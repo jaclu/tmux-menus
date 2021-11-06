@@ -17,5 +17,4 @@ menus_dir="$CURRENT_DIR/menus"
 
 
 
-bind \\ run-shell $menus_dir/main.sh
-
+tmux bind \\ run-shell $menus_dir/main.sh
