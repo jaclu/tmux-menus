@@ -24,7 +24,7 @@ items=(
      "<P> Rename pane"         P     'command-prompt -I \"#T\"  -p \"New pane name: \"  \"select-pane -T '%%'\"' 
      "<P> Swap pane to prev"  \{     "swap-pane -U"
      "<P> Swap pane to next"  \}     "swap-pane -D"
-     "#{?pane_marked_set,,-}<P> Swap current pane with marked"      p  swap-pane
+     "#{?pane_marked_set,,-}    Swap current pane with marked"      p  swap-pane
      "<P> Move pane to a new window"  !  break-pane
      "    #{?pane_synchronized,Disable,Activate} synchronized panes"  s  "set -g synchronize-panes"
      ""
