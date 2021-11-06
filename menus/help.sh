@@ -25,10 +25,6 @@ tmux display-menu  \
      "" \
     "On options spanning multiple lines,"      "" ""  \
     "if you use Enter to select, you must be"  "" ""  \
-    "on the line with the shortcut. Otherwise" "" ""  \
-    "it is interperated as cancel."            "" ""  \
-    "" \
-    "<P> indicates this key can also be" "" ""  \
-    "    used with <prefix> directely"   "" ""
+    "on the line with the shortcut. Otherwise" "" "" "it is interperated as cancel."            "" "" "" "<P> indicates this key can also be" "" ""  "    used with <prefix> directely"   "" ""
 
 exit 0

@@ -12,6 +12,8 @@ menu_name="$0"
 
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+. utils.sh
+
 menu_title="Main menu"
 
 show_help=0
@@ -22,14 +24,15 @@ items=(
     "    Handling Sessions" s  "run-shell $CURRENT_DIR/sessions.sh"
     "    Advanced Options"  a  "run-shell $CURRENT_DIR/advanced.sh"
     ""
-    "<P> #{?pane_marked,Unmark,Mark} current pane" "" ""
-    "     (used by Pane and Windows menu)"  m  "select-pane -m"
+    "    #{?pane_marked,Unmark,Mark} current pane - used by" "" ""
+    "<P>   Pane and  Windows menu"  m  "select-pane -m"
     ""
     "<P> Detach from tmux"  d  detach-client
-    "    Kill server - all your sessions" "" ""
-    "        on this host are terminated"  k  "confirm-before -p \"kill tmux server on #H ? (y/n)\" kill-server"
-    )
+    "    Kill server - all your" "" ""
+    "    sesssions on this host" "" ""
+    "    are terminated"  k  'confirm-before -p \"kill tmux server on #H ? (y/n)\" kill-server'
+)
 
-. menu-renderer.sh
+eval $(render_menu)
 
 exit 0
