@@ -8,26 +8,28 @@
 #   Version: 1.0 2021-11-06-
 #       Initial release
 #
+menu_name="$0"
 
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+menu_title="Main menu"
 
-tmux display-menu \
-    -T "#[align=centre] Main menu " \
-    -x C -y C \
-    \
-    "    Handling Panes"    p  "run-shell $CURRENT_DIR/panes.sh"     \
-    "    Handling Windows"  w  "run-shell $CURRENT_DIR/windows.sh"   \
-    "    Handling Sessions" s  "run-shell $CURRENT_DIR/sessions.sh"  \
-    "    Advanced Options"  a  "run-shell $CURRENT_DIR/advanced.sh"  \
-    "" \
-    "<P> #{?pane_marked,Unmark,Mark} current pane" "" ""  \
-    "     (used by Pane and Windows menu)"  m  "select-pane -m"  \
-    "" \
-    "<P> Detach from tmux"  d  detach-client     \
-    "    Kill server - all your sessions" "" ""  \
-    "        on this host are terminated"  k  "confirm-before -p \"kill tmux server on #H ? (y/n)\" kill-server"  \
-    "" \
-    "Help"  h  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/main.sh\""
+show_help=0
+
+items=(
+    "    Handling Panes"    p  "run-shell $CURRENT_DIR/panes.sh"
+    "    Handling Windows"  w  "run-shell $CURRENT_DIR/windows.sh"
+    "    Handling Sessions" s  "run-shell $CURRENT_DIR/sessions.sh"
+    "    Advanced Options"  a  "run-shell $CURRENT_DIR/advanced.sh"
+    ""
+    "<P> #{?pane_marked,Unmark,Mark} current pane" "" ""
+    "     (used by Pane and Windows menu)"  m  "select-pane -m"
+    ""
+    "<P> Detach from tmux"  d  detach-client
+    "    Kill server - all your sessions" "" ""
+    "        on this host are terminated"  k  "confirm-before -p \"kill tmux server on #H ? (y/n)\" kill-server"
+    )
+
+. menu_renderer.sh
 
 exit 0
