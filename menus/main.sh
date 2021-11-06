@@ -30,6 +30,6 @@ items=(
     "        on this host are terminated"  k  "confirm-before -p \"kill tmux server on #H ? (y/n)\" kill-server"
     )
 
-. menu_renderer.sh
+. menu-renderer.sh
 
 exit 0
