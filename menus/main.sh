@@ -24,10 +24,9 @@ tmux display-menu \
     "<P> #{?pane_marked,Unmark,Mark} current pane" "" ""  \
     "     (used by Pane and Windows menu)"  m  "select-pane -m"  \
     "" \
-    "    Detach from tmux, leaving it running" "" "" \
-    "<P>         waiting for later re-connect"  d  detach-client     \
-    "         Kill server - all your sessions" "" ""  \
-    "             on this host are terminated"  k  "confirm-before -p \"kill tmux server on #H ? (y/n)\" kill-server"  \
+    "<P> Detach from tmux"  d  detach-client     \
+    "    Kill server - all your sessions" "" ""  \
+    "        on this host are terminated"  k  "confirm-before -p \"kill tmux server on #H ? (y/n)\" kill-server"  \
     "" \
     "Help"  h  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/main.sh\""
 
