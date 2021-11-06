@@ -1,0 +1,18 @@
+#!/bin/sh
+
+tmux display-menu \
+     -T "#[align=centre] Sessions " \
+     -x C -y C \
+     \
+     "Back to main-menu"  Left  "run-shell $HOME/tmux-menu-main.sh"  \
+     "" \
+     "<P> Rename this session"         $   "command-prompt -I \"#S\" \"rename-session -- '%%'\""  \
+     "    New session"                 n  "command-prompt -p \"Name of new session: \" \"new-session -s '%%'\""  \
+     "    Kill current session"        k  "run \"cut -c3- $PATH_TO_TMUX_CONF | sh -s _kill_current_session\""    \
+     "" \
+     "    Choose session, use arrows" ""  ""  \
+     "<P>         to navigate & zoom"   s   "choose-tree -Zs"  \
+     "" \
+     "Help"  h  "run-shell \"$HOME/tmux-menu-help.sh $HOME/tmux-menu-sessions.sh\""
+
+exit 0
