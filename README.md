@@ -1,14 +1,12 @@
 # tmux-menus
 
-Popup menus to help with managing your environment
+Popup menus to help with managing your environment.
 
 ## Purpose
 
-Not only meant for begginers, I use it myself daily for tasks I use so rarely
-that I struggle to remember some of the shortcuts.
-I have also tried to add some more general items, that I don't need myself,
-but might be helpful to others. It's fairly easy to add/remove items to fit your
-specific needs.
+Not only meant for beginers, I use it myself regularly for tasks I can't be bothered to learn by hart.<br>
+I have also tried to add some more general items, that might be helpful to others.<br>
+It's fairly easy to add/remove items to fit your specific needs.
 
 ## Usage
 
@@ -21,7 +19,7 @@ Default is ``` <prefix> \ ``` see Settings below for how to change it.
 | Version| Notice |
 | -------| ------------- |
 | 3.2 -   | Fully compatible  |
-| 3.0 - 3.1c | Can show the menus, centering not supported, will be displayed top left. <br>Additionally some actions might not work depending on version. <br> There should be a notification about it in such casses |
+| 3.0 - 3.1c | Can show the menus, centering not supported, will be displayed top left. <br>Additionally some actions might not work depending on version. <br> There should be a notification message about "unknown command" in such casses. |
 
 
 ## Installation
