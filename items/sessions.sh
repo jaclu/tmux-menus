@@ -22,6 +22,7 @@
 
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+script_dir="$(dirname "$CURRENT_DIR")/scripts"
 
 tmux display-menu  \
      -T "#[align=centre] Sessions "  \
@@ -31,7 +32,7 @@ tmux display-menu  \
      "" \
      "<P> Rename this session"         $   "command-prompt -I \"#S\" \"rename-session -- '%%'\""  \
      "    New session"                 n  "command-prompt -p \"Name of new session: \" \"new-session -s '%%'\""  \
-     "    Kill current session"        k  "run \"cut -c3- $PATH_TO_TMUX_CONF | sh -s _kill_current_session\""    \
+     "    Kill current session"        k  "run \"$script_dir/kill_current_session.sh\""  \
      "" \
      "    Choose session, use arrows" ""  ""  \
      "<P>         to navigate & zoom"   s   "choose-tree -Zs"  \
