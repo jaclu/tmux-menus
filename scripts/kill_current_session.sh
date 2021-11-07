@@ -26,7 +26,7 @@ if [ "$1" != "$force_directive" ]; then
     fi
 fi
 
-ses_to_go="$(tmux display-message -p '#S')"
+ses_to_go="$(tmux display-message -p '#{session_id}')"
 
 if [ -z "$ses_to_go" ]; then
    exit 0
