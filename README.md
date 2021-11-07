@@ -64,4 +64,6 @@ If you want use special chars like \ ^ $ & etc, you must prefix them with \
 
 The default binding would be given as ``` '\\' ```
 
+## License
 
+[MIT](LICENSE.md)
