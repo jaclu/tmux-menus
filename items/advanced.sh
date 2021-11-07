@@ -5,8 +5,10 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0 2021-11-06-
+#   Version: 1.0 2021-11-07
 #       Initial release
+#
+#   This is the advanced menu, wit more archaic tasks
 #
 
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -24,5 +26,3 @@ tmux display-menu \
     "<P> Prompt for a command"  :     command-prompt  \
     "" \
     "Help"  h  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/advanced.sh\""
-
-exit 0

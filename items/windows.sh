@@ -5,16 +5,18 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0 2021-11-06-
+#   Version: 1.0 2021-11-07
 #       Initial release
+#
+#   Menu dealing with windows
 #
 
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 
-tmux display-menu \
-     -T "#[align=centre] Windows manipulation " \
-     -x C -y C \
+tmux display-menu  \
+     -T "#[align=centre] Windows manipulation "  \
+     -x C -y C  \
      \
      "Back to main-menu"     Left  "run-shell $CURRENT_DIR/main.sh"  \
      "" \
@@ -32,5 +34,3 @@ tmux display-menu \
      "<P>        to navigate & zoom"  w   "choose-tree -Zw"  \
      "" \
      "Help"  h  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/windows.sh\""
-
-exit 0
