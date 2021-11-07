@@ -22,6 +22,11 @@ if [ "$1" != "$force_directive" ]; then
     ses_count="$(tmux list-sessions | wc -l)"
     if [ "$ses_count" -eq 1 ]; then
 	$CURRENT_DIR/kill_session_confirm.sh
+	
+	#
+	# This script will be called again with the force param
+	# if continuation is desired, this instance should now quit.
+	#
 	exit 0
     fi
 fi
