@@ -41,4 +41,4 @@ source "$CURRENT_DIR/scripts/utils.sh"
 
 trigger_key=$(get_tmux_option "@menus_trigger" "\\")
 
-tmux bind "$trigger_key" run-shell $menus_dir/main.sh
+tmux bind -N "Displays tmux-menus"  "$trigger_key" run-shell $menus_dir/main.sh
