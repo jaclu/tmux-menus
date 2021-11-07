@@ -12,7 +12,7 @@ specific needs.
 
 ## Installation
 
-Compatability: tmux version 3.0 or higher
+Compatability: tmux version 3.2 or higher
 
 ### Installation with [Tmux Plugin Manager](https://github.com/tmux-plugins/tpm) (recommended)
 
