@@ -10,7 +10,7 @@
 #
 #   Kills current session. If this is the only session, it
 #   first calls kill_session_confirm.sh where user can confirm
-#   if this should still happen, since it will terminate the session
+#   if this should still happen, since it will terminate the tmux server.
 #
 
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
