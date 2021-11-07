@@ -10,7 +10,15 @@
 #
 #   This is the help menu, in case you havent guessed :)
 #
-
+#   There are three types of menu item lines:
+#   1) An item leading to an action
+#       "Description" "in menu shortcut key" " action taken when it is triggered"
+#   2) Just a line of text
+#       "Some text to display" "" ""
+#   3) Separator line
+#       ""
+#   All but the last line in the menu, needs to end with a continuation \
+#    
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 previous_menu="$1"
@@ -32,5 +40,7 @@ tmux display-menu  \
     "on the line with the shortcut. Otherwise" "" ""  \
     "it is interperated as cancel."            "" ""  \
     "" \
-    "<P> indicates this key can also be" "" ""  \
-    "    used with <prefix> directely"   "" ""
+    "<P> indicates this key is a deault key" "" ""  \
+    "    so unless you have changed it," "" ""   \
+    "    it should be possible to use" "" "" \
+    "    with <prefix> directly." "" ""
