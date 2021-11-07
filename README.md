@@ -6,7 +6,7 @@ Popup menus to help with managing your environment
 
 Not only meant for begginers, I use it myself daily for tasks I use so rarely
 that I struggle to remember some of the shortcuts.
-I have also tried to add some more general, that I don't need myself,
+I have also tried to add some more general items, that I don't need myself,
 but might be helpful to others. It's fairly easy to add/remove items to fit your
 specific needs.
 
@@ -46,16 +46,22 @@ tmux source-file ~/.tmux.conf
 
 ## Usage
 
-Once installed hit the current trigger (see Settings below) to get the main menu top popup.
+Once installed, hit the current trigger (see Settings below) to get the main menu to popup.
 
 
 ## Settings
 
-Default trigger key is <prefix> \
+Default trigger key is ``` <prefix> \ ```
 
 If you want to change it you can assign a value to  @menus_trigger
 
 Sample
+```tmux
+set -g @menus_trigger 'b'
+```
 
-set -g @menus_trigger 'B'
+If you want use special chars like \ ^ $ & etc, you must prefix them with \
+
+The default binding would be given as ``` '\\' ```
+
 
