@@ -20,8 +20,8 @@ Default is ``` <prefix> \ ``` see Settings below for how to change it.
 
 | Version| Notice |
 | -------| ------------- |
-| 3.2    | Fully compatible  |
-| 3.1c   | Can show the menus, but it doesnt support centering so they will be displayed top left  |
+| 3.2 -   | Fully compatible  |
+| 3.0 - 3.1c | Can show the menus, but it doesnt support centering so they will be displayed top left  |
 
 
 ## Installation
