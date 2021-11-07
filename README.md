@@ -10,9 +10,21 @@ I have also tried to add some more general items, that I don't need myself,
 but might be helpful to others. It's fairly easy to add/remove items to fit your
 specific needs.
 
-## Installation
+## Usage
 
-Compatability: tmux version 3.2 or higher
+Once installed, hit the trigger to get the main menu to popup.
+Default is ``` <prefix> \ ``` see Settings below for how to change it.
+
+
+## Compatability
+
+| Version| Notice |
+| -------| ------------- |
+| 3.2    | Fully compatible  |
+| 3.1c   | Can show the menus, but it doesnt support centering so they will be displayed top left  |
+
+
+## Installation
 
 ### Installation with [Tmux Plugin Manager](https://github.com/tmux-plugins/tpm) (recommended)
 
@@ -43,11 +55,6 @@ From the terminal, reload TMUX environment:
 ```shell
 tmux source-file ~/.tmux.conf
 ```
-
-## Usage
-
-Once installed, hit the current trigger (see Settings below) to get the main menu to popup.
-
 
 ## Settings
 
