@@ -33,13 +33,13 @@ tmux display-menu  \
      "    Move window Left"   l     "swap-window -dt:-1"  \
      "    Move window Right"  r     "swap-window -dt:+1"  \
      "#{?pane_marked_set,,-}    Swap current window with window" "" ""  \
-     "#{?pane_marked_set,,-}             containing marked pane"  W  swap-window  \
+     "#{?pane_marked_set,,-}             containing marked pane"  w  swap-window  \
      "" \
      "    New window after current"   n  "command-prompt -p \"Name of new window: \" \"new-window -a -n '%%'"  \
      "<P> New window at the end"      c  "command-prompt -p \"Name of new window: \" \"new-window -n '%%'"  \
      "<P> Kill current window"       \&  "confirm-before -p \"kill-window #W? (y/n)\" kill-window"  \
      "" \
      "    Choose window, use arrows" ""  ""  \
-     "<P>        to navigate & zoom"  w   "choose-tree -Zw"  \
+     "<P>        to navigate & zoom"  W   "choose-tree -Zw"  \
      "" \
      "Help"  h  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/windows.sh\""
