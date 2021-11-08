@@ -38,7 +38,7 @@ tmux display-menu  \
      "" \
      "    Choose a tmux paste buffer" "" ""                     \
      "<P>  (Enter pastes Esq aborts)"  =  "choose-buffer -Z"  \
-     "<P> Display pane numbers"         q  display-panes       \
-     "<P> Kill current pane"            x  "confirm-before -p \"kill-pane #P? (y/n)\" kill-pane"  \
+     "<P> Display pane numbers"        q  display-panes       \
+     "<P> Kill current pane"           x  "confirm-before -p \"kill-pane #P? (y/n)\" kill-pane"  \
      "" \
      "Help"  h  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/panes.sh\""
