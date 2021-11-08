@@ -19,6 +19,7 @@ Default is ``` <prefix> \ ``` see Settings below for how to change it.
 ![help](/screenshots/help.png)
 ![panes](/screenshots/panes.png)
 ![winws](/screenshots/windows.png)
+![sessions](/screenshots/sessions.png)
 ![winws](/screenshots/advanced.png)
 
 ## Compatability
