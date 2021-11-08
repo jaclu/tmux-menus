@@ -19,13 +19,14 @@
 #       ""
 #   All but the last line in the menu, needs to end with a continuation \
 #    
+
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 
 previous_menu="$1"
 
-
 if [ -z "$previous_menu" ]; then
-    tmux display-message -d 0 "ERROR: tmux-menus:help was called without notice of what called it"
+    tmux display-message -d 5000 "ERROR: tmux-menus:help was called without notice of what called it"
 fi
 
 
