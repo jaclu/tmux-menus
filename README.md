@@ -80,7 +80,7 @@ The default binding would be given as ``` '\\' ```
 
 ## Modifications
 
-If you want to experiment on changing the menus, I would recomend to first clone/copy this repo to a different location on your system.
+If you want to experiment with changing the menus, I would recomend to first clone/copy this repo to a different location on your system.
 
 Then by just running ./menus.tmux in the new location, your trigger key will bind to this alternate menu set. 
 So next time you trigger the menus you will get this in-development menu tree.
