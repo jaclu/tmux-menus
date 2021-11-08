@@ -11,11 +11,11 @@
 
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-menus_dir="$CURRENT_DIR/items"
+MENUS_DIR="$CURRENT_DIR/items"
+SCRIPTS_DIR="$CURRENT_DIR/scripts"
 
-
-source "$CURRENT_DIR/scripts/utils.sh"
+source "$SCRIPTS_DIR/utils.sh"
 
 trigger_key=$(get_tmux_option "@menus_trigger" "\\")
 
-tmux bind -N "Displays tmux-menus"  "$trigger_key" run-shell $menus_dir/main.sh
+tmux bind -N "Displays tmux-menus"  "$trigger_key" run-shell $MENUS_DIR/main.sh
