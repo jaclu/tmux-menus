@@ -4,7 +4,7 @@ Popup menus to help with managing your environment.
 
 ## Purpose
 
-Not only meant for beginers, I use it myself regularly for tasks I can't be bothered to learn by hart.<br>
+Not only meant for beginers, I use it myself regularly for tasks I can't be bothered to learn by heart.<br>
 I have also tried to add some more general items, that might be helpful to others.<br>
 It's fairly easy to add/remove items to fit your specific needs.
 
