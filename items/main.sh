@@ -32,8 +32,8 @@ tmux display-menu \
      "    Handling Sessions" s  "run-shell $CURRENT_DIR/sessions.sh"  \
      "    Advanced Options"  a  "run-shell $CURRENT_DIR/advanced.sh"  \
      "" \
-     "<P> #{?pane_marked,Unmark,Mark} current pane" "" ""  \
-     "     (used by Pane and Windows menu)"  m  "select-pane -m"  \
+     "    #{?pane_marked,Unmark,Mark} current pane" "" ""  \
+     "<P>  (used by Pane and Windows menu)"  m  "select-pane -m"  \
      "" \
      "<P> Detach from tmux"  d  detach-client     \
      "    Kill server - all your sessions" "" ""  \
