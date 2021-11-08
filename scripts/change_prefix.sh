@@ -11,7 +11,6 @@
 #   Updates global prefix, if prefix param is given
 #
 
-CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 prefix_char="$1"
 
@@ -20,7 +19,8 @@ if [ -z "$prefix_char" ]; then
     exit 0
 fi
 
-prefix="C-$prefix_char"
+
+prefix="C-${prefix_char}"
 
 tmux set-option -g prefix "$prefix"
 
