@@ -22,11 +22,8 @@
 
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-script_dir="$(dirname "$CURRENT_DIR")/scripts"
+SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
-
-
-current_prefix="$(tmux show-option -g prefix | cut -d' ' -f2 | cut -d'-' -f2)"
 
 current_mouse_status="$(tmux show-option -g mouse | cut -d' ' -f2)"
 if [ "$current_mouse_status" = "on" ]; then
@@ -36,6 +33,9 @@ else
 fi
 
 
+current_prefix="$(tmux show-option -g prefix | cut -d' ' -f2 | cut -d'-' -f2)"
+
+
 tmux display-menu \
     -T "#[align=centre] Advanced options "  \
     -x C -y C \
@@ -43,7 +43,7 @@ tmux display-menu \
     "Back to main-menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
     "" \
     "    Toggle mouse to: $new_mouse_status"   "m"  "set-option -g mouse $new_mouse_status"  \
-    "    Change prefix <$current_prefix>"  p  "command-prompt -1 -p prefix 'run \"$script_dir/change_prefix.sh %%\"'"  \
+    "    Change prefix <$current_prefix>"  p  "command-prompt -1 -p prefix 'run \"$SCRIPT_DIR/change_prefix.sh %%\"'"  \
     "" \
     "<P> Show messages"        \~     show-messages        \
     "<P> Customize options"     C     "customize-mode -Z"  \
