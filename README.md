@@ -13,6 +13,13 @@ It's fairly easy to add/remove items to fit your specific needs.
 Once installed, hit the trigger to get the main menu to popup.
 Default is ``` <prefix> \ ``` see Settings below for how to change it.
 
+## Screenshots
+
+![main](/screenshots/main.png)
+![help](/screenshots/help.png)
+![panes](/screenshots/panes.png)
+![winws](/screenshots/windows.png)
+![winws](/screenshots/advanced.png)
 
 ## Compatability
 
