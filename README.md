@@ -110,7 +110,7 @@ to be able to inspect stuff, if something seems not to be working.
 
 When done, deploy by copy/commit your changes to the default location, this will be used from now on.
 
-If you want to go back to your installed version for now, either reload configs, or run menus.tmux in your normal tmux-menus dir, regardless the installed version will be activated next time you start tmux in any case.
+If you want to go back to your installed version for now, either reload configs, or run menus.tmux in your normal tmux-menus dir to just restart that. Regardless the installed version will be activated next time you start tmux.
 
 
 ## License
