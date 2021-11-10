@@ -98,15 +98,10 @@ Each menu is run as a script, so you can edit a menu script and once it is saved
 
 So rapid development with minimal fuzz!
 
-If you are struggeling with a menu edit, I would suggest to just run that menu item in a pane of the tmux session your working on 
+If you are struggeling with a menu edit, I would suggest to just run that menu item in a pane of the tmux session your working on ``` ./items/sessions.sh ``` this will directly trigger that menu and display any syntax errors on the command line.
 
-``` ./items/sessions.sh ```
-
-this will directly trigger that menu and display any syntax errors. I often add lines like
-
-``` echo "foo is now [$foo]" >> /tmp/menus-dbg.log ```
-
-to be able to inspect stuff, if something seems not to be working.
+I often add lines like ``` echo "foo is now [$foo]" >> /tmp/menus-dbg.log ``` to be able to inspect stuff, if something seems not to be working.
+If you are triggering a menu from the command line, you can use direct echo, but then you need to remove them before deploying, since tmux will see any script output as an potential error and display it in a scroll back buffer.
 
 When done, deploy by copy/commit your changes to the default location, this will be used from now on.
 
