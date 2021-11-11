@@ -5,8 +5,10 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0 2021-11-07
-#       Initial release
+#   Version: 1.0.1 2021-11-11
+#        Added label to key, so that is shows up if you do <prefix> ?
+#    1.0 2021-11-07
+#        Initial release
 #
 
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
