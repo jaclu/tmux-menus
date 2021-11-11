@@ -86,6 +86,16 @@ If you want use special chars like \ ^ $ & etc, you must prefix them with \
 
 The default binding would be given as ``` '\\' ```
 
+### Menu location
+
+Locations can be one of  C, P, W, M
+
+```tmux
+set -g @menus_location_x 'W'
+set -g @menus_location_y 'W'
+```
+
+
 
 ## Modifications
 
