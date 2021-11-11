@@ -73,6 +73,8 @@ tmux source-file ~/.tmux.conf
 
 ## Settings
 
+### Trigger
+
 Default trigger key is ``` <prefix> \ ```
 
 If you want to change it you can assign a value to  @menus_trigger
@@ -88,11 +90,21 @@ The default binding would be given as ``` '\\' ```
 
 ### Menu location
 
-Locations can be one of  C, P, W, M
+(New) Default location is: W
+
+Locations can be one of:
+
+ * W - By the current window name in the status line
+ * P - Lower left of current pane
+ * C - Centered in window (tmux 3.2 and up)
+ * M - Mouse position
+ * R - Right edge of terminal (Only for x)
+ * S - Next to status line (Only for y)
+ * Number - In window coordinates 0,0 is top left
 
 ```tmux
-set -g @menus_location_x 'W'
-set -g @menus_location_y 'W'
+set -g @menus_location_x 'C'
+set -g @menus_location_y 'C'
 ```
 
 
