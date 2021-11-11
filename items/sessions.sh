@@ -5,8 +5,10 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0 2021-11-07
-#       Initial release
+#   Version: 1.1 2021-11-11
+#        Added suport for menu_location_x  &  menu_location_y
+#    1.0 2021-11-07
+#        Initial release
 #
 #   Menu dealing with sessions
 #
@@ -18,16 +20,19 @@
 #   3) Separator line
 #       ""
 #   All but the last line in the menu, needs to end with a continuation \
+#   Whitespace after thhis \ will fail the menu!
 #
 
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
+source "$SCRIPT_DIR/utils.sh"
+
 
 tmux display-menu  \
      -T "#[align=centre] Sessions "  \
-     -x C -y C  \
+     -x $menu_location_x -y $menu_location_y \
      \
      "Back to main-menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
      "" \

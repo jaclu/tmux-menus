@@ -5,8 +5,10 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0 2021-11-07
-#       Initial release
+#   Version: 1.1 2021-11-11
+#        Added suport for menu_location_x  &  menu_location_y
+#    1.0 2021-11-07
+#        Initial release
 #
 
 
@@ -20,3 +22,14 @@ get_tmux_option() {
 	echo "$option_value"
     fi
 }
+
+
+
+#
+#  C (tmux 3.2 and up)  Centered in window
+#  P Lower left of current pane
+#  W by the current window name in the status line
+#  M by the mouse position
+#
+menu_location_x="$(get_tmux_option "@menus_location_x" "W")"
+menu_location_y="$(get_tmux_option "@menus_location_y" "W")"
