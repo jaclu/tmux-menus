@@ -5,7 +5,9 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.1 2021-11-11
+#   Version: 1.1.1 2021-11-11
+#        Added Next & Previous session commands
+#    1.1 2021-11-11
 #        Added suport for menu_location_x  &  menu_location_y
 #    1.0 2021-11-07
 #        Initial release
@@ -30,6 +32,18 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 source "$SCRIPT_DIR/utils.sh"
 
 
+#
+#  Please note that I use revrse logic for prev / next.
+#  This is due to that the tmux default logic seems reversed,
+#  this notion of prev / next just makes more sense to me.
+
+#  Please note that I use revrse logic for prev/next session.
+#  This is due to that the tmux default logic seems reversed,
+#  this notion of prev/next just makes more sense to me.
+#  If I use next session, I would expect to go to next sessions
+#  in the order they were created...
+#  As always, feel free to edit to your pleasure :)
+#
 tmux display-menu  \
      -T "#[align=centre] Sessions "  \
      -x $menu_location_x -y $menu_location_y \
@@ -37,7 +51,9 @@ tmux display-menu  \
      "Back to main-menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
      "" \
      "<P> Rename this session"   $  "command-prompt -I \"#S\" \"rename-session -- '%%'\""  \
-     "    New session"           n  "command-prompt -p \"Name of new session: \" \"new-session -s '%%'\""  \
+     "    Previous session"      p  "switch-client -n" \
+     "    Next session"          n  "switch-client -p" \
+     "    New session"           N  "command-prompt -p \"Name of new session: \" \"new-session -s '%%'\""  \
      "    Kill current session"  k  "confirm-before -p \"Are you sure you want to kill this session ? (y/n)\" \"run \"${SCRIPT_DIR}/kill_current_session.sh\"\" "  \
      "" \
      "    Choose session, use arrows" ""  ""  \
