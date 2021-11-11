@@ -36,7 +36,7 @@ Default is ``` <prefix> \ ``` see Settings below for how to change it.
 | Version| Notice |
 | -------| ------------- |
 | 3.2 -   | Fully compatible  |
-| 3.0 - 3.1c | Can show the menus, centering not supported, will be displayed top left. <br>Additionally some actions might not work depending on version. <br> There should be a notification message about "unknown command" in such casses. |
+| 3.0 - 3.1c | Menu centering not supported, will be displayed top left if C is used as menu location. <br>Additionally some actions might not work depending on version. <br> There should be a notification message about "unknown command" in such casses. |
 
 
 ## Installation
