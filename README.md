@@ -9,7 +9,7 @@ There are some very basic popups per default<br>
 * ``` <prefix> < ``` displays some windows handling options
 * ``` <prefix> > ``` displays some pane handling options
 
-I find them rather lacking and prefered a more integrated aproach with navigation and simple adoptability, also covering more than just panes and windows.
+I find them rather lacking and since they are written as hard to read one-liners, I prefered a more integrated aproach with navigation and simple adoptability, also covering more than just panes and windows.
 
 Not only meant for beginers, I use it myself regularly for tasks I can't be bothered to learn by heart, or when direct typing would be much longer.<br>
 Example: Kill the server directly is min 12 keys: ``` <prefix> : kill-ser <tab> <enter> ``` <br>
