@@ -9,7 +9,7 @@
 #       Initial release
 #
 #   Called from kill_current_session.sh
-#   If thie question to continue is answered with y
+#   If the question to continue is answered with y
 #   It calls kill_current_session.sh with the force param
 #   to avoid making the check for just one session
 #
