@@ -52,7 +52,7 @@ if [ $ses_count -gt 1 ]; then
     #  it gets killed it gets disconnected. Nothing major, the other sessions
     #  are still running, but its an unnesesarry anoyannce to have to
     #  reconnect. Combined with that this is not blocking anything,
-    #  running it its own thread, it doesnt hurt to wait a bit.
+    #  running in its own thread, it doesnt hurt to wait a bit.
     #
     #  If it is the last session, this slowness doesnt matter, it would
     #  switch back to itself anyhow, and regardless if the kill happens before
