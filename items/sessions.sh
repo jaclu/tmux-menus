@@ -38,13 +38,6 @@ source "$SCRIPT_DIR/utils.sh"
 #  Please note that I use revrse logic for prev / next.
 #  This is due to that the tmux default logic seems reversed,
 #  this notion of prev / next just makes more sense to me.
-
-#  Please note that I use revrse logic for prev/next session.
-#  This is due to that the tmux default logic seems reversed,
-#  this notion of prev/next just makes more sense to me.
-#  If I use next session, I would expect to go to next sessions
-#  in the order they were created...
-#  As always, feel free to edit to your pleasure :)
 #
 tmux display-menu  \
      -T "#[align=centre] Sessions "  \
@@ -52,9 +45,9 @@ tmux display-menu  \
      \
      "Back to main-menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
      "" \
-     "<P> Rename this session"   $  "command-prompt -I \"#S\" \"rename-session -- '%%'\""  \
-     "    Previous session"      p  "switch-client -n" \
-     "    Next session"          n  "switch-client -p" \
+     "<P> Rename this session"   \$  "command-prompt -I \"#S\" \"rename-session -- '%%'\""  \
+     "<P> Previous session"      \(  "switch-client -p" \
+     "<P> Next session"          \)  "switch-client -n" \
      "    New session"           N  "command-prompt -p \"Name of new session: \" \"new-session -s '%%'\""  \
      "    Kill current session"  k  "confirm-before -p \"Are you sure you want to kill this session? (y/n)\" \"run \"${SCRIPT_DIR}/kill_current_session.sh\"\" "  \
      "    Kill all other sessions"  K  "confirm-before -p \"Are you sure you want to kill all other sessions? (y/n)\" \"kill-session -a\""  \
