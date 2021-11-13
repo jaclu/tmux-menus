@@ -5,7 +5,9 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.1.1 2021-11-11
+#   Version: 1.1.2 2021-11-13
+#        Added K - Kill all other sessions
+#    1.1.1 2021-11-11
 #        Added  Previous/Next Session commands.
 #    1.1 2021-11-11
 #        Added suport for menu_location_x  &  menu_location_y
@@ -54,7 +56,8 @@ tmux display-menu  \
      "    Previous session"      p  "switch-client -n" \
      "    Next session"          n  "switch-client -p" \
      "    New session"           N  "command-prompt -p \"Name of new session: \" \"new-session -s '%%'\""  \
-     "    Kill current session"  k  "confirm-before -p \"Are you sure you want to kill this session ? (y/n)\" \"run \"${SCRIPT_DIR}/kill_current_session.sh\"\" "  \
+     "    Kill current session"  k  "confirm-before -p \"Are you sure you want to kill this session? (y/n)\" \"run \"${SCRIPT_DIR}/kill_current_session.sh\"\" "  \
+     "    Kill all other sessions"  K  "confirm-before -p \"Are you sure you want to kill all other sessions? (y/n)\" \"kill-session -a\""  \
      "" \
      "    Choose session, use arrows" ""  ""  \
      "<P>         to navigate & zoom"   s   "choose-tree -Zs"  \
