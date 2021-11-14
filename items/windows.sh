@@ -5,7 +5,9 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.1 2021-11-11
+#   Version: 1.1.1 2021-11-14
+#        Added K - kill all other windows
+#    1.1 2021-11-11
 #        Added suport for menu_location_x  &  menu_location_y
 #    1.0.1 2021-11-11
 #        Added "Display Window size" S
@@ -48,6 +50,7 @@ tmux display-menu  \
      "    New window after current"   n  "command-prompt -p \"Name of new window: \" \"new-window -a -n '%%'"  \
      "<P> New window at the end"      c  "command-prompt -p \"Name of new window: \" \"new-window -n '%%'"  \
      "<P> Kill current window"       \&  "confirm-before -p \"kill-window #W? (y/n)\" kill-window"  \
+     "    Kill all other windows"  K  "confirm-before -p \"Are you sure you want to kill all other windows? (y/n)\" \"run \"${SCRIPT_DIR}/kill_other_windows.sh\" \" "  \
      "" \
      "    Choose window, use arrows" ""  ""  \
      "<P>        to navigate & zoom"  W   "choose-tree -Zw"  \
