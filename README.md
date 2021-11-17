@@ -31,17 +31,17 @@ Default is ``` <prefix> \ ``` see Settings below for how to change it.
 ![sessions](/screenshots/sessions.png)
 ![winws](/screenshots/advanced.png)
 
-## Compatability
+## Install
 
-| Version| Notice |
-| -------| ------------- |
-| 3.2 -   | Fully compatible  |
-| 3.0 - 3.1c | Menu centering not supported, will be displayed top left if C is used as menu location. <br>Additionally some actions might not work depending on version. <br> There should be a notification message about "unknown command" in such casses. |
+### Using [Tmux Plugin Manager](https://github.com/tmux-plugins/tpm) (recommended)
 
+1. Add plugin to the list of TPM plugins in `.tmux.conf`:
 
-## Installation
+    ```
+    set -g @plugin 'jaclu/tmux-menus'
+    ```
 
-### Installation with [Tmux Plugin Manager](https://github.com/tmux-plugins/tpm) (recommended)
+2. Hit `prefix + I` to fetch the plugin and source it. You should now be able to use the plugin.
 
 Add plugin to the list of TPM plugins in `.tmux.conf`:
 
@@ -53,42 +53,38 @@ Hit `<prefix> + I` to fetch the plugin and source it.
 
 ### Manual Installation
 
-Clone the repo:
+1. Clone this repo:
 
-```shell
-git clone https://github.com/jaclu/tmux-menus.git ~/clone/path
+    ```console
+    $ git clone https://github.com/jaclu/tmux-menus ~/some/path
+    ```
+
+2. Source the plugin in your `.tmux.conf` by adding the following to the bottom of the file:
+
+    ```
+    run-shell ~/some/path/plugin.tmux
+    ```
+
+3. Reload the environment by running:
+
+    ```console
+    $ tmux source-file ~/.tmux.conf
+    ```
+
+
+## Configuration
+
+#### Changing the default key-binding for this plugin
+
+```
+set -g @menus_trigger 'x'
 ```
 
-Add this line to the bottom of `.tmux.conf`:
+Default: `'\\'`
 
-```tmux
-run-shell ~/clone/path/menus.tmux
-```
 
-From the terminal, reload TMUX environment:
 
-```shell
-tmux source-file ~/.tmux.conf
-```
-
-## Settings
-
-### Trigger
-
-Default trigger key is ``` <prefix> \ ```
-
-If you want to change it you can assign a value to  @menus_trigger
-
-Sample
-```tmux
-set -g @menus_trigger 'b'
-```
-
-If you want use special chars like \ ^ $ & etc, you must prefix them with \
-
-The default binding would be given as ``` '\\' ```
-
-### Menu location
+#### Menu location
 
 (New) Default location is: W
 
@@ -128,6 +124,14 @@ If you are triggering a menu from the command line, you can use direct echo, but
 When done, deploy by copy/commit your changes to the default location, this will be used from now on.
 
 If you want to go back to your installed version for now, either reload configs, or run ./menus.tmux in your normal tmux-menus dir to rebind those menus to the trigger. Regardless the installed version will be activated next time you start tmux.
+
+
+## Compatability
+
+| Version| Notice |
+| -------| ------------- |
+| 3.2 -   | Fully compatible  |
+| 3.0 - 3.1c | Menu centering not supported, will be displayed top left if C is used as menu location. <br>Additionally some actions might not work depending on version. <br> There should be a notification message about "unknown command" in such casses. |
 
 
 ## License
