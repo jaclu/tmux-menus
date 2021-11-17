@@ -6,7 +6,6 @@
 #   Part of https://github.com/jaclu/tmux-menus
 #
 #   Version: 1.0 2021-11-14
-#       Initial release
 #
 #   Kill all other windows
 #

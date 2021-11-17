@@ -6,7 +6,6 @@
 #   Part of https://github.com/jaclu/tmux-menus
 #
 #   Version: 1.0 2021-11-07
-#       Initial release
 #
 #   Kills current session. If this is the only session, it
 #   first calls kill_session_confirm.sh where user can confirm

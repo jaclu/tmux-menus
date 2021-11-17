@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 #
 #   Copyright (c) 2021: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -6,13 +6,6 @@
 #   Part of https://github.com/jaclu/tmux-menus
 #
 #   Version: 1.1.2 2021-11-13
-#        Added K - Kill all other sessions
-#    1.1.1 2021-11-11
-#        Added  Previous/Next Session commands.
-#    1.1 2021-11-11
-#        Added suport for menu_location_x  &  menu_location_y
-#    1.0 2021-11-07
-#        Initial release
 #
 #   Menu dealing with sessions
 #

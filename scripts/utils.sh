@@ -6,9 +6,6 @@
 #   Part of https://github.com/jaclu/tmux-menus
 #
 #   Version: 1.1 2021-11-11
-#        Added suport for menu_location_x  &  menu_location_y
-#    1.0 2021-11-07
-#        Initial release
 #
 
 

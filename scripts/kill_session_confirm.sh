@@ -6,7 +6,6 @@
 #   Part of https://github.com/jaclu/tmux-menus
 #
 #   Version: 1.0 2021-11-07
-#       Initial release
 #
 #   Called from kill_current_session.sh
 #   If the question to continue is answered with y
