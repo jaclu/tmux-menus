@@ -82,7 +82,10 @@ set -g @menus_trigger 'x'
 
 Default: `'\\'`
 
-
+To indicate that the window is in  synchronized panes mode, you can add something like this to your status bar
+```
+#{?pane_synchronized,*** PANES SYNCED! *** ,}
+```
 
 #### Menu location
 
