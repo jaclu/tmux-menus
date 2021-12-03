@@ -36,12 +36,13 @@ tmux display-menu  \
      "<P> Rename window"      ,     "command-prompt -I \"#W\"  -p \"New window name: \"  \"rename-window '%%'\""  \
      "    Move window Left"   \<     "swap-window -dt:-1"  \
      "    Move window Right"  \>     "swap-window -dt:+1"  \
-     "#{?pane_marked_set,,-}    Swap current window with window" "" ""  \
-     "#{?pane_marked_set,,-}             containing marked pane"  w  swap-window  \
      "    Display Window size" S "display-message \"Window size: #{window_width}x#{window_height}\"" \
      "" \
+     "#{?pane_marked_set,,-}    Swap current window with window" "" ""  \
+     "#{?pane_marked_set,,-}    containing marked pane         "  w  swap-window  \
      "    New window after current"   n  "command-prompt -p \"Name of new window: \" \"new-window -a -n '%%'"  \
      "<P> New window at the end"      c  "command-prompt -p \"Name of new window: \" \"new-window -n '%%'"  \
+     "" \
      "<P> Kill current window"       \&  "confirm-before -p \"kill-window #W? (y/n)\" kill-window"  \
      "    Kill all other windows"  K  "confirm-before -p \"Are you sure you want to kill all other windows? (y/n)\" \"run \"${SCRIPT_DIR}/kill_other_windows.sh\" \" "  \
      "" \
