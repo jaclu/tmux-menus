@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.1 2021-11-11
+#   Version: 1.1.1 2021-12-03
 #
 #   menu dealing with panes
 #
@@ -33,10 +33,10 @@ tmux display-menu  \
      \
      "Back to main-menu"       Left  "run-shell $CURRENT_DIR/main.sh"  \
      "" \
-     "<P> Rename pane"         P     "command-prompt -I \"#T\"  -p \"New pane name: \"  \"select-pane -T '%%'\""  \
+     "    Rename pane"         P     "command-prompt -I \"#T\"  -p \"New pane name: \"  \"select-pane -T '%%'\""  \
      "<P> Swap pane to prev"  \{     "swap-pane -U"       \
      "<P> Swap pane to next"  \}     "swap-pane -D"       \
-     "#{?pane_marked_set,,-}<P> Swap current pane with marked"      p  swap-pane  \
+     "#{?pane_marked_set,,-}    Swap current pane with marked"      p  swap-pane  \
      "<P> Move pane to a new window"  !  break-pane   \
      "    #{?pane_synchronized,Disable,Activate} synchronized panes"  s  "set -g synchronize-panes"  \
      "    Display Pane size" S "display-message \"Pane: #P size: #{pane_width}x#{pane_height}\"" \
