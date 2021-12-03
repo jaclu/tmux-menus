@@ -11,9 +11,9 @@ There are some very basic popups per default<br>
 
 I find them rather lacking and since they are written as hard to read one-liners, I prefered a more integrated aproach with navigation and simple adoptability, also covering more than just panes and windows.
 
-Not only meant for beginers, I use it myself regularly for tasks I can't be bothered to learn by heart, or when direct typing would be much longer.<br>
+Not only meant for beginers, I use it myself regularly for tasks I can't be bothered to learn by heart, stuff that doesn't have a short-cut or when direct typing would be much longer.<br>
 Example: Kill the server directly is min 12 keys: ``` <prefix> : kill-ser <tab> <enter> ``` <br>
-with the menus it is 4 keys: ```<prefix> \ k y ``` <br>
+with the menus it is 5 keys: ```<prefix> \ a k y ``` <br>
   
 I have also tried to add some more general items, that might be helpful to others. It's fairly easy to add/remove items to fit your specific needs.
 
