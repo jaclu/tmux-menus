@@ -41,8 +41,6 @@ tmux display-menu  \
      "    #{?pane_synchronized,Disable,Activate} synchronized panes"  s  "set -g synchronize-panes"  \
      "    Display Pane size" S "display-message \"Pane: #P size: #{pane_width}x#{pane_height}\"" \
      "" \
-     "    Choose a tmux paste buffer" "" ""                     \
-     "<P>  (Enter pastes Esq aborts)"  =  "choose-buffer -Z"  \
      "<P> Display pane numbers"        q  display-panes       \
      "<P> Kill current pane"           x  "confirm-before -p \"kill-pane #P? (y/n)\" kill-pane"  \
      "" \
