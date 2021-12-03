@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.1.2 2021-11-13
+#   Version: 1.1.3 2021-12-03
 #
 #   Menu dealing with sessions
 #
@@ -44,8 +44,5 @@ tmux display-menu  \
      "    New session"           N  "command-prompt -p \"Name of new session: \" \"new-session -s '%%'\""  \
      "    Kill current session"  k  "confirm-before -p \"Are you sure you want to kill this session? (y/n)\" \"run \"${SCRIPT_DIR}/kill_current_session.sh\"\" "  \
      "    Kill all other sessions"  K  "confirm-before -p \"Are you sure you want to kill all other sessions? (y/n)\" \"kill-session -a\""  \
-     "" \
-     "    Choose session, use arrows" ""  ""  \
-     "<P>         to navigate & zoom"   s   "choose-tree -Zs"  \
      "" \
      "Help"  h  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/sessions.sh\""
