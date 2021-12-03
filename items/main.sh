@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.1 2021-11-11
+#   Version: 1.1.1 2021-12-03
 #
 #   Main menu, the one popping up when you hit the trigger
 #
@@ -36,11 +36,15 @@ tmux display-menu \
      "    Handling Sessions" s  "run-shell $CURRENT_DIR/sessions.sh"  \
      "    Advanced Options"  a  "run-shell $CURRENT_DIR/advanced.sh"  \
      "" \
-     "    #{?pane_marked,Unmark,Mark} current pane" "" ""  \
-     "<P>  (used by Pane and Windows menu)"  m  "select-pane -m"  \
+     "    Navigate & zoom to ses/win/pane" ""  ""  \
+     "<P> use arrows to navigate & zoom"   s   "choose-tree -Zs"  \
+     "" \
+     "    (Used by Pane and Windows menu)"  "" "" \
+     "<P> #{?pane_marked,Unmark,Mark} current pane" m  "select-pane -m"  \
+     "" \
+     "    Choose a tmux paste buffer" "" ""                     \
+     "<P> (Enter pastes Esq aborts) "  =  "choose-buffer -Z"  \
      "" \
      "<P> Detach from tmux"  d  detach-client     \
-     "    Kill server - all your sessions" "" ""  \
-     "        on this host are terminated"  k  "confirm-before -p \"kill tmux server on #H ? (y/n)\" kill-server"  \
      "" \
      "Help"  h  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/main.sh\""
