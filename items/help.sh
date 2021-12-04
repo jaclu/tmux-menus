@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.1 2021-11-11
+#   Version: 1.1.1 2021-12-04
 #
 #   This is the help menu, in case you havent guessed :)
 #
