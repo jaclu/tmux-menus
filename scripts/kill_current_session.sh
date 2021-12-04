@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0 2021-11-07
+#   Version: 1.0.1 2021-12-04
 #
 #   Kills current session. If this is the only session, it
 #   first calls kill_session_confirm.sh where user can confirm
@@ -22,7 +22,7 @@ ses_count="$(tmux list-sessions | wc -l)"
 ses_to_go="$(tmux display-message -p '#{session_id}')"
 
 if [ -z "$ses_to_go" ]; then
-    tmux display-message -d 5000 "ERROR: tmux-menus:kill_current_session.sh  Failed to identify current session!"
+    tmux display-message "ERROR: tmux-menus:kill_current_session.sh  Failed to identify current session!"
     exit 0
 fi
 
@@ -30,7 +30,6 @@ fi
 if [ "$1" != "$force_directive" ]; then
     if [ $ses_count -lt 2 ]; then
 	$CURRENT_DIR/kill_session_confirm.sh
-	
 	#
 	# This script will be called again with the force param
 	# if continuation is desired, this instance should now quit.
@@ -40,7 +39,7 @@ if [ "$1" != "$force_directive" ]; then
 fi
 
 
-#  switch to random next session
+#  switch to next session
 tmux switch-client -n &
 
 
@@ -52,10 +51,6 @@ if [ $ses_count -gt 1 ]; then
     #  are still running, but its an unnesesarry anoyannce to have to
     #  reconnect. Combined with that this is not blocking anything,
     #  running in its own thread, it doesnt hurt to wait a bit.
-    #
-    #  If it is the last session, this slowness doesnt matter, it would
-    #  switch back to itself anyhow, and regardless if the kill happens before
-    #  or after the switch the end result is the same.
     #
     sleep 2
 fi
