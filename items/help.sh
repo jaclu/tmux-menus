@@ -29,7 +29,7 @@ source "$SCRIPT_DIR/utils.sh"
 previous_menu="$1"
 
 if [ -z "$previous_menu" ]; then
-    tmux display-message -d 5000 "ERROR: tmux-menus:help was called without notice of what called it"
+    tmux display-message "ERROR: tmux-menus:help was called without notice of what called it"
 fi
 
 
