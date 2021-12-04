@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.1.1 2021-12-03
+#   Version: 1.1.2 2021-12-04
 #
 #   Main menu, the one popping up when you hit the trigger
 #
@@ -48,3 +48,6 @@ tmux display-menu \
      "<P> Detach from tmux"  d  detach-client     \
      "" \
      "Help"  h  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/main.sh\""
+
+#  Help needs an additional param to tell it where to go back, resulting in the need for this run-shell instance's params to be enclosed 
+#  in an addtional level of "" to make both params to be seen as the one expected param to run-shell
