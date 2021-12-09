@@ -34,14 +34,19 @@ tmux display-menu  \
      "Back to main-menu"       Left  "run-shell $CURRENT_DIR/main.sh"  \
      "" \
      "    Rename pane"         P     "command-prompt -I \"#T\"  -p \"New pane name: \"  \"select-pane -T '%%'\""  \
-     "<P> Swap pane to prev"  \{     "swap-pane -U"       \
-     "<P> Swap pane to next"  \}     "swap-pane -D"       \
+     "<P> Display pane numbers"        q  display-panes       \
+     "    Display Pane size" s "display-message \"Pane: #P size: #{pane_width}x#{pane_height}\"" \
+     "    Save pane history to file" H "command-prompt -p 'Save current-pane history to filename:' -I '~/tmux.history' 'capture-pane -S - -E - ; save-buffer %1 ; delete-buffer'" \
+     "" \
+     "<P> Swap pane with prev"  \{     "swap-pane -U"       \
+     "<P> Swap pane with next"  \}     "swap-pane -D"       \
      "#{?pane_marked_set,,-}    Swap current pane with marked"      p  swap-pane  \
      "<P> Move pane to a new window"  !  break-pane   \
-     "    #{?pane_synchronized,Disable,Activate} synchronized panes"  s  "set -g synchronize-panes"  \
-     "    Display Pane size" S "display-message \"Pane: #P size: #{pane_width}x#{pane_height}\"" \
      "" \
-     "<P> Display pane numbers"        q  display-panes       \
+     "    Choose a tmux paste buffer" "" ""                     \
+     "<P> (Enter pastes Esq aborts) "  =  "choose-buffer -Z"  \
+     "" \
+     "    #{?pane_synchronized,Disable,Activate} synchronized panes"  S  "set -g synchronize-panes"  \
      "<P> Kill current pane"           x  "confirm-before -p \"kill-pane #P? (y/n)\" kill-pane"  \
      "" \
      "Help"  h  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/panes.sh\""

@@ -42,9 +42,6 @@ tmux display-menu \
      "    (Used by Pane and Windows menu)"  "" "" \
      "<P> #{?pane_marked,Unmark,Mark} current pane" m  "select-pane -m"  \
      "" \
-     "    Choose a tmux paste buffer" "" ""                     \
-     "<P> (Enter pastes Esq aborts) "  =  "choose-buffer -Z"  \
-     "" \
      "<P> Detach from tmux"  d  detach-client     \
      "" \
      "Help"  h  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/main.sh\""
