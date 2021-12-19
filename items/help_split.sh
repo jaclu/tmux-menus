@@ -34,11 +34,12 @@ fi
 
 
 tmux display-menu  \
-     -T "#[align=centre] Help summary "  \
+     -T "#[align=centre] Help splitting display "  \
      -x $menu_location_x -y $menu_location_y \
      \
      "Back to pevious menu"  Left  "run-shell $previous_menu"  \
      "" \
-    "Splitting curent pane or Window in two."   "" "" \
-    "Window refers to the entire display"       "" ""
+     "Creating a new pane by splitting" "" "" \
+     "curent pane or Window."   "" "" \
+     "Window refers to the entire display"       "" ""
 
