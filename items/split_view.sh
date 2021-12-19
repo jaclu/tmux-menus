@@ -43,4 +43,4 @@ tmux display-menu  \
      "Above" A "split-window -fvb -c '#{pane_current_path}'" \
      "Below" B "split-window -fv  -c '#{pane_current_path}'" \
      "" \
-     "Help"  h  "run-shell \"$CURRENT_DIR/help_split.sh $CURRENT_DIR/pane_splitting.sh\""
+     "Help"  h  "run-shell \"$CURRENT_DIR/help_split.sh $CURRENT_DIR/split_view.sh\""
