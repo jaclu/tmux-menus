@@ -27,9 +27,11 @@ Default is ``` <prefix> \ ``` see Settings below for how to change it.
 ![main](/screenshots/main.png)
 ![help](/screenshots/help.png)
 ![panes](/screenshots/panes.png)
-![winws](/screenshots/windows.png)
+![wins](/screenshots/windows.png)
 ![sessions](/screenshots/sessions.png)
-![winws](/screenshots/advanced.png)
+![adv](/screenshots/advanced.png)
+![split](/screenshots/split_view.png)
+![help_split](/screenshots/help_split.png)
 
 ## Install
 
