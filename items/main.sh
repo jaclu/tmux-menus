@@ -34,6 +34,7 @@ tmux display-menu \
      "    Handling Panes"    p  "run-shell $CURRENT_DIR/panes.sh"     \
      "    Handling Windows"  w  "run-shell $CURRENT_DIR/windows.sh"   \
      "    Handling Sessions" s  "run-shell $CURRENT_DIR/sessions.sh"  \
+     "    Layouts"           l  "run-shell $CURRENT_DIR/layouts.sh"  \
      "    Split view"        v  "run-shell $CURRENT_DIR/split_view.sh"  \
      "    Advanced Options"  a  "run-shell $CURRENT_DIR/advanced.sh"  \
      "" \
