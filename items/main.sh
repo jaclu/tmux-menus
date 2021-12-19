@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.1.2 2021-12-04
+#   Version: 1.1.3 2021-12-19
 #
 #   Main menu, the one popping up when you hit the trigger
 #

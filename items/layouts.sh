@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.1.1 2021-12-03
+#   Version: 1.0 2021-12-19
 #
 #   menu dealing with panes
 #
