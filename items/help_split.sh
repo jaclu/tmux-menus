@@ -39,5 +39,6 @@ tmux display-menu  \
      \
      "Back to pevious menu"  Left  "run-shell $previous_menu"  \
      "" \
-    "Splitting curent pane or winwow in two."      "" "" 
+    "Splitting curent pane or Window in two."   "" "" \
+    "Window refers to the entire display"       "" ""
 
