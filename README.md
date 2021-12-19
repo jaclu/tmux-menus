@@ -20,7 +20,7 @@ I have also tried to add some more general items, that might be helpful to other
 ## Usage
 
 Once installed, hit the trigger to get the main menu to popup.
-Default is ``` <prefix> \ ``` see Settings below for how to change it.
+Default is ``` <prefix> \ ``` see Configuration below for how to change it.
 
 ## Screenshots
 
