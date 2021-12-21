@@ -2,6 +2,7 @@
 
 Popup menus to help with managing your environment.
 
+
 ## Purpose
 
 There are some very basic popups per default<br> 
@@ -17,10 +18,12 @@ with the menus it is 5 keys: ```<prefix> \ a K y ``` <br>
   
 I have also tried to add some more general items, that might be helpful to others. It's fairly easy to add/remove items to fit your specific needs.
 
+
 ## Usage
 
 Once installed, hit the trigger to get the main menu to popup.
 Default is ``` <prefix> \ ``` see Configuration below for how to change it.
+
 
 ## Screenshots
 
@@ -33,6 +36,7 @@ Default is ``` <prefix> \ ``` see Configuration below for how to change it.
 ![adv](/screenshots/advanced.png)
 ![help](/screenshots/help.png)
 ![help_split](/screenshots/help_split.png)
+
 
 ## Install
 
@@ -74,7 +78,6 @@ Hit `<prefix> + I` to fetch the plugin and source it.
     $ tmux source-file ~/.tmux.conf
     ```
 
-
 ## Configuration
 
 #### Changing the default key-binding for this plugin
@@ -84,13 +87,6 @@ set -g @menus_trigger 'x'
 ```
 
 Default: `'\\'`
-
-#### Indication when window is in synchronized panes mode
-
-You can add this snippet to your status bar
-```
-#{?pane_synchronized,*** PANES SYNCED! *** ,}
-```
 
 #### Menu location
 
@@ -111,6 +107,13 @@ set -g @menus_location_x 'C'
 set -g @menus_location_y 'C'
 ```
 
+#### Indication when window is in synchronized panes mode
+
+Not directly related to this plugin, but might be helpful. You can add this snippet to your status bar to indicate sync mode.
+
+```
+#{?pane_synchronized,*** PANES SYNCED! *** ,}
+```
 
 
 ## Modifications
