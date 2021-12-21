@@ -5,19 +5,20 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.1.2 2021-12-03
+#   Version: 1.1.3 2021-12-21
 #
 #   Menu dealing with windows
 #
 #   There are three types of menu item lines:
 #   1) An item leading to an action
 #       "Description" "in menu shortcut key" " action taken when it is triggered"
+#       For any field containing no spaces quotes are optional
 #   2) Just a line of text
 #       "Some text to display" "" ""
 #   3) Separator line
 #       ""
 #   All but the last line in the menu, needs to end with a continuation \
-#   Whitespace after thhis \ will fail the menu!
+#   Whitespace after thhis \ will cause the menu to fail!
 #
 
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -29,9 +30,9 @@ source "$SCRIPT_DIR/utils.sh"
 
 tmux display-menu  \
      -T "#[align=centre] Windows manipulation "  \
-     -x $menu_location_x -y $menu_location_y \
+     -x $menu_location_x -y $menu_location_y     \
      \
-     "Back to main-menu"     Left  "run-shell $CURRENT_DIR/main.sh"  \
+     "Back to main-menu"     Left  "run-shell $CURRENT_DIR/main.sh"     \
      "" \
      "<P> Rename window"      ,     "command-prompt -I \"#W\"  -p \"New window name: \"  \"rename-window '%%'\""  \
      "    Move window Left"   \<     "swap-window -dt:-1"  \
@@ -47,7 +48,3 @@ tmux display-menu  \
      "    Kill all other windows"  K  "confirm-before -p \"Are you sure you want to kill all other windows? (y/n)\" \"run \"${SCRIPT_DIR}/kill_other_windows.sh\" \" "  \
      "" \
      "Help"  h  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/windows.sh\""
-
-#     "    Choose window, use arrows" ""  ""  \
-#     "<P>        to navigate & zoom"  W   "choose-tree -Zw"  \
-#     "" \

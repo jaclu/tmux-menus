@@ -5,19 +5,20 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.1.3 2021-12-03
+#   Version: 1.1.4 2021-12-21
 #
 #   Menu dealing with sessions
 #
 #   There are three types of menu item lines:
 #   1) An item leading to an action
 #       "Description" "in menu shortcut key" " action taken when it is triggered"
+#       For any field containing no spaces quotes are optional
 #   2) Just a line of text
 #       "Some text to display" "" ""
 #   3) Separator line
 #       ""
 #   All but the last line in the menu, needs to end with a continuation \
-#   Whitespace after thhis \ will fail the menu!
+#   Whitespace after thhis \ will cause the menu to fail!
 #
 
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
