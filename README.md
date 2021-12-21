@@ -7,7 +7,7 @@ Popup menus to help with managing your environment.
 
 There are some very basic popups per default<br> 
 
-* ``` <prefix> < ``` displays some windows handling options
+* ``` <prefix> < ``` displays some windows handeling options
 * ``` <prefix> > ``` displays some pane handling options
 
 I find them rather lacking and since they are written as hard to read one-liners, I prefered a more integrated aproach with navigation and simple adoptability, also covering more than just panes and windows.
