@@ -134,7 +134,7 @@ If you are triggering a menu from the command line, you can use direct echo, but
 
 When done, deploy by copy/commit your changes to the default location, this will be used from now on.
 
-If you want to go back to your installed version for now, either reload configs, or run ./menus.tmux in your normal tmux-menus dir to rebind those menus to the trigger. Regardless the installed version will be activated next time you start tmux.
+If you want to go back to your installed version for now, either reload configs, or run ~/.tmux/plguins/tmux-menus/menus.tmux to rebind those menus to the trigger. Regardless the installed version will be activated next time you start tmux.
 
 
 ## Compatability
