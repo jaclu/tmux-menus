@@ -2,13 +2,14 @@
 
 Popup menus to help with managing your environment.
 
+Simple to modify to fit your needs. I have included several menus that most might find slightly redundant, since it is easier to remove exess for more experienced users, than it is to add more for newbies.
 
 ## Purpose
 
 There are some very basic popups per default<br> 
 
-* ``` <prefix> < ``` displays some windows handeling options
-* ``` <prefix> > ``` displays some pane handeling options
+* ``` <prefix> < ``` displays some windows handling options
+* ``` <prefix> > ``` displays some pane handling options
 
 I find them rather lacking and since they are written as hard to read one-liners, I prefered a more integrated aproach with navigation and simple adoptability, also covering more than just panes and windows.
 
