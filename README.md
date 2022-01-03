@@ -70,7 +70,7 @@ Hit `<prefix> + I` to fetch the plugin and source it.
 2. Source the plugin in your `.tmux.conf` by adding the following to the bottom of the file:
 
     ```
-    run-shell ~/some/path/plugin.tmux
+    run-shell ~/some/path/menus.tmux
     ```
 
 3. Reload the environment by running:
