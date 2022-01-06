@@ -4,6 +4,7 @@ Popup menus to help with managing your environment.
 
 Simple to modify to fit your needs. I have included several menus that most might find slightly redundant, since it is easier to remove exess for more experienced users, than it is to add more for newbies.
 
+
 ## Purpose
 
 There are some very basic popups per default<br> 
@@ -59,6 +60,7 @@ set -g @plugin 'jaclu/tmux-menus'
 
 Hit `<prefix> + I` to fetch the plugin and source it.
 
+
 ### Manual Installation
 
 1. Clone this repo:
@@ -81,7 +83,7 @@ Hit `<prefix> + I` to fetch the plugin and source it.
 
 ## Configuration
 
-#### Changing the default key-binding for this plugin
+### Changing the default key-binding for this plugin
 
 ```
 set -g @menus_trigger 'x'
@@ -89,7 +91,7 @@ set -g @menus_trigger 'x'
 
 Default: `'\\'`
 
-#### Menu location
+### Menu location
 
 (New) Default location is: W
 
@@ -108,7 +110,8 @@ set -g @menus_location_x 'C'
 set -g @menus_location_y 'C'
 ```
 
-#### Indication when window is in synchronized panes mode
+
+### Indication when window is in synchronized panes mode
 
 Not directly related to this plugin, but might be helpful. You can add this snippet to your status bar to indicate sync mode.
 
@@ -146,6 +149,13 @@ If you want to go back to your installed version for now, either reload configs,
 | 3.0 - 3.1c | Menu centering not supported, will be displayed top left if C is used as menu location. <br>Additionally some actions might not work depending on version. <br> There should be a notification message about "unknown command" in such casses. |
 
 
-## License
+## Contributing
+
+Contributions are welcome, and they are greatly appreciated! Every little bit helps, and credit will always be given.
+
+The best way to send feedback is to file an issue at https://github.com/jaclu/tmux-menus/issues
+
+
+##### License
 
 [MIT](LICENSE.md)
