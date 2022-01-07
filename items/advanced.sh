@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 #
-#   Copyright (c) 2021: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2021, 2022: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.1.2 2021-12-21
+#   Version: 1.1.3 2022-01-08
 #
-#   This is the advanced menu, wit more archaic tasks
+#   This is the advanced menu, with more archaic tasks
 #
 #   There are three types of menu item lines:
 #   1) An item leading to an action
@@ -47,7 +47,7 @@ tmux display-menu \
      "" \
      "<P> Show messages"        \~     show-messages        \
      "<P> Customize options"     C     "customize-mode -Z"  \
-     "<P> Describe key binding"  /     "command-prompt -k -p key \"list-keys -1N \\"%%%\\"\""  \
+     "<P> Describe (prefix) key binding"  /     "command-prompt -k -p key \"list-keys -1N \\"%%%\\"\""  \
      "<P> Prompt for a command"  :     command-prompt  \
      "" \
      "    Toggle mouse to: $new_mouse_status"   "m"  "set-option -g mouse $new_mouse_status"  \
