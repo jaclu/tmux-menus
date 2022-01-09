@@ -35,7 +35,7 @@ tmux display-menu  \
      "Back to main-menu"       Left  "run-shell $CURRENT_DIR/main.sh"  \
      "" \
      "<P> Even horizontal"  M-1  "select-layout even-horizontal"       \
-     "<P> Eeven vertical"   M-2  "select-layout even-vertical"         \
+     "<P> Even vertical"    M-2  "select-layout even-vertical"         \
      "<P> Main horizontal"  M-3  "select-layout main-horizontal"       \
      "<P> Main vertical"    M-4  "select-layout main-vertical"         \
      "<P> Tiled"            M-5  "select-layout tiled"                 \
