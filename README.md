@@ -4,6 +4,11 @@ Popup menus to help with managing your environment.
 
 Simple to modify to fit your needs. I have included several menus that most might find slightly redundant, since it is easier to remove exess for more experienced users, than it is to add more for newbies.
 
+#### Recent changes
+
+- Added move, link and unlink window
+- Added move pane
+- Added spread panes evenly
 
 ## Purpose
 
@@ -37,6 +42,7 @@ Default is ``` <prefix> \ ``` see Configuration below for how to change it.
 ![split](/screenshots/split_view.png)
 ![adv](/screenshots/advanced.png)
 ![help](/screenshots/help.png)
+![wins_help](/screenshots/windows_help.png)
 ![help_split](/screenshots/help_split.png)
 
 
@@ -93,7 +99,7 @@ Default: `'\\'`
 
 ### Menu location
 
-(New) Default location is: W
+Default location is: W
 
 Locations can be one of:
 
