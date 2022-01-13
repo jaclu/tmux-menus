@@ -37,9 +37,9 @@ tmux display-menu  \
      "" \
      "    Move window to other location" "m" "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_window.sh M %%\"'" \
      "    Link window to other session" "l" "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_window.sh L %%\"'" \
+     "    Unlink window from this session" "u" "unlink-window" \
      "#{?pane_marked_set,,-}    Swap current window with window" "" ""  \
      "#{?pane_marked_set,,-}    containing marked pane         "  w  swap-window  \
-     "    Unlink window from this session" "u" "unlink-window" \
      "    Move window Left"   \<     "swap-window -dt:-1"  \
      "    Move window Right"  \>     "swap-window -dt:+1"  \
      "" \
