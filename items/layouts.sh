@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 #
-#   Copyright (c) 2021: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2021,2022: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0.1 2021-12-21
+#   Version: 1.1.0 2022-01-12
 #
 #   menu dealing with panes
 #
@@ -32,12 +32,13 @@ tmux display-menu  \
      -T "#[align=centre] Layouts "            \
      -x $menu_location_x -y $menu_location_y  \
      \
-     "Back to main-menu"       Left  "run-shell $CURRENT_DIR/main.sh"  \
+     "Back to main-menu"           Left  "run-shell $CURRENT_DIR/main.sh"  \
      "" \
-     "<P> Even horizontal"  M-1  "select-layout even-horizontal"       \
-     "<P> Even vertical"    M-2  "select-layout even-vertical"         \
-     "<P> Main horizontal"  M-3  "select-layout main-horizontal"       \
-     "<P> Main vertical"    M-4  "select-layout main-vertical"         \
-     "<P> Tiled"            M-5  "select-layout tiled"                 \
+     "<P> Even horizontal"          M-1  "select-layout even-horizontal"   \
+     "<P> Even vertical"            M-2  "select-layout even-vertical"     \
+     "<P> Main horizontal"          M-3  "select-layout main-horizontal"   \
+     "<P> Main vertical"            M-4  "select-layout main-vertical"     \
+     "<P> Tiled"                    M-5  "select-layout tiled"             \
+     "<P> Spread panes out evenly."   E  "select-layout -E"                \
      "" \
      "Help"  h  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/layouts.sh\""
