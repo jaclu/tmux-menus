@@ -34,8 +34,7 @@ tmux display-menu  \
      \
      "Back to main-menu"       Left  "run-shell $CURRENT_DIR/main.sh"  \
      "" \
-     "Move pane to other window or" "" "" \
-     "  session - visual navigator" "m" "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_pane.sh M %%\"'" \
+     "    Move to other window or session" m "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_pane.sh M %%\"'" \
      "#{?pane_marked_set,,-}    Swap current pane with marked"      p  swap-pane  \
      "<P> Swap pane with prev"  \{     "swap-pane -U"         \
      "<P> Swap pane with next"  \}     "swap-pane -D"         \
