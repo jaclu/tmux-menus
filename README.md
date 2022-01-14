@@ -23,7 +23,7 @@ I find them rather lacking and since they are written as hard to read one-liners
 
 Not only meant for beginers, I use it myself regularly for tasks I can't be bothered to learn by heart, stuff that doesn't have a short-cut or when direct typing would be much longer.<br>
 Example: Kill the server directly is min 12 keys: ``` <prefix> : kill-ser <tab> <enter> ``` <br>
-with the menus it is 5 keys: ```<prefix> \ a K y ``` <br>
+with the menus it is 6 keys: ```<prefix> \ a K y ``` <br>
   
 I have also tried to add some more general items, that might be helpful to others. It's fairly easy to add/remove items to fit your specific needs.
 
