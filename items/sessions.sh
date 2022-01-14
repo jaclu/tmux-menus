@@ -40,6 +40,7 @@ tmux display-menu  \
      "Back to main-menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
      "" \
      "<P> Rename this session"   \$  "command-prompt -I \"#S\" \"rename-session -- '%%'\""  \
+     "    List sessions"         l   "list-sessions" \
      "<P> Previous session"      \(  "switch-client -p" \
      "<P> Next session"          \)  "switch-client -n" \
      "    New session"           N  "command-prompt -p \"Name of new session: \" \"new-session -s '%%'\""  \
