@@ -2,7 +2,7 @@
 
 Popup menus to help with managing your environment.
 
-Simple to modify to fit your needs. I have included several menus that most might find slightly redundant, since it is easier to remove exess for more experienced users, than it is to add more for newbies.
+Simple to modify to fit your needs. I have included several items that some might find slightly redundant, since it is easier to remove exess for more experienced users, than it is to add more for newbies.
 
 #### Recent changes
 
