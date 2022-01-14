@@ -6,6 +6,8 @@ Simple to modify to fit your needs. I have included several menus that most migh
 
 #### Recent changes
 
+- Added Advanced - Manage clients, with integrated list of commands
+- Added Sessions - List sessions
 - Added move, link and unlink window
 - Added move pane
 - Added spread panes evenly
