@@ -8,8 +8,8 @@ Simple to modify to fit your needs. I have included several items that some migh
 
 - Added Advanced - Manage clients, with integrated list of commands
 - Added Sessions - List sessions
-- Added move, link and unlink window
-- Added move pane
+- Added Windows - move, link and unlink
+- Added Panes - move
 - Added spread panes evenly
 
 ## Purpose
