@@ -39,7 +39,10 @@ if [ "$1" != "$force_directive" ]; then
 fi
 
 
-#  switch to next session
+#
+#  Switch to next session, in order not to get disconnected when active session
+#  is terminated.
+#
 tmux switch-client -n &
 
 
