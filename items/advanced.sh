@@ -20,12 +20,17 @@
 #   All but the last line in the menu, needs to end with a continuation \
 #   Whitespace after thhis \ will cause the menu to fail!
 #
+#   TODO: Display list of clients and action list from man page
+#   in a temporary window, to make interactions more maneagable
+#   "<P> Manage clients" "D" "run-shell $SCRIPT_DIR/manage_clients.sh" 
+#
 
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
 source "$SCRIPT_DIR/utils.sh"
+
 
 
 current_mouse_status="$(tmux show-option -g mouse | cut -d' ' -f2)"
