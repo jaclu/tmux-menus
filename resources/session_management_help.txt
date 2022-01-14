@@ -1,0 +1,26 @@
+Key    Function     Key bindings for choose-client
+-----  --------     Scroll down if you cant see the entire help
+Enter  Choose selected client
+Up     Select previous client
+Down   Select next client
+C-s    Search by name
+n      Repeat last search
+t      Toggle if client is tagged
+T      Tag no clients
+C-t    Tag all clients
+d      Detach selected client
+D      Detach tagged clients
+x      Detach and HUP selected client
+X      Detach and HUP tagged clients
+z      Suspend selected client
+Z      Suspend tagged clients
+f      Enter a format to filter items
+O      Change sort field
+r      Reverse sort order
+v      Toggle preview - Will only show if lower pane is at least 20 lines
+q      Exit mode
+
+At this point you unfortunately have to close this window manually
+when you are done, if you exit choose-client with q or ESC  :(
+If you end with enter this temp window will be killed. 
+-- End of help text --
