@@ -50,15 +50,12 @@ esac
 
 
 #
-#  Filter out potential pane selection part
-#
-#  bad inputs:
+#  inputs:
 #    with pane idx:      =main:1.%13
-#  good inputs
 #    with window idx:    =main:3.
 #    without window idx: =main:
 #
-raw_dest="$3" # upto 1st % excluding it
+raw_dest="$3"
 
 
 if [ -z "$raw_dest" ] ; then
@@ -75,7 +72,3 @@ win_pane="${dest#*:}"  # after first colon
 dest_win_idx="${win_pane%%.*}"   # up to first dot excluding it
 dest_pane_idx="${win_pane#*.}"
 cur_ses="$(tmux display -p '#S')"
-
-
-#tmux display -d 0 "d[$dest] ds[$dest_ses] dwi[$dest_win_idx] dpi[$dest_pane_idx] cs[$cur_ses]"
-#exit 0
