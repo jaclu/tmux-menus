@@ -52,40 +52,31 @@ Default is ``` <prefix> \ ``` see Configuration below for how to change it.
 
 ### Using [Tmux Plugin Manager](https://github.com/tmux-plugins/tpm) (recommended)
 
-1. Add plugin to the list of TPM plugins in `.tmux.conf`:
-
-    ```
-    set -g @plugin 'jaclu/tmux-menus'
-    ```
-
-2. Hit `prefix + I` to fetch the plugin and source it. You should now be able to use the plugin.
-
 Add plugin to the list of TPM plugins in `.tmux.conf`:
 
 ```tmux
 set -g @plugin 'jaclu/tmux-menus'
 ```
 
-Hit `<prefix> + I` to fetch the plugin and source it.
-
+Hit `prefix + I` to fetch the plugin and source it. You should now be able to use the plugin.
 
 ### Manual Installation
 
 1. Clone this repo:
 
-    ```console
+    ```bash
     $ git clone https://github.com/jaclu/tmux-menus ~/some/path
     ```
 
 2. Source the plugin in your `.tmux.conf` by adding the following to the bottom of the file:
 
-    ```
+    ```tmux
     run-shell ~/some/path/menus.tmux
     ```
 
 3. Reload the environment by running:
 
-    ```console
+    ```bash
     $ tmux source-file ~/.tmux.conf
     ```
 
@@ -139,7 +130,12 @@ Each menu is run as a script, so you can edit a menu script and once it is saved
 
 So rapid development with minimal fuzz!
 
-If you are struggeling with a menu edit, I would suggest to just run that menu item in a pane of the tmux session your working on, something like ``` ./items/sessions.sh ``` this will directly trigger that menu and display any syntax errors on the command line.
+If you are struggeling with a menu edit, I would suggest to just run that menu item in a pane of the tmux session your working on, something like
+
+```bash
+./items/sessions.sh
+```
+this will directly trigger that menu and display any syntax errors on the command line.
 
 I often add lines like ``` echo "foo is now [$foo]" >> /tmp/menus-dbg.log ``` to be able to inspect stuff, if something seems not to be working.
 If you are triggering a menu from the command line, you can use direct echo, but then you need to remove them before deploying, since tmux will see any script output as an potential error and display it in a scroll back buffer.
