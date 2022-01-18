@@ -21,13 +21,6 @@ CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 . $CURRENT_DIR/relocate_common.sh W "$1" "$2"
 
-LOG_FILE="/tmp/relocate.log"
-
-echo "item_type: $item_type" >> $LOG_FILE
-echo "action: $action" >> $LOG_FILE
-echo "cur_ses [$cur_ses] dest [$dest_ses]" >> $LOG_FILE
-echo "dest_win_idx [$dest_win_idx] dest_pane_idx [$dest_pane_idx]" >> $LOG_FILE
-
 
 if [ "$cur_ses" = "$dest_ses" ]; then
     #
