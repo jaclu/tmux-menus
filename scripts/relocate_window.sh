@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0 2022-01-13
+#   Version: 1.0.1 2022-01-18
 #
 #   Moving current window within same session or to other session.
 #
@@ -21,6 +21,12 @@ CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 . $CURRENT_DIR/relocate_common.sh W "$1" "$2"
 
+LOG_FILE="/tmp/relocate.log"
+
+echo "item_type: $item_type" >> $LOG_FILE
+echo "action: $action" >> $LOG_FILE
+echo "cur_ses [$cur_ses] dest [$dest_ses]" >> $LOG_FILE
+echo "dest_win_idx [$dest_win_idx] dest_pane_idx [$dest_pane_idx]" >> $LOG_FILE
 
 
 if [ "$cur_ses" = "$dest_ses" ]; then
@@ -48,7 +54,7 @@ else
         # Unlink window at current location, ie get rid of original instance
         # And re-indix previous session
         #
-        tmux unlink-window -r
+        tmux unlink-window
     fi
     #
     #  When Window / Pane is moved to another session, focus does not 
