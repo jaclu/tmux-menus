@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 #
-#   Copyright (c) 2021: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2021,2022: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.1.4 2021-12-21
+#   Version: 1.1.5 2022-01-19
 #
 #   Menu dealing with sessions
 #
@@ -39,12 +39,12 @@ tmux display-menu  \
      \
      "Back to main-menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
      "" \
-     "<P> Rename this session"   \$  "command-prompt -I \"#S\" \"rename-session -- '%%'\""  \
-     "    List sessions"         l   "list-sessions" \
-     "<P> Previous session"      \(  "switch-client -p" \
-     "<P> Next session"          \)  "switch-client -n" \
-     "    New session"           N  "command-prompt -p \"Name of new session: \" \"new-session -s '%%'\""  \
-     "    Kill current session"  k  "confirm-before -p \"Are you sure you want to kill this session? (y/n)\" \"run \"${SCRIPT_DIR}/kill_current_session.sh\"\" "  \
+     "<P> Rename this session"     \$  "command-prompt -I \"#S\" \"rename-session -- '%%'\""  \
+     "    List sessions"            l   "list-sessions" \
+     "<P> Previous session"        \(  "switch-client -p" \
+     "<P> Next session"            \)  "switch-client -n" \
+     "    New session"              N  "command-prompt -p \"Name of new session: \" \"new-session -s '%%'\""  \
+     "    Kill current session"     k  "confirm-before -p \"Are you sure you want to kill this session? (y/n)\" \"run \"${SCRIPT_DIR}/kill_current_session.sh\"\" "  \
      "    Kill all other sessions"  K  "confirm-before -p \"Are you sure you want to kill all other sessions? (y/n)\" \"kill-session -a\""  \
      "" \
      "Help"  h  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/sessions.sh\""
