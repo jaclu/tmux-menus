@@ -50,35 +50,25 @@ Default is ``` <prefix> \ ``` see Configuration below for how to change it.
 
 ## Install
 
-### Using [Tmux Plugin Manager](https://github.com/tmux-plugins/tpm) (recommended)
+### Installation with [Tmux Plugin Manager](https://github.com/tmux-plugins/tpm) (recommended)
 
 Add plugin to the list of TPM plugins in `.tmux.conf`:
 
-```tmux
-set -g @plugin 'jaclu/tmux-menus'
-```
+    set -g @plugin 'jaclu/tmux-menus'
 
-Hit `prefix + I` to fetch the plugin and source it. You should now be able to use the plugin.
+Hit `prefix + I` to fetch the plugin and source it. That's it!
 
 ### Manual Installation
 
-1. Clone this repo:
+Clone the repo:
 
-    ```bash
-    $ git clone https://github.com/jaclu/tmux-menus ~/some/path
-    ```
+    $ git clone https://github.com/jaclu/tmux-menus ~/clone/path
 
-2. Source the plugin in your `.tmux.conf` by adding the following to the bottom of the file:
+Add this line to the bottom of `.tmux.conf`:
 
-    ```tmux
-    run-shell ~/some/path/menus.tmux
-    ```
+    run-shell ~/clone/path/menus.tmux
 
-3. Reload the environment by running:
-
-    ```bash
-    $ tmux source-file ~/.tmux.conf
-    ```
+Reload TMUX environment with `$ tmux source-file ~/.tmux.conf`, and that's it.
 
 ## Configuration
 
