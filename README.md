@@ -92,7 +92,7 @@ Default: `'\\'`
 
 ### Menu location
 
-Default location is: W
+Default location is: P
 
 Locations can be one of:
 
