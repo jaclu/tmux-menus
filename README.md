@@ -6,11 +6,7 @@ Simple to modify to fit your needs. I have included several items that some migh
 
 #### Recent changes
 
-- Added Advanced - Manage clients, with integrated list of commands
-- Added Sessions - List sessions
-- Added Windows - move, link and unlink
-- Added Panes - move
-- Added spread panes evenly
+- Added @menus_root_trigger for triggering menus without using `<prefix>`
 
 ## Purpose
 
@@ -72,14 +68,26 @@ Reload TMUX environment with `$ tmux source-file ~/.tmux.conf`, and that's it.
 
 ## Configuration
 
-### Changing the default key-binding for this plugin
+### Changing the key-binding for this plugin
 
+The default trigger is `<prefix> \`
+  
+There are now two options to trigger the menus, if you want to use another key following prefix, set it like this
+  
 ```
 set -g @menus_trigger 'x'
 ```
+  
+If you prefer to trigger it without having to first hit `<prefix>` use this variable instead:
 
-Default: `'\\'`
+```
+set -g @menus_root_trigger 'F11'
+```
+  
+**Be aware that only one of theese variables can be set!**
+If both are set tmux-menus will not initialize, and an error message will be displayed!
 
+  
 ### Menu location
 
 Default location is: P
