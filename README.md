@@ -6,7 +6,7 @@ Simple to modify to fit your needs. I have included several items that some migh
 
 #### Recent changes
 
-- Added @menus_root_trigger for triggering menus without using `<prefix>`
+- Added @menus_without_prefix for triggering menus without using `<prefix>`
 
 ## Purpose
 
@@ -68,24 +68,24 @@ Reload TMUX environment with `$ tmux source-file ~/.tmux.conf`, and that's it.
 
 ## Configuration
 
-### Changing the key-binding for this plugin
+### Changing the key-bindings for this plugin
 
-The default trigger is `<prefix> \`
-  
-There are now two options to trigger the menus, if you want to use another key following prefix, set it like this
-  
+The default trigger is `<prefix> \`. Trigger is selected like this:
+ 
 ```
 set -g @menus_trigger 'x'
 ```
-  
-If you prefer to trigger it without having to first hit `<prefix>` use this variable instead:
+
+Please not that using special keys, like the default backslash needs to be noted in a specific way in order not to confuse tmux.
+Either `'\'` or without quotes as `\\`.  Quoting `'\\'` will not make sense for tmux and fail to bind any key!
+
+If you want to trigger menus without first hitting `<prefix>`
 
 ```
-set -g @menus_root_trigger 'F11'
+set -g @menus_without_prefix 1
 ```
-  
-**Be aware that only one of theese variables can be set!**
-If both are set tmux-menus will not initialize, and an error message will be displayed!
+
+This param can be either 0 (the default) or 1
 
   
 ### Menu location
@@ -108,12 +108,12 @@ set -g @menus_location_y 'C'
 ```
 
 
-### Indication when window is in synchronized panes mode
+## Indication when window is in synchronized panes mode
 
-Not directly related to this plugin, but might be helpful. You can add this snippet to your status bar to indicate sync mode.
+Not directly related to this plugin, but since it does have an option to trigger sync mode, and having it on unintendedly can really ruin your day, this might be helpful. If you want to trigger syncronized mode. You can add this snippet to your status bar to indicate sync mode very clearly, so that you hopefully never leave it turned on when not intended.
 
 ```
-#{?pane_synchronized,*** PANES SYNCED! *** ,}
+#[reverse,blink]#{?pane_synchronized,*** PANES SYNCED! *** ,}#[default]
 ```
 
 
@@ -130,12 +130,19 @@ So rapid development with minimal fuzz!
 
 If you are struggeling with a menu edit, I would suggest to just run that menu item in a pane of the tmux session your working on, something like
 
-```bash
+```
 ./items/sessions.sh
 ```
 this will directly trigger that menu and display any syntax errors on the command line.
 
-I often add lines like ``` echo "foo is now [$foo]" >> /tmp/menus-dbg.log ``` to be able to inspect stuff, if something seems not to be working.
+In utils I have a function log_it. If log_file is defined, any log_it will be printed there.
+
+```
+log_it "foo is now [$foo]"
+```
+
+This can be left in the code once you'r done debugging for later usage. Without log_file being set nothing will printed.
+
 If you are triggering a menu from the command line, you can use direct echo, but then you need to remove them before deploying, since tmux will see any script output as an potential error and display it in a scroll back buffer.
 
 When done, deploy by copy/commit your changes to the default location, this will be used from now on.
