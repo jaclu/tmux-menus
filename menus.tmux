@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.1.0 2022-01-31
+#   Version: 1.2.0 2022-02-01
 #
 
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -22,37 +22,57 @@ source "$SCRIPTS_DIR/utils.sh"
 default_key="\\"
 
 
+#
+#  If log_file is empty or undefined, no logging will occur, so normally
+#  comment it out for normal usage.
+#
+#log_file="/tmp/tmux-menus.log"
+
+log_it() {
+    if [ -z "$log_file" ]; then
+        return
+    fi
+    printf "%s\n" "$@" >> "$log_file"
+}
+
 
 #
-#  Only one of menus_trigger or menus_root_trigger can be set.
-#  If both are set an error message is displayed, and tmux-menus will not be
-#  activated. Obviously, if it was bound to a key in a previous init, that bind
-#  is still active.
+#  Make it easy to see when a log run occured, also makes it easier
+#  to separate runs of this script
 #
-#  In case you do not wan't to restart tmux, you need to unset the variable you
-#  no longer want to have assigned:
-#     tmux set -ug @menus_trigger
-#     tmux set -ug @menus_root_trigger
-#
-#  To unbind a previously bound key, use something like:
-#     tmux unbind-key '\'
-#
+log_it ""  # Trigger LF to separate runs of this script
+log_it "$(date)"
 
 
-trigger_key=$(get_tmux_option "@menus_trigger")
-root_key=$(get_tmux_option "@menus_root_trigger")
+trigger_key=$(get_tmux_option "@menus_trigger" "$default_key")
+log_it "trigger_key=[$trigger_key]"
+
+without_prefix=$(get_tmux_option "@menus_without_prefix" "0")
+log_it "without_prefix=[$without_prefix]"
 
 
-if [ -n "$trigger_key" ] && [ -n "$root_key" ]; then 
-    tmux display 'ERROR: both "@menus_trigger" and "@menus_root_trigger" are set, only one can be used!'
-    exit 0  # Exit 0 wont throw a tmux error
-fi
-
-if [ -n "$root_key" ]; then
-    tmux bind -n "$root_key" run-shell $MENUS_DIR/main.sh
-else
-    # Use defaullt key, if not assigned
-    "${trigger_key:=$default_key}"
+case "$without_prefix" in
     
-    tmux bind  "$trigger_key" run-shell $MENUS_DIR/main.sh
+    "0" | "1" ) ;;  # expected values
+
+    "yes" | "Yes" | "YES" | "true" | "True" | "TRUE" )
+	#  Be a nice guy and accept some common positives
+        log_it "Converted incorret positive to 1"
+        without_prefix=1
+        ;;
+    
+    *)
+        log_it "Invalid without_prefix value"
+        tmux display 'ERROR: "@menus_without_prefix" should be 0 or 1'
+        exit 0  # Exit 0 wont throw a tmux error
+
+esac
+
+
+if [ "$without_prefix" -eq 1 ]; then
+    tmux bind -n "$trigger_key" run-shell "$MENUS_DIR"/main.sh
+    log_it "Menus bound to: $trigger_key"
+else
+    tmux bind    "$trigger_key" run-shell "$MENUS_DIR"/main.sh
+    log_it "Menus bound to: <prefix> $trigger_key"
 fi
