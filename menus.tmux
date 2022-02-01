@@ -28,13 +28,6 @@ default_key="\\"
 #
 #log_file="/tmp/tmux-menus.log"
 
-log_it() {
-    if [ -z "$log_file" ]; then
-        return
-    fi
-    printf "%s\n" "$@" >> "$log_file"
-}
-
 
 #
 #  Make it easy to see when a log run occured, also makes it easier

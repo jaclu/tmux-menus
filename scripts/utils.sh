@@ -23,6 +23,18 @@ get_tmux_option() {
 
 
 #
+#  If $log_file is empty or undefined, no logging will occur.
+#
+log_it() {
+    if [ -z "$log_file" ]; then
+        return
+    fi
+    printf "%s\n" "$@" >> "$log_file"
+}
+
+
+
+#
 #  C (tmux 3.2 and up)  Centered in window
 #  P Lower left of current pane
 #  W by the current window name in the status line
