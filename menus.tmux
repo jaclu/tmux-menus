@@ -17,7 +17,7 @@ source "$SCRIPTS_DIR/utils.sh"
 
 
 #
-#  In shell script, backslash needs to be doubled also inside quotes.
+#  In shell script unlike in tmux, backslash needs to be doubled inside quotes.
 #
 default_key="\\"
 
@@ -27,6 +27,7 @@ default_key="\\"
 #  comment it out for normal usage.
 #
 #log_file="/tmp/tmux-menus.log"
+
 
 
 #
