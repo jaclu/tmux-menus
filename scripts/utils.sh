@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 #
-#   Copyright (c) 2021: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2021,2022: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.1 2021-11-11
+#   Version: 1.2 2022-02-01
 #
 
 
@@ -33,12 +33,14 @@ log_it() {
 }
 
 
-
 #
-#  C (tmux 3.2 and up)  Centered in window
-#  P Lower left of current pane
-#  W by the current window name in the status line
-#  M by the mouse position
+#  W - By the current window name in the status line
+#  P - Lower left of current pane
+#  C - Centered in window (tmux 3.2 and up)
+#  M - Mouse position
+#  R - Right edge of terminal (Only for x)
+#  S - Next to status line (Only for y)
+#  Number - In window coordinates 0,0 is top left
 #
-menu_location_x="$(get_tmux_option "@menus_location_x" "W")"
-menu_location_y="$(get_tmux_option "@menus_location_y" "W")"
+menu_location_x="$(get_tmux_option "@menus_location_x" "P")"
+menu_location_y="$(get_tmux_option "@menus_location_y" "P")"
