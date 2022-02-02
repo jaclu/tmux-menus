@@ -110,7 +110,7 @@ set -g @menus_location_y 'C'
 
 ## Indication when window is in synchronized panes mode
 
-Not directly related to this plugin, but since it does have an option to trigger sync mode, and having it on unintendedly can really ruin your day. If you want to trigger syncronized mode. You can add this snippet to your status bar to indicate sync mode very clearly, so that you hopefully never leave it turned on when not intended.
+Not directly related to this plugin, but since it does have an option to trigger sync mode, and having it on unintendedly can really ruin your day. You can add this snippet to your status bar to indicate sync mode very clearly, so that you hopefully never leave it turned on when not intended.
 
 ```
 #[reverse,blink]#{?pane_synchronized,*** PANES SYNCED! ***,}#[default]
