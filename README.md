@@ -6,6 +6,7 @@ Simple to modify to fit your needs. I have included several items that some migh
 
 #### Recent changes
 
+- Added Reload Configuration to main menu
 - Added @menus_without_prefix for triggering menus without using `<prefix>`
 
 ## Purpose

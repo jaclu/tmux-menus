@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 #
-#   Copyright (c) 2021: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2021,2022: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.1.4 2021-12-21
+#   Version: 1.2.0 2022-02-02
 #
 #   Main menu, the one popping up when you hit the trigger
 #
@@ -54,8 +54,10 @@ tmux display-menu \
      "    Split view"        v  "run-shell $CURRENT_DIR/split_view.sh"  \
      "    Advanced Options"  a  "run-shell $CURRENT_DIR/advanced.sh"    \
      "" \
-     "    Navigate & zoom to ses/win/pane" ""  ""  \
-     "<P> use arrows to navigate & zoom"   s   "choose-tree -Zs"  \
+     "    Reload configuration file" "r" "run-shell 'tmux source-file ~/.tmux.conf; tmux display-message \"Sourced ~/.tmux.conf\"'" \
+     "" \
+     "    Navigate & select ses/win/pane " ""  ""  \
+     "<P> use arrows to navigate & zoom  " s   "choose-tree -Zs"  \
      "" \
      "    (Used by Pane and Windows menu)"  "" ""  \
      "<P> #{?pane_marked,Unmark,Mark} current pane" m  "select-pane -m"  \
