@@ -61,7 +61,7 @@ tmux display-menu  \
      "    Choose a tmux paste buffer" "" ""                   \
      "<P> (Enter pastes Esq aborts) "  =  "choose-buffer -Z"  \
      "" \
-     "    #{?pane_synchronized,Disable,Activate} synchronized panes"  s  "set -w synchronize-panes"  \
+     "    #{?pane_synchronized,Disable,Activate} synchronized panes"  S  "set -w synchronize-panes"  \
      "    Save pane history to file"   h  "command-prompt -p 'Save current-pane history to filename:' -I '~/tmux.history' 'capture-pane -S - -E - ; save-buffer %1 ; delete-buffer'" \
      "<P> Kill current pane"           x  "confirm-before -p \"kill-pane #P? (y/n)\" kill-pane"      \
      "" \
