@@ -42,32 +42,21 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
 source "$SCRIPT_DIR/utils.sh"
 
-previous_menu="$1"
-
-if [ -z "$previous_menu" ]; then
-    tmux display-message "ERROR: tmux-menus:help was called without notice of what called it"
-fi
-
 
 tmux display-menu  \
-    -T "#[align=centre] Help summary "      \
-    -x $menu_location_x -y $menu_location_y \
-    \
-    "Back to pevious menu"  Left  "run-shell $previous_menu"  \
-    "" \
-    "<P> indicates this key is a deault key" "" ""    \
-    "    so unless you have changed it," "" ""        \
-    "    it should be possible to use" "" ""          \
-    "    with <prefix> directly." "" "" \
-    "" \
-    " -->  Indicates this will open a" "" "" \
-    "      new menu." "" "" \
-    "" \
-    "On options spanning multiple lines,"      "" ""  \
-    "if you use Enter to select, you must be"  "" ""  \
-    "on the line with the shortcut. Otherwise" "" ""  \
-    "it is interperated as cancel."            "" "" \
-    "" \
-    "Shortcut keys are typically upper case" "" "" \
-    "for new menus, and lower case for actions" "" "" \
-    "with the exception of default keys." "" ""
+     -T "#[align=centre] Move Window "  \
+     -x "$menu_location_x" -y "$menu_location_y"  \
+     \
+     "Back to Main menu"       Home  "run-shell $CURRENT_DIR/main.sh"  \
+     "Back to Handling Window"  Left  "run-shell $CURRENT_DIR/windows.sh" \
+     "" \
+"    Move window to other location"    m  "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_window.sh M %%\"'" \
+     "    Swap window Left"                \<  "swap-window -dt:-1"  \
+     "    Swap window Right"               \>  "swap-window -dt:+1"  \
+     "" \
+     "    Link window to other session"     l  "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_window.sh L %%\"'" \
+     "    Unlink window from this session"  u  "unlink-window" \
+     "#{?pane_marked_set,,-}    Swap current window with window" "" ""  \
+     "#{?pane_marked_set,,-}    containing marked pane         "  w  swap-window  \
+     "" \
+     "Help, explaining move & link  -->"         H  "run-shell \"$CURRENT_DIR/help_window_move.sh\""

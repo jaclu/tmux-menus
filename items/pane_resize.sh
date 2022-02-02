@@ -42,32 +42,22 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
 source "$SCRIPT_DIR/utils.sh"
 
-previous_menu="$1"
-
-if [ -z "$previous_menu" ]; then
-    tmux display-message "ERROR: tmux-menus:help was called without notice of what called it"
-fi
-
 
 tmux display-menu  \
-    -T "#[align=centre] Help summary "      \
-    -x $menu_location_x -y $menu_location_y \
-    \
-    "Back to pevious menu"  Left  "run-shell $previous_menu"  \
-    "" \
-    "<P> indicates this key is a deault key" "" ""    \
-    "    so unless you have changed it," "" ""        \
-    "    it should be possible to use" "" ""          \
-    "    with <prefix> directly." "" "" \
-    "" \
-    " -->  Indicates this will open a" "" "" \
-    "      new menu." "" "" \
-    "" \
-    "On options spanning multiple lines,"      "" ""  \
-    "if you use Enter to select, you must be"  "" ""  \
-    "on the line with the shortcut. Otherwise" "" ""  \
-    "it is interperated as cancel."            "" "" \
-    "" \
-    "Shortcut keys are typically upper case" "" "" \
-    "for new menus, and lower case for actions" "" "" \
-    "with the exception of default keys." "" ""
+     -T "#[align=centre] Resize Pane "  \
+     -x "$menu_location_x" -y "$menu_location_y"  \
+     \
+     "Back to Main menu"       Home  "run-shell $CURRENT_DIR/main.sh"  \
+     "Back to Handling Pane"  Left  "run-shell $CURRENT_DIR/panes.sh" \
+     "" \
+     "<P> up    by 5"  M-Up   "resize-pane -U 5"  \
+     "<P> down  by 5"  M-Down "resize-pane -D 5"  \
+     "<P> left  by 5"  M-Left "resize-pane -L 5"  \
+     "<P> right by 5"  M-Left "resize-pane -R 5"  \
+     "" \
+     "<P> up    by 1"  C-Up   "resize-pane -U"    \
+     "<P> down  by 1"  C-Down "resize-pane -D"    \
+     "<P> left  by 1"  C-Left "resize-pane -L"    \
+     "<P> right by 1"  C-Left "resize-pane -R"    \
+     "" \
+     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/panes.sh\""

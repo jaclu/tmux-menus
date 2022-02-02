@@ -42,32 +42,22 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
 source "$SCRIPT_DIR/utils.sh"
 
-previous_menu="$1"
-
-if [ -z "$previous_menu" ]; then
-    tmux display-message "ERROR: tmux-menus:help was called without notice of what called it"
-fi
-
 
 tmux display-menu  \
-    -T "#[align=centre] Help summary "      \
-    -x $menu_location_x -y $menu_location_y \
-    \
-    "Back to pevious menu"  Left  "run-shell $previous_menu"  \
-    "" \
-    "<P> indicates this key is a deault key" "" ""    \
-    "    so unless you have changed it," "" ""        \
-    "    it should be possible to use" "" ""          \
-    "    with <prefix> directly." "" "" \
-    "" \
-    " -->  Indicates this will open a" "" "" \
-    "      new menu." "" "" \
-    "" \
-    "On options spanning multiple lines,"      "" ""  \
-    "if you use Enter to select, you must be"  "" ""  \
-    "on the line with the shortcut. Otherwise" "" ""  \
-    "it is interperated as cancel."            "" "" \
-    "" \
-    "Shortcut keys are typically upper case" "" "" \
-    "for new menus, and lower case for actions" "" "" \
-    "with the exception of default keys." "" ""
+     -T "#[align=centre] Move Window Help"      \
+     -x "$menu_location_x" -y "$menu_location_y" \
+     \
+     "Back to Main menu"    Home  "run-shell $CURRENT_DIR/main.sh"  \
+     "Back to Move Window"  Left  "run-shell $CURRENT_DIR/window_move.sh" \
+     "" \
+     "==  Move & Link window navigatom  ==" "" "" \
+     "Displays a navigation tree, options:" "" "" \
+     "1 - Chose a session." "" "" \
+     "    Current window will be put as" "" "" \
+     "    the last window in that session." "" "" \
+     "2 - Choose a window in a session." "" "" \
+     "    Current window will be inserted" "" "" \
+     "    on that location, pushing remaining" "" "" \
+     "    windows one step to the right." "" "" \
+     "If you choose a pane, the pane part" "" "" \
+     "of the selection will be ignored." "" ""

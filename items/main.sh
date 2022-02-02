@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 #
-#   Copyright (c) 2021,2022: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2022: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.0 2022-02-02
+#   Version: 1.2.0 2022-02-03
 #
 #   Main menu, the one popping up when you hit the trigger
 #
@@ -47,13 +47,14 @@ tmux display-menu \
      -T "#[align=centre] Main menu "          \
      -x $menu_location_x -y $menu_location_y  \
      \
-     "    Handling Panes"    p  "run-shell $CURRENT_DIR/panes.sh"       \
-     "    Handling Windows"  w  "run-shell $CURRENT_DIR/windows.sh"     \
-     "    Handling Sessions" s  "run-shell $CURRENT_DIR/sessions.sh"    \
-     "    Layouts"           l  "run-shell $CURRENT_DIR/layouts.sh"     \
-     "    Split view"        v  "run-shell $CURRENT_DIR/split_view.sh"  \
-     "    Advanced Options"  a  "run-shell $CURRENT_DIR/advanced.sh"    \
+     "    Handling Pane      -->"  P  "run-shell $CURRENT_DIR/panes.sh"       \
+     "    Handling Window    -->"  W  "run-shell $CURRENT_DIR/windows.sh"     \
+     "    Handling Sessions  -->"  S  "run-shell $CURRENT_DIR/sessions.sh"    \
+     "    Layouts            -->"  L  "run-shell $CURRENT_DIR/layouts.sh"     \
+     "    Split view         -->"  V  "run-shell $CURRENT_DIR/split_view.sh"  \
+     "    Advanced Options   -->"  A  "run-shell $CURRENT_DIR/advanced.sh"    \
      "" \
+     "<P> List keys"        \?  "list-keys -N" \
      "    Reload configuration file" "r" "run-shell 'tmux source-file ~/.tmux.conf; tmux display-message \"Sourced ~/.tmux.conf\"'" \
      "" \
      "    Navigate & select ses/win/pane " ""  ""  \
@@ -64,7 +65,7 @@ tmux display-menu \
      "" \
      "<P> Detach from tmux"  d  detach-client      \
      "" \
-     "Help"  h  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/main.sh\""
+     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/main.sh\""
 
 #  Help needs an additional param to tell it where to go back, resulting in the need for this run-shell instance's params to be enclosed 
 #  in an addtional level of "" to make both params to be seen as the one expected param to run-shell

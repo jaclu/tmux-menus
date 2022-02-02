@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 #
-#   Copyright (c) 2021,2022: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2022: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.1 2022-01-19
+#   Version: 1.2.0 2022-02-03
 #
-#   This is the advanced menu, with more archaic tasks
+#   Main menu, the one popping up when you hit the trigger
 #
 #   Types of menu item lines.
 #
@@ -61,7 +61,7 @@ tmux display-menu \
      -T "#[align=centre] Advanced options "  \
      -x $menu_location_x -y $menu_location_y \
      \
-     "Back to main-menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
+     "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
      "" \
      "<P> Manage clients"                       D  "run-shell $SCRIPT_DIR/manage_clients.sh" \
      "    Toggle mouse to: $new_mouse_status"   m  "set-option -g mouse $new_mouse_status"  \
@@ -73,6 +73,6 @@ tmux display-menu \
      "    Change prefix <$current_prefix>"      p  "command-prompt -1 -p prefix 'run \"$SCRIPT_DIR/change_prefix.sh %%\"'"  \
      "" \
      "Kill server - all your sessions" "" ""  \
-     "on this host are terminated    "          K  "confirm-before -p \"kill tmux server on #H ? (y/n)\" kill-server"  \
+     "on this host are terminated    "          k  "confirm-before -p \"kill tmux server on #H ? (y/n)\" kill-server"  \
      "" \
-     "Help"  h  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/advanced.sh\""
+     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/advanced.sh\""

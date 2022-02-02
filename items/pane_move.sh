@@ -42,32 +42,18 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
 source "$SCRIPT_DIR/utils.sh"
 
-previous_menu="$1"
-
-if [ -z "$previous_menu" ]; then
-    tmux display-message "ERROR: tmux-menus:help was called without notice of what called it"
-fi
-
 
 tmux display-menu  \
-    -T "#[align=centre] Help summary "      \
-    -x $menu_location_x -y $menu_location_y \
-    \
-    "Back to pevious menu"  Left  "run-shell $previous_menu"  \
-    "" \
-    "<P> indicates this key is a deault key" "" ""    \
-    "    so unless you have changed it," "" ""        \
-    "    it should be possible to use" "" ""          \
-    "    with <prefix> directly." "" "" \
-    "" \
-    " -->  Indicates this will open a" "" "" \
-    "      new menu." "" "" \
-    "" \
-    "On options spanning multiple lines,"      "" ""  \
-    "if you use Enter to select, you must be"  "" ""  \
-    "on the line with the shortcut. Otherwise" "" ""  \
-    "it is interperated as cancel."            "" "" \
-    "" \
-    "Shortcut keys are typically upper case" "" "" \
-    "for new menus, and lower case for actions" "" "" \
-    "with the exception of default keys." "" ""
+     -T "#[align=centre] Move Pane "  \
+     -x "$menu_location_x" -y "$menu_location_y"  \
+     \
+     "Back to Main menu"      Home  "run-shell $CURRENT_DIR/main.sh"  \
+     "Back to Handling Pane"  Left  "run-shell $CURRENT_DIR/panes.sh" \
+     "" \
+     "    Move to other window or session"  m  "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_pane.sh M %%\"'" \
+     "#{?pane_marked_set,,-}    Swap current pane with marked"  p  swap-pane  \
+     "<P> Swap pane with prev"        \{  "swap-pane -U" \
+     "<P> Swap pane with next"        \}  "swap-pane -D" \
+     "<P> Move pane to a new window"   !  break-pane \
+     "" \
+     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/panes.sh\""

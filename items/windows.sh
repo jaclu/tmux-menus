@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 #
-#   Copyright (c) 2021,2022: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2022: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.1 2022-01-19
+#   Version: 1.2.0 2022-02-03
 #
-#   Menu dealing with windows handling
+#   Main menu, the one popping up when you hit the trigger
 #
 #   Types of menu item lines.
 #
@@ -45,26 +45,19 @@ source "$SCRIPT_DIR/utils.sh"
 
 
 tmux display-menu  \
-     -T "#[align=centre] Windows manipulation "  \
+     -T "#[align=centre] Handling Window   "  \
      -x "$menu_location_x" -y "$menu_location_y" \
      \
      "Back to main-menu"  Left  "run-shell $CURRENT_DIR/main.sh" \
      "" \
-     "    Move window to other location"    m  "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_window.sh M %%\"'" \
-     "    Link window to other session"     l  "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_window.sh L %%\"'" \
-     "    Unlink window from this session"  u  "unlink-window" \
-     "#{?pane_marked_set,,-}    Swap current window with window" "" ""  \
-     "#{?pane_marked_set,,-}    containing marked pane         "  w  swap-window  \
-     "    Move window Left"                \<  "swap-window -dt:-1"  \
-     "    Move window Right"               \>  "swap-window -dt:+1"  \
+     "    Move window  -->"   M "run-shell \"$CURRENT_DIR/window_move.sh\"" \
      "" \
      "    New window after current"         n  "command-prompt -p \"Name of new window: \" \"new-window -a -n '%%'"  \
      "<P> New window at the end"            c  "command-prompt -p \"Name of new window: \" \"new-window -n '%%'"     \
-     "" \
      "<P> Rename window"                    ,  "command-prompt -I \"#W\"  -p \"New window name: \"  \"rename-window '%%'\""  \
      "    Display Window size"              s  "display-message \"Window size: #{window_width}x#{window_height}\""           \
      "" \
      "<P> Kill current window"             \&  "confirm-before -p \"kill-window #W? (y/n)\" kill-window"  \
-     "    Kill all other windows"           K  "confirm-before -p \"Are you sure you want to kill all other windows? (y/n)\" \"run \"${SCRIPT_DIR}/kill_other_windows.sh\" \" "  \
+     "    Kill all other windows"           o  "confirm-before -p \"Are you sure you want to kill all other windows? (y/n)\" \"run \"${SCRIPT_DIR}/kill_other_windows.sh\" \" "  \
      "" \
-     "Help, explaining move & link"         h  "run-shell \"$CURRENT_DIR/help_windows.sh\""
+     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/windows.sh\""

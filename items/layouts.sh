@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 #
-#   Copyright (c) 2021,2022: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2022: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.1.0 2022-01-12
+#   Version: 1.2.0 2022-02-03
 #
-#   menu dealing with panes
+#   Main menu, the one popping up when you hit the trigger
 #
 #   Types of menu item lines.
 #
@@ -47,7 +47,7 @@ tmux display-menu  \
      -T "#[align=centre] Layouts "            \
      -x $menu_location_x -y $menu_location_y  \
      \
-     "Back to main-menu"           Left  "run-shell $CURRENT_DIR/main.sh"  \
+     "Back to Main menu"           Left  "run-shell $CURRENT_DIR/main.sh"  \
      "" \
      "<P> Even horizontal"          M-1  "select-layout even-horizontal"   \
      "<P> Even vertical"            M-2  "select-layout even-vertical"     \
@@ -56,4 +56,4 @@ tmux display-menu  \
      "<P> Tiled"                    M-5  "select-layout tiled"             \
      "<P> Spread panes out evenly."   E  "select-layout -E"                \
      "" \
-     "Help"  h  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/layouts.sh\""
+     "Help  -->"  h  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/layouts.sh\""

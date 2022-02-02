@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 #
-#   Copyright (c) 2021: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2022: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.1.2 2021-12-21
+#   Version: 1.2.0 2022-02-03
 #
-#   This is the help menu, in case you havent guessed :)
+#   Main menu, the one popping up when you hit the trigger
 #
 #   Types of menu item lines.
 #
@@ -50,10 +50,10 @@ fi
 
 
 tmux display-menu  \
-     -T "#[align=centre] Help splitting display "              \
+     -T "#[align=centre] Help Split View "              \
      -x $menu_location_x -y $menu_location_y                   \
      \
-     "Back to pevious menu"  Left  "run-shell $previous_menu"  \
+     "Back to Split View"  Left  "run-shell $previous_menu"  \
      "" \
      "Creating a new pane by splitting" "" ""                  \
      "curent pane or Window."   "" ""                          \

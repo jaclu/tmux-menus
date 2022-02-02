@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 #
-#   Copyright (c) 2021,2022: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2022: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.2 2022-02-01
+#   Version: 1.2.0 2022-02-03
 #
-#   menu dealing with panes
+#   Main menu, the one popping up when you hit the trigger
 #
 #   Types of menu item lines.
 #
@@ -44,27 +44,25 @@ source "$SCRIPT_DIR/utils.sh"
 
 
 tmux display-menu  \
-     -T "#[align=centre] Pane manipulation "  \
+     -T "#[align=centre] Handling Pane "  \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Back to main-menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
+     "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
      "" \
-     "    Move to other window or session"  m  "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_pane.sh M %%\"'" \
-     "#{?pane_marked_set,,-}    Swap current pane with marked"  p  swap-pane  \
-     "<P> Swap pane with prev"        \{  "swap-pane -U" \
-     "<P> Swap pane with next"        \}  "swap-pane -D" \
+     "    Move pane  -->" M "run-shell \"$CURRENT_DIR/pane_move.sh\"" \
+     "    Resize pane  -->" R "run-shell \"$CURRENT_DIR/pane_resize.sh\"" \
      "" \
-     "<P> Move pane to a new window"   !  break-pane \
-     "" \
-     "    Rename pane"                 P  "command-prompt -I \"#T\"  -p \"New pane name: \"  \"select-pane -T '%%'\""  \
+     "<P> Zoom pane toggle"            z  "resize-pane -Z" \
      "<P> Display pane numbers"        q  display-panes \
+     "    Rename pane"                 r  "command-prompt -I \"#T\"  -p \"New pane name: \"  \"select-pane -T '%%'\""  \
+     "    Display pane size" s "display-message \"Pane: #P size: #{pane_width}x#{pane_height}\"" \
+     "<P> Enter scrollback" PgUp "copy-mode -u" \
      "" \
      "    Choose a tmux paste buffer" "" ""                   \
      "<P> (Enter pastes Esq aborts) "  =  "choose-buffer -Z"  \
      "" \
-     "    #{?pane_synchronized,Disable,Activate} synchronized panes"  S  "set -w synchronize-panes"  \
-     "    Display Pane size" s "display-message \"Pane: #P size: #{pane_width}x#{pane_height}\"" \
-     "    Save pane history to file"   H  "command-prompt -p 'Save current-pane history to filename:' -I '~/tmux.history' 'capture-pane -S - -E - ; save-buffer %1 ; delete-buffer'" \
+     "    #{?pane_synchronized,Disable,Activate} synchronized panes"  s  "set -w synchronize-panes"  \
+     "    Save pane history to file"   h  "command-prompt -p 'Save current-pane history to filename:' -I '~/tmux.history' 'capture-pane -S - -E - ; save-buffer %1 ; delete-buffer'" \
      "<P> Kill current pane"           x  "confirm-before -p \"kill-pane #P? (y/n)\" kill-pane"      \
      "" \
-     "Help"  h  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/panes.sh\""
+     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/panes.sh\""

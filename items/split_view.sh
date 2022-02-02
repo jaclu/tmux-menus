@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 #
-#   Copyright (c) 2021,2022: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2022: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0.2 2022-01-22
+#   Version: 1.2.0 2022-02-03
 #
-#   Menu dealing with splitting panes/windows.
+#   Main menu, the one popping up when you hit the trigger
 #
 #   Types of menu item lines.
 #
@@ -47,16 +47,16 @@ tmux display-menu  \
      -T "#[align=centre] Split view "        \
      -x $menu_location_x -y $menu_location_y \
      \
-     "Back to main-menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
+     "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
      "#[align=centre]-----  Split Pane  -----" "" ""              \
-     "Left"   l  "split-window -hb   -c '#{pane_current_path}'"   \
-     "Right"  r  "split-window -h    -c '#{pane_current_path}'"   \
-     "Above"  a  "split-window -vb   -c '#{pane_current_path}'"   \
-     "Below"  b  "split-window -v    -c '#{pane_current_path}'"   \
+     "    Left"   l   "split-window -hb   -c '#{pane_current_path}'"   \
+     "<P> Right"  \%  "split-window -h    -c '#{pane_current_path}'"   \
+     "    Above"  a   "split-window -vb   -c '#{pane_current_path}'"   \
+     "<P> Below"  \"  "split-window -v    -c '#{pane_current_path}'"   \
      "#[align=centre]----  Split Window  ----" "" ""              \
-     "Left"   L  "split-window -fhb  -c '#{pane_current_path}'"   \
-     "Right"  R  "split-window -fh   -c '#{pane_current_path}'"   \
-     "Above"  A  "split-window -fvb  -c '#{pane_current_path}'"   \
-     "Below"  B  "split-window -fv   -c '#{pane_current_path}'"   \
+     "    Left"   L   "split-window -fhb  -c '#{pane_current_path}'"   \
+     "    Right"  R   "split-window -fh   -c '#{pane_current_path}'"   \
+     "    Above"  A   "split-window -fvb  -c '#{pane_current_path}'"   \
+     "    Below"  B   "split-window -fv   -c '#{pane_current_path}'"   \
      "" \
-     "Help"   h  "run-shell \"$CURRENT_DIR/help_split.sh $CURRENT_DIR/split_view.sh\""
+     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help_split.sh $CURRENT_DIR/split_view.sh\""
