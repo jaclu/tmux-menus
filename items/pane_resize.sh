@@ -50,6 +50,8 @@ tmux display-menu  \
      "Back to Main menu"       Home  "run-shell $CURRENT_DIR/main.sh"  \
      "Back to Handling Pane"  Left  "run-shell $CURRENT_DIR/panes.sh" \
      "" \
+     "#[align=left]Specify width & height" s "command-prompt -p 'Pane width,Pane height' 'resize-pane -x %1 -y %2'" \
+     "" \
      "<P> up    by 5"  M-Up   "resize-pane -U 5"  \
      "<P> down  by 5"  M-Down "resize-pane -D 5"  \
      "<P> left  by 5"  M-Left "resize-pane -L 5"  \
