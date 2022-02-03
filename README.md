@@ -6,8 +6,7 @@ Simple to modify to fit your needs. I have included several items that some migh
 
 #### Recent changes
 - Split Pane & Window menus into sub-menus
-- Screenshots do not reflect this yet
-- Added Reload Configuration to Main menu
+- Added Several new actions to Panes
 - Added @menus_without_prefix for triggering menus without using `<prefix>`
 
 ## Purpose
@@ -34,16 +33,7 @@ Default is ``` <prefix> \ ``` see Configuration below for how to change it.
 
 ## Screenshots
 
-![main](/screenshots/main.png)
-![panes](/screenshots/panes.png)
-![wins](/screenshots/windows.png)
-![sessions](/screenshots/sessions.png)
-![layouts](/screenshots/layouts.png)
-![split](/screenshots/split_view.png)
-![adv](/screenshots/advanced.png)
-![help](/screenshots/help.png)
-![wins_help](/screenshots/windows_help.png)
-![help_split](/screenshots/help_split.png)
+![menus](/screenshots/menus.png)
 
 
 ## Install
