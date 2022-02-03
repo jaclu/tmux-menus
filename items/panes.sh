@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.1 2022-02-03
+#   Version: 1.2.2 2022-02-03
 #
 #   Main menu, the one popping up when you hit the trigger
 #
@@ -56,7 +56,7 @@ tmux display-menu  \
      "<P> Display pane numbers"        q  display-panes \
      "    Rename pane"                 r  "command-prompt -I \"#T\"  -p \"New pane name: \"  \"select-pane -T '%%'\""  \
      "    Display pane size" s "display-message \"Pane: #P size: #{pane_width}x#{pane_height}\"" \
-     "<P> Enter scrollback" PgUp "copy-mode -u" \
+     "<P> Copy mode (~scrollback)" PgUp "copy-mode -u" \
      "" \
      "    Choose a tmux paste buffer" "" ""                   \
      "<P> (Enter pastes Esq aborts) "  =  "choose-buffer -Z"  \
