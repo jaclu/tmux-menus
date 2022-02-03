@@ -1,11 +1,11 @@
-#!/usr/bin/env bash
+#!/bin/sh
 #
 #   Copyright (c) 2022: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.0 2022-02-03
+#   Version: 1.2.1 2022-02-03
 #
 #   Main menu, the one popping up when you hit the trigger
 #
@@ -36,11 +36,11 @@
 #   For any field containing no spaces, quotes are optional.
 #
 
-CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 
 SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
-source "$SCRIPT_DIR/utils.sh"
+. "$SCRIPT_DIR/utils.sh"
 
 
 tmux display-menu  \
@@ -51,7 +51,7 @@ tmux display-menu  \
      "Back to Handling Pane"  Left  "run-shell $CURRENT_DIR/panes.sh" \
      "" \
      "    Move to other window or session"  m  "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_pane.sh M %%\"'" \
-     "#{?pane_marked_set,,-}    Swap current pane with marked"  p  swap-pane  \
+     "#{?pane_marked_set,,-}    Swap current pane with marked"  s  swap-pane  \
      "<P> Swap pane with prev"        \{  "swap-pane -U" \
      "<P> Swap pane with next"        \}  "swap-pane -D" \
      "<P> Move pane to a new window"   !  break-pane \

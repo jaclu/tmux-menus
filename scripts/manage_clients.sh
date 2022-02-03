@@ -1,16 +1,16 @@
-#!/usr/bin/env bash
+#!/bin/sh
 #
 #   Copyright (c) 2022: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: X.X 2022-01-13
+#   Version: 1.2.1 2022-02-03
 #
 #   Displays list of clients and the list of available actions.
 #   
 
-CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 
 RESOURCES_DIR="$(dirname "$CURRENT_DIR")/resources"
 

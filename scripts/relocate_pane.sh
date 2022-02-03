@@ -1,19 +1,20 @@
-#!/usr/bin/env bash
+#!/bin/sh
 #
 #   Copyright (c) 2022: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0 2022-01-13
+#   Version: 1.2.1 2022-02-03
 #
 #   Moving current pane within same session or to other session.
 #
 
-CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 
-. $CURRENT_DIR/relocate_common.sh P "$1" "$2"
+. $CURRENT_DIR/relocate_param_check.sh
 
+param_check P "$1" "$2"
 
 
 tmux move-pane -t "${dest_ses}:${dest_win_idx}.${dest_pane_idx}"

@@ -1,11 +1,11 @@
-#!/usr/bin/env bash
+#!/bin/sh
 #
 #   Copyright (c) 2022: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.0 2022-02-03
+#   Version: 1.2.1 2022-02-03
 #
 #   Main menu, the one popping up when you hit the trigger
 #
@@ -36,11 +36,11 @@
 #   For any field containing no spaces, quotes are optional.
 #
 
-CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 
 SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
-source "$SCRIPT_DIR/utils.sh"
+. "$SCRIPT_DIR/utils.sh"
 
 
 #

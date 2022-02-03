@@ -1,19 +1,20 @@
-#!/usr/bin/env bash
+#!/bin/sh
 #
-#   Copyright (c) 2021,2022: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2022: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.0 2022-02-01
+#   Version: 1.2.1 2022-02-03
 #
 
-CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 
 MENUS_DIR="$CURRENT_DIR/items"
 SCRIPTS_DIR="$CURRENT_DIR/scripts"
 
-source "$SCRIPTS_DIR/utils.sh"
+. "$SCRIPTS_DIR/utils.sh"
 
 
 #

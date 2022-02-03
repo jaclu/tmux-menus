@@ -1,11 +1,11 @@
-#!/usr/bin/env bash
+#!/bin/sh
 #
 #   Copyright (c) 2022: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0.1 2022-01-18
+#   Version: 1.2.1 2022-02-03
 #
 #   Moving current window within same session or to other session.
 #
@@ -17,9 +17,11 @@
 #   If a pane is selected, that part of the selection is simply ignored.
 #   
 
-CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 
-. $CURRENT_DIR/relocate_common.sh W "$1" "$2"
+. $CURRENT_DIR/relocate_param_check.sh
+
+param_check W "$1" "$2"
 
 
 if [ "$cur_ses" = "$dest_ses" ]; then

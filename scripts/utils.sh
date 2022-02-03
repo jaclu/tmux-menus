@@ -1,13 +1,14 @@
-#!/usr/bin/env bash
+#!/bin/sh
 #
-#   Copyright (c) 2021,2022: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2022: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2 2022-02-01
+#   Version: 1.2.1 2022-02-03
 #
-
+#  Common stuff
+#
 
 get_tmux_option() {
     local option=$1
