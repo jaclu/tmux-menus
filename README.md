@@ -35,8 +35,14 @@ Default is ``` <prefix> \ ``` see Configuration below for how to change it.
 
 ## Screenshots
 
-![menus](/screenshots/menus.png)
-
+![main](https://user-images.githubusercontent.com/5046648/152526934-32e77cfe-abab-4871-9998-daf6f2d0f4f0.png)
+![Pane](https://user-images.githubusercontent.com/5046648/152528760-3ea341a6-b83f-4cda-930a-664f2959d524.png)
+![Pane Move](https://user-images.githubusercontent.com/5046648/152528992-ab2b5d50-5ee2-4a12-b7d8-191fbf39db8f.png)
+![Pane Resize](https://user-images.githubusercontent.com/5046648/152529193-e1831eaa-f4dd-4c10-a6ba-569abea26b34.png)
+![Window](https://user-images.githubusercontent.com/5046648/152528156-b403c6bb-681f-4c87-80d9-2cb9137ab168.png)
+![Window Move](https://user-images.githubusercontent.com/5046648/152528503-d5f55402-0774-4633-a15c-a824fbc8f9b1.png)
+![Sessions](https://user-images.githubusercontent.com/5046648/152529474-13f66b4a-53b5-45fb-ade0-0f247da38992.png)
+![Help Summary](https://user-images.githubusercontent.com/5046648/152529784-a1520b13-ff62-463c-8326-43ad2a3b336c.png)
 
 ## Install
 
