@@ -36,7 +36,7 @@ Default is ``` <prefix> \ ``` see Configuration below for how to change it.
 ## Screenshots
 
 ![main](https://user-images.githubusercontent.com/5046648/152526934-32e77cfe-abab-4871-9998-daf6f2d0f4f0.png)
-![Pane](https://user-images.githubusercontent.com/5046648/152539425-1d9b93a4-99e5-4450-91f3-975d24311595.png)
+![Pane](https://user-images.githubusercontent.com/5046648/152705128-4923bf68-8afe-45d4-993a-de4f6d9476cf.png)
 ![Pane Move](https://user-images.githubusercontent.com/5046648/152528992-ab2b5d50-5ee2-4a12-b7d8-191fbf39db8f.png)
 ![Pane Resize](https://user-images.githubusercontent.com/5046648/152529193-e1831eaa-f4dd-4c10-a6ba-569abea26b34.png)
 ![Window](https://user-images.githubusercontent.com/5046648/152528156-b403c6bb-681f-4c87-80d9-2cb9137ab168.png)
