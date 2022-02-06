@@ -59,7 +59,7 @@ Hit `prefix + I` to fetch the plugin and source it. That's it!
 
 Clone the repo:
 
-    $ git clone https://github.com/jaclu/tmux-menus ~/clone/path
+    $ git clone https://github.com/jaclu/tmux-menus.git ~/clone/path
 
 Add this line to the bottom of `.tmux.conf`:
 
