@@ -77,7 +77,7 @@ The default trigger is `<prefix> \`. Trigger is selected like this:
 set -g @menus_trigger 'x'
 ```
 
-Please note that using special keys, like the default backslash needs to be noted in a specific way in order not to confuse tmux.
+Please note that special keys, like the default backslash needs to be noted in a specific way in order not to confuse tmux.
 Either `'\'` or without quotes as `\\`.  Quoting `'\\'` will not make sense for tmux and fail to bind any key!
 
 If you want to trigger menus without first hitting `<prefix>`
