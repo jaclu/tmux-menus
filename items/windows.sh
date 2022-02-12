@@ -49,14 +49,18 @@ tmux display-menu  \
      \
      "Back to main-menu"  Left  "run-shell $CURRENT_DIR/main.sh" \
      "" \
-     "    Move window  -->"   M "run-shell \"$CURRENT_DIR/window_move.sh\"" \
+     "    Move window  -->"  M  "run-shell \"$CURRENT_DIR/window_move.sh\"" \
      "" \
-     "    New window after current"         n  "command-prompt -p \"Name of new window: \" \"new-window -a -n '%%'"  \
-     "<P> New window at the end"            c  "command-prompt -p \"Name of new window: \" \"new-window -n '%%'"     \
-     "<P> Rename window"                    ,  "command-prompt -I \"#W\"  -p \"New window name: \"  \"rename-window '%%'\""  \
-     "    Display Window size"              s  "display-message \"Window size: #{window_width}x#{window_height}\""           \
+     "<P> Rename window"             ,  "command-prompt -I \"#W\"  -p \"New window name: \"  \"rename-window '%%'\""  \
+     "<P> Previous window"           p  "previous-window" \
+     "<P> Next window"               n  "next-window" \
+     "    New window after current"  a  "command-prompt -p \"Name of new window: \" \"new-window -a -n '%%'"  \
+     "<P> New window at the end"     c  "command-prompt -p \"Name of new window: \" \"new-window -n '%%'"     \
+     "    Display Window size"       s  "display-message \"Window size: #{window_width}x#{window_height}\""           \
      "" \
-     "<P> Kill current window"             \&  "confirm-before -p \"kill-window #W? (y/n)\" kill-window"  \
-     "    Kill all other windows"           o  "confirm-before -p \"Are you sure you want to kill all other windows? (y/n)\" \"run \"${SCRIPT_DIR}/kill_other_windows.sh\" \" "  \
+     "<P> Search in all panes"       f  "command-promp -p \"Search in all panes:\" \"find-window -Z -- '%%'\"" \
+     "" \
+     "<P> Kill current window"      \&  "confirm-before -p \"kill-window #W? (y/n)\" kill-window"  \
+     "    Kill all other windows"    o  "confirm-before -p \"Are you sure you want to kill all other windows? (y/n)\" \"run \"${SCRIPT_DIR}/kill_other_windows.sh\" \" "  \
      "" \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/windows.sh\""
