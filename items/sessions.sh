@@ -55,10 +55,10 @@ tmux display-menu  \
      "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
      "" \
      "<P> Rename this session"     \$  "command-prompt -I \"#S\" \"rename-session -- '%%'\""  \
-     "    List sessions"            l   "list-sessions" \
      "<P> Previous session"        \(  "switch-client -p" \
      "<P> Next session"            \)  "switch-client -n" \
      "    New session"              n  "command-prompt -p \"Name of new session: \" \"new-session -s '%%'\""  \
+     "" \
      "    Kill current session"     k  "confirm-before -p \"Are you sure you want to kill this session? (y/n)\" \"run \"${SCRIPT_DIR}/kill_current_session.sh\"\" "  \
      "    Kill all other sessions"  o  "confirm-before -p \"Are you sure you want to kill all other sessions? (y/n)\" \"kill-session -a\""  \
      "" \
