@@ -24,8 +24,8 @@ default_key="\\"
 
 
 #
-#  If log_file is empty or undefined, no logging will occur, so normally
-#  comment it out for normal usage.
+#  If log_file is empty or undefined, no logging will occur, so comment it out
+#  for normal usage.
 #
 #log_file="/tmp/tmux-menus.log"
 
