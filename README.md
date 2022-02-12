@@ -36,11 +36,11 @@ Default is ``` <prefix> \ ``` see Configuration below for how to change it.
 ## Screenshots
 
 ![main](https://user-images.githubusercontent.com/5046648/152526934-32e77cfe-abab-4871-9998-daf6f2d0f4f0.png)
-![Pane](https://user-images.githubusercontent.com/5046648/152705128-4923bf68-8afe-45d4-993a-de4f6d9476cf.png)
+![Pane](https://user-images.githubusercontent.com/5046648/153721750-59e2b1ea-86c8-4e6a-bcee-34ee776cb9b0.png)
 ![Pane Move](https://user-images.githubusercontent.com/5046648/152528992-ab2b5d50-5ee2-4a12-b7d8-191fbf39db8f.png)
-![Window](https://user-images.githubusercontent.com/5046648/152528156-b403c6bb-681f-4c87-80d9-2cb9137ab168.png)
+![Window](https://user-images.githubusercontent.com/5046648/153721701-a2fc93c5-1b34-4f19-8d5d-a09fa27c442d.png)
 ![Window Move](https://user-images.githubusercontent.com/5046648/152528503-d5f55402-0774-4633-a15c-a824fbc8f9b1.png)
-![Sessions](https://user-images.githubusercontent.com/5046648/152529474-13f66b4a-53b5-45fb-ade0-0f247da38992.png)
+![Session](https://user-images.githubusercontent.com/5046648/153721732-861aba5b-0a46-40d6-9711-a06b6df7650b.png)
 ![Advanced](https://user-images.githubusercontent.com/5046648/152538425-0c724399-d6c6-45ca-bc65-a64a890dd7a8.png)
 ![Help Summary](https://user-images.githubusercontent.com/5046648/152529784-a1520b13-ff62-463c-8326-43ad2a3b336c.png)
 
