@@ -52,17 +52,19 @@ tmux display-menu  \
      "    Move pane  -->" M "run-shell \"$CURRENT_DIR/pane_move.sh\"" \
      "    Resize pane  -->" R "run-shell \"$CURRENT_DIR/pane_resize.sh\"" \
      "" \
+     "    Rename pane"                 r  "command-prompt -I \"#T\"  -p \"New pane name: \"  \"select-pane -T '%%'\""  \
      "<P> Zoom pane toggle"            z  "resize-pane -Z" \
      "<P> Display pane numbers"        q  display-panes \
-     "    Rename pane"                 r  "command-prompt -I \"#T\"  -p \"New pane name: \"  \"select-pane -T '%%'\""  \
-     "    Display pane size" s "display-message \"Pane: #P size: #{pane_width}x#{pane_height}\"" \
      "<P> Copy mode (~scrollback)" \[ "copy-mode" \
+     "    Display pane size" s "display-message \"Pane: #P size: #{pane_width}x#{pane_height}\"" \
      "" \
      "    Choose a tmux paste buffer" "" ""                   \
      "<P> (Enter pastes Esq aborts) "  =  "choose-buffer -Z"  \
      "" \
      "    #{?pane_synchronized,Disable,Activate} synchronized panes"  S  "set -w synchronize-panes"  \
      "    Save pane history to file"   h  "command-prompt -p 'Save current-pane history to filename:' -I '~/tmux.history' 'capture-pane -S - -E - ; save-buffer %1 ; delete-buffer'" \
+     "" \
      "<P> Kill current pane"           x  "confirm-before -p \"kill-pane #P? (y/n)\" kill-pane"      \
+     "    Kill all other panes"        o  "confirm-before -p \"Are you sure you want to kill all other panes? (y/n)\" \"kill-pane -a\""      \
      "" \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/panes.sh\""
