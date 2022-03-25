@@ -34,14 +34,14 @@ Default is `<prefix> \` see Configuration below for how to change it.
 
 ## Screenshots
 
-![main](https://user-images.githubusercontent.com/5046648/154112056-492e0c4b-3ec8-4f56-ae72-822a3d51de02.png)
-![Pane](https://user-images.githubusercontent.com/5046648/153721750-59e2b1ea-86c8-4e6a-bcee-34ee776cb9b0.png)
-![Pane Move](https://user-images.githubusercontent.com/5046648/152528992-ab2b5d50-5ee2-4a12-b7d8-191fbf39db8f.png)
-![Window](https://user-images.githubusercontent.com/5046648/154112225-4d334798-a34c-4a4b-a91c-5bc7733ea3de.png)
-![Window Move](https://user-images.githubusercontent.com/5046648/152528503-d5f55402-0774-4633-a15c-a824fbc8f9b1.png)
-![Session](https://user-images.githubusercontent.com/5046648/154112361-fa0489e5-2caf-43a5-845a-ac3239ceecfb.png)
-![Advanced](https://user-images.githubusercontent.com/5046648/152538425-0c724399-d6c6-45ca-bc65-a64a890dd7a8.png)
-![Help Summary](https://user-images.githubusercontent.com/5046648/152529784-a1520b13-ff62-463c-8326-43ad2a3b336c.png)
+![main](https://user-images.githubusercontent.com/5046648/160180597-408cc73e-1495-48ef-87f6-9890aebf7209.png)
+![Pane](https://user-images.githubusercontent.com/5046648/160180873-d8f20bd6-f650-490e-a6d0-41f61198e3c3.png)
+![Pane Move](https://user-images.githubusercontent.com/5046648/160180947-5490d40c-67be-4cc0-ba87-7f5f8aa1e951.png)
+![Window](https://user-images.githubusercontent.com/5046648/160181041-d9e7be3f-8d47-46c1-972c-df3e2b325682.png)
+![Window Move](https://user-images.githubusercontent.com/5046648/160181115-ed8db448-d0f2-4753-a90c-8045006f4a79.png)
+![Session](https://user-images.githubusercontent.com/5046648/160181163-7917147d-89e7-4d75-945d-e2e7ef59b71d.png)
+![Advanced](https://user-images.githubusercontent.com/5046648/160181219-e5f514ee-a874-4f18-ac12-34c12bf9f1c7.png)
+![Help Summary](https://user-images.githubusercontent.com/5046648/160181272-26f4249f-6424-4ed2-9509-89e5dca7234f.png)
 
 ## Install
 
