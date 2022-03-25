@@ -64,6 +64,7 @@ tmux display-menu  \
      "    #{?pane_synchronized,Disable,Activate} synchronized panes"  S  "set -w synchronize-panes"  \
      "    Save pane history to file"   h  "command-prompt -p 'Save current-pane history to filename:' -I '~/tmux.history' 'capture-pane -S - -E - ; save-buffer %1 ; delete-buffer'" \
      "" \
+     "    Respawn current pane"        p  "confirm-before -p \"respawn-pane #P? (y/n)\" \"respawn-pane -k\"" \
      "<P> Kill current pane"           x  "confirm-before -p \"kill-pane #P? (y/n)\" kill-pane"      \
      "    Kill all other panes"        o  "confirm-before -p \"Are you sure you want to kill all other panes? (y/n)\" \"kill-pane -a\""      \
      "" \
