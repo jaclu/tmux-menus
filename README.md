@@ -159,6 +159,9 @@ Contributions are welcome, and they are greatly appreciated! Every little bit he
 
 The best way to send feedback is to file an issue at https://github.com/jaclu/tmux-menus/issues
 
+### Special thanks to
+[giddie](https://github.com/giddie) for contributing "Respawn current pane"
+
 ##### License
 
 [MIT](LICENSE.md)
