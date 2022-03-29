@@ -58,14 +58,14 @@ log_it "use_notes=[$use_notes]"
 
 if [ "$without_prefix" -eq 1 ]; then
     if [ "$use_notes" -eq 1 ]; then
-        tmux bind -N "tmux-menus" -n "$trigger_key" run-shell "$MENUS_DIR"/main.sh
+        tmux bind -N "$plugin_name" -n "$trigger_key" run-shell "$MENUS_DIR"/main.sh
     else
         tmux bind -n "$trigger_key" run-shell "$MENUS_DIR"/main.sh
     fi
     log_it "Menus bound to: $trigger_key"
 else
     if [ "$use_notes" -eq 1 ]; then
-        tmux bind -N "tmux-menus" "$trigger_key" run-shell "$MENUS_DIR"/main.sh
+        tmux bind -N "$plugin_name" "$trigger_key" run-shell "$MENUS_DIR"/main.sh
     else
         tmux bind    "$trigger_key" run-shell "$MENUS_DIR"/main.sh
     fi
