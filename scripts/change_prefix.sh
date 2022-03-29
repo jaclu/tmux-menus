@@ -10,6 +10,11 @@
 #   Updates global prefix, if prefix param is given
 #
 
+# shellcheck disable=SC1007
+CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+
+# shellcheck disable=SC1091
+. "$CURRENT_DIR/utils.sh"
 
 prefix_char="$1"
 

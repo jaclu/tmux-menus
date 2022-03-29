@@ -15,14 +15,19 @@
 # shellcheck disable=SC1007
 CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 
+# shellcheck disable=SC1091
+. utils.sh
+
+
 force_directive="force"
 
 ses_count="$(tmux list-sessions | wc -l)"
 
 ses_to_go="$(tmux display-message -p '#{session_id}')"
 
+
 if [ -z "$ses_to_go" ]; then
-    tmux display-message "ERROR: tmux-menus:kill_current_session.sh  Failed to identify current session!"
+    tmux display-message "ERROR: $plugin_name:kill_current_session.sh  Failed to identify current session!"
     exit 0
 fi
 

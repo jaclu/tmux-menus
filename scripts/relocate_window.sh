@@ -20,9 +20,14 @@
 CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 
 # shellcheck disable=SC1091
+. "$CURRENT_DIR/utils.sh"
+
+# shellcheck disable=SC1091
 . "$CURRENT_DIR/relocate_param_check.sh"
 
+
 param_check W "$1" "$2"
+
 
 # shellcheck disable=SC2154
 if [ "$cur_ses" = "$dest_ses" ]; then
