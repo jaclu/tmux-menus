@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.1 2022-02-03
+#   Version: 1.2.2 2022-03-29
 #
 #   Moving current window within same session or to other session.
 #
@@ -16,14 +16,15 @@
 #
 #   If a pane is selected, that part of the selection is simply ignored.
 #
-
+# shellcheck disable=SC1007
 CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 
-. $CURRENT_DIR/relocate_param_check.sh
+# shellcheck disable=SC1091
+. "$CURRENT_DIR/relocate_param_check.sh"
 
 param_check W "$1" "$2"
 
-
+# shellcheck disable=SC2154
 if [ "$cur_ses" = "$dest_ses" ]; then
     #
     #  to same session

@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.1 2022-02-03
+#   Version: 1.2.2 2022-03-29
 #
 #   Called from kill_current_session.sh
 #   If the question to continue is answered with y
@@ -13,6 +13,7 @@
 #   to avoid making the check for just one session
 #
 
+# shellcheck disable=SC1007
 CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 
 

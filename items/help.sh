@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.2 2022-03-19
+#   Version: 1.2.3 2022-03-29
 #
 #   Main menu, the one popping up when you hit the trigger
 #
@@ -36,10 +36,11 @@
 #   For any field containing no spaces, quotes are optional.
 #
 
+# shellcheck disable=SC1007
 CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-
 SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
+# shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
 
 
@@ -50,25 +51,26 @@ if [ -z "$previous_menu" ]; then
 fi
 
 
+# shellcheck disable=SC2154
 tmux display-menu  \
-    -T "#[align=centre] Help summary "      \
-    -x $menu_location_x -y $menu_location_y \
+    -T "#[align=centre] Help summary "          \
+    -x "$menu_location_x" -y "$menu_location_y" \
     \
     "Back to previous menu"  Left  "run-shell $previous_menu"  \
     "" \
-    "<P> indicates this key is a default key" "" ""    \
+    "<P> indicates this key is a default key" "" ""   \
     "    so unless you have changed it," "" ""        \
     "    it should be possible to use" "" ""          \
-    "    with <prefix> directly." "" "" \
+    "    with <prefix> directly." "" ""  \
     "" \
-    " -->  Indicates this will open a" "" "" \
+    " -->  Indicates this will open a" "" ""  \
     "      new menu." "" "" \
     "" \
     "On options spanning multiple lines,"      "" ""  \
     "if you use Enter to select, you must be"  "" ""  \
     "on the line with the shortcut. Otherwise" "" ""  \
-    "it is interpreted as cancel."            "" "" \
+    "it is interpreted as cancel."            "" ""   \
     "" \
-    "Shortcut keys are typically upper case" "" "" \
-    "for new menus, and lower case for actions" "" "" \
+    "Shortcut keys are typically upper case" "" ""     \
+    "for new menus, and lower case for actions" "" ""  \
     "with the exception of default keys." "" ""

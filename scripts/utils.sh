@@ -1,20 +1,33 @@
 #!/bin/sh
+# Always sourced file - Fake bangpath to help editors
+# shellcheck disable=SC2034
+#  Directives for shellcheck directly after bang path are global
 #
 #   Copyright (c) 2022: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.3 2022-03-19
+#   Version: 1.3.4 2022-03-29
 #
 #  Common stuff
 #
+
+
+#
+#  Shorthand, to avoid manually typing package name on multiple
+#  locations, easily getting out of sync.
+#
+plugin_name="tmux-menus"
+
 
 #
 #  If log_file is empty or undefined, no logging will occur,
 #  so comment it out for normal usage.
 #
-#log_file="/tmp/tmux-menus.log"  # Trigger LF to separate runs of this script
+#log_file="/tmp/$tmux-menus.log"  # Trigger LF to separate runs of this script
+
+
 
 
 #
@@ -75,14 +88,11 @@ get_tmux_option() {
     unset gtm_value
 }
 
+
 #
-#  W - By the current window name in the status line
-#  P - Lower left of current pane
-#  C - Centered in window (tmux 3.2 and up)
-#  M - Mouse position
-#  R - Right edge of terminal (Only for x)
-#  S - Next to status line (Only for y)
-#  Number - In window coordinates 0,0 is top left
+#  Must come after definition of get_tmux_option to be able
+#  to use it.
 #
 menu_location_x="$(get_tmux_option "@menus_location_x" "P")"
 menu_location_y="$(get_tmux_option "@menus_location_y" "P")"
+

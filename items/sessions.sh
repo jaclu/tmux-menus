@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.3 2022-03-19
+#   Version: 1.2.4 2022-03-29
 #
 #   Main menu, the one popping up when you hit the trigger
 #
@@ -36,11 +36,15 @@
 #   For any field containing no spaces, quotes are optional.
 #
 
+# shellcheck disable=SC1007
 CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-
 SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
+# shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
+
+
+# shellcheck disable=SC2154
 
 
 #
@@ -50,7 +54,7 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 #
 tmux display-menu  \
      -T "#[align=centre] Sessions "  \
-     -x $menu_location_x -y $menu_location_y \
+     -x "$menu_location_x" -y "$menu_location_y" \
      \
      "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
      "" \

@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.1 2022-03-19
+#   Version: 1.2.2 2022-03-29
 #
 #   Main menu, the one popping up when you hit the trigger
 #
@@ -36,11 +36,13 @@
 #   For any field containing no spaces, quotes are optional.
 #
 
+# shellcheck disable=SC1007
 CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-
 SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
+# shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
+
 
 
 #
@@ -56,15 +58,15 @@ fi
 current_prefix="$(tmux show-option -g prefix | cut -d' ' -f2 | cut -d'-' -f2)"
 
 
-
+# shellcheck disable=SC2154,SC2140
 tmux display-menu \
-     -T "#[align=centre] Advanced options "  \
-     -x $menu_location_x -y $menu_location_y \
+     -T "#[align=centre] Advanced options "      \
+     -x "$menu_location_x" -y "$menu_location_y" \
      \
      "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
      "" \
      "<P> Manage clients"                       D  "run-shell $SCRIPT_DIR/manage_clients.sh" \
-     "    Toggle mouse to: $new_mouse_status"   m  "set-option -g mouse $new_mouse_status"  \
+     "    Toggle mouse to: $new_mouse_status"   m  "set-option -g mouse $new_mouse_status"   \
      "" \
      "<P> Show messages"                       \~  show-messages        \
      "<P> Customize options"                    C  "customize-mode -Z"  \

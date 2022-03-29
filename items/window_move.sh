@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.2 2022-03-19
+#   Version: 1.2.3 2022-03-29
 #
 #   Main menu, the one popping up when you hit the trigger
 #
@@ -36,13 +36,15 @@
 #   For any field containing no spaces, quotes are optional.
 #
 
+# shellcheck disable=SC1007
 CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-
 SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
+# shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
 
 
+# shellcheck disable=SC2154
 tmux display-menu  \
      -T "#[align=centre] Move Window "  \
      -x "$menu_location_x" -y "$menu_location_y"  \
@@ -50,7 +52,7 @@ tmux display-menu  \
      "Back to Main menu"       Home  "run-shell $CURRENT_DIR/main.sh"  \
      "Back to Handling Window"  Left  "run-shell $CURRENT_DIR/windows.sh" \
      "" \
-"    Move window to other location"    m  "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_window.sh M %%\"'" \
+     "    Move window to other location"    m  "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_window.sh M %%\"'" \
      "    Swap window Left"                \<  "swap-window -dt:-1"  \
      "    Swap window Right"               \>  "swap-window -dt:+1"  \
      "" \

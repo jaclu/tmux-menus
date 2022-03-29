@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.3 2022-03-19
+#   Version: 1.2.4 2022-03-29
 #
 #   Main menu, the one popping up when you hit the trigger
 #
@@ -36,16 +36,18 @@
 #   For any field containing no spaces, quotes are optional.
 #
 
+# shellcheck disable=SC1007
 CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-
 SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
+# shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
 
 
+# shellcheck disable=SC2154
 tmux display-menu \
-     -T "#[align=centre] Main menu "          \
-     -x $menu_location_x -y $menu_location_y  \
+     -T "#[align=centre] Main menu "              \
+     -x "$menu_location_x" -y "$menu_location_y"  \
      \
      "    Handling Pane      -->"  P  "run-shell $CURRENT_DIR/panes.sh"       \
      "    Handling Window    -->"  W  "run-shell $CURRENT_DIR/windows.sh"     \
@@ -54,8 +56,8 @@ tmux display-menu \
      "    Split view         -->"  V  "run-shell $CURRENT_DIR/split_view.sh"  \
      "    Advanced Options   -->"  A  "run-shell $CURRENT_DIR/advanced.sh"    \
      "" \
-     "<P> List all key bindings"        \?  "list-keys -N" \
-     "    Reload configuration file" "r" "run-shell 'tmux source-file ~/.tmux.conf; tmux display-message \"Sourced ~/.tmux.conf\"'" \
+     "<P> List all key bindings"        \?  "list-keys -N"  \
+     "    Reload configuration file" "r" "run-shell 'tmux source-file ~/.tmux.conf; tmux display-message \"Sourced ~/.tmux.conf\"'"  \
      "" \
      "    Navigate & select ses/win/pane " ""  ""  \
      "<P> use arrows to navigate & zoom  " s   "choose-tree -Zs"  \

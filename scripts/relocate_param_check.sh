@@ -1,11 +1,13 @@
 #!/bin/sh
+# shellcheck disable=SC2034
+#  Directives for shellcheck directly after bang path are global
 #
 #   Copyright (c) 2022: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.1 2022-02-03
+#   Version: 1.2.2 2022-03-29
 #
 #   Common stuff for relocate_pane.sh & relocate_windows.sh
 #   Validate parameters
