@@ -8,7 +8,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.4 2022-03-29
+#   Version: 1.3.5 2022-03-29
 #
 #  Common stuff
 #
@@ -25,9 +25,7 @@ plugin_name="tmux-menus"
 #  If log_file is empty or undefined, no logging will occur,
 #  so comment it out for normal usage.
 #
-#log_file="/tmp/$tmux-menus.log"  # Trigger LF to separate runs of this script
-
-
+# log_file="/tmp/$plugin_name.log"  # Trigger LF to separate runs of this script
 
 
 #
@@ -37,7 +35,18 @@ log_it() {
     if [ -z "$log_file" ]; then
         return
     fi
-    printf "%s\n" "$@" >> "$log_file"
+    printf "[%s] %s\n" "$(date '+%H:%M:%S')" "$@" >> "$log_file"
+}
+
+
+error_msg() {
+    msg="ERROR: $1"
+    ex_code="$2"
+    [ -z "$ex_code" ] && ex_code=0
+
+    log_it "$msg"
+    tmux display "$plugin_name $msg"
+    exit "$ex_code"
 }
 
 
@@ -68,6 +77,7 @@ bool_param() {
         *)
             log_it "Invalid parameter bool_param($1)"
             tmux display "ERROR: bool_param($1) - should be 0 or 1"
+            ;;
 
     esac
     return 1
