@@ -16,7 +16,7 @@
 CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 
 # shellcheck disable=SC1091
-. utils.sh
+. "$CURRENT_DIR/utils.sh"
 
 
 force_directive="force"
