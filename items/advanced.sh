@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.3 2022-04-03
+#   Version: 1.2.4b1 2022-04-03
 #
 #   Advanced options
 #
@@ -65,7 +65,7 @@ tmux display-menu \
      \
      "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
      "" \
-     "    Manage clients  -->"    C "run-shell \"$CURRENT_DIR/choose_client.sh\""    \
+     "    Manage clients  -->"    M "run-shell \"$CURRENT_DIR/choose_client.sh\""    \
      "" \
      "    Toggle mouse to: $new_mouse_status"   m  "set-option -g mouse $new_mouse_status"   \
      "" \
