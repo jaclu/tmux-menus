@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.4 2022-04-03
+#   Version: 1.2.5b1 2022-04-03
 #
 #   Choose layout
 #
@@ -58,4 +58,4 @@ tmux display-menu  \
      "<P> Tiled"                    M-5  "select-layout tiled"             \
      "<P> Spread panes out evenly."   E  "select-layout -E"                \
      "" \
-     "Help  -->"  h  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/layouts.sh\""
+     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/layouts.sh\""
