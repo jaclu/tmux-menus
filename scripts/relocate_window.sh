@@ -26,18 +26,13 @@ CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 . "$CURRENT_DIR/relocate_param_check.sh"
 
 
-param_check W "$1" "$2"
-
-
 # shellcheck disable=SC2154
 if [ "$cur_ses" = "$dest_ses" ]; then
     #
     #  to same session
     #
-    if [ "$action" = "L" ]; then
-        tmux display "ERROR: Linking to same session is pointless!"
-        exit 0
-    fi
+    # NEEDS TESTING
+    [ "$action" = "L" ] && error_msg "Linking to same session is pointless!" 1
 
     #
     #  Move within the current session

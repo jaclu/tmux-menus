@@ -48,7 +48,7 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 previous_menu="$1"
 
 if [ -z "$previous_menu" ]; then
-    tmux display-message "ERROR: tmux-menus:help was called without notice of what called it"
+    error_msg "help_split.sh was called without notice of what called it"
 fi
 
 

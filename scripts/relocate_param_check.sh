@@ -15,16 +15,15 @@
 
 param_check() {
     item_type="$1"
+    echo ">> param_check($item_type)"
 
     case "$item_type" in
 
         "W" | "P" ) : ;;  # Valid parameters
 
-        "*" )
-            echo "ERROR: First param must be W or P!"
-            echo "       Indicating source is Window or Pane!"
-            exit 1
-            ;;
+        * )
+            # NEEDS TESTING
+            error_msg "param_check($1) First param must be W or P!" 1
 
     esac
 
@@ -33,20 +32,18 @@ param_check() {
 
     case "$action" in
 
-        "M" ) : ;;  # Valid param
+        "M" ) : ;;  # Valid parameters
 
         "L" )
             if [ "$item_type" = "P" ]; then
-                echo "ERROR: Panes can not be linked!"
-                exit 1
+                # NEEDS TESTING
+                error_msg "param_check() Panes can not be linked!" 1
             fi
             ;;
 
-        "*" )
-            echo "ERROR: Second param must be L or M!"
-            echo "       Indicating move or link action"
-            echo "       Only windows can be linked!"
-            exit 1
+        * )
+            # NEEDS TESTING
+            error_msg "param_check($1,$2) 2nd param must be L or M Indicating move or link action" 1
             ;;
 
     esac
@@ -62,8 +59,8 @@ param_check() {
 
 
     if [ -z "$raw_dest" ] ; then
-        echo "ERROR: no destination param given!"
-        exit 1
+        # NEEDS TESTING
+        error_msg "param_check() - no destination param (\$3) given!" 1
     fi
 
 

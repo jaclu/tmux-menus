@@ -39,14 +39,17 @@ log_it() {
 }
 
 
+#
+#  Display $1 as an error message in log and as a tmux display-message
+#  If no $2 or set to 0, process is not exited
+#
 error_msg() {
     msg="ERROR: $1"
-    ex_code="$2"
-    [ -z "$ex_code" ] && ex_code=0
+    exit_code="${2:-0}"
 
     log_it "$msg"
-    tmux display "$plugin_name $msg"
-    exit "$ex_code"
+    tmux display-message "$plugin_name $msg"
+    [ "$exit_code" -ne 0 ] && exit "$exit_code"
 }
 
 
@@ -76,7 +79,7 @@ bool_param() {
 
         *)
             log_it "Invalid parameter bool_param($1)"
-            tmux display "ERROR: bool_param($1) - should be 0 or 1"
+            error_msg "bool_param($1) - should be 0 or 1"
             ;;
 
     esac
