@@ -53,7 +53,7 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 #  this notion of prev / next just makes more sense to me.
 #
 tmux display-menu  \
-     -T "#[align=centre] Sessions "  \
+     -T "#[align=centre] Handling Sessions "  \
      -x "$menu_location_x" -y "$menu_location_y" \
      \
      "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
