@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.5b1 2022-04-03
+#   Version: 1.2.5b2 2022-04-03
 #
 #   Move Window
 #
@@ -58,7 +58,7 @@ tmux display-menu  \
      "    Swap window Left"                \<  "swap-window -dt:-1"  \
      "    Swap window Right"               \>  "swap-window -dt:+1"  \
      "" \
-     "    Link window to other session"     l  "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_window.sh L %%\"'" \
+     "    Link window to other session"     l  "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_window.sh W L %%\"'" \
      "    Unlink window from this session"  u  "unlink-window" \
      "#{?pane_marked_set,,-}    Swap current window with window" "" ""  \
      "#{?pane_marked_set,,-}    containing marked pane         "  w  swap-window  \
