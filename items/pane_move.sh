@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.4 2022-04-03
+#   Version: 1.2.5 2022-04-03
 #
 #   Move a pane
 #
@@ -58,4 +58,4 @@ tmux display-menu  \
      "<P> Swap pane with next"        \}  "swap-pane -D" \
      "<P> Move pane to a new window"   !  break-pane \
      "" \
-     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/panes.sh\""
+     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/pane_move.sh\""

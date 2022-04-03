@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.3 2022-04-03
+#   Version: 1.2.4 2022-04-03
 #
 #   Resize a pane
 #
@@ -64,4 +64,4 @@ tmux display-menu  \
      "<P> left  by 1"  C-Left "resize-pane -L"    \
      "<P> right by 1"  C-Left "resize-pane -R"    \
      "" \
-     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/panes.sh\""
+     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/pane_resize.sh\""
