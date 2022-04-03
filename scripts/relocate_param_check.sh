@@ -7,7 +7,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.3b1 2022-04-03
+#   Version: 1.2.3 2022-04-03
 #
 #   Common stuff for relocate_pane.sh & relocate_windows.sh
 #   Validate parameters

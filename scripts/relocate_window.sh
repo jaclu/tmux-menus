@@ -8,7 +8,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.4b3 2022-04-03
+#   Version: 1.2.4 2022-04-03
 #
 #   Moving current window within same session or to other session.
 #

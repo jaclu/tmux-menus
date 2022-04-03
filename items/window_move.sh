@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.5b2 2022-04-03
+#   Version: 1.2.5 2022-04-03
 #
 #   Move Window
 #
