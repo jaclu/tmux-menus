@@ -7,7 +7,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.2 2022-03-29
+#   Version: 1.2.3b1 2022-04-03
 #
 #   Common stuff for relocate_pane.sh & relocate_windows.sh
 #   Validate parameters
@@ -15,7 +15,6 @@
 
 param_check() {
     item_type="$1"
-    echo ">> param_check($item_type)"
 
     case "$item_type" in
 
@@ -64,12 +63,14 @@ param_check() {
     fi
 
 
+    cur_ses="$(tmux display -p '#S')"
     dest="${raw_dest#*=}"  # skipping initial =
-    dest_ses="${dest%%:*}" # up to first colon excluding it
     win_pane="${dest#*:}"  # after first colon
+    dest_ses="${dest%%:*}" # up to first colon excluding it
 
 
     dest_win_idx="${win_pane%%.*}"   # up to first dot excluding it
     dest_pane_idx="${win_pane#*.}"
-    cur_ses="$(tmux display -p '#S')"
+
+    log_it "param_check($*) - item_type [$item_type] action [$action] cur_ses [$cur_ses] dest [$dest] win_pane [$win_pane] dest_ses [$dest_ses] dest_win_idx [$dest_win_idx] dest_pane_idx [$dest_pane_idx]"
 }

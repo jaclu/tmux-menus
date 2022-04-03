@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.4 2022-04-03
+#   Version: 1.2.5b1 2022-04-03
 #
 #   Move Window
 #
@@ -54,7 +54,7 @@ tmux display-menu  \
      "Back to Main menu"       Home  "run-shell $CURRENT_DIR/main.sh"  \
      "Back to Handling Window"  Left  "run-shell $CURRENT_DIR/windows.sh" \
      "" \
-     "    Move window to other location"    m  "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_window.sh M %%\"'" \
+     "    Move window to other location"    m  "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_window.sh W M %%\"'" \
      "    Swap window Left"                \<  "swap-window -dt:-1"  \
      "    Swap window Right"               \>  "swap-window -dt:+1"  \
      "" \
