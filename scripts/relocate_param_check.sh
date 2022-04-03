@@ -7,7 +7,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.2 2022-03-29
+#   Version: 1.2.3 2022-04-03
 #
 #   Common stuff for relocate_pane.sh & relocate_windows.sh
 #   Validate parameters
@@ -20,11 +20,9 @@ param_check() {
 
         "W" | "P" ) : ;;  # Valid parameters
 
-        "*" )
-            echo "ERROR: First param must be W or P!"
-            echo "       Indicating source is Window or Pane!"
-            exit 1
-            ;;
+        * )
+            # NEEDS TESTING
+            error_msg "param_check($1) First param must be W or P!" 1
 
     esac
 
@@ -33,20 +31,18 @@ param_check() {
 
     case "$action" in
 
-        "M" ) : ;;  # Valid param
+        "M" ) : ;;  # Valid parameters
 
         "L" )
             if [ "$item_type" = "P" ]; then
-                echo "ERROR: Panes can not be linked!"
-                exit 1
+                # NEEDS TESTING
+                error_msg "param_check() Panes can not be linked!" 1
             fi
             ;;
 
-        "*" )
-            echo "ERROR: Second param must be L or M!"
-            echo "       Indicating move or link action"
-            echo "       Only windows can be linked!"
-            exit 1
+        * )
+            # NEEDS TESTING
+            error_msg "param_check($1,$2) 2nd param must be L or M Indicating move or link action" 1
             ;;
 
     esac
@@ -62,17 +58,19 @@ param_check() {
 
 
     if [ -z "$raw_dest" ] ; then
-        echo "ERROR: no destination param given!"
-        exit 1
+        # NEEDS TESTING
+        error_msg "param_check() - no destination param (\$3) given!" 1
     fi
 
 
+    cur_ses="$(tmux display -p '#S')"
     dest="${raw_dest#*=}"  # skipping initial =
-    dest_ses="${dest%%:*}" # up to first colon excluding it
     win_pane="${dest#*:}"  # after first colon
+    dest_ses="${dest%%:*}" # up to first colon excluding it
 
 
     dest_win_idx="${win_pane%%.*}"   # up to first dot excluding it
     dest_pane_idx="${win_pane#*.}"
-    cur_ses="$(tmux display -p '#S')"
+
+    log_it "param_check($*) - item_type [$item_type] action [$action] cur_ses [$cur_ses] dest [$dest] win_pane [$win_pane] dest_ses [$dest_ses] dest_win_idx [$dest_win_idx] dest_pane_idx [$dest_pane_idx]"
 }

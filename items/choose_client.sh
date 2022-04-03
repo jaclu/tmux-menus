@@ -5,9 +5,9 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.5 2022-04-03
+#   Version: 1.0.0 2022-04-03
 #
-#   Move a pane
+#   Modify Clients
 #
 #   Types of menu item lines.
 #
@@ -46,16 +46,32 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
 # shellcheck disable=SC2154
 tmux display-menu  \
-     -T "#[align=centre] Move Pane "  \
+     -T "#[align=centre] Choose Client "  \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
      "Back to Main menu"      Home  "run-shell $CURRENT_DIR/main.sh"  \
-     "Back to Handling Pane"  Left  "run-shell $CURRENT_DIR/panes.sh" \
+     "Back to Advanced options"  Left  "run-shell $CURRENT_DIR/advanced.sh" \
      "" \
-     "    Move to other window or session"  m  "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_pane.sh M %%\"'" \
-     "#{?pane_marked_set,,-}    Swap current pane with marked"  s  swap-pane  \
-     "<P> Swap pane with prev"        \{  "swap-pane -U" \
-     "<P> Swap pane with next"        \}  "swap-pane -D" \
-     "<P> Move pane to a new window"   !  break-pane \
+     "       ========  Commands  ========"       "" "" \
+     "    Enter Choose selected client"          "" "" \
+     "    Up    Select previous client"          "" "" \
+     "    Down  Select next client"              "" "" \
+     "    C-s   Search by name"                  "" "" \
+     "    n     Repeat last search"              "" "" \
+     "    t     Toggle if client is tagged"      "" "" \
+     "    T     Tag no clients".                 "" "" \
+     "    C-t   Tag all clients"                 "" "" \
+     "    d     Detach selected client"          "" "" \
+     "    D     Detach tagged clients"           "" "" \
+     "    x     Detach and HUP selected client"  "" "" \
+     "    X     Detach and HUP tagged clients"   "" "" \
+     "    z     Suspend selected client"         "" "" \
+     "    Z     Suspend tagged clients"          "" "" \
+     "    f     Enter a format to filter items"  "" "" \
+     "    O     Change sort field"               "" "" \
+     "    r     Reverse sort order"              "" "" \
+     "    v     Toggle preview"                  "" "" \
+     "    q     Exit mode"                       "" "" \
+     "<P>"  D  "choose-client -Z"  \
      "" \
-     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/pane_move.sh\""
+     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/choose_client.sh\""

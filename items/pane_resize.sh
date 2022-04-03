@@ -5,9 +5,9 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.2 2022-03-29
+#   Version: 1.2.4 2022-04-03
 #
-#   Main menu, the one popping up when you hit the trigger
+#   Resize a pane
 #
 #   Types of menu item lines.
 #
@@ -64,4 +64,4 @@ tmux display-menu  \
      "<P> left  by 1"  C-Left "resize-pane -L"    \
      "<P> right by 1"  C-Left "resize-pane -R"    \
      "" \
-     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/panes.sh\""
+     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/pane_resize.sh\""

@@ -5,11 +5,9 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.5 2022-04-03
+#   Version: 1.0.0 2022-04-03
 #
-#   Move Window
-#
-#   Main menu, the one popping up when you hit the trigger
+#   Select and modify paste buffers
 #
 #   Types of menu item lines.
 #
@@ -48,19 +46,31 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
 # shellcheck disable=SC2154
 tmux display-menu  \
-     -T "#[align=centre] Move Window "  \
+     -T "#[align=centre] Paste buffers "  \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Back to Main menu"       Home  "run-shell $CURRENT_DIR/main.sh"  \
-     "Back to Handling Window"  Left  "run-shell $CURRENT_DIR/windows.sh" \
+     "Back to Main menu"      Home  "run-shell $CURRENT_DIR/main.sh"  \
+     "Back to Handling Pane"  Left  "run-shell $CURRENT_DIR/panes.sh" \
      "" \
-     "    Move window to other location"    m  "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_window.sh W M %%\"'" \
-     "    Swap window Left"                \<  "swap-window -dt:-1"  \
-     "    Swap window Right"               \>  "swap-window -dt:+1"  \
+     "     ========  Commands  ========"        "" "" \
+     "    Enter Paste selected buffer"           "" "" \
+     "    Up    Select previous buffer"          "" "" \
+     "    Down  Select next buffer"              "" "" \
+     "    C-s   Search by name or content"       "" "" \
+     "    n     Repeat last search"              "" "" \
+     "    t     Toggle if buffer is tagged"      "" "" \
+     "    T     Tag no buffers"                  "" "" \
+     "    C-t   Tag all buffers"                 "" "" \
+     "    p     Paste selected buffer"           "" "" \
+     "    P     Paste tagged buffers"            "" "" \
+     "    d     Delete selected buffer"          "" "" \
+     "    D     Delete tagged buffers"           "" "" \
+     "    e     Open the buffer in an editor"    "" "" \
+     "    f     Enter a format to filter items"  "" "" \
+     "    O     Change sort field"               "" "" \
+     "    r     Reverse sort order"              "" "" \
+     "    v     Toggle preview"                  "" "" \
+     "    q     Exit mode"                       "" "" \
+     "<P>"  =  "choose-buffer -Z"  \
      "" \
-     "    Link window to other session"     l  "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_window.sh W L %%\"'" \
-     "    Unlink window from this session"  u  "unlink-window" \
-     "#{?pane_marked_set,,-}    Swap current window with window" "" ""  \
-     "#{?pane_marked_set,,-}    containing marked pane         "  w  swap-window  \
-     "" \
-     "Help, explaining move & link  -->"         H  "run-shell \"$CURRENT_DIR/help_window_move.sh\""
+     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/pane_buffers.sh\""

@@ -5,9 +5,9 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.5 2022-03-29
+#   Version: 1.2.6 2022-04-03
 #
-#   Main menu, the one popping up when you hit the trigger
+#   Handling pane
 #
 #   Types of menu item lines.
 #
@@ -51,8 +51,9 @@ tmux display-menu  \
      \
      "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
      "" \
-     "    Move pane  -->" M "run-shell \"$CURRENT_DIR/pane_move.sh\"" \
-     "    Resize pane  -->" R "run-shell \"$CURRENT_DIR/pane_resize.sh\"" \
+     "    Move pane  -->"    M "run-shell \"$CURRENT_DIR/pane_move.sh\""    \
+     "    Resize pane  -->"  R "run-shell \"$CURRENT_DIR/pane_resize.sh\""  \
+     "    Paste buffers -->" B "run-shell \"$CURRENT_DIR/pane_buffers.sh\"" \
      "" \
      "    Rename pane"                 r  "command-prompt -I \"#T\"  -p \"New pane name: \"  \"select-pane -T '%%'\""  \
      "<P> Zoom pane toggle"            z  "resize-pane -Z" \
@@ -60,10 +61,7 @@ tmux display-menu  \
      "<P> Copy mode (~scrollback)" \[ "copy-mode" \
      "    Display pane size" s "display-message \"Pane: #P size: #{pane_width}x#{pane_height}\"" \
      "" \
-     "    Choose a tmux paste buffer" "" ""                   \
-     "<P> (Enter pastes Esq aborts) "  =  "choose-buffer -Z"  \
-     "" \
-     "    #{?pane_synchronized,Disable,Activate} synchronized panes"  S  "set -w synchronize-panes"  \
+     "    #{?pane_synchronized,Disable,Activate} synchronized panes"  y  "set -w synchronize-panes"  \
      "    Save pane history to file"   h  "command-prompt -p 'Save current-pane history to filename:' -I '~/tmux.history' 'capture-pane -S - -E - ; save-buffer %1 ; delete-buffer'" \
      "" \
      "    Respawn current pane"        p  "confirm-before -p \"respawn-pane #P? (y/n)\" \"respawn-pane -k\"" \
