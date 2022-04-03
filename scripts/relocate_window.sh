@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.4b1 2022-04-03
+#   Version: 1.2.4b2 2022-04-03
 #
 #   Moving current window within same session or to other session.
 #
@@ -46,7 +46,7 @@ else
     #  tmux move only works in same session, so we use link & unlink for
     #  moving to another session
     #
-    tmux link-window -b -t "$raw_dest" # Create a link to this at destination
+    tmux link-window -b -t "$dest_ses:$dest_win_idx" # Create a link to this at destination
     if [ "$action" != "L" ]; then
         #
         # Unlink window at current location, ie get rid of original instance
