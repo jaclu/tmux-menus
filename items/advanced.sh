@@ -65,7 +65,8 @@ tmux display-menu \
      \
      "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
      "" \
-     "<P> Manage clients"                       D  "run-shell $SCRIPT_DIR/manage_clients.sh" \
+     "    Manage clients  -->"    C "run-shell \"$CURRENT_DIR/choose_client.sh\""    \
+     "" \
      "    Toggle mouse to: $new_mouse_status"   m  "set-option -g mouse $new_mouse_status"   \
      "" \
      "<P> Show messages"                       \~  show-messages        \
