@@ -1,11 +1,14 @@
 #!/bin/sh
+# shellcheck disable=SC2154
+#  Directives for shellcheck directly after bang path are global
+
 #
 #   Copyright (c) 2022: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.4b2 2022-04-03
+#   Version: 1.2.4b3 2022-04-03
 #
 #   Moving current window within same session or to other session.
 #
@@ -25,7 +28,7 @@ CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 # shellcheck disable=SC1091
 . "$CURRENT_DIR/relocate_param_check.sh"
 
-param_check $@
+param_check "$@"
 
 log_it "relocate_window.sh - action [$action] raw_dest [$raw_dest] cur_ses [$cur_ses] dest_ses [$dest_ses] dest_win_idx [$dest_win_idx]"
 
@@ -35,7 +38,7 @@ if [ "$cur_ses" = "$dest_ses" ]; then
     #  to same session
     #
     # NEEDS TESTING
-    [ "$action" = "L" ] && error_msg "Linking to same session is pointless!" 1
+    [ "$action" = "L" ] && error_msg "Linking to same session is pointless!"
 
     #
     #  Move within the current session
