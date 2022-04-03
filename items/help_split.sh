@@ -5,9 +5,9 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.3 2022-03-29
+#   Version: 1.2.4 2022-04-03
 #
-#   Main menu, the one popping up when you hit the trigger
+#   Help about splitting the view
 #
 #   Types of menu item lines.
 #
