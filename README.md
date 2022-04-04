@@ -52,7 +52,7 @@ Hit `prefix + I` to fetch the plugin and source it. That's it!
 
 Clone the repository:
 
-    $ git clone https://github.com/jaclu/tmux-menus.git ~/clone/path
+    $ git clone https://github.com/jaclu/tmux-menus ~/clone/path
 
 Add this line to the bottom of `.tmux.conf`:
 
@@ -132,8 +132,6 @@ In utils I have a function log_it. And a variable log_file. If log_file is defin
 ```
 log_it "foo is now [$foo]"
 ```
-
-This can be left in the code once you're done debugging for later usage. Without log_file being set nothing will printed.
 
 If you are triggering a menu from the command line, you can use direct echo, but then you need to remove them before deploying, since tmux will see any script output as an potential error and display it in a scroll back buffer.
 
