@@ -83,7 +83,7 @@ bool_param() {
             ;;
 
     esac
-    return 1
+    return 1 # default to false
 }
 
 
