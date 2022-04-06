@@ -11,10 +11,11 @@ Simple to modify to fit your needs. I have included several items that some migh
 
 ## Purpose
 
-There are some very basic popups per default<br>
+There are some very basic popups per default (See *Configuration* on how to disable them)
 
 -   `<prefix> <` displays some windows handling options
 -   `<prefix> >` displays some pane handling options
+-   Right clicking on pane, status or status left.
 
 I find them rather lacking and since they are written as hard to read one-liners, I preferred a more integrated approach with navigation and simple adaptability, also covering more than just panes and windows.
 
@@ -80,6 +81,15 @@ set -g @menus_without_prefix 1
 ```
 
 This param can be either 0 (the default) or 1
+
+To disable the fairly limited default popup menus, add the following
+```
+unbind-key -n MouseDown3Pane
+unbind-key -n MouseDown3Status
+unbind-key -n MouseDown3StatusLeft
+unbind-key <
+unbind-key >
+```
 
 ### Menu location
 
