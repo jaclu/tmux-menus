@@ -33,7 +33,7 @@ Default is `<prefix> \` see Configuration below for how to change it.
 ## Screenshots
 
 ![main](https://user-images.githubusercontent.com/5046648/160180597-408cc73e-1495-48ef-87f6-9890aebf7209.png)
-![Pane](https://user-images.githubusercontent.com/5046648/161430735-9e1b4f35-04c9-4ca6-ac87-e0514ef5a5eb.png)
+![Pane](https://user-images.githubusercontent.com/5046648/162336772-2ea33840-dd02-4119-acf6-555fe87c6304.png)
 ![Window](https://user-images.githubusercontent.com/5046648/160181041-d9e7be3f-8d47-46c1-972c-df3e2b325682.png)
 ![Session](https://user-images.githubusercontent.com/5046648/160181163-7917147d-89e7-4d75-945d-e2e7ef59b71d.png)
 ![Advanced](https://user-images.githubusercontent.com/5046648/162164528-9cd1d1db-cdf9-4681-9cad-67b581e681a8.png)
