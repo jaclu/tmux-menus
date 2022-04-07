@@ -36,7 +36,7 @@ Default is `<prefix> \` see Configuration below for how to change it.
 ![Pane](https://user-images.githubusercontent.com/5046648/161430735-9e1b4f35-04c9-4ca6-ac87-e0514ef5a5eb.png)
 ![Window](https://user-images.githubusercontent.com/5046648/160181041-d9e7be3f-8d47-46c1-972c-df3e2b325682.png)
 ![Session](https://user-images.githubusercontent.com/5046648/160181163-7917147d-89e7-4d75-945d-e2e7ef59b71d.png)
-![Advanced](https://user-images.githubusercontent.com/5046648/161430652-c9082ad3-8ed8-43f2-9a23-b81953a21af4.png)
+![Advanced](https://user-images.githubusercontent.com/5046648/162164528-9cd1d1db-cdf9-4681-9cad-67b581e681a8.png)
 ![Help Summary](https://user-images.githubusercontent.com/5046648/160181272-26f4249f-6424-4ed2-9509-89e5dca7234f.png)
 
 ## Install
