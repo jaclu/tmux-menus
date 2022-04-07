@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.6 2022-04-03
+#   Version: 1.2.7 2022-04-08
 #
 #   Handling pane
 #
@@ -55,7 +55,7 @@ tmux display-menu  \
      "    Resize pane  -->"  R "run-shell \"$CURRENT_DIR/pane_resize.sh\""  \
      "    Paste buffers -->" B "run-shell \"$CURRENT_DIR/pane_buffers.sh\"" \
      "" \
-     "    Rename pane"                 r  "command-prompt -I \"#T\"  -p \"New pane name: \"  \"select-pane -T '%%'\""  \
+     "    Set Title"                t  "command-prompt -I \"#T\"  -p \"Title: \"  \"select-pane -T '%%'\""  \
      "<P> Zoom pane toggle"            z  "resize-pane -Z" \
      "<P> Display pane numbers"        q  display-panes \
      "<P> Copy mode (~scrollback)" \[ "copy-mode" \
@@ -64,7 +64,7 @@ tmux display-menu  \
      "    #{?pane_synchronized,Disable,Activate} synchronized panes"  y  "set -w synchronize-panes"  \
      "    Save pane history to file"   h  "command-prompt -p 'Save current-pane history to filename:' -I '~/tmux.history' 'capture-pane -S - -E - ; save-buffer %1 ; delete-buffer'" \
      "" \
-     "    Respawn current pane"        p  "confirm-before -p \"respawn-pane #P? (y/n)\" \"respawn-pane -k\"" \
+     "    Respawn current pane"        r  "confirm-before -p \"respawn-pane #P? (y/n)\" \"respawn-pane -k\"" \
      "<P> Kill current pane"           x  "confirm-before -p \"kill-pane #P? (y/n)\" kill-pane"      \
      "    Kill all other panes"        o  "confirm-before -p \"Are you sure you want to kill all other panes? (y/n)\" \"kill-pane -a\""      \
      "" \
