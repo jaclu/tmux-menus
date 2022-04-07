@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.4 2022-04-03
+#   Version: 1.2.5 2022-04-07
 #
 #   Advanced options
 #
@@ -67,12 +67,12 @@ tmux display-menu \
      "" \
      "    Manage clients  -->"    M "run-shell \"$CURRENT_DIR/choose_client.sh\""    \
      "" \
-     "    Toggle mouse to: $new_mouse_status"   m  "set-option -g mouse $new_mouse_status"   \
-     "" \
      "<P> Show messages"                       \~  show-messages        \
      "<P> Customize options"                    C  "customize-mode -Z"  \
      "<P> Describe (prefix) key binding"        /  "command-prompt -k -p key \"list-keys -1N \\"%%%\\"\""  \
      "<P> Prompt for a command"                 :  command-prompt  \
+     "" \
+     "    Toggle mouse to: $new_mouse_status"   m  "set-option -g mouse $new_mouse_status"   \
      "    Change prefix <$current_prefix>"      p  "command-prompt -1 -p prefix 'run \"$SCRIPT_DIR/change_prefix.sh %%\"'"  \
      "" \
      "Kill server - all your sessions" "" ""  \
