@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.5 2022-04-08
+#   Version: 1.2.4 2022-03-29
 #
 #   Main menu, the one popping up when you hit the trigger
 #
@@ -59,9 +59,6 @@ tmux display-menu \
      "<P> List all key bindings"        \?  "list-keys -N"  \
      "    Reload configuration file" "r" "run-shell 'tmux source-file ~/.tmux.conf; tmux display-message \"Sourced ~/.tmux.conf\"'"  \
      "" \
-     "    Search in all sessions and" "" "" \
-     "    windows, ignores case," "" "" \
-     "<P> only visible part"     f  "command-prompt -p \"Search for:\" \"find-window -CNTiZ -- '%%'\"" \
      "    Navigate & select ses/win/pane " ""  ""  \
      "<P> use arrows to navigate & zoom  " s   "choose-tree -Zs"  \
      "" \
