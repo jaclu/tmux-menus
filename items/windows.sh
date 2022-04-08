@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.5 2022-04-03
+#   Version: 1.2.6 2022-04-08
 #
 #   Handling Window
 #
@@ -62,8 +62,6 @@ tmux display-menu  \
      "<P> Last selected window"        l  "last-window" \
      "<P> Previous window (in order)"  p  "previous-window" \
      "<P> Next     window (in order)"  n  "next-window" \
-     "" \
-     "<P> Search in all panes"     f  "command-prompt -p \"Search in all panes:\" \"find-window -Z -- '%%'\"" \
      "" \
      "<P> Kill current window"    \&  "confirm-before -p \"kill-window #W? (y/n)\" kill-window"  \
      "    Kill all other windows"  o  "confirm-before -p \"Are you sure you want to kill all other windows? (y/n)\" \"run \"${SCRIPT_DIR}/kill_other_windows.sh\" \" "  \
