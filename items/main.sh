@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.5 2022-04-08
+#   Version: 1.2.6 2022-04-08
 #
 #   Main menu, the one popping up when you hit the trigger
 #
@@ -61,9 +61,10 @@ tmux display-menu \
      "" \
      "    Search in all sessions and" "" "" \
      "    windows, ignores case," "" "" \
-     "<P> only visible part"     f  "command-prompt -p \"Search for:\" \"find-window -CNTiZ -- '%%'\"" \
+     "    only visible part"     s  "command-prompt -p \"Search for:\" \"find-window -CNTiZ -- '%%'\"" \
+     "" \
      "    Navigate & select ses/win/pane " ""  ""  \
-     "<P> use arrows to navigate & zoom  " s   "choose-tree -Zs"  \
+     "<P> use arrows to navigate & zoom  " n   "choose-tree -Zs"  \
      "" \
      "    (Used by Pane and Windows menu)"  "" ""  \
      "<P> #{?pane_marked,Unmark,Mark} current pane" m  "select-pane -m"  \
