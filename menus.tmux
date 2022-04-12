@@ -5,15 +5,17 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.7 2022-03-29
+#   Version: 1.2.8 2022-04-12
 #
 
 
+# shellcheck disable=SC1007
 CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 
 MENUS_DIR="$CURRENT_DIR/items"
 SCRIPTS_DIR="$CURRENT_DIR/scripts"
 
+# shellcheck disable=SC1091
 . "$SCRIPTS_DIR/utils.sh"
 
 
@@ -58,6 +60,7 @@ log_it "use_notes=[$use_notes]"
 
 if [ "$without_prefix" -eq 1 ]; then
     if [ "$use_notes" -eq 1 ]; then
+	# shellcheck disable=SC2154
         tmux bind -N "$plugin_name" -n "$trigger_key" run-shell "$MENUS_DIR"/main.sh
     else
         tmux bind -n "$trigger_key" run-shell "$MENUS_DIR"/main.sh
