@@ -1,5 +1,5 @@
 #!/bin/sh
-# shellcheck disable=SC2154
+#  shellcheck disable=SC2154
 #  Directives for shellcheck directly after bang path are global
 #
 #   Copyright (c) 2022: Jacob.Lundqvist@gmail.com
@@ -21,8 +21,7 @@ CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 # shellcheck disable=SC1091
 . "$CURRENT_DIR/relocate_param_check.sh"
 
-
-param_check P "$1" "$2"
+param_check "$@"
 
 
 tmux move-pane -t "${dest_ses}:${dest_win_idx}.${dest_pane_idx}"
