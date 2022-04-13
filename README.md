@@ -53,13 +53,13 @@ Hit `prefix + I` to fetch the plugin and source it. That's it!
 
 Clone the repository:
 
-    $ git clone https://github.com/jaclu/tmux-menus ~/clone/path
+    $ git clone https://github.com/jaclu/tmux-menus.git ~/clone/path
 
 Add this line to the bottom of `.tmux.conf`:
 
     run-shell ~/clone/path/menus.tmux
 
-Reload TMUX environment with `$ tmux source-file ~/.tmux.conf`, and that's it.
+Reload TMUX environment with `$ tmux source-file ~/.tmux.conf` - that's it!
 
 ## Configuration
 
@@ -68,7 +68,7 @@ Reload TMUX environment with `$ tmux source-file ~/.tmux.conf`, and that's it.
 The default trigger is `<prefix> \`. Trigger is selected like this:
 
 ```
-set -g @menus_trigger 'x'
+set -g @menus_trigger 'F9'
 ```
 
 Please note that special keys, like the default backslash needs to be noted in a specific way in order not to confuse tmux.
