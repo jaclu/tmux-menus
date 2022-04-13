@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.6 2022-04-08
+#   Version: 1.2.7 2022-04-13
 #
 #   Move a pane
 #
@@ -52,7 +52,7 @@ tmux display-menu  \
      "Back to Main menu"      Home  "run-shell $CURRENT_DIR/main.sh"  \
      "Back to Handling Pane"  Left  "run-shell $CURRENT_DIR/panes.sh" \
      "" \
-     "    Move to other window or session"  m  "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_pane.sh M %%\"'" \
+     "    Move to other window or session"  m  "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_pane.sh  P M %%\"'" \
      "#{?pane_marked_set,,-}    Swap current pane with marked"  s  swap-pane  \
      "<P> Swap pane with prev"        \{  "swap-pane -U" \
      "<P> Swap pane with next"        \}  "swap-pane -D" \
