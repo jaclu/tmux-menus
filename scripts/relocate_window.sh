@@ -8,7 +8,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.4 2022-04-03
+#   Version: 1.2.5 2022-04-13
 #
 #   Moving current window within same session or to other session.
 #
@@ -30,7 +30,6 @@ CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 
 param_check "$@"
 
-log_it "relocate_window.sh - action [$action] raw_dest [$raw_dest] cur_ses [$cur_ses] dest_ses [$dest_ses] dest_win_idx [$dest_win_idx]"
 
 # shellcheck disable=SC2154
 if [ "$cur_ses" = "$dest_ses" ]; then
