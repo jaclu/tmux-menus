@@ -5,7 +5,7 @@
 #
 #  Part of https://github.com/jaclu/tmux-menus
 #
-#  Version: 1.0.2 2022-04-14
+#  Version: 1.0.3  2022-04-14
 #
 #  Does shellcheck on all relevant scripts in this project
 #
