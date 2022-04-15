@@ -8,7 +8,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.7 2022-04-07
+#   Version: 1.3.8 2022-04-15
 #
 #  Common stuff
 #
@@ -67,13 +67,13 @@ bool_param() {
 
         "yes" | "Yes" | "YES" | "true" | "True" | "TRUE" )
             #  Be a nice guy and accept some common positives
-            log_it "Converted incorrect positive [$1] to 1"
+            log_it "Converted incorrect positive [$1] to 0"
             return 0
             ;;
 
         "no" | "No" | "NO" | "false" | "False" | "FALSE" )
             #  Be a nice guy and accept some common negatives
-            log_it "Converted incorrect negative [$1] to 0"
+            log_it "Converted incorrect negative [$1] to 1"
             return 1
             ;;
 
@@ -83,7 +83,7 @@ bool_param() {
             ;;
 
     esac
-    return 1 # default to false
+    return 1 # default to False
 }
 
 
