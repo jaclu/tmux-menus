@@ -6,8 +6,9 @@ Simple to modify to fit your needs. I have included several items that some migh
 
 #### Recent changes
 
+-   Repeatable actions keeps menu open - example: Next window
 -   New menus: Pane - Paste buffers, Advanced - Manage clients
--   Pane - Respawn curent pane
+-   Pane - Respawn current pane
 
 ## Purpose
 
