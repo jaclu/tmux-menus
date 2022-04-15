@@ -6,6 +6,7 @@ Simple to modify to fit your needs. I have included several items that some migh
 
 #### Recent changes
 
+-   Windows - Move to next/prev with an alert
 -   Repeatable actions keeps menu open - example: Next window
 -   New menus: Pane - Paste buffers, Advanced - Manage clients
 -   Pane - Respawn current pane
@@ -32,10 +33,9 @@ Once installed, hit the trigger to get the main menu to popup.
 Default is `<prefix> \` see Configuration below for how to change it.
 
 ## Screenshots
-
 ![main](https://user-images.githubusercontent.com/5046648/162342967-c623317e-4865-4957-b80d-828e33e6daa5.png)
 ![Pane](https://user-images.githubusercontent.com/5046648/162336772-2ea33840-dd02-4119-acf6-555fe87c6304.png)
-![Window](https://user-images.githubusercontent.com/5046648/162340267-77693df3-0c03-4bbf-8b28-61fef050d5e8.png)
+![Window](https://user-images.githubusercontent.com/5046648/163653392-1e870761-2e49-4764-b133-8122d41e9a8d.png)
 ![Session](https://user-images.githubusercontent.com/5046648/160181163-7917147d-89e7-4d75-945d-e2e7ef59b71d.png)
 ![Advanced](https://user-images.githubusercontent.com/5046648/162164528-9cd1d1db-cdf9-4681-9cad-67b581e681a8.png)
 ![Help Summary](https://user-images.githubusercontent.com/5046648/160181272-26f4249f-6424-4ed2-9509-89e5dca7234f.png)
