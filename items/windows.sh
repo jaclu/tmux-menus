@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.6 2022-04-08
+#   Version: 1.2.7 2022-04-16
 #
 #   Handling Window
 #
@@ -59,9 +59,12 @@ tmux display-menu  \
      "<P> New window at the end"     c  "command-prompt -p \"Name of new window: \" \"new-window -n '%%'"     \
      "    Display Window size"       s  "display-message \"Window size: #{window_width}x#{window_height}\""           \
      "" \
-     "<P> Last selected window"        l  "last-window" \
-     "<P> Previous window (in order)"  p  "previous-window" \
-     "<P> Next     window (in order)"  n  "next-window" \
+     "<P> Last selected window"        l  "last-window ; run-shell \"$CURRENT_DIR/windows.sh\"" \
+     "<P> Previous window (in order)"  p  "previous-window ; run-shell \"$CURRENT_DIR/windows.sh\"" \
+     "<P> Next     window (in order)"  n  "next-window ; run-shell \"$CURRENT_DIR/windows.sh\"" \
+     "" \
+     "<P> previous window with an alert" M-p "previous-window -a ; run-shell \"$CURRENT_DIR/windows.sh\"" \
+     "<P> next window with an alert" M-n "next-window -a ; run-shell \"$CURRENT_DIR/windows.sh\"" \
      "" \
      "<P> Kill current window"    \&  "confirm-before -p \"kill-window #W? (y/n)\" kill-window"  \
      "    Kill all other windows"  o  "confirm-before -p \"Are you sure you want to kill all other windows? (y/n)\" \"run \"${SCRIPT_DIR}/kill_other_windows.sh\" \" "  \

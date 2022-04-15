@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.7 2022-04-08
+#   Version: 1.2.8 2022-04-16
 #
 #   Main menu, the one popping up when you hit the trigger
 #
@@ -67,7 +67,7 @@ tmux display-menu \
      "    use arrows to navigate & zoom  " n   "choose-tree -Z"  \
      "" \
      "    (Used by Pane and Windows menu)"  "" ""  \
-     "<P> #{?pane_marked,Unmark,Mark} current pane" m  "select-pane -m"  \
+     "<P> #{?pane_marked,Unmark,Mark} current pane" m  "select-pane -m ; run-shell \"$CURRENT_DIR/main.sh\""  \
      "" \
      "<P> Detach from tmux"  d  detach-client      \
      "" \

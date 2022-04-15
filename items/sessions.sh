@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.5 2022-04-03
+#   Version: 1.2.6 2022-04-16
 #
 #   Handling Sessions
 #
@@ -61,9 +61,9 @@ tmux display-menu  \
      "<P> Rename this session" \$  "command-prompt -I \"#S\" \"rename-session -- '%%'\""  \
      "    New session"          n  "command-prompt -p \"Name of new session: \" \"new-session -s '%%'\""  \
      "" \
-     "<P> Last selected session"         L  "switch-client -l" \
-     "<P> Previous session (in order)"  \(  "switch-client -p" \
-     "<P> Next     session (in order)"  \)  "switch-client -n" \
+     "<P> Last selected session"         L  "switch-client -l ; run-shell \"$CURRENT_DIR/sessions.sh\"" \
+     "<P> Previous session (in order)"  \(  "switch-client -p ; run-shell \"$CURRENT_DIR/sessions.sh\"" \
+     "<P> Next     session (in order)"  \)  "switch-client -n ; run-shell \"$CURRENT_DIR/sessions.sh\"" \
      "" \
      "    Kill current session"     k  "confirm-before -p \"Are you sure you want to kill this session? (y/n)\" \"run \"${SCRIPT_DIR}/kill_current_session.sh\"\" "  \
      "    Kill all other sessions"  o  "confirm-before -p \"Are you sure you want to kill all other sessions? (y/n)\" \"kill-session -a\""  \

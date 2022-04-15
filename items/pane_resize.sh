@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.4 2022-04-03
+#   Version: 1.2.5 2022-04-16
 #
 #   Resize a pane
 #
@@ -54,14 +54,14 @@ tmux display-menu  \
      "" \
      "#[align=left]Specify width & height" s "command-prompt -p 'Pane width,Pane height' 'resize-pane -x %1 -y %2'" \
      "" \
-     "<P> up    by 5"  M-Up   "resize-pane -U 5"  \
-     "<P> down  by 5"  M-Down "resize-pane -D 5"  \
-     "<P> left  by 5"  M-Left "resize-pane -L 5"  \
-     "<P> right by 5"  M-Left "resize-pane -R 5"  \
+     "<P> up    by 5"  M-Up   "resize-pane -U 5 ; run-shell \"$CURRENT_DIR/pane_resize.sh\""  \
+     "<P> down  by 5"  M-Down "resize-pane -D 5 ; run-shell \"$CURRENT_DIR/pane_resize.sh\""  \
+     "<P> left  by 5"  M-Left "resize-pane -L 5 ; run-shell \"$CURRENT_DIR/pane_resize.sh\""  \
+     "<P> right by 5"  M-Left "resize-pane -R 5 ; run-shell \"$CURRENT_DIR/pane_resize.sh\""  \
      "" \
-     "<P> up    by 1"  C-Up   "resize-pane -U"    \
-     "<P> down  by 1"  C-Down "resize-pane -D"    \
-     "<P> left  by 1"  C-Left "resize-pane -L"    \
-     "<P> right by 1"  C-Left "resize-pane -R"    \
+     "<P> up    by 1"  C-Up   "resize-pane -U ; run-shell \"$CURRENT_DIR/pane_resize.sh\""    \
+     "<P> down  by 1"  C-Down "resize-pane -D ; run-shell \"$CURRENT_DIR/pane_resize.sh\""    \
+     "<P> left  by 1"  C-Left "resize-pane -L ; run-shell \"$CURRENT_DIR/pane_resize.sh\""    \
+     "<P> right by 1"  C-Right "resize-pane -R ; run-shell \"$CURRENT_DIR/pane_resize.sh\""    \
      "" \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/pane_resize.sh\""
