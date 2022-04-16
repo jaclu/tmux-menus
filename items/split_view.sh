@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.4 2022-04-03
+#   Version: 1.2.5 2022-04-16
 #
 #   Split display
 #
@@ -51,14 +51,14 @@ tmux display-menu  \
      \
      "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
      "#[align=centre]-----  Split Pane  -----" "" ""              \
-     "    Left"   l   "split-window -hb   -c '#{pane_current_path}'"   \
-     "<P> Right"  "%" "split-window -h    -c '#{pane_current_path}'"   \
-     "    Above"  a   "split-window -vb   -c '#{pane_current_path}'"   \
-     "<P> Below"  \"  "split-window -v    -c '#{pane_current_path}'"   \
+     "    Left"   l   "split-window -hb   -c '#{pane_current_path}' ; run-shell \"$CURRENT_DIR/split_view.sh\""   \
+     "<P> Right"  "%" "split-window -h    -c '#{pane_current_path}' ; run-shell \"$CURRENT_DIR/split_view.sh\""   \
+     "    Above"  a   "split-window -vb   -c '#{pane_current_path}' ; run-shell \"$CURRENT_DIR/split_view.sh\""   \
+     "<P> Below"  \"  "split-window -v    -c '#{pane_current_path}' ; run-shell \"$CURRENT_DIR/split_view.sh\""   \
      "#[align=centre]----  Split Window  ----" "" ""              \
-     "    Left"   L   "split-window -fhb  -c '#{pane_current_path}'"   \
-     "    Right"  R   "split-window -fh   -c '#{pane_current_path}'"   \
-     "    Above"  A   "split-window -fvb  -c '#{pane_current_path}'"   \
-     "    Below"  B   "split-window -fv   -c '#{pane_current_path}'"   \
+     "    Left"   L   "split-window -fhb  -c '#{pane_current_path}' ; run-shell \"$CURRENT_DIR/split_view.sh\""   \
+     "    Right"  R   "split-window -fh   -c '#{pane_current_path}' ; run-shell \"$CURRENT_DIR/split_view.sh\""   \
+     "    Above"  A   "split-window -fvb  -c '#{pane_current_path}' ; run-shell \"$CURRENT_DIR/split_view.sh\""   \
+     "    Below"  B   "split-window -fv   -c '#{pane_current_path}' ; run-shell \"$CURRENT_DIR/split_view.sh\""   \
      "" \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help_split.sh $CURRENT_DIR/split_view.sh\""
