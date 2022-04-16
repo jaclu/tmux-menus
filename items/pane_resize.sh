@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.6 2022-04-16
+#   Version: 1.2.7  2022-04-16
 #
 #   Resize a pane
 #
@@ -49,19 +49,20 @@ tmux display-menu  \
      -T "#[align=centre] Resize Pane "  \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Back to Main menu"       Home  "run-shell $CURRENT_DIR/main.sh"  \
+     "Back to Main menu"      Home  "run-shell $CURRENT_DIR/main.sh"  \
      "Back to Handling Pane"  Left  "run-shell $CURRENT_DIR/panes.sh" \
      "" \
-     "#[align=left]Specify width & height" s "command-prompt -p 'Pane width,Pane height' 'resize-pane -x %1 -y %2'" \
-     "" \
-     "<P> up    by 5"  M-Up    "resize-pane -U 5 ; run-shell \"$CURRENT_DIR/pane_resize.sh\""  \
-     "<P> down  by 5"  M-Down  "resize-pane -D 5 ; run-shell \"$CURRENT_DIR/pane_resize.sh\""  \
-     "<P> left  by 5"  M-Left  "resize-pane -L 5 ; run-shell \"$CURRENT_DIR/pane_resize.sh\""  \
-     "<P> right by 5"  M-Right "resize-pane -R 5 ; run-shell \"$CURRENT_DIR/pane_resize.sh\""  \
-     "" \
-     "<P> up    by 1"  C-Up    "resize-pane -U ; run-shell \"$CURRENT_DIR/pane_resize.sh\""    \
-     "<P> down  by 1"  C-Down  "resize-pane -D ; run-shell \"$CURRENT_DIR/pane_resize.sh\""    \
-     "<P> left  by 1"  C-Left  "resize-pane -L ; run-shell \"$CURRENT_DIR/pane_resize.sh\""    \
-     "<P> right by 1"  C-Right "resize-pane -R ; run-shell \"$CURRENT_DIR/pane_resize.sh\""    \
+     "Specify width & height" s "command-prompt -p 'Pane width,Pane height' 'resize-pane -x %1 -y %2'" \
+     " " "" "" \
+     "#[align=centre]-------  resize by 1  ------" "" "" \
+     "up     "  u  "resize-pane -U ; run-shell \"$CURRENT_DIR/pane_resize.sh\""    \
+     "down   "  d  "resize-pane -D ; run-shell \"$CURRENT_DIR/pane_resize.sh\""    \
+     "left   "  l  "resize-pane -L ; run-shell \"$CURRENT_DIR/pane_resize.sh\""    \
+     "right  "  r  "resize-pane -R ; run-shell \"$CURRENT_DIR/pane_resize.sh\""    \
+     "#[align=centre]-------  resize by 5  ------" "" "" \
+     "up     "  U  "resize-pane -U 5 ; run-shell \"$CURRENT_DIR/pane_resize.sh\""  \
+     "down   "  D  "resize-pane -D 5 ; run-shell \"$CURRENT_DIR/pane_resize.sh\""  \
+     "left   "  L  "resize-pane -L 5 ; run-shell \"$CURRENT_DIR/pane_resize.sh\""  \
+     "right  "  R  "resize-pane -R 5 ; run-shell \"$CURRENT_DIR/pane_resize.sh\""  \
      "" \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/pane_resize.sh\""
