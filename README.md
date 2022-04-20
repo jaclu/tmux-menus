@@ -7,7 +7,7 @@ Simple to modify to fit your needs. I have included several items that some migh
 #### Recent changes
 
 -   Windows - Move to next/prev with an alert
--   Repeatable actions keeps menu open - example: Next window
+-   Repeatable actions keeps menu open - example: Handling Pane - Display pane numbers
 -   New menus: Pane - Paste buffers, Advanced - Manage clients
 -   Pane - Respawn current pane
 
