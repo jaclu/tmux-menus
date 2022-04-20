@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.7 2022-04-08
+#   Version: 1.2.8 2022-04-20
 #
 #   Handling pane
 #
@@ -51,17 +51,17 @@ tmux display-menu  \
      \
      "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
      "" \
-     "    Move pane  -->"    M "run-shell \"$CURRENT_DIR/pane_move.sh\""    \
-     "    Resize pane  -->"  R "run-shell \"$CURRENT_DIR/pane_resize.sh\""  \
-     "    Paste buffers -->" B "run-shell \"$CURRENT_DIR/pane_buffers.sh\"" \
+     "    Move pane  -->"     M  "run-shell \"$CURRENT_DIR/pane_move.sh\""    \
+     "    Resize pane  -->"   R  "run-shell \"$CURRENT_DIR/pane_resize.sh\""  \
+     "    Paste buffers -->"  B  "run-shell \"$CURRENT_DIR/pane_buffers.sh\"" \
      "" \
-     "    Set Title"                t  "command-prompt -I \"#T\"  -p \"Title: \"  \"select-pane -T '%%'\""  \
-     "<P> Zoom pane toggle"            z  "resize-pane -Z" \
-     "<P> Display pane numbers"        q  display-panes \
+     "    Set Title"             t  "command-prompt -I \"#T\"  -p \"Title: \"  \"select-pane -T '%%'\""  \
+     "<P> Zoom pane toggle"      z  "resize-pane -Z" \
+     "<P> Display pane numbers"  q  "display-panes ; run-shell \"$CURRENT_DIR/panes.sh\""    \
      "<P> Copy mode (~scrollback)" \[ "copy-mode" \
-     "    Display pane size" s "display-message \"Pane: #P size: #{pane_width}x#{pane_height}\"" \
+     "    Display pane size"     s  "display-message \"Pane: #P size: #{pane_width}x#{pane_height}\"" \
      "" \
-     "    #{?pane_synchronized,Disable,Activate} synchronized panes"  y  "set -w synchronize-panes"  \
+     "    #{?pane_synchronized,#[bold]Disable[#defaults],Activate} synchronized panes"  y  "set -w synchronize-panes"  \
      "    Save pane history to file"   h  "command-prompt -p 'Save current-pane history to filename:' -I '~/tmux.history' 'capture-pane -S - -E - ; save-buffer %1 ; delete-buffer'" \
      "" \
      "    Respawn current pane"        r  "confirm-before -p \"respawn-pane #P? (y/n)\" \"respawn-pane -k\"" \
