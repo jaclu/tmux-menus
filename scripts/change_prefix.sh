@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.1 2022-02-03
+#   Version: 1.2.2 2022-04-21
 #
 #   Updates global prefix, if prefix param is given
 #
@@ -27,4 +27,4 @@ prefix="C-${prefix_char}"
 
 tmux set-option -g prefix "$prefix"
 
-tmux display "Be aware <prefix> is now: $prefix"
+tmux display-message "Be aware <prefix> is now: $prefix"

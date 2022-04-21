@@ -7,7 +7,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.5 2022-04-13
+#   Version: 1.2.6 2022-04-21
 #
 #   Common stuff for relocate_pane.sh & relocate_windows.sh
 #   Validate parameters
@@ -63,7 +63,7 @@ param_check() {
     fi
 
 
-    cur_ses="$(tmux display -p '#S')"
+    cur_ses="$(tmux display-message -p '#S')"
     dest="${raw_dest#*=}"  # skipping initial =
     dest_ses="${dest%%:*}" # up to first colon excluding it
 
