@@ -7,8 +7,7 @@ Simple to modify to fit your needs. I have included several items that some migh
 #### Recent changes
 
 -   Pane - Move - Break pane, blocked if only one pane present
--   Windows - Move to next/prev with an alert
--   Repeatable actions keeps menu open - example: Handling Pane - Display pane numbers
+-   Repeatable actions keeps menu open - example: Handling Pane - Move Pane - Swap pane with prev
 -   New menus: Pane - Paste buffers, Advanced - Manage clients
 -   Pane - Respawn current pane
 
