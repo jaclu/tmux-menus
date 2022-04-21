@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.7 2022-04-16
+#   Version: 1.2.8 2022-04-21
 #
 #   Handling Window
 #
@@ -63,8 +63,8 @@ tmux display-menu  \
      "<P> Previous window (in order)"  p  "previous-window ; run-shell \"$CURRENT_DIR/windows.sh\"" \
      "<P> Next     window (in order)"  n  "next-window ; run-shell \"$CURRENT_DIR/windows.sh\"" \
      "" \
-     "<P> previous window with an alert" M-p "previous-window -a ; run-shell \"$CURRENT_DIR/windows.sh\"" \
-     "<P> next window with an alert" M-n "next-window -a ; run-shell \"$CURRENT_DIR/windows.sh\"" \
+     "    Previous window with an alert" P "previous-window -a ; run-shell \"$CURRENT_DIR/windows.sh\"" \
+     "    Next window with an alert" N "next-window -a ; run-shell \"$CURRENT_DIR/windows.sh\"" \
      "" \
      "<P> Kill current window"    \&  "confirm-before -p \"kill-window #W? (y/n)\" kill-window"  \
      "    Kill all other windows"  o  "confirm-before -p \"Are you sure you want to kill all other windows? (y/n)\" \"run \"${SCRIPT_DIR}/kill_other_windows.sh\" \" "  \

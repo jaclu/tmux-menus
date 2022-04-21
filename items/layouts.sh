@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.5 2022-04-03
+#   Version: 1.2.6 2022-04-21
 #
 #   Choose layout
 #
@@ -51,11 +51,11 @@ tmux display-menu  \
      \
      "Back to Main menu"           Left  "run-shell $CURRENT_DIR/main.sh"  \
      "" \
-     "<P> Even horizontal"          M-1  "select-layout even-horizontal"   \
-     "<P> Even vertical"            M-2  "select-layout even-vertical"     \
-     "<P> Main horizontal"          M-3  "select-layout main-horizontal"   \
-     "<P> Main vertical"            M-4  "select-layout main-vertical"     \
-     "<P> Tiled"                    M-5  "select-layout tiled"             \
-     "<P> Spread panes out evenly."   E  "select-layout -E"                \
+     "    Even horizontal"           1  "select-layout even-horizontal ; run-shell \"$CURRENT_DIR/layouts.sh\"" \
+     "    Even vertical"             2  "select-layout even-vertical ; run-shell \"$CURRENT_DIR/layouts.sh\"" \
+     "    Main horizontal"           3  "select-layout main-horizontal ; run-shell \"$CURRENT_DIR/layouts.sh\"" \
+     "    Main vertical"             4  "select-layout main-vertical ; run-shell \"$CURRENT_DIR/layouts.sh\"" \
+     "    Tiled"                     5  "select-layout tiled ; run-shell \"$CURRENT_DIR/layouts.sh\"" \
+    "<P> Spread panes out evenly."   E  "select-layout -E ; run-shell \"$CURRENT_DIR/layouts.sh\"" \
      "" \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/layouts.sh\""
