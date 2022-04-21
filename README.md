@@ -6,7 +6,7 @@ Simple to modify to fit your needs. I have included several items that some migh
 
 #### Recent changes
 
--   Pane - Move - Break pane is blocked if only one pane
+-   Pane - Move - Break pane, blocked if only one pane present
 -   Windows - Move to next/prev with an alert
 -   Repeatable actions keeps menu open - example: Handling Pane - Display pane numbers
 -   New menus: Pane - Paste buffers, Advanced - Manage clients
@@ -22,11 +22,13 @@ There are some very basic popups per default (See *Configuration* on how to disa
 
 I find them rather lacking and since they are written as hard to read one-liners, I preferred a more integrated approach with navigation and simple adaptability, also covering more than just panes and windows.
 
-Not only meant for beginners, I use it myself regularly for tasks I can't be bothered to learn by heart, stuff that doesn't have a short-cut or when direct typing would be much longer.<br>
-Example: Kill the server directly is min 11 keys: `<prefix> : kill-ser <tab> <enter>` <br>
-with the menus it is 5 keys: `<prefix> \ A k y ` <br>
+Not only meant for beginners, I use it myself regularly for
 
-I have also tried to add some more general items, that might be helpful to others. It's fairly easy to add/remove items to fit your specific needs.
+- When direct typing would be much longer.<br> Example: Kill the server directly is min 12 keys: `<prefix> : kill-ser <tab> <enter>` <br> with the menus it is 5 keys: `<prefix> \ A k y ` <br>
+
+- Tasks that would need external scripts in order to avoid hard to read excessive bind one liners, such as Break pane to new window with sanity check.
+
+- Things I use to seldom to remember as shortcuts.
 
 ## Usage
 
@@ -145,7 +147,8 @@ In utils I have a function log_it. And a variable log_file. If log_file is defin
 log_it "foo is now [$foo]"
 ```
 
-If you are triggering a menu from the command line, you can use direct echo, but then you need to remove them before deploying, since tmux will see any script output as an potential error and display it in a scroll back buffer.
+If you are triggering a menu from the command line, you can use direct echo, but then you need to remove them before deploying, since tmux will see any script output as an potential error and display it in a scroll back buffer.<br>In most cases a more practical way to achieve the same result would be to set
+`log_file='/dev/stdout'`
 
 When done, deploy by copy/commit your changes to the default location, this will be used from now on.
 
