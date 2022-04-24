@@ -5,19 +5,22 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.2 2022-03-29
+#   Version: 1.2.3 2022-04-24
+#
+#   It is assumed that the calliing entity has recieved confirmation
+#   that this session shoule be killed if that is needed.
 #
 #   Kills current session. If this is the only session, it
 #   first calls kill_session_confirm.sh where user can confirm
 #   if this should still happen, since it will terminate the tmux server.
 #
 
+
 # shellcheck disable=SC1007
 CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 
 # shellcheck disable=SC1091
 . "$CURRENT_DIR/utils.sh"
-
 
 force_directive="force"
 
