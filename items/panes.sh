@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.8 2022-04-20
+#   Version: 1.2.9 2022-05-03
 #
 #   Handling pane
 #
@@ -58,7 +58,7 @@ tmux display-menu  \
      "    Set Title"             t  "command-prompt -I \"#T\"  -p \"Title: \"  \"select-pane -T '%%'\""  \
      "<P> Zoom pane toggle"      z  "resize-pane -Z" \
      "<P> Display pane numbers"  q  "display-panes ; run-shell \"$CURRENT_DIR/panes.sh\""    \
-     "<P> Copy mode (~scrollback)" \[ "copy-mode" \
+     '<P> Copy mode - "history"' \[ "copy-mode" \
      "    Display pane size"     s  "display-message \"Pane: #P size: #{pane_width}x#{pane_height}\"" \
      "" \
      "    #{?pane_synchronized,#[bold]Disable[#defaults],Activate} synchronized panes"  y  "set -w synchronize-panes"  \
