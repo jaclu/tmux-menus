@@ -6,11 +6,11 @@ Simple to modify to fit your needs. I have included several items that some migh
 
 #### Recent changes
 
--   Removed menu incompatible default shortcuts. In menus, shortcuts can not use C/M prefix or navigation keys, so for such defaults I ignore them.
--   Pane - Move - Break pane, blocked if only one pane present
--   Repeatable actions keeps menu open - example: Handling Pane - Move Pane - Swap pane with prev
--   New menus: Pane - Paste buffers, Advanced - Manage clients
--   Pane - Respawn current pane
+- moved "mark current pane" to pane menu
+- Removed menu incompatible default shortcuts. In menus, shortcuts can not use C/M prefix or navigation keys, so for such defaults I ignore them.
+- Pane - Move - Break pane, blocked if only one pane present
+- Repeatable actions keeps menu open - example: Handling Pane - Move Pane - Swap pane with prev
+- New menus: Pane - Paste buffers, Advanced - Manage clients
 
 ## Purpose
 
