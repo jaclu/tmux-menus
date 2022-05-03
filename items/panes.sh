@@ -59,6 +59,7 @@ tmux display-menu  \
      "<P> Zoom pane toggle"      z  "resize-pane -Z" \
      "<P> Display pane numbers"  q  "display-panes ; run-shell \"$CURRENT_DIR/panes.sh\""    \
      '<P> Copy mode - "history"' \[ "copy-mode" \
+     "<P> #{?pane_marked,Unmark,Mark} current pane" m  "select-pane -m ; run-shell \"$CURRENT_DIR/panes.sh\""  \
      "    Display pane size"     s  "display-message \"Pane: #P size: #{pane_width}x#{pane_height}\"" \
      "" \
      "    #{?pane_synchronized,#[bold]Disable[#defaults],Activate} synchronized panes"  y  "set -w synchronize-panes"  \
