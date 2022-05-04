@@ -24,10 +24,9 @@ I find them rather lacking and since they are written as hard to read one-liners
 
 Not only meant for beginners, I use it myself regularly for
 
+- When connecting using terminals without much support for Meta or Ctrl, like using iSH, then Pane-Resize Pane and Layouts allows me to resize panes with ease.
+- Tasks that would need external scripts in order to avoid hard to read complex bind one-liners, such as kill curent session, without getting disconnected.
 - When direct typing would be much longer.<br> Example: Kill the server directly is min 12 keys: `<prefix> : kill-ser <tab> <enter>` <br> with the menus it is 5 keys: `<prefix> \ A k y ` <br>
-
-- Tasks that would need external scripts in order to avoid hard to read excessive bind one liners, such as Break pane to new window with sanity check.
-
 - Things I use to seldom to remember as shortcuts.
 
 ## Usage
