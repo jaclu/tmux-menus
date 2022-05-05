@@ -1,0 +1,19 @@
+#!/bin/sh
+
+44  22
+
+#  40 17 advanced
+#  41 28 advanced_manage_clients
+# 44 15 help
+# 40  7 help_split
+#  (!)44 15 help_window_move
+# > 36 12 layouts
+#  38 18 main   OLD 43 23 NEW 43 18
+# !41 27 pane_buffers
+#  41 13 pane_move (when marked)
+#  33 19 pane_resize
+#  35 22  panes
+#  39 15 sessions
+#  25 15 split_view
+#  43 15 window_move
+#  38 22 windows
