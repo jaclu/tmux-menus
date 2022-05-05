@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.5 2022-04-07
+#   Version: 1.2.6 2022-05-05
 #
 #   Advanced options
 #
@@ -44,7 +44,6 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 . "$SCRIPT_DIR/utils.sh"
 
 
-
 #
 #  Gather some info in order to be able to show states
 #
@@ -52,8 +51,10 @@ current_mouse_status="$(tmux show-option -g mouse | cut -d' ' -f2)"
 if [ "$current_mouse_status" = "on" ]; then
     new_mouse_status="off"
 else
+
     new_mouse_status="on"
 fi
+
 
 current_prefix="$(tmux show-option -g prefix | cut -d' ' -f2 | cut -d'-' -f2)"
 
@@ -65,7 +66,7 @@ tmux display-menu \
      \
      "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
      "" \
-     "    Manage clients  -->"    M "run-shell \"$CURRENT_DIR/choose_client.sh\""    \
+     "    Manage clients  -->"    M "run-shell \"$CURRENT_DIR/advanced_manage_clients.sh\""    \
      "" \
      "<P> Show messages"                       \~  show-messages        \
      "<P> Customize options"                    C  "customize-mode -Z"  \
