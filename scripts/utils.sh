@@ -8,7 +8,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.8 2022-04-15
+#   Version: 1.3.9 2022-05-05
 #
 #  Common stuff
 #
@@ -25,7 +25,7 @@ plugin_name="tmux-menus"
 #  If log_file is empty or undefined, no logging will occur,
 #  so comment it out for normal usage.
 #
-# log_file="/tmp/$plugin_name.log"
+#log_file="/tmp/$plugin_name.log"
 
 
 #
@@ -99,6 +99,27 @@ get_tmux_option() {
     unset gtm_option
     unset gtm_default
     unset gtm_value
+}
+
+
+check_screen_size() {
+    css_min_width="$1"
+    css_min_height="$2"
+    css_msg="${3:-tmux-menus}"
+    log_it "check_screen_size() $css_min_width $css_min_height"
+    [ "$css_min_width" = "" ] && error_msg "check_screen_size() param 1 (width) missing" 1
+    [ "$css_min_height" = "" ] && error_msg "check_screen_size() param 2 (height) missing" 1
+    
+    css_width="$(tmux display -p "#{window_width}")"
+    log_it "Current width: $css_width"
+    css_height="$(tmux display -p "#{window_height}")"
+    log_it "Current height: $css_height"
+
+    if [ $css_width -lt $css_min_width -o $css_height -lt $css_min_height ]; then
+	echo
+	echo "$css_msg needs a screen size"
+	echo "of at least $css_min_width x $css_min_height"
+    fi
 }
 
 

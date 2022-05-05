@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0.0 2022-04-03
+#   Version: 1.0.1 2022-05-05
 #
 #   Modify Clients
 #
@@ -43,10 +43,12 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
 
+t_start="$(date +'%s')"
+
 
 # shellcheck disable=SC2154
 tmux display-menu  \
-     -T "#[align=centre] Choose Client "  \
+     -T "#[align=centre] Manage Clients "  \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
      "Back to Main menu"      Home  "run-shell $CURRENT_DIR/main.sh"  \
@@ -75,3 +77,15 @@ tmux display-menu  \
      "<P>"  D  "choose-client -Z"  \
      "" \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/choose_client.sh\""
+
+
+#
+#  If a menu can't fit inside the available space it will close instantly
+#  so if the seconds didnt tick up, assume this situation and check screen size
+#  Giving a warning if it is to small.
+#  And obviously display this message in a way that does not depend on
+#  screen size :)
+#
+[ "$t_start" = "$(date +'%s')" ] && check_screen_size 44 28 "Manage Clients"
+
+exit 0

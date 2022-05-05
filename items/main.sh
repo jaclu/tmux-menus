@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.10 2022-05-05
+#   Version: 1.2.11 2022-05-05
 #
 #   Main menu, the one popping up when you hit the trigger
 #
@@ -44,6 +44,8 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 . "$SCRIPT_DIR/utils.sh"
 
 t_start="$(date +'%s')"
+
+
 # shellcheck disable=SC2154
 tmux display-menu \
      -T "#[align=centre] Main menu "              \
@@ -70,15 +72,14 @@ tmux display-menu \
      "" \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/main.sh\""
 
+
 #
 #  If a menu can't fit inside the available space it will close instantly
-#  so if the seconds didnt tick up, assume this situation and display
-#  info about minimal screen size needed.
+#  so if the seconds didnt tick up, assume this situation and check screen size
+#  Giving a warning if it is to small.
 #  And obviously display this message in a way that does not depend on
 #  screen size :)
 #
-if [ "$t_start" = "$(date +'%s')" ]; then
-    echo
-    echo "tmux-menus needs a screen size"
-    echo "of at least 43x23"
-fi
+[ "$t_start" = "$(date +'%s')" ] && check_screen_size 43 23
+
+exit 0
