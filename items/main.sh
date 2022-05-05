@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.9 2022-05-03
+#   Version: 1.2.10 2022-05-05
 #
 #   Main menu, the one popping up when you hit the trigger
 #
@@ -43,7 +43,7 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
 
-
+t_start="$(date +'%s')"
 # shellcheck disable=SC2154
 tmux display-menu \
      -T "#[align=centre] Main menu "              \
@@ -70,5 +70,15 @@ tmux display-menu \
      "" \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/main.sh\""
 
-#  Help needs an additional param to tell it where to go back, resulting in the need for this run-shell instance's parameters to be enclosed
-#  in an additional level of "" to make both parameters to be seen as the one expected param to run-shell
+#
+#  If a menu can't fit inside the available space it will close instantly
+#  so if the seconds didnt tick up, assume this situation and display
+#  info about minimal screen size needed.
+#  And obviously display this message in a way that does not depend on
+#  screen size :)
+#
+if [ "$t_start" = "$(date +'%s')" ]; then
+    echo
+    echo "tmux-menus needs a screen size"
+    echo "of at least 43x23"
+fi
