@@ -49,13 +49,13 @@ tmux display-menu  \
      -T "#[align=centre] Split view "        \
      -x "$menu_location_x" -y "$menu_location_y" \
      \
-     "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
-     "#[align=centre]-----  Split Pane  -----" "" ""              \
+     "Main menu  -->"  Left  "run-shell $CURRENT_DIR/main.sh"  \
+     "-#[align=centre]---  Split Pane  ---" "" ""              \
      "    Left"   l   "split-window -hb   -c '#{pane_current_path}' ; run-shell \"$CURRENT_DIR/split_view.sh\""   \
      "<P> Right"  "%" "split-window -h    -c '#{pane_current_path}' ; run-shell \"$CURRENT_DIR/split_view.sh\""   \
      "    Above"  a   "split-window -vb   -c '#{pane_current_path}' ; run-shell \"$CURRENT_DIR/split_view.sh\""   \
      "<P> Below"  \"  "split-window -v    -c '#{pane_current_path}' ; run-shell \"$CURRENT_DIR/split_view.sh\""   \
-     "#[align=centre]----  Split Window  ----" "" ""              \
+     "-#[align=centre]--  Split Window  --" "" ""              \
      "    Left"   L   "split-window -fhb  -c '#{pane_current_path}' ; run-shell \"$CURRENT_DIR/split_view.sh\""   \
      "    Right"  R   "split-window -fh   -c '#{pane_current_path}' ; run-shell \"$CURRENT_DIR/split_view.sh\""   \
      "    Above"  A   "split-window -fvb  -c '#{pane_current_path}' ; run-shell \"$CURRENT_DIR/split_view.sh\""   \

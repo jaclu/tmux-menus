@@ -43,37 +43,39 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
 
+menu_name="Manage Clients"
+
 t_start="$(date +'%s')"
 
 
 # shellcheck disable=SC2154
 tmux display-menu  \
-     -T "#[align=centre] Manage Clients "  \
+     -T "#[align=centre] $menu_name "  \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Main menu         -->"      Home  "run-shell $CURRENT_DIR/main.sh"  \
+     "Main menu         -->"  Home  "run-shell $CURRENT_DIR/main.sh"     \
      "Advanced options  -->"  Left  "run-shell $CURRENT_DIR/advanced.sh" \
-     "" \
-     "========  Commands  ========"       "" "" \
-     "Enter Choose selected client"          "" "" \
-     "Up    Select previous client"          "" "" \
-     "Down  Select next client"              "" "" \
-     "C-s   Search by name"                  "" "" \
-     "n     Repeat last search"              "" "" \
-     "t     Toggle if client is tagged"      "" "" \
-     "T     Tag no clients".                 "" "" \
-     "C-t   Tag all clients"                 "" "" \
-     "d     Detach selected client"          "" "" \
-     "D     Detach tagged clients"           "" "" \
-     "x     Detach and HUP selected client"  "" "" \
-     "X     Detach and HUP tagged clients"   "" "" \
-     "z     Suspend selected client"         "" "" \
-     "Z     Suspend tagged clients"          "" "" \
-     "f     Enter a format to filter items"  "" "" \
-     "O     Change sort field"               "" "" \
-     "r     Reverse sort order"              "" "" \
-     "v     Toggle preview"                  "" "" \
-     "q     Exit mode"                       "" "" \
+     "-#[align=centre]-----------   Commands   -----------"   "" "" \
+     "-Enter Choose selected client"          "" "" \
+     "-Up    Select previous client"          "" "" \
+     "-Down  Select next client"              "" "" \
+     "-C-s   Search by name"                  "" "" \
+     "-n     Repeat last search"              "" "" \
+     "-t     Toggle if client is tagged"      "" "" \
+     "-T     Tag no clients".                 "" "" \
+     "-C-t   Tag all clients"                 "" "" \
+     "-d     Detach selected client"          "" "" \
+     "-D     Detach tagged clients"           "" "" \
+     "-x     Detach and HUP selected client"  "" "" \
+     "-X     Detach and HUP tagged clients"   "" "" \
+     "-z     Suspend selected client"         "" "" \
+     "-Z     Suspend tagged clients"          "" "" \
+     "-f     Enter a format to filter items"  "" "" \
+     "-O     Change sort field"               "" "" \
+     "-r     Reverse sort order"              "" "" \
+     "-v     Toggle preview"                  "" "" \
+     "-q     Exit mode"                       "" "" \
+     "-" "" "" \
      "<P>"  D  "choose-client -Z"  \
      "" \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/choose_client.sh\""
@@ -86,6 +88,7 @@ tmux display-menu  \
 #  And obviously display this message in a way that does not depend on
 #  screen size :)
 #
-[ "$t_start" = "$(date +'%s')" ] && check_screen_size 44 28 "Manage Clients"
+[ "$t_start" = "$(date +'%s')" ] && check_screen_size 41 28 "$menu_name"
+
 
 exit 0

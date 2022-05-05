@@ -44,6 +44,9 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 . "$SCRIPT_DIR/utils.sh"
 
 
+menu_name="Advanced options"
+
+
 #
 #  Gather some info in order to be able to show states
 #
@@ -59,24 +62,37 @@ fi
 current_prefix="$(tmux show-option -g prefix | cut -d' ' -f2 | cut -d'-' -f2)"
 
 
+t_start="$(date +'%s')"
+
 # shellcheck disable=SC2154,SC2140
 tmux display-menu \
-     -T "#[align=centre] Advanced options "      \
-     -x "$menu_location_x" -y "$menu_location_y" \
+     -T "#[align=centre] $menu_name "             \
+     -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Main menu  -->"  Left  "run-shell $CURRENT_DIR/main.sh"  \
+     "Main menu       -->"  Left  "run-shell $CURRENT_DIR/main.sh"  \
+     "Manage clients  -->"  M     "run-shell \"$CURRENT_DIR/advanced_manage_clients.sh\""    \
      "" \
-     "Manage clients  -->"    M "run-shell \"$CURRENT_DIR/advanced_manage_clients.sh\""    \
+     "<P> Show messages"         \~  show-messages        \
+     "<P> Customize options"      C  "customize-mode -Z"  \
+     "<P> Describe (prefix) key"  /  "command-prompt -k -p key \"list-keys -1N \\"%%%\\"\""  \
+     "<P> Prompt for a command"   :  command-prompt  \
      "" \
-     "<P> Show messages"                       \~  show-messages        \
-     "<P> Customize options"                    C  "customize-mode -Z"  \
-     "<P> Describe (prefix) key"        /  "command-prompt -k -p key \"list-keys -1N \\"%%%\\"\""  \
-     "<P> Prompt for a command"                 :  command-prompt  \
+     "Toggle mouse to: $new_mouse_status"  m  "set-option -g mouse $new_mouse_status"   \
+     "Change prefix <$current_prefix>"     p  "command-prompt -1 -p prefix 'run \"$SCRIPT_DIR/change_prefix.sh %%\"'"  \
      "" \
-     "Toggle mouse to: $new_mouse_status"   m  "set-option -g mouse $new_mouse_status"   \
-     "Change prefix <$current_prefix>"      p  "command-prompt -1 -p prefix 'run \"$SCRIPT_DIR/change_prefix.sh %%\"'"  \
-     "" \
-     "Kill server - all your sessions" "" ""  \
-     " on this host are terminated    "          k  "confirm-before -p \"kill tmux server on #H ? (y/n)\" kill-server"  \
+     "-Kill server - all your sessions"       "" ""  \
+     " on this host are terminated    "    k  "confirm-before -p \"kill tmux server on #H ? (y/n)\" kill-server"  \
      "" \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/advanced.sh\""
+
+
+#
+#  If a menu can't fit inside the available space it will close instantly
+#  so if the seconds didnt tick up, assume this situation and check screen size
+#  Giving a warning if it is to small.
+#  And obviously display this message in a way that does not depend on
+#  screen size :)
+#
+[ "$t_start" = "$(date +'%s')" ] && check_screen_size 40 17 "$menu_name"
+
+exit 0

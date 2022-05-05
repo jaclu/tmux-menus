@@ -56,7 +56,7 @@ tmux display-menu  \
      -T "#[align=centre] Handling Sessions "  \
      -x "$menu_location_x" -y "$menu_location_y" \
      \
-     "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
+     "Main menu  -->"  Left  "run-shell $CURRENT_DIR/main.sh"  \
      "" \
      "<P> Rename this session" \$  "command-prompt -I \"#S\" \"rename-session -- '%%'\""  \
      "    New session"          n  "command-prompt -p \"Name of new session: \" \"new-session -s '%%'\""  \
@@ -65,7 +65,7 @@ tmux display-menu  \
      "<P> Previous session (in order)"  \(  "switch-client -p ; run-shell \"$CURRENT_DIR/sessions.sh\"" \
      "<P> Next     session (in order)"  \)  "switch-client -n ; run-shell \"$CURRENT_DIR/sessions.sh\"" \
      "" \
-     "    Kill current session"     k  "confirm-before -p \"Are you sure you want to kill this session? (y/n)\" \"run \"${SCRIPT_DIR}/kill_current_session.sh\"\" "  \
-     "    Kill all other sessions"  o  "confirm-before -p \"Are you sure you want to kill all other sessions? (y/n)\" \"kill-session -a\""  \
+     "Kill current session"     k  "confirm-before -p \"Are you sure you want to kill this session? (y/n)\" \"run \"${SCRIPT_DIR}/kill_current_session.sh\"\" "  \
+     "Kill all other sessions"  o  "confirm-before -p \"Are you sure you want to kill all other sessions? (y/n)\" \"kill-session -a\""  \
      "" \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/sessions.sh\""

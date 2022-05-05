@@ -43,23 +43,41 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
 
-
+menu_name="Help, Split view"
 
 previous_menu="$1"
+
 
 if [ -z "$previous_menu" ]; then
     error_msg "help_split.sh was called without notice of what called it"
 fi
 
 
+#
+#  TODO: For odd reasons this title needs multiple right padding spaces,
+#        in order to actually print one
+#
+t_start="$(date +'%s')"
+
 # shellcheck disable=SC2154
 tmux display-menu  \
-     -T "#[align=centre] Help Split View "         \
+     -T "#[align=centre] $menu_name   "       \
      -x "$menu_location_x" -y "$menu_location_y"   \
      \
-     "Back to Split View"  Left  "run-shell $previous_menu"  \
+     "Split View  -->"  Left  "run-shell $previous_menu"  \
      "" \
-     "Creating a new pane by splitting" "" ""                \
-     "current pane or Window."   "" ""                       \
-     "Window refers to the entire display"       "" ""
+     "-Creating a new pane by splitting"     "" "" \
+     "-current Pane or Window."              "" "" \
+     "-Window refers to the entire display"  "" ""
 
+
+#
+#  If a menu can't fit inside the available space it will close instantly
+#  so if the seconds didnt tick up, assume this situation and check screen size
+#  Giving a warning if it is to small.
+#  And obviously display this message in a way that does not depend on
+#  screen size :)
+#
+[ "$t_start" = "$(date +'%s')" ] && check_screen_size 40 7 "$menu_name"
+
+exit 0

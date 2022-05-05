@@ -51,12 +51,12 @@ tmux display-menu  \
      -T "#[align=centre] Move Window "  \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Back to Main menu"       Home  "run-shell $CURRENT_DIR/main.sh"  \
-     "Back to Handling Window"  Left  "run-shell $CURRENT_DIR/windows.sh" \
+     "Main menu        -->"  Home  "run-shell $CURRENT_DIR/main.sh"  \
+     "Handling Window  -->"  Left  "run-shell $CURRENT_DIR/windows.sh" \
      "" \
      "    Move window to other location"    m  "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_window.sh W M %%\"'" \
-     "#{?pane_marked_set,,-}    Swap current window with window" "" ""  \
-     "#{?pane_marked_set,,-}    containing marked pane         "  s  swap-window  \
+     "-    Swap current window with window" "" ""  \
+     "#{?pane_marked_set,,-}     containing marked pane        "  s  swap-window  \
      "    Swap window Left"                \<  "swap-window -dt:-1 ; run-shell \"$CURRENT_DIR/window_move.sh\""  \
      "    Swap window Right"               \>  "swap-window -dt:+1 ; run-shell \"$CURRENT_DIR/window_move.sh\""  \
      "" \

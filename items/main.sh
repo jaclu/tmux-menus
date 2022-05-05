@@ -62,7 +62,7 @@ tmux display-menu \
      "    Reload configuration file" "r" "run-shell 'tmux source-file ~/.tmux.conf; tmux display-message \"Sourced ~/.tmux.conf\"'"  \
      "<P> Detach from tmux"  d  detach-client      \
      "" \
-     "Search in all ses/win, ignores" "" "" \
+     "-Search in all ses/win, ignores" "" "" \
      " case, only visible part"     s  "command-prompt -p \"Search for:\" \"find-window -CNTiZ -- '%%'\"" \
      "Navigate & select ses/win/pane" n   "choose-tree -Z"  \
      "" \
@@ -76,6 +76,7 @@ tmux display-menu \
 #  And obviously display this message in a way that does not depend on
 #  screen size :)
 #
-[ "$t_start" = "$(date +'%s')" ] && check_screen_size 40 20
+
+[ "$t_start" = "$(date +'%s')" ] && check_screen_size 38 18
 
 exit 0

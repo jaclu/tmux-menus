@@ -49,7 +49,7 @@ tmux display-menu  \
      -T "#[align=centre] Layouts "            \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Back to Main menu"           Left  "run-shell $CURRENT_DIR/main.sh"  \
+     "Main menu  -->"           Left  "run-shell $CURRENT_DIR/main.sh"  \
      "" \
      "    Even horizontal"           1  "select-layout even-horizontal ; run-shell \"$CURRENT_DIR/layouts.sh\"" \
      "    Even vertical"             2  "select-layout even-vertical ; run-shell \"$CURRENT_DIR/layouts.sh\"" \

@@ -43,11 +43,11 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
 
-t_start="$(date +'%s')"
-
 previous_menu="$1"
 
 menu_name="Help summary"
+
+t_start="$(date +'%s')"
 
 
 if [ -z "$previous_menu" ]; then
@@ -60,25 +60,24 @@ tmux display-menu  \
     -T "#[align=centre] $menu_name "          \
     -x "$menu_location_x" -y "$menu_location_y" \
     \
-    "Back to previous menu"  Left  "run-shell $previous_menu"  \
+    "Previous menu  -->"  Left  "run-shell $previous_menu"  \
     "" \
-    "<P> indicates this key is a default key" "" ""   \
-    "    so unless you have changed it," "" ""        \
-    "    it should be possible to use" "" ""          \
-    "    with <prefix> directly." "" ""  \
+    "- -->  Indicates this will open a"         "" "" \
+    "-      new menu."                          "" "" \
     "" \
-    " -->  Indicates this will open a" "" ""  \
-    "      new menu." "" "" \
+    "-<P> Indicates this key is a default key"  "" "" \
+    "-    so unless you have changed it,"       "" "" \
+    "-    it should be possible to use"         "" "" \
+    "-    with <prefix> directly."              "" "" \
     "" \
-    "On options spanning multiple lines,"      "" ""  \
-    "if you use Enter to select, you must be"  "" ""  \
-    "on the line with the shortcut. Otherwise" "" ""  \
-    "it is interpreted as cancel."            "" ""   \
-    "" \
-    "Shortcut keys are typically upper case" "" ""     \
-    "for new menus, and lower case for actions" "" ""  \
-    "with the exception of default keys." "" ""
+    "-Shortcut keys are upper case for new"     "" "" \
+    "-menus, and lower case for actions,"       "" "" \
+    "-with the exception of defaults."          "" ""
 
+
+menu_name="Help summary"
+
+t_start="$(date +'%s')"
 
 #
 #  If a menu can't fit inside the available space it will close instantly
@@ -87,6 +86,6 @@ tmux display-menu  \
 #  And obviously display this message in a way that does not depend on
 #  screen size :)
 #
-[ "$t_start" = "$(date +'%s')" ] && check_screen_size 45 20 "$menu_name"
+[ "$t_start" = "$(date +'%s')" ] && check_screen_size 44 15 "$menu_name"
 
 exit 0

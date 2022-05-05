@@ -44,16 +44,17 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 . "$SCRIPT_DIR/utils.sh"
 
 
+
+
 # shellcheck disable=SC2154
 tmux display-menu  \
      -T "#[align=centre] Handling Pane "  \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
-     "" \
-     "Move pane  -->"     M  "run-shell \"$CURRENT_DIR/pane_move.sh\""    \
-     "Resize pane  -->"   R  "run-shell \"$CURRENT_DIR/pane_resize.sh\""  \
-     "Paste buffers -->"  B  "run-shell \"$CURRENT_DIR/pane_buffers.sh\"" \
+     "Main menu      -->"  Left  "run-shell $CURRENT_DIR/main.sh"  \
+     "Move pane      -->"  M     "run-shell \"$CURRENT_DIR/pane_move.sh\""    \
+     "Resize pane    -->"  R     "run-shell \"$CURRENT_DIR/pane_resize.sh\""  \
+     "Paste buffers  -->"  B      "run-shell \"$CURRENT_DIR/pane_buffers.sh\"" \
      "" \
      "    Set Title"             t  "command-prompt -I \"#T\"  -p \"Title: \"  \"select-pane -T '%%'\""  \
      "<P> Zoom pane toggle"      z  "resize-pane -Z" \

@@ -50,9 +50,8 @@ tmux display-menu  \
      -T "#[align=centre] Handling Window   "  \
      -x "$menu_location_x" -y "$menu_location_y" \
      \
-     "Back to main-menu"  Left  "run-shell $CURRENT_DIR/main.sh" \
-     "" \
-     "Move window  -->"  M  "run-shell \"$CURRENT_DIR/window_move.sh\"" \
+     "Main menu    -->"  Left  "run-shell $CURRENT_DIR/main.sh" \
+     "Move window  -->"  M     "run-shell \"$CURRENT_DIR/window_move.sh\"" \
      "" \
      "<P> Rename window"             ,  "command-prompt -I \"#W\"  -p \"New window name: \"  \"rename-window '%%'\""  \
      "    New window after current"  a  "command-prompt -p \"Name of new window: \" \"new-window -a -n '%%'"  \
