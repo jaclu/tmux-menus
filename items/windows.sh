@@ -44,14 +44,20 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
 
+menu_name="Handling Window"
+req_win_width=38
+req_win_height=21
+
+
+t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
 tmux display-menu  \
-     -T "#[align=centre] Handling Window   "  \
+     -T "#[align=centre] $menu_name   "  \
      -x "$menu_location_x" -y "$menu_location_y" \
      \
-     "Main menu    -->"  Left  "run-shell $CURRENT_DIR/main.sh" \
-     "Move window  -->"  M     "run-shell \"$CURRENT_DIR/window_move.sh\"" \
+     "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh" \
+     "Move window  -->"   M     "run-shell \"$CURRENT_DIR/window_move.sh\"" \
      "" \
      "<P> Rename window"             ,  "command-prompt -I \"#W\"  -p \"New window name: \"  \"rename-window '%%'\""  \
      "    New window after current"  a  "command-prompt -p \"Name of new window: \" \"new-window -a -n '%%'"  \
@@ -69,3 +75,6 @@ tmux display-menu  \
      "    Kill all other windows"  o  "confirm-before -p \"Are you sure you want to kill all other windows? (y/n)\" \"run \"${SCRIPT_DIR}/kill_other_windows.sh\" \" "  \
      "" \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/windows.sh\""
+
+
+ensure_menu_fits_on_screen

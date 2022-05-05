@@ -43,19 +43,21 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
 
-t_start="$(date +'%s')"
-
 menu_name="Paste buffers"
+req_win_width=41
+req_win_height=27
 
+
+t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
 tmux display-menu  \
      -T "#[align=centre] $menu_name "  \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Main menu      -->"      Home  "run-shell $CURRENT_DIR/main.sh"  \
-     "Handling Pane  -->"  Left  "run-shell $CURRENT_DIR/panes.sh" \
-     "-#[align=centre]-----------   Commands   -----------" "" "" \
+     "Back to Main menu"      Home  "run-shell $CURRENT_DIR/main.sh"  \
+     "Back to Handling Pane"  Left  "run-shell $CURRENT_DIR/panes.sh" \
+     "-#[align=centre,nodim]-----------   Commands   -----------" "" "" \
      "-Enter Paste selected buffer"           "" "" \
      "-Up    Select previous buffer"          "" "" \
      "-Down  Select next buffer"              "" "" \
@@ -80,13 +82,4 @@ tmux display-menu  \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/pane_buffers.sh\""
 
 
-#
-#  If a menu can't fit inside the available space it will close instantly
-#  so if the seconds didnt tick up, assume this situation and check screen size
-#  Giving a warning if it is to small.
-#  And obviously display this message in a way that does not depend on
-#  screen size :)
-#
-[ "$t_start" = "$(date +'%s')" ] && check_screen_size 41 27 "$menu_name"
-
-exit 0
+ensure_menu_fits_on_screen

@@ -43,22 +43,31 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
 
+menu_name="Split view"
+req_win_width=28
+req_win_height=15
+
+
+t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
 tmux display-menu  \
-     -T "#[align=centre] Split view "        \
+     -T "#[align=centre] $menu_name "        \
      -x "$menu_location_x" -y "$menu_location_y" \
      \
-     "Main menu  -->"  Left  "run-shell $CURRENT_DIR/main.sh"  \
-     "-#[align=centre]---  Split Pane  ---" "" ""              \
+     "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
+     "-#[align=centre,nodim]----  Split Pane  ----" "" ""              \
      "    Left"   l   "split-window -hb   -c '#{pane_current_path}' ; run-shell \"$CURRENT_DIR/split_view.sh\""   \
      "<P> Right"  "%" "split-window -h    -c '#{pane_current_path}' ; run-shell \"$CURRENT_DIR/split_view.sh\""   \
      "    Above"  a   "split-window -vb   -c '#{pane_current_path}' ; run-shell \"$CURRENT_DIR/split_view.sh\""   \
      "<P> Below"  \"  "split-window -v    -c '#{pane_current_path}' ; run-shell \"$CURRENT_DIR/split_view.sh\""   \
-     "-#[align=centre]--  Split Window  --" "" ""              \
+     "-#[align=centre,nodim]---  Split Window  ---" "" ""              \
      "    Left"   L   "split-window -fhb  -c '#{pane_current_path}' ; run-shell \"$CURRENT_DIR/split_view.sh\""   \
      "    Right"  R   "split-window -fh   -c '#{pane_current_path}' ; run-shell \"$CURRENT_DIR/split_view.sh\""   \
      "    Above"  A   "split-window -fvb  -c '#{pane_current_path}' ; run-shell \"$CURRENT_DIR/split_view.sh\""   \
      "    Below"  B   "split-window -fv   -c '#{pane_current_path}' ; run-shell \"$CURRENT_DIR/split_view.sh\""   \
      "" \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help_split.sh $CURRENT_DIR/split_view.sh\""
+
+
+ensure_menu_fits_on_screen

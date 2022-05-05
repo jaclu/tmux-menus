@@ -43,12 +43,15 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
 
-t_start="$(date +'%s')"
+menu_name="Main menu"
+req_win_width=41
+req_win_height=19
 
+t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
 tmux display-menu \
-     -T "#[align=centre] Main menu "              \
+     -T "#[align=centre] $menu_name "              \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
      "Handling Pane      -->"  P  "run-shell $CURRENT_DIR/panes.sh"       \
@@ -58,25 +61,15 @@ tmux display-menu \
      "Split view         -->"  V  "run-shell $CURRENT_DIR/split_view.sh"  \
      "Advanced Options   -->"  A  "run-shell $CURRENT_DIR/advanced.sh"    \
      "" \
+     "-#[nodim]Search in all sesions and windows" "" "" \
+     " ignores case, only visible part "     s  "command-prompt -p \"Search for:\" \"find-window -CNTiZ -- '%%'\"" \
+     "Navigate & select ses/win/pane" n   "choose-tree -Z"  \
+     "" \
      "<P> List all key bindings"        \?  "list-keys -N"  \
      "    Reload configuration file" "r" "run-shell 'tmux source-file ~/.tmux.conf; tmux display-message \"Sourced ~/.tmux.conf\"'"  \
      "<P> Detach from tmux"  d  detach-client      \
      "" \
-     "-Search in all ses/win, ignores" "" "" \
-     " case, only visible part"     s  "command-prompt -p \"Search for:\" \"find-window -CNTiZ -- '%%'\"" \
-     "Navigate & select ses/win/pane" n   "choose-tree -Z"  \
-     "" \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/main.sh\""
 
 
-#
-#  If a menu can't fit inside the available space it will close instantly
-#  so if the seconds didnt tick up, assume this situation and check screen size
-#  Giving a warning if it is to small.
-#  And obviously display this message in a way that does not depend on
-#  screen size :)
-#
-
-[ "$t_start" = "$(date +'%s')" ] && check_screen_size 38 18
-
-exit 0
+ensure_menu_fits_on_screen

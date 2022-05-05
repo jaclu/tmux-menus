@@ -43,11 +43,11 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
 
-previous_menu="$1"
-
 menu_name="Help summary"
+req_win_width=44
+req_win_height=15
 
-t_start="$(date +'%s')"
+previous_menu="$1"
 
 
 if [ -z "$previous_menu" ]; then
@@ -55,12 +55,14 @@ if [ -z "$previous_menu" ]; then
 fi
 
 
+t_start="$(date +'%s')"
+
 # shellcheck disable=SC2154
 tmux display-menu  \
     -T "#[align=centre] $menu_name "          \
     -x "$menu_location_x" -y "$menu_location_y" \
     \
-    "Previous menu  -->"  Left  "run-shell $previous_menu"  \
+    "Back to Previous menu"  Left  "run-shell $previous_menu"  \
     "" \
     "- -->  Indicates this will open a"         "" "" \
     "-      new menu."                          "" "" \
@@ -75,17 +77,4 @@ tmux display-menu  \
     "-with the exception of defaults."          "" ""
 
 
-menu_name="Help summary"
-
-t_start="$(date +'%s')"
-
-#
-#  If a menu can't fit inside the available space it will close instantly
-#  so if the seconds didnt tick up, assume this situation and check screen size
-#  Giving a warning if it is to small.
-#  And obviously display this message in a way that does not depend on
-#  screen size :)
-#
-[ "$t_start" = "$(date +'%s')" ] && check_screen_size 44 15 "$menu_name"
-
-exit 0
+ensure_menu_fits_on_screen

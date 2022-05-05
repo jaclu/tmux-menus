@@ -44,9 +44,11 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 . "$SCRIPT_DIR/utils.sh"
 
 menu_name="Help, Split view"
+req_win_width=40
+req_win_height=7
+
 
 previous_menu="$1"
-
 
 if [ -z "$previous_menu" ]; then
     error_msg "help_split.sh was called without notice of what called it"
@@ -64,20 +66,11 @@ tmux display-menu  \
      -T "#[align=centre] $menu_name   "       \
      -x "$menu_location_x" -y "$menu_location_y"   \
      \
-     "Split View  -->"  Left  "run-shell $previous_menu"  \
+     "Back to Previous menu"  Left  "run-shell $previous_menu"  \
      "" \
      "-Creating a new pane by splitting"     "" "" \
      "-current Pane or Window."              "" "" \
      "-Window refers to the entire display"  "" ""
 
 
-#
-#  If a menu can't fit inside the available space it will close instantly
-#  so if the seconds didnt tick up, assume this situation and check screen size
-#  Giving a warning if it is to small.
-#  And obviously display this message in a way that does not depend on
-#  screen size :)
-#
-[ "$t_start" = "$(date +'%s')" ] && check_screen_size 40 7 "$menu_name"
-
-exit 0
+ensure_menu_fits_on_screen

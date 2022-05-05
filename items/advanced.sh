@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.7 2022-05-05
+#   Version: 1.2.8 2022-05-06
 #
 #   Advanced options
 #
@@ -45,7 +45,8 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
 
 menu_name="Advanced options"
-
+req_win_width=40
+req_win_height=17
 
 #
 #  Gather some info in order to be able to show states
@@ -69,8 +70,8 @@ tmux display-menu \
      -T "#[align=centre] $menu_name "             \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Main menu       -->"  Left  "run-shell $CURRENT_DIR/main.sh"  \
-     "Manage clients  -->"  M     "run-shell \"$CURRENT_DIR/advanced_manage_clients.sh\""    \
+     "Back to Main menu"       Left  "run-shell $CURRENT_DIR/main.sh"  \
+     "Client management  -->"  C     "run-shell \"$CURRENT_DIR/advanced_manage_clients.sh\""    \
      "" \
      "<P> Show messages"         \~  show-messages        \
      "<P> Customize options"      C  "customize-mode -Z"  \
@@ -80,19 +81,10 @@ tmux display-menu \
      "Toggle mouse to: $new_mouse_status"  m  "set-option -g mouse $new_mouse_status"   \
      "Change prefix <$current_prefix>"     p  "command-prompt -1 -p prefix 'run \"$SCRIPT_DIR/change_prefix.sh %%\"'"  \
      "" \
-     "-Kill server - all your sessions"       "" ""  \
+     "-#[nodim]Kill server - all your sessions"       "" ""  \
      " on this host are terminated    "    k  "confirm-before -p \"kill tmux server on #H ? (y/n)\" kill-server"  \
      "" \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/advanced.sh\""
 
 
-#
-#  If a menu can't fit inside the available space it will close instantly
-#  so if the seconds didnt tick up, assume this situation and check screen size
-#  Giving a warning if it is to small.
-#  And obviously display this message in a way that does not depend on
-#  screen size :)
-#
-[ "$t_start" = "$(date +'%s')" ] && check_screen_size 40 17 "$menu_name"
-
-exit 0
+ensure_menu_fits_on_screen

@@ -43,19 +43,27 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
 
+menu_name="Layouts"
+req_win_width=35
+req_win_height=12
+
+t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
 tmux display-menu  \
-     -T "#[align=centre] Layouts "            \
+     -T "#[align=centre] $menu_name "            \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Main menu  -->"           Left  "run-shell $CURRENT_DIR/main.sh"  \
+     "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
      "" \
-     "    Even horizontal"           1  "select-layout even-horizontal ; run-shell \"$CURRENT_DIR/layouts.sh\"" \
-     "    Even vertical"             2  "select-layout even-vertical ; run-shell \"$CURRENT_DIR/layouts.sh\"" \
-     "    Main horizontal"           3  "select-layout main-horizontal ; run-shell \"$CURRENT_DIR/layouts.sh\"" \
-     "    Main vertical"             4  "select-layout main-vertical ; run-shell \"$CURRENT_DIR/layouts.sh\"" \
-     "    Tiled"                     5  "select-layout tiled ; run-shell \"$CURRENT_DIR/layouts.sh\"" \
-    "<P> Spread panes out evenly."   E  "select-layout -E ; run-shell \"$CURRENT_DIR/layouts.sh\"" \
+     "    Even horizontal"         1  "select-layout even-horizontal ; run-shell \"$CURRENT_DIR/layouts.sh\"" \
+     "    Even vertical"           2  "select-layout even-vertical ; run-shell \"$CURRENT_DIR/layouts.sh\"" \
+     "    Main horizontal"         3  "select-layout main-horizontal ; run-shell \"$CURRENT_DIR/layouts.sh\"" \
+     "    Main vertical"           4  "select-layout main-vertical ; run-shell \"$CURRENT_DIR/layouts.sh\"" \
+     "    Tiled"                   5  "select-layout tiled ; run-shell \"$CURRENT_DIR/layouts.sh\"" \
+    "<P> Spread panes out evenly"  E  "select-layout -E ; run-shell \"$CURRENT_DIR/layouts.sh\"" \
      "" \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/layouts.sh\""
+
+
+ensure_menu_fits_on_screen

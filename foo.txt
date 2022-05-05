@@ -2,18 +2,25 @@
 
 44  22
 
+#  41 19 main   OLD 43 23 NEW 43 18
+
 #  40 17 advanced
 #  41 28 advanced_manage_clients
-# 44 15 help
-# 40  7 help_split
-#  (!)44 15 help_window_move
-# > 36 12 layouts
-#  38 18 main   OLD 43 23 NEW 43 18
-# !41 27 pane_buffers
+#  44 15 help
+#  40  7 help_split
+#  44 15 help_window_move
+#  35 12 layouts
+#  41 27 pane_buffers
 #  41 13 pane_move (when marked)
-#  33 19 pane_resize
+#  33 18 pane_resize
 #  35 22  panes
 #  39 15 sessions
-#  25 15 split_view
-#  43 15 window_move
-#  38 22 windows
+#  28 16 split_view
+#  41 15 window_move
+#>  38 22 windows
+
+menu_name="Help summary"
+req_win_width=44
+req_win_height=15
+
+ensure_menu_fits_on_screen

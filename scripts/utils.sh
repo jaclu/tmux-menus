@@ -44,12 +44,22 @@ log_it() {
 #  If no $2 or set to 0, process is not exited
 #
 error_msg() {
-    msg="ERROR: $1"
-    exit_code="${2:-0}"
+    em_msg="ERROR: $1"
+    em_exit_code="${2:-0}"
 
-    log_it "$msg"
-    tmux display-message "$plugin_name $msg"
-    [ "$exit_code" -ne 0 ] && exit "$exit_code"
+    log_it "em_$msg"
+    
+    em_msg="$plugin_name $em_msg"
+    em_msg_len="$(echo -n "$em_msg" | wc -m)"
+    em_screen_width="$(tmux display -p "#{window_width}")"
+    if [ "$em_msg_len" -le "$em_screen_width" ]; then
+	tmux display-message "$em_msg"
+    else
+	#  Screen is to narrow to use display message
+	echo
+	echo "$em_msg"
+    fi
+    [ "$em_exit_code" -ne 0 ] && exit "$em_exit_code"
 }
 
 
@@ -102,23 +112,25 @@ get_tmux_option() {
 }
 
 
-check_screen_size() {
-    css_min_width="$1"
-    css_min_height="$2"
-    css_msg="${3:-tmux-menus}"
-    log_it "check_screen_size() $css_min_width $css_min_height"
-    [ "$css_min_width" = "" ] && error_msg "check_screen_size() param 1 (width) missing" 1
-    [ "$css_min_height" = "" ] && error_msg "check_screen_size() param 2 (height) missing" 1
+ensure_menu_fits_on_screen() {
+    [ "$t_start" -ne "$(date +'%s')" ] && return  # menu should have been displayed
+
+    log_it "ensure_menu_fits_on_screen() $req_win_width req_win_height" "$menu_name"
+    [ "$req_win_width" = "" ] && error_msg "ensure_menu_fits_on_screen() req_win_width not set" 1
+    [ "$req_win_height" = "" ] && error_msg "ensure_menu_fits_on_screen() req_win_height not set" 1
+    [ "$menu_name" = "" ] && error_msg "ensure_menu_fits_on_screen() menu_name not set" 1
     
     css_width="$(tmux display -p "#{window_width}")"
     log_it "Current width: $css_width"
     css_height="$(tmux display -p "#{window_height}")"
     log_it "Current height: $css_height"
 
-    if [ $css_width -lt $css_min_width -o $css_height -lt $css_min_height ]; then
+    if [ $css_width -lt $req_win_width -o $css_height -lt $req_win_height ]; then
 	echo
-	echo "$css_msg needs a screen size"
-	echo "of at least $css_min_width x $css_min_height"
+	echo "menu '$menu_name'"
+	echo "needs a screen size"
+	echo "of at least $req_win_width x $req_win_height"
+	exit 0  # Is needed if the screen was too small and menu failed to display
     fi
 }
 
