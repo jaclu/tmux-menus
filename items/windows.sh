@@ -52,7 +52,7 @@ tmux display-menu  \
      \
      "Back to main-menu"  Left  "run-shell $CURRENT_DIR/main.sh" \
      "" \
-     "    Move window  -->"  M  "run-shell \"$CURRENT_DIR/window_move.sh\"" \
+     "Move window  -->"  M  "run-shell \"$CURRENT_DIR/window_move.sh\"" \
      "" \
      "<P> Rename window"             ,  "command-prompt -I \"#W\"  -p \"New window name: \"  \"rename-window '%%'\""  \
      "    New window after current"  a  "command-prompt -p \"Name of new window: \" \"new-window -a -n '%%'"  \
@@ -63,8 +63,8 @@ tmux display-menu  \
      "<P> Previous window (in order)"  p  "previous-window ; run-shell \"$CURRENT_DIR/windows.sh\"" \
      "<P> Next     window (in order)"  n  "next-window ; run-shell \"$CURRENT_DIR/windows.sh\"" \
      "" \
-     "    Previous window with an alert" P "previous-window -a ; run-shell \"$CURRENT_DIR/windows.sh\"" \
-     "    Next window with an alert" N "next-window -a ; run-shell \"$CURRENT_DIR/windows.sh\"" \
+     "Previous window with an alert" P "previous-window -a ; run-shell \"$CURRENT_DIR/windows.sh\"" \
+     "Next window with an alert" N "next-window -a ; run-shell \"$CURRENT_DIR/windows.sh\"" \
      "" \
      "<P> Kill current window"    \&  "confirm-before -p \"kill-window #W? (y/n)\" kill-window"  \
      "    Kill all other windows"  o  "confirm-before -p \"Are you sure you want to kill all other windows? (y/n)\" \"run \"${SCRIPT_DIR}/kill_other_windows.sh\" \" "  \

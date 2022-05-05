@@ -51,9 +51,9 @@ tmux display-menu  \
      \
      "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
      "" \
-     "    Move pane  -->"     M  "run-shell \"$CURRENT_DIR/pane_move.sh\""    \
-     "    Resize pane  -->"   R  "run-shell \"$CURRENT_DIR/pane_resize.sh\""  \
-     "    Paste buffers -->"  B  "run-shell \"$CURRENT_DIR/pane_buffers.sh\"" \
+     "Move pane  -->"     M  "run-shell \"$CURRENT_DIR/pane_move.sh\""    \
+     "Resize pane  -->"   R  "run-shell \"$CURRENT_DIR/pane_resize.sh\""  \
+     "Paste buffers -->"  B  "run-shell \"$CURRENT_DIR/pane_buffers.sh\"" \
      "" \
      "    Set Title"             t  "command-prompt -I \"#T\"  -p \"Title: \"  \"select-pane -T '%%'\""  \
      "<P> Zoom pane toggle"      z  "resize-pane -Z" \
@@ -62,8 +62,8 @@ tmux display-menu  \
      "<P> #{?pane_marked,Unmark,Mark} current pane" m  "select-pane -m ; run-shell \"$CURRENT_DIR/panes.sh\""  \
      "    Display pane size"     s  "display-message \"Pane: #P size: #{pane_width}x#{pane_height}\"" \
      "" \
-     "    #{?pane_synchronized,#[bold]Disable[#defaults],Activate} synchronized panes"  y  "set -w synchronize-panes"  \
-     "    Save pane history to file"   h  "command-prompt -p 'Save current-pane history to filename:' -I '~/tmux.history' 'capture-pane -S - -E - ; save-buffer %1 ; delete-buffer'" \
+     "#{?pane_synchronized,#[bold]Disable[#defaults],Activate} synchronized panes"  y  "set -w synchronize-panes"  \
+     "Save pane history to file"   h  "command-prompt -p 'Save current-pane history to filename:' -I '~/tmux.history' 'capture-pane -S - -E - ; save-buffer %1 ; delete-buffer'" \
      "" \
      "    Respawn current pane"        r  "confirm-before -p \"respawn-pane #P? (y/n)\" \"respawn-pane -k\"" \
      "<P> Kill current pane"           x  "confirm-before -p \"kill-pane #P? (y/n)\" kill-pane"      \

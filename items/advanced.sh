@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.6 2022-05-05
+#   Version: 1.2.7 2022-05-05
 #
 #   Advanced options
 #
@@ -64,19 +64,19 @@ tmux display-menu \
      -T "#[align=centre] Advanced options "      \
      -x "$menu_location_x" -y "$menu_location_y" \
      \
-     "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
+     "Main menu  -->"  Left  "run-shell $CURRENT_DIR/main.sh"  \
      "" \
-     "    Manage clients  -->"    M "run-shell \"$CURRENT_DIR/advanced_manage_clients.sh\""    \
+     "Manage clients  -->"    M "run-shell \"$CURRENT_DIR/advanced_manage_clients.sh\""    \
      "" \
      "<P> Show messages"                       \~  show-messages        \
      "<P> Customize options"                    C  "customize-mode -Z"  \
-     "<P> Describe (prefix) key binding"        /  "command-prompt -k -p key \"list-keys -1N \\"%%%\\"\""  \
+     "<P> Describe (prefix) key"        /  "command-prompt -k -p key \"list-keys -1N \\"%%%\\"\""  \
      "<P> Prompt for a command"                 :  command-prompt  \
      "" \
-     "    Toggle mouse to: $new_mouse_status"   m  "set-option -g mouse $new_mouse_status"   \
-     "    Change prefix <$current_prefix>"      p  "command-prompt -1 -p prefix 'run \"$SCRIPT_DIR/change_prefix.sh %%\"'"  \
+     "Toggle mouse to: $new_mouse_status"   m  "set-option -g mouse $new_mouse_status"   \
+     "Change prefix <$current_prefix>"      p  "command-prompt -1 -p prefix 'run \"$SCRIPT_DIR/change_prefix.sh %%\"'"  \
      "" \
      "Kill server - all your sessions" "" ""  \
-     "on this host are terminated    "          k  "confirm-before -p \"kill tmux server on #H ? (y/n)\" kill-server"  \
+     " on this host are terminated    "          k  "confirm-before -p \"kill tmux server on #H ? (y/n)\" kill-server"  \
      "" \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/advanced.sh\""

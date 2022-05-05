@@ -51,24 +51,20 @@ tmux display-menu \
      -T "#[align=centre] Main menu "              \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "    Handling Pane      -->"  P  "run-shell $CURRENT_DIR/panes.sh"       \
-     "    Handling Window    -->"  W  "run-shell $CURRENT_DIR/windows.sh"     \
-     "    Handling Sessions  -->"  S  "run-shell $CURRENT_DIR/sessions.sh"    \
-     "    Layouts            -->"  L  "run-shell $CURRENT_DIR/layouts.sh"     \
-     "    Split view         -->"  V  "run-shell $CURRENT_DIR/split_view.sh"  \
-     "    Advanced Options   -->"  A  "run-shell $CURRENT_DIR/advanced.sh"    \
+     "Handling Pane      -->"  P  "run-shell $CURRENT_DIR/panes.sh"       \
+     "Handling Window    -->"  W  "run-shell $CURRENT_DIR/windows.sh"     \
+     "Handling Sessions  -->"  S  "run-shell $CURRENT_DIR/sessions.sh"    \
+     "Layouts            -->"  L  "run-shell $CURRENT_DIR/layouts.sh"     \
+     "Split view         -->"  V  "run-shell $CURRENT_DIR/split_view.sh"  \
+     "Advanced Options   -->"  A  "run-shell $CURRENT_DIR/advanced.sh"    \
      "" \
      "<P> List all key bindings"        \?  "list-keys -N"  \
      "    Reload configuration file" "r" "run-shell 'tmux source-file ~/.tmux.conf; tmux display-message \"Sourced ~/.tmux.conf\"'"  \
-     "" \
-     "    Search in all sessions and" "" "" \
-     "    windows, ignores case," "" "" \
-     "    only visible part"     s  "command-prompt -p \"Search for:\" \"find-window -CNTiZ -- '%%'\"" \
-     "" \
-     "    Navigate & select ses/win/pane " ""  ""  \
-     "    use arrows to navigate & zoom  " n   "choose-tree -Z"  \
-     "" \
      "<P> Detach from tmux"  d  detach-client      \
+     "" \
+     "Search in all ses/win, ignores" "" "" \
+     " case, only visible part"     s  "command-prompt -p \"Search for:\" \"find-window -CNTiZ -- '%%'\"" \
+     "Navigate & select ses/win/pane" n   "choose-tree -Z"  \
      "" \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/main.sh\""
 
@@ -80,6 +76,6 @@ tmux display-menu \
 #  And obviously display this message in a way that does not depend on
 #  screen size :)
 #
-[ "$t_start" = "$(date +'%s')" ] && check_screen_size 43 23
+[ "$t_start" = "$(date +'%s')" ] && check_screen_size 40 20
 
 exit 0
