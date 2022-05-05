@@ -51,7 +51,7 @@ tmux display-menu  \
      -T "#[align=centre] Handling Pane "  \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Main menu      -->"  Left  "run-shell $CURRENT_DIR/main.sh"  \
+     "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
      "Move pane      -->"  M     "run-shell \"$CURRENT_DIR/pane_move.sh\""    \
      "Resize pane    -->"  R     "run-shell \"$CURRENT_DIR/pane_resize.sh\""  \
      "Paste buffers  -->"  B      "run-shell \"$CURRENT_DIR/pane_buffers.sh\"" \

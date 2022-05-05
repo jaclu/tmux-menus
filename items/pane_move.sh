@@ -49,8 +49,8 @@ tmux display-menu  \
      -T "#[align=centre] Move Pane "  \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Main menu      -->"  Home  "run-shell $CURRENT_DIR/main.sh"  \
-     "Handling Pane  -->"  Left  "run-shell $CURRENT_DIR/panes.sh" \
+     "Back to Main menu"  Home  "run-shell $CURRENT_DIR/main.sh"  \
+     "Back to Handling Pane"  Left  "run-shell $CURRENT_DIR/panes.sh" \
      "" \
      "    Move to other win/ses"  m  "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_pane.sh  P M %%\"'" \
      "#{?pane_marked_set,,-}    Swap current pane with marked"  s  swap-pane  \
