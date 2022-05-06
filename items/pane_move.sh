@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.10 2022-04-21
+#   Version: 1.3.0 2022-05-06
 #
 #   Move a pane
 #

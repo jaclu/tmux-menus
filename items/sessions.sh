@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.6 2022-04-16
+#   Version: 1.3.0 2022-05-06
 #
 #   Handling Sessions
 #

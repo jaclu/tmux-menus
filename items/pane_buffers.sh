@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0.1 2022-05-05
+#   Version: 1.1.0 2022-05-06
 #
 #   Select and modify paste buffers
 #
