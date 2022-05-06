@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.8 2022-04-21
+#   Version: 1.3.0 2022-05-06
 #
 #   Handling Window
 #
@@ -44,15 +44,20 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
 
+menu_name="Handling Window"
+req_win_width=38
+req_win_height=21
+
+
+t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
 tmux display-menu  \
-     -T "#[align=centre] Handling Window   "  \
+     -T "#[align=centre] $menu_name   "  \
      -x "$menu_location_x" -y "$menu_location_y" \
      \
-     "Back to main-menu"  Left  "run-shell $CURRENT_DIR/main.sh" \
-     "" \
-     "    Move window  -->"  M  "run-shell \"$CURRENT_DIR/window_move.sh\"" \
+     "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh" \
+     "Move window  -->"   M     "run-shell \"$CURRENT_DIR/window_move.sh\"" \
      "" \
      "<P> Rename window"             ,  "command-prompt -I \"#W\"  -p \"New window name: \"  \"rename-window '%%'\""  \
      "    New window after current"  a  "command-prompt -p \"Name of new window: \" \"new-window -a -n '%%'"  \
@@ -63,10 +68,13 @@ tmux display-menu  \
      "<P> Previous window (in order)"  p  "previous-window ; run-shell \"$CURRENT_DIR/windows.sh\"" \
      "<P> Next     window (in order)"  n  "next-window ; run-shell \"$CURRENT_DIR/windows.sh\"" \
      "" \
-     "    Previous window with an alert" P "previous-window -a ; run-shell \"$CURRENT_DIR/windows.sh\"" \
-     "    Next window with an alert" N "next-window -a ; run-shell \"$CURRENT_DIR/windows.sh\"" \
+     "Previous window with an alert" P "previous-window -a ; run-shell \"$CURRENT_DIR/windows.sh\"" \
+     "Next window with an alert" N "next-window -a ; run-shell \"$CURRENT_DIR/windows.sh\"" \
      "" \
      "<P> Kill current window"    \&  "confirm-before -p \"kill-window #W? (y/n)\" kill-window"  \
      "    Kill all other windows"  o  "confirm-before -p \"Are you sure you want to kill all other windows? (y/n)\" \"run \"${SCRIPT_DIR}/kill_other_windows.sh\" \" "  \
      "" \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/windows.sh\""
+
+
+ensure_menu_fits_on_screen

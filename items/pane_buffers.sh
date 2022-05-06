@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0.1 2022-05-05
+#   Version: 1.1.0 2022-05-06
 #
 #   Select and modify paste buffers
 #
@@ -43,10 +43,12 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
 
-t_start="$(date +'%s')"
-
 menu_name="Paste buffers"
+req_win_width=41
+req_win_height=27
 
+
+t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
 tmux display-menu  \
@@ -55,38 +57,29 @@ tmux display-menu  \
      \
      "Back to Main menu"      Home  "run-shell $CURRENT_DIR/main.sh"  \
      "Back to Handling Pane"  Left  "run-shell $CURRENT_DIR/panes.sh" \
-     "" \
-     "     ========  Commands  ========"        "" "" \
-     "    Enter Paste selected buffer"           "" "" \
-     "    Up    Select previous buffer"          "" "" \
-     "    Down  Select next buffer"              "" "" \
-     "    C-s   Search by name or content"       "" "" \
-     "    n     Repeat last search"              "" "" \
-     "    t     Toggle if buffer is tagged"      "" "" \
-     "    T     Tag no buffers"                  "" "" \
-     "    C-t   Tag all buffers"                 "" "" \
-     "    p     Paste selected buffer"           "" "" \
-     "    P     Paste tagged buffers"            "" "" \
-     "    d     Delete selected buffer"          "" "" \
-     "    D     Delete tagged buffers"           "" "" \
-     "    e     Open the buffer in an editor"    "" "" \
-     "    f     Enter a format to filter items"  "" "" \
-     "    O     Change sort field"               "" "" \
-     "    r     Reverse sort order"              "" "" \
-     "    v     Toggle preview"                  "" "" \
-     "    q     Exit mode"                       "" "" \
+     "-#[align=centre,nodim]-----------   Commands   -----------" "" "" \
+     "-Enter Paste selected buffer"           "" "" \
+     "-Up    Select previous buffer"          "" "" \
+     "-Down  Select next buffer"              "" "" \
+     "-C-s   Search by name or content"       "" "" \
+     "-n     Repeat last search"              "" "" \
+     "-t     Toggle if buffer is tagged"      "" "" \
+     "-T     Tag no buffers"                  "" "" \
+     "-C-t   Tag all buffers"                 "" "" \
+     "-p     Paste selected buffer"           "" "" \
+     "-P     Paste tagged buffers"            "" "" \
+     "-d     Delete selected buffer"          "" "" \
+     "-D     Delete tagged buffers"           "" "" \
+     "-e     Open the buffer in an editor"    "" "" \
+     "-f     Enter a format to filter items"  "" "" \
+     "-O     Change sort field"               "" "" \
+     "-r     Reverse sort order"              "" "" \
+     "-v     Toggle preview"                  "" "" \
+     "-q     Exit mode"                       "" "" \
+     "-" "" "" \
      "<P>"  =  "choose-buffer -Z"  \
      "" \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/pane_buffers.sh\""
 
 
-#
-#  If a menu can't fit inside the available space it will close instantly
-#  so if the seconds didnt tick up, assume this situation and check screen size
-#  Giving a warning if it is to small.
-#  And obviously display this message in a way that does not depend on
-#  screen size :)
-#
-[ "$t_start" = "$(date +'%s')" ] && check_screen_size 44 27 "$menu_name"
-
-exit 0
+ensure_menu_fits_on_screen

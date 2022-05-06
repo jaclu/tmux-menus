@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.5 2022-05-05
+#   Version: 1.3.0 2022-05-06
 #
 #   General Help
 #
@@ -43,11 +43,11 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
 
-t_start="$(date +'%s')"
+menu_name="Help summary"
+req_win_width=44
+req_win_height=15
 
 previous_menu="$1"
-
-menu_name="Help summary"
 
 
 if [ -z "$previous_menu" ]; then
@@ -55,38 +55,26 @@ if [ -z "$previous_menu" ]; then
 fi
 
 
+t_start="$(date +'%s')"
+
 # shellcheck disable=SC2154
 tmux display-menu  \
     -T "#[align=centre] $menu_name "          \
     -x "$menu_location_x" -y "$menu_location_y" \
     \
-    "Back to previous menu"  Left  "run-shell $previous_menu"  \
+    "Back to Previous menu"  Left  "run-shell $previous_menu"  \
     "" \
-    "<P> indicates this key is a default key" "" ""   \
-    "    so unless you have changed it," "" ""        \
-    "    it should be possible to use" "" ""          \
-    "    with <prefix> directly." "" ""  \
+    "- -->  Indicates this will open a"         "" "" \
+    "-      new menu."                          "" "" \
     "" \
-    " -->  Indicates this will open a" "" ""  \
-    "      new menu." "" "" \
+    "-<P> Indicates this key is a default key"  "" "" \
+    "-    so unless you have changed it,"       "" "" \
+    "-    it should be possible to use"         "" "" \
+    "-    with <prefix> directly."              "" "" \
     "" \
-    "On options spanning multiple lines,"      "" ""  \
-    "if you use Enter to select, you must be"  "" ""  \
-    "on the line with the shortcut. Otherwise" "" ""  \
-    "it is interpreted as cancel."            "" ""   \
-    "" \
-    "Shortcut keys are typically upper case" "" ""     \
-    "for new menus, and lower case for actions" "" ""  \
-    "with the exception of default keys." "" ""
+    "-Shortcut keys are upper case for new"     "" "" \
+    "-menus, and lower case for actions,"       "" "" \
+    "-with the exception of defaults."          "" ""
 
 
-#
-#  If a menu can't fit inside the available space it will close instantly
-#  so if the seconds didnt tick up, assume this situation and check screen size
-#  Giving a warning if it is to small.
-#  And obviously display this message in a way that does not depend on
-#  screen size :)
-#
-[ "$t_start" = "$(date +'%s')" ] && check_screen_size 45 20 "$menu_name"
-
-exit 0
+ensure_menu_fits_on_screen

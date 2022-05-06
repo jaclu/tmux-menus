@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.7 2022-04-16
+#   Version: 1.3.0 2022-05-06
 #
 #   Move Window
 #
@@ -45,22 +45,31 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
 
+menu_name="Move Window"
+req_win_width=41
+req_win_height=15
+
+
+t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
 tmux display-menu  \
-     -T "#[align=centre] Move Window "  \
+     -T "#[align=centre] $menu_name "  \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Back to Main menu"       Home  "run-shell $CURRENT_DIR/main.sh"  \
+     "Back to Main menu"        Home  "run-shell $CURRENT_DIR/main.sh"  \
      "Back to Handling Window"  Left  "run-shell $CURRENT_DIR/windows.sh" \
      "" \
-     "    Move window to other location"    m  "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_window.sh W M %%\"'" \
-     "#{?pane_marked_set,,-}    Swap current window with window" "" ""  \
-     "#{?pane_marked_set,,-}    containing marked pane         "  s  swap-window  \
-     "    Swap window Left"                \<  "swap-window -dt:-1 ; run-shell \"$CURRENT_DIR/window_move.sh\""  \
-     "    Swap window Right"               \>  "swap-window -dt:+1 ; run-shell \"$CURRENT_DIR/window_move.sh\""  \
+     "Move window to other location"    m  "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_window.sh W M %%\"'" \
+     "-#{?pane_marked_set,#[nodim],}Swap current window with window" "" ""  \
+     "#{?pane_marked_set,,-} containing marked pane        "  s  swap-window  \
+     "Swap window Left"                \<  "swap-window -dt:-1 ; run-shell \"$CURRENT_DIR/window_move.sh\""  \
+     "Swap window Right"               \>  "swap-window -dt:+1 ; run-shell \"$CURRENT_DIR/window_move.sh\""  \
      "" \
-     "    Link window to other session"     l  "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_window.sh W L %%\"'" \
-     "    Unlink window from this session"  u  "unlink-window" \
+     "Link window to other session"     l  "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_window.sh W L %%\"'" \
+     "Unlink window from this session"  u  "unlink-window" \
      "" \
-     "Help, explaining move & link  -->"         H  "run-shell \"$CURRENT_DIR/help_window_move.sh\""
+     "Help, explaining move & link  -->"  H  "run-shell \"$CURRENT_DIR/help_window_move.sh\""
+
+
+ensure_menu_fits_on_screen

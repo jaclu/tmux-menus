@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.9 2022-05-03
+#   Version: 1.3.0 2022-05-06
 #
 #   Handling pane
 #
@@ -43,17 +43,22 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
 
+menu_name="Handling Pane"
+req_win_width=35
+req_win_height=22
+
+
+t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
 tmux display-menu  \
      -T "#[align=centre] Handling Pane "  \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
-     "" \
-     "    Move pane  -->"     M  "run-shell \"$CURRENT_DIR/pane_move.sh\""    \
-     "    Resize pane  -->"   R  "run-shell \"$CURRENT_DIR/pane_resize.sh\""  \
-     "    Paste buffers -->"  B  "run-shell \"$CURRENT_DIR/pane_buffers.sh\"" \
+     "Back to Main menu"   Left  "run-shell $CURRENT_DIR/main.sh"  \
+     "Move pane      -->"  M     "run-shell \"$CURRENT_DIR/pane_move.sh\""    \
+     "Resize pane    -->"  R     "run-shell \"$CURRENT_DIR/pane_resize.sh\""  \
+     "Paste buffers  -->"  B     "run-shell \"$CURRENT_DIR/pane_buffers.sh\"" \
      "" \
      "    Set Title"             t  "command-prompt -I \"#T\"  -p \"Title: \"  \"select-pane -T '%%'\""  \
      "<P> Zoom pane toggle"      z  "resize-pane -Z" \
@@ -62,11 +67,14 @@ tmux display-menu  \
      "<P> #{?pane_marked,Unmark,Mark} current pane" m  "select-pane -m ; run-shell \"$CURRENT_DIR/panes.sh\""  \
      "    Display pane size"     s  "display-message \"Pane: #P size: #{pane_width}x#{pane_height}\"" \
      "" \
-     "    #{?pane_synchronized,#[bold]Disable[#defaults],Activate} synchronized panes"  y  "set -w synchronize-panes"  \
-     "    Save pane history to file"   h  "command-prompt -p 'Save current-pane history to filename:' -I '~/tmux.history' 'capture-pane -S - -E - ; save-buffer %1 ; delete-buffer'" \
+     "#{?pane_synchronized,#[bold]Disable[#defaults],Activate} synchronized panes"  y  "set -w synchronize-panes"  \
+     "Save pane history to file"   h  "command-prompt -p 'Save current-pane history to filename:' -I '~/tmux.history' 'capture-pane -S - -E - ; save-buffer %1 ; delete-buffer'" \
      "" \
      "    Respawn current pane"        r  "confirm-before -p \"respawn-pane #P? (y/n)\" \"respawn-pane -k\"" \
      "<P> Kill current pane"           x  "confirm-before -p \"kill-pane #P? (y/n)\" kill-pane"      \
      "    Kill all other panes"        o  "confirm-before -p \"Are you sure you want to kill all other panes? (y/n)\" \"kill-pane -a\""      \
      "" \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/panes.sh\""
+
+
+ensure_menu_fits_on_screen
