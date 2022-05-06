@@ -6,7 +6,7 @@ Simple to modify to fit your needs. I have included several items that some migh
 
 #### Recent changes
 
-- Checks for window size, displaying size requirement for the menu if size is an issue, since menus just don't display if the screen is to small.
+- To make it more phone friendly, it now checks for window size, displaying size requirement for the menu if it does not fit. Menus just don't display if the screen is to small.
 - moved "mark current pane" to pane menu
 - Removed menu incompatible default shortcuts. In menus, shortcuts can not use C/M prefix or navigation keys, so for such defaults I ignore them.
 - Pane - Move - Break pane, blocked if only one pane present
