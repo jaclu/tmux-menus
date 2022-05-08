@@ -9,32 +9,6 @@
 #
 #   Handling Window
 #
-#   Types of menu item lines.
-#
-#   1) An item leading to an action
-#          "Description" "In-menu key" "Action taken when it is triggered"
-#
-#   2) Just a line of text
-#      You must supply two empty strings, in order for the
-#      menu logic to interpret it as a full menu line item.
-#          "Some text to display" "" ""
-#
-#   3) Separator line
-#      This is a proper graphical separator line, without any label.
-#          ""
-#
-#   4) Labeled separator line
-#      Not perfect, since you will have at least one space on each side of
-#      the labeled separator line, but using something like this and carefully
-#      increase the dashes until you are just below forcing the menu to just
-#      grow wider, seems to be as close as it gets.
-#          "#[align=centre]-----  Other stuff  -----" "" ""
-#
-#
-#   All but the last line in the menu, needs to end with a continuation \
-#   White space after this \ will cause the menu to fail!
-#   For any field containing no spaces, quotes are optional.
-#
 
 # shellcheck disable=SC1007
 CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
@@ -48,6 +22,19 @@ menu_name="Handling Window"
 req_win_width=38
 req_win_height=21
 
+conf_bef="confirm-before -p"
+
+rename_window="command-prompt -I \"#W\"  -p \"New window name: \"  \"rename-window '%%'\""
+new_after="command-prompt -p \"Name of new window: \" \"new-window -a -n '%%'"
+new_at_end="command-prompt -p \"Name of new window: \" \"new-window -n '%%'
+disp_win_size="display-message \"Window size: #{window_width}x#{window_height}\""
+kill_current="$conf_bef \"kill-window #W? (y/n)\" kill-window"
+kill_other="$conf_bef \"Are you sure you want to kill all other windows? (y/n)\""
+kill_other="$kill_other \"run \"${SCRIPT_DIR}/kill_other_windows.sh\" \""
+
+
+this_menu="$CURRENT_DIR/windowss.sh"
+reload="; run-shell \"$this_menu\""
 
 t_start="$(date +'%s')"
 
@@ -59,22 +46,22 @@ tmux display-menu  \
      "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh" \
      "Move window  -->"   M     "run-shell \"$CURRENT_DIR/window_move.sh\"" \
      "" \
-     "<P> Rename window"             ,  "command-prompt -I \"#W\"  -p \"New window name: \"  \"rename-window '%%'\""  \
-     "    New window after current"  a  "command-prompt -p \"Name of new window: \" \"new-window -a -n '%%'"  \
-     "<P> New window at the end"     c  "command-prompt -p \"Name of new window: \" \"new-window -n '%%'"     \
-     "    Display Window size"       s  "display-message \"Window size: #{window_width}x#{window_height}\""           \
+     "<P> Rename window"               ,  $rename_window \
+     "    New window after current"    a  $new_after     \
+     "<P> New window at the end"       c  $new_at_end    \
+     "    Display Window size"         s  $disp_win_size \
      "" \
-     "<P> Last selected window"        l  "last-window ; run-shell \"$CURRENT_DIR/windows.sh\"" \
-     "<P> Previous window (in order)"  p  "previous-window ; run-shell \"$CURRENT_DIR/windows.sh\"" \
-     "<P> Next     window (in order)"  n  "next-window ; run-shell \"$CURRENT_DIR/windows.sh\"" \
+     "<P> Last selected window"        l  "last-window     $reload" \
+     "<P> Previous window (in order)"  p  "previous-window $reload" \
+     "<P> Next     window (in order)"  n  "next-window     $reload" \
      "" \
-     "Previous window with an alert" P "previous-window -a ; run-shell \"$CURRENT_DIR/windows.sh\"" \
-     "Next window with an alert" N "next-window -a ; run-shell \"$CURRENT_DIR/windows.sh\"" \
+     "Previous window with an alert"   P  "previous-window -a $reload" \
+     "Next window with an alert"       N  "next-window -a     $reload" \
      "" \
-     "<P> Kill current window"    \&  "confirm-before -p \"kill-window #W? (y/n)\" kill-window"  \
-     "    Kill all other windows"  o  "confirm-before -p \"Are you sure you want to kill all other windows? (y/n)\" \"run \"${SCRIPT_DIR}/kill_other_windows.sh\" \" "  \
-     "" \
-     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/windows.sh\""
+     "<P> Kill current window"    \&  "$kill_current" \
+     "    Kill all other windows"  o  "kill_other" \
+          "" \
+     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $this_menu\""
 
 
 ensure_menu_fits_on_screen
