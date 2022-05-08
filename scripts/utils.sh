@@ -1,18 +1,18 @@
 #!/bin/sh
 # Always sourced file - Fake bangpath to help editors
-# shellcheck disable=SC2034
-#  Directives for shellcheck directly after bang path are global
 #
 #   Copyright (c) 2022: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.9 2022-05-05
+#   Version: 1.3.10 2022-05-08
 #
 #  Common stuff
 #
 
+#  shellcheck disable=SC2034,SC2154
+#  Directives for shellcheck directly after bang path are global
 
 #
 #  Shorthand, to avoid manually typing package name on multiple
@@ -47,10 +47,8 @@ error_msg() {
     em_msg="ERROR: $1"
     em_exit_code="${2:-0}"
 
-    log_it "em_$msg"
-    
     em_msg="$plugin_name $em_msg"
-    em_msg_len="$(echo -n "$em_msg" | wc -m)"
+    em_msg_len="$(printf "%s" "$em_msg" | wc -m)"
     em_screen_width="$(tmux display -p "#{window_width}")"
     if [ "$em_msg_len" -le "$em_screen_width" ]; then
 	tmux display-message "$em_msg"
@@ -125,7 +123,7 @@ ensure_menu_fits_on_screen() {
     css_height="$(tmux display -p "#{window_height}")"
     log_it "Current height: $css_height"
 
-    if [ $css_width -lt $req_win_width -o $css_height -lt $req_win_height ]; then
+    if [ "$css_width" -lt "$req_win_width" ] || [ "$css_height" -lt "$req_win_height" ]; then
 	echo
 	echo "menu '$menu_name'"
 	echo "needs a screen size"
