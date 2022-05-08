@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.1 2022-05-08
+#   Version: 1.3.2 2022-05-08
 #
 #   Handling pane
 #
@@ -21,8 +21,8 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 . "$SCRIPT_DIR/utils.sh"
 
 menu_name="Handling Pane"
-req_win_width=35
-req_win_height=22
+req_win_width=38
+req_win_height=23
 
 
 this_menu="$CURRENT_DIR/panes.sh"
