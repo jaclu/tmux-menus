@@ -5,36 +5,14 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.0 2022-05-06
+#   Version: 1.3.1 2022-05-08
 #
 #   General Help
 #
-#   Types of menu item lines.
-#
-#   1) An item leading to an action
-#          "Description" "In-menu key" "Action taken when it is triggered"
-#
-#   2) Just a line of text
-#      You must supply two empty strings, in order for the
-#      menu logic to interpret it as a full menu line item.
-#          "Some text to display" "" ""
-#
-#   3) Separator line
-#      This is a proper graphical separator line, without any label.
-#          ""
-#
-#   4) Labeled separator line
-#      Not perfect, since you will have at least one space on each side of
-#      the labeled separator line, but using something like this and carefully
-#      increase the dashes until you are just below forcing the menu to just
-#      grow wider, seems to be as close as it gets.
-#          "#[align=centre]-----  Other stuff  -----" "" ""
-#
-#
-#   All but the last line in the menu, needs to end with a continuation \
-#   White space after this \ will cause the menu to fail!
-#   For any field containing no spaces, quotes are optional.
-#
+
+#  shellcheck disable=SC2034
+#  Directives for shellcheck directly after bang path are global
+
 
 # shellcheck disable=SC1007
 CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
@@ -44,8 +22,8 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 . "$SCRIPT_DIR/utils.sh"
 
 menu_name="Help summary"
-req_win_width=44
-req_win_height=15
+req_win_width=40
+req_win_height=16
 
 previous_menu="$1"
 
@@ -64,17 +42,18 @@ tmux display-menu  \
     \
     "Back to Previous menu"  Left  "run-shell $previous_menu"  \
     "" \
-    "- -->  Indicates this will open a"         "" "" \
-    "-      new menu."                          "" "" \
+    "- -->  Indicates this will open a"     "" "" \
+    "-      new menu."                      "" "" \
     "" \
-    "-<P> Indicates this key is a default key"  "" "" \
-    "-    so unless you have changed it,"       "" "" \
-    "-    it should be possible to use"         "" "" \
-    "-    with <prefix> directly."              "" "" \
+    "-<P> Indicates this key is a default"  "" "" \
+    "-    key, so unless it has been"       "" "" \
+    "-    change, it should be possible"    "" "" \
+    "-    to use with <prefix> directly."   "" "" \
     "" \
-    "-Shortcut keys are upper case for new"     "" "" \
-    "-menus, and lower case for actions,"       "" "" \
-    "-with the exception of defaults."          "" ""
+    "-Shortcut keys are upper case for"     "" "" \
+    "-menus menus, and lower case for"      "" "" \
+    "-actions."                             "" "" \
+    "-With the exception of defaults."      "" ""
 
 
 ensure_menu_fits_on_screen
