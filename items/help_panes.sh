@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0.0 2022-05-06
+#   Version: 1.0.1  2022-05-08
 #
 #   Help regarding panes menu
 #
@@ -42,12 +42,12 @@ tmux display-menu  \
     \
     "Back to Previous menu"  Left  "run-shell $previous_menu"  \
     "" \
-    "-When saving history with escapes" "" "" \
-    "-less/most will not be able" "" "" \
-    "-to display the content." "" "" \
+    "-When saving history with escapes"    "" "" \
+    "-less/most will not be able"          "" "" \
+    "-to display the content."             "" "" \
     "- " "" "" \
-    "-You would have to use tools like" "" "" \
-    "-cat/bat in order to see the colors" "" ""
+    "-You would have to use tools like"    "" "" \
+    "-cat/bat in order to see the colors"  "" ""
  
 
 ensure_menu_fits_on_screen
