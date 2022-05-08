@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.4.1 2022-05-08
+#   Version: 1.4.2 2022-05-08
 #
 #   Main menu, the one popping up when you hit the trigger
 #
@@ -47,6 +47,10 @@ menu_name="Main menu"
 req_win_width=40
 req_win_height=17
 
+run_shell="run-shell $CURRENT_DIR"
+search_all="command-prompt -p \"Search for:\" \"find-window -CNTiZ -- '%%'\""
+source_it="'tmux source-file ~/.tmux.conf; tmux display-message \"Sourced ~/.tmux.conf\"'"
+
 t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
@@ -54,19 +58,19 @@ tmux display-menu \
      -T "#[align=centre] $menu_name "              \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Handling Pane      -->"  P  "run-shell $CURRENT_DIR/panes.sh"       \
-     "Handling Window    -->"  W  "run-shell $CURRENT_DIR/windows.sh"     \
-     "Handling Sessions  -->"  S  "run-shell $CURRENT_DIR/sessions.sh"    \
-     "Layouts            -->"  L  "run-shell $CURRENT_DIR/layouts.sh"     \
-     "Split view         -->"  V  "run-shell $CURRENT_DIR/split_view.sh"  \
-     "Advanced Options   -->"  A  "run-shell $CURRENT_DIR/advanced.sh"    \
+     "Handling Pane      -->"  P  "$run_shell/panes.sh"       \
+     "Handling Window    -->"  W  "$run_shell/windows.sh"     \
+     "Handling Sessions  -->"  S  "$run_shell/sessions.sh"    \
+     "Layouts            -->"  L  "$run_shell/layouts.sh"     \
+     "Split view         -->"  V  "$run_shell/split_view.sh"  \
+     "Advanced Options   -->"  A  "$run_shell/advanced.sh"    \
      "" \
-     "-#[nodim]Search in all sessions & windows" "" "" \
-     " ignores case, only visible part"     s  "command-prompt -p \"Search for:\" \"find-window -CNTiZ -- '%%'\"" \
-     "Navigate & select ses/win/pane" n   "choose-tree -Z"  \
+     "-#[nodim]Search in all sessions & windows" "" ""        \
+     " ignores case, only visible part"  s  "$search_all"     \
+     "Navigate & select ses/win/pane"    n  "choose-tree -Z"  \
      "" \
-     "    Reload configuration file" "r" "run-shell 'tmux source-file ~/.tmux.conf; tmux display-message \"Sourced ~/.tmux.conf\"'"  \
-     "<P> Detach from tmux"  d  detach-client      \
+     "    Reload configuration file"     r  "run-shell $source_it" \
+     "<P> Detach from tmux"              d  detach-client          \
      "" \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/main.sh\""
 
