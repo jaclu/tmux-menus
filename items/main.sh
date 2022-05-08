@@ -61,7 +61,7 @@ tmux display-menu \
      "Split view         -->"  V  "run-shell $CURRENT_DIR/split_view.sh"  \
      "Advanced Options   -->"  A  "run-shell $CURRENT_DIR/advanced.sh"    \
      "" \
-     "-#[nodim]Search in all sesions and windows" "" "" \
+     "-#[nodim]Search in all sessions and windows" "" "" \
      " ignores case, only visible part "     s  "command-prompt -p \"Search for:\" \"find-window -CNTiZ -- '%%'\"" \
      "Navigate & select ses/win/pane" n   "choose-tree -Z"  \
      "" \
