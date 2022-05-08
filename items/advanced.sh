@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.0 2022-05-06
+#   Version: 1.3.1 2022-05-08
 #
 #   Advanced options
 #
@@ -46,7 +46,7 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
 menu_name="Advanced options"
 req_win_width=40
-req_win_height=17
+req_win_height=18
 
 #
 #  Gather some info in order to be able to show states
@@ -73,10 +73,11 @@ tmux display-menu \
      "Back to Main menu"       Left  "run-shell $CURRENT_DIR/main.sh"  \
      "Client management  -->"  C     "run-shell \"$CURRENT_DIR/advanced_manage_clients.sh\""    \
      "" \
-     "<P> Show messages"         \~  show-messages        \
-     "<P> Customize options"      C  "customize-mode -Z"  \
-     "<P> Describe (prefix) key"  /  "command-prompt -k -p key \"list-keys -1N \\"%%%\\"\""  \
-     "<P> Prompt for a command"   :  command-prompt  \
+     "<P> List all key bindings"  \?  "list-keys -N"  \
+     "<P> Describe (prefix) key"   /  "command-prompt -k -p key \"list-keys -1N \\"%%%\\"\""  \
+     "<P> Show messages"          \~  show-messages        \
+     "<P> Customize options"       C  "customize-mode -Z"  \
+     "<P> Prompt for a command"    :  command-prompt  \
      "" \
      "Toggle mouse to: $new_mouse_status"  m  "set-option -g mouse $new_mouse_status"   \
      "Change prefix <$current_prefix>"     p  "command-prompt -1 -p prefix 'run \"$SCRIPT_DIR/change_prefix.sh %%\"'"  \

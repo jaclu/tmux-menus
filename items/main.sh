@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.4.0 2022-05-06
+#   Version: 1.4.1 2022-05-08
 #
 #   Main menu, the one popping up when you hit the trigger
 #
@@ -44,8 +44,8 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 . "$SCRIPT_DIR/utils.sh"
 
 menu_name="Main menu"
-req_win_width=41
-req_win_height=19
+req_win_width=40
+req_win_height=17
 
 t_start="$(date +'%s')"
 
@@ -61,11 +61,10 @@ tmux display-menu \
      "Split view         -->"  V  "run-shell $CURRENT_DIR/split_view.sh"  \
      "Advanced Options   -->"  A  "run-shell $CURRENT_DIR/advanced.sh"    \
      "" \
-     "-#[nodim]Search in all sessions and windows" "" "" \
-     " ignores case, only visible part "     s  "command-prompt -p \"Search for:\" \"find-window -CNTiZ -- '%%'\"" \
+     "-#[nodim]Search in all sessions & windows" "" "" \
+     " ignores case, only visible part"     s  "command-prompt -p \"Search for:\" \"find-window -CNTiZ -- '%%'\"" \
      "Navigate & select ses/win/pane" n   "choose-tree -Z"  \
      "" \
-     "<P> List all key bindings"        \?  "list-keys -N"  \
      "    Reload configuration file" "r" "run-shell 'tmux source-file ~/.tmux.conf; tmux display-message \"Sourced ~/.tmux.conf\"'"  \
      "<P> Detach from tmux"  d  detach-client      \
      "" \
