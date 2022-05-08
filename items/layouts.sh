@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.1 2022-05-08
+#   Version: 1.3.2 2022-05-08
 #
 #   Choose layout
 #
@@ -47,15 +47,15 @@ menu_name="Layouts"
 req_win_width=35
 req_win_height=12
 
-t_start="$(date +'%s')"
-
 this_menu="$CURRENT_DIR/layouts.sh"
 reload=" ; run-shell \"$this_menu\""
+
+t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
 tmux display-menu  \
      -T "#[align=centre] $menu_name "            \
-     -x "$menu_location_x" -y "$menu_location_y"  \
+     -x "$menu_location_x" -y "$menu_location_y" \
      \
      "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
      "" \
