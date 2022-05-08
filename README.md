@@ -36,11 +36,11 @@ Once installed, hit the trigger to get the main menu to popup.
 Default is `<prefix> \` see Configuration below for how to change it.
 
 ## Screenshots
-![main](https://user-images.githubusercontent.com/5046648/162342967-c623317e-4865-4957-b80d-828e33e6daa5.png)
-![Pane](https://user-images.githubusercontent.com/5046648/162336772-2ea33840-dd02-4119-acf6-555fe87c6304.png)
-![Window](https://user-images.githubusercontent.com/5046648/163653392-1e870761-2e49-4764-b133-8122d41e9a8d.png)
-![Session](https://user-images.githubusercontent.com/5046648/160181163-7917147d-89e7-4d75-945d-e2e7ef59b71d.png)
-![Advanced](https://user-images.githubusercontent.com/5046648/162164528-9cd1d1db-cdf9-4681-9cad-67b581e681a8.png)
+![main](https://user-images.githubusercontent.com/5046648/167306451-4730fd02-39bc-45d6-b683-1a3d0733e59b.png)
+![Pane](https://user-images.githubusercontent.com/5046648/167306468-a3711e0f-c8b8-4b02-82e2-b464c77d7f92.png)
+![Window](https://user-images.githubusercontent.com/5046648/167306488-42df3119-6458-42c7-90a1-382e47c5420c.png)
+![Session](https://user-images.githubusercontent.com/5046648/167306514-b02f26a3-5589-4843-8b66-0e4b710c7a20.png)
+![Advanced](https://user-images.githubusercontent.com/5046648/167306530-3631fd07-5693-4e9e-98ab-f70ddb3b1213.png)
 ![Help Summary](https://user-images.githubusercontent.com/5046648/167306179-d8cb103d-f82a-43df-929c-2fce7f16b4cd.png)
 
 ## Install
