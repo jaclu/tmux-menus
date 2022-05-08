@@ -41,7 +41,7 @@ Default is `<prefix> \` see Configuration below for how to change it.
 ![Window](https://user-images.githubusercontent.com/5046648/167306488-42df3119-6458-42c7-90a1-382e47c5420c.png)
 ![Session](https://user-images.githubusercontent.com/5046648/167306514-b02f26a3-5589-4843-8b66-0e4b710c7a20.png)
 ![Advanced](https://user-images.githubusercontent.com/5046648/167306530-3631fd07-5693-4e9e-98ab-f70ddb3b1213.png)
-![Help Summary](https://user-images.githubusercontent.com/5046648/167306179-d8cb103d-f82a-43df-929c-2fce7f16b4cd.png)
+![Help Summary](https://user-images.githubusercontent.com/5046648/167317979-63219b33-f9c0-4c80-95fc-2c7a9e4edcdb.png)
 
 ## Install
 
