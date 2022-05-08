@@ -75,7 +75,7 @@ tmux display-menu  \
      "<P> Kill current pane"          x  "$kill_this"   \
      "    Kill all other panes"       o  "$kill_others" \
      "" \
-     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $this_menu\""
+     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help_panes.sh $this_menu\""
 
 
 ensure_menu_fits_on_screen
