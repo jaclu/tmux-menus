@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.1 2022-05-08
+#   Version: 1.3.2 2022-05-09
 #
 #   General Help
 #
@@ -47,7 +47,7 @@ tmux display-menu  \
     "" \
     "-<P> Indicates this key is a default"              "" ""  \
     "-    key, so unless it has been"                   "" ""  \
-    "-    change, it should be possible"                "" ""  \
+    "-    changed, it should be possible"               "" ""  \
     "-    to use with <prefix> directly."               "" ""  \
     "" \
     "-Shortcut keys are upper case for"                 "" ""  \
