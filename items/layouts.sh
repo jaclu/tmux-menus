@@ -24,6 +24,7 @@ menu_name="Layouts"
 req_win_width=35
 req_win_height=12
 
+
 this_menu="$CURRENT_DIR/layouts.sh"
 reload=" ; run-shell \"$this_menu\""
 
@@ -32,17 +33,17 @@ t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
 tmux display-menu  \
-     -T "#[align=centre] $menu_name "            \
-     -x "$menu_location_x" -y "$menu_location_y" \
+     -T "#[align=centre] $menu_name "             \
+     -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
+     "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh"             \
      "" \
-     "    Even horizontal"         1  "select-layout even-horizontal $reload" \
-     "    Even vertical"           2  "select-layout even-vertical   $reload" \
-     "    Main horizontal"         3  "select-layout main-horizontal $reload" \
-     "    Main vertical"           4  "select-layout main-vertical   $reload" \
-     "    Tiled"                   5  "select-layout tiled           $reload" \
-    "<P> Spread panes out evenly"  E  "select-layout -E              $reload" \
+     "    Even horizontal"        1  "select-layout even-horizontal $reload" \
+     "    Even vertical"          2  "select-layout even-vertical   $reload" \
+     "    Main horizontal"        3  "select-layout main-horizontal $reload" \
+     "    Main vertical"          4  "select-layout main-vertical   $reload" \
+     "    Tiled"                  5  "select-layout tiled           $reload" \
+    "<P> Spread panes out evenly" E  "select-layout -E              $reload" \
      "" \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $this_menu\""
 

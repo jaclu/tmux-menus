@@ -21,10 +21,10 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
 
-
 menu_name="Advanced options"
 req_win_width=40
 req_win_height=18
+
 
 #
 #  Gather some info in order to be able to show states
@@ -38,9 +38,9 @@ else
 fi
 current_prefix="$(tmux show-option -g prefix | cut -d' ' -f2 | cut -d'-' -f2)"
 
-
 this_menu="$CURRENT_DIR/advanced.sh"
 reload="; run-shell '$this_menu'"
+
 describe_prefix="command-prompt -k -p key 'list-keys -1N \"%%%\"'"
 toggle_mouse="set-option -g mouse $new_mouse_status"
 change_prefix="command-prompt -1 -p prefix 'run \"$SCRIPT_DIR/change_prefix.sh %%\"'"
@@ -66,7 +66,7 @@ tmux display-menu \
      "Toggle mouse to: $new_mouse_status"  m  "$toggle_mouse $reload"  \
      "Change prefix <$current_prefix>"     p  "$change_prefix"         \
      "" \
-     "-#[nodim]Kill server - all your sessions"       "" ""            \
+     "-#[nodim]Kill server - all your sessions"                 "" ""  \
      " on this host are terminated    "    k  "$kill_server"           \
      "" \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $this_menu\""

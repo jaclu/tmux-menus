@@ -30,33 +30,33 @@ t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
 tmux display-menu  \
-     -T "#[align=centre] $menu_name "  \
+     -T "#[align=centre] $menu_name "             \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Back to Main menu"         Home  "run-shell $CURRENT_DIR/main.sh"     \
-     "Back to Advanced options"  Left  "run-shell $CURRENT_DIR/advanced.sh" \
-     "-#[align=centre,nodim]-----------   Commands   -----------"   "" "" \
-     "-Enter Choose selected client"          "" "" \
-     "-Up    Select previous client"          "" "" \
-     "-Down  Select next client"              "" "" \
-     "-C-s   Search by name"                  "" "" \
-     "-n     Repeat last search"              "" "" \
-     "-t     Toggle if client is tagged"      "" "" \
-     "-T     Tag no clients".                 "" "" \
-     "-C-t   Tag all clients"                 "" "" \
-     "-d     Detach selected client"          "" "" \
-     "-D     Detach tagged clients"           "" "" \
-     "-x     Detach and HUP selected client"  "" "" \
-     "-X     Detach and HUP tagged clients"   "" "" \
-     "-z     Suspend selected client"         "" "" \
-     "-Z     Suspend tagged clients"          "" "" \
-     "-f     Enter a format to filter items"  "" "" \
-     "-O     Change sort field"               "" "" \
-     "-r     Reverse sort order"              "" "" \
-     "-v     Toggle preview"                  "" "" \
-     "-q     Exit mode"                       "" "" \
+     "Back to Main menu"        Home  "run-shell $CURRENT_DIR/main.sh"      \
+     "Back to Advanced options" Left  "run-shell $CURRENT_DIR/advanced.sh"  \
+     "-#[align=centre,nodim]-----------   Commands   -----------"    "" ""  \
+     "-Enter Choose selected client"                                 "" ""  \
+     "-Up    Select previous client"                                 "" ""  \
+     "-Down  Select next client"                                     "" ""  \
+     "-C-s   Search by name"                                         "" ""  \
+     "-n     Repeat last search"                                     "" ""  \
+     "-t     Toggle if client is tagged"                             "" ""  \
+     "-T     Tag no clients".                                        "" ""  \
+     "-C-t   Tag all clients"                                        "" ""  \
+     "-d     Detach selected client"                                 "" ""  \
+     "-D     Detach tagged clients"                                  "" ""  \
+     "-x     Detach and HUP selected client"                         "" ""  \
+     "-X     Detach and HUP tagged clients"                          "" ""  \
+     "-z     Suspend selected client"                                "" ""  \
+     "-Z     Suspend tagged clients"                                 "" ""  \
+     "-f     Enter a format to filter items"                         "" ""  \
+     "-O     Change sort field"                                      "" ""  \
+     "-r     Reverse sort order"                                     "" ""  \
+     "-v     Toggle preview"                                         "" ""  \
+     "-q     Exit mode"                                              "" ""  \
      "-" "" "" \
-     "<P>"  D  "choose-client -Z"  \
+     "<P>"  D  "choose-client -Z"                                           \
      "" \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/advanced_manage_clients.sh\""
 

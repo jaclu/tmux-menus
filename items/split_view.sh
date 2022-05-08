@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.1 2022-05-08
+#   Version: 1.3.2 2022-05-08
 #
 #   Split display
 #
@@ -24,6 +24,7 @@ menu_name="Split view"
 req_win_width=28
 req_win_height=15
 
+
 this_menu="$CURRENT_DIR/split_view.sh"
 reload="; run-shell \"$this_menu\""
 
@@ -32,22 +33,22 @@ t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
 tmux display-menu  \
-     -T "#[align=centre] $menu_name "        \
-     -x "$menu_location_x" -y "$menu_location_y" \
+     -T "#[align=centre] $menu_name "             \
+     -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
-     "-#[align=centre,nodim]----  Split Pane  ----" "" ""              \
-     "    Left"   l   "split-window -hb   -c  '#{pane_current_path}' $reload" \
-     "<P> Right"  "%" "split-window -h    -c  '#{pane_current_path}' $reload" \
-     "    Above"  a   "split-window -vb   -c  '#{pane_current_path}' $reload" \
-     "<P> Below"  \"  "split-window -v    -c  '#{pane_current_path}' $reload" \
-     "-#[align=centre,nodim]---  Split Window  ---" "" ""              \
-     "    Left"   L   "split-window -fhb  -c  '#{pane_current_path}' $reload" \
-     "    Right"  R   "split-window -fh   -c  '#{pane_current_path}' $reload" \
-     "    Above"  A   "split-window -fvb  -c  '#{pane_current_path}' $reload" \
-     "    Below"  B   "split-window -fv   -c  '#{pane_current_path}' $reload" \
+     "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh"             \
+     "-#[align=centre,nodim]----  Split Pane  ----" "" ""                    \
+     "    Left"    l  "split-window -hb  -c '#{pane_current_path}' $reload"  \
+     "<P> Right"   %  "split-window -h   -c '#{pane_current_path}' $reload"  \
+     "    Above"   a  "split-window -vb  -c '#{pane_current_path}' $reload"  \
+     "<P> Below"  \"  "split-window -v   -c '#{pane_current_path}' $reload"  \
+     "-#[align=centre,nodim]---  Split Window  ---" "" ""                    \
+     "    Left"    L  "split-window -fhb -c '#{pane_current_path}' $reload"  \
+     "    Right"   R  "split-window -fh  -c '#{pane_current_path}' $reload"  \
+     "    Above"   A  "split-window -fvb -c '#{pane_current_path}' $reload"  \
+     "    Below"   B  "split-window -fv  -c '#{pane_current_path}' $reload"  \
      "" \
-     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help_split.sh $this_menu\""
+     "Help  -->"   H  "run-shell \"$CURRENT_DIR/help_split.sh $this_menu\""
 
 
 ensure_menu_fits_on_screen

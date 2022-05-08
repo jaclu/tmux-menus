@@ -27,6 +27,7 @@ req_win_height=13
 
 this_menu="$CURRENT_DIR/pane_move.sh"
 reload="; run-shell '$this_menu'"
+
 mv_2_other="choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_pane.sh  P M %%\"'"
 break_2_other="run-shell $SCRIPT_DIR/break_pane.sh"
 
@@ -45,13 +46,13 @@ tmux display-menu  \
      "Back to Main menu"      Home  "run-shell $CURRENT_DIR/main.sh"  \
      "Back to Handling Pane"  Left  "run-shell $CURRENT_DIR/panes.sh" \
      "" \
-     "    Move to other win/ses        "  m  "$mv_2_other"          \
-     "#{?pane_marked_set,,-}    Swap current pane with marked"      \
-                                          s  "swap-pane $reload"    \
-     "<P> Swap pane with prev"           \{  "swap-pane -U $reload" \
-     "<P> Swap pane with next"           \}  "swap-pane -D $reload" \
+     "    Move to other win/ses        "  m  "$mv_2_other"            \
+     "#{?pane_marked_set,,-}    Swap current pane with marked"        \
+                                          s  "swap-pane $reload"      \
+     "<P> Swap pane with prev"           \{  "swap-pane -U $reload"   \
+     "<P> Swap pane with next"           \}  "swap-pane -D $reload"   \
      "" \
-     "<P> Break pane to a new window"     !  "$break_2_other"       \
+     "<P> Break pane to a new window"     !  "$break_2_other"         \
     "" \
      "Help  -->"  H  "run-shell '$CURRENT_DIR/help.sh $this_menu'"
 

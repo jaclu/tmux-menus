@@ -28,6 +28,7 @@ req_win_height=21
 
 this_menu="$CURRENT_DIR/windows.sh"
 reload="; run-shell \"$this_menu\""
+
 rename_window="command-prompt -I \"#W\"  -p \"New window name: \" \
 	      \"rename-window '%%'\""
 new_after="command-prompt -p \"Name of new window: \" \"new-window -a -n '%%'\""
@@ -43,7 +44,7 @@ t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
 tmux display-menu  \
-     -T "#[align=centre] $menu_name   "  \
+     -T "#[align=centre] $menu_name   "          \
      -x "$menu_location_x" -y "$menu_location_y" \
      \
      "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh"            \

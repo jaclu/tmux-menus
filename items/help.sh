@@ -25,8 +25,8 @@ menu_name="Help summary"
 req_win_width=40
 req_win_height=16
 
-previous_menu="$1"
 
+previous_menu="$1"
 
 if [ -z "$previous_menu" ]; then
     error_msg "help.sh was called without notice of what called it"
@@ -37,23 +37,23 @@ t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
 tmux display-menu  \
-    -T "#[align=centre] $menu_name "          \
-    -x "$menu_location_x" -y "$menu_location_y" \
+    -T "#[align=centre] $menu_name "             \
+    -x "$menu_location_x" -y "$menu_location_y"  \
     \
     "Back to Previous menu"  Left  "run-shell $previous_menu"  \
     "" \
-    "- -->  Indicates this will open a"     "" "" \
-    "-      new menu."                      "" "" \
+    "- -->  Indicates this will open a"                 "" ""  \
+    "-      new menu."                                  "" ""  \
     "" \
-    "-<P> Indicates this key is a default"  "" "" \
-    "-    key, so unless it has been"       "" "" \
-    "-    change, it should be possible"    "" "" \
-    "-    to use with <prefix> directly."   "" "" \
+    "-<P> Indicates this key is a default"              "" ""  \
+    "-    key, so unless it has been"                   "" ""  \
+    "-    change, it should be possible"                "" ""  \
+    "-    to use with <prefix> directly."               "" ""  \
     "" \
-    "-Shortcut keys are upper case for"     "" "" \
-    "-menus menus, and lower case for"      "" "" \
-    "-actions."                             "" "" \
-    "-With the exception of defaults."      "" ""
+    "-Shortcut keys are upper case for"                 "" ""  \
+    "-menus menus, and lower case for"                  "" ""  \
+    "-actions."                                         "" ""  \
+    "-With the exception of defaults."                  "" ""
 
 
 ensure_menu_fits_on_screen

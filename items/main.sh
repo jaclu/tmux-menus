@@ -24,6 +24,7 @@ menu_name="Main menu"
 req_win_width=40
 req_win_height=17
 
+
 run_shell="run-shell $CURRENT_DIR"
 search_all="command-prompt -p \"Search for:\" \"find-window -CNTiZ -- '%%'\""
 
@@ -41,22 +42,22 @@ t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
 tmux display-menu \
-     -T "#[align=centre] $menu_name "              \
+     -T "#[align=centre] $menu_name "             \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Handling Pane      -->"  P  "$run_shell/panes.sh"       \
-     "Handling Window    -->"  W  "$run_shell/windows.sh"     \
-     "Handling Sessions  -->"  S  "$run_shell/sessions.sh"    \
-     "Layouts            -->"  L  "$run_shell/layouts.sh"     \
-     "Split view         -->"  V  "$run_shell/split_view.sh"  \
-     "Advanced Options   -->"  A  "$run_shell/advanced.sh"    \
+     "Handling Pane      -->"            P  "$run_shell/panes.sh"       \
+     "Handling Window    -->"            W  "$run_shell/windows.sh"     \
+     "Handling Sessions  -->"            S  "$run_shell/sessions.sh"    \
+     "Layouts            -->"            L  "$run_shell/layouts.sh"     \
+     "Split view         -->"            V  "$run_shell/split_view.sh"  \
+     "Advanced Options   -->"            A  "$run_shell/advanced.sh"    \
      "" \
-     "-#[nodim]Search in all sessions & windows" "" ""        \
-     " ignores case, only visible part"  s  "$search_all"     \
-     "Navigate & select ses/win/pane"    n  "choose-tree -Z"  \
+     "-#[nodim]Search in all sessions & windows" "" ""                  \
+     " ignores case, only visible part"  s  "$search_all"               \
+     "Navigate & select ses/win/pane"    n  "choose-tree -Z"            \
      "" \
-     "    Reload configuration file"     r  "$source_it"      \
-     "<P> Detach from tmux"              d  detach-client     \
+     "    Reload configuration file"     r  "$source_it"                \
+     "<P> Detach from tmux"              d  detach-client               \
      "" \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/main.sh\""
 

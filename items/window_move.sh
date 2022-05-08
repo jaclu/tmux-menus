@@ -24,6 +24,7 @@ menu_name="Move Window"
 req_win_width=41
 req_win_height=15
 
+
 this_menu="$CURRENT_DIR/window_move.sh"
 reload="; run-shell \"$this_menu\""
 to_other="choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_window.sh W M %%\"'"
@@ -34,21 +35,21 @@ t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
 tmux display-menu  \
-     -T "#[align=centre] $menu_name "  \
+     -T "#[align=centre] $menu_name "             \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Back to Main menu"        Home  "run-shell $CURRENT_DIR/main.sh"      \
-     "Back to Handling Window"  Left  "run-shell $CURRENT_DIR/windows.sh"   \
+     "Back to Main menu"        Home  "run-shell $CURRENT_DIR/main.sh"       \
+     "Back to Handling Window"  Left  "run-shell $CURRENT_DIR/windows.sh"    \
      "" \
-     "Move window to other location"      m  "$to_other"                    \
-     "-#{?pane_marked_set,#[nodim],}Swap current window with window"  "" "" \
-     "#{?pane_marked_set,,-} containing marked pane"                        \
-                                          s  swap-window                    \
-     "Swap window Left"                  \<  "swap-window -dt:-1 $reload"   \
-     "Swap window Right"                 \>  "swap-window -dt:+1 $reload"   \
+     "Move window to other location"      m  "$to_other"                     \
+     "-#{?pane_marked_set,#[nodim],}Swap current window with window"  "" ""  \
+     "#{?pane_marked_set,,-} containing marked pane"                         \
+                                          s  swap-window                     \
+     "Swap window Left"                  \<  "swap-window -dt:-1 $reload"    \
+     "Swap window Right"                 \>  "swap-window -dt:+1 $reload"    \
      "" \
-     "Link window to other session"       l  "$link_other"                  \
-     "Unlink window from this session"    u  "unlink-window"                \
+     "Link window to other session"       l  "$link_other"                   \
+     "Unlink window from this session"    u  "unlink-window"                 \
      "" \
      "Help, explaining move & link  -->"  H  "run-shell \"$this_menu\""
 

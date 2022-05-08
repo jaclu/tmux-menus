@@ -25,8 +25,8 @@ menu_name="Help Panes"
 req_win_width=39
 req_win_height=10
 
-previous_menu="$1"
 
+previous_menu="$1"
 
 if [ -z "$previous_menu" ]; then
     error_msg "help.sh was called without notice of what called it"
@@ -37,17 +37,17 @@ t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
 tmux display-menu  \
-    -T "#[align=centre] $menu_name "          \
-    -x "$menu_location_x" -y "$menu_location_y" \
+    -T "#[align=centre] $menu_name "             \
+    -x "$menu_location_x" -y "$menu_location_y"  \
     \
     "Back to Previous menu"  Left  "run-shell $previous_menu"  \
     "" \
-    "-When saving history with escapes"    "" "" \
-    "-less/most will not be able"          "" "" \
-    "-to display the content."             "" "" \
+    "-When saving history with escapes"                 "" ""  \
+    "-less/most will not be able"                       "" ""  \
+    "-to display the content."                          "" ""  \
     "- " "" "" \
-    "-You would have to use tools like"    "" "" \
-    "-cat/bat in order to see the colors"  "" ""
+    "-You would have to use tools like"                 "" ""  \
+    "-cat/bat in order to see the colors"               "" ""
  
 
 ensure_menu_fits_on_screen

@@ -30,6 +30,7 @@ reload="; run-shell '$this_menu'"
 
 set_size="command-prompt -p 'Pane width,Pane height' 'resize-pane -x %1 -y %2'"
 
+
 t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
@@ -40,17 +41,17 @@ tmux display-menu  \
      "Back to Main menu"      Home  "run-shell $CURRENT_DIR/main.sh"  \
      "Back to Handling Pane"  Left  "run-shell $CURRENT_DIR/panes.sh" \
      "" \
-     "Specify width & height"  s  "$set_size"                   \
-     "-#[align=centre,nodim]-------  resize by 1  ------" "" "" \
-     "up     "                 u  "resize-pane -U $reload"      \
-     "down   "                 d  "resize-pane -D $reload"      \
-     "left   "                 l  "resize-pane -L $reload"      \
-     "right  "                 r  "resize-pane -R $reload"      \
-     "-#[align=centre,nodim]-------  resize by 5  ------" "" "" \
-     "up     "                 U  "resize-pane -U 5 $reload"    \
-     "down   "                 D  "resize-pane -D 5 $reload"    \
-     "left   "                 L  "resize-pane -L 5 $reload"    \
-     "right  "                 R  "resize-pane -R 5 $reload"    \
+     "Specify width & height"  s  "$set_size"                         \
+     "-#[align=centre,nodim]-------  resize by 1  ------" "" ""       \
+     "up     "                 u  "resize-pane -U $reload"            \
+     "down   "                 d  "resize-pane -D $reload"            \
+     "left   "                 l  "resize-pane -L $reload"            \
+     "right  "                 r  "resize-pane -R $reload"            \
+     "-#[align=centre,nodim]-------  resize by 5  ------" "" ""       \
+     "up     "                 U  "resize-pane -U 5 $reload"          \
+     "down   "                 D  "resize-pane -D 5 $reload"          \
+     "left   "                 L  "resize-pane -L 5 $reload"          \
+     "right  "                 R  "resize-pane -R 5 $reload"          \
      "" \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $this_menu\""
 

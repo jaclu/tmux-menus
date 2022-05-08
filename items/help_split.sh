@@ -32,25 +32,25 @@ if [ -z "$previous_menu" ]; then
 fi
 
 
-#
-#  TODO: For odd reasons this title needs multiple right padding spaces,
-#        in order to actually print one
-#
 t_start="$(date +'%s')"
 
+#
+#  TODO: For odd reasons this title needs multiple right padding spaces,
+#        in order to actually print one, figure out what's going on
+#
 # shellcheck disable=SC2154
 tmux display-menu  \
-     -T "#[align=centre] $menu_name   "       \
-     -x "$menu_location_x" -y "$menu_location_y"   \
+     -T "#[align=centre] $menu_name   "           \
+     -x "$menu_location_x" -y "$menu_location_y"  \
      \
      "Back to Previous menu"  Left  "run-shell $previous_menu"  \
      "" \
-     "-Creating a new pane by"       "" "" \
-     "-splitting current Pane or"    "" "" \
-     "-Window."                      "" "" \
+     "-Creating a new pane by"                           "" ""  \
+     "-splitting current Pane or"                        "" ""  \
+     "-Window."                                          "" ""  \
      "- " "" "" \
-     "-Window refers to the entire"  "" "" \
-     "-display."                     "" ""
+     "-Window refers to the entire"                      "" ""  \
+     "-display."                                         "" ""
 
 
 ensure_menu_fits_on_screen

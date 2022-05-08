@@ -24,6 +24,7 @@ menu_name="Handling Sessions"
 req_win_width=39
 req_win_height=15
 
+
 this_menu="$CURRENT_DIR/sessions.sh"
 reload="; run-shell \"$this_menu\""
 
@@ -41,20 +42,20 @@ t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
 tmux display-menu  \
-     -T "#[align=centre] $menu_name "  \
-     -x "$menu_location_x" -y "$menu_location_y" \
+     -T "#[align=centre] $menu_name "             \
+     -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
+     "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh"        \
      "" \
-     "<P> Rename this session"          \$  "$rename"  \
-     "    New session"                   n  "$new_ses" \
+     "<P> Rename this session"          \$  "$rename"                   \
+     "    New session"                   n  "$new_ses"                  \
      "" \
-     "<P> Last selected session"         L  "switch-client -l $reload" \
-     "<P> Previous session (in order)"  \(  "switch-client -p $reload" \
-     "<P> Next     session (in order)"  \)  "switch-client -n $reload" \
+     "<P> Last selected session"         L  "switch-client -l $reload"  \
+     "<P> Previous session (in order)"  \(  "switch-client -p $reload"  \
+     "<P> Next     session (in order)"  \)  "switch-client -n $reload"  \
      "" \
-     "Kill current session"              k  "$kill_current" \
-     "Kill all other sessions"           o  "$kill_other"   \
+     "Kill current session"              k  "$kill_current"             \
+     "Kill all other sessions"           o  "$kill_other"               \
      "" \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $this_menu\""
 

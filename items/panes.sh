@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.2 2022-05-08
+#   Version: 1.3.3 2022-05-08
 #
 #   Handling pane
 #
@@ -53,27 +53,27 @@ tmux display-menu  \
      -T "#[align=centre] Handling Pane "  \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Back to Main menu"   Left  "run-shell $CURRENT_DIR/main.sh"  \
+     "Back to Main menu"   Left  "run-shell $CURRENT_DIR/main.sh"             \
      "Move pane      -->"  M     "run-shell \"$CURRENT_DIR/pane_move.sh\""    \
      "Resize pane    -->"  R     "run-shell \"$CURRENT_DIR/pane_resize.sh\""  \
      "Paste buffers  -->"  B     "run-shell \"$CURRENT_DIR/pane_buffers.sh\"" \
      "" \
-     "    Set Title"                  t  "$title" \
-     "<P> Zoom pane toggle"           z  "resize-pane -Z $reload" \
-     "<P> Display pane numbers"       q  "display-panes $reload"  \
-     '<P> Copy mode - "history"' \[ "copy-mode"         \
-     "<P> #{?pane_marked,Unmark,Mark} current pane"     \
-                                      m  "select-pane -m $reload" \
-     "    Display pane size"          s  "$pane_size"   \
+     "    Set Title"                  t  "$title"                             \
+     "<P> Zoom pane toggle"           z  "resize-pane -Z $reload"             \
+     "<P> Display pane numbers"       q  "display-panes $reload"              \
+     '<P> Copy mode - "history"' \[ "copy-mode"                               \
+     "<P> #{?pane_marked,Unmark,Mark} current pane"                           \
+                                      m  "select-pane -m $reload"             \
+     "    Display pane size"          s  "$pane_size"                         \
      "" \
-     "#{?pane_synchronized,Disable,Activate} synchronized panes"  \
-                                      y  "set -w synchronize-panes $reload"  \
-     "Save pane history no escapes"   h  "$hist_no_esc" \
-     "Save pane history with escapes" e  "$hist_w_esc"  \
+     "#{?pane_synchronized,Disable,Activate} synchronized panes"              \
+                                      y  "set -w synchronize-panes $reload"   \
+     "Save pane history no escapes"   h  "$hist_no_esc"                       \
+     "Save pane history with escapes" e  "$hist_w_esc"                        \
      "" \
-     "    Respawn current pane"       r  "$respawn"     \
-     "<P> Kill current pane"          x  "$kill_this"   \
-     "    Kill all other panes"       o  "$kill_others" \
+     "    Respawn current pane"       r  "$respawn"                           \
+     "<P> Kill current pane"          x  "$kill_this"                         \
+     "    Kill all other panes"       o  "$kill_others"                       \
      "" \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help_panes.sh $this_menu\""
 
