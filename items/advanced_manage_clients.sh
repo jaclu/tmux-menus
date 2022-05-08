@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.1.1 2022-05-08
+#   Version: 1.1.2 2022-05-08
 #
 #   Modify Clients
 #
@@ -58,7 +58,7 @@ tmux display-menu  \
      "-" "" "" \
      "<P>"  D  "choose-client -Z"  \
      "" \
-     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/choose_client.sh\""
+     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/advanced_manage_clients.sh\""
 
 
 ensure_menu_fits_on_screen
