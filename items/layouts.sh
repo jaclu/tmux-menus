@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.0 2022-05-06
+#   Version: 1.3.1 2022-05-08
 #
 #   Choose layout
 #
@@ -49,6 +49,9 @@ req_win_height=12
 
 t_start="$(date +'%s')"
 
+this_menu="$CURRENT_DIR/layouts.sh"
+reload=" ; run-shell \"$this_menu\""
+
 # shellcheck disable=SC2154
 tmux display-menu  \
      -T "#[align=centre] $menu_name "            \
@@ -56,14 +59,14 @@ tmux display-menu  \
      \
      "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
      "" \
-     "    Even horizontal"         1  "select-layout even-horizontal ; run-shell \"$CURRENT_DIR/layouts.sh\"" \
-     "    Even vertical"           2  "select-layout even-vertical ; run-shell \"$CURRENT_DIR/layouts.sh\"" \
-     "    Main horizontal"         3  "select-layout main-horizontal ; run-shell \"$CURRENT_DIR/layouts.sh\"" \
-     "    Main vertical"           4  "select-layout main-vertical ; run-shell \"$CURRENT_DIR/layouts.sh\"" \
-     "    Tiled"                   5  "select-layout tiled ; run-shell \"$CURRENT_DIR/layouts.sh\"" \
-    "<P> Spread panes out evenly"  E  "select-layout -E ; run-shell \"$CURRENT_DIR/layouts.sh\"" \
+     "    Even horizontal"         1  "select-layout even-horizontal $reload" \
+     "    Even vertical"           2  "select-layout even-vertical   $reload" \
+     "    Main horizontal"         3  "select-layout main-horizontal $reload" \
+     "    Main vertical"           4  "select-layout main-vertical   $reload" \
+     "    Tiled"                   5  "select-layout tiled           $reload" \
+    "<P> Spread panes out evenly"  E  "select-layout -E              $reload" \
      "" \
-     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/layouts.sh\""
+     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $this_menu\""
 
 
 ensure_menu_fits_on_screen
