@@ -45,12 +45,12 @@ tmux display-menu  \
      \
      "Back to Previous menu"  Left  "run-shell $previous_menu"  \
      "" \
-     "-Creating a new pane by" "" "" \
-     "-splitting current Pane or" "" "" \
-     "-Window."              "" "" \
+     "-Creating a new pane by"       "" "" \
+     "-splitting current Pane or"    "" "" \
+     "-Window."                      "" "" \
      "- " "" "" \
-     "-Window refers to the entire" "" "" \
-     "-display."  "" ""
+     "-Window refers to the entire"  "" "" \
+     "-display."                     "" ""
 
 
 ensure_menu_fits_on_screen
