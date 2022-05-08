@@ -5,36 +5,13 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.0 2022-05-06
+#   Version: 1.3.1 2022-05-08
 #
 #   Split display
 #
-#   Types of menu item lines.
-#
-#   1) An item leading to an action
-#          "Description" "In-menu key" "Action taken when it is triggered"
-#
-#   2) Just a line of text
-#      You must supply two empty strings, in order for the
-#      menu logic to interpret it as a full menu line item.
-#          "Some text to display" "" ""
-#
-#   3) Separator line
-#      This is a proper graphical separator line, without any label.
-#          ""
-#
-#   4) Labeled separator line
-#      Not perfect, since you will have at least one space on each side of
-#      the labeled separator line, but using something like this and carefully
-#      increase the dashes until you are just below forcing the menu to just
-#      grow wider, seems to be as close as it gets.
-#          "#[align=centre]-----  Other stuff  -----" "" ""
-#
-#
-#   All but the last line in the menu, needs to end with a continuation \
-#   White space after this \ will cause the menu to fail!
-#   For any field containing no spaces, quotes are optional.
-#
+
+#  shellcheck disable=SC2034
+#  Directives for shellcheck directly after bang path are global
 
 # shellcheck disable=SC1007
 CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
@@ -47,6 +24,9 @@ menu_name="Split view"
 req_win_width=28
 req_win_height=15
 
+this_menu="$CURRENT_DIR/split_view.sh"
+reload="; run-shell \"$this_menu\""
+
 
 t_start="$(date +'%s')"
 
@@ -57,17 +37,17 @@ tmux display-menu  \
      \
      "Back to Main menu"  Left  "run-shell $CURRENT_DIR/main.sh"  \
      "-#[align=centre,nodim]----  Split Pane  ----" "" ""              \
-     "    Left"   l   "split-window -hb   -c '#{pane_current_path}' ; run-shell \"$CURRENT_DIR/split_view.sh\""   \
-     "<P> Right"  "%" "split-window -h    -c '#{pane_current_path}' ; run-shell \"$CURRENT_DIR/split_view.sh\""   \
-     "    Above"  a   "split-window -vb   -c '#{pane_current_path}' ; run-shell \"$CURRENT_DIR/split_view.sh\""   \
-     "<P> Below"  \"  "split-window -v    -c '#{pane_current_path}' ; run-shell \"$CURRENT_DIR/split_view.sh\""   \
+     "    Left"   l   "split-window -hb   -c  '#{pane_current_path}' $reload" \
+     "<P> Right"  "%" "split-window -h    -c  '#{pane_current_path}' $reload" \
+     "    Above"  a   "split-window -vb   -c  '#{pane_current_path}' $reload" \
+     "<P> Below"  \"  "split-window -v    -c  '#{pane_current_path}' $reload" \
      "-#[align=centre,nodim]---  Split Window  ---" "" ""              \
-     "    Left"   L   "split-window -fhb  -c '#{pane_current_path}' ; run-shell \"$CURRENT_DIR/split_view.sh\""   \
-     "    Right"  R   "split-window -fh   -c '#{pane_current_path}' ; run-shell \"$CURRENT_DIR/split_view.sh\""   \
-     "    Above"  A   "split-window -fvb  -c '#{pane_current_path}' ; run-shell \"$CURRENT_DIR/split_view.sh\""   \
-     "    Below"  B   "split-window -fv   -c '#{pane_current_path}' ; run-shell \"$CURRENT_DIR/split_view.sh\""   \
+     "    Left"   L   "split-window -fhb  -c  '#{pane_current_path}' $reload" \
+     "    Right"  R   "split-window -fh   -c  '#{pane_current_path}' $reload" \
+     "    Above"  A   "split-window -fvb  -c  '#{pane_current_path}' $reload" \
+     "    Below"  B   "split-window -fv   -c  '#{pane_current_path}' $reload" \
      "" \
-     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help_split.sh $CURRENT_DIR/split_view.sh\""
+     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help_split.sh $this_menu\""
 
 
 ensure_menu_fits_on_screen
