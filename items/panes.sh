@@ -5,36 +5,13 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.0 2022-05-06
+#   Version: 1.3.2 2022-05-08
 #
 #   Handling pane
 #
-#   Types of menu item lines.
-#
-#   1) An item leading to an action
-#          "Description" "In-menu key" "Action taken when it is triggered"
-#
-#   2) Just a line of text
-#      You must supply two empty strings, in order for the
-#      menu logic to interpret it as a full menu line item.
-#          "Some text to display" "" ""
-#
-#   3) Separator line
-#      This is a proper graphical separator line, without any label.
-#          ""
-#
-#   4) Labeled separator line
-#      Not perfect, since you will have at least one space on each side of
-#      the labeled separator line, but using something like this and carefully
-#      increase the dashes until you are just below forcing the menu to just
-#      grow wider, seems to be as close as it gets.
-#          "#[align=centre]-----  Other stuff  -----" "" ""
-#
-#
-#   All but the last line in the menu, needs to end with a continuation \
-#   White space after this \ will cause the menu to fail!
-#   For any field containing no spaces, quotes are optional.
-#
+
+#  shellcheck disable=SC2034
+#  Directives for shellcheck directly after bang path are global
 
 # shellcheck disable=SC1007
 CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
@@ -44,8 +21,29 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 . "$SCRIPT_DIR/utils.sh"
 
 menu_name="Handling Pane"
-req_win_width=35
-req_win_height=22
+req_win_width=38
+req_win_height=23
+
+
+this_menu="$CURRENT_DIR/panes.sh"
+reload="; run-shell '$this_menu'"
+
+title="command-prompt -I '#T'  -p 'Title: '  'select-pane -T \"%%\"'"
+pane_size="display-message 'Pane: #P size: #{pane_width}x#{pane_height}'"
+
+#
+#  adding -e to capture-pane saves escape sequences, but then less/most fails
+#  to display, cat/bat history-file will display the included colors correctly.
+#
+hist_no_esc="command-prompt -p 'Save to (no escapes):' -I \
+    '~/tmux.history' 'capture-pane -S - -E - ; save-buffer %1 ; delete-buffer'"
+hist_w_esc="command-prompt -p 'Save to (with escapes):' -I \
+    '~/tmux.history' 'capture-pane -S - -E - -e ; save-buffer %1 ; \
+    delete-buffer'"
+
+respawn="confirm-before -p 'respawn-pane #P? (y/n)' 'respawn-pane -k'"
+kill_this="confirm-before -p 'kill-pane #T (#P)? (y/n)' kill-pane"
+kill_others="confirm-before -p 'Are you sure you want to kill all other panes? (y/n)' 'kill-pane -a'"
 
 
 t_start="$(date +'%s')"
@@ -60,21 +58,24 @@ tmux display-menu  \
      "Resize pane    -->"  R     "run-shell \"$CURRENT_DIR/pane_resize.sh\""  \
      "Paste buffers  -->"  B     "run-shell \"$CURRENT_DIR/pane_buffers.sh\"" \
      "" \
-     "    Set Title"             t  "command-prompt -I \"#T\"  -p \"Title: \"  \"select-pane -T '%%'\""  \
-     "<P> Zoom pane toggle"      z  "resize-pane -Z" \
-     "<P> Display pane numbers"  q  "display-panes ; run-shell \"$CURRENT_DIR/panes.sh\""    \
-     '<P> Copy mode - "history"' \[ "copy-mode" \
-     "<P> #{?pane_marked,Unmark,Mark} current pane" m  "select-pane -m ; run-shell \"$CURRENT_DIR/panes.sh\""  \
-     "    Display pane size"     s  "display-message \"Pane: #P size: #{pane_width}x#{pane_height}\"" \
+     "    Set Title"                  t  "$title" \
+     "<P> Zoom pane toggle"           z  "resize-pane -Z $reload" \
+     "<P> Display pane numbers"       q  "display-panes $reload"  \
+     '<P> Copy mode - "history"' \[ "copy-mode"         \
+     "<P> #{?pane_marked,Unmark,Mark} current pane"     \
+                                      m  "select-pane -m $reload" \
+     "    Display pane size"          s  "$pane_size"   \
      "" \
-     "#{?pane_synchronized,#[bold]Disable[#defaults],Activate} synchronized panes"  y  "set -w synchronize-panes"  \
-     "Save pane history to file"   h  "command-prompt -p 'Save current-pane history to filename:' -I '~/tmux.history' 'capture-pane -S - -E - ; save-buffer %1 ; delete-buffer'" \
+     "#{?pane_synchronized,Disable,Activate} synchronized panes"  \
+                                      y  "set -w synchronize-panes $reload"  \
+     "Save pane history no escapes"   h  "$hist_no_esc" \
+     "Save pane history with escapes" e  "$hist_w_esc"  \
      "" \
-     "    Respawn current pane"        r  "confirm-before -p \"respawn-pane #P? (y/n)\" \"respawn-pane -k\"" \
-     "<P> Kill current pane"           x  "confirm-before -p \"kill-pane #P? (y/n)\" kill-pane"      \
-     "    Kill all other panes"        o  "confirm-before -p \"Are you sure you want to kill all other panes? (y/n)\" \"kill-pane -a\""      \
+     "    Respawn current pane"       r  "$respawn"     \
+     "<P> Kill current pane"          x  "$kill_this"   \
+     "    Kill all other panes"       o  "$kill_others" \
      "" \
-     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/panes.sh\""
+     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help_panes.sh $this_menu\""
 
 
 ensure_menu_fits_on_screen

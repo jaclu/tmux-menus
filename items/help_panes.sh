@@ -5,9 +5,9 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.1 2022-05-08
+#   Version: 1.0.1  2022-05-08
 #
-#   General Help
+#   Help regarding panes menu
 #
 
 #  shellcheck disable=SC2034
@@ -21,9 +21,9 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
 
-menu_name="Help summary"
-req_win_width=40
-req_win_height=16
+menu_name="Help Panes"
+req_win_width=39
+req_win_height=10
 
 previous_menu="$1"
 
@@ -42,18 +42,12 @@ tmux display-menu  \
     \
     "Back to Previous menu"  Left  "run-shell $previous_menu"  \
     "" \
-    "- -->  Indicates this will open a"     "" "" \
-    "-      new menu."                      "" "" \
-    "" \
-    "-<P> Indicates this key is a default"  "" "" \
-    "-    key, so unless it has been"       "" "" \
-    "-    change, it should be possible"    "" "" \
-    "-    to use with <prefix> directly."   "" "" \
-    "" \
-    "-Shortcut keys are upper case for"     "" "" \
-    "-menus menus, and lower case for"      "" "" \
-    "-actions."                             "" "" \
-    "-With the exception of defaults."      "" ""
-
+    "-When saving history with escapes"    "" "" \
+    "-less/most will not be able"          "" "" \
+    "-to display the content."             "" "" \
+    "- " "" "" \
+    "-You would have to use tools like"    "" "" \
+    "-cat/bat in order to see the colors"  "" ""
+ 
 
 ensure_menu_fits_on_screen
