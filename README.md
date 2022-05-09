@@ -86,27 +86,6 @@ set -g @menus_without_prefix 1
 
 This param can be either 0 (the default) or 1
 
-If you want to be able to dynamically edit menu settings from within menus, set this
-
-```
-set -g @menus_config_overrides 1
-```
-
-This param can be either 0 (the default) or 1
-
-If enabled, then you can change location of he menus from menu options in the main menu
-
-
-#### Default menus
-
-To disable the fairly limited default popup menus, add the following
-```
-unbind-key -n MouseDown3Pane
-unbind-key -n MouseDown3Status
-unbind-key -n MouseDown3StatusLeft
-unbind-key <
-unbind-key >
-```
 
 ### Menu location
 
@@ -125,6 +104,29 @@ Locations can be one of:
 ```tmux
 set -g @menus_location_x 'C'
 set -g @menus_location_y 'C'
+```
+
+### Live config
+
+If you want to be able to dynamically edit menu settings from within menus, set this
+
+```
+set -g @menus_config_overrides 1
+```
+
+This param can be either 0 (the default) or 1
+
+If enabled, then you can change location of he menus with the `Menus configuration` sub-menu
+
+#### Default menus
+
+To disable the fairly limited default popup menus, add the following
+```
+unbind-key -n MouseDown3Pane
+unbind-key -n MouseDown3Status
+unbind-key -n MouseDown3StatusLeft
+unbind-key <
+unbind-key >
 ```
 
 ## Indication when window is in synchronized panes mode

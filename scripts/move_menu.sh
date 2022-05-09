@@ -7,7 +7,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 0.0.3 2022-03-29
+#   Version: 1.0.0 2022-05-09
 #
 #   Moving current pane within same session or to other session.
 #
@@ -35,7 +35,6 @@ log_it "move_menu() w=[$menu_width] h=[$menu_height] [$action] [$param_1] [$para
 if [ -z "$action" ]; then
     error_msg "move_menu.sh was called without action param" 1
 fi
-
 
 
 #  It will be created with defaults if not present

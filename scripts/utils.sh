@@ -6,7 +6,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.10 2022-05-08
+#   Version: 1.4.0 2022-05-09
 #
 #  Common stuff
 #
@@ -26,6 +26,13 @@ plugin_name="tmux-menus"
 #  so comment it out for normal usage.
 #
 log_file="/tmp/$plugin_name.log"
+
+
+#
+#  If @menus_config_overrides is 1, this file is used to store
+#  custom settings. If it is missing, it will be re-created with defaults
+#
+config_file="/tmp/tmux-menus.conf"
 
 
 #
@@ -133,11 +140,8 @@ ensure_menu_fits_on_screen() {
 }
 
 
-config_file=/tmp/tmux-menus.conf
-
-
 write_config() {
-    [ $config_overrides -ne 1] && return
+    [ "$config_overrides" -ne 1 ] && return
     log_it "write_config() x[$location_x] y[$location_y]"
     echo "location_x=$location_x" > "$config_file"
     echo "location_y=$location_y" >> "$config_file"
@@ -145,27 +149,30 @@ write_config() {
 
 
 read_config() {
-    [ $config_overrides -ne 1] && return
+    [ "$config_overrides" -ne 1 ] && return
     log_it "read_config()"
     if [ ! -f "$config_file" ]; then
         location_x=P
         location_y=P
         write_config
     fi
+    #  shellcheck disable=SC1090
     . "$config_file"
     [ -z "$location_x" ] && location_x="P"
     [ -z "$location_y" ] && location_y="P"
 }
 
 
+#
+#  This is for shell checking status.
+#  In tmux code #{?@menus_config_overrides,,} can be used
+#
 if bool_param "$(get_tmux_option "@menus_config_overrides" "0")"; then
     config_overrides=1
 else
     config_overrides=0
 fi
-
 log_it "config_overrides=[$config_overrides]"
-
 
 
 if [ $config_overrides -eq 1 ] && [ -f "$config_file" ]; then

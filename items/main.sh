@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.4.3 2022-05-08
+#   Version: 1.4.4 2022-05-09
 #
 #   Main menu, the one popping up when you hit the trigger
 #
@@ -22,7 +22,7 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
 menu_name="Main menu"
 req_win_width=40
-req_win_height=17
+req_win_height=18
 
 
 run_shell="run-shell $CURRENT_DIR"
@@ -60,8 +60,8 @@ tmux display-menu \
      "    Reload configuration file"     r  "$source_it"                \
      "<P> Detach from tmux"              d  detach-client               \
      "" \
-     "#{?@menus_config_overrides,Menus configuration  -->,-Config disabled}" \
-                  C  "run-shell \"$CURRENT_DIR/config.sh\""  \
+     "#{?@menus_config_overrides,Menus configuration  -->,-Config disabled}"  \
+                  C  "run-shell \"$CURRENT_DIR/config.sh\""                   \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/main.sh\""
 
 

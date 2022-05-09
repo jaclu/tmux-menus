@@ -5,12 +5,12 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 0.0.2 2022-05-09
+#   Version: 1.0.0  2022-05-09
 #
-#   Main menu, the one popping up when you hit the trigger
+#   Live configuration. So far only menu location is available
 #
 
-#  shellcheck disable=SC2034
+#  shellcheck disable=SC2034,SC2154
 #  Directives for shellcheck directly after bang path are global
 
 # shellcheck disable=SC1007
