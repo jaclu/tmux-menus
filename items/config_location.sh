@@ -53,11 +53,11 @@ tmux display-menu \
      "Down"     d  "run-shell '$SCRIPT_DIR/move_menu.sh down  $reload'"  \
      "Left"     l  "run-shell '$SCRIPT_DIR/move_menu.sh left  $reload'"  \
      "Right"    r  "run-shell '$SCRIPT_DIR/move_menu.sh right $reload'"  \
-     "-#[align=centre,nodim]-- x inc:$cached_inc_x x inc:$cached_inc_y ---" "" ""       \
-     "incr X inc" 1 "run-shell '$SCRIPT_DIR/move_menu.sh x-inc  $reload'"  \
-     "decr X inc" 2 "run-shell '$SCRIPT_DIR/move_menu.sh x-decr $reload'"  \
-     "incr Y inc" 3 "run-shell '$SCRIPT_DIR/move_menu.sh y-inc  $reload'"  \
-     "decr Y inc" 4 "run-shell '$SCRIPT_DIR/move_menu.sh y-decr $reload'"  \
+     "-#[align=centre,nodim]-- x inc:$cached_inc_x x inc:$cached_inc_y ---" "" ""  \
+     "incr X inc"  x  "run-shell '$SCRIPT_DIR/move_menu.sh x-inc  $reload'"  \
+     "decr X inc"  X  "run-shell '$SCRIPT_DIR/move_menu.sh x-decr $reload'"  \
+     "incr Y inc"  y  "run-shell '$SCRIPT_DIR/move_menu.sh y-inc  $reload'"  \
+     "decr Y inc"  Y  "run-shell '$SCRIPT_DIR/move_menu.sh y-decr $reload'"  \
                                                      "" \
      "-Bottom left corner defines" "" "" \
      "-menu location!" "" ""
