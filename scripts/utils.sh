@@ -163,11 +163,12 @@ if bool_param "$(get_tmux_option "@menus_config_overrides" "0")"; then
 else
     config_overrides=0
 fi
+
 log_it "config_overrides=[$config_overrides]"
 
 
 
-if [ $config_overrides -eq 1] && [ -f "$config_file" ]; then
+if [ $config_overrides -eq 1 ] && [ -f "$config_file" ]; then
     read_config
     menu_location_x="$location_x"
     menu_location_y="$location_y"
