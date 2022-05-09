@@ -6,12 +6,10 @@ Simple to modify to fit your needs. I have included several items that some migh
 
 #### Recent changes
 
+- New feature, Menus configuration, if @menus_config_overrides is set to "1"
 - Moved "List all key bindings" to Advanced Options
 - To make it more phone friendly, it now checks for window size, displaying size requirement for the menu if it does not fit. Menus just don't display if the screen is to small.
 - moved "mark current pane" to pane menu
-- Removed menu incompatible default shortcuts. In menus, shortcuts can not use C/M prefix or navigation keys, so for such defaults I ignore them.
-- Pane - Move - Break pane, blocked if only one pane present
-- Repeatable actions keeps menu open - example: Handling Pane - Move Pane - Swap pane with prev
 
 ## Purpose
 
