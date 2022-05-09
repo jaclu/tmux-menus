@@ -60,7 +60,7 @@ tmux display-menu \
      "    Reload configuration file"     r  "$source_it"                \
      "<P> Detach from tmux"              d  detach-client               \
      "" \
-     "Configuration  -->" C "run-shell \"$CURRENT_DIR/config.sh\""      \
+     "Menu location  -->" M "run-shell \"$CURRENT_DIR/config.sh\""      \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/main.sh\""
 
 

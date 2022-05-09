@@ -20,27 +20,40 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
 
-menu_name="Configuration"
-req_win_width=52
-req_win_height=15
+menu_name="Configure Menu Location"
+req_win_width=32
+req_win_height=14
 
 
-select_menu="run-shell $CURRENT_DIR"
-
+open_menu="run-shell $CURRENT_DIR"
 this_menu="$CURRENT_DIR/config.sh"
 reload="; $this_menu"
+move_menu="run-shell '$SCRIPT_DIR/move_menu.sh $req_win_width $req_win_height"
+t_start="$(date +'%s')"  #  if the menu closed in < 1s assume it didnt fit
 
-t_start="$(date +'%s')"
+
 
 # shellcheck disable=SC2154
 tmux display-menu \
      -T "#[align=centre] $menu_name "             \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Back to Main menu"    Left  "$select_menu/main.sh"             \
-     "Location of menus -->"  L   "$select_menu/config_location.sh"  \
+     "Back to Main menu"      Left  "$open_menu/main.sh"    \
      "" \
-     "Clear cache" c "run-shell 'rm /tmp/menus.cache'"
+     "Center"           C  "$move_menu C $reload'"      \
+     "Right side"       R  "$move_menu R $reload'"      \
+     "Pane bot left"    P  "$move_menu P $reload'"      \
+     "Win pos status"   W  "$move_menu W $reload'"      \
+     "By status line"   S  "$move_menu S $reload'"      \
+     "set coordinates"  c  "command-prompt -I \"$cached_location_x\",\"$cached_location_y\"   \
+        -p \"horizontal param (max: #{window_width}) \",\"vertical param (max: #{window_height}) \" \"$move_menu coord %1 %2 $reload'\""  \
+    "" \
+     "-When using coordinates" "" "" \
+     "-lower left corner is set!" "" ""
 
+
+
+#     "set Y"            y  "command-prompt -I \"$cached_location_y\"   \
+#        -p \"y param (max: #{window_height}) \" \"$move_menu y %% $reload'\""  \
 
 ensure_menu_fits_on_screen

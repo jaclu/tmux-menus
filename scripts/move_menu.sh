@@ -21,7 +21,8 @@ CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 req_win_width="$1"
 req_win_height="$2"
 direction="$3"
-param="$4"
+param_1="$4"
+param_2="$5"
 
 
 
@@ -37,6 +38,31 @@ fi
 #  It will be created with defaults if not present
 read_cache
 
+#
+#  If not numerical, change param to center screen
+#
+not_to_numerical() {
+    log_it "to_numerical()"
+    log_it "---->> full win width [$(tmux display -p '#{window_width}')]"
+    log_it "---->> menu size: ($req_win_width,$req_win_height)"
+    case $cached_location_x in
+	''|*[!0-9]*)
+	    log_it " fixing x"
+	    cached_location_x="$(tmux display -p "(#{window_width} - $req_win_width) / 2" | bc)"
+	    ;;
+    esac
+
+    case $cached_location_y in
+	''|*[!0-9]*)
+	    log_it "  fixing y"
+	    cached_location_y="$(tmux display -p "(#{window_height} + $req_win_height) / 2" | bc)"
+            ;;
+    esac
+
+    log_it "  post to_numerical()  x[$cached_location_x] y[$cached_location_y]"
+}
+
+
 
 if [ "$direction" = "C" ]; then
     cached_location_x="C"
@@ -51,10 +77,9 @@ elif [ "$direction" = "W" ]; then
     cached_location_y="W"
 elif [ "$direction" = "S" ]; then
     cached_location_y="S"
-elif [ "$direction" = "x" ]; then
-    cached_location_x="$param"
-elif [ "$direction" = "y" ]; then
-    cached_location_y="$param"
+elif [ "$direction" = "coord" ]; then
+    cached_location_x="$param_1"
+    cached_location_y="$param_2"
 fi
 
 write_cache

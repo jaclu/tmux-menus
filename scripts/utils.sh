@@ -135,31 +135,6 @@ ensure_menu_fits_on_screen() {
 cache_file=/tmp/menus.cache
 
 
-#
-#  If not numerical, change param to center screen
-#
-to_numerical() {
-    log_it "to_numerical()"
-    log_it "---->> full win width [$(tmux display -p '#{window_width}')]"
-    log_it "---->> menu size: ($req_win_width,$req_win_height)"
-    case $cached_location_x in
-	''|*[!0-9]*)
-	    log_it " fixing x"
-	    cached_location_x="$(tmux display -p "(#{window_width} - $req_win_width) / 2" | bc)"
-	    #cached_location_x="$(tmux display -p "#{window_width} / 2" | bc)"
-	    ;;
-    esac
-
-    case $cached_location_y in
-	''|*[!0-9]*)
-	    log_it "  fixing y"
-	    cached_location_y="$(tmux display -p "(#{window_height} + $req_win_height) / 2" | bc)"
-            ;;
-    esac
-
-    log_it "  post to_numerical()  x[$cached_location_x] y[$cached_location_y]"
-}
-
 write_cache() {
     log_it "write_cache()"
     echo "cached_location_x=$cached_location_x" > "$cache_file"
@@ -174,8 +149,8 @@ read_cache() {
         write_cache
     fi
     . "$cache_file"
-    [ -z "$cached_location_x" ] && to_numerical
-    [ -z "$cached_location_y" ] && to_numerical
+    [ -z "$cached_location_x" ] && cached_location_x="P"
+    [ -z "$cached_location_y" ] && cached_location_y="P"
     show_cache
 }
 
