@@ -31,6 +31,8 @@ reload="; $this_menu"
 move_menu="run-shell '$SCRIPT_DIR/move_menu.sh $req_win_width $req_win_height"
 t_start="$(date +'%s')"  #  if the menu closed in < 1s assume it didnt fit
 
+
+
 # shellcheck disable=SC2154
 tmux display-menu \
      -T "#[align=centre] $menu_name "             \
@@ -44,8 +46,7 @@ tmux display-menu \
      "Pane bot left"   P  "$move_menu P $reload'"      \
      "Win pos status"  W  "$move_menu W $reload'"      \
      "By status line"  S  "$move_menu S $reload'"      \
-     "coordinates"     c  "
-     "decrese"  Y  "$move_menu  y-decr  $reload'"  \
+     "alter x"     c  command-prompt -I "$cached_location_x" -p "x param (max: #{window_width}) " $move_menu x \"%%\"'"
      "" \
      "-Bottom left corner defines" "" "" \
      "-menu location!" "" ""
