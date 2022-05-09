@@ -149,6 +149,7 @@ read_cache() {
         write_cache
     fi
     "$cache_file"
+    log_it "cached_location_x=[$cached_location_x] cached_location_y=[$cached_location_y]"
 }
 
 
