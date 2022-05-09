@@ -30,6 +30,7 @@ req_win_height=17
 this_menu="$CURRENT_DIR/config.sh"
 reload="; run-shell '$this_menu'"
 
+read_cache
 
 t_start="$(date +'%s')"
 
