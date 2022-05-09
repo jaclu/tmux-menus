@@ -41,13 +41,15 @@ tmux display-menu \
      "Back to Main menu"      Home  "$open_menu/main.sh"    \
      "Back to Configuration"  Left  "$open_menu/config.sh"  \
      "" \
-     "Center"          C  "$move_menu C $reload'"      \
-     "Right side"      R  "$move_menu R $reload'"      \
-     "Pane bot left"   P  "$move_menu P $reload'"      \
-     "Win pos status"  W  "$move_menu W $reload'"      \
-     "By status line"  S  "$move_menu S $reload'"      \
-     "set X"     x  "command-prompt -I \"$cached_location_x\" -p \"x param (max: #{window_width}) \" \"$move_menu x %%'\"" \
-     "set Y"     y  "command-prompt -I \"$cached_location_y\" -p \"y param (max: #{window_height}) \" \"$move_menu y %%'\"" \
+     "Center"           C  "$move_menu C $reload'"      \
+     "Right side"       R  "$move_menu R $reload'"      \
+     "Pane bot left"    P  "$move_menu P $reload'"      \
+     "Win pos status"   W  "$move_menu W $reload'"      \
+     "By status line"   S  "$move_menu S $reload'"      \
+     "set X"            x  "command-prompt -I \"$cached_location_x\"   \
+        -p \"x param (max: #{window_width}) \" \"$move_menu x %%'\""   \
+     "set Y"            y  "command-prompt -I \"$cached_location_y\"   \
+        -p \"y param (max: #{window_height}) \" \"$move_menu y %%'\""  \
      "" \
      "-Bottom left corner defines" "" "" \
      "-menu location!" "" ""

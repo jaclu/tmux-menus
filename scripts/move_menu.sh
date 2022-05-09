@@ -34,7 +34,7 @@ fi
 
 
 
-#  It will be created with defaultsif not present
+#  It will be created with defaults if not present
 read_cache
 
 
@@ -57,6 +57,4 @@ elif [ "$direction" = "y" ]; then
     cached_location_y="$param"
 fi
 
-show_cache
 write_cache
-show_cache
