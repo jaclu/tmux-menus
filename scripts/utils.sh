@@ -132,37 +132,39 @@ ensure_menu_fits_on_screen() {
     fi
 }
 
-cache_file=/tmp/menus.cache
+
+config_file=/tmp/tmux-menus.conf
 
 
-write_cache() {
-    log_it "write_cache()"
-    echo "cached_location_x=$cached_location_x" > "$cache_file"
-    echo "cached_location_y=$cached_location_y" >> "$cache_file"
+write_config() {
+    log_it "write_config() x[$location_x] y[$location_y]"
+    echo "location_x=$location_x" > "$config_file"
+    echo "location_y=$location_y" >> "$config_file"
 }
 
-read_cache() {
-    log_it "read_cache()"
-    if [ ! -f "$cache_file" ]; then
-        cached_location_x=P
-        cached_location_y=P
-        write_cache
+read_config() {
+    log_it "read_config()"
+    if [ ! -f "$config_file" ]; then
+        location_x=P
+        location_y=P
+        write_config
     fi
-    . "$cache_file"
-    [ -z "$cached_location_x" ] && cached_location_x="P"
-    [ -z "$cached_location_y" ] && cached_location_y="P"
-    show_cache
+    . "$config_file"
+    [ -z "$location_x" ] && location_x="P"
+    [ -z "$location_y" ] && location_y="P"
+    show_config
 }
 
-show_cache()   {
-    log_it "show_cache() - cached_location_x[$cached_location_x] cached_location_y[$cached_location_y]"
+show_config()   {
+    log_it "show_config() - location_x[$location_x] location_y[$location_y]"
 }
 
 
-if [ -f "$cache_file" ]; then
-    read_cache
-    menu_location_x="$cached_location_x"
-    menu_location_y="$cached_location_y"
+
+if [ -f "$config_file" ]; then
+    read_config
+    menu_location_x="$location_x"
+    menu_location_y="$location_y"
 else
     #
     #  Must come after definition of get_tmux_option to be able
