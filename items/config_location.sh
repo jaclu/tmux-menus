@@ -29,26 +29,30 @@ open_menu="run-shell $CURRENT_DIR"
 this_menu="$CURRENT_DIR/config_location.sh"
 reload="; $this_menu"
 
-t_start="$(date +'%s')"
+t_start="$(date +'%s')"  #  if the menu closed in < 1s assume it didnt fit
 
 # shellcheck disable=SC2154
 tmux display-menu \
      -T "#[align=centre] $menu_name "             \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Back to Main menu"      Home  "$open_menu/main.sh"  \
-     "Back to Configuration"  Left  "$open_menu/config.sh" \
+     "Back to Main menu"      Home  "$open_menu/main.sh"    \
+     "Back to Configuration"  Left  "$open_menu/config.sh"  \
      "" \
-     "Center" C "run-shell '$SCRIPT_DIR/move_menu.sh C $reload'" \
-     "The right side of the terminal (-x)" R "run-shell '$SCRIPT_DIR/move_menu.sh R $reload'" \
-     "Bottom left of pane" P "run-shell '$SCRIPT_DIR/move_menu.sh P $reload'" \
-     "The window position on the status line" W "run-shell '$SCRIPT_DIR/move_menu.sh W $reload'" \
-     "The line above or below the status line (-y)" S "run-shell '$SCRIPT_DIR/move_menu.sh S $reload'" \
+     "Center"   C  "run-shell '$SCRIPT_DIR/move_menu.sh C $reload'"      \
+     "The right side of the terminal (-x)" \
+                R  "run-shell '$SCRIPT_DIR/move_menu.sh R $reload'"      \
+     "Bottom left of pane" \
+                P  "run-shell '$SCRIPT_DIR/move_menu.sh P $reload'"      \
+     "The window position on the status line" \
+                W  "run-shell '$SCRIPT_DIR/move_menu.sh W $reload'"      \
+     "The line above or below the status line (-y)" \
+                S  "run-shell '$SCRIPT_DIR/move_menu.sh S $reload'"      \
      "" \
-     "Up"     u "run-shell '$SCRIPT_DIR/move_menu.sh up    $reload'" \
-     "Down"   d "run-shell '$SCRIPT_DIR/move_menu.sh down  $reload'" \
-     "Left"   l "run-shell '$SCRIPT_DIR/move_menu.sh left  $reload'" \
-     "Right"  r "run-shell '$SCRIPT_DIR/move_menu.sh right $reload'" \
+     "Up"       u  "run-shell '$SCRIPT_DIR/move_menu.sh up    $reload'"  \
+     "Down"     d  "run-shell '$SCRIPT_DIR/move_menu.sh down  $reload'"  \
+     "Left"     l  "run-shell '$SCRIPT_DIR/move_menu.sh left  $reload'"  \
+     "Right"    r  "run-shell '$SCRIPT_DIR/move_menu.sh right $reload'"  \
      "" \
      "-Bottom left corner defines" "" "" \
      "-menu location!" "" ""
