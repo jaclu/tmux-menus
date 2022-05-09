@@ -20,7 +20,7 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
 
-menu_name="Configuration"
+menu_name="Configure Menu Location"
 req_win_width=52
 req_win_height=15
 
