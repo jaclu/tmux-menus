@@ -137,12 +137,15 @@ config_file=/tmp/tmux-menus.conf
 
 
 write_config() {
+    [ $config_overrides -ne 1] && return
     log_it "write_config() x[$location_x] y[$location_y]"
     echo "location_x=$location_x" > "$config_file"
     echo "location_y=$location_y" >> "$config_file"
 }
 
+
 read_config() {
+    [ $config_overrides -ne 1] && return
     log_it "read_config()"
     if [ ! -f "$config_file" ]; then
         location_x=P
@@ -152,16 +155,19 @@ read_config() {
     . "$config_file"
     [ -z "$location_x" ] && location_x="P"
     [ -z "$location_y" ] && location_y="P"
-    show_config
-}
-
-show_config()   {
-    log_it "show_config() - location_x[$location_x] location_y[$location_y]"
 }
 
 
+if bool_param "$(get_tmux_option "@menus_config_overrides" "0")"; then
+    config_overrides=1
+else
+    config_overrides=0
+fi
+log_it "config_overrides=[$config_overrides]"
 
-if [ -f "$config_file" ]; then
+
+
+if [ $config_overrides -eq 1] && [ -f "$config_file" ]; then
     read_config
     menu_location_x="$location_x"
     menu_location_y="$location_y"
