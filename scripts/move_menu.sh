@@ -7,10 +7,14 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.2 2022-03-29
+#   Version: 0.0.3 2022-03-29
 #
 #   Moving current pane within same session or to other session.
 #
+
+#  shellcheck disable=SC2034
+#  Directives for shellcheck directly after bang path are global
+
 
 # shellcheck disable=SC1007
 CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
@@ -18,17 +22,18 @@ CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 # shellcheck disable=SC1091
 . "$CURRENT_DIR/utils.sh"
 
-direction="$1"
+
+action="$1"
 param_1="$2"
 param_2="$3"
 
 
 
-log_it "move_menu() w=[$menu_width] h=[$menu_height] [$direction]"
+log_it "move_menu() w=[$menu_width] h=[$menu_height] [$action] [$param_1] [$param_2"
 
 
-if [ -z "$direction" ]; then
-    error_msg "move_menu.sh was called without direction param" 1
+if [ -z "$action" ]; then
+    error_msg "move_menu.sh was called without action param" 1
 fi
 
 
@@ -37,20 +42,20 @@ fi
 read_config
 
 
-if [ "$direction" = "C" ]; then
+if [ "$action" = "C" ]; then
     location_x="C"
     location_y="C"
-elif [ "$direction" = "R" ]; then
+elif [ "$action" = "R" ]; then
     location_x="R"
-elif [ "$direction" = "P" ]; then
+elif [ "$action" = "P" ]; then
     location_x="P"
     location_y="P"
-elif [ "$direction" = "W" ]; then
+elif [ "$action" = "W" ]; then
     location_x="W"
     location_y="W"
-elif [ "$direction" = "S" ]; then
+elif [ "$action" = "S" ]; then
     location_y="S"
-elif [ "$direction" = "coord" ]; then
+elif [ "$action" = "coord" ]; then
     location_x="$param_1"
     location_y="$param_2"
 fi
