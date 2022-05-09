@@ -30,17 +30,17 @@ this_menu="$CURRENT_DIR/config.sh"
 reload="; $this_menu"
 move_menu="run-shell '$SCRIPT_DIR/move_menu.sh"
 
+#
+#  The -p sequence will get wrecked by lnie breaks,
+#  so left as one annoyingly long line
+#
 set_coordinates="command-prompt \
     -I \"$location_x\",\"$location_y\" \
     -p \"horizontal pos (max: #{window_width}):\",\"vertical pos (max: #{window_height}):\" \
     \"$move_menu coord %1 %2 $reload'\""
 
 
-
-
-
 t_start="$(date +'%s')"  #  if the menu closed in < 1s assume it didnt fit
-
 
 
 # shellcheck disable=SC2154
@@ -61,6 +61,5 @@ tmux display-menu \
     "-When using coordinates" "" "" \
     "-lower left corner is set!" "" ""
 
-#    "set coordinates"  c  "command-prompt -I \"$cached_location_x\",\"$cached_location_y\" -p \"horizontal param (max: #{window_width}) \",\"vertical param (max: #{window_height}) \" \"$move_menu coord %1 %2 $reload'\"" \
 
 ensure_menu_fits_on_screen
