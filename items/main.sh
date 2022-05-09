@@ -40,6 +40,7 @@ source_it="command-prompt -I '~/.tmux.conf' -p 'Source file:' \
 
 t_start="$(date +'%s')"
 
+
 # shellcheck disable=SC2154
 tmux display-menu \
      -T "#[align=centre] $menu_name "             \
@@ -59,6 +60,7 @@ tmux display-menu \
      "    Reload configuration file"     r  "$source_it"                \
      "<P> Detach from tmux"              d  detach-client               \
      "" \
+     "Configuration  -->" C "run-shell \"$CURRENT_DIR/config.sh\""      \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/main.sh\""
 
 

@@ -20,30 +20,27 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
 
-read_cache
-
 menu_name="Configuration"
-req_win_width=40
-req_win_height=17
+req_win_width=52
+req_win_height=15
 
+
+select_menu="run-shell $CURRENT_DIR"
 
 this_menu="$CURRENT_DIR/config.sh"
-reload="; run-shell '$this_menu'"
-
-read_cache
+reload="; $this_menu"
 
 t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
 tmux display-menu \
      -T "#[align=centre] $menu_name "             \
-     -x "$cached_location_x" -y "$cached_location_y"  \
+     -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "-#[align=centre,nodim]----  Move menu  ----" "" "" \
-     "Up"     u run-shell "$SCRIPT_DIR/move_menu up $reload" \
-     "Down"   d run-shell "$SCRIPT_DIR/move_menu up $reload" \
-     "Left"   l run-shell "$SCRIPT_DIR/move_menu up $reload" \
-     "Right"  r run-shell "$SCRIPT_DIR/move_menu up $reload"
+     "Back to Main menu"    Left  "$select_menu/main.sh"             \
+     "Location of menus -->"  L   "$select_menu/config_location.sh"  \
+     "" \
+     "Clear cache" c "run-shell 'rm /tmp/menus.cache'"
 
 
 ensure_menu_fits_on_screen

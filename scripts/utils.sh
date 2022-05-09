@@ -136,28 +136,36 @@ cache_file=/tmp/menus.cache
 
 write_cache() {
     log_it "write_cache()"
-    echo "#!/bin/sh" > "$cache_file"
     echo "cached_location_x=$cached_location_x" >> "$cache_file"
     echo "cached_location_y=$cached_location_y" >> "$cache_file"
-    chmod 755 "$cache_file"
 }
 
 read_cache() {
     log_it "read_cache()"
     if [ ! -f "$cache_file" ]; then
-        cached_location_x=0
-        cached_location_y=0
+        cached_location_x=P
+        cached_location_y=P
         write_cache
     fi
     . "$cache_file"
     log_it "cached_location_x=[$cached_location_x] cached_location_y=[$cached_location_y]"
 }
 
+show_cache()   {
+    log_it "show_cache() - cached_location_x=[$cached_location_x] cached_location_y=[$cached_location_y]"
+}
 
-#
-#  Must come after definition of get_tmux_option to be able
-#  to use it.
-#
-menu_location_x="$(get_tmux_option "@menus_location_x" "P")"
-menu_location_y="$(get_tmux_option "@menus_location_y" "P")"
 
+if [ -f "$cache_file" ]; then
+    read_cache
+    menu_location_x="$cached_location_x"
+    menu_location_y="$cached_location_y"
+else
+    #
+    #  Must come after definition of get_tmux_option to be able
+    #  to use it.
+    #
+    menu_location_x="$(get_tmux_option "@menus_location_x" "P")"
+    menu_location_y="$(get_tmux_option "@menus_location_y" "P")"
+    
+fi
