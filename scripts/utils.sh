@@ -136,9 +136,9 @@ cache_file=/tmp/menus.cache
 
 write_cache() {
     log_it "write_cache()"
-    echo "#!/bin/sh" >> "$cache_file"
-    echo "cached_location_x=$cached_location_x" > "$cache_file"
-    echo "cached_location_y=$cached_location_y" > "$cache_file"
+    echo "#!/bin/sh" > "$cache_file"
+    echo "cached_location_x=$cached_location_x" >> "$cache_file"
+    echo "cached_location_y=$cached_location_y" >> "$cache_file"
     chmod 755 "$cache_file"
 }
 
