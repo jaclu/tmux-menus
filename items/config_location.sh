@@ -21,14 +21,14 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 . "$SCRIPT_DIR/utils.sh"
 
 menu_name="Configure Menu Location"
-req_win_width=52
-req_win_height=15
+req_win_width=32
+req_win_height=24
 
 
 open_menu="run-shell $CURRENT_DIR"
 this_menu="$CURRENT_DIR/config_location.sh"
 reload="; $this_menu"
-
+move_menu="run-shell '$SCRIPT_DIR/move_menu.sh $req_win_width $req_win_height"
 t_start="$(date +'%s')"  #  if the menu closed in < 1s assume it didnt fit
 
 # shellcheck disable=SC2154
@@ -39,27 +39,14 @@ tmux display-menu \
      "Back to Main menu"      Home  "$open_menu/main.sh"    \
      "Back to Configuration"  Left  "$open_menu/config.sh"  \
      "" \
-     "Center"   C  "run-shell '$SCRIPT_DIR/move_menu.sh C $reload'"      \
-     "The right side of the terminal (-x)" \
-                R  "run-shell '$SCRIPT_DIR/move_menu.sh R $reload'"      \
-     "Bottom left of pane" \
-                P  "run-shell '$SCRIPT_DIR/move_menu.sh P $reload'"      \
-     "The window position on the status line" \
-                W  "run-shell '$SCRIPT_DIR/move_menu.sh W $reload'"      \
-     "The line above or below the status line (-y)" \
-                S  "run-shell '$SCRIPT_DIR/move_menu.sh S $reload'"      \
+     "Center"          C  "$move_menu C $reload'"      \
+     "Right side"      R  "$move_menu R $reload'"      \
+     "Pane bot left"   P  "$move_menu P $reload'"      \
+     "Win pos status"  W  "$move_menu W $reload'"      \
+     "By status line"  S  "$move_menu S $reload'"      \
+     "coordinates"     c  "
+     "decrese"  Y  "$move_menu  y-decr  $reload'"  \
      "" \
-     "Up"       u  "run-shell '$SCRIPT_DIR/move_menu.sh up    $reload'"  \
-     "Down"     d  "run-shell '$SCRIPT_DIR/move_menu.sh down  $reload'"  \
-     "Left"     l  "run-shell '$SCRIPT_DIR/move_menu.sh left  $reload'"  \
-     "Right"    r  "run-shell '$SCRIPT_DIR/move_menu.sh right $reload'"  \
-     "-#[align=centre,nodim]------  x increment :$cached_inc_x  ------" "" ""  \
-     "increase" x  "run-shell '$SCRIPT_DIR/move_menu.sh x-incr  $reload'"  \
-     "decrese"  X  "run-shell '$SCRIPT_DIR/move_menu.sh x-decr  $reload'"  \
-     "-#[align=centre,nodim]------  y increment :$cached_inc_y  ------" "" ""  \
-     "increase" y  "run-shell '$SCRIPT_DIR/move_menu.sh y-incr  $reload'"  \
-     "decrese"  Y  "run-shell '$SCRIPT_DIR/move_menu.sh y-decr  $reload'"  \
-                                                     "" \
      "-Bottom left corner defines" "" "" \
      "-menu location!" "" ""
 

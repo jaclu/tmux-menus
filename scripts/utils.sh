@@ -134,12 +134,38 @@ ensure_menu_fits_on_screen() {
 
 cache_file=/tmp/menus.cache
 
+
+#
+#  If not numerical, change param to center screen
+#
+to_numerical() {
+    log_it "to_numerical()"
+    log_it "---->> full win width [$(tmux display -p '#{window_width}')]"
+    log_it "---->> menu size: ($req_win_width,$req_win_height)"
+    case $cached_location_x in
+	''|*[!0-9]*)
+	    log_it " fixing x"
+	    cached_location_x="$(tmux display -p "(#{window_width} - $req_win_width) / 2" | bc)"
+	    #cached_location_x="$(tmux display -p "#{window_width} / 2" | bc)"
+	    ;;
+    esac
+
+    case $cached_location_y in
+	''|*[!0-9]*)
+	    log_it "  fixing y"
+	    cached_location_y="$(tmux display -p "(#{window_height} + $req_win_height) / 2" | bc)"
+            ;;
+    esac
+
+    log_it "  post to_numerical()  x[$cached_location_x] y[$cached_location_y]"
+}
+
 write_cache() {
     log_it "write_cache()"
-    echo "cached_location_x=$cached_location_x" >> "$cache_file"
+    echo "cached_location_x=$cached_location_x" > "$cache_file"
     echo "cached_location_y=$cached_location_y" >> "$cache_file"
-    echo "cached_inc_x=$cached_inc_x"           >> "$cache_file"
-    echo "cached_inc_y=$cached_inc_y"           >> "$cache_file"
+    echo "cached_incr_x=$cached_incr_x"         >> "$cache_file"
+    echo "cached_incr_y=$cached_incr_y"         >> "$cache_file"
 }
 
 read_cache() {
@@ -147,16 +173,20 @@ read_cache() {
     if [ ! -f "$cache_file" ]; then
         cached_location_x=P
         cached_location_y=P
-        cached_inc_x=1
-        cached_inc_y=1
+        cached_incr_x=1
+        cached_incr_y=1
         write_cache
     fi
     . "$cache_file"
-    log_it "cached_location_x=[$cached_location_x] cached_location_y=[$cached_location_y]"
+    [ -z "$cached_location_x" ] && to_numerical
+    [ -z "$cached_location_y" ] && to_numerical
+    [ -z "$cached_incr_x" ] && cached_incr_x=1
+    [ -z "$cached_incr_y" ] && cached_incr_y=1
+    show_cache
 }
 
 show_cache()   {
-    log_it "show_cache() - cached_location_x=[$cached_location_x] cached_location_y=[$cached_location_y]"
+    log_it "show_cache() - cached_location_x[$cached_location_x] cached_location_y[$cached_location_y] cached_incr_x[$cached_incr_x] cached_incr_y[$cached_incr_y]"
 }
 
 
@@ -170,6 +200,5 @@ else
     #  to use it.
     #
     menu_location_x="$(get_tmux_option "@menus_location_x" "P")"
-    menu_location_y="$(get_tmux_option "@menus_location_y" "P")"
-    
+    menu_location_y="$(get_tmux_option "@menus_location_y" "P")"    
 fi

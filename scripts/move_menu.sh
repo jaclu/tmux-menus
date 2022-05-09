@@ -18,29 +18,15 @@ CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 # shellcheck disable=SC1091
 . "$CURRENT_DIR/utils.sh"
 
-direction="$1"
+req_win_width="$1"
+req_win_height="$2"
+direction="$3"
 
 
-#
-#  If not numerical, change param to center screen
-#
-to_numerical() {
-    log_it "to_numerical() $1"
-    case $cached_location_x in
-	''|*[!0-9]*)
-        cached_location_x="$(tmux display -p '(#{window_width} - 52) / 2' | bc)"
-	    ;;
-    esac
-
-    case $cached_location_y in
-	''|*[!0-9]*)
-        cached_location_y="$(tmux display -p '(#{window_height} + 15) / 2' | bc)"
-        ;;
-    esac
-}
 
 
-log_it "move_menu() [$direction]"
+log_it "move_menu() w=[$menu_width] h=[$menu_height] [$direction]"
+
 
 if [ -z "$direction" ]; then
     error_msg "move_menu.sh was called without direction param" 1
@@ -54,16 +40,16 @@ read_cache
 
 if [ "$direction" = "up" ]; then
     to_numerical
-    cached_location_y="$(echo $cached_location_y - $cached_inc_y | bc)"
+    cached_location_y="$(echo $cached_location_y - $cached_incr_y | bc)"
 elif [ "$direction" = "down" ]; then
     to_numerical
-    cached_location_y="$(echo $cached_location_y + $cached_inc_y | bc)"
+    cached_location_y="$(echo $cached_location_y + $cached_incr_y | bc)"
 elif [ "$direction" = "left" ]; then
     to_numerical
-    cached_location_x="$(echo $cached_location_x - $cached_inc_x | bc)"
+    cached_location_x="$(echo $cached_location_x - $cached_incr_x | bc)"
 elif [ "$direction" = "right" ]; then
     to_numerical
-    cached_location_x="$(echo $cached_location_x + $cached_inc_x | bc)"
+    cached_location_x="$(echo $cached_location_x + $cached_incr_x | bc)"
 elif [ "$direction" = "C" ]; then
     cached_location_x="C"
     cached_location_y="C"
@@ -78,14 +64,15 @@ elif [ "$direction" = "W" ]; then
 elif [ "$direction" = "S" ]; then
     cached_location_y="S"
 elif [ "$direction" = "x-incr" ]; then
-    cached_inc_x="$(echo "$cached_inc_x + 1" | bc)"
+    cached_incr_x="$(echo "$cached_incr_x + 1" | bc)"
 elif [ "$direction" = "x-decr" ]; then
-    [ "$cached_inc_x" -gt 1 ] && cached_inc_x="$(echo "$cached_inc_x - 1" | bc)"
+    [ "$cached_incr_x" -gt 1 ] && cached_incr_x="$(echo "$cached_incr_x - 1" | bc)"
 elif [ "$direction" = "y-incr" ]; then
-    cached_inc_y="$(echo "<1ca>     </1ca>ched_inc_y + 1" | bc)"
+    cached_incr_y="$(echo "$cached_incr_y + 1" | bc)"
 elif [ "$direction" = "y-decr" ]; then
-    [ "$cached_inc_y" -gt 1 ] && cached_inc_y="$(echo "$cached_inc_y - 1" | bc)"
+    [ "$cached_incr_y" -gt 1 ] && cached_incr_y="$(echo "$cached_incr_y - 1" | bc)"
 fi
 
+show_cache
 write_cache
 show_cache

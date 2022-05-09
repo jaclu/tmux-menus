@@ -34,13 +34,13 @@ t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
 tmux display-menu \
-     -T "#[align=centre,bg=red] $menu_name "             \
+     -T "#[align=centre] $menu_name "             \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "#[bg=red]Back to Main menu"    Left  "$select_menu/main.sh"             \
-     "#[bg=red]Location of menus -->"  L   "$select_menu/config_location.sh"  \
+     "Back to Main menu"    Left  "$select_menu/main.sh"             \
+     "Location of menus -->"  L   "$select_menu/config_location.sh"  \
      "" \
-     "#[bg=red]Clear cache" c "run-shell 'rm /tmp/menus.cache'"
+     "Clear cache" c "run-shell 'rm /tmp/menus.cache'"
 
 
 ensure_menu_fits_on_screen
