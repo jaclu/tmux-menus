@@ -77,12 +77,12 @@ elif [ "$direction" = "W" ]; then
     cached_location_y="W"
 elif [ "$direction" = "S" ]; then
     cached_location_y="S"
-elif [ "$direction" = "x-inc" ]; then
+elif [ "$direction" = "x-incr" ]; then
     cached_inc_x="$(echo "$cached_inc_x + 1" | bc)"
 elif [ "$direction" = "x-decr" ]; then
     [ "$cached_inc_x" -gt 1 ] && cached_inc_x="$(echo "$cached_inc_x - 1" | bc)"
-elif [ "$direction" = "y-inc" ]; then
-    cached_inc_y="$(echo "$cached_inc_y + 1" | bc)"
+elif [ "$direction" = "y-incr" ]; then
+    cached_inc_y="$(echo "<1ca>     </1ca>ched_inc_y + 1" | bc)"
 elif [ "$direction" = "y-decr" ]; then
     [ "$cached_inc_y" -gt 1 ] && cached_inc_y="$(echo "$cached_inc_y - 1" | bc)"
 fi
