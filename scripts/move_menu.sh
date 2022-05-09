@@ -54,16 +54,16 @@ read_cache
 
 if [ "$direction" = "up" ]; then
     to_numerical
-    cached_location_y="$(echo $cached_location_y - 1 | bc)"
+    cached_location_y="$(echo $cached_location_y - $cached_inc_y | bc)"
 elif [ "$direction" = "down" ]; then
     to_numerical
-    cached_location_y="$(echo $cached_location_y + 1 | bc)"
+    cached_location_y="$(echo $cached_location_y + $cached_inc_y | bc)"
 elif [ "$direction" = "left" ]; then
     to_numerical
-    cached_location_x="$(echo $cached_location_x - 2 | bc)"
+    cached_location_x="$(echo $cached_location_x - $cached_inc_x | bc)"
 elif [ "$direction" = "right" ]; then
     to_numerical
-    cached_location_x="$(echo $cached_location_x + 2 | bc)"
+    cached_location_x="$(echo $cached_location_x + $cached_inc_x | bc)"
 elif [ "$direction" = "C" ]; then
     cached_location_x="C"
     cached_location_y="C"
@@ -77,6 +77,14 @@ elif [ "$direction" = "W" ]; then
     cached_location_y="W"
 elif [ "$direction" = "S" ]; then
     cached_location_y="S"
+elif [ "$direction" = "x-inc" ]; then
+    cached_inc_x="$(echo "$cached_inc_x + 1" | bc)"
+elif [ "$direction" = "x-decr" ]; then
+    cached_inc_x="$(echo "$cached_inc_x - 1" | bc)"
+elif [ "$direction" = "y-inc" ]; then
+    cached_inc_x="$(echo "$cached_inc_y + 1" | bc)"
+elif [ "$direction" = "y-decr" ]; then
+    cached_inc_x="$(echo "$cached_inc_y - 1" | bc)"
 fi
 
 write_cache

@@ -138,6 +138,8 @@ write_cache() {
     log_it "write_cache()"
     echo "cached_location_x=$cached_location_x" >> "$cache_file"
     echo "cached_location_y=$cached_location_y" >> "$cache_file"
+    echo "cached_inc_x=$cached_inc_x"           >> "$cache_file"
+    echo "cached_inc_y=$cached_inc_y"           >> "$cache_file"
 }
 
 read_cache() {
@@ -145,6 +147,8 @@ read_cache() {
     if [ ! -f "$cache_file" ]; then
         cached_location_x=P
         cached_location_y=P
+        cached_inc_x=1
+        cached_inc_y=1
         write_cache
     fi
     . "$cache_file"
