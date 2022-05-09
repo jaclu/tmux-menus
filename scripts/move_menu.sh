@@ -20,30 +20,32 @@ CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 
 direction="$1"
 
-if [ -z "$direction" ]; then
-    error_msg "move_menu.sh was called without direction param" 1
-fi
 
-log_it "move_menu() [$direction]"
-
+#
+#  If not numerical, change param to center screen
+#
 to_numerical() {
     log_it "to_numerical() $1"
     case $cached_location_x in
 	''|*[!0-9]*)
-	    c="$(tmux display -p '(#{window_width} - 52) / 2')"
-	    cached_location_x="$(echo $c | bc)"
-	    log_it "Converted x from C into [$cached_location_x]"
+        cached_location_x="$(tmux display -p '(#{window_width} - 52) / 2' | bc)"
 	    ;;
     esac
 
     case $cached_location_y in
 	''|*[!0-9]*)
-	    c="$(tmux display -p '(#{window_height} + 15) / 2')"
-	    cached_location_y="$(echo $c | bc)"
-	    log_it "Converted x from C into [$cached_location_x]"
-	    ;;
+        cached_location_y="$(tmux display -p '(#{window_height} + 15) / 2' | bc)"
+        ;;
     esac
 }
+
+
+log_it "move_menu() [$direction]"
+
+if [ -z "$direction" ]; then
+    error_msg "move_menu.sh was called without direction param" 1
+fi
+
 
 
 #  It will be created with defaultsif not present
@@ -58,10 +60,10 @@ elif [ "$direction" = "down" ]; then
     cached_location_y="$(echo $cached_location_y + 1 | bc)"
 elif [ "$direction" = "left" ]; then
     to_numerical
-    cached_location_x="$(echo $cached_location_x - 1 | bc)"
+    cached_location_x="$(echo $cached_location_x - 2 | bc)"
 elif [ "$direction" = "right" ]; then
     to_numerical
-    cached_location_x="$(echo $cached_location_x + 1 | bc)"
+    cached_location_x="$(echo $cached_location_x + 2 | bc)"
 elif [ "$direction" = "C" ]; then
     cached_location_x="C"
     cached_location_y="C"
