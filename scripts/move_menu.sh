@@ -80,11 +80,11 @@ elif [ "$direction" = "S" ]; then
 elif [ "$direction" = "x-inc" ]; then
     cached_inc_x="$(echo "$cached_inc_x + 1" | bc)"
 elif [ "$direction" = "x-decr" ]; then
-    cached_inc_x="$(echo "$cached_inc_x - 1" | bc)"
+    [ "$cached_inc_x" -gt 1 ] && cached_inc_x="$(echo "$cached_inc_x - 1" | bc)"
 elif [ "$direction" = "y-inc" ]; then
     cached_inc_y="$(echo "$cached_inc_y + 1" | bc)"
 elif [ "$direction" = "y-decr" ]; then
-    cached_inc_y="$(echo "$cached_inc_y - 1" | bc)"
+    [ "$cached_inc_y" -gt 1 ] && cached_inc_y="$(echo "$cached_inc_y - 1" | bc)"
 fi
 
 write_cache
