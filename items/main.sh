@@ -38,9 +38,6 @@ source_it="command-prompt -I '~/.tmux.conf' -p 'Source file:' \
     tmux display File_could_not_be_sourced-not_found?  \"'"
 
 
-# if [ "$config_overrides" -eq 1 ]; then
-  
-
 t_start="$(date +'%s')"
 
 
@@ -63,7 +60,8 @@ tmux display-menu \
      "    Reload configuration file"     r  "$source_it"                \
      "<P> Detach from tmux"              d  detach-client               \
      "" \
-     "Menu location  -->" M "run-shell \"$CURRENT_DIR/config.sh\""      \
+     "#{?@menus_config_overrides,Menus configuration  -->,-Config disabled}" \
+                  C  "run-shell \"$CURRENT_DIR/config.sh\""  \
      "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/main.sh\""
 
 
