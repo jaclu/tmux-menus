@@ -132,6 +132,9 @@ ensure_menu_fits_on_screen() {
     fi
 }
 
+# shellcheck disable=SC1007
+CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+cache_file="$CURRENT_DIR"/menus.cache
 
 write_cache() {
     log_it "write_cache()"
