@@ -134,12 +134,14 @@ ensure_menu_fits_on_screen() {
 
 
 write_cache() {
+    log_it "write_cache()"
     echo "#!/bin/sh" >> "$cache_file"
     echo "cached_location_x=$cached_location_x" > "$cache_file"
     echo "cached_location_y=$cached_location_y" > "$cache_file"
 }
 
 read_cache() {
+    log_it "read_cache()"
     if [ ! -f "$cache_file" ]; then
         cached_location_x=0
         cached_location_y=0
