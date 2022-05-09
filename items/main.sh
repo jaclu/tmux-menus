@@ -38,6 +38,9 @@ source_it="command-prompt -I '~/.tmux.conf' -p 'Source file:' \
     tmux display File_could_not_be_sourced-not_found?  \"'"
 
 
+# if [ "$config_overrides" -eq 1 ]; then
+  
+
 t_start="$(date +'%s')"
 
 
