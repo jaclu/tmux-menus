@@ -1,0 +1,1 @@
+     "Up"    u run-shell "$SCRIPT_DIR/move_menu up" \
