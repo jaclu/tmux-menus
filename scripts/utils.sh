@@ -164,8 +164,6 @@ write_cache() {
     log_it "write_cache()"
     echo "cached_location_x=$cached_location_x" > "$cache_file"
     echo "cached_location_y=$cached_location_y" >> "$cache_file"
-    echo "cached_incr_x=$cached_incr_x"         >> "$cache_file"
-    echo "cached_incr_y=$cached_incr_y"         >> "$cache_file"
 }
 
 read_cache() {
@@ -173,20 +171,16 @@ read_cache() {
     if [ ! -f "$cache_file" ]; then
         cached_location_x=P
         cached_location_y=P
-        cached_incr_x=1
-        cached_incr_y=1
         write_cache
     fi
     . "$cache_file"
     [ -z "$cached_location_x" ] && to_numerical
     [ -z "$cached_location_y" ] && to_numerical
-    [ -z "$cached_incr_x" ] && cached_incr_x=1
-    [ -z "$cached_incr_y" ] && cached_incr_y=1
     show_cache
 }
 
 show_cache()   {
-    log_it "show_cache() - cached_location_x[$cached_location_x] cached_location_y[$cached_location_y] cached_incr_x[$cached_incr_x] cached_incr_y[$cached_incr_y]"
+    log_it "show_cache() - cached_location_x[$cached_location_x] cached_location_y[$cached_location_y]"
 }
 
 

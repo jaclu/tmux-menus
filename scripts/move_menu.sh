@@ -38,19 +38,7 @@ fi
 read_cache
 
 
-if [ "$direction" = "up" ]; then
-    to_numerical
-    cached_location_y="$(echo $cached_location_y - $cached_incr_y | bc)"
-elif [ "$direction" = "down" ]; then
-    to_numerical
-    cached_location_y="$(echo $cached_location_y + $cached_incr_y | bc)"
-elif [ "$direction" = "left" ]; then
-    to_numerical
-    cached_location_x="$(echo $cached_location_x - $cached_incr_x | bc)"
-elif [ "$direction" = "right" ]; then
-    to_numerical
-    cached_location_x="$(echo $cached_location_x + $cached_incr_x | bc)"
-elif [ "$direction" = "C" ]; then
+if [ "$direction" = "C" ]; then
     cached_location_x="C"
     cached_location_y="C"
 elif [ "$direction" = "R" ]; then
@@ -65,15 +53,8 @@ elif [ "$direction" = "S" ]; then
     cached_location_y="S"
 elif [ "$direction" = "x" ]; then
     cached_location_x="$param"
-    
-# elif [ "$direction" = "x-incr" ]; then
-#     cached_incr_x="$(echo "$cached_incr_x + 1" | bc)"
-# elif [ "$direction" = "x-decr" ]; then
-#     [ "$cached_incr_x" -gt 1 ] && cached_incr_x="$(echo "$cached_incr_x - 1" | bc)"
-# elif [ "$direction" = "y-incr" ]; then
-#     cached_incr_y="$(echo "$cached_incr_y + 1" | bc)"
-# elif [ "$direction" = "y-decr" ]; then
-#     [ "$cached_incr_y" -gt 1 ] && cached_incr_y="$(echo "$cached_incr_y - 1" | bc)"
+elif [ "$direction" = "y" ]; then
+    cached_location_y="$param"
 fi
 
 show_cache

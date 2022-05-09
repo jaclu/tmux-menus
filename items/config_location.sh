@@ -46,7 +46,8 @@ tmux display-menu \
      "Pane bot left"   P  "$move_menu P $reload'"      \
      "Win pos status"  W  "$move_menu W $reload'"      \
      "By status line"  S  "$move_menu S $reload'"      \
-     "alter x"     c  command-prompt -I "$cached_location_x" -p "x param (max: #{window_width}) " $move_menu x \"%%\"'"
+     "set X"     x  "command-prompt -I \"$cached_location_x\" -p \"x param (max: #{window_width}) \" \"$move_menu x %%'\"" \
+     "set Y"     y  "command-prompt -I \"$cached_location_y\" -p \"y param (max: #{window_height}) \" \"$move_menu y %%'\"" \
      "" \
      "-Bottom left corner defines" "" "" \
      "-menu location!" "" ""
