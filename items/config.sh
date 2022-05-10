@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0.3  2022-05-10
+#   Version: 1.0.4  2022-05-10
 #
 #   Live configuration. So far only menu location is available
 #
@@ -28,7 +28,7 @@ req_win_height=14
 this_menu="$CURRENT_DIR/config.sh"
 reload="; $this_menu"
 change_location="run-shell '$SCRIPT_DIR/move_menu.sh"
-open_menu="run-shell $CURRENT_DIR"
+open_menu="run-shell '$CURRENT_DIR"
 
 #
 #  The -p sequence will get wrecked by lnie breaks,
@@ -47,17 +47,16 @@ tmux display-menu \
     -T "#[align=centre] $menu_name "             \
     -x "$menu_location_x" -y "$menu_location_y"  \
     \
-    "Back to Previous menu"  Left  "$open_menu/advanced.sh'"       \
+    "Back to Previous menu"  Left  "$open_menu/advanced.sh'"        \
     "" \
     "Center"                 c     "$change_location  C  $reload'"  \
-    "Right edge of pane"     r     "$change_location  R  $reload'"  \
+    "win Right edge"         r     "$change_location  R  $reload'"  \
     "Pane bottom left"       p     "$change_location  P  $reload'"  \
-    "Win pos status"         w     "$change_location  W  $reload'"  \
-    "By status line"         l     "$change_location  S  $reload'"  \
+    "Win pos status line"    w     "$change_location  W  $reload'"  \
     "" \
-    "set coordinates"        s     "$set_coordinates"              \
+    "set coordinates"        s     "$set_coordinates"               \
     "" \
-    "-When using coordinates"      "" ""                           \
+    "-When using coordinates"      "" ""                            \
     "-lower left corner is set!"   "" ""
 
 
