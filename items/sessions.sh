@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.2 2022-05-10
+#   Version: 1.3.3 2022-05-10
 #
 #   Handling Sessions
 #
@@ -46,7 +46,7 @@ tmux display-menu  \
      -T "#[align=centre] $menu_name "             \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Back to Main menu"  Left  "$open_menu/main.sh"                    \
+     "Back to Main menu"  Left  "$open_menu/main.sh'"                   \
      "" \
      "<P> Rename this session"          \$  "$rename"                   \
      "    New session"                   n  "$new_ses"                  \
@@ -58,7 +58,7 @@ tmux display-menu  \
      "Kill current session"              k  "$kill_current"             \
      "Kill all other sessions"           o  "$kill_other"               \
      "" \
-     "Help  -->"  H  "$open_menu/help.sh $this_menu"
+     "Help  -->"  H  "$open_menu/help.sh $this_menu'"
 
 
 ensure_menu_fits_on_screen

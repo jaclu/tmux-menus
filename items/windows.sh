@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.3 2022-05-10
+#   Version: 1.3.4 2022-05-10
 #
 #   Handling Window
 #
@@ -48,8 +48,8 @@ tmux display-menu  \
      -T "#[align=centre] $menu_name   "           \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Back to Main menu"  Left  "$open_menu/main.sh"         \
-     "Move window  -->"   M     "$open_menu/window_move.sh"  \
+     "Back to Main menu"  Left  "$open_menu/main.sh'"         \
+     "Move window  -->"   M     "$open_menu/window_move.sh'"  \
      "" \
      "<P> Rename window"               ,  "$rename_window"              \
      "    New window after current"    a  "$new_after"                  \
@@ -66,7 +66,7 @@ tmux display-menu  \
      "<P> Kill current window"        \&  "$kill_current"               \
      "    Kill all other windows"      o  "$kill_other"                 \
           "" \
-     "Help  -->"  H  "$open_menu/help.sh $this_menu"
+     "Help  -->"  H  "$open_menu/help.sh $this_menu'"
 
 
 ensure_menu_fits_on_screen

@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.1.2  2022-05-10
+#   Version: 1.1.3  2022-05-10
 #
 #   Select and modify paste buffers
 #
@@ -36,8 +36,8 @@ tmux display-menu  \
      -T "#[align=centre] $menu_name "             \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Back to Main menu"      Home  "$open_menu/main.sh"   \
-     "Back to Handling Pane"  Left  "$open_menu/panes.sh"  \
+     "Back to Main menu"      Home  "$open_menu/main.sh'"   \
+     "Back to Handling Pane"  Left  "$open_menu/panes.sh'"  \
      "-#[align=centre,nodim]-----------   Commands   -----------" "" ""  \
      "-Enter Paste selected buffer"             "" ""  \
      "-Up    Select previous buffer"            "" ""  \
@@ -60,7 +60,7 @@ tmux display-menu  \
      "-" "" "" \
      "<P>"  =  "choose-buffer -Z"                      \
      "" \
-     "Help  -->"  H  "$open_menu/help.sh $this_menu"
+     "Help  -->"  H  "$open_menu/help.sh $this_menu'"
 
 
 ensure_menu_fits_on_screen

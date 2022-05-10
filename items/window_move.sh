@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.2  2022-05-10
+#   Version: 1.3.3  2022-05-10
 #
 #   Move Window
 #
@@ -44,8 +44,8 @@ tmux display-menu  \
      -T "#[align=centre] $menu_name "             \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Back to Main menu"        Home  "$open_menu/main.sh"       \
-     "Back to Handling Window"  Left  "$open_menu/windows.sh"    \
+     "Back to Main menu"        Home  "$open_menu/main.sh'"       \
+     "Back to Handling Window"  Left  "$open_menu/windows.sh'"    \
      "" \
      "Move window to other location"      m  "$to_other"                     \
      "-#{?pane_marked_set,#[nodim],}Swap current window with window"  "" ""  \
@@ -58,7 +58,7 @@ tmux display-menu  \
      "Unlink window from this session"    u  "unlink-window"                 \
      "" \
      "Help, explaining move & link  -->"  \
-                                H  "$open_menu/help_window_move.sh $this_menu"
+                                H  "$open_menu/help_window_move.sh $this_menu'"
 
 
 ensure_menu_fits_on_screen

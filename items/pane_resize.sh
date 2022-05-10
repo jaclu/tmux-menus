@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.2  2022-05-10
+#   Version: 1.3.3  2022-05-10
 #
 #   Resize a pane
 #
@@ -39,8 +39,8 @@ tmux display-menu  \
      -T "#[align=centre] $menu_name "                            \
      -x "$menu_location_x" -y "$menu_location_y"                 \
      \
-     "Back to Main menu"      Home  "$open_menu/main.sh"         \
-     "Back to Handling Pane"  Left  "$open_menu/panes.sh"        \
+     "Back to Main menu"      Home  "$open_menu/main.sh'"        \
+     "Back to Handling Pane"  Left  "$open_menu/panes.sh'"       \
      "" \
      "Specify width & height"  s  "$set_size"                    \
      "-#[align=centre,nodim]-------  resize by 1  ------" "" ""  \
@@ -54,7 +54,7 @@ tmux display-menu  \
      "left   "                 L  "resize-pane -L 5 $reload"     \
      "right  "                 R  "resize-pane -R 5 $reload"     \
      "" \
-     "Help  -->"               H  "$open_menu/help.sh $this_menu"
+     "Help  -->"               H  "$open_menu/help.sh $this_menu'"
 
 
 ensure_menu_fits_on_screen

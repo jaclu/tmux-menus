@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.3 2022-05-10
+#   Version: 1.3.4 2022-05-10
 #
 #   Advanced options
 #
@@ -56,8 +56,8 @@ tmux display-menu \
      -T "#[align=centre] $menu_name "             \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Back to Main menu"     Left  "$open_menu/main.sh"                     \
-     "Managet clients  -->"  M     "$open_menu/advanced_manage_clients.sh"  \
+     "Back to Main menu"     Left  "$open_menu/main.sh'"                     \
+     "Managet clients  -->"  M     "$open_menu/advanced_manage_clients.sh'"  \
      "" \
      "<P> List all key bindings"          \?  "list-keys -N"           \
      "<P> Describe (prefix) key"           /  "$describe_prefix"       \
@@ -72,8 +72,8 @@ tmux display-menu \
      " on this host are terminated    "    k  "$kill_server"           \
      "" \
      "#{?@menus_config_overrides,Configuration Menu  -->,-Configuration disabled}" \
-                  C  "$open_menu/config.sh"                            \
-     "Help  -->"  H  "$open_menu/help.sh $this_menu"
+                  C  "$open_menu/config.sh'"                           \
+     "Help  -->"  H  "$open_menu/help.sh $this_menu'"
 
 
 ensure_menu_fits_on_screen

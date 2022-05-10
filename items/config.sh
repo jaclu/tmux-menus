@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0.1  2022-05-10
+#   Version: 1.0.2  2022-05-10
 #
 #   Live configuration. So far only menu location is available
 #
@@ -47,7 +47,7 @@ tmux display-menu \
     -T "#[align=centre] $menu_name "             \
     -x "$menu_location_x" -y "$menu_location_y"  \
     \
-    "Back to Previous menu"  Left  "$open_menu/advanced.sh"        \
+    "Back to Previous menu"  Left  "$open_menu/advanced.sh'"       \
     "" \
     "Center"                 c     "$change_location  C  $reload"  \
     "Right edge of pane"     r     "$change_location  R  $reload"  \

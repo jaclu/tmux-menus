@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.3 2022-05-10
+#   Version: 1.3.4 2022-05-10
 #
 #   Choose layout
 #
@@ -37,7 +37,7 @@ tmux display-menu  \
      -T "#[align=centre] $menu_name "             \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Back to Main menu"  Left  "$open_menu/main.sh"                         \
+     "Back to Main menu"  Left  "$open_menu/main.sh'"                        \
      "" \
      "    Even horizontal"         1  "select-layout even-horizontal $reload" \
      "    Even vertical"           2  "select-layout even-vertical   $reload" \
@@ -46,7 +46,7 @@ tmux display-menu  \
      "    Tiled"                   5  "select-layout tiled           $reload" \
     "<P> Spread panes out evenly"  E  "select-layout -E              $reload" \
      "" \
-     "Help  -->"  H  "$open_menu/help.sh $this_menu"
+     "Help  -->"  H  "$open_menu/help.sh $this_menu'"
 
 
 ensure_menu_fits_on_screen
