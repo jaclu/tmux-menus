@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.2  2022-05-10
+#   Version: 1.3.3  2022-05-10
 #
 #   Help about move and link window
 #
@@ -21,7 +21,7 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 . "$SCRIPT_DIR/utils.sh"
 
 menu_name="Help, Move/Link Window"
-req_win_width=39
+req_win_width=38
 req_win_height=15
 
 
@@ -46,12 +46,12 @@ tmux display-menu  \
      "- Current window will be put as"                   "" ""  \
      "- the last window in that session."                "" ""  \
      "-2 - Choose a window in a session."                "" ""  \
-     "- Current window will be"                          "" ""  \
-     "- inserted on that location,"                      "" ""  \
-     "- pushing remaining windows"                       "" ""  \
-     "- one step to the right."                          "" ""  \
-     "-3 - If you choose a pane, the pane"               "" ""  \
-     "-part of the selection is ignored."                "" ""
+     "- Current window will be inserted"                 "" ""  \
+     "- on that location, pushing other"                 "" ""  \
+     "- windows one step to the right."                  "" ""  \
+     "-3 - If you choose a pane,"                        "" ""  \
+     "- the pane part of the selection"                  "" ""  \
+     "- is ignored."                                     "" ""
 
 
 ensure_menu_fits_on_screen
