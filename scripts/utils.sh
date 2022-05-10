@@ -6,7 +6,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.4.0 2022-05-09
+#   Version: 1.4.1 2022-05-10
 #
 #  Common stuff
 #
@@ -25,7 +25,7 @@ plugin_name="tmux-menus"
 #  If log_file is empty or undefined, no logging will occur,
 #  so comment it out for normal usage.
 #
-log_file="/tmp/$plugin_name.log"
+#log_file="/tmp/$plugin_name.log"
 
 
 #
