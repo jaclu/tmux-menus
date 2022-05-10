@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0.2  2022-05-10
+#   Version: 1.0.3  2022-05-10
 #
 #   Live configuration. So far only menu location is available
 #
@@ -49,11 +49,11 @@ tmux display-menu \
     \
     "Back to Previous menu"  Left  "$open_menu/advanced.sh'"       \
     "" \
-    "Center"                 c     "$change_location  C  $reload"  \
-    "Right edge of pane"     r     "$change_location  R  $reload"  \
-    "Pane bottom left"       p     "$change_location  P  $reload"  \
-    "Win pos status"         w     "$change_location  W  $reload"  \
-    "By status line"         l     "$change_location  S  $reload"  \
+    "Center"                 c     "$change_location  C  $reload'"  \
+    "Right edge of pane"     r     "$change_location  R  $reload'"  \
+    "Pane bottom left"       p     "$change_location  P  $reload'"  \
+    "Win pos status"         w     "$change_location  W  $reload'"  \
+    "By status line"         l     "$change_location  S  $reload'"  \
     "" \
     "set coordinates"        s     "$set_coordinates"              \
     "" \
