@@ -34,11 +34,11 @@ Once installed, hit the trigger to get the main menu to popup.
 Default is `<prefix> \` see Configuration below for how to change it.
 
 ## Screenshots
-![main](https://user-images.githubusercontent.com/5046648/167506262-87249815-311d-4d8c-b52c-7d86f55a59ef.png)
+![main](https://user-images.githubusercontent.com/5046648/167640620-26b4b7da-e3fc-4270-bdc8-431555744d3b.png)
 ![Pane](https://user-images.githubusercontent.com/5046648/167306468-a3711e0f-c8b8-4b02-82e2-b464c77d7f92.png)
 ![Window](https://user-images.githubusercontent.com/5046648/167306488-42df3119-6458-42c7-90a1-382e47c5420c.png)
 ![Session](https://user-images.githubusercontent.com/5046648/167306514-b02f26a3-5589-4843-8b66-0e4b710c7a20.png)
-![Advanced](https://user-images.githubusercontent.com/5046648/167306530-3631fd07-5693-4e9e-98ab-f70ddb3b1213.png)
+![Advanced](https://user-images.githubusercontent.com/5046648/167641035-bddd039d-7c23-4718-8034-004bd1b1e4c2.png)
 ![Help Summary](https://user-images.githubusercontent.com/5046648/167317979-63219b33-f9c0-4c80-95fc-2c7a9e4edcdb.png)
 
 ## Install
