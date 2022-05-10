@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.1.2 2022-05-08
+#   Version: 1.1.3 2022-05-10
 #
 #   Modify Clients
 #
@@ -26,6 +26,10 @@ req_win_width=41
 req_win_height=28
 
 
+this_menu="$CURRENT_DIR/advanced_manage_clients.sh"
+open_menu="run-shell '$CURRENT_DIR"
+
+
 t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
@@ -33,8 +37,8 @@ tmux display-menu  \
      -T "#[align=centre] $menu_name "             \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Back to Main menu"        Home  "run-shell $CURRENT_DIR/main.sh"      \
-     "Back to Advanced options" Left  "run-shell $CURRENT_DIR/advanced.sh"  \
+     "Back to Main menu"        Home  "$open_menu/main.sh"                  \
+     "Back to Advanced options" Left  "$open_menu/advanced.sh"              \
      "-#[align=centre,nodim]-----------   Commands   -----------"    "" ""  \
      "-Enter Choose selected client"                                 "" ""  \
      "-Up    Select previous client"                                 "" ""  \
@@ -58,7 +62,7 @@ tmux display-menu  \
      "-" "" "" \
      "<P>"  D  "choose-client -Z"                                           \
      "" \
-     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/advanced_manage_clients.sh\""
+     "Help  -->"  H  "$open_menu/help.sh $this_menu"
 
 
 ensure_menu_fits_on_screen

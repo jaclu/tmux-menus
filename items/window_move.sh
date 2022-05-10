@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.1  2022-05-08
+#   Version: 1.3.2  2022-05-10
 #
 #   Move Window
 #
@@ -30,6 +30,12 @@ reload="; run-shell \"$this_menu\""
 to_other="choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_window.sh W M %%\"'"
 link_other="choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_window.sh W L %%\"'"
 
+#
+#  when referred, close reference with '" in order to allow extra
+#  run-shell params
+#
+open_menu="run-shell '$CURRENT_DIR"
+
 
 t_start="$(date +'%s')"
 
@@ -38,8 +44,8 @@ tmux display-menu  \
      -T "#[align=centre] $menu_name "             \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Back to Main menu"        Home  "run-shell $CURRENT_DIR/main.sh"       \
-     "Back to Handling Window"  Left  "run-shell $CURRENT_DIR/windows.sh"    \
+     "Back to Main menu"        Home  "$open_menu/main.sh"       \
+     "Back to Handling Window"  Left  "$open_menu/windows.sh"    \
      "" \
      "Move window to other location"      m  "$to_other"                     \
      "-#{?pane_marked_set,#[nodim],}Swap current window with window"  "" ""  \
@@ -51,7 +57,8 @@ tmux display-menu  \
      "Link window to other session"       l  "$link_other"                   \
      "Unlink window from this session"    u  "unlink-window"                 \
      "" \
-     "Help, explaining move & link  -->"  H  "run-shell \"$this_menu\""
+     "Help, explaining move & link  -->"  \
+                                H  "$open_menu/help_window_move.sh $this_menu"
 
 
 ensure_menu_fits_on_screen

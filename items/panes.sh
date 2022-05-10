@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.3 2022-05-08
+#   Version: 1.3.4 2022-05-10
 #
 #   Handling pane
 #
@@ -27,6 +27,7 @@ req_win_height=23
 
 this_menu="$CURRENT_DIR/panes.sh"
 reload="; run-shell '$this_menu'"
+open_menu="run-shell '$CURRENT_DIR"
 
 title="command-prompt -I '#T'  -p 'Title: '  'select-pane -T \"%%\"'"
 pane_size="display-message 'Pane: #P size: #{pane_width}x#{pane_height}'"
@@ -50,13 +51,13 @@ t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
 tmux display-menu  \
-     -T "#[align=centre] Handling Pane "  \
+     -T "#[align=centre] Handling Pane "          \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Back to Main menu"   Left  "run-shell $CURRENT_DIR/main.sh"             \
-     "Move pane      -->"  M     "run-shell \"$CURRENT_DIR/pane_move.sh\""    \
-     "Resize pane    -->"  R     "run-shell \"$CURRENT_DIR/pane_resize.sh\""  \
-     "Paste buffers  -->"  B     "run-shell \"$CURRENT_DIR/pane_buffers.sh\"" \
+     "Back to Main menu"   Left  "$open_menu/main.sh"          \
+     "Move pane      -->"  M     "$open_menu/pane_move.sh"     \
+     "Resize pane    -->"  R     "$open_menu/pane_resize.sh"   \
+     "Paste buffers  -->"  B     "$open_menu/pane_buffers.sh"  \
      "" \
      "    Set Title"                  t  "$title"                             \
      "<P> Zoom pane toggle"           z  "resize-pane -Z $reload"             \
@@ -75,7 +76,7 @@ tmux display-menu  \
      "<P> Kill current pane"          x  "$kill_this"                         \
      "    Kill all other panes"       o  "$kill_others"                       \
      "" \
-     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help_panes.sh $this_menu\""
+     "Help  -->"  H  "$open_menu/help_panes.sh $this_menu"
 
 
 ensure_menu_fits_on_screen

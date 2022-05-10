@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0.0  2022-05-09
+#   Version: 1.0.1  2022-05-10
 #
 #   Live configuration. So far only menu location is available
 #
@@ -21,14 +21,14 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 . "$SCRIPT_DIR/utils.sh"
 
 menu_name="Configure Menu Location"
-req_win_width=30
+req_win_width=32
 req_win_height=14
 
 
-open_menu="run-shell $CURRENT_DIR"
 this_menu="$CURRENT_DIR/config.sh"
 reload="; $this_menu"
-move_menu="run-shell '$SCRIPT_DIR/move_menu.sh"
+change_location="run-shell '$SCRIPT_DIR/move_menu.sh"
+open_menu="run-shell $CURRENT_DIR"
 
 #
 #  The -p sequence will get wrecked by lnie breaks,
@@ -37,29 +37,28 @@ move_menu="run-shell '$SCRIPT_DIR/move_menu.sh"
 set_coordinates="command-prompt \
     -I \"$location_x\",\"$location_y\" \
     -p \"horizontal pos (max: #{window_width}):\",\"vertical pos (max: #{window_height}):\" \
-    \"$move_menu coord %1 %2 $reload'\""
+    \"$change_location coord %1 %2 $reload'\""
 
 
 t_start="$(date +'%s')"  #  if the menu closed in < 1s assume it didnt fit
-
 
 # shellcheck disable=SC2154
 tmux display-menu \
     -T "#[align=centre] $menu_name "             \
     -x "$menu_location_x" -y "$menu_location_y"  \
     \
-    "Back to Main menu"  Left  "$open_menu/main.sh"  \
+    "Back to Previous menu"  Left  "$open_menu/advanced.sh"        \
     "" \
-    "Center"              c  "$move_menu C $reload'"    \
-    "Right edge of pane"  r  "$move_menu R $reload'"    \
-    "Pane bottom left"    p  "$move_menu P $reload'"    \
-    "Win pos status"      w  "$move_menu W $reload'"    \
-    "By status line"      l  "$move_menu S $reload'"    \
+    "Center"                 c     "$change_location  C  $reload"  \
+    "Right edge of pane"     r     "$change_location  R  $reload"  \
+    "Pane bottom left"       p     "$change_location  P  $reload"  \
+    "Win pos status"         w     "$change_location  W  $reload"  \
+    "By status line"         l     "$change_location  S  $reload"  \
     "" \
-    "set coordinates"     s  "$set_coordinates"         \
+    "set coordinates"        s     "$set_coordinates"              \
     "" \
-    "-When using coordinates" "" "" \
-    "-lower left corner is set!" "" ""
+    "-When using coordinates"      "" ""                           \
+    "-lower left corner is set!"   "" ""
 
 
 ensure_menu_fits_on_screen

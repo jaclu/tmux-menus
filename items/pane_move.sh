@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.1 2022-05-08
+#   Version: 1.3.2 2022-05-10
 #
 #   Move a pane
 #
@@ -30,6 +30,7 @@ reload="; run-shell '$this_menu'"
 
 mv_2_other="choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_pane.sh  P M %%\"'"
 break_2_other="run-shell $SCRIPT_DIR/break_pane.sh"
+open_menu="run-shell '$CURRENT_DIR"
 
 
 t_start="$(date +'%s')"
@@ -43,8 +44,8 @@ tmux display-menu  \
      -T "#[align=centre] $menu_name "             \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Back to Main menu"      Home  "run-shell $CURRENT_DIR/main.sh"  \
-     "Back to Handling Pane"  Left  "run-shell $CURRENT_DIR/panes.sh" \
+     "Back to Main menu"      Home  "$open_menu/main.sh"  \
+     "Back to Handling Pane"  Left  "$open_menu/panes.sh" \
      "" \
      "    Move to other win/ses        "  m  "$mv_2_other"            \
      "#{?pane_marked_set,,-}    Swap current pane with marked"        \
@@ -54,7 +55,7 @@ tmux display-menu  \
      "" \
      "<P> Break pane to a new window"     !  "$break_2_other"         \
     "" \
-     "Help  -->"  H  "run-shell '$CURRENT_DIR/help.sh $this_menu'"
+     "Help  -->"  H  "$open_menu/help.sh $this_menu"
 
 
 ensure_menu_fits_on_screen

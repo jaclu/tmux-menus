@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.4.4 2022-05-09
+#   Version: 1.4.5 2022-05-10
 #
 #   Main menu, the one popping up when you hit the trigger
 #
@@ -25,8 +25,8 @@ req_win_width=40
 req_win_height=18
 
 
-run_shell="run-shell $CURRENT_DIR"
 search_all="command-prompt -p \"Search for:\" \"find-window -CNTiZ -- '%%'\""
+open_menu="run-shell '$CURRENT_DIR"
 
 #
 #  Nested quotes only gets you so far, there is only " ' and \"
@@ -40,29 +40,26 @@ source_it="command-prompt -I '~/.tmux.conf' -p 'Source file:' \
 
 t_start="$(date +'%s')"
 
-
 # shellcheck disable=SC2154
 tmux display-menu \
      -T "#[align=centre] $menu_name "             \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Handling Pane      -->"            P  "$run_shell/panes.sh"       \
-     "Handling Window    -->"            W  "$run_shell/windows.sh"     \
-     "Handling Sessions  -->"            S  "$run_shell/sessions.sh"    \
-     "Layouts            -->"            L  "$run_shell/layouts.sh"     \
-     "Split view         -->"            V  "$run_shell/split_view.sh"  \
-     "Advanced Options   -->"            A  "$run_shell/advanced.sh"    \
+     "Handling Pane      -->"            P  "$open_menu/panes.sh"       \
+     "Handling Window    -->"            W  "$open_menu/windows.sh"     \
+     "Handling Sessions  -->"            S  "$open_menu/sessions.sh"    \
+     "Layouts            -->"            L  "$open_menu/layouts.sh"     \
+     "Split view         -->"            V  "$open_menu/split_view.sh"  \
+     "Advanced Options   -->"            A  "$open_menu/advanced.sh"    \
      "" \
+     "Navigate & select ses/win/pane"    n  "choose-tree -Z"            \
      "-#[nodim]Search in all sessions & windows" "" ""                  \
      " ignores case, only visible part"  s  "$search_all"               \
-     "Navigate & select ses/win/pane"    n  "choose-tree -Z"            \
      "" \
      "    Reload configuration file"     r  "$source_it"                \
      "<P> Detach from tmux"              d  detach-client               \
      "" \
-     "#{?@menus_config_overrides,Menus configuration  -->,-Config disabled}"  \
-                  C  "run-shell \"$CURRENT_DIR/config.sh\""                   \
-     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $CURRENT_DIR/main.sh\""
+     "Help  -->"  H  "$open_menu/help.sh $CURRENT_DIR/main.sh"
 
 
 ensure_menu_fits_on_screen

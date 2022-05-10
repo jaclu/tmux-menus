@@ -25,6 +25,13 @@ req_win_width=44
 req_win_height=15
 
 
+previous_menu="$1"
+
+if [ -z "$previous_menu" ]; then
+    error_msg "help.sh was called without notice of what called it"
+fi
+
+
 t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
@@ -32,8 +39,7 @@ tmux display-menu  \
      -T "#[align=centre] $menu_name "             \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Back to Main menu"    Home  "run-shell $CURRENT_DIR/main.sh"         \
-     "Back to Move Window"  Left  "run-shell $CURRENT_DIR/window_move.sh"  \
+    "Back to Previous menu"  Left  "run-shell $previous_menu"              \
      "---  Move & Link window navigation  --"                       "" ""  \
      "-Displays a navigation tree, options:"                        "" ""  \
      "-1 - Chose a session."                                        "" ""  \

@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.1  2022-05-08
+#   Version: 1.3.2  2022-05-10
 #
 #   Resize a pane
 #
@@ -29,31 +29,32 @@ this_menu="$CURRENT_DIR/pane_resize.sh"
 reload="; run-shell '$this_menu'"
 
 set_size="command-prompt -p 'Pane width,Pane height' 'resize-pane -x %1 -y %2'"
+open_menu="run-shell '$CURRENT_DIR"
 
 
 t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
 tmux display-menu  \
-     -T "#[align=centre] $menu_name "  \
-     -x "$menu_location_x" -y "$menu_location_y"  \
+     -T "#[align=centre] $menu_name "                            \
+     -x "$menu_location_x" -y "$menu_location_y"                 \
      \
-     "Back to Main menu"      Home  "run-shell $CURRENT_DIR/main.sh"  \
-     "Back to Handling Pane"  Left  "run-shell $CURRENT_DIR/panes.sh" \
+     "Back to Main menu"      Home  "$open_menu/main.sh"         \
+     "Back to Handling Pane"  Left  "$open_menu/panes.sh"        \
      "" \
-     "Specify width & height"  s  "$set_size"                         \
-     "-#[align=centre,nodim]-------  resize by 1  ------" "" ""       \
-     "up     "                 u  "resize-pane -U $reload"            \
-     "down   "                 d  "resize-pane -D $reload"            \
-     "left   "                 l  "resize-pane -L $reload"            \
-     "right  "                 r  "resize-pane -R $reload"            \
-     "-#[align=centre,nodim]-------  resize by 5  ------" "" ""       \
-     "up     "                 U  "resize-pane -U 5 $reload"          \
-     "down   "                 D  "resize-pane -D 5 $reload"          \
-     "left   "                 L  "resize-pane -L 5 $reload"          \
-     "right  "                 R  "resize-pane -R 5 $reload"          \
+     "Specify width & height"  s  "$set_size"                    \
+     "-#[align=centre,nodim]-------  resize by 1  ------" "" ""  \
+     "up     "                 u  "resize-pane -U $reload"       \
+     "down   "                 d  "resize-pane -D $reload"       \
+     "left   "                 l  "resize-pane -L $reload"       \
+     "right  "                 r  "resize-pane -R $reload"       \
+     "-#[align=centre,nodim]-------  resize by 5  ------" "" ""  \
+     "up     "                 U  "resize-pane -U 5 $reload"     \
+     "down   "                 D  "resize-pane -D 5 $reload"     \
+     "left   "                 L  "resize-pane -L 5 $reload"     \
+     "right  "                 R  "resize-pane -R 5 $reload"     \
      "" \
-     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $this_menu\""
+     "Help  -->"               H  "$open_menu/help.sh $this_menu"
 
 
 ensure_menu_fits_on_screen

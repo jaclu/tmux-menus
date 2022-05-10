@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.2 2022-05-08
+#   Version: 1.3.3 2022-05-10
 #
 #   Advanced options
 #
@@ -23,7 +23,7 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
 menu_name="Advanced options"
 req_win_width=40
-req_win_height=18
+req_win_height=19
 
 
 #
@@ -41,6 +41,8 @@ current_prefix="$(tmux show-option -g prefix | cut -d' ' -f2 | cut -d'-' -f2)"
 this_menu="$CURRENT_DIR/advanced.sh"
 reload="; run-shell '$this_menu'"
 
+
+open_menu="run-shell '$CURRENT_DIR"
 describe_prefix="command-prompt -k -p key 'list-keys -1N \"%%%\"'"
 toggle_mouse="set-option -g mouse $new_mouse_status"
 change_prefix="command-prompt -1 -p prefix 'run \"$SCRIPT_DIR/change_prefix.sh %%\"'"
@@ -54,13 +56,13 @@ tmux display-menu \
      -T "#[align=centre] $menu_name "             \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
-     "Back to Main menu"     Left  "run-shell $CURRENT_DIR/main.sh"    \
-     "Managet clients  -->"   M     "run-shell \"$CURRENT_DIR/advanced_manage_clients.sh\"" \
+     "Back to Main menu"     Left  "$open_menu/main.sh"                     \
+     "Managet clients  -->"  M     "$open_menu/advanced_manage_clients.sh"  \
      "" \
      "<P> List all key bindings"          \?  "list-keys -N"           \
      "<P> Describe (prefix) key"           /  "$describe_prefix"       \
      "<P> Show messages"                  \~  show-messages            \
-     "<P> Customize options"               C  "customize-mode -Z"      \
+     "<P> Options customize"               O  "customize-mode -Z"      \
      "<P> Prompt for a command"            :  command-prompt           \
      "" \
      "Toggle mouse to: $new_mouse_status"  m  "$toggle_mouse $reload"  \
@@ -69,7 +71,9 @@ tmux display-menu \
      "-#[nodim]Kill server - all your sessions"                 "" ""  \
      " on this host are terminated    "    k  "$kill_server"           \
      "" \
-     "Help  -->"  H  "run-shell \"$CURRENT_DIR/help.sh $this_menu\""
+     "#{?@menus_config_overrides,Configuration Menu  -->,-Configuration disabled}" \
+                  C  "$open_menu/config.sh"                            \
+     "Help  -->"  H  "$open_menu/help.sh $this_menu"
 
 
 ensure_menu_fits_on_screen
