@@ -21,9 +21,9 @@ There are some very basic popups per default (See *Configuration* on how to disa
 
 I find them rather lacking and since they are written as hard to read one-liners, I preferred a more integrated approach with navigation and simple adaptability, also covering more than just panes and windows.
 
-Not only meant for beginners, I use it myself regularly for
+Not only meant for beginners, I use it myself all the time:
 
-- When connecting using terminals without much support for Meta or Ctrl, like using iSH, then Pane-Resize Pane and Layouts allows me to resize panes with ease.
+- When connecting using terminals without much support for Meta or Ctrl, then this gives me access to all the stuff that is not available with my normal shortcuts.
 - Tasks that would need external scripts in order to avoid hard to read complex bind one-liners, such as kill curent session, without getting disconnected.
 - When direct typing would be much longer.<br> Example: Kill the server directly is min 12 keys: `<prefix> : kill-ser <tab> <enter>` <br> with the menus it is 5 keys: `<prefix> \ A k y ` <br>
 - Things I use to seldom to remember as shortcuts.
