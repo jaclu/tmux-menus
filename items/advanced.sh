@@ -57,7 +57,7 @@ tmux display-menu \
      -x "$menu_location_x" -y "$menu_location_y"  \
      \
      "Back to Main menu"     Left  "$open_menu/main.sh'"                     \
-     "Managet clients  -->"  M     "$open_menu/advanced_manage_clients.sh'"  \
+     "Manage clients  -->"  M     "$open_menu/advanced_manage_clients.sh'"  \
      "" \
      "<P> List all key bindings"          \?  "list-keys -N"           \
      "<P> Describe (prefix) key"           /  "$describe_prefix"       \
