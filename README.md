@@ -97,7 +97,7 @@ Locations can be one of:
 -   M - Mouse position (does not seem to work as intended...)
 -   R - Right edge of terminal (Only for x)
 -   S - Next to status line (Only for y)
--   Number - In window coordinates 0,0 is top left
+-   Number - In window coordinates 0,0 is top left. To make it even more confusing, the coordinate defines lower left of the menus placement...
 
 ```tmux
 set -g @menus_location_x 'C'
@@ -114,7 +114,7 @@ set -g @menus_config_overrides 1
 
 This param can be either 0 (the default) or 1
 
-If enabled, then you can change location of he menus with the `Menus configuration` sub-menu
+Currently only menu location can be set.
 
 #### Default menus
 
