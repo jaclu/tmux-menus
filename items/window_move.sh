@@ -48,7 +48,7 @@ tmux display-menu  \
      "Back to Handling Window"  Left  "$open_menu/windows.sh'"    \
      "" \
      "Move window to other location"      m  "$to_other"                     \
-     "-#{?pane_marked_set,,#[dim]}Swap current window with window"  "" ""  \
+     "#{?pane_marked_set,-#[nodim],-}Swap current window with window"  "" ""  \
      "#{?pane_marked_set,,-} containing marked pane"                         \
                                           s  swap-window                     \
      "Swap window Left"                  \<  "swap-window -dt:-1 $reload"    \
