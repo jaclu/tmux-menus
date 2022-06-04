@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0.4  2022-05-10
+#   Version: 1.0.5  2022-06-04
 #
 #   Live configuration. So far only menu location is available
 #
@@ -22,7 +22,7 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
 menu_name="Configure Menu Location"
 req_win_width=32
-req_win_height=14
+req_win_height=13
 
 
 this_menu="$CURRENT_DIR/config.sh"
