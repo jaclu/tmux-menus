@@ -6,7 +6,8 @@ Simple to modify to fit your needs. I have included several items that some migh
 
 #### Recent changes
 
-- New feature, Advanced - Configuration Menu, available if @menus_config_overrides is set to "1"
+- Fixed incorrect default in Advanced
+- New feature, Advanced - Plugin Configuration, available if @menus_config_overrides is set to "1"
 - Moved "List all key bindings" to Advanced Options
 - To make it more phone friendly, it now checks for window size, displaying size requirement for the menu if it does not fit. Menus just don't display if the screen is to small.
 - moved "mark current pane" to pane menu
@@ -38,7 +39,7 @@ Default is `<prefix> \` see Configuration below for how to change it.
 ![Pane](https://user-images.githubusercontent.com/5046648/167306468-a3711e0f-c8b8-4b02-82e2-b464c77d7f92.png)
 ![Window](https://user-images.githubusercontent.com/5046648/167306488-42df3119-6458-42c7-90a1-382e47c5420c.png)
 ![Session](https://user-images.githubusercontent.com/5046648/167306514-b02f26a3-5589-4843-8b66-0e4b710c7a20.png)
-![Advanced](https://user-images.githubusercontent.com/5046648/168927710-d15e748a-df86-4ecd-a75f-fe5bf744a046.png)
+![Advanced](https://user-images.githubusercontent.com/5046648/172018080-ad23ff4a-57d6-46c5-ab73-deed32b9914e.png)
 ![Help Summary](https://user-images.githubusercontent.com/5046648/167317979-63219b33-f9c0-4c80-95fc-2c7a9e4edcdb.png)
 
 ## Install

@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.4 2022-05-10
+#   Version: 1.3.5 2022-06-04
 #
 #   Advanced options
 #
@@ -62,7 +62,7 @@ tmux display-menu \
      "<P> List all key bindings"          \?  "list-keys -N"           \
      "<P> Describe (prefix) key"           /  "$describe_prefix"       \
      "<P> Show messages"                  \~  show-messages            \
-     "<P> Options customize"               O  "customize-mode -Z"      \
+     "<P> Customize options"               C  "customize-mode -Z"      \
      "<P> Prompt for a command"            :  command-prompt           \
      "" \
      "Toggle mouse to: $new_mouse_status"  m  "$toggle_mouse $reload"  \
@@ -71,8 +71,8 @@ tmux display-menu \
      "-#[nodim]Kill server - all your sessions"                 "" ""  \
      " on this host are terminated    "    k  "$kill_server"           \
      "" \
-     "#{?@menus_config_overrides,Configuration Menu  -->,-Configuration disabled}" \
-                  C  "$open_menu/config.sh'"                           \
+     "#{?@menus_config_overrides,Plugin configuration  -->,-Configuration disabled}" \
+                  P  "$open_menu/config.sh'"                           \
      "Help  -->"  H  "$open_menu/help.sh $this_menu'"
 
 
