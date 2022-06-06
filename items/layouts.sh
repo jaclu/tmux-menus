@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.4 2022-05-10
+#   Version: 1.3.5 2022-06-06
 #
 #   Choose layout
 #
@@ -21,8 +21,8 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 . "$SCRIPT_DIR/utils.sh"
 
 menu_name="Layouts"
-req_win_width=35
-req_win_height=12
+req_win_width=31
+req_win_height=16
 
 
 this_menu="$CURRENT_DIR/layouts.sh"
@@ -39,12 +39,22 @@ tmux display-menu  \
      \
      "Back to Main menu"  Left  "$open_menu/main.sh'"                        \
      "" \
-     "    Even horizontal"         1  "select-layout even-horizontal $reload" \
-     "    Even vertical"           2  "select-layout even-vertical   $reload" \
-     "    Main horizontal"         3  "select-layout main-horizontal $reload" \
-     "    Main vertical"           4  "select-layout main-vertical   $reload" \
-     "    Tiled"                   5  "select-layout tiled           $reload" \
-    "<P> Spread panes out evenly"  E  "select-layout -E              $reload" \
+     "Most of these defaults" "" "" \
+     "can't be used in menus." "" "" \
+     "They are just listed" "" "" \
+     " " "" "" \
+     "#[fg=red]<P> M-1#[default] Even horizontal"  1  \
+          "select-layout even-horizontal $reload"     \
+     "#[fg=red]<P> M-2#[default] Even vertical"    2  \
+          "select-layout even-vertical   $reload"     \
+     "#[fg=red]<P> M-3#[default] Main horizontal"  3  \
+          "select-layout main-horizontal $reload"     \
+     "#[fg=red]<P> M-4#[default] Main vertical"    4  \
+          "select-layout main-vertical   $reload"     \
+     "#[fg=red]<P> M-5#[default] Tiled"            5  \
+          "select-layout tiled           $reload"     \
+    "<P> Spread evenly"                            E  \
+          "select-layout -E              $reload"     \
      "" \
      "Help  -->"  H  "$open_menu/help.sh $this_menu'"
 
