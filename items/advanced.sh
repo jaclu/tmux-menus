@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.5 2022-06-04
+#   Version: 1.3.6 2022-06-06
 #
 #   Advanced options
 #
@@ -45,8 +45,17 @@ reload="; run-shell '$this_menu'"
 open_menu="run-shell '$CURRENT_DIR"
 describe_prefix="command-prompt -k -p key 'list-keys -1N \"%%%\"'"
 toggle_mouse="set-option -g mouse $new_mouse_status"
-change_prefix="command-prompt -1 -p prefix 'run \"$SCRIPT_DIR/change_prefix.sh %%\"'"
 kill_server="confirm-before -p 'kill tmux server on #H ? (y/n)' kill-server"
+
+#
+#  Slightly weird, I can't get line continuation passed shellcheck on
+#  the next two, so have to revert to multi step assignment
+#
+change_prefix="command-prompt -1 -p prefix "
+change_prefix="$change_prefix 'run \"$SCRIPT_DIR/change_prefix.sh %%\"'"
+
+plugin_conf_prompt="#{?@menus_config_overrides,Plugin configuration"
+plugin_conf_prompt="$plugin_conf_prompt  -->,-Configuration disabled}"
 
 
 t_start="$(date +'%s')"
@@ -71,8 +80,7 @@ tmux display-menu \
      "-#[nodim]Kill server - all your sessions"                 "" ""  \
      " on this host are terminated    "    k  "$kill_server"           \
      "" \
-     "#{?@menus_config_overrides,Plugin configuration  -->,-Configuration disabled}" \
-                  P  "$open_menu/config.sh'"                           \
+     "$plugin_conf_prompt"                 P  "$open_menu/config.sh'"  \
      "Help  -->"  H  "$open_menu/help.sh $this_menu'"
 
 

@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.5 2022-05-10
+#   Version: 1.3.6 2022-06-06
 #
 #   Handling pane
 #
@@ -44,7 +44,12 @@ hist_w_esc="command-prompt -p 'Save to (with escapes):' -I \
 
 respawn="confirm-before -p 'respawn-pane #P? (y/n)' 'respawn-pane -k'"
 kill_this="confirm-before -p 'kill-pane #T (#P)? (y/n)' kill-pane"
-kill_others="confirm-before -p 'Are you sure you want to kill all other panes? (y/n)' 'kill-pane -a'"
+#
+#  Slightly weird, I can't get line continuation passed shellcheck on this
+#  one, so have to revert to multi step assignment
+#
+kill_others="confirm-before -p 'Are you sure you want to kill "
+kill_others="$kill_others all other panes? (y/n)' 'kill-pane -a'"
 
 
 t_start="$(date +'%s')"

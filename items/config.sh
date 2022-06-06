@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0.5  2022-06-04
+#   Version: 1.0.6  2022-06-06
 #
 #   Live configuration. So far only menu location is available
 #
@@ -34,9 +34,11 @@ open_menu="run-shell '$CURRENT_DIR"
 #  The -p sequence will get wrecked by lnie breaks,
 #  so left as one annoyingly long line
 #
+prompt1="horizontal pos (max: #{window_width}):"
+prompt2="vertical pos (max: #{window_height}):"
 set_coordinates="command-prompt \
     -I \"$location_x\",\"$location_y\" \
-    -p \"horizontal pos (max: #{window_width}):\",\"vertical pos (max: #{window_height}):\" \
+    -p \"$prompt1\",\"$prompt2\" \
     \"$change_location coord %1 %2 $reload'\""
 
 
