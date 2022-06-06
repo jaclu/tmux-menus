@@ -24,7 +24,7 @@ I find them rather lacking and since they are written as hard to read one-liners
 
 Not only meant for beginners, I use it myself all the time:
 
-- When connecting using terminals without much support for Meta or Ctrl, then this gives me access to all the stuff that is not available with my normal shortcuts.
+- When connecting using terminals without much support for Meta or Ctrl, then this gives me access to all the stuff that is not available with my normal shortcuts. For instance when running iSH the console keyboard is very limitd.
 - Tasks that would need external scripts in order to avoid hard to read complex bind one-liners, such as kill curent session, without getting disconnected.
 - When direct typing would be much longer.<br> Example: Kill the server directly is min 12 keys: `<prefix> : kill-ser <tab> <enter>` <br> with the menus it is 5 keys: `<prefix> \ A k y ` <br>
 - Things I use to seldom to remember as shortcuts.
