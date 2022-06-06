@@ -6,11 +6,11 @@ Simple to modify to fit your needs. I have included several items that some migh
 
 #### Recent changes
 
+- Layouts - listing, but not using defaults that are not usable in popup menus
 - Fixed incorrect default in Advanced
 - New feature, Advanced - Plugin Configuration, available if @menus_config_overrides is set to "1"
 - Moved "List all key bindings" to Advanced Options
 - To make it more phone friendly, it now checks for window size, displaying size requirement for the menu if it does not fit. Menus just don't display if the screen is to small.
-- moved "mark current pane" to pane menu
 
 ## Purpose
 
