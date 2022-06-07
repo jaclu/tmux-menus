@@ -86,19 +86,18 @@ bool_param() {
 
         "yes" | "Yes" | "YES" | "true" | "True" | "TRUE" )
             #  Be a nice guy and accept some common positives
-            log_it "Converted incorrect positive [$1] to 0"
+            log_it "Converted positive [$1] to 0"
             return 0
             ;;
 
         "no" | "No" | "NO" | "false" | "False" | "FALSE" )
             #  Be a nice guy and accept some common negatives
-            log_it "Converted incorrect negative [$1] to 1"
+            log_it "Converted negative [$1] to 1"
             return 1
             ;;
 
         *)
-            log_it "Invalid parameter bool_param($1)"
-            error_msg "bool_param($1) - should be 0 or 1"
+            error_msg "bool_param($1) - should be 1/yes/true or 0/no/false"
             ;;
 
     esac
