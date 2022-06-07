@@ -6,7 +6,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.4.2 2022-06-07
+#   Version: 1.4.3 2022-06-07
 #
 #  Common stuff
 #
@@ -154,13 +154,13 @@ ensure_menu_fits_on_screen() {
     msg="$msg w:$req_win_width h:$req_win_height"
     log_it "$msg"
 
-    css_width="$(tmux display -p "#{window_width}")"
-    log_it "Current width: $css_width"
-    css_height="$(tmux display -p "#{window_height}")"
-    log_it "Current height: $css_height"
+    cur_width="$(tmux display -p "#{window_width}")"
+    log_it "Current width: $cur_width"
+    cur_height="$(tmux display -p "#{window_height}")"
+    log_it "Current height: $cur_height"
 
-    if    [ "$css_width" -lt "$req_win_width" ] || \
-          [ "$css_height" -lt "$req_win_height" ]; then
+    if    [ "$cur_width" -lt "$req_win_width" ] || \
+          [ "$cur_height" -lt "$req_win_height" ]; then
         echo
         echo "menu '$menu_name'"
         echo "needs a screen size"
