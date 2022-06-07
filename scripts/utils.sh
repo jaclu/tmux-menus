@@ -6,7 +6,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.4.1 2022-05-10
+#   Version: 1.4.2 2022-06-07
 #
 #  Common stuff
 #
@@ -193,7 +193,7 @@ read_config() {
 
 
 #
-#  This is for shell checking status.
+#  This is for shells checking status.
 #  In tmux code #{?@menus_config_overrides,,} can be used
 #
 if bool_param "$(get_tmux_option "@menus_config_overrides" "0")"; then
@@ -201,7 +201,7 @@ if bool_param "$(get_tmux_option "@menus_config_overrides" "0")"; then
 else
     config_overrides=0
 fi
-log_it "config_overrides=[$config_overrides]"
+#log_it "config_overrides=[$config_overrides]"
 
 
 if [ $config_overrides -eq 1 ] && [ -f "$config_file" ]; then
@@ -214,5 +214,5 @@ else
     #  to use it.
     #
     menu_location_x="$(get_tmux_option "@menus_location_x" "P")"
-    menu_location_y="$(get_tmux_option "@menus_location_y" "P")"    
+    menu_location_y="$(get_tmux_option "@menus_location_y" "P")"
 fi
