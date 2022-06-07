@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.1  2022-05-08
+#   Version: 1.3.2  2022-06-07
 #
 
 #  shellcheck disable=SC1007
@@ -48,7 +48,8 @@ log_it "without_prefix=[$without_prefix]"
 #  Generic plugin setting I use to add Notes to keys that are bound
 #  This makes this key binding show up when doing <prefix> ?
 #  If not set to "Yes", no attempt at adding notes will happen
-#  bind-key Notes were added in tmux 3.1, so should not be used on older versions!
+#  bind-key Notes were added in tmux 3.1, so should not be used on
+#  older versions!
 #
 if bool_param "$(get_tmux_option "@use_bind_key_notes_in_plugins" "No")"; then
     use_notes=1
@@ -58,19 +59,16 @@ fi
 log_it "use_notes=[$use_notes]"
 
 
+params=""
+if [ "$use_notes" -eq 1 ]; then
+    params="$params -N '$plugin_name'"
+fi
 if [ "$without_prefix" -eq 1 ]; then
-    if [ "$use_notes" -eq 1 ]; then
-	#  shellcheck disable=SC2154
-        tmux bind -N "$plugin_name" -n "$trigger_key" run-shell "$MENUS_DIR"/main.sh
-    else
-        tmux bind -n "$trigger_key" run-shell "$MENUS_DIR"/main.sh
-    fi
+    params="$params -n"
     log_it "Menus bound to: $trigger_key"
 else
-    if [ "$use_notes" -eq 1 ]; then
-        tmux bind -N "$plugin_name" "$trigger_key" run-shell "$MENUS_DIR"/main.sh
-    else
-        tmux bind    "$trigger_key" run-shell "$MENUS_DIR"/main.sh
-    fi
     log_it "Menus bound to: <prefix> $trigger_key"
 fi
+
+# Activate trigger key
+tmux bind $params "$trigger_key"  run-shell "$MENUS_DIR/main.sh"

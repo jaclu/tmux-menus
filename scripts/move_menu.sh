@@ -28,10 +28,6 @@ param_1="$2"
 param_2="$3"
 
 
-
-log_it "move_menu() w=[$menu_width] h=[$menu_height] [$action] [$param_1] [$param_2"
-
-
 if [ -z "$action" ]; then
     error_msg "move_menu.sh was called without action param" 1
 fi

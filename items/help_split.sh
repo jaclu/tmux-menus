@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.1 2022-05-08
+#   Version: 1.3.2 2022-06-07
 #
 #   Help about splitting the view
 #
@@ -39,18 +39,17 @@ t_start="$(date +'%s')"
 #        in order to actually print one, figure out what's going on
 #
 # shellcheck disable=SC2154
-tmux display-menu  \
-     -T "#[align=centre] $menu_name   "           \
-     -x "$menu_location_x" -y "$menu_location_y"  \
-     \
-     "Back to Previous menu"  Left  "run-shell $previous_menu"  \
-     "" \
-     "-Creating a new pane by"                           "" ""  \
-     "-splitting current Pane or"                        "" ""  \
-     "-Window."                                          "" ""  \
-     "- " "" "" \
-     "-Window refers to the entire"                      "" ""  \
-     "-display."                                         "" ""
-
+tmux display-menu                                               \
+    -T "#[align=centre] $menu_name   "                          \
+    -x "$menu_location_x" -y "$menu_location_y"                 \
+                                                                \
+    "Back to Previous menu"  Left  "run-shell $previous_menu"   \
+    ""                                                          \
+    "-Creating a new pane by"                           "" ""   \
+    "-splitting current Pane or"                        "" ""   \
+    "-Window."                                          "" ""   \
+    "- " "" ""                                                  \
+    "-Window refers to the entire"                      "" ""   \
+    "-display."                                         "" ""
 
 ensure_menu_fits_on_screen
