@@ -6,7 +6,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.4.3 2022-06-07
+#   Version: 1.4.4 2022-06-07
 #
 #  Common stuff
 #
@@ -136,6 +136,11 @@ get_tmux_option() {
 #  Not perfect, but it kind of works. If you hit escape and instantly close
 #  the menu, a time diff zero might trigger this to check sizes, but if
 #  the menu fits on the screen, no size warning will be printed.
+#
+#  This gets slightly more complicated with tmux 3.3, since now tmux shrinks
+#  menus that don't fit due to width, so tmux might decide it can show a menu,
+#  but due to shrinkage, the hints in the menu might be so shortened that they
+#  are off little help explaining what this option would do.
 #
 ensure_menu_fits_on_screen() {
     [ "$t_start" -ne "$(date +'%s')" ] && return  # should have been displayed
