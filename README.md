@@ -50,7 +50,7 @@ Add plugin to the list of TPM plugins in `.tmux.conf`:
 
     set -g @plugin 'jaclu/tmux-menus'
 
-Hit `prefix + I` to fetch the plugin and source it. That's it!
+Hit prefix + I to fetch the plugin and source it. You should now be able to use the plugin.
 
 ### Manual Installation
 
@@ -62,7 +62,7 @@ Add this line to the bottom of `.tmux.conf`:
 
     run-shell ~/clone/path/menus.tmux
 
-Reload TMUX environment with `$ tmux source-file ~/.tmux.conf` - that's it!
+Reload TMUX environment with `tmux source-file ~/.tmux.conf`. You should now be able to use the plugin.
 
 ## Configuration
 
@@ -117,7 +117,7 @@ This param can be either 0 (the default) or 1
 
 Currently only menu location can be set.
 
-#### Default menus
+### Default menus
 
 To disable the fairly limited default popup menus, add the following
 ```
@@ -140,7 +140,7 @@ Not directly related to this plugin, but since it does have an option to trigger
 
 If you want to experiment with changing the menus, I would recommend to first clone/copy this repository to a different location on your system.
 
-Then by just running ./menus.tmux in the new location, your trigger key will bind to this alternate menu set.
+Then by just running `~/path/to/alternate-tmux-menus/menus.tmux`, your trigger key will bind to this alternate menu set.
 So next time you trigger the menus you will get this in-development menu tree.
 
 Each menu is run as a script, so you can edit a menu script and once it is saved, the new content will be displayed next time you trigger that menu.
@@ -155,25 +155,27 @@ If you are struggling with a menu edit, I would suggest to just run that menu it
 
 This will directly trigger that menu and display any syntax errors on the command line.
 
-In utils I have a function log_it. And a variable log_file. If log_file is defined, any call to log_it will be printed there. If not, nothing will happen, so log_it lines can be left in the code.
+In `scripts/utils.sh` there is a function log_it, and a variable log_file. If log_file is defined, any call to log_it will be printed there. If it is not defined, nothing will happen. So log_it lines can be left in the code.
+
+If you are triggering a menu from the command line, you can use direct echo, but then you need to remove it before deploying, since tmux will see any script output as an potential error and display it in a scroll back buffer.<br>
+If tailing a log file is unpractical, a more scaleable way to achieve the same result as echo would be to set `log_file='/dev/stdout'`
+
+To trigger log output, just add lines like:
 
 ```
 log_it "foo is now [$foo]"
 ```
 
-If you are triggering a menu from the command line, you can use direct echo, but then you need to remove them before deploying, since tmux will see any script output as an potential error and display it in a scroll back buffer.<br>In most cases a more practical way to achieve the same result would be to set
-`log_file='/dev/stdout'`
+When done, first unset log_file, then copy or commit your changes to the default location, this will be used from now on.
 
-When done, deploy by copy/commit your changes to the default location, this will be used from now on.
-
-If you want to go back to your installed version for now, either reload configs, or run ~/.tmux/plguins/tmux-menus/menus.tmux to rebind those menus to the trigger. Regardless the installed version will be activated next time you start tmux.
+If you want to go back to your installed version for now, either reload configs, or run `~/.tmux/plugins/tmux-menus/menus.tmux` to rebind those menus to the trigger. Regardless the installed version will be activated next time you start tmux automatically.
 
 ## Compatibility
 
-| Version    | Notice                                                                                                                                                                                                                                        |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 3.2 -      | Fully compatible                                                                                                                                                                                                                              |
-| 3.0 - 3.1c | Menu centering not supported, will be displayed top left if C is used as menu location. <br>Additionally some actions might not work depending on version. <br> There should be a notification message about "unknown command" in such cases. |
+| Version    | Notice
+| - | - | 
+| 3.2 -      | Fully compatible
+| 3.0 - 3.1c | Menu centering not supported, will be displayed top left if C is used as menu location. <br>Additionally some actions might not work depending on version. <br> There should be a notification message about "unknown command" in such cases.
 
 ## Contributing
 
