@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.2  2022-06-07
+#   Version: 1.3.3  2022-06-08
 #
 
 #  shellcheck disable=SC1007
@@ -61,6 +61,7 @@ log_it "use_notes=[$use_notes]"
 
 params=""
 if [ "$use_notes" -eq 1 ]; then
+    #  shellcheck disable=SC2089,SC2154
     params="$params -N '$plugin_name'"
 fi
 if [ "$without_prefix" -eq 1 ]; then
@@ -70,5 +71,5 @@ else
     log_it "Menus bound to: <prefix> $trigger_key"
 fi
 
-# Activate trigger key
-tmux bind $params "$trigger_key"  run-shell "$MENUS_DIR/main.sh"
+#  shellcheck disable=SC2086,SC2090
+tmux bind $params "$trigger_key" run-shell "$MENUS_DIR/main.sh"
