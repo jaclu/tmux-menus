@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.2 2022-03-29
+#   Version: 1.2.3 2022-06-07
 #
 #   Called from kill_current_session.sh
 #   If the question to continue is answered with y
@@ -16,5 +16,9 @@
 # shellcheck disable=SC1007
 CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 
+set -- 	"Only one session, you will be disconnected if you continue. " \
+		"Proceed? (y/n)"
+prompt="$*"
 
-tmux confirm-before -p "Only one session, you will be disconnected if you continue. Proceed? (y/n)" "run \"$CURRENT_DIR/kill_current_session.sh force\""
+tmux confirm-before -p "$prompt" \
+	"run \"$CURRENT_DIR/kill_current_session.sh force\""
