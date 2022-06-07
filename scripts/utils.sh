@@ -54,15 +54,19 @@ error_msg() {
     em_msg="ERROR: $1"
     em_exit_code="${2:-0}"
 
+    log_it "$em_msg"
     em_msg="$plugin_name $em_msg"
     em_msg_len="$(printf "%s" "$em_msg" | wc -m)"
     em_screen_width="$(tmux display -p "#{window_width}")"
     if [ "$em_msg_len" -le "$em_screen_width" ]; then
-	tmux display-message "$em_msg"
+        tmux display-message "$em_msg"
     else
-	#  Screen is to narrow to use display message
-	echo
-	echo "$em_msg"
+        #
+        #  Screen is to narrow to use display message
+        #  By echoing it, it will be displayed in a copy-mode
+        #
+        echo
+        echo "$em_msg"
     fi
     [ "$em_exit_code" -ne 0 ] && exit "$em_exit_code"
 }
