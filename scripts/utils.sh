@@ -155,9 +155,9 @@ ensure_menu_fits_on_screen() {
     msg="ensure_menu_fits_on_screen() menu_name not set"
     [ "$menu_name" = "" ] && error_msg "$msg" 1
 
-    msg="ensure_menu_fits_on_screen() '$menu_name'"
-    msg="$msg w:$req_win_width h:$req_win_height"
-    log_it "$msg"
+    set -- "ensure_menu_fits_on_screen() '$menu_name' " \
+        "w:$req_win_width h:$req_win_height"
+    log_it "$*"
 
     cur_width="$(tmux display -p "#{window_width}")"
     log_it "Current width: $cur_width"

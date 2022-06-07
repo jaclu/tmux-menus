@@ -30,15 +30,19 @@ this_menu="$CURRENT_DIR/windows.sh"
 reload="; run-shell \"$this_menu\""
 open_menu="run-shell '$CURRENT_DIR"
 
-rename_window="command-prompt -I \"#W\"  -p \"New window name: \" \
-    \"rename-window '%%'\""
+set -- "command-prompt -I \"#W\"  -p \"New window name: \"" \
+    "\"rename-window '%%'\""
+rename_window="$*"
+
 new_after="command-prompt -p \"Name of new window: \" \"new-window -a -n '%%'\""
 new_at_end="command-prompt -p 'Name of new window: ' 'new-window -n \"%%\"'"
 disp_size="display-message \"Window size: #{window_width}x#{window_height}\""
 kill_current="confirm-before -p \"kill-window #W? (y/n)\" kill-window"
-kill_other="confirm-before -p \
-    'Are you sure you want to kill all other windows? (y/n)' \
-    'run \"${SCRIPT_DIR}/kill_other_windows.sh\"'"
+
+set -- "confirm-before -p " \
+    "'Are you sure you want to kill all other windows? (y/n)'" \
+    "'run \"${SCRIPT_DIR}/kill_other_windows.sh\"'"
+kill_other="$*"
 
 
 t_start="$(date +'%s')"

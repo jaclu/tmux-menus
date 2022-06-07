@@ -36,10 +36,12 @@ open_menu="run-shell '$CURRENT_DIR"
 #
 prompt1="horizontal pos (max: #{window_width}):"
 prompt2="vertical pos (max: #{window_height}):"
-set_coordinates="command-prompt \
-    -I \"$location_x\",\"$location_y\" \
-    -p \"$prompt1\",\"$prompt2\" \
-    \"$change_location coord %1 %2 $reload'\""
+
+set -- "command-prompt " \
+    "-I \"$location_x\",\"$location_y\"" \
+    "-p \"$prompt1\",\"$prompt2\"" \
+    "\"$change_location coord %1 %2 $reload'\""
+set_coordinates="$*"
 
 
 t_start="$(date +'%s')"  #  if the menu closed in < 1s assume it didnt fit

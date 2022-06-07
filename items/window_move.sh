@@ -27,9 +27,14 @@ req_win_height=15
 
 this_menu="$CURRENT_DIR/window_move.sh"
 reload="; run-shell \"$this_menu\""
-to_other="choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_window.sh W M %%\"'"
-link_other="choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_window.sh W L %%\"'"
 
+set -- "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_window.sh " \
+    "W M %%\"'"
+to_other="$*"
+
+set -- "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_window.sh" \
+    "W L %%\"'"
+link_other="$*"
 #
 #  when referred, close reference with '" in order to allow extra
 #  run-shell params

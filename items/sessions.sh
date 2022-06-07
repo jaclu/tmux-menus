@@ -31,12 +31,16 @@ open_menu="run-shell '$CURRENT_DIR"
 
 rename="command-prompt -I '#S' 'rename-session -- \"%%\"'"
 new_ses="command-prompt -p 'Name of new session: ' 'new-session -s \"%%\"'"
-kill_current="confirm-before -p \
-    'Are you sure you want to kill this session? (y/n)' \
-    'run \"${SCRIPT_DIR}/kill_current_session.sh\"'"
-kill_other="confirm-before -p \
-     'Are you sure you want to kill all other sessions? (y/n)' \
-     'kill-session -a'"
+
+set -- "confirm-before -p " \
+    "'Are you sure you want to kill this session? (y/n)'" \
+    "'run \"${SCRIPT_DIR}/kill_current_session.sh\"'"
+kill_current="$*"
+
+set -- "confirm-before -p " \
+    "'Are you sure you want to kill all other sessions? (y/n)' " \
+    "'kill-session -a'"
+kill_other="$*"
 
 
 t_start="$(date +'%s')"

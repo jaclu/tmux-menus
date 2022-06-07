@@ -47,15 +47,13 @@ describe_prefix="command-prompt -k -p key 'list-keys -1N \"%%%\"'"
 toggle_mouse="set-option -g mouse $new_mouse_status"
 kill_server="confirm-before -p 'kill tmux server on #H ? (y/n)' kill-server"
 
-#
-#  Slightly weird, I can't get line continuation passed shellcheck on
-#  the next two, so have to revert to multi step assignment
-#
-change_prefix="command-prompt -1 -p prefix "
-change_prefix="$change_prefix 'run \"$SCRIPT_DIR/change_prefix.sh %%\"'"
+set -- "command-prompt -1 -p prefix " \
+    "'run \"$SCRIPT_DIR/change_prefix.sh %%\"'"
+change_prefix="$*"
 
-plugin_conf_prompt="#{?@menus_config_overrides,Plugin configuration"
-plugin_conf_prompt="$plugin_conf_prompt  -->,-Configuration disabled}"
+set -- "#{?@menus_config_overrides,Plugin configuration  " \
+    "-->,-Configuration disabled}"
+plugin_conf_prompt="$*"
 
 
 t_start="$(date +'%s')"
