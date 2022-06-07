@@ -7,7 +7,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.8 2022-06-07
+#   Version: 1.2.9 2022-06-08
 #
 #   Common stuff for relocate_pane.sh & relocate_windows.sh
 #   Validate parameters
@@ -42,9 +42,9 @@ param_check() {
 
         * )
             # NEEDS TESTING
-            msg="param_check($1,$2) 2nd param must be L or M Indicating"
-            msg="$msg move or link action"
-            error_msg $msg 1
+            set --  "param_check($1,$2) 2nd param must be L or M"  \
+                    "Indicating move or link action"
+            error_msg "$*" 1
             ;;
 
     esac
@@ -77,9 +77,9 @@ param_check() {
     #    relocate_window.sh  $dest_ses $dest_win_idx
     #    relocate_pane.sh   $dest_ses $dest_win_idx.${dest_pane_idx}"
 
-    set --  "param_check($*) - item_type [$item_type] action [$action] " \
-            "cur_ses [$cur_ses] dest [$dest] win_pane [$win_pane] " \
-            "dest_ses [$dest_ses] dest_win_idx [$dest_win_idx] " \
+    set --  "param_check($*) - item_type [$item_type] action [$action]" \
+            "cur_ses [$cur_ses] dest [$dest] win_pane [$win_pane]"      \
+            "dest_ses [$dest_ses] dest_win_idx [$dest_win_idx]"         \
             "dest_pane_idx [$dest_pane_idx]"
     log_it "$*"
 }

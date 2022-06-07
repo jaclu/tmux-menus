@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.7 2022-06-07
+#   Version: 1.3.8 2022-06-08
 #
 #   Handling pane
 #
@@ -36,13 +36,12 @@ pane_size="display-message 'Pane: #P size: #{pane_width}x#{pane_height}'"
 #  adding -e to capture-pane saves escape sequences, but then less/most fails
 #  to display, cat/bat history-file will display the included colors correctly.
 #
-set -- "command-prompt -p 'Save to (no escapes):' -I '~/tmux.history' " \
-    "'capture-pane -S - -E - ; save-buffer %1 ; delete-buffer'"
+set --  "command-prompt -p 'Save to (no escapes):' -I '~/tmux.history'"  \
+        "'capture-pane -S - -E - ; save-buffer %1 ; delete-buffer'"
 hist_no_esc="$*"
 
-set -- "command-prompt -p 'Save to (with escapes):' -I " \
-    "'~/tmux.history' 'capture-pane -S - -E - -e ; save-buffer %1 ; " \
-    "delete-buffer'"
+set --  "command-prompt -p 'Save to (with escapes):' -I '~/tmux.history'"  \
+        "'capture-pane -S - -E - -e ; save-buffer %1 ; delete-buffer'"
 hist_w_esc="$*"
 
 respawn="confirm-before -p 'respawn-pane #P? (y/n)' 'respawn-pane -k'"

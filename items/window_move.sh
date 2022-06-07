@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.5  2022-06-07
+#   Version: 1.3.6  2022-06-08
 #
 #   Move Window
 #
@@ -28,13 +28,9 @@ req_win_height=15
 this_menu="$CURRENT_DIR/window_move.sh"
 reload="; run-shell \"$this_menu\""
 
-set -- "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_window.sh " \
-    "W M %%\"'"
-to_other="$*"
-
-set -- "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_window.sh" \
-    "W L %%\"'"
-link_other="$*"
+common_param="choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_window.sh"
+to_other="$common_param W M %%\"'"
+link_other="$common_param W L %%\"'"
 #
 #  when referred, close reference with '" in order to allow extra
 #  run-shell params

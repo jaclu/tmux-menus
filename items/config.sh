@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0.7  2022-06-07
+#   Version: 1.0.8  2022-06-08
 #
 #   Live configuration. So far only menu location is available
 #
@@ -37,10 +37,10 @@ open_menu="run-shell '$CURRENT_DIR"
 prompt1="horizontal pos (max: #{window_width}):"
 prompt2="vertical pos (max: #{window_height}):"
 
-set -- "command-prompt " \
-    "-I \"$location_x\",\"$location_y\"" \
-    "-p \"$prompt1\",\"$prompt2\"" \
-    "\"$change_location coord %1 %2 $reload'\""
+set --  "command-prompt"                             \
+        "-I \"$location_x\",\"$location_y\""         \
+        "-p \"$prompt1\",\"$prompt2\""               \
+        "\"$change_location coord %1 %2 $reload'\""
 set_coordinates="$*"
 
 

@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.4 2022-06-07
+#   Version: 1.3.5 2022-06-08
 #
 #   Move a pane
 #
@@ -28,8 +28,8 @@ req_win_height=13
 this_menu="$CURRENT_DIR/pane_move.sh"
 reload="; run-shell '$this_menu'"
 
-set -- "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_pane.sh " \
-    "P M %%\"'"
+set --  "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_pane.sh"  \
+        "P M %%\"'"
 mv_2_other="$*"
 
 break_2_other="run-shell $SCRIPT_DIR/break_pane.sh"

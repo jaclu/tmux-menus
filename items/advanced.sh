@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.7 2022-06-07
+#   Version: 1.3.8 2022-06-08
 #
 #   Advanced options
 #
@@ -47,12 +47,12 @@ describe_prefix="command-prompt -k -p key 'list-keys -1N \"%%%\"'"
 toggle_mouse="set-option -g mouse $new_mouse_status"
 kill_server="confirm-before -p 'kill tmux server on #H ? (y/n)' kill-server"
 
-set -- "command-prompt -1 -p prefix " \
-    "'run \"$SCRIPT_DIR/change_prefix.sh %%\"'"
+set --  "command-prompt -1 -p prefix"                \
+        "'run \"$SCRIPT_DIR/change_prefix.sh %%\"'"
 change_prefix="$*"
 
-set -- "#{?@menus_config_overrides,Plugin configuration  " \
-    "-->,-Configuration disabled}"
+set --  "#{?@menus_config_overrides,Plugin configuration"  \
+        " -->,-Configuration disabled}"
 plugin_conf_prompt="$*"
 
 

@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.4.8 2022-06-07
+#   Version: 1.4.9 2022-06-08
 #
 #   Main menu, the one popping up when you hit the trigger
 #
@@ -33,9 +33,9 @@ open_menu="run-shell '$CURRENT_DIR"
 #  I wish it would be, but \' is not yet valid.
 #  Thus I can't use spaces in the below display statements
 #
-set -- "command-prompt -I '~/.tmux.conf' -p 'Source file:' "            \
-    "'run-shell \"tmux source-file %% && tmux display Sourced_it! || "  \
-    "tmux display File_could_not_be_sourced-not_found?  \"'"
+set --  "command-prompt -I '~/.tmux.conf' -p 'Source file:'"            \
+        "'run-shell \"tmux source-file %% && tmux display Sourced_it!"  \
+        "|| tmux display File_could_not_be_sourced-not_found?  \"'"
 source_it="$*"
 
 t_start="$(date +'%s')"

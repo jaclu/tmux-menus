@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.4 2022-06-07
+#   Version: 1.3.5 2022-06-08
 #
 #   Handling Sessions
 #
@@ -32,14 +32,14 @@ open_menu="run-shell '$CURRENT_DIR"
 rename="command-prompt -I '#S' 'rename-session -- \"%%\"'"
 new_ses="command-prompt -p 'Name of new session: ' 'new-session -s \"%%\"'"
 
-set -- "confirm-before -p " \
-    "'Are you sure you want to kill this session? (y/n)'" \
-    "'run \"${SCRIPT_DIR}/kill_current_session.sh\"'"
+set --  "confirm-before -p"                                     \
+        "'Are you sure you want to kill this session? (y/n)'"   \
+        "'run \"${SCRIPT_DIR}/kill_current_session.sh\"'"
 kill_current="$*"
 
-set -- "confirm-before -p " \
-    "'Are you sure you want to kill all other sessions? (y/n)' " \
-    "'kill-session -a'"
+set --  "confirm-before -p"                                          \
+        "'Are you sure you want to kill all other sessions? (y/n)'"  \
+        "'kill-session -a'"
 kill_other="$*"
 
 
