@@ -176,7 +176,7 @@ ensure_menu_fits_on_screen() {
 
 write_config() {
     [ "$config_overrides" -ne 1 ] && return
-    log_it "write_config() x[$location_x] y[$location_y]"
+    #log_it "write_config() x[$location_x] y[$location_y]"
     echo "location_x=$location_x" > "$config_file"
     echo "location_y=$location_y" >> "$config_file"
 }
@@ -184,7 +184,7 @@ write_config() {
 
 read_config() {
     [ "$config_overrides" -ne 1 ] && return
-    log_it "read_config()"
+    #log_it "read_config()"
     if [ ! -f "$config_file" ]; then
         location_x=P
         location_y=P
