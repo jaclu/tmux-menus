@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.5 2022-06-06
+#   Version: 1.3.6 2022-06-07
 #
 #   Handling Window
 #
@@ -48,29 +48,28 @@ kill_other="$*"
 t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
-tmux display-menu  \
-    -T "#[align=centre] $menu_name   "           \
-    -x "$menu_location_x" -y "$menu_location_y"  \
-    \
-    "Back to Main menu"  Left  "$open_menu/main.sh'"         \
-    "Move window  -->"   M     "$open_menu/window_move.sh'"  \
-    "" \
-    "<P> Rename window"               ,  "$rename_window"              \
-    "    New window after current"    a  "$new_after"                  \
-    "<P> New window at the end"       c  "$new_at_end"                 \
-    "    Display Window size"         s  "$disp_size"                  \
-    "" \
-    "<P> Last selected window"        l  "last-window     $reload"     \
-    "<P> Previous window [in order]"  p  "previous-window $reload"     \
-    "<P> Next     window (in order)"  n  "next-window     $reload"     \
-    "" \
-    "Previous window with an alert"   P  "previous-window -a $reload"  \
-    "Next window with an alert"       N  "next-window     -a $reload"  \
-    "" \
-    "<P> Kill current window"        \&  "$kill_current"               \
-    "    Kill all other windows"      o  "$kill_other"                 \
-      "" \
+tmux display-menu                                                       \
+    -T "#[align=centre] $menu_name   "                                  \
+    -x "$menu_location_x" -y "$menu_location_y"                         \
+                                                                        \
+    "Back to Main menu"  Left  "$open_menu/main.sh'"                    \
+    "Move window  -->"   M     "$open_menu/window_move.sh'"             \
+    ""                                                                  \
+    "<P> Rename window"               ,  "$rename_window"               \
+    "    New window after current"    a  "$new_after"                   \
+    "<P> New window at the end"       c  "$new_at_end"                  \
+    "    Display Window size"         s  "$disp_size"                   \
+    ""                                                                  \
+    "<P> Last selected window"        l  "last-window     $reload"      \
+    "<P> Previous window [in order]"  p  "previous-window $reload"      \
+    "<P> Next     window (in order)"  n  "next-window     $reload"      \
+    ""                                                                  \
+    "Previous window with an alert"   P  "previous-window -a $reload"   \
+    "Next window with an alert"       N  "next-window     -a $reload"   \
+    ""                                                                  \
+    "<P> Kill current window"        \&  "$kill_current"                \
+    "    Kill all other windows"      o  "$kill_other"                  \
+      ""                                                                \
     "Help  -->"  H  "$open_menu/help.sh $this_menu'"
-
 
 ensure_menu_fits_on_screen

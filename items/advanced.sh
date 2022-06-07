@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.6 2022-06-06
+#   Version: 1.3.7 2022-06-07
 #
 #   Advanced options
 #
@@ -59,27 +59,26 @@ plugin_conf_prompt="$*"
 t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154,SC2140
-tmux display-menu \
-     -T "#[align=centre] $menu_name "             \
-     -x "$menu_location_x" -y "$menu_location_y"  \
-     \
-     "Back to Main menu"     Left  "$open_menu/main.sh'"                     \
-     "Manage clients  -->"  M     "$open_menu/advanced_manage_clients.sh'"  \
-     "" \
-     "<P> List all key bindings"          \?  "list-keys -N"           \
-     "<P> Describe (prefix) key"           /  "$describe_prefix"       \
-     "<P> Show messages"                  \~  show-messages            \
-     "<P> Customize options"               C  "customize-mode -Z"      \
-     "<P> Prompt for a command"            :  command-prompt           \
-     "" \
-     "Toggle mouse to: $new_mouse_status"  m  "$toggle_mouse $reload"  \
-     "Change prefix <$current_prefix>"     p  "$change_prefix"         \
-     "" \
-     "-#[nodim]Kill server - all your sessions"                 "" ""  \
-     " on this host are terminated    "    k  "$kill_server"           \
-     "" \
-     "$plugin_conf_prompt"                 P  "$open_menu/config.sh'"  \
-     "Help  -->"  H  "$open_menu/help.sh $this_menu'"
-
+tmux display-menu                                                           \
+    -T "#[align=centre] $menu_name "                                        \
+    -x "$menu_location_x" -y "$menu_location_y"                             \
+                                                                            \
+    "Back to Main menu"     Left  "$open_menu/main.sh'"                     \
+    "Manage clients  -->"  M     "$open_menu/advanced_manage_clients.sh'"   \
+    ""                                                                      \
+    "<P> List all key bindings"          \?  "list-keys -N"                 \
+    "<P> Describe (prefix) key"           /  "$describe_prefix"             \
+    "<P> Show messages"                  \~  show-messages                  \
+    "<P> Customize options"               C  "customize-mode -Z"            \
+    "<P> Prompt for a command"            :  command-prompt                 \
+    ""                                                                      \
+    "Toggle mouse to: $new_mouse_status"  m  "$toggle_mouse $reload"        \
+    "Change prefix <$current_prefix>"     p  "$change_prefix"               \
+    ""                                                                      \
+    "-#[nodim]Kill server - all your sessions"                 "" ""        \
+    " on this host are terminated    "    k  "$kill_server"                 \
+    ""                                                                      \
+    "$plugin_conf_prompt"                 P  "$open_menu/config.sh'"        \
+    "Help  -->"  H  "$open_menu/help.sh $this_menu'"
 
 ensure_menu_fits_on_screen

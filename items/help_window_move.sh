@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.3  2022-05-10
+#   Version: 1.3.4  2022-06-07
 #
 #   Help about move and link window
 #
@@ -35,23 +35,22 @@ fi
 t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
-tmux display-menu  \
-     -T "#[align=centre] $menu_name "             \
-     -x "$menu_location_x" -y "$menu_location_y"  \
-     \
-     "Back to Previous menu"  Left  "run-shell $previous_menu"  \
-     "" \
-     "-Displays a navigation tree"                       "" ""  \
-     "-1 - Chose a session."                             "" ""  \
-     "- Current window will be put as"                   "" ""  \
-     "- the last window in that session."                "" ""  \
-     "-2 - Choose a window in a session."                "" ""  \
-     "- Current window will be inserted"                 "" ""  \
-     "- on that location, pushing other"                 "" ""  \
-     "- windows one step to the right."                  "" ""  \
-     "-3 - If you choose a pane,"                        "" ""  \
-     "- the pane part of the selection"                  "" ""  \
-     "- is ignored."                                     "" ""
-
+tmux display-menu                                               \
+    -T "#[align=centre] $menu_name "                            \
+    -x "$menu_location_x" -y "$menu_location_y"                 \
+                                                                \
+    "Back to Previous menu"  Left  "run-shell $previous_menu"   \
+    ""                                                          \
+    "-Displays a navigation tree"                       "" ""   \
+    "-1 - Chose a session."                             "" ""   \
+    "- Current window will be put as"                   "" ""   \
+    "- the last window in that session."                "" ""   \
+    "-2 - Choose a window in a session."                "" ""   \
+    "- Current window will be inserted"                 "" ""   \
+    "- on that location, pushing other"                 "" ""   \
+    "- windows one step to the right."                  "" ""   \
+    "-3 - If you choose a pane,"                        "" ""   \
+    "- the pane part of the selection"                  "" ""   \
+    "- is ignored."                                     "" ""
 
 ensure_menu_fits_on_screen

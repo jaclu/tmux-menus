@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0.1  2022-05-08
+#   Version: 1.0.2  2022-06-07
 #
 #   Help regarding panes menu
 #
@@ -36,18 +36,17 @@ fi
 t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
-tmux display-menu  \
-    -T "#[align=centre] $menu_name "             \
-    -x "$menu_location_x" -y "$menu_location_y"  \
-    \
-    "Back to Previous menu"  Left  "run-shell $previous_menu"  \
-    "" \
-    "-When saving history with escapes"                 "" ""  \
-    "-less/most will not be able"                       "" ""  \
-    "-to display the content."                          "" ""  \
-    "- " "" "" \
-    "-You would have to use tools like"                 "" ""  \
+tmux display-menu                                               \
+    -T "#[align=centre] $menu_name "                            \
+    -x "$menu_location_x" -y "$menu_location_y"                 \
+                                                                \
+    "Back to Previous menu"  Left  "run-shell $previous_menu"   \
+    ""                                                          \
+    "-When saving history with escapes"                 "" ""   \
+    "-less/most will not be able"                       "" ""   \
+    "-to display the content."                          "" ""   \
+    "- " "" ""                                                  \
+    "-You would have to use tools like"                 "" ""   \
     "-cat/bat in order to see the colors"               "" ""
- 
 
 ensure_menu_fits_on_screen

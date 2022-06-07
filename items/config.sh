@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0.6  2022-06-06
+#   Version: 1.0.7  2022-06-07
 #
 #   Live configuration. So far only menu location is available
 #
@@ -47,21 +47,20 @@ set_coordinates="$*"
 t_start="$(date +'%s')"  #  if the menu closed in < 1s assume it didnt fit
 
 # shellcheck disable=SC2154
-tmux display-menu \
-    -T "#[align=centre] $menu_name "             \
-    -x "$menu_location_x" -y "$menu_location_y"  \
-    \
+tmux display-menu                                                   \
+    -T "#[align=centre] $menu_name "                                \
+    -x "$menu_location_x" -y "$menu_location_y"                     \
+                                                                    \
     "Back to Previous menu"  Left  "$open_menu/advanced.sh'"        \
-    "" \
+    ""                                                              \
     "Center"                 c     "$change_location  C  $reload'"  \
     "win Right edge"         r     "$change_location  R  $reload'"  \
     "Pane bottom left"       p     "$change_location  P  $reload'"  \
     "Win pos status line"    w     "$change_location  W  $reload'"  \
-    "" \
+    ""                                                              \
     "set coordinates"        s     "$set_coordinates"               \
-    "" \
+    ""                                                              \
     "-When using coordinates"      "" ""                            \
     "-lower left corner is set!"   "" ""
-
 
 ensure_menu_fits_on_screen

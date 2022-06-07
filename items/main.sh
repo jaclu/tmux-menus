@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.4.7 2022-06-04
+#   Version: 1.4.8 2022-06-07
 #
 #   Main menu, the one popping up when you hit the trigger
 #
@@ -41,25 +41,24 @@ source_it="$*"
 t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
-tmux display-menu \
-     -T "#[align=centre] $menu_name "             \
-     -x "$menu_location_x" -y "$menu_location_y"  \
-     \
-     "Handling Pane      -->"            P  "$open_menu/panes.sh'"       \
-     "Handling Window    -->"            W  "$open_menu/windows.sh'"     \
-     "Handling Sessions  -->"            S  "$open_menu/sessions.sh'"    \
-     "Layouts            -->"            L  "$open_menu/layouts.sh'"     \
-     "Split view         -->"            V  "$open_menu/split_view.sh'"  \
-     "Advanced Options   -->"            A  "$open_menu/advanced.sh'"    \
-     "" \
-     "Navigate & select ses/win/pane"    n  "choose-tree -Z"             \
-     "-#[nodim]Search in all sessions & windows" "" ""                   \
-     " ignores case, only visible part"  s  "$search_all"                \
-     "" \
-     "    Reload configuration file"     r  "$source_it"                 \
-     "<P> Detach from tmux"              d  detach-client                \
-     "" \
-     "Help  -->"  H  "$open_menu/help.sh $CURRENT_DIR/main.sh'"
-
+tmux display-menu                                                       \
+    -T "#[align=centre] $menu_name "                                    \
+    -x "$menu_location_x" -y "$menu_location_y"                         \
+                                                                        \
+    "Handling Pane      -->"            P  "$open_menu/panes.sh'"       \
+    "Handling Window    -->"            W  "$open_menu/windows.sh'"     \
+    "Handling Sessions  -->"            S  "$open_menu/sessions.sh'"    \
+    "Layouts            -->"            L  "$open_menu/layouts.sh'"     \
+    "Split view         -->"            V  "$open_menu/split_view.sh'"  \
+    "Advanced Options   -->"            A  "$open_menu/advanced.sh'"    \
+    ""                                                                  \
+    "Navigate & select ses/win/pane"    n  "choose-tree -Z"             \
+    "-#[nodim]Search in all sessions & windows" "" ""                   \
+    " ignores case, only visible part"  s  "$search_all"                \
+    ""                                                                  \
+    "    Reload configuration file"     r  "$source_it"                 \
+    "<P> Detach from tmux"              d  detach-client                \
+    ""                                                                  \
+    "Help  -->"  H  "$open_menu/help.sh $CURRENT_DIR/main.sh'"
 
 ensure_menu_fits_on_screen
