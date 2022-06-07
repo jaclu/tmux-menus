@@ -6,7 +6,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.4.4 2022-06-07
+#   Version: 1.4.5 2022-06-08
 #
 #  Common stuff
 #
@@ -25,7 +25,7 @@ plugin_name="tmux-menus"
 #  If log_file is empty or undefined, no logging will occur,
 #  so comment it out for normal usage.
 #
-log_file="/tmp/$plugin_name.log"
+#log_file="/tmp/$plugin_name.log"
 
 
 #
@@ -155,8 +155,8 @@ ensure_menu_fits_on_screen() {
     msg="ensure_menu_fits_on_screen() menu_name not set"
     [ "$menu_name" = "" ] && error_msg "$msg" 1
 
-    set -- "ensure_menu_fits_on_screen() '$menu_name' " \
-        "w:$req_win_width h:$req_win_height"
+    set -- "ensure_menu_fits_on_screen() '$menu_name'" \
+           "w:$req_win_width h:$req_win_height"
     log_it "$*"
 
     cur_width="$(tmux display -p "#{window_width}")"
