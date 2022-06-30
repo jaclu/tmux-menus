@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.1.0  2022-06-30
+#   Version: 1.1.1  2022-06-30
 #
 #   Select country for mullvad VPN
 #
@@ -58,7 +58,10 @@ fi
 
 idx=0
 max_item=$(( offset + display_items ))
-available_short_cuts="01234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ~!@#$%^&*()-_=+[{]}:\|,<.>/?"
+
+s="01234567890abcdefghijklmnopqrstuvwxyz"
+s="${s}ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+available_short_cuts="${s}~!@#$%^&*()-_=+[{]}:\|,<.>/?"
 
 
 #
@@ -69,10 +72,15 @@ if grep -V | grep -q BSD ; then
 else
     grep_gnu="-P"
 fi
-countries="$(mullvad relay list | grep -v $grep_gnu '^\t' | grep -v '^$' | awk '{printf "%s|",$0}')"
+countries="$(mullvad relay list | grep -v $grep_gnu '^\t' | \
+             grep -v '^$' | awk '{printf "%s|",$0}')"
+
 
 #  shellcheck disable=SC2089
-menu_items="'Back to Main menu'  Home  \"$open_menu/main.sh'\" 'Back to Mullvad'  Left  \"$open_menu/extras/mullvad.sh'\" \"\" "
+menu_items="'Back to Main menu'  Home  \"$open_menu/main.sh'\" \
+    'Back to Mullvad'  Left  \"$open_menu/extras/mullvad.sh'\" \"\" "
+
+
 while true; do
     country="${countries%%|*}"
     countries="${countries#*|}"
@@ -98,7 +106,8 @@ while true; do
 
     #  Add a line to the list
     #  shellcheck disable=SC2089
-    menu_items="$menu_items '$country' '$short_cut' \"run-shell 'mullvad relay set location $country_code > /dev/null'\""
+    menu_items="$menu_items '$country' '$short_cut' \
+        \"run-shell 'mullvad relay set location $country_code > /dev/null'\""
 
     [ "$countries" = "$country" ] && break  # we have processed last item
 done
@@ -112,9 +121,5 @@ t_start="$(date +'%s')"
 #  shellcheck disable=SC2086,SC2090,SC2154
 echo $menu_items | xargs tmux display-menu -T "#[align=centre] $menu_name "  \
     -x $menu_location_x -y $menu_location_y
-
-
-
-
 
 ensure_menu_fits_on_screen
