@@ -93,20 +93,18 @@ while true; do
 
     country_code="$(echo "$country" | cut -d\( -f 2 | sed s/\)//)"
 
-    short_cut="$(echo $available_short_cuts | cut -c1-1)"
-    available_short_cuts="$(echo $available_short_cuts | cut -c2-)"
-
+    short_cut="$(echo "$available_short_cuts" | cut -c1-1)"
+    available_short_cuts="$(echo "$available_short_cuts" | cut -c2-)"
 
     #  Add a line to the list
     #  shellcheck disable=SC2089
-    menu_items="$menu_items '$country' $short_cut \"run-shell 'mullvad relay set location $country_code > /dev/null'\""
+    menu_items="$menu_items '$country' '$short_cut' \"run-shell 'mullvad relay set location $country_code > /dev/null'\""
 
     [ "$countries" = "$country" ] && break  # we have processed last item
 done
 
 
 menu_items="$menu_items $nav"
-
 
 
 t_start="$(date +'%s')"
