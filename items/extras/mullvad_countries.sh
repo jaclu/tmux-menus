@@ -55,12 +55,27 @@ fi
 #     #mullvad relay list | grep -v "^\t"
 # }
 
-
-
 menu_items=""
 
-menu_items="$menu_items 'Germany' 1 \"display de\""
-menu_items="$menu_items 'Sweden' 2 \"display se\""
+countries="$(mullvad relay list | grep -v -e "^\t" -e "^$" | \
+             awk '{printf "%s|",$0}')"
+
+sep="|"
+while true; do
+    country="${countries%%|*}"
+    countries="${countries#*|}"
+    [ -z "$country" ] && break  #  skipping ending blank line
+
+    country_code="$(echo $country | cut -d\( -f 2 | sed s/\)//)"
+
+    menu_items="$menu_items '$country' \"\" \"display $country_code\""
+
+    #echo ">> remainder: $countries"
+    [ "$countries" = "$country" ] && break  # we have processed last item
+done
+
+
+
 
 
 menu_items="$menu_items '' 'Help  -->'  H           \
