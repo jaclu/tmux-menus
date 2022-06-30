@@ -43,25 +43,54 @@ else
     lan_cmd="allow"
 fi
 
-#mullvad relay set location de
-#mullvad relay set location de ber
+
+# mullvad relay set location de
+# mullvad relay set location de ber
+
+
+
+# list_countries() {
+#     # List countries
+#     # mullvad relay list | grep -v "^\t"
+#     #mullvad relay list | grep -v "^\t"
+# }
+
+list_cities() {
+    country="$1"
+    if [ -z "$country" ]; then
+        error_msg "extras/mullvad.cities - no param!"
+    fi
+    #  List cities
+    #  mullvad relay list | grep -v "^\t\t"
+    #    Start of line - country
+    #    Indented City
+}
+
+# list_servers() {
+#     server="$1"
+#     if [ -z "$server" ]; then
+#         error_msg "extras/mullvad.servers - no param!"
+#     fi
+# }
 
 
 t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
-tmux display-menu                                                   \
-    -T "#[align=centre] $menu_name "                                \
-    -x "$menu_location_x" -y "$menu_location_y"                     \
-                                                                    \
-    "Back to Main menu"  Home  "$open_menu/main.sh'"                \
-    "Back to Extras"     Left  "$open_menu/extras.sh'"              \
-    ""                                                              \
-    "Connect"                 c  "$prefix connect $suffix"          \
-    "Disconnect"              d  "$prefix disconnect $suffix"       \
-    "$lan_label LAN sharing"  l  "$prefix lan set $lan_cmd $suffix" \
-    ""                                                              \
-    "Help  -->"  H  "$open_menu/help.sh $CURRENT_DIR/spotify.sh'"
+tmux display-menu                                                           \
+    -T "#[align=centre] $menu_name "                                        \
+    -x "$menu_location_x" -y "$menu_location_y"                             \
+                                                                            \
+    "Back to Main menu"  Home  "$open_menu/main.sh'"                        \
+    "Back to Extras"     Left  "$open_menu/extras.sh'"                      \
+    ""                                                                      \
+    "Connect"                 c  "$prefix connect $suffix"                  \
+    "Disconnect"              d  "$prefix disconnect $suffix"               \
+    "$lan_label LAN sharing"  s  "$prefix lan set $lan_cmd $suffix"         \
+    "Select Location  ->"     L  "$open_menu/extras/mullvad_countries.sh'"  \
+    ""                                                                      \
+    "Help  -->"  H  "$open_menu/help.sh $CURRENT_DIR/mullvad.sh'"
+
 
 
 ensure_menu_fits_on_screen
