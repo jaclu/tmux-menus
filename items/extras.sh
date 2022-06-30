@@ -28,18 +28,34 @@ req_win_height=23
 this_menu="$CURRENT_DIR/panes.sh"
 reload="; run-shell '$this_menu'"
 open_menu="run-shell '$CURRENT_DIR"
-open_extra="run-shell '$CURRENT_DIR/conditionals"
+open_extra="run-shell '$CURRENT_DIR/extras"
+
+
+is_avalable() {
+    cmd="$1"
+    if [ -z "$cmd" ]; then
+        error_msg "extras.is_available - no param!"
+    fi
+    if [ -n "$(which $cmd)" ]; then
+        echo "$cmd"
+    else
+        echo "-$cmd"
+    fi
+
+}
 
 
 t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
-tmux display-menu                                                           \
-    -T "#[align=centre] Handling Pane "                                     \
-    -x "$menu_location_x" -y "$menu_location_y"                             \
-    "Back to Main menu"   Left  "$open_menu/main.sh'"                       \
-    "Spotify        -->"  S     "$open_extra/spotify.sh"                    \
-    ""                                                                      \
+tmux display-menu                                                       \
+    -T "#[align=centre] Extras "                                        \
+    -x "$menu_location_x" -y "$menu_location_y"                         \
+    "Back to Main menu"  Left  "$open_menu/main.sh'"                    \
+    ""                                                                  \
+    "$(is_avalable mullvad)  -->"  M   "$open_extra/mullvad.sh"         \
+    "$(is_avalable spotify)  -->"  S   "$open_extra/spotify.sh"         \
+    ""                                                                  \
     "Help  -->"  H  "$open_menu/help_panes.sh $this_menu'"
 
 
