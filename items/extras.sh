@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.8 2022-06-08
+#   Version: 1.0.0 2022-06-30
 #
 #   Handling pane
 #
@@ -25,7 +25,7 @@ req_win_width=38
 req_win_height=23
 
 
-this_menu="$CURRENT_DIR/panes.sh"
+this_menu="$CURRENT_DIR/extras.sh"
 reload="; run-shell '$this_menu'"
 open_menu="run-shell '$CURRENT_DIR"
 open_extra="run-shell '$CURRENT_DIR/extras"
@@ -33,13 +33,14 @@ open_extra="run-shell '$CURRENT_DIR/extras"
 
 is_avalable() {
     cmd="$1"
+    label=${2:-$cmd}
     if [ -z "$cmd" ]; then
         error_msg "extras.is_available - no param!"
     fi
-    if [ -n "$(which $cmd)" ]; then
-        echo "$cmd"
+    if [ -n "$(which "$cmd")" ]; then
+        echo "$label"
     else
-        echo "-$cmd"
+        echo "-$label"
     fi
 
 }
@@ -53,10 +54,12 @@ tmux display-menu                                                       \
     -x "$menu_location_x" -y "$menu_location_y"                         \
     "Back to Main menu"  Left  "$open_menu/main.sh'"                    \
     ""                                                                  \
-    "$(is_avalable mullvad)  -->"  M   "$open_extra/mullvad.sh"         \
-    "$(is_avalable spotify)  -->"  S   "$open_extra/spotify.sh"         \
+    "$(is_avalable spotify Spotify)  -->"        S                      \
+            "$open_extra/spotify.sh"                                    \
+    "$(is_avalable mullvad "Mullvad VPN")  -->"  M                      \
+            "$open_extra/mullvad.sh"                                    \
     ""                                                                  \
-    "Help  -->"  H  "$open_menu/help_panes.sh $this_menu'"
+    "Help  -->"  H  "$open_menu/help_extras.sh $this_menu'"
 
 
 ensure_menu_fits_on_screen
