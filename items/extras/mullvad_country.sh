@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.1.1  2022-06-30
+#   Version: 1.1.2  2022-06-30
 #
 #   Select country for mullvad VPN
 #
@@ -21,10 +21,10 @@ SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
 
+menu_name="Mullvad Select Country"
 req_win_width=28
 req_win_height=9
 
-menu_name="Mullvad Select Country"
 
 open_menu="run-shell '$ITEMS_DIR"
 

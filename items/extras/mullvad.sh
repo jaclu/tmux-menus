@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0.- 2022-06-30
+#   Version: 1.0.1 2022-06-30
 #
 #   Configure mullvad VPN
 #
@@ -22,14 +22,12 @@ SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 . "$SCRIPT_DIR/utils.sh"
 
 menu_name="Mullvad VPN"
-
 req_win_width=1
 req_win_height=1
 
 
 this_menu="$CURRENT_DIR/mullvad.sh"
 reload="; run-shell '$this_menu'"
-
 open_menu="run-shell '$ITEMS_DIR"
 
 prefix="run-shell 'mullvad "
