@@ -50,6 +50,7 @@ tmux display-menu                                                       \
     "Handling Sessions  -->"            S  "$open_menu/sessions.sh'"    \
     "Layouts            -->"            L  "$open_menu/layouts.sh'"     \
     "Split view         -->"            V  "$open_menu/split_view.sh'"  \
+    "Extras             -->"            E  "$open_menu/extras.sh'"      \
     "Advanced Options   -->"            A  "$open_menu/advanced.sh'"    \
     ""                                                                  \
     "Navigate & select ses/win/pane"    n  "choose-tree -Z"             \
