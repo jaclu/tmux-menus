@@ -6,11 +6,12 @@ Simple to modify to fit your needs. I have included several items that some migh
 
 #### Recent changes
 
+- Extras - Configure other software, currently supported: Spotify, Mullvad VPN<br/>Further suggestions are welcome!
 - Layouts - listing, but not using defaults that are not usable in popup menus
 - Fixed incorrect default in Advanced
 - New feature, Advanced - Plugin Configuration, available if @menus_config_overrides is set to "1"
 - Moved "List all key bindings" to Advanced Options
-- To make it more phone friendly, it now checks for window size, displaying size requirement for the menu if it does not fit. Menus just don't display if the screen is to small.
+- To make it more phone friendly, it now checks for window size, displaying size requirement for the menu if it does not fit. Menus just don't display if the screen is to small, and no error-code indicates this condition.
 
 ## Purpose
 
@@ -173,7 +174,7 @@ If you want to go back to your installed version for now, either reload configs,
 ## Compatibility
 
 | Version    | Notice
-| - | - | 
+| - | - |
 | 3.2 -      | Fully compatible
 | 3.0 - 3.1c | Menu centering not supported, will be displayed top left if C is used as menu location. <br>Additionally some actions might not work depending on version. <br> There should be a notification message about "unknown command" in such cases.
 

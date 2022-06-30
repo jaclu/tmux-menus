@@ -26,6 +26,8 @@ checkables=(
     scripts/*.sh
 
     items/*.sh
+
+    items/extras/*.sh
 )
 
 for script in "${checkables[@]}"; do
