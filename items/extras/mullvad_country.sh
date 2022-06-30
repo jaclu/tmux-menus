@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.1.2  2022-06-30
+#   Version: 1.1.3  2022-07-01
 #
 #   Select country for mullvad VPN
 #
@@ -21,6 +21,13 @@ SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
 
+
+nav_add() {
+    [ -z "$nav" ] && nav="\"\""
+    nav="$nav \"$1  -->\" '$2' \"$open_menu/extras/mullvad_country.sh $3\""
+}
+
+
 menu_name="Mullvad Select Country"
 req_win_width=28
 req_win_height=9
@@ -28,40 +35,31 @@ req_win_height=9
 
 open_menu="run-shell '$ITEMS_DIR"
 
+
+offset="${1:-0}"  #  optional param indicating first item to display
+
 lines="$(tmux display -p '#{window_height}')"
 display_items=$(( lines - 7 ))
+max_item=$(( offset + display_items ))
+
 if [ "$display_items" -lt 1 ]; then
+    #  Screen not high enough to display even one item from the list
+    #  Abort with error message about insufficient screen size
     ensure_menu_fits_on_screen
     exit 1
 fi
 
 
-#
-#  Cmd line params to limit list size, optional parameters are
-#  offset and max display
-#
-offset="${1:-0}"
-
-
-nav_add() {
-    [ -z "$nav" ] && nav="\"\""
-    nav="$nav \"$1\" '$2' \"$open_menu/extras/mullvad_country.sh $3\""
-}
-
-
 if [ "$offset" -gt 0 ]; then
-    new_offset=$(( offset - display_items ))
-    [ "$new_offset" -lt 0 ] && new_offset=0
-    nav_add "Back  -->" B $new_offset
+    previous_page=$(( offset - display_items ))
+    [ "$previous_page" -lt 0 ] && previous_page=0
+    nav_add "Back" B $previous_page
 fi
 
 
-idx=0
-max_item=$(( offset + display_items ))
-
-s="01234567890abcdefghijklmnopqrstuvwxyz"
-s="${s}ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-available_short_cuts="${s}~!@#$%^&*()-_=+[{]}:\|,<.>/?"
+#  shellcheck disable=SC2089
+menu_items="'Back to Main menu'  Home  \"$open_menu/main.sh'\" \
+    'Back to Mullvad'  Left  \"$open_menu/extras/mullvad.sh'\" \"\" "
 
 
 #
@@ -75,38 +73,40 @@ fi
 countries="$(mullvad relay list | grep -v $grep_gnu '^\t' | \
              grep -v '^$' | awk '{printf "%s|",$0}')"
 
+s="01234567890abcdefghijklmnopqrstuvwxyz"
+s="${s}ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+available_keys="${s}~!@#$%^&*()-_=+[{]}:\|,<.>/?"
 
-#  shellcheck disable=SC2089
-menu_items="'Back to Main menu'  Home  \"$open_menu/main.sh'\" \
-    'Back to Mullvad'  Left  \"$open_menu/extras/mullvad.sh'\" \"\" "
-
-
+idx=0
 while true; do
     country="${countries%%|*}"
     countries="${countries#*|}"
 
-    [ -z "$country" ] && break  #  skipping ending blank line
+    [ -z "$country" ] && break  #  skpp empty lines
 
     #
     #  Limit list size if screen is to small to handle entire list
     #
     if [ "$idx" -ge $max_item ]; then
         log_it "cant display all"
-        nav_add "Forward  -->" F $idx
+        nav_add "Forward" F $idx
         break
     fi
 
     idx=$(( idx + 1 ))
+
+    #  loop until we come to first item to display
     [ "$idx" -le "$offset" ] && continue
 
     country_code="$(echo "$country" | cut -d\( -f 2 | sed s/\)//)"
 
-    short_cut="$(echo "$available_short_cuts" | cut -c1-1)"
-    available_short_cuts="$(echo "$available_short_cuts" | cut -c2-)"
+    #  Pick the next available shortcut-key, then pop it of the list
+    key="$(echo "$available_keys" | cut -c1-1)"
+    available_keys="$(echo "$available_keys" | cut -c2-)"
 
-    #  Add a line to the list
+    #  Add a line to the menu
     #  shellcheck disable=SC2089
-    menu_items="$menu_items '$country' '$short_cut' \
+    menu_items="$menu_items '$country' '$key' \
         \"run-shell 'mullvad relay set location $country_code > /dev/null'\""
 
     [ "$countries" = "$country" ] && break  # we have processed last item
