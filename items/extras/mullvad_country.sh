@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0.0 2022-06-30
+#   Version: 1.1.0  2022-06-30
 #
 #   Select country for mullvad VPN
 #
@@ -58,9 +58,9 @@ fi
 
 idx=0
 max_item=$(( offset + display_items ))
-available_short_cuts="01234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-countries="$(mullvad relay list | grep -v -e "^\t" -e "^$" | \
-             awk '{printf "%s|",$0}')"
+available_short_cuts="01234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ~!@#$%^&*()-_=+[{]}:\|,<.>/?"
+
+
 #
 #  BSD & GNU grep regexp differs...
 #
