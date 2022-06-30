@@ -61,6 +61,16 @@ max_item=$(( offset + display_items ))
 available_short_cuts="01234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 countries="$(mullvad relay list | grep -v -e "^\t" -e "^$" | \
              awk '{printf "%s|",$0}')"
+#
+#  BSD & GNU grep regexp differs...
+#
+if grep -V | grep -q BSD ; then
+    grep_gnu=""
+else
+    grep_gnu="-P"
+fi
+countries="$(mullvad relay list | grep -v $grep_gnu '^\t' | grep -v '^$' | awk '{printf "%s|",$0}')"
+
 #  shellcheck disable=SC2089
 menu_items="'Back to Main menu'  Home  \"$open_menu/main.sh'\" 'Back to Mullvad'  Left  \"$open_menu/extras/mullvad.sh'\" \"\" "
 while true; do
