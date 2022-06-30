@@ -5,9 +5,9 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.4.9 2022-06-08
+#   Version: 1.0.0 2022-06-30
 #
-#   Main menu, the one popping up when you hit the trigger
+#   Directly control Spotify
 #
 
 #  shellcheck disable=SC2034

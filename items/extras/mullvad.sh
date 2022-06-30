@@ -5,9 +5,9 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.4.9 2022-06-08
+#   Version: 1.0.- 2022-06-30
 #
-#   Main menu, the one popping up when you hit the trigger
+#   Configure mullvad VPN
 #
 
 #  shellcheck disable=SC2034
@@ -87,9 +87,7 @@ tmux display-menu                                                           \
     "Connect"                 c  "$prefix connect $suffix"                  \
     "Disconnect"              d  "$prefix disconnect $suffix"               \
     "$lan_label LAN sharing"  s  "$prefix lan set $lan_cmd $suffix"         \
-    "Select Location  ->"     L  "$open_menu/extras/mullvad_countries.sh'"  \
-    ""                                                                      \
-    "Help  -->"  H  "$open_menu/help.sh $CURRENT_DIR/mullvad.sh'"
+    "Select Location  ->"     L  "$open_menu/extras/mullvad_country.sh'"
 
 
 
