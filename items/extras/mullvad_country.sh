@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.1.4  2022-07-01
+#   Version: 1.1.5  2022-07-01
 #
 #   Select country for mullvad VPN
 #
@@ -15,8 +15,8 @@
 
 # shellcheck disable=SC1007
 CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 ITEMS_DIR="$(dirname "$CURRENT_DIR")"
+SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
