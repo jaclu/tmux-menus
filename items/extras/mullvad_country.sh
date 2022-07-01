@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.1.3  2022-07-01
+#   Version: 1.1.4  2022-07-01
 #
 #   Select country for mullvad VPN
 #
@@ -15,8 +15,8 @@
 
 # shellcheck disable=SC1007
 CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-ITEMS_DIR="$(dirname "$CURRENT_DIR")"
 SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
+ITEMS_DIR="$(dirname "$CURRENT_DIR")"
 
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
@@ -34,7 +34,6 @@ req_win_height=9
 
 
 open_menu="run-shell '$ITEMS_DIR"
-
 
 offset="${1:-0}"  #  optional param indicating first item to display
 
@@ -73,8 +72,8 @@ fi
 countries="$(mullvad relay list | grep -v $grep_gnu '^\t' | \
              grep -v '^$' | awk '{printf "%s|",$0}')"
 
-s="01234567890abcdefghijklmnopqrstuvwxyz"
-s="${s}ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+s="1234567890abcdefghijklmnopqrstuvwxyz"
+s="${s}ACDEGHIJKLMNOPQRSTUVWXYZ"
 available_keys="${s}~!@#$%^&*()-_=+[{]}:\|,<.>/?"
 
 idx=0
@@ -110,6 +109,18 @@ while true; do
         \"run-shell 'mullvad relay set location $country_code > /dev/null'\""
 
     [ "$countries" = "$country" ] && break  # we have processed last item
+
+    if [ -z "$available_keys" ]; then
+        #
+        #  Next iteration will fail due to having run out of keys,
+        #  shouldn't happen. When setting this up there were plenty of spare
+        #  keys. If this becomes an issue at some point, one workaround is
+        #  to simply not use short-cut keys.
+        #  Safety workaround for now, repeat usage of '?', will look slightly
+        #  confusing but will not break anything (as-of 3.3a)
+        #
+        available_keys='?'
+    fi
 done
 
 
