@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.8 2022-06-08
+#   Version: 1.3.9 2022-07-20
 #
 #   Advanced options
 #
@@ -76,7 +76,7 @@ tmux display-menu                                                           \
     "Change prefix <$current_prefix>"     p  "$change_prefix"               \
     ""                                                                      \
     "-#[nodim]Kill server - all your sessions"                 "" ""        \
-    " on this host are terminated    "    k  "$kill_server"                 \
+    " on this host are terminated    "   \&  "$kill_server"                 \
     ""                                                                      \
     "$plugin_conf_prompt"                 P  "$open_menu/config.sh'"        \
     "Help  -->"  H  "$open_menu/help.sh $this_menu'"

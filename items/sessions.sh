@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.5 2022-06-08
+#   Version: 1.3.6 2022-07-20
 #
 #   Handling Sessions
 #
@@ -59,7 +59,7 @@ tmux display-menu                                                       \
     "<P> Previous session (in order)"  \(  "switch-client -p $reload"   \
     "<P> Next     session (in order)"  \)  "switch-client -n $reload"   \
     ""                                                                  \
-    "Kill current session"              k  "$kill_current"              \
+    "Kill current session"             \&  "$kill_current"              \
     "Kill all other sessions"           o  "$kill_other"                \
     ""                                                                  \
     "Help  -->"  H  "$open_menu/help.sh $this_menu'"
