@@ -6,7 +6,7 @@ Simple to modify to fit your needs. I have included several items that some migh
 
 #### Recent changes
 
-- Changed shortcut for kill ses/server from k into & in Advanced and Sessions, to ensure vi style navigation keys do not select anything
+- Changed shortcut for kill ses/server from k into x in Advanced and Sessions, to ensure vi style navigation keys do not select anything
 - Extras - Configure other software, currently supported: Spotify, Mullvad VPN<br/>Further suggestions are welcome!
 - Layouts - listing, but not using defaults that are not usable in popup menus
 - Fixed incorrect default in Advanced

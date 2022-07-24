@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.9 2022-07-20
+#   Version: 1.3.10 2022-07-24
 #
 #   Advanced options
 #
@@ -26,6 +26,11 @@ req_win_width=40
 req_win_height=19
 
 
+this_menu="$CURRENT_DIR/advanced.sh"
+reload="; run-shell '$this_menu'"
+open_menu="run-shell '$CURRENT_DIR"
+
+
 #
 #  Gather some info in order to be able to show states
 #
@@ -38,20 +43,16 @@ else
 fi
 current_prefix="$(tmux show-option -g prefix | cut -d' ' -f2 | cut -d'-' -f2)"
 
-this_menu="$CURRENT_DIR/advanced.sh"
-reload="; run-shell '$this_menu'"
 
-
-open_menu="run-shell '$CURRENT_DIR"
 describe_prefix="command-prompt -k -p key 'list-keys -1N \"%%%\"'"
 toggle_mouse="set-option -g mouse $new_mouse_status"
 kill_server="confirm-before -p 'kill tmux server on #H ? (y/n)' kill-server"
 
-set --  "command-prompt -1 -p prefix"                \
+set --  "command-prompt -1 -p prefix"                                       \
         "'run \"$SCRIPT_DIR/change_prefix.sh %%\"'"
 change_prefix="$*"
 
-set --  "#{?@menus_config_overrides,Plugin configuration"  \
+set --  "#{?@menus_config_overrides,Plugin configuration"                   \
         " -->,-Configuration disabled}"
 plugin_conf_prompt="$*"
 
@@ -76,7 +77,7 @@ tmux display-menu                                                           \
     "Change prefix <$current_prefix>"     p  "$change_prefix"               \
     ""                                                                      \
     "-#[nodim]Kill server - all your sessions"                 "" ""        \
-    " on this host are terminated    "   \&  "$kill_server"                 \
+    " on this host are terminated    "    x  "$kill_server"                 \
     ""                                                                      \
     "$plugin_conf_prompt"                 P  "$open_menu/config.sh'"        \
     "Help  -->"  H  "$open_menu/help.sh $this_menu'"
