@@ -6,7 +6,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.4.5 2022-06-08
+#   Version: 1.4.6 2022-07-28
 #
 #  Common stuff
 #
@@ -209,7 +209,7 @@ fi
 #log_it "config_overrides=[$config_overrides]"
 
 
-if [ $config_overrides -eq 1 ] && [ -f "$config_file" ]; then
+if [ "$config_overrides" -eq 1 ] && [ -f "$config_file" ]; then
     read_config
     menu_location_x="$location_x"
     menu_location_y="$location_y"

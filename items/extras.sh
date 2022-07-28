@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0.0 2022-06-30
+#   Version: 1.0.1 2022-07-28
 #
 #   Handling pane
 #
@@ -37,7 +37,7 @@ is_avalable() {
     if [ -z "$cmd" ]; then
         error_msg "extras.is_available - no param!"
     fi
-    if [ -n "$(which "$cmd")" ]; then
+    if [ -n "$(command -v "$cmd")" ]; then
         echo "$label"
     else
         echo "-$label"
