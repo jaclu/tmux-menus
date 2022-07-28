@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0.1 2022-06-30
+#   Version: 1.1.0 2022-07-28
 #
 #   Configure mullvad VPN
 #
@@ -82,10 +82,12 @@ tmux display-menu                                                           \
     "Back to Main menu"  Home  "$open_menu/main.sh'"                        \
     "Back to Extras"     Left  "$open_menu/extras.sh'"                      \
     ""                                                                      \
+    "Status"                  s  "display \"$(mullvad status)\" ;           \
+                                    run-shell '$this_menu'"                 \
     "Connect"                 c  "$prefix connect $suffix"                  \
     "Disconnect"              d  "$prefix disconnect $suffix"               \
-    "$lan_label LAN sharing"  s  "$prefix lan set $lan_cmd $suffix"         \
-    "Select Location  ->"     L  "$open_menu/extras/mullvad_country.sh'"
+    "$lan_label LAN sharing"  l  "$prefix lan set $lan_cmd $suffix"         \
+    "Select Location  -->"     L  "$open_menu/extras/mullvad_country.sh'"
 
 
 
