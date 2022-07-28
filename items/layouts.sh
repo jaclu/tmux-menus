@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.6 2022-06-07
+#   Version: 1.3.7 2022-07-28
 #
 #   Choose layout
 #
@@ -39,10 +39,10 @@ tmux display-menu                                       \
                                                         \
     "Back to Main menu"  Left  "$open_menu/main.sh'"    \
     ""                                                  \
-    "Most of these defaults" "" ""                      \
-    "can't be used in menus." "" ""                     \
-    "They are just listed" "" ""                        \
-    " " "" ""                                           \
+    "-Most of these defaults" "" ""                     \
+    "-can't be used in menus." "" ""                    \
+    "-They are just listed" "" ""                       \
+    "-" "" ""                                           \
     "#[fg=red]<P> M-1#[default] Even horizontal"   1    \
         "select-layout even-horizontal $reload"         \
     "#[fg=red]<P> M-2#[default] Even vertical"     2    \
