@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.1.5  2022-07-01
+#   Version: 1.1.6  2022-07-28
 #
 #   Select country for mullvad VPN
 #
@@ -52,7 +52,7 @@ fi
 if [ "$offset" -gt 0 ]; then
     previous_page=$(( offset - display_items ))
     [ "$previous_page" -lt 0 ] && previous_page=0
-    nav_add "Back" B $previous_page
+    nav_add "Back" B "$previous_page"
 fi
 
 
@@ -69,6 +69,7 @@ if grep -V | grep -q BSD ; then
 else
     grep_gnu="-P"
 fi
+# shellcheck disable=SC2248
 countries="$(mullvad relay list | grep -v $grep_gnu '^\t' | \
              grep -v '^$' | awk '{printf "%s|",$0}')"
 
@@ -86,9 +87,9 @@ while true; do
     #
     #  Limit list size if screen is to small to handle entire list
     #
-    if [ "$idx" -ge $max_item ]; then
+    if [ "$idx" -ge "$max_item" ]; then
         log_it "cant display all"
-        nav_add "Forward" F $idx
+        nav_add "Forward" F "$idx"
         break
     fi
 
