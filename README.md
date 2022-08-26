@@ -8,7 +8,8 @@ Simple to modify to fit your needs. I have included several items that some migh
 
 - Added to Extras/Mullvad VPN - display status
 - Changed shortcut for kill ses/server from k into x in Advanced and Sessions, to ensure vi style navigation keys do not select anything
-- Extras - Configure other software, currently supported: Spotify, Mullvad VPN<br/>Further suggestions are welcome!
+- Extras - Configure other software, currently supported: Spotify, Mullvad VPN  
+Further suggestions are welcome!
 - Layouts - listing, but not using defaults that are not usable in popup menus
 - Fixed incorrect default in Advanced
 - New feature, Advanced - Plugin Configuration, available if @menus_config_overrides is set to "1"
@@ -27,7 +28,9 @@ Not only meant for beginners, I use it myself all the time:
 
 - When connecting using terminals without much support for Meta or Ctrl, then this gives me access to all the stuff that is not available with my normal shortcuts. For instance when running iSH the console keyboard is very limitd.
 - Tasks that would need external scripts in order to avoid hard to read complex bind one-liners, such as kill curent session, without getting disconnected.
-- When direct typing would be much longer.<br> Example: Kill the server directly is min 12 keys: `<prefix> : kill-ser <tab> <enter>` <br> with the menus it is 5 keys: `<prefix> \ A k y ` <br>
+- When direct typing would be much longer.   
+Example: Kill the server directly is min 12 keys: `<prefix> : kill-ser <tab> <enter>`   
+with the menus it is 5 keys: `<prefix> \ A x y `
 - Things I use to seldom to remember as shortcuts.
 
 ## Usage
@@ -158,7 +161,7 @@ This will directly trigger that menu and display any syntax errors on the comman
 
 In `scripts/utils.sh` there is a function log_it, and a variable log_file. If log_file is defined, any call to log_it will be printed there. If it is not defined, nothing will happen. So log_it lines can be left in the code.
 
-If you are triggering a menu from the command line, you can use direct echo, but then you need to remove it before deploying, since tmux will see any script output as an potential error and display it in a scroll back buffer.<br>
+If you are triggering a menu from the command line, you can use direct echo, but then you need to remove it before deploying, since tmux will see any script output as an potential error and display it in a scroll back buffer.  
 If tailing a log file is unpractical, a more scaleable way to achieve the same result as echo would be to set `log_file='/dev/stdout'`
 
 To trigger log output, just add lines like:
@@ -176,7 +179,9 @@ If you want to go back to your installed version for now, either reload configs,
 | Version    | Notice
 | - | - |
 | 3.2 -      | Fully compatible
-| 3.0 - 3.1c | Menu centering not supported, will be displayed top left if C is used as menu location. <br>Additionally some actions might not work depending on version. <br> There should be a notification message about "unknown command" in such cases.
+| 3.0 - 3.1c | Menu centering not supported, will be displayed top left if C is used as menu location.  
+Additionally some actions might not work depending on version.  
+There should be a notification message about "unknown command" in such cases.
 
 ## Contributing
 
