@@ -21,9 +21,9 @@ SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 dropbox_status_check() {
     is_dropbox_running && run_stat=0 || run_stat=1
     if [ "$run_stat" -ne "$1" ]; then
-	return 0
+        return 0
     else
-	return 1
+        return 1
     fi
 }
 
@@ -46,6 +46,7 @@ tmux set-option -g display-time 30000
 
 tmux display "Doing dropbox $action ..."
 
+
 if [ "$action" = "start" ]; then
     #
     #  If dropbox was toggled on in the timeframe where it is still shutting
@@ -53,16 +54,13 @@ if [ "$action" = "start" ]; then
     #  before triggering the start event.
     #
     while [ "$(dropbox status)" = "Syncing..." ]; do
-	log_it " waiting for dropbox stop to complete..."
-	sleep 1
+        log_it " waiting for dropbox stop to complete..."
+        sleep 1
     done
-
 fi
 
 
-
-
-log_it "dropbox_toggle.sh $action  --------------------"
+log_it "dropbox_toggle.sh $action  ------"
 
 
 dropbox "$action" > /dev/null 2>&1 &
@@ -74,9 +72,13 @@ done
 
 log_it "status change completed"
 
+
+#
 # Hack to clear msg
+#
 tmux set-option -g display-time 1
-tmux display ""2
+tmux display ""
+
 
 # Restore org value
 tmux set-option -g display-time "$org_disp_time"

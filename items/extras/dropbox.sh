@@ -53,7 +53,7 @@ tmux display-menu                                                   \
     ""                                                              \
     "Status"     s  "display \"$(dropbox status)\" $reload"         \
     "$tgl_lbl"   t  "run-shell \"$CURRENT_DIR/_dropbox_toggle.sh\"  \
-    		     $reload"                                       \
+                      $reload"                                      \
     ""                                                              \
     "Help  -->"  H  "$open_menu/help.sh $CURRENT_DIR/dropbox.sh'"
 
