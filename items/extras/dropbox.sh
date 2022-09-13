@@ -49,21 +49,6 @@ is_dropbox_running() {
 }
 
 
-toggle_status(){
-    log_it "toggle_status($1)"
-    if [ "$1" = "start" ]; then
-	action="start"
-    else
-	action="stop"
-    fi
-    log_it "  action: $action"
-    dropbox "$action" > /dev/null 2>&1
-    log_it "  action done"
-    #sleep 1
-    log_it "restarting dropbox menu"
-    $this_menu
-}
-
 # if run with param, assume it is a toggle action
 [ -n "$1" ] && toggle_status $1
 
@@ -89,7 +74,7 @@ tmux display-menu                                                   \
     ""                                                              \
     "Status"    s  "display \"$(dropbox status)\" ;                 \
                     run-shell '$this_menu'"                         \
-    "$tgl_lbl"  t   "run-shell \"$this_menu $tgl_act\""             \
+    "$tgl_lbl"  t   "run-shell \"./dropbox_toggle.sh $tgl_act\""    \
     ""                                                              \
     "Help  -->"  H  "$open_menu/help.sh $CURRENT_DIR/dropbox.sh'"
 
