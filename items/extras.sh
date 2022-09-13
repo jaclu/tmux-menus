@@ -54,6 +54,8 @@ tmux display-menu                                                       \
     -x "$menu_location_x" -y "$menu_location_y"                         \
     "Back to Main menu"  Left  "$open_menu/main.sh'"                    \
     ""                                                                  \
+    "$(is_avalable dropbox Dropbox)  -->"        D                      \
+            "$open_extra/dropbox.sh"                                    \
     "$(is_avalable spotify Spotify)  -->"        S                      \
             "$open_extra/spotify.sh"                                    \
     "$(is_avalable mullvad "Mullvad VPN")  -->"  M                      \
