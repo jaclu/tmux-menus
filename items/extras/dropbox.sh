@@ -22,8 +22,8 @@ SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 . "$SCRIPT_DIR/utils.sh"
 
 menu_name="Dropbox"
-req_win_width=1
-req_win_height=1
+req_win_width=28
+req_win_height=9
 
 
 this_menu="$CURRENT_DIR/dropbox.sh"
@@ -48,24 +48,11 @@ is_dropbox_running() {
     fi
 }
 
-
-# if run with param, assume it is a toggle action
-[ -n "$1" ] && toggle_status $1
-
-
 if is_dropbox_running; then
     tgl_lbl="sTop"
-    tgl_act="stop"
 else
     tgl_lbl="sTart"
-    tgl_act="start"
 fi
-
-
-
-#prefix="run-shell 'spotify "
-#suffix=" > /dev/null' ; run-shell '$this_menu'"
-#    "Replay"             r     "$prefix replay    $suffix"          \
 
 
 t_start="$(date +'%s')"
@@ -78,8 +65,9 @@ tmux display-menu                                                   \
     "Back to Main menu"  Home  "$open_menu/main.sh'"                \
     "Back to Extras"     Left  "$open_menu/extras.sh'"              \
     ""                                                              \
-    "Status"    s  "display \"$(dropbox status)\" $reload"          \
-    "$tgl_lbl"  t   "run-shell \"$CURRENT_DIR/dropbox_toggle.sh $tgl_act\" $reload"  \
+    "Status"     s  "display \"$(dropbox status)\" $reload"         \
+    "$tgl_lbl"   t  "run-shell \"$CURRENT_DIR/_dropbox_toggle.sh\"  \
+    		     $reload"                                       \
     ""                                                              \
     "Help  -->"  H  "$open_menu/help.sh $CURRENT_DIR/dropbox.sh'"
 

@@ -87,7 +87,7 @@ tmux display-menu                                                           \
     "Connect"                 c  "$prefix connect $suffix"                  \
     "Disconnect"              d  "$prefix disconnect $suffix"               \
     "$lan_label LAN sharing"  l  "$prefix lan set $lan_cmd $suffix"         \
-    "Select Location  -->"     L  "$open_menu/extras/mullvad_country.sh'"
+    "Select Location  -->"    L  "$open_menu/extras/_mullvad_country.sh'"
 
 
 
