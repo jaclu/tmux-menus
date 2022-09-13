@@ -62,6 +62,12 @@ else
 fi
 
 
+
+#prefix="run-shell 'spotify "
+#suffix=" > /dev/null' ; run-shell '$this_menu'"
+#    "Replay"             r     "$prefix replay    $suffix"          \
+
+
 t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
@@ -72,9 +78,8 @@ tmux display-menu                                                   \
     "Back to Main menu"  Home  "$open_menu/main.sh'"                \
     "Back to Extras"     Left  "$open_menu/extras.sh'"              \
     ""                                                              \
-    "Status"    s  "display \"$(dropbox status)\" ;                 \
-                    run-shell '$this_menu'"                         \
-    "$tgl_lbl"  t   "run-shell \"$CURRENT_DIR/dropbox_toggle.sh $tgl_act\""    \
+    "Status"    s  "display \"$(dropbox status)\" $reload"          \
+    "$tgl_lbl"  t   "run-shell \"$CURRENT_DIR/dropbox_toggle.sh $tgl_act\" $reload"  \
     ""                                                              \
     "Help  -->"  H  "$open_menu/help.sh $CURRENT_DIR/dropbox.sh'"
 
