@@ -5,9 +5,9 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0.1 2022-06-30
+#   Version: 1.0.2 2022-09-14
 #
-#   Directly control Spotify
+#   Directly control DropBox
 #
 
 #  shellcheck disable=SC2034
@@ -30,8 +30,11 @@ this_menu="$CURRENT_DIR/dropbox.sh"
 reload="; run-shell '$this_menu'"
 open_menu="run-shell '$ITEMS_DIR"
 
-#prefix="run-shell 'dropbox "
-#suffix=" > /dev/null' ; run-shell '$this_menu'"
+
+if [ -z "$(command -v dropbox)" ]; then
+    tmux display "dropbox bin not found!"
+    exit 1
+fi
 
 
 if is_dropbox_running; then

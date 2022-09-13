@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0.3 2022-09-13
+#   Version: 1.0.4 2022-09-14
 #
 #   Directly control Spotify
 #
@@ -31,6 +31,12 @@ open_menu="run-shell '$ITEMS_DIR"
 
 prefix="run-shell 'spotify "
 suffix=" > /dev/null' ; run-shell '$this_menu'"
+
+
+if [ -z "$(command -v spotify)" ]; then
+    tmux display "spotify bin not found!"
+    exit 1
+fi
 
 
 t_start="$(date +'%s')"

@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.1.2 2022-09-13
+#   Version: 1.1.3 2022-09-14
 #
 #   Configure mullvad VPN
 #
@@ -31,6 +31,13 @@ open_menu="run-shell '$ITEMS_DIR"
 
 prefix="run-shell 'mullvad "
 suffix=" > /dev/null' ; run-shell '$this_menu'"
+
+
+if [ -z "$(command -v mullvad)" ]; then
+    tmux display "mullvad bin not found!"
+    exit 1
+fi
+
 
 if [ "$(mullvad lan get | awk 'NF>1{print $NF}')" = "allow" ]; then
     lan_label="Disable"
