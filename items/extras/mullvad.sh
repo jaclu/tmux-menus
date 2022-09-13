@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.1.1 2022-09-13
+#   Version: 1.1.2 2022-09-13
 #
 #   Configure mullvad VPN
 #
@@ -27,7 +27,6 @@ req_win_height=10
 
 
 this_menu="$CURRENT_DIR/mullvad.sh"
-reload="; run-shell '$this_menu'"
 open_menu="run-shell '$ITEMS_DIR"
 
 prefix="run-shell 'mullvad "
@@ -41,29 +40,19 @@ else
     lan_cmd="allow"
 fi
 
-
-# mullvad relay set location de
-# mullvad relay set location de ber
-
-
-
-# list_countries() {
-#     # List countries
-#     # mullvad relay list | grep -v "^\t"
-#     #mullvad relay list | grep -v "^\t"
-# }
-
-list_cities() {
-    country="$1"
-    if [ -z "$country" ]; then
-        error_msg "extras/mullvad.cities - no param!"
-    fi
-    #  List cities
-    #  mullvad relay list | grep -v "^\t\t"
-    #    Start of line - country
-    #    Indented City
-}
-
+#
+#  city and server selection not done yet..
+#
+#list_cities() {
+#    country="$1"
+#    if [ -z "$country" ]; then
+#        error_msg "extras/mullvad.cities - no param!"
+#    fi
+#    #  List cities
+#    #  mullvad relay list | grep -v "^\t\t"
+#    #    Start of line - country
+#    #    Indented City
+#}
 # list_servers() {
 #     server="$1"
 #     if [ -z "$server" ]; then
@@ -88,7 +77,6 @@ tmux display-menu                                                           \
     "Disconnect"              d  "$prefix disconnect $suffix"               \
     "$lan_label LAN sharing"  l  "$prefix lan set $lan_cmd $suffix"         \
     "Select Location  -->"    L  "$open_menu/extras/_mullvad_country.sh'"
-
 
 
 ensure_menu_fits_on_screen
