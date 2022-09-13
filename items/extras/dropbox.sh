@@ -64,6 +64,9 @@ toggle_status(){
     $this_menu
 }
 
+# if run with param, assume it is a toggle action
+[ -n "$1" ] && toggle_status $1
+
 
 if is_dropbox_running; then
     tgl_lbl="sTop"
@@ -86,7 +89,7 @@ tmux display-menu                                                   \
     ""                                                              \
     "Status"    s  "display \"$(dropbox status)\" ;                 \
                     run-shell '$this_menu'"                         \
-    "$tgl_lbl"  t   "run-shell toggle_status"                       \
+    "$tgl_lbl"  t   "run-shell $this_menu toggle"                   \
     ""                                                              \
     "Help  -->"  H  "$open_menu/help.sh $CURRENT_DIR/dropbox.sh'"
 
