@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0.1 2022-06-30
+#   Version: 1.0.2 2022-09-13
 #
 #   Directly control Spotify
 #
@@ -22,8 +22,8 @@ SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 . "$SCRIPT_DIR/utils.sh"
 
 menu_name="Spotify"
-req_win_width=1
-req_win_height=1
+req_win_width=28
+req_win_height=13
 
 
 this_menu="$CURRENT_DIR/spotify.sh"
