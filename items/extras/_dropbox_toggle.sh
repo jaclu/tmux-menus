@@ -18,41 +18,14 @@ SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
 
-action="$1"
-
-#
-#  Convert to boolean status, from dropox (python) status logic
-#
-is_dropbox_running() {
-    dropbox running && return 1
-    if [ "$(dropbox status)" = "Syncing..." ]; then
-	return 1  # it is terminating, so label it not running
-    else
-	# is running
-	return 0
-    fi
-}
-
-
 dropbox_status_check() {
-    dropbox running && run_stat=1 || run_stat=0
+    is_dropbox_running && run_stat=0 || run_stat=1
     if [ "$run_stat" -ne "$1" ]; then
-	return 0  # True
+	return 0
     else
-	return 1  # False
+	return 1
     fi
 }
-
-
-
-#
-#  Temp set a very high disp time, org value
-#  will be restored when script is done
-#
-org_disp_time="$(tmux show -g display-time | cut -d' ' -f 2)"
-tmux set-option -g display-time 30000
-
-tmux display "Toggling dropbox status..."
 
 
 if is_dropbox_running; then
@@ -63,7 +36,33 @@ else
     new_run_stat=0
 fi
 
-log_it "dropbox_toggle.sh $action"
+
+#
+#  Temp set a very high disp time, org value
+#  will be restored when script is done
+#
+org_disp_time="$(tmux show -g display-time | cut -d' ' -f 2)"
+tmux set-option -g display-time 30000
+
+tmux display "Doing dropbox $action ..."
+
+if [ "$action" = "start" ]; then
+    #
+    #  If dropbox was toggled on in the timeframe where it is still shutting
+    #  down but has not completed that operation, wait for it to complete
+    #  before triggering the start event.
+    #
+    while [ "$(dropbox status)" = "Syncing..." ]; do
+	log_it " waiting for dropbox stop to complete..."
+	sleep 1
+    done
+
+fi
+
+
+
+
+log_it "dropbox_toggle.sh $action  --------------------"
 
 
 dropbox "$action" > /dev/null 2>&1 &

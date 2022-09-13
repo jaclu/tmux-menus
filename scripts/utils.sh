@@ -6,7 +6,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.4.6 2022-07-28
+#   Version: 1.5.0 2022-09-13
 #
 #  Common stuff
 #
@@ -194,6 +194,25 @@ read_config() {
     . "$config_file"
     [ -z "$location_x" ] && location_x="P"
     [ -z "$location_y" ] && location_y="P"
+}
+
+
+#
+#  Convert to boolean status from the dropox (python?) status logic
+#  where 1 means running and 0 means not running
+#
+is_dropbox_running() {
+    dropbox running && return 1
+    if [ "$(dropbox status)" = "Syncing..." ]; then
+	#  status is only this whilst terminating, during normal operations
+	#  it also mentions what file (-s) is being synced.
+	#  So this is a sure sign dropbox is about to shut down,
+	#  so can be labeled asnot running
+	return 1
+    else
+	# is running
+	return 0
+    fi
 }
 
 

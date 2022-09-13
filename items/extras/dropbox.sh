@@ -30,23 +30,9 @@ this_menu="$CURRENT_DIR/dropbox.sh"
 reload="; run-shell '$this_menu'"
 open_menu="run-shell '$ITEMS_DIR"
 
-prefix="run-shell 'dropbox "
-suffix=" > /dev/null' ; run-shell '$this_menu'"
+#prefix="run-shell 'dropbox "
+#suffix=" > /dev/null' ; run-shell '$this_menu'"
 
-
-#
-#  Argh this uses reverse boolean logic
-#   1 is running
-#   0 is not running
-#
-is_dropbox_running() {
-    dropbox running && return 1
-    if [ "$(dropbox status)" = "Syncing..." ]; then
-	return 1  # it is terminating
-    else
-	return 0
-    fi
-}
 
 if is_dropbox_running; then
     tgl_lbl="sTop"
