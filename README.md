@@ -6,7 +6,7 @@ Simple to modify to fit your needs. I have included several items that some migh
 
 #### Recent changes
 
-- Extras - added Dropbox
+- Extras - added Dropbox. It has been tested to work on Linux.
 - Added to Extras/Mullvad VPN - display status
 - Changed shortcut for kill ses/server from k into x in Advanced and Sessions, to ensure vi style navigation keys do not select anything
 - Extras - Configure other software, currently supported: Spotify, Mullvad VPN  
