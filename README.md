@@ -6,13 +6,13 @@ Simple to modify to fit your needs. I have included several items that some migh
 
 #### Recent changes
 
+- Extras - added Dropbox
 - Added to Extras/Mullvad VPN - display status
 - Changed shortcut for kill ses/server from k into x in Advanced and Sessions, to ensure vi style navigation keys do not select anything
 - Extras - Configure other software, currently supported: Spotify, Mullvad VPN  
 Further suggestions are welcome!
 - Layouts - listing, but not using defaults that are not usable in popup menus
 - Fixed incorrect default in Advanced
-- New feature, Advanced - Plugin Configuration, available if @menus_config_overrides is set to "1"
 
 ## Purpose
 
