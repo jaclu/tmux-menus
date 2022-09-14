@@ -10,11 +10,11 @@
 #   Kill all other windows
 #
 
-window_list="$(IFS=" " tmux list-windows -F '#{window_id}')"
-current_window="$(tmux display-message -p '#{window_id}')"
+window_list="$(IFS=" " $TMUX_BIN list-windows -F '#{window_id}')"
+current_window="$($TMUX_BIN display-message -p '#{window_id}')"
 
 for w in $window_list; do
     if [ "$w" != "$current_window" ]; then
-        tmux kill-window -t "$w"
+        $TMUX_BIN kill-window -t "$w"
     fi
 done

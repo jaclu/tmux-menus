@@ -34,7 +34,7 @@ suffix=" > /dev/null' ; run-shell '$this_menu'"
 
 
 if [ -z "$(command -v mullvad)" ]; then
-    tmux display "mullvad bin not found!"
+    $TMUX_BIN display "mullvad bin not found!"
     exit 1
 fi
 
@@ -71,7 +71,7 @@ fi
 t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
-tmux display-menu                                                           \
+$TMUX_BIN display-menu                                                           \
     -T "#[align=centre] $menu_name "                                        \
     -x "$menu_location_x" -y "$menu_location_y"                             \
                                                                             \

@@ -25,6 +25,6 @@ fi
 
 prefix="C-${prefix_char}"
 
-tmux set-option -g prefix "$prefix"
+$TMUX_BIN set-option -g prefix "$prefix"
 
-tmux display-message "Be aware <prefix> is now: $prefix"
+$TMUX_BIN display-message "Be aware <prefix> is now: $prefix"

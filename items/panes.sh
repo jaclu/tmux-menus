@@ -57,7 +57,7 @@ kill_others="$kill_others all other panes? (y/n)' 'kill-pane -a'"
 t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
-tmux display-menu                                                           \
+$TMUX_BIN display-menu                                                           \
     -T "#[align=centre] Handling Pane "                                     \
     -x "$menu_location_x" -y "$menu_location_y"                             \
                                                                             \

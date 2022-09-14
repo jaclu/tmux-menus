@@ -47,7 +47,7 @@ set_coordinates="$*"
 t_start="$(date +'%s')"  #  if the menu closed in < 1s assume it didnt fit
 
 # shellcheck disable=SC2154
-tmux display-menu                                                   \
+$TMUX_BIN display-menu                                                   \
     -T "#[align=centre] $menu_name "                                \
     -x "$menu_location_x" -y "$menu_location_y"                     \
                                                                     \

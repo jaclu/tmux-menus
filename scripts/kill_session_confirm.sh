@@ -20,5 +20,5 @@ set --  "Only one session, you will be disconnected if you continue."  \
         "Proceed? (y/n)"
 prompt="$*"
 
-tmux confirm-before -p "$prompt" \
+$TMUX_BIN confirm-before -p "$prompt" \
     "run \"$CURRENT_DIR/kill_current_session.sh force\""

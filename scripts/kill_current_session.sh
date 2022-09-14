@@ -24,9 +24,9 @@ CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 
 force_directive="force"
 
-ses_count="$(tmux list-sessions | wc -l)"
+ses_count="$($TMUX_BIN list-sessions | wc -l)"
 
-ses_to_go="$(tmux display-message -p '#{session_id}')"
+ses_to_go="$($TMUX_BIN display-message -p '#{session_id}')"
 
 
 if [ -z "$ses_to_go" ]; then
@@ -50,7 +50,7 @@ fi
 #  Switch to next session, in order not to get disconnected when active session
 #  is terminated.
 #
-tmux switch-client -n &
+$TMUX_BIN switch-client -n &
 
 
 if [ "$ses_count" -gt 1 ]; then
@@ -66,4 +66,4 @@ if [ "$ses_count" -gt 1 ]; then
 fi
 
 
-tmux kill-session -t "$ses_to_go"
+$TMUX_BIN kill-session -t "$ses_to_go"

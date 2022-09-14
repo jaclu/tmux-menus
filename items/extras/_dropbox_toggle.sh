@@ -41,10 +41,10 @@ fi
 #  Temp set a very high disp time, org value
 #  will be restored when script is done
 #
-org_disp_time="$(tmux show -g display-time | cut -d' ' -f 2)"
-tmux set-option -g display-time 30000
+org_disp_time="$($TMUX_BIN show -g display-time | cut -d' ' -f 2)"
+$TMUX_BIN set-option -g display-time 30000
 
-tmux display "Doing dropbox $action ..."
+$TMUX_BIN display "Doing dropbox $action ..."
 
 
 if [ "$action" = "start" ]; then
@@ -76,11 +76,11 @@ log_it "status change completed"
 #
 # Hack to clear msg
 #
-tmux set-option -g display-time 1
-tmux display ""
+$TMUX_BIN set-option -g display-time 1
+$TMUX_BIN display ""
 
 
 # Restore org value
-tmux set-option -g display-time "$org_disp_time"
+$TMUX_BIN set-option -g display-time "$org_disp_time"
 
 exit 0
