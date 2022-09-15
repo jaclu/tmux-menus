@@ -10,8 +10,8 @@
 #   Breaks pane to new window as long as there was more than one pane in current
 #
 
-if [ "$(tmux list-panes | wc -l)" -lt 2 ]; then
-    tmux display-message "Only one pane!"
+if [ "$($TMUX_BIN list-panes | wc -l)" -lt 2 ]; then
+    $TMUX_BIN display-message "Only one pane!"
 else
-    tmux command-prompt -I "#W"  -p "New window name: " "break-pane -n '%%'"
+    $TMUX_BIN command-prompt -I "#W"  -p "New window name: " "break-pane -n '%%'"
 fi

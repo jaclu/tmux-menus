@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0.1 2022-07-28
+#   Version: 1.0.2 2022-09-14
 #
 #   Handling pane
 #
@@ -49,17 +49,17 @@ is_avalable() {
 t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
-tmux display-menu                                                       \
+$TMUX_BIN display-menu                                                       \
     -T "#[align=centre] Extras "                                        \
     -x "$menu_location_x" -y "$menu_location_y"                         \
     "Back to Main menu"  Left  "$open_menu/main.sh'"                    \
     ""                                                                  \
     "$(is_avalable dropbox Dropbox)  -->"        D                      \
-            "$open_extra/dropbox.sh"                                    \
+            "$open_extra/dropbox.sh'"                                    \
     "$(is_avalable spotify Spotify)  -->"        S                      \
-            "$open_extra/spotify.sh"                                    \
+            "$open_extra/spotify.sh'"                                    \
     "$(is_avalable mullvad "Mullvad VPN")  -->"  M                      \
-            "$open_extra/mullvad.sh"                                    \
+            "$open_extra/mullvad.sh'"                                    \
     ""                                                                  \
     "Help  -->"  H  "$open_menu/help_extras.sh $this_menu'"
 

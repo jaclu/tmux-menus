@@ -34,6 +34,16 @@ plugin_name="tmux-menus"
 #
 config_file="/tmp/tmux-menus.conf"
 
+#
+#  I use an env var TMUX_BIN to point at the current tmux, defined in my
+#  tmux.conf, in order to pick the version matching the server running.
+#  This is needed when checking backwards compatability with various versions.
+#  If not found, it is set to whatever is in path, so should have no negative
+#  impact. In all calls to tmux I use $TMUX_BIN instead in the rest of this
+#  plugin.
+#
+[ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
+
 
 #
 #  If $log_file is empty or undefined, no logging will occur.
@@ -57,9 +67,9 @@ error_msg() {
     log_it "$em_msg"
     em_msg="$plugin_name $em_msg"
     em_msg_len="$(printf "%s" "$em_msg" | wc -m)"
-    em_screen_width="$(tmux display -p "#{window_width}")"
+    em_screen_width="$($TMUX_BIN display -p "#{window_width}")"
     if [ "$em_msg_len" -le "$em_screen_width" ]; then
-        tmux display-message "$em_msg"
+        $TMUX_BIN display-message "$em_msg"
     else
         #
         #  Screen is to narrow to use display message
@@ -108,7 +118,7 @@ bool_param() {
 get_tmux_option() {
     gtm_option=$1
     gtm_default=$2
-    gtm_value=$(tmux show-option -gqv "$gtm_option")
+    gtm_value=$($TMUX_BIN show-option -gqv "$gtm_option")
     if [ -z "$gtm_value" ]; then
         echo "$gtm_default"
     else
@@ -130,7 +140,7 @@ get_tmux_option() {
 #  set, and that this sequence is done in the menu code:
 #
 #    t_start="$(date +'%s')"
-#    tmux display-menu ...
+#    $TMUX_BIN display-menu ...
 #    ensure_menu_fits_on_screen
 #
 #  Not perfect, but it kind of works. If you hit escape and instantly close
@@ -159,9 +169,9 @@ ensure_menu_fits_on_screen() {
            "w:$req_win_width h:$req_win_height"
     log_it "$*"
 
-    cur_width="$(tmux display -p "#{window_width}")"
+    cur_width="$($TMUX_BIN display -p "#{window_width}")"
     log_it "Current width: $cur_width"
-    cur_height="$(tmux display -p "#{window_height}")"
+    cur_height="$($TMUX_BIN display -p "#{window_height}")"
     log_it "Current height: $cur_height"
 
     if    [ "$cur_width" -lt "$req_win_width" ] || \

@@ -42,30 +42,30 @@ if [ "$cur_ses" = "$dest_ses" ]; then
     #
     #  Move within the current session
     #
-    tmux move-window -b -t ":${dest_win_idx}"
+    $TMUX_BIN move-window -b -t ":${dest_win_idx}"
 else
     #
     #  tmux move only works in same session, so we use link & unlink for
     #  moving to another session
     #
-    tmux link-window -b -t "$dest_ses:$dest_win_idx" # Create a link to this at destination
+    $TMUX_BIN link-window -b -t "$dest_ses:$dest_win_idx" # Create a link to this at destination
     if [ "$action" != "L" ]; then
         #
         # Unlink window at current location, ie get rid of original instance
         # And re-indix previous session
         #
-        tmux unlink-window
+        $TMUX_BIN unlink-window
     fi
     #
     #  When Window / Pane is moved to another session, focus does not
     #  auto-switch, so this manually sets focus.
     #
-    tmux switch-client -t "$dest_ses"  # switch focus to new location
+    $TMUX_BIN switch-client -t "$dest_ses"  # switch focus to new location
 fi
 
 if [ -z "$dest_win_idx" ]; then
     #
     # No dest windows idx given, assume it should go last
     #
-    tmux move-window -t 999
+    $TMUX_BIN move-window -t 999
 fi

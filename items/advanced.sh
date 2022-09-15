@@ -34,14 +34,14 @@ open_menu="run-shell '$CURRENT_DIR"
 #
 #  Gather some info in order to be able to show states
 #
-current_mouse_status="$(tmux show-option -g mouse | cut -d' ' -f2)"
+current_mouse_status="$($TMUX_BIN show-option -g mouse | cut -d' ' -f2)"
 if [ "$current_mouse_status" = "on" ]; then
     new_mouse_status="off"
 else
 
     new_mouse_status="on"
 fi
-current_prefix="$(tmux show-option -g prefix | cut -d' ' -f2 | cut -d'-' -f2)"
+current_prefix="$($TMUX_BIN show-option -g prefix | cut -d' ' -f2 | cut -d'-' -f2)"
 
 
 describe_prefix="command-prompt -k -p key 'list-keys -1N \"%%%\"'"
@@ -60,7 +60,7 @@ plugin_conf_prompt="$*"
 t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154,SC2140
-tmux display-menu                                                           \
+$TMUX_BIN display-menu                                                           \
     -T "#[align=centre] $menu_name "                                        \
     -x "$menu_location_x" -y "$menu_location_y"                             \
                                                                             \

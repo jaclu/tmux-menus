@@ -72,4 +72,4 @@ else
 fi
 
 #  shellcheck disable=SC2086,SC2090
-tmux bind $params "$trigger_key" run-shell "$MENUS_DIR/main.sh"
+$TMUX_BIN bind $params "$trigger_key" run-shell "$MENUS_DIR/main.sh"

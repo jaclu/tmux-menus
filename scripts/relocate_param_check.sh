@@ -65,7 +65,7 @@ param_check() {
     fi
 
 
-    cur_ses="$(tmux display-message -p '#S')"
+    cur_ses="$($TMUX_BIN display-message -p '#S')"
     dest="${raw_dest#*=}"  # skipping initial =
     dest_ses="${dest%%:*}" # up to first colon excluding it
 
