@@ -7,11 +7,13 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.9 2022-06-08
+#   Version: 1.2.10 2022-09-17
 #
 #   Common stuff for relocate_pane.sh & relocate_windows.sh
 #   Validate parameters
 #
+# Global check exclude, ignoring: is referenced but not assigned
+# shellcheck disable=SC2154
 
 param_check() {
     item_type="$1"

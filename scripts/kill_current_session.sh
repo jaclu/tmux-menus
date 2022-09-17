@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.3 2022-04-24
+#   Version: 1.2.4 2022-09-17
 #
 #   It is assumed that the calliing entity has recieved confirmation
 #   that this session shoule be killed if that is needed.
@@ -14,6 +14,8 @@
 #   first calls kill_session_confirm.sh where user can confirm
 #   if this should still happen, since it will terminate the tmux server.
 #
+# Global check exclude, ignoring: is referenced but not assigned
+# shellcheck disable=SC2154
 
 
 # shellcheck disable=SC1007

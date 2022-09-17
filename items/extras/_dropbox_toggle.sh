@@ -5,10 +5,13 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0.1 2022-06-30
+#   Version: 1.0.2 2022-09-17
 #
 #   toggle dropbox on/off
 #
+# Global check exclude
+# shellcheck disable=SC2154
+
 
 # shellcheck disable=SC1007
 CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)

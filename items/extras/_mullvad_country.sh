@@ -5,13 +5,13 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.1.6  2022-07-28
+#   Version: 1.1.7  2022-09-17
 #
 #   Select country for mullvad VPN
 #
 
-#  shellcheck disable=SC2034
-#  Directives for shellcheck directly after bang path are global
+# Global check exclude
+# shellcheck disable=SC2034,SC2154
 
 # shellcheck disable=SC1007
 CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)

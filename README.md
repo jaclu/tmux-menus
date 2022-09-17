@@ -19,7 +19,7 @@ Further suggestions are welcome.
 
 ## Purpose
 
-There are some basic popups per default
+Some basic popup menus come as default
 (See *Configuration* on how to turn them off)
 
 - `<prefix> <` displays some windows handling options
@@ -97,7 +97,7 @@ The default trigger is `<prefix> \`. Trigger is selected like this:
 set -g @menus_trigger 'F9'
 ```
 
-Please note that special keys, like the default backslash needs to be noted
+Please note that non standard keys, like the default backslash needs to be noted
 in a specific way in order not to confuse tmux.
 Either `'\'` or without quotes as `\\`. Quoting `'\\'` won't make sense
 for tmux and fail to bind any key.
@@ -141,7 +141,7 @@ set -g @menus_config_overrides 1
 
 This param can be either 0 (the default) or 1
 
-So far only menu location can be set.
+configurable items: menu location
 
 ### Default menus
 
@@ -155,7 +155,7 @@ unbind-key <
 unbind-key >
 ```
 
-## Clear indication that window is in synchronized panes mode
+## Making synchronized panes stand out
 
 Not directly related to this plugin, but since it does have an option to
 trigger sync mode, and having it on unintendedly can ruin your day,

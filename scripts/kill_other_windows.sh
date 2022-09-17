@@ -5,10 +5,14 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.1 2022-02-03
+#   Version: 1.2.2 2022-09-17
 #
 #   Kill all other windows
 #
+# Global check exclude, ignoring: is referenced but not assigned
+# shellcheck disable=SC2154
+
+
 
 window_list="$(IFS=" " $TMUX_BIN list-windows -F '#{window_id}')"
 current_window="$($TMUX_BIN display-message -p '#{window_id}')"

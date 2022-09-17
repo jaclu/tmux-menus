@@ -5,10 +5,13 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.2 2022-04-21
+#   Version: 1.2.3 2022-09-17
 #
 #   Updates global prefix, if prefix param is given
 #
+# Global check exclude, ignoring: is referenced but not assigned
+# shellcheck disable=SC2154
+
 
 # shellcheck disable=SC1007
 CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)

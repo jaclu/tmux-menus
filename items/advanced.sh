@@ -5,14 +5,13 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.10 2022-07-24
+#   Version: 1.3.11 2022-09-17
 #
 #   Advanced options
 #
 
-#  shellcheck disable=SC2034
-#  Directives for shellcheck directly after bang path are global
-
+# Global check exclude
+# shellcheck disable=SC2034,SC2154
 
 # shellcheck disable=SC1007
 CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)

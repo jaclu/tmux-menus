@@ -5,10 +5,13 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0.0 2022-04-21
+#   Version: 1.0.1 2022-09-17
 #
 #   Breaks pane to new window as long as there was more than one pane in current
 #
+# Global check exclude, ignoring: is referenced but not assigned
+# shellcheck disable=SC2154
+
 
 if [ "$($TMUX_BIN list-panes | wc -l)" -lt 2 ]; then
     $TMUX_BIN display-message "Only one pane!"

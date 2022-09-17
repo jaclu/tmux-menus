@@ -5,13 +5,13 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0.2 2022-09-14
+#   Version: 1.0.3 2022-09-17
 #
 #   Directly control DropBox
 #
 
-#  shellcheck disable=SC2034
-#  Directives for shellcheck directly after bang path are global
+# Global check exclude
+# shellcheck disable=SC2034,SC2154
 
 # shellcheck disable=SC1007
 CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
