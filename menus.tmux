@@ -62,7 +62,7 @@ log_it "use_notes=[$use_notes]"
 params=""
 if [ "$use_notes" -eq 1 ]; then
     #  shellcheck disable=SC2089,SC2154
-    params="$params -N 'plugin $plugin_name'"
+    params="$params -N plugin-$plugin_name"
 fi
 if [ "$without_prefix" -eq 1 ]; then
     params="$params -n"
@@ -72,4 +72,4 @@ else
 fi
 
 #  shellcheck disable=SC2086,SC2090
-$TMUX_BIN bind $params "$trigger_key" run-shell "$MENUS_DIR/main.sh"
+$TMUX_BIN bind $params $trigger_key run-shell "$MENUS_DIR/main.sh"
