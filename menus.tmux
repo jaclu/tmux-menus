@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.3  2022-06-08
+#   Version: 1.3.4  2022-06-17
 #
 
 #  shellcheck disable=SC1007
@@ -62,7 +62,7 @@ log_it "use_notes=[$use_notes]"
 params=""
 if [ "$use_notes" -eq 1 ]; then
     #  shellcheck disable=SC2089,SC2154
-    params="$params -N '$plugin_name'"
+    params="$params -N 'plugin $plugin_name'"
 fi
 if [ "$without_prefix" -eq 1 ]; then
     params="$params -n"
