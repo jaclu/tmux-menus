@@ -24,7 +24,7 @@ Some basic popup menus come as default
 
 - `<prefix> <` displays some windows handling options
 - `<prefix> >` displays some pane handling options
-- Right clicking on pane, status or status left.
+- Right click on pane, ALT-right click on pane, status or status left.
 
 Rather lacking and since they're written as hard to read
 one-liners, a more integrated approach with navigation and adaptability seemed
@@ -149,6 +149,7 @@ To turn off the limited default popup menus, add the following
 
 ```tmux
 unbind-key -n MouseDown3Pane
+unbind-key -n M-MouseDown3Pane
 unbind-key -n MouseDown3Status
 unbind-key -n MouseDown3StatusLeft
 unbind-key <
