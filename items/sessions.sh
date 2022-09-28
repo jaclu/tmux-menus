@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.7 2022-07-24
+#   Version: 1.3.8 2022-09-28
 #
 #   Handling Sessions
 #
@@ -34,7 +34,7 @@ new_ses="command-prompt -p 'Name of new session: ' 'new-session -s \"%%\"'"
 
 set --  "confirm-before -p"                                             \
         "'Are you sure you want to kill this session? (y/n)'"           \
-        "'run \"${SCRIPT_DIR}/kill_current_session.sh\"'"
+        "\"set -s detach-on-destroy no-detached \\; kill-session\""
 kill_current="$*"
 
 set --  "confirm-before -p"                                             \
