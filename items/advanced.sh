@@ -40,7 +40,9 @@ else
 
     new_mouse_status="on"
 fi
-current_prefix="$($TMUX_BIN show-option -g prefix | cut -d' ' -f2 | cut -d'-' -f2)"
+current_prefix="$($TMUX_BIN show-option -g prefix | "                       \
+                  "cut -d' ' -f2 | "                                        \
+                  "cut -d'-' -f2)"
 
 
 describe_prefix="command-prompt -k -p key 'list-keys -1N \"%%%\"'"
@@ -59,7 +61,7 @@ plugin_conf_prompt="$*"
 t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154,SC2140
-$TMUX_BIN display-menu                                                           \
+$TMUX_BIN display-menu                                                      \
     -T "#[align=centre] $menu_name "                                        \
     -x "$menu_location_x" -y "$menu_location_y"                             \
                                                                             \

@@ -30,17 +30,17 @@ this_menu="$CURRENT_DIR/windows.sh"
 reload="; run-shell \"$this_menu\""
 open_menu="run-shell '$CURRENT_DIR"
 
-set --  "command-prompt -I \"#W\"  -p \"New window name: \""  \
+set --  "command-prompt -I \"#W\"  -p \"New window name: \""            \
         "\"rename-window '%%'\""
 rename_window="$*"
 
-new_after="command-prompt -p \"Name of new window: \" \"new-window -a -n '%%'\""
+new_aft="command-prompt -p \"Name of new window: \" \"new-window -a -n '%%'\""
 new_at_end="command-prompt -p 'Name of new window: ' 'new-window -n \"%%\"'"
 disp_size="display-message \"Window size: #{window_width}x#{window_height}\""
 kill_current="confirm-before -p \"kill-window #W? (y/n)\" kill-window"
 
-set --  "confirm-before -p"                                         \
-        "'Are you sure you want to kill all other windows? (y/n)'"  \
+set --  "confirm-before -p"                                             \
+        "'Are you sure you want to kill all other windows? (y/n)'"      \
         "'run \"${SCRIPT_DIR}/kill_other_windows.sh\"'"
 kill_other="$*"
 
@@ -48,7 +48,7 @@ kill_other="$*"
 t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
-$TMUX_BIN display-menu                                                       \
+$TMUX_BIN display-menu                                                  \
     -T "#[align=centre] $menu_name   "                                  \
     -x "$menu_location_x" -y "$menu_location_y"                         \
                                                                         \
@@ -56,7 +56,7 @@ $TMUX_BIN display-menu                                                       \
     "Move window  -->"   M     "$open_menu/window_move.sh'"             \
     ""                                                                  \
     "<P> Rename window"               ,  "$rename_window"               \
-    "    New window after current"    a  "$new_after"                   \
+    "    New window after current"    a  "$new_aft"                     \
     "<P> New window at the end"       c  "$new_at_end"                  \
     "    Display Window size"         s  "$disp_size"                   \
     ""                                                                  \

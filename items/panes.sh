@@ -36,11 +36,11 @@ pane_size="display-message 'Pane: #P size: #{pane_width}x#{pane_height}'"
 #  adding -e to capture-pane saves escape sequences, but then less/most fails
 #  to display, cat/bat history-file will display the included colors correctly.
 #
-set --  "command-prompt -p 'Save to (no escapes):' -I '~/tmux.history'"  \
+set --  "command-prompt -p 'Save to (no escapes):' -I '~/tmux.history'"     \
         "'capture-pane -S - -E - ; save-buffer %1 ; delete-buffer'"
 hist_no_esc="$*"
 
-set --  "command-prompt -p 'Save to (with escapes):' -I '~/tmux.history'"  \
+set --  "command-prompt -p 'Save to (with escapes):' -I '~/tmux.history'"   \
         "'capture-pane -S - -E - -e ; save-buffer %1 ; delete-buffer'"
 hist_w_esc="$*"
 
@@ -57,7 +57,7 @@ kill_others="$kill_others all other panes? (y/n)' 'kill-pane -a'"
 t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
-$TMUX_BIN display-menu                                                           \
+$TMUX_BIN display-menu                                                      \
     -T "#[align=centre] Handling Pane "                                     \
     -x "$menu_location_x" -y "$menu_location_y"                             \
                                                                             \

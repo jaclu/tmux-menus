@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.2 2022-06-07
+#   Version: 1.3.4 2022-06-07
 #
 #   Help about splitting the view
 #
@@ -39,7 +39,7 @@ t_start="$(date +'%s')"
 #        in order to actually print one, figure out what's going on
 #
 # shellcheck disable=SC2154
-$TMUX_BIN display-menu                                               \
+$TMUX_BIN display-menu                                          \
     -T "#[align=centre] $menu_name   "                          \
     -x "$menu_location_x" -y "$menu_location_y"                 \
                                                                 \

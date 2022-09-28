@@ -16,5 +16,6 @@
 if [ "$($TMUX_BIN list-panes | wc -l)" -lt 2 ]; then
     $TMUX_BIN display-message "Only one pane!"
 else
-    $TMUX_BIN command-prompt -I "#W"  -p "New window name: " "break-pane -n '%%'"
+    $TMUX_BIN command-prompt -I "#W"  -p "New window name: "   \
+        "break-pane -n '%%'"
 fi

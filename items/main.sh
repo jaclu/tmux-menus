@@ -35,14 +35,15 @@ open_menu="run-shell '$CURRENT_DIR"
 #  Thus I can't use spaces in the below display statements
 #
 set --  "command-prompt -I '~/.tmux.conf' -p 'Source file:'"            \
-        "'run-shell \"$TMUX_BIN source-file %% && $TMUX_BIN display Sourced_it!"  \
-        "|| $TMUX_BIN display File_could_not_be_sourced-not_found?  \"'"
+        "'run-shell \"$TMUX_BIN source-file %% && $TMUX_BIN display "   \
+        "Sourced_it! || $TMUX_BIN display "                             \
+        "File_could_not_be_sourced-not_found?  \"'"
 source_it="$*"
 
 t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
-$TMUX_BIN display-menu                                                       \
+$TMUX_BIN display-menu                                                  \
     -T "#[align=centre] $menu_name "                                    \
     -x "$menu_location_x" -y "$menu_location_y"                         \
                                                                         \

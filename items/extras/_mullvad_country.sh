@@ -131,7 +131,8 @@ menu_items="$menu_items $nav"
 t_start="$(date +'%s')"
 
 #  shellcheck disable=SC2086,SC2090,SC2154
-echo $menu_items | xargs $TMUX_BIN display-menu -T "#[align=centre] $menu_name "  \
+echo $menu_items | xargs $TMUX_BIN display-menu      \
+    -T "#[align=centre] $menu_name "                 \
     -x $menu_location_x -y $menu_location_y
 
 ensure_menu_fits_on_screen
