@@ -242,4 +242,4 @@ The best way to send feedback is to file an issue at
 
 #### License
 
-[MIT](LICENSE.md)
+[MIT](LICENSE)
