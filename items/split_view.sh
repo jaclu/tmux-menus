@@ -37,7 +37,7 @@ $TMUX_BIN display-menu                                                      \
     -T "#[align=centre] $menu_name "                                        \
     -x "$menu_location_x" -y "$menu_location_y"                             \
                                                                             \
-    "Back to Main menu"  Left  "$open_menu/main.sh'"                        \
+    "Back to Main menu  <--"  Left  "$open_menu/main.sh'"                   \
     "-#[align=centre,nodim]----  Split Pane  ----" "" ""                    \
     "    Left"    l  "split-window -hb  -c '#{pane_current_path}' $reload"  \
     "<P> Right"   %  "split-window -h   -c '#{pane_current_path}' $reload"  \

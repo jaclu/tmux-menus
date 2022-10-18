@@ -52,8 +52,8 @@ $TMUX_BIN display-menu                                                  \
     -T "#[align=centre] $menu_name   "                                  \
     -x "$menu_location_x" -y "$menu_location_y"                         \
                                                                         \
-    "Back to Main menu"  Left  "$open_menu/main.sh'"                    \
-    "Move window  -->"   M     "$open_menu/window_move.sh'"             \
+    "Back to Main menu  <--"  Left  "$open_menu/main.sh'"               \
+    "Move window        -->"   M     "$open_menu/window_move.sh'"       \
     ""                                                                  \
     "<P> Rename window"               ,  "$rename_window"               \
     "    New window after current"    a  "$new_aft"                     \
