@@ -5,8 +5,6 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.6  2022-06-08
-#
 #   Move Window
 #
 
@@ -45,8 +43,8 @@ $TMUX_BIN display-menu                                                      \
     -T "#[align=centre] $menu_name "                                        \
     -x "$menu_location_x" -y "$menu_location_y"                             \
                                                                             \
-    "Back to Main menu        ^--"        Home  "$open_menu/main.sh'"                  \
-    "Back to Handling Window  <--"  Left  "$open_menu/windows.sh'"               \
+    "Back to Main menu        <--"        Home  "$open_menu/main.sh'"       \
+    "Back to Handling Window  <--"  Left  "$open_menu/windows.sh'"          \
     ""                                                                      \
     "Move window to other location"      m  "$to_other"                     \
     "#{?pane_marked_set,-#[nodim],-}Swap current window with window"        \

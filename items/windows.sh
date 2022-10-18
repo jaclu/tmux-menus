@@ -5,8 +5,6 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.7 2022-06-08
-#
 #   Handling Window
 #
 
