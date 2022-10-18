@@ -21,7 +21,7 @@ Some basic popup menus come as default
 - `<prefix> >` displays some pane handling options
 - Right click on pane, ALT-right click on pane, status or status left.
 
-Rather lacking and since they're written as hard to read one-liners, 
+Rather lacking and since they're written as hard to read one-liners,
 a more integrated approach with navigation and adaptability seemed
 the way to go, also covering more than panes and windows.
 
