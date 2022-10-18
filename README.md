@@ -8,14 +8,9 @@ experienced users, than to add more for newbies.
 
 ## Recent changes
 
+- Added back arrows to previous menu / main (where applicable)
 - Extras - added Dropbox. It has been tested to work on Linux.
 - Added to Extras/Mullvad VPN - display status
-- Changed shortcut to kill session/server from k into x in Advanced and
-Sessions, to ensure vi style navigation keys don't select anything
-- Extras - Configure other software, supported: Spotify, Mullvad VPN
-Further suggestions are welcome.
-- Layouts - listing, but not using defaults that aren't usable in popup menus
-- Fixed incorrect default in Advanced
 
 ## Purpose
 
