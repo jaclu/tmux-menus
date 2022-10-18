@@ -5,8 +5,6 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0.5 2022-09-17
-#
 #   Directly control Spotify
 #
 
