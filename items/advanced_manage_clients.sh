@@ -37,8 +37,8 @@ $TMUX_BIN display-menu                                                      \
     -T "#[align=centre] $menu_name "                                        \
     -x "$menu_location_x" -y "$menu_location_y"                             \
                                                                             \
-    "Back to Main menu"        Home  "$open_menu/main.sh'"                  \
-    "Back to Advanced options" Left  "$open_menu/advanced.sh'"              \
+    "Back to Main menu         <=="  Home  "$open_menu/main.sh'"            \
+    "Back to Advanced options  <--"  Left  "$open_menu/advanced.sh'"        \
     "-#[align=centre,nodim]-----------   Commands   -----------"    "" ""   \
     "-Enter Choose selected client"                                 "" ""   \
     "-Up    Select previous client"                                 "" ""   \

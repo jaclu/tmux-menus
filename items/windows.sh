@@ -7,7 +7,6 @@
 #
 #   Handling Window
 #
-
 #  shellcheck disable=SC2034
 #  Directives for shellcheck directly after bang path are global
 

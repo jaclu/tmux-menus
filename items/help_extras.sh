@@ -22,8 +22,8 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 . "$SCRIPT_DIR/utils.sh"
 
 menu_name="Help Extras"
-req_win_width=40
-req_win_height=16
+req_win_width=37
+req_win_height=8
 
 
 previous_menu="$1"
@@ -36,15 +36,15 @@ fi
 t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
-$TMUX_BIN display-menu                                          \
-    -T "#[align=centre] $menu_name "                            \
-    -x "$menu_location_x" -y "$menu_location_y"                 \
-                                                                \
-    "Back to Previous menu"  Left  "run-shell $previous_menu"   \
-    ""                                                          \
-    "-Extras are menus manipulating" "" ""                      \
-    "-other software."     "" ""                                \
-    "-If a specific app is not found," "" ""                    \
+$TMUX_BIN display-menu                                              \
+    -T "#[align=centre] $menu_name "                                \
+    -x "$menu_location_x" -y "$menu_location_y"                     \
+                                                                    \
+    "Back to Previous menu  <--"  Left  "run-shell $previous_menu"  \
+    ""                                                              \
+    "-Extras are menus manipulating" "" ""                          \
+    "-other software."     "" ""                                    \
+    "-If a specific app is not found," "" ""                        \
     "-that entry is gryed out." "" ""
 
 ensure_menu_fits_on_screen

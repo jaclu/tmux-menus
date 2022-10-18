@@ -21,7 +21,7 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 . "$SCRIPT_DIR/utils.sh"
 
 menu_name="Resize Pane"
-req_win_width=33
+req_win_width=38
 req_win_height=18
 
 
@@ -39,8 +39,8 @@ $TMUX_BIN display-menu                                              \
     -T "#[align=centre] $menu_name "                                \
     -x "$menu_location_x" -y "$menu_location_y"                     \
                                                                     \
-    "Back to Main menu"      Home  "$open_menu/main.sh'"            \
-    "Back to Handling Pane"  Left  "$open_menu/panes.sh'"           \
+    "Back to Main menu      <=="  Home  "$open_menu/main.sh'"       \
+    "Back to Handling Pane  <--"  Left  "$open_menu/panes.sh'"      \
     ""                                                              \
     "Specify width & height"  s  "$set_size"                        \
     "-#[align=centre,nodim]-------  resize by 1  ------" "" ""      \

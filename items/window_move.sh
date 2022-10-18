@@ -7,7 +7,6 @@
 #
 #   Move Window
 #
-
 #  shellcheck disable=SC2034
 #  Directives for shellcheck directly after bang path are global
 
@@ -43,7 +42,7 @@ $TMUX_BIN display-menu                                                      \
     -T "#[align=centre] $menu_name "                                        \
     -x "$menu_location_x" -y "$menu_location_y"                             \
                                                                             \
-    "Back to Main menu        <--"        Home  "$open_menu/main.sh'"       \
+    "Back to Main menu        <=="        Home  "$open_menu/main.sh'"       \
     "Back to Handling Window  <--"  Left  "$open_menu/windows.sh'"          \
     ""                                                                      \
     "Move window to other location"      m  "$to_other"                     \
