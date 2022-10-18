@@ -5,8 +5,6 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0.8  2022-06-08
-#
 #   Live configuration. So far only menu location is available
 #
 
@@ -21,7 +19,7 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 . "$SCRIPT_DIR/utils.sh"
 
 menu_name="Configure Menu Location"
-req_win_width=32
+req_win_width=37
 req_win_height=13
 
 
@@ -51,7 +49,7 @@ $TMUX_BIN display-menu                                                 \
     -T "#[align=centre] $menu_name "                                   \
     -x "$menu_location_x" -y "$menu_location_y"                        \
                                                                        \
-    "Back to Previous menu"  Left  "$open_menu/advanced.sh'"           \
+    "Back to Previous menu  <--"  Left  "$open_menu/advanced.sh'"      \
     ""                                                                 \
     "Center"                 c     "$change_location  C  $reload'"     \
     "win Right edge"         r     "$change_location  R  $reload'"     \

@@ -5,8 +5,6 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.5 2022-06-07
-#
 #   Split display
 #
 
@@ -21,7 +19,7 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 . "$SCRIPT_DIR/utils.sh"
 
 menu_name="Split view"
-req_win_width=28
+req_win_width=33
 req_win_height=15
 
 
@@ -37,7 +35,7 @@ $TMUX_BIN display-menu                                                      \
     -T "#[align=centre] $menu_name "                                        \
     -x "$menu_location_x" -y "$menu_location_y"                             \
                                                                             \
-    "Back to Main menu"  Left  "$open_menu/main.sh'"                        \
+    "Back to Main menu  <--"  Left  "$open_menu/main.sh'"                   \
     "-#[align=centre,nodim]----  Split Pane  ----" "" ""                    \
     "    Left"    l  "split-window -hb  -c '#{pane_current_path}' $reload"  \
     "<P> Right"   %  "split-window -h   -c '#{pane_current_path}' $reload"  \

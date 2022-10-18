@@ -5,8 +5,6 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0.2 2022-09-14
-#
 #   Handling pane
 #
 
@@ -21,8 +19,8 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 . "$SCRIPT_DIR/utils.sh"
 
 menu_name="Handling Pane"
-req_win_width=38
-req_win_height=23
+req_win_width=33
+req_win_height=9
 
 
 this_menu="$CURRENT_DIR/extras.sh"
@@ -52,7 +50,7 @@ t_start="$(date +'%s')"
 $TMUX_BIN display-menu                                                  \
     -T "#[align=centre] Extras "                                        \
     -x "$menu_location_x" -y "$menu_location_y"                         \
-    "Back to Main menu"  Left  "$open_menu/main.sh'"                    \
+    "Back to Main menu  <--"  Left  "$open_menu/main.sh'"               \
     ""                                                                  \
     "$(is_avalable dropbox Dropbox)  -->"        D                      \
             "$open_extra/dropbox.sh'"                                   \

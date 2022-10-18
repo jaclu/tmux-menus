@@ -5,8 +5,6 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.8 2022-06-08
-#
 #   Handling pane
 #
 
@@ -61,10 +59,10 @@ $TMUX_BIN display-menu                                                      \
     -T "#[align=centre] Handling Pane "                                     \
     -x "$menu_location_x" -y "$menu_location_y"                             \
                                                                             \
-    "Back to Main menu"   Left  "$open_menu/main.sh'"                       \
-    "Move pane      -->"  M     "$open_menu/pane_move.sh'"                  \
-    "Resize pane    -->"  R     "$open_menu/pane_resize.sh'"                \
-    "Paste buffers  -->"  B     "$open_menu/pane_buffers.sh'"               \
+    "Back to Main menu  <--"  Left  "$open_menu/main.sh'"                   \
+    "Move pane          -->"  M     "$open_menu/pane_move.sh'"              \
+    "Resize pane        -->"  R     "$open_menu/pane_resize.sh'"            \
+    "Paste buffers      -->"  B     "$open_menu/pane_buffers.sh'"           \
     ""                                                                      \
     "    Set Title"                  t  "$title"                            \
     "<P> Zoom pane toggle"           z  "resize-pane -Z $reload"            \

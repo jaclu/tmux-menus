@@ -5,11 +5,8 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.7 2022-06-08
-#
 #   Handling Window
 #
-
 #  shellcheck disable=SC2034
 #  Directives for shellcheck directly after bang path are global
 
@@ -52,8 +49,8 @@ $TMUX_BIN display-menu                                                  \
     -T "#[align=centre] $menu_name   "                                  \
     -x "$menu_location_x" -y "$menu_location_y"                         \
                                                                         \
-    "Back to Main menu"  Left  "$open_menu/main.sh'"                    \
-    "Move window  -->"   M     "$open_menu/window_move.sh'"             \
+    "Back to Main menu  <--"  Left  "$open_menu/main.sh'"               \
+    "Move window        -->"   M     "$open_menu/window_move.sh'"       \
     ""                                                                  \
     "<P> Rename window"               ,  "$rename_window"               \
     "    New window after current"    a  "$new_aft"                     \

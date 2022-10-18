@@ -5,8 +5,6 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.5 2022-06-08
-#
 #   Move a pane
 #
 
@@ -47,8 +45,8 @@ $TMUX_BIN display-menu                                                  \
     -T "#[align=centre] $menu_name "                                    \
     -x "$menu_location_x" -y "$menu_location_y"                         \
                                                                         \
-    "Back to Main menu"      Home  "$open_menu/main.sh'"                \
-    "Back to Handling Pane"  Left  "$open_menu/panes.sh'"               \
+    "Back to Main menu      <=="  Home  "$open_menu/main.sh'"           \
+    "Back to Handling Pane  <--"  Left  "$open_menu/panes.sh'"          \
     ""                                                                  \
     "    Move to other win/ses        "  m  "$mv_2_other"               \
     "#{?pane_marked_set,,-}    Swap current pane with marked"           \

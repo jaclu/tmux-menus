@@ -5,8 +5,6 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0.5 2022-09-17
-#
 #   Directly control Spotify
 #
 
@@ -22,7 +20,7 @@ SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 . "$SCRIPT_DIR/utils.sh"
 
 menu_name="Spotify"
-req_win_width=28
+req_win_width=33
 req_win_height=13
 
 
@@ -46,8 +44,8 @@ $TMUX_BIN display-menu                                              \
     -T "#[align=centre] $menu_name "                                \
     -x "$menu_location_x" -y "$menu_location_y"                     \
                                                                     \
-    "Back to Main menu"  Home  "$open_menu/main.sh'"                \
-    "Back to Extras"     Left  "$open_menu/extras.sh'"              \
+    "Back to Main menu  <=="  Home  "$open_menu/main.sh'"           \
+    "Back to Extras     <--"  Left  "$open_menu/extras.sh'"         \
     ""                                                              \
     "Pause/Resume"       " "   "$prefix pause     $suffix"          \
     "Prev"               p     "$prefix prev      $suffix"          \

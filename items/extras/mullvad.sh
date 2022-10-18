@@ -5,8 +5,6 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.1.4 2022-09-17
-#
 #   Configure mullvad VPN
 #
 
@@ -22,7 +20,7 @@ SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 . "$SCRIPT_DIR/utils.sh"
 
 menu_name="Mullvad VPN"
-req_win_width=28
+req_win_width=33
 req_win_height=10
 
 
@@ -75,8 +73,8 @@ $TMUX_BIN display-menu                                                      \
     -T "#[align=centre] $menu_name "                                        \
     -x "$menu_location_x" -y "$menu_location_y"                             \
                                                                             \
-    "Back to Main menu"  Home  "$open_menu/main.sh'"                        \
-    "Back to Extras"     Left  "$open_menu/extras.sh'"                      \
+    "Back to Main menu  <=="  Home  "$open_menu/main.sh'"                   \
+    "Back to Extras     <--"  Left  "$open_menu/extras.sh'"                 \
     ""                                                                      \
     "Status"                  s  "display \"$(mullvad status)\" ;           \
                                     run-shell '$this_menu'"                 \

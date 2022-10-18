@@ -5,8 +5,6 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.4 2022-06-07
-#
 #   Help about splitting the view
 #
 
@@ -21,7 +19,7 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 . "$SCRIPT_DIR/utils.sh"
 
 menu_name="Help, Split view"
-req_win_width=32
+req_win_width=37
 req_win_height=10
 
 
@@ -39,17 +37,17 @@ t_start="$(date +'%s')"
 #        in order to actually print one, figure out what's going on
 #
 # shellcheck disable=SC2154
-$TMUX_BIN display-menu                                          \
-    -T "#[align=centre] $menu_name   "                          \
-    -x "$menu_location_x" -y "$menu_location_y"                 \
-                                                                \
-    "Back to Previous menu"  Left  "run-shell $previous_menu"   \
-    ""                                                          \
-    "-Creating a new pane by"                           "" ""   \
-    "-splitting current Pane or"                        "" ""   \
-    "-Window."                                          "" ""   \
-    "- " "" ""                                                  \
-    "-Window refers to the entire"                      "" ""   \
+$TMUX_BIN display-menu                                              \
+    -T "#[align=centre] $menu_name   "                              \
+    -x "$menu_location_x" -y "$menu_location_y"                     \
+                                                                    \
+    "Back to Previous menu  <--"  Left  "run-shell $previous_menu"  \
+    ""                                                              \
+    "-Creating a new pane by"                           "" ""       \
+    "-splitting current Pane or"                        "" ""       \
+    "-Window."                                          "" ""       \
+    "- " "" ""                                                      \
+    "-Window refers to the entire"                      "" ""       \
     "-display."                                         "" ""
 
 ensure_menu_fits_on_screen

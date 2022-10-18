@@ -5,8 +5,6 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.8 2022-09-28
-#
 #   Handling Sessions
 #
 
@@ -50,7 +48,7 @@ $TMUX_BIN display-menu                                                  \
     -T "#[align=centre] $menu_name "                                    \
     -x "$menu_location_x" -y "$menu_location_y"                         \
                                                                         \
-    "Back to Main menu"  Left  "$open_menu/main.sh'"                    \
+    "Back to Main menu  <--"  Left  "$open_menu/main.sh'"               \
     ""                                                                  \
     "<P> Rename this session"          \$  "$rename"                    \
     "    New session"                   n  "$new_ses"                   \
