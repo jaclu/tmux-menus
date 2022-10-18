@@ -5,8 +5,6 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0.2  2022-06-07
-#
 #   Help regarding panes menu
 #
 

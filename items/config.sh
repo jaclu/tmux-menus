@@ -5,8 +5,6 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.0.8  2022-06-08
-#
 #   Live configuration. So far only menu location is available
 #
 

@@ -5,8 +5,6 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.3.4  2022-06-07
-#
 #   Help about move and link window
 #
 
