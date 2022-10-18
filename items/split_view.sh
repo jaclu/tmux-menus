@@ -21,7 +21,7 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 . "$SCRIPT_DIR/utils.sh"
 
 menu_name="Split view"
-req_win_width=28
+req_win_width=33
 req_win_height=15
 
 

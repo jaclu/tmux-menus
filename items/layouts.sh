@@ -21,7 +21,7 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 . "$SCRIPT_DIR/utils.sh"
 
 menu_name="Layouts"
-req_win_width=31
+req_win_width=33
 req_win_height=16
 
 
