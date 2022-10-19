@@ -41,7 +41,7 @@ $TMUX_BIN display-menu                                              \
     "Back to Previous menu  <--"  Left  "run-shell $previous_menu"  \
     ""                                                              \
     "- -->  Indicates this will open a"                 "" ""       \
-    "-      new menu."                                  "" ""       \
+    "- <--  new menu."                                  "" ""       \
     ""                                                              \
     "-<P> Indicates this key is a default"              "" ""       \
     "-    key, so unless it has been"                   "" ""       \
