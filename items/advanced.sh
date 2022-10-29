@@ -35,19 +35,14 @@ current_mouse_status="$($TMUX_BIN show-option -g mouse | cut -d' ' -f2)"
 if [ "$current_mouse_status" = "on" ]; then
     new_mouse_status="off"
 else
-
     new_mouse_status="on"
 fi
-current_prefix="$($TMUX_BIN show-option -g prefix | "                       \
-                  "cut -d' ' -f2 | "                                        \
-                  "cut -d'-' -f2)"
-
-
+current_prefix="$($TMUX_BIN show-option -g prefix | cut -d'-' -f2)"
 describe_prefix="command-prompt -k -p key 'list-keys -1N \"%%%\"'"
 toggle_mouse="set-option -g mouse $new_mouse_status"
 kill_server="confirm-before -p 'kill tmux server on #H ? (y/n)' kill-server"
 
-set --  "command-prompt -1 -p prefix"                                       \
+set --  "command-prompt -1 -p \"prefix (will take effect imeditally)\""     \
         "'run \"$SCRIPT_DIR/change_prefix.sh %%\"'"
 change_prefix="$*"
 
