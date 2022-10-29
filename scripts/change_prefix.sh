@@ -19,10 +19,15 @@ CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 # shellcheck disable=SC1091
 . "$CURRENT_DIR/utils.sh"
 
-prefix_char="$1"
 
+#
+#  Since this is a critical param, make extra sure we have valid input
+#
+prefix_char="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
 if [ -z "$prefix_char" ]; then
     error_msg "change_prefix.sh No prefix given!" 1
+elif [ "$(printf $prefix_char | wc -m)" -ne 1 ]; then
+    error_msg "Must be exactly one char! Was:[$prefix_char]" 1
 fi
 
 
