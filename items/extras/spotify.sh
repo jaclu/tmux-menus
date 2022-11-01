@@ -36,24 +36,40 @@ if [ -z "$(command -v spotify)" ]; then
     exit 1
 fi
 
+title_label="Title - now playing"
+title_key="t"
+if [ "$(uname)" != "Darwin" ]; then
+    # Title check is a MacOS script
+    title_label="-$title_label"
+    title_key=""
+fi
 
 t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
-$TMUX_BIN display-menu                                              \
-    -T "#[align=centre] $menu_name "                                \
-    -x "$menu_location_x" -y "$menu_location_y"                     \
-                                                                    \
-    "Back to Main menu  <=="  Home  "$open_menu/main.sh'"           \
-    "Back to Extras     <--"  Left  "$open_menu/extras.sh'"         \
-    ""                                                              \
-    "Pause/Resume"       " "   "$prefix pause     $suffix"          \
-    "Prev"               p     "$prefix prev      $suffix"          \
-    "Next"               n     "$prefix next      $suffix"          \
-    "Replay"             r     "$prefix replay    $suffix"          \
-    "vol Up"             u     "$prefix vol up    $suffix"          \
-    "vol Down"           d     "$prefix vol down  $suffix"          \
-    ""                                                              \
+$TMUX_BIN display-menu                                                  \
+    -T "#[align=centre] $menu_name "                                    \
+    -x "$menu_location_x" -y "$menu_location_y"                         \
+                                                                        \
+    "Back to Main menu  <=="  Home  "$open_menu/main.sh'"               \
+    "Back to Extras     <--"  Left  "$open_menu/extras.sh'"             \
+    ""                                                                  \
+    "$title_label"      "$title_key"                                    \
+                                                                        \
+        "display \"$($SCRIPT_DIR/spotify-now-playing)\" ;               \
+        run-shell \"$this_menu\""                                       \
+                                                                        \
+    "Pause/Resume"          " "  "$prefix pause           $suffix"      \
+    "Next"                   n   "$prefix next            $suffix"      \
+    "Prev"                   p   "$prefix prev            $suffix"      \
+    "Replay"                 r   "$prefix replay          $suffix"      \
+    "Copy URI to clipboard"  i   "$prefix share uri       $suffix"      \
+    "Copy URL to clipboard"  l   "$prefix share url       $suffix"      \
+    "Shuffle - toggle"       s   "$prefix toggle shuffle  $suffix"      \
+    "Repeat  - toggle"       R   "$prefix toggle repeat   $suffix"      \
+    "vol Up"                 u   "$prefix vol up          $suffix"      \
+    "vol Down"               d   "$prefix vol down        $suffix"      \
+    ""                                                                  \
     "Help  -->"  H  "$open_menu/help.sh $CURRENT_DIR/spotify.sh'"
 
 
