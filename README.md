@@ -61,7 +61,7 @@ Default is `<prefix> \` see Configuration below for how to change it.
   <td> 3.2 -<td>Fully compatible</td>
 </tr>
 <tr>
-  <td>3.0 ⁠ 3.1c<td>Menu centering not supported, it's displayed top left
+  <td>3.0 ⁠- 3.1c<td>Menu centering not supported, it's displayed top left
   if C is menu location. Some actions might not work depending on version.
   There should be a notification message about "unknown command" in such cases.
 </td></tr></table>
