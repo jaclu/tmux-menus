@@ -54,6 +54,18 @@ Default is `<prefix> \` see Configuration below for how to change it.
 ![Advanced](https://user-images.githubusercontent.com/5046648/172018080-ad23ff4a-57d6-46c5-ab73-deed32b9914e.png)
 ![Session](https://user-images.githubusercontent.com/5046648/167306514-b02f26a3-5589-4843-8b66-0e4b710c7a20.png)
 
+## Compatibility
+
+<table><tr><th>Version<th>Notice</th></tr>
+<tr>
+  <td> 3.2 -<td>Fully compatible</td>
+</tr>
+<tr>
+  <td>3.0 ⁠ 3.1c<td>Menu centering not supported, it's displayed top left
+  if C is menu location. Some actions might not work depending on version.
+  There should be a notification message about "unknown command" in such cases.
+</td></tr></table>
+
 ## Install
 
 ### Installation with [Tmux Plugin Manager](https://github.com/tmux-plugins/tpm) (recommended)
@@ -210,18 +222,6 @@ If you want to go back to your installed version for now, either reload
 configs, or run `~/.tmux/plugins/tmux-menus/menus.tmux` to rebind those
 menus to the trigger. Regardless the installed version is activated
 next time you start tmux automatically.
-
-## Compatibility
-
-<table><tr><th>Version<th>Notice</th></tr>
-<tr>
-  <td> 3.2 -<td>Fully compatible</td>
-</tr>
-<tr>
-  <td>3.0 ⁠ 3.1c<td>Menu centering not supported, it's displayed top left
-  if C is menu location. Some actions might not work depending on version.
-  There should be a notification message about "unknown command" in such cases.
-</td></tr></table>
 
 ## Contributing
 
