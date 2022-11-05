@@ -45,7 +45,7 @@ config_file="/tmp/tmux-menus.conf"
 #
 #  If available, is expected to point to conf file for this environment
 #
-[ -z "$TMUX_CONF" ] && TMUX_CONF="~/.tmux.conf"
+[ -z "$TMUX_CONF" ] && TMUX_CONF="$HOME/.tmux.conf"
 
 
 #
