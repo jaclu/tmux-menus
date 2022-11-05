@@ -19,7 +19,7 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 . "$SCRIPT_DIR/utils.sh"
 
 menu_name="Resize Pane"
-req_win_width=38
+req_win_width=37
 req_win_height=18
 
 
