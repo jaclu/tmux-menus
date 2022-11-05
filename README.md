@@ -8,7 +8,7 @@ experienced users, than to add more for newbies.
 
 ## Recent changes
 
-- Added Plugins inventory - (main menu) Lists defined plugins and items not supposed to be in plugins dir
+- Added Plugins inventory - (main menu) Lists defined plugins, install status and items not supposed to be in plugins dir
 - Added back arrows to previous menu / main (where applicable)
 - Extras - added Dropbox. It has been tested to work on Linux.
 - Added to Extras/Mullvad VPN - display status
