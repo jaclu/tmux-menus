@@ -48,12 +48,12 @@ Default is `<prefix> \` see Configuration below for how to change it.
 
 ## Screenshots
 
-![main](https://user-images.githubusercontent.com/5046648/167640620-26b4b7da-e3fc-4270-bdc8-431555744d3b.png)
-![Help Summary](https://user-images.githubusercontent.com/5046648/167317979-63219b33-f9c0-4c80-95fc-2c7a9e4edcdb.png)
-![Pane](https://user-images.githubusercontent.com/5046648/167306468-a3711e0f-c8b8-4b02-82e2-b464c77d7f92.png)
-![Window](https://user-images.githubusercontent.com/5046648/167306488-42df3119-6458-42c7-90a1-382e47c5420c.png)
-![Advanced](https://user-images.githubusercontent.com/5046648/172018080-ad23ff4a-57d6-46c5-ab73-deed32b9914e.png)
-![Session](https://user-images.githubusercontent.com/5046648/167306514-b02f26a3-5589-4843-8b66-0e4b710c7a20.png)
+![main](https://user-images.githubusercontent.com/5046648/200143659-44995aeb-2c4a-45b4-b89c-bab12d164abd.png)
+![Help Summary](https://user-images.githubusercontent.com/5046648/200143733-e6205e82-f92b-4019-adf7-db7eb222085e.png)
+![Pane](https://user-images.githubusercontent.com/5046648/200143811-d4e3b254-310e-4207-82b6-a7bd527fcb47.png)
+![Window](https://user-images.githubusercontent.com/5046648/200143848-eb7c0c3e-837c-4393-b761-d8424eaa782e.png)
+![Advanced](https://user-images.githubusercontent.com/5046648/200143879-4973d4d2-2c74-47a2-9110-d87b5765707a.png)
+![Session](https://user-images.githubusercontent.com/5046648/200143930-e27f063f-c054-47d5-9640-502f4127cb14.png)
 
 ## Compatibility
 
