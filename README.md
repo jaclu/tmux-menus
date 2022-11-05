@@ -49,11 +49,11 @@ Default is `<prefix> \` see Configuration below for how to change it.
 ## Screenshots
 
 ![main](https://user-images.githubusercontent.com/5046648/200143659-44995aeb-2c4a-45b4-b89c-bab12d164abd.png)
-![Help Summary](https://user-images.githubusercontent.com/5046648/200143733-e6205e82-f92b-4019-adf7-db7eb222085e.png)
 ![Pane](https://user-images.githubusercontent.com/5046648/200143811-d4e3b254-310e-4207-82b6-a7bd527fcb47.png)
 ![Window](https://user-images.githubusercontent.com/5046648/200143848-eb7c0c3e-837c-4393-b761-d8424eaa782e.png)
 ![Advanced](https://user-images.githubusercontent.com/5046648/200143879-4973d4d2-2c74-47a2-9110-d87b5765707a.png)
 ![Session](https://user-images.githubusercontent.com/5046648/200143930-e27f063f-c054-47d5-9640-502f4127cb14.png)
+![Help Summary](https://user-images.githubusercontent.com/5046648/200143733-e6205e82-f92b-4019-adf7-db7eb222085e.png)
 
 ## Compatibility
 
