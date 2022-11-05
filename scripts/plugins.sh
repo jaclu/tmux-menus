@@ -6,6 +6,7 @@ CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 # shellcheck disable=SC1091
 . "$CURRENT_DIR/utils.sh"
 
+#  shellcheck disable=SC2154
 if [[ "$TMUX_CONF" = "$HOME/.tmux.conf" ]]; then
     plugins_dir="$HOME/.tmux/plugins"
 else
@@ -16,9 +17,10 @@ echo "Defined plugins:"
 echo
 
 plugin_missing=false
-mapfile -t plugins < <(grep "set -g @plugin" "$TMUX_CONF" | awk '{ print $4 }' | sed s/\"//g)
+#  shellcheck disable=SC2207
+plugins=( $(grep "set -g @plugin" "$TMUX_CONF" | awk '{ print $4 }' | sed s/\"//g) )
 for plugin in "${plugins[@]}" ; do
-    name="$(echo $plugin | cut -d/ -f2)"
+    name="$(echo "$plugin" | cut -d/ -f2)"
     if [[ -d "$plugins_dir/$name" ]]; then
         echo "    $plugin"
     else
