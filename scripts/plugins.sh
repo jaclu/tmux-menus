@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC1007
+CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 
+# shellcheck disable=SC1091
+. "$CURRENT_DIR/utils.sh"
 
-if [[ "$TMUX_CONF" = "~/.tmux.conf" ]]; then
-    plugins_dir="~/.tmux/plugins"
+if [[ "$TMUX_CONF" = "$HOME/.tmux.conf" ]]; then
+    plugins_dir="$HOME/.tmux/plugins"
 else
     plugins_dir="$(dirname "$TMUX_CONF")/plugins"
 fi
