@@ -21,7 +21,7 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
 menu_name="Main menu"
 req_win_width=40
-req_win_height=17
+req_win_height=20
 
 
 search_all="command-prompt -p \"Search for:\" \"find-window -CNTiZ -- '%%'\""
