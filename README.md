@@ -8,6 +8,7 @@ experienced users, than to add more for newbies.
 
 ## Recent changes
 
+- Added Plugins inventory
 - Added back arrows to previous menu / main (where applicable)
 - Extras - added Dropbox. It has been tested to work on Linux.
 - Added to Extras/Mullvad VPN - display status
