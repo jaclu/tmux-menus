@@ -6,8 +6,6 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.5.0 2022-09-13
-#
 #  Common stuff
 #
 
@@ -43,6 +41,11 @@ config_file="/tmp/tmux-menus.conf"
 #  plugin.
 #
 [ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
+
+#
+#  If available, is expected to point to conf file for this environment
+#
+[ -z "$TMUX_CONF" ] && TMUX_CONF="~/.tmux.conf"
 
 
 #
