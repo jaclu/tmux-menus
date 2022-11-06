@@ -49,8 +49,7 @@ $TMUX_BIN display-menu                                              \
     "-    to use with <prefix> directly."               "" ""       \
     ""                                                              \
     "-Shortcut keys are upper case for"                 "" ""       \
-    "-menus menus, and lower case for"                  "" ""       \
-    "-actions."                                         "" ""       \
+    "-menus, and lower case for actions."               "" ""       \
     "-With the exception of defaults."                  "" ""
 
 ensure_menu_fits_on_screen
