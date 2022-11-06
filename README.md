@@ -53,7 +53,7 @@ Default is `<prefix> \` see Configuration below for how to change it.
 ![Window](https://user-images.githubusercontent.com/5046648/200143848-eb7c0c3e-837c-4393-b761-d8424eaa782e.png)
 ![Advanced](https://user-images.githubusercontent.com/5046648/200143879-4973d4d2-2c74-47a2-9110-d87b5765707a.png)
 ![Session](https://user-images.githubusercontent.com/5046648/200143930-e27f063f-c054-47d5-9640-502f4127cb14.png)
-![Help Summary](https://user-images.githubusercontent.com/5046648/200148799-c7b2ccb8-7970-4178-8a36-0559935a7465.png)
+![Help Summary](https://user-images.githubusercontent.com/5046648/200149023-619deff0-8d66-45e2-be3e-a6def82e9fbc.png)
 
 ## Compatibility
 
