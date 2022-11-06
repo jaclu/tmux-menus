@@ -21,7 +21,7 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
 menu_name="Help summary"
 req_win_width=40
-req_win_height=16
+req_win_height=15
 
 
 previous_menu="$1"
@@ -50,6 +50,6 @@ $TMUX_BIN display-menu                                              \
     ""                                                              \
     "-Shortcut keys are upper case for"                 "" ""       \
     "-menus, and lower case for actions."               "" ""       \
-    "-With the exception of defaults."                  "" ""
+    "-Unless they are defaults."                        "" ""
 
 ensure_menu_fits_on_screen
