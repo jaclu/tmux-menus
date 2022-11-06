@@ -46,7 +46,7 @@ with the menus 5 keys: `<prefix> \ A x y`
 Once installed, hit the trigger to get the main menu to popup.
 Default is `<prefix> \` see Configuration below for how to change it.
 
-## Screenshots
+## Screenshots of some menus
 
 ![main](https://user-images.githubusercontent.com/5046648/200143659-44995aeb-2c4a-45b4-b89c-bab12d164abd.png)
 ![Pane](https://user-images.githubusercontent.com/5046648/200143811-d4e3b254-310e-4207-82b6-a7bd527fcb47.png)
