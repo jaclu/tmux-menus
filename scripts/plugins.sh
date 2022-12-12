@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+#
+#   Copyright (c) 2022: Jacob.Lundqvist@gmail.com
+#   License: MIT
+#
+#   Part of https://github.com/jaclu/tmux-menus
+#
 
 # shellcheck disable=SC1007
 CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
@@ -17,7 +23,10 @@ fi
 
 names=(tpm)  # plugin manager
 
-plugin_missing=false
+
+#
+#  Generate list of plugins defined in config file
+#
 #  shellcheck disable=SC2207
 plugins=( $(grep "set -g @plugin" "$TMUX_CONF" | awk '{ print $4 }' | sed s/\"//g) )
 if [[ ${#plugins[@]} -gt 0 ]]; then
@@ -25,6 +34,11 @@ if [[ ${#plugins[@]} -gt 0 ]]; then
 else
     echo "No plugins defined"
 fi
+
+#
+#  Check if they are installed or not
+#
+plugin_missing=false
 for plugin in "${plugins[@]}" ; do
     name="$(echo "$plugin" | cut -d/ -f2)"
     names+=("$name")  # add item supposed to be in plugins dir
@@ -39,6 +53,7 @@ done
 #
 #  List all items in plugins_dir not supposed to be there
 #
+undefined_item=false
 echo
 for file in "$plugins_dir"/*; do
     item="$(echo "$file" | sed s/'plugins'/\|/ | cut -d'|' -f2 | sed s/.//)"
@@ -46,13 +61,21 @@ for file in "$plugins_dir"/*; do
     if [[ ! ${names[*]} =~ ${item} ]]; then
         # whatever you want to do when array doesn't contain value
         echo "Undefined item: $plugins_dir/$item"
+        undefined_item=true
     fi
 done
 
 if $plugin_missing ; then
     if [[ -d "$plugins_dir/tpm" ]]; then
         echo
-        echo "Install missing plugins with <prefix> I"
+        echo "You can install plugins listed as NOT INSTALLED with <prefix> I"
+    fi
+fi
+
+if $undefined_item ; then
+    if [[ -d "$plugins_dir/tpm" ]]; then
+        echo
+        echo "You can remove undefined items with <prefix> M-u"
     fi
 fi
 
