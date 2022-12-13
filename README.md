@@ -8,7 +8,7 @@ experienced users, than to add more for newbies.
 
 ## Recent changes
 
-- Plugin inventory lists undefined plugins, and gives instructions howto
+- Plugin inventory lists uninstalled plugins, and gives instructions howto
 uninstall not used plugins
 - Added Plugins inventory - (main menu) Lists defined plugins, install status and items not supposed to be in plugins dir
 - Added back arrows to previous menu / main (where applicable)
