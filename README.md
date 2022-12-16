@@ -8,7 +8,7 @@ experienced users, than to add more for newbies.
 
 ## Recent changes
 
-- Main menu - Public IP. It is simply echoed in the current pane, so that there is plenty of time to read and/or copy it.
+- Main menu, Public IP - It is simply echoed in the current pane, so that there is plenty of time to read and/or copy it.
 Just hit escape to get pane to resume normal operation.
 - Plugin inventory lists uninstalled plugins, and gives instructions howto
 uninstall not used plugins
@@ -50,7 +50,7 @@ Default is `<prefix> \` see Configuration below for how to change it.
 
 ## Screenshots of some menus
 
-![main](https://user-images.githubusercontent.com/5046648/200143659-44995aeb-2c4a-45b4-b89c-bab12d164abd.png)
+![main](https://user-images.githubusercontent.com/5046648/208101656-d265c78b-b5c5-4961-ac1a-59289deae674.png)
 ![Pane](https://user-images.githubusercontent.com/5046648/200143811-d4e3b254-310e-4207-82b6-a7bd527fcb47.png)
 ![Window](https://user-images.githubusercontent.com/5046648/200143848-eb7c0c3e-837c-4393-b761-d8424eaa782e.png)
 ![Advanced](https://user-images.githubusercontent.com/5046648/200143879-4973d4d2-2c74-47a2-9110-d87b5765707a.png)
