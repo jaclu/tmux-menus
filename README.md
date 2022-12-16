@@ -8,12 +8,12 @@ experienced users, than to add more for newbies.
 
 ## Recent changes
 
+- Main menu - Public IP. It is simply echoed in the current pane, so that there is plenty of time to read and/or copy it.
+Just hit escape to get pane to resume normal operation.
 - Plugin inventory lists uninstalled plugins, and gives instructions howto
 uninstall not used plugins
 - Added Plugins inventory - (main menu) Lists defined plugins, install status and items not supposed to be in plugins dir
 - Added back arrows to previous menu / main (where applicable)
-- Extras - added Dropbox. It has been tested to work on Linux.
-- Added to Extras/Mullvad VPN - display status
 
 ## Purpose
 
