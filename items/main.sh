@@ -53,7 +53,7 @@ $TMUX_BIN display-menu                                                          
     "Extras             -->"            E  "$open_menu/extras.sh'"              \
     "Advanced Options   -->"            A  "$open_menu/advanced.sh'"            \
     ""                                                                          \
-    "Public IP"                         i  "run \"curl --silent http://ip.me\"" \
+    "Public IP"                         i  "run \"curl ifconfig.me\"" \
     "Plugins inventory"                 p  "run $SCRIPT_DIR/plugins.sh"         \
     ""                                                                          \
     "Navigate & select ses/win/pane"    n  "choose-tree -Z"                     \
