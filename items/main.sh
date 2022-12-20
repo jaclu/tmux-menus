@@ -27,17 +27,6 @@ req_win_height=20
 search_all="command-prompt -p \"Search for:\" \"find-window -CNTiZ -- '%%'\""
 open_menu="run-shell '$CURRENT_DIR"
 
-#
-#  Nested quotes only gets you so far, there is only " ' and \"
-#  I wish it would be, but \' is not yet valid.
-#  Thus I can't use spaces in the below display statements
-#
-set --  "command-prompt -I '~/.tmux.conf' -p 'Source file:'"                \
-        "'run-shell \"$TMUX_BIN source-file %% && $TMUX_BIN display "       \
-        "Sourced_it! || $TMUX_BIN display "                                 \
-        "File_could_not_be_sourced-not_found?  \"'"
-source_it="$*"
-
 
 t_start="$(date +'%s')"
 
@@ -61,7 +50,7 @@ $TMUX_BIN display-menu                                                      \
     "-#[nodim]Search in all sessions & windows" "" ""                       \
     " ignores case, only visible part"  s  "$search_all"                    \
     ""                                                                      \
-    "    Reload configuration file"     r  "$source_it"                     \
+    "    Reload configuration file"     r  "run $SCRIPT_DIR/reload_conf.sh" \
     "<P> Detach from tmux"              d  detach-client                    \
     ""                                                                      \
     "Help  -->"  H  "$open_menu/help.sh $CURRENT_DIR/main.sh'"
