@@ -157,7 +157,7 @@ configurable items: menu location
 
 ### Default menus
 
-To turn off the limited default popup menus, add the following
+To disable the rather limited default popup menus, add the following
 
 ```tmux
 unbind-key -n MouseDown3Pane
