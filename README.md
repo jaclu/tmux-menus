@@ -69,15 +69,17 @@ Default is `<prefix> \` see Configuration below for how to change it.
   There should be a notification message about "unknown command" in such cases.
 </td></tr></table>
 
-## Install
+## Installation
 
 ### Installation with [Tmux Plugin Manager](https://github.com/tmux-plugins/tpm) (recommended)
 
 Add plugin to the list of TPM plugins in `.tmux.conf`:
 
-    set -g @plugin 'jaclu/tmux-menus'
+```tmux
+set -g @plugin 'jaclu/tmux-menus'
+```
 
-Hit prefix + I to fetch the plugin and source it. You should now be able to
+Hit `<prefix> + I` to install the plugin and activate it. You should now be able to
 use the plugin.
 
 ### Manual installation
