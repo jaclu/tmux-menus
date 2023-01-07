@@ -112,7 +112,7 @@ set -g @menus_trigger 'F9'
 Please note that non standard keys, like the default backslash needs to be noted
 in a specific way in order not to confuse tmux.
 Either `'\'` or without quotes as `\\`. Quoting `'\\'` won't make sense
-for tmux and fail to bind any key.
+for tmux and fail to bind the key.
 
 If you want to trigger menus without first hitting `<prefix>`
 
