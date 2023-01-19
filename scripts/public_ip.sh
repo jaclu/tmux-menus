@@ -8,7 +8,7 @@
 #   Displays public IP
 #
 
-echo  # Extra LF to avoid cursor placed over text
-echo "Public IP: $(curl ifconfig.me)"
+echo # Extra LF to avoid cursor placed over text
+echo "Public IP: $(curl https://ifconfig.me)"
 echo
 echo "Press Escape to exit this output"

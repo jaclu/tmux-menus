@@ -239,7 +239,8 @@ The best way to send feedback is to file an issue at
 ### Thanks to
 
 - [giddie](https://github.com/giddie) for suggesting "Re-spawn current pane"
-
+- [wilddog64](https://github.com/wilddog64) for suggesting adding a prefix
+to the curl that probes public IP
 #### License
 
 [MIT](LICENSE)
