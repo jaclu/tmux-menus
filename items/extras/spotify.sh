@@ -56,7 +56,7 @@ $TMUX_BIN display-menu                                                  \
     ""                                                                  \
     "$title_label"      "$title_key"                                    \
                                                                         \
-        "display \"$($SCRIPT_DIR/spotify-now-playing)\" ;               \
+        "display \"$("$SCRIPT_DIR"/spotify-now-playing)\" ;             \
         run-shell \"$this_menu\""                                       \
                                                                         \
     "Pause/Resume"          " "  "$prefix pause           $suffix"      \

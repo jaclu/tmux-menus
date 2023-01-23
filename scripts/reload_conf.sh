@@ -9,6 +9,7 @@
 #   Gives prompt to correct if need-be
 #
 
+# shellcheck disable=SC1007
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 
 # shellcheck disable=SC1091
@@ -21,8 +22,8 @@ SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 #
 conf="${TMUX_CONF:-~/.tmux.conf}"
 
+# shellcheck disable=SC2154
 $TMUX_BIN command-prompt -I "$conf" -p "Source file:"               \
     "run-shell \"$TMUX_BIN source-file %% &&                        \
     $TMUX_BIN display 'Sourced it!' ||                              \
     $TMUX_BIN display 'File could not be sourced - not found?'"
-
