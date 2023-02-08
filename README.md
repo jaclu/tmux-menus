@@ -233,8 +233,7 @@ next time you start tmux automatically.
 Contributions are welcome, and they're appreciated.
 Every little bit helps, and credit is always given.
 
-The best way to send feedback is to file an issue at
-[issues](https://github.com/jaclu/tmux-menus/issues)
+The best way to send feedback is to file an [issue](https://github.com/jaclu/tmux-menus/issues)
 
 ### Thanks to
 
