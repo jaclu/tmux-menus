@@ -50,7 +50,7 @@ Default is `<prefix> \` see Configuration below for how to change it.
 
 ## Screenshots of some menus
 
-![main](https://user-images.githubusercontent.com/5046648/208101656-d265c78b-b5c5-4961-ac1a-59289deae674.png)
+![main](https://user-images.githubusercontent.com/5046648/220794673-6504f675-0b89-41a6-9fa9-16387dada883.png)
 ![Pane](https://user-images.githubusercontent.com/5046648/200143811-d4e3b254-310e-4207-82b6-a7bd527fcb47.png)
 ![Window](https://user-images.githubusercontent.com/5046648/200143848-eb7c0c3e-837c-4393-b761-d8424eaa782e.png)
 ![Advanced](https://user-images.githubusercontent.com/5046648/200143879-4973d4d2-2c74-47a2-9110-d87b5765707a.png)
