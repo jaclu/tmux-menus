@@ -96,7 +96,7 @@ Add this line to the bottom of `.tmux.conf`:
 run-shell ~/clone/path/menus.tmux
 ```
 
-Reload TMUX environment with `tmux source-file ~/.tmux.conf`.
+Reload TMUX environment with `tmux source ~/.tmux.conf`.
 You should now be able to use the plugin.
 
 ## Configuration
