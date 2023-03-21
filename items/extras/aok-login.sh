@@ -34,7 +34,7 @@ req_win_width=33
 req_win_height=13
 
 login_mode="run-shell '/usr/local/bin/aok -l"
-suffix=" > /dev/null' ; run-shell '$this_menu'"
+suffix=" > /dev/null' ; run-shell $0"
 
 t_start="$(date +'%s')"
 
