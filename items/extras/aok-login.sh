@@ -29,10 +29,10 @@ SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 . "$SCRIPT_DIR/utils.sh"
 
 menu_name="iSH-AOK"
+open_menu="run-shell '$ITEMS_DIR"
+full_path_this="$CURRENT_DIR/$(basename $0)"
 req_win_width=33
 req_win_height=13
-
-full_path_this="$CURRENT_DIR/$(basename $0)"
 
 #  For items only available if kernel is AOK
 if is_aok_kernel; then
@@ -42,7 +42,7 @@ else
 fi
  
 if ls -l /bin/login | grep -q login.loop; then
-  current_login_method="enabled"
+    current_login_method="enabled"
 elif ls -l /bin/login | grep -q login.once; then
     current_login_method="once"
 else
@@ -71,7 +71,6 @@ fi
 login_mode="run-shell '/usr/local/bin/aok -l"
 suffix=" > /dev/null' ; run-shell '$full_path_this'"
 
-open_menu="run-shell '$ITEMS_DIR"
 
 t_start="$(date +'%s')"
 
@@ -92,9 +91,9 @@ $TMUX_BIN display-menu \
     "" \
     "Only for iSH-AOK kernel" "" "" \
     "$aok_kernel$multicore_act_lbl Multicore" "m" "run-shell 'toggle_multicore $multicore_action  $suffix" \
-    "$aok_kernel$elock_act_lbl Extra locking" "e" "run-shell 'elock            $elock_action      $suffix" 
-
-#    "" \    
-#    "Help  -->" H "$open_menu/help.sh $full_path_this'"
+    "$aok_kernel$elock_act_lbl Extra locking" "e" "run-shell 'elock            $elock_action      $suffix" \
+    \ 
+    "" \    
+    "Help  -->" H "$open_menu/help.sh $full_path_this'"
 
 ensure_menu_fits_on_screen
