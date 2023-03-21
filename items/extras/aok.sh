@@ -51,22 +51,10 @@ $TMUX_BIN display-menu \
     \
     "Back to Main menu  <==" Home "$open_menu/main.sh'" \
     "Back to Extras     <--" Left "$open_menu/extras.sh'" \
+    "Login mode         -->" L "$open_menu/extras/aok-login.sh" \
     "" \
-    "$title_label" "$title_key" \
-    \
-    "display \"$("$SCRIPT_DIR"/spotify-now-playing)\" ;             \
-        run-shell \"$this_menu\"" \
-    \
-    "toggle Multicore" " " "$prefix pause           $suffix" \
-    "Next" n "$prefix next            $suffix" \
-    "Prev" p "$prefix prev            $suffix" \
-    "Replay" r "$prefix replay          $suffix" \
-    "Copy URI to clipboard" i "$prefix share uri       $suffix" \
-    "Copy URL to clipboard" l "$prefix share url       $suffix" \
-    "Shuffle - toggle" s "$prefix toggle shuffle  $suffix" \
-    "Repeat  - toggle" R "$prefix toggle repeat   $suffix" \
-    "vol Up" u "$prefix vol up          $suffix" \
-    "vol Down" d "$prefix vol down        $suffix" \
+    "toggle Multicore" "m" "$prefix pause           $suffix" \
+    "toggle Extra locking" "e" "$prefix next            $suffix" \
     "" \
     "Help  -->" H "$open_menu/help.sh $CURRENT_DIR/spotify.sh'"
 
