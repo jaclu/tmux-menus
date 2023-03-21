@@ -22,7 +22,7 @@ display_login_method() {
 }
 
 disable_if_matching() {
-    [ "$1" = "$current_login" ] && echo "-"
+    [ "$1" = "$(display_login_method)" ] && echo "-"
 }
 
 if [ "$(cat /proc/ish/defaults/enable_multicore)" = "true" ]; then
