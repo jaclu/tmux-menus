@@ -23,11 +23,6 @@ menu_name="iSH-AOK"
 req_win_width=33
 req_win_height=13
 
-if [ -z "$(command -v spotify)" ]; then
-    $TMUX_BIN display "spotify bin not found!"
-    exit 1
-fi
-
 login_mode="run-shell '/usr/local/bin/aok -l"
 suffix=" > /dev/null' ; run-shell '$this_menu'"
 
