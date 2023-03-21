@@ -83,6 +83,6 @@ $TMUX_BIN display-menu \
     "$multicore_act_lbl Multicore" "m" "run-shell 'toggle_multicore $multicore_action  $suffix" \
     "$elock_act_lbl Extra locking" "e" "run-shell 'elock            $elock_action      $suffix" \
     "" \    
-    "Help  -->" H "$open_menu/help.sh $CURRENT_DIR/spotify.sh'"
+    "Help  -->" H "$open_menu/help.sh $full_path_this'"
 
 ensure_menu_fits_on_screen
