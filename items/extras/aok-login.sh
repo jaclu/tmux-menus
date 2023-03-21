@@ -90,6 +90,7 @@ $TMUX_BIN display-menu \
     "$(disable_if_matching enabled)Enable login"      "e" "$login_mode enable $suffix" \
     "$(disable_if_matching once)Single login session" "s" "$login_mode once $suffix" \
     "" \
+    "Only for iSH-AOK kernel" "" "" \
     "$aok_kernel$multicore_act_lbl Multicore" "m" "run-shell 'toggle_multicore $multicore_action  $suffix" \
     "$aok_kernel$elock_act_lbl Extra locking" "e" "run-shell 'elock            $elock_action      $suffix" 
 
