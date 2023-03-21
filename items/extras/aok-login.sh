@@ -59,7 +59,6 @@ req_win_height=13
 full_path_this="$CURRENT_DIR/$(basename $0)"
 
 login_mode="run-shell '/usr/local/bin/aok -l"
-current_login="$(display_login_mthod)"
 suffix=" > /dev/null' ; run-shell '$full_path_this'"
 
 t_start="$(date +'%s')"
