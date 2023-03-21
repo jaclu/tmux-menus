@@ -61,6 +61,8 @@ full_path_this="$CURRENT_DIR/$(basename $0)"
 login_mode="run-shell '/usr/local/bin/aok -l"
 suffix=" > /dev/null' ; run-shell '$full_path_this'"
 
+open_menu="run-shell '$ITEMS_DIR"
+
 t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
