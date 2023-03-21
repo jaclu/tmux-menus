@@ -15,6 +15,10 @@ disable_if_matching() {
     [ "$1" = "$current_login_method" ] && echo "-"
 }
 
+is_aok_kernel() {
+    grep -qi aok /proc/ish/version 2>/dev/null
+}
+
 
 # shellcheck disable=SC1007
 CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
@@ -30,8 +34,15 @@ req_win_height=13
 
 full_path_this="$CURRENT_DIR/$(basename $0)"
 
+#  For items only available if kernel is AOK
+if is_aok_kernel; then
+    aok_kernel=""
+else
+    aok_kernel="-"
+fi
+ 
 if ls -l /bin/login | grep -q login.loop; then
-    current_login_method="enabled"
+  current_login_method="enabled"
 elif ls -l /bin/login | grep -q login.once; then
     current_login_method="once"
 else
@@ -79,8 +90,8 @@ $TMUX_BIN display-menu \
     "$(disable_if_matching enabled)Enable login"      "e" "$login_mode enable $suffix" \
     "$(disable_if_matching once)Single login session" "s" "$login_mode once $suffix" \
     "" \
-    "$multicore_act_lbl Multicore" "m" "run-shell 'toggle_multicore $multicore_action  $suffix" \
-    "$elock_act_lbl Extra locking" "e" "run-shell 'elock            $elock_action      $suffix" 
+    "$aok_kernel$multicore_act_lbl Multicore" "m" "run-shell 'toggle_multicore $multicore_action  $suffix" \
+    "$aok_kernel$elock_act_lbl Extra locking" "e" "run-shell 'elock            $elock_action      $suffix" 
 
 #    "" \    
 #    "Help  -->" H "$open_menu/help.sh $full_path_this'"
