@@ -25,6 +25,25 @@ disable_if_matching() {
     [ "$1" = "$current_login" ] && echo "-"
 }
 
+if [ "$(cat /proc/ish/defaults/enable_multicore)" = "true" ]; then
+    multicore_act_lbl="disable"
+    multicore_action="off"
+else
+    multicore_act_lbl="enable"
+    multicore_action="on"
+fi
+
+
+#  Display action if elock would be triggered
+if [ "$(cat /proc/ish/defaults/enable_extralocking)" = "true" ]; then
+    elock_act_lbl="disable"
+    elock_action="off"
+else
+    elock_act_lbl="enable"
+    elock_action="on"
+fi
+
+
 # shellcheck disable=SC1007
 CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 ITEMS_DIR="$(dirname "$CURRENT_DIR")"
@@ -38,6 +57,7 @@ req_win_width=33
 req_win_height=13
 
 full_path_this="$CURRENT_DIR/$(basename $0)"
+
 login_mode="run-shell '/usr/local/bin/aok -l"
 current_login="$(display_login_mthod)"
 suffix=" > /dev/null' ; run-shell '$full_path_this'"
@@ -55,10 +75,13 @@ $TMUX_BIN display-menu \
     "" \
     "Current login method: $(display_login_method)" "" "" \
     " " "" "" \
-    "$(disable_if_matching disabled)Disable login" "d" "$login_mode disable $suffix" \
-    "$(disable_if_matching enabled)Enable login" "e" "$login_mode enable $suffix" \
+    "$(disable_if_matching disabled)Disable login"    "d" "$login_mode disable $suffix" \
+    "$(disable_if_matching enabled)Enable login"      "e" "$login_mode enable $suffix" \
     "$(disable_if_matching once)Single login session" "s" "$login_mode once $suffix" \
     "" \
+    "$multicore_act_lbl Multicore" "m" "run-shell 'toggle_multicore $multicore_action  $suffix" \
+    "$elock_act_lbl Extra locking" "e" "run-shell 'elock            $elock_action      $suffix" \
+    "" \    
     "Help  -->" H "$open_menu/help.sh $CURRENT_DIR/spotify.sh'"
 
 ensure_menu_fits_on_screen
