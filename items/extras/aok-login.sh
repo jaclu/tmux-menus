@@ -11,19 +11,32 @@
 # Global check exclude
 # shellcheck disable=SC2034,SC2154
 
-display_login_method() {
-    if ls -l /bin/login | grep -q login.loop; then
-        echo "enabled"
-    elif ls -l /bin/login | grep -q login.once; then
-        echo "once"
-    else
-        echo "disabled"
-    fi
+disable_if_matching() {
+    [ "$1" = "$current_login_method" ] && echo "-"
 }
 
-disable_if_matching() {
-    [ "$1" = "$(display_login_method)" ] && echo "-"
-}
+
+# shellcheck disable=SC1007
+CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+ITEMS_DIR="$(dirname "$CURRENT_DIR")"
+SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
+
+# shellcheck disable=SC1091
+. "$SCRIPT_DIR/utils.sh"
+
+menu_name="iSH-AOK"
+req_win_width=33
+req_win_height=13
+
+full_path_this="$CURRENT_DIR/$(basename $0)"
+
+if ls -l /bin/login | grep -q login.loop; then
+    current_login_method="enabled"
+elif ls -l /bin/login | grep -q login.once; then
+    current_login_method="once"
+else
+    current_login_method="disabled"
+fi
 
 if [ "$(cat /proc/ish/defaults/enable_multicore)" = "true" ]; then
     multicore_act_lbl="disable"
@@ -44,20 +57,6 @@ else
 fi
 
 
-# shellcheck disable=SC1007
-CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-ITEMS_DIR="$(dirname "$CURRENT_DIR")"
-SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
-
-# shellcheck disable=SC1091
-. "$SCRIPT_DIR/utils.sh"
-
-menu_name="iSH-AOK"
-req_win_width=33
-req_win_height=13
-
-full_path_this="$CURRENT_DIR/$(basename $0)"
-
 login_mode="run-shell '/usr/local/bin/aok -l"
 suffix=" > /dev/null' ; run-shell '$full_path_this'"
 
@@ -74,7 +73,7 @@ $TMUX_BIN display-menu \
     "Back to Extras     <--" Left "$open_menu/extras.sh'" \
     "Back to AOK        <--" A "$open_menu/extras/aok.sh" \
     "" \
-    "Current login method: $(display_login_method)" "" "" \
+    "Current login method: $current_login_method" "" "" \
     " " "" "" \
     "$(disable_if_matching disabled)Disable login"    "d" "$login_mode disable $suffix" \
     "$(disable_if_matching enabled)Enable login"      "e" "$login_mode enable $suffix" \
