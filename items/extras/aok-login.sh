@@ -21,6 +21,10 @@ display_login_method() {
     fi
 }
 
+disable_if_matching() {
+    [ "$1" = "$current_login" ] && echo "-"
+}
+
 # shellcheck disable=SC1007
 CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 ITEMS_DIR="$(dirname "$CURRENT_DIR")"
@@ -33,8 +37,15 @@ menu_name="iSH-AOK"
 req_win_width=33
 req_win_height=13
 
+full_path_this="$CURRENT_DIR/$(basename $0)"
 login_mode="run-shell '/usr/local/bin/aok -l"
+<<<<<<< HEAD
+suffix=" > /dev/null' ; run-shell '$full_path_this'"
+
+current_login="$(display_login_mthod)"
+=======
 suffix=" > /dev/null' ; run-shell $0"
+>>>>>>> 8a1890589afe005aded869918290973a42c595b2
 
 t_start="$(date +'%s')"
 
@@ -47,10 +58,11 @@ $TMUX_BIN display-menu \
     "Back to Extras     <--" Left "$open_menu/extras.sh'" \
     "Back to AOK        <--" A "$open_menu/extras/aok.sh" \
     "" \
-    "Current login method: $(display_login_method)" \
-    "Disable login" "d" "$login_mode disable $suffix" \
-    "Enable login" "l" "$login_mode enable $suffix" \
-    "Single login session" "s" "$login_mode once $suffix" \
+    "Current login method: $(display_login_method)" "" "" \
+    " " "" "" \
+    "$(disable_if_matching disabled)Disable login" "d" "$login_mode disable $suffix" \
+    "$(disable_if_matching enabled)Enable login" "e" "$login_mode enable $suffix" \
+    "$(disable_if_matching once)Single login session" "s" "$login_mode once $suffix" \
     "" \
     "Help  -->" H "$open_menu/help.sh $CURRENT_DIR/spotify.sh'"
 
