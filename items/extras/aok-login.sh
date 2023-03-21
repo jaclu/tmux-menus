@@ -11,6 +11,16 @@
 # Global check exclude
 # shellcheck disable=SC2034,SC2154
 
+display_login_method() {
+    if ls -l /bin/login | grep -q login.loop; then
+        echo "enabled"
+    elif ls -l /bin/login | grep -q login.once; then
+        echo "once"
+    else
+        echo "disabled"
+    fi
+}
+
 # shellcheck disable=SC1007
 CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 ITEMS_DIR="$(dirname "$CURRENT_DIR")"
@@ -37,6 +47,7 @@ $TMUX_BIN display-menu \
     "Back to Extras     <--" Left "$open_menu/extras.sh'" \
     "Back to AOK        <--" A "$open_menu/extras/aok.sh" \
     "" \
+    "Current login method: $(display_login_method)" \
     "Disable login" "d" "$login_mode disable $suffix" \
     "Enable login" "l" "$login_mode enable $suffix" \
     "Single login session" "s" "$login_mode once $suffix" \
