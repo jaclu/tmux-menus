@@ -57,7 +57,7 @@ $TMUX_BIN display-menu                                                  \
     -x "$menu_location_x" -y "$menu_location_y"                         \
     "Back to Main menu  <--"  Left  "$open_menu/main.sh'"               \
     ""                                                                  \
-    "$(is_aok_fs)iSH with AOK File System  -->" A                       \
+    "$(is_aok_fs)iSH with AOK FS  -->"          A                       \
             "$open_extra/aok.sh'"                                       \
     "$(is_avalable dropbox Dropbox)  -->"       D                       \
             "$open_extra/dropbox.sh'"                                   \
