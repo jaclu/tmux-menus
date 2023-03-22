@@ -21,7 +21,7 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 menu_name="Handling Pane"
 full_path_this="$CURRENT_DIR/$(basename $0)"
 req_win_width=33
-req_win_height=9
+req_win_height=10
 
 reload="; run-shell '$full_path_this'"
 open_menu="run-shell '$CURRENT_DIR"

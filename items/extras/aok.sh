@@ -27,7 +27,7 @@ SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
 
-menu_name="AOK"
+menu_name="AOK FS tools"
 full_path_this="$CURRENT_DIR/$(basename $0)"
 req_win_width=35
 req_win_height=18
