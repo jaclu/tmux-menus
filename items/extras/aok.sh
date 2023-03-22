@@ -88,7 +88,7 @@ $TMUX_BIN display-menu \
     "-  kernel tweaks" "" "" \
     "-" "" "" \
     "$aok_kernel$multicore_act_lbl Multicore" "m" "run-shell 'toggle_multicore $multicore_action  $suffix" \
-    "$aok_kernel$elock_act_lbl Extra locking" "e" "run-shell 'elock            $elock_action      $suffix" \
+    "$aok_kernel$elock_act_lbl extra Locking" "l" "run-shell 'elock            $elock_action      $suffix" \
     \
     "" \
     "Help  -->" H "$open_menu/help.sh $full_path_this'"
