@@ -78,14 +78,15 @@ $TMUX_BIN display-menu \
     "Back to Main menu  <==" Home "$open_menu/main.sh'" \
     "Back to Extras     <--" Left "$open_menu/extras.sh'" \
     "" \
-    "Current login method: $current_login_method" "" "" \
-    " " "" "" \
+    "-Current login method: $current_login_method" "" "" \
+    "- " "" "" \
     "$(disable_if_matching disabled)Disable login" "d" "$login_mode disable $suffix" \
     "$(disable_if_matching enabled)Enable login" "e" "$login_mode enable $suffix" \
     "$(disable_if_matching once)Single login session" "s" "$login_mode once $suffix" \
     "" \
-    "${aok_kernel}= Only for iSH-AOK kernel =" "" "" \
-    "$aok_kernel  kernel tweaks" "" "" \
+    "-= Only for iSH-AOK kernel =" "" "" \
+    "-  kernel tweaks" "" "" \
+    "-" "" "" \
     "$aok_kernel$multicore_act_lbl Multicore" "m" "run-shell 'toggle_multicore $multicore_action  $suffix" \
     "$aok_kernel$elock_act_lbl Extra locking" "e" "run-shell 'elock            $elock_action      $suffix" \
     \
