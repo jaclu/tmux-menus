@@ -80,7 +80,7 @@ $TMUX_BIN display-menu                                                          
     -x "$menu_location_x" -y "$menu_location_y"                                                             \
                                                                                                             \
     "Back to Main menu  <==" Home "$open_menu/main.sh'"                                                     \
-    "Back to Extras     <--" Left "$open_menu/extras.sh'"                                                   \ 
+    "Back to Extras     <--" Left "$open_menu/extras.sh'"                                                   \
     ""                                                                                                      \
     "Current login method: $current_login_method" "" ""                                                     \
     " " "" ""                                                                                               \
