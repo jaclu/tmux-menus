@@ -19,16 +19,15 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 . "$SCRIPT_DIR/utils.sh"
 
 menu_name="Help, Split view"
+full_path_this="$CURRENT_DIR/$(basename $0)"
 req_win_width=37
 req_win_height=10
-
 
 previous_menu="$1"
 
 if [ -z "$previous_menu" ]; then
     error_msg "help_split.sh was called without notice of what called it"
 fi
-
 
 t_start="$(date +'%s')"
 
@@ -37,17 +36,17 @@ t_start="$(date +'%s')"
 #        in order to actually print one, figure out what's going on
 #
 # shellcheck disable=SC2154
-$TMUX_BIN display-menu                                              \
-    -T "#[align=centre] $menu_name   "                              \
-    -x "$menu_location_x" -y "$menu_location_y"                     \
-                                                                    \
-    "Back to Previous menu  <--"  Left  "run-shell $previous_menu"  \
-    ""                                                              \
-    "-Creating a new pane by"                           "" ""       \
-    "-splitting current Pane or"                        "" ""       \
-    "-Window."                                          "" ""       \
-    "- " "" ""                                                      \
-    "-Window refers to the entire"                      "" ""       \
-    "-display."                                         "" ""
+$TMUX_BIN display-menu \
+    -T "#[align=centre] $menu_name   " \
+    -x "$menu_location_x" -y "$menu_location_y" \
+    \
+    "Back to Previous menu  <--" Left "run-shell $previous_menu" \
+    "" \
+    "-Creating a new pane by" "" "" \
+    "-splitting current Pane or" "" "" \
+    "-Window." "" "" \
+    "- " "" "" \
+    "-Window refers to the entire" "" "" \
+    "-display." "" ""
 
 ensure_menu_fits_on_screen

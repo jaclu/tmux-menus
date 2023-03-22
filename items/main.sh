@@ -19,6 +19,7 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 . "$SCRIPT_DIR/utils.sh"
 
 menu_name="Main menu"
+full_path_this="$CURRENT_DIR/$(basename $0)"
 req_win_width=40
 req_win_height=20
 

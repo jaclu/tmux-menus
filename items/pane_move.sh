@@ -19,20 +19,18 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 . "$SCRIPT_DIR/utils.sh"
 
 menu_name="Move Pane"
+full_path_this="$CURRENT_DIR/$(basename $0)"
 req_win_width=41
 req_win_height=13
 
+reload="; run-shell '$full_path_this'"
 
-this_menu="$CURRENT_DIR/pane_move.sh"
-reload="; run-shell '$this_menu'"
-
-set --  "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_pane.sh"  \
-        "P M %%\"'"
+set -- "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_pane.sh" \
+    "P M %%\"'"
 mv_2_other="$*"
 
 break_2_other="run-shell $SCRIPT_DIR/break_pane.sh"
 open_menu="run-shell '$CURRENT_DIR"
-
 
 t_start="$(date +'%s')"
 
@@ -41,22 +39,22 @@ t_start="$(date +'%s')"
 #  not to expand into the shortcuts if no pane is marked
 #
 # shellcheck disable=SC2154
-$TMUX_BIN display-menu                                              \
-    -T "#[align=centre] $menu_name "                                \
-    -x "$menu_location_x" -y "$menu_location_y"                     \
-                                                                    \
-    "Back to Main menu      <=="    Home  "$open_menu/main.sh'"     \
-    "Back to Handling Pane  <--"    Left  "$open_menu/panes.sh'"    \
-    ""                                                              \
-    "    Move to other win/ses        "                             \
-                                      m   "$mv_2_other"             \
-    "#{?pane_marked_set,,-}    Swap current pane with marked"       \
-                                      s   "swap-pane $reload"       \
-    "<P> Swap pane with prev"        \{   "swap-pane -U $reload"    \
-    "<P> Swap pane with next"        \}   "swap-pane -D $reload"    \
-    ""                                                              \
-    "<P> Break pane to a new window"  !   "$break_2_other"          \
-    ""                                                              \
-    "Help  -->"  H  "$open_menu/help.sh $this_menu'"
+$TMUX_BIN display-menu \
+    -T "#[align=centre] $menu_name " \
+    -x "$menu_location_x" -y "$menu_location_y" \
+    \
+    "Back to Main menu      <==" Home "$open_menu/main.sh'" \
+    "Back to Handling Pane  <--" Left "$open_menu/panes.sh'" \
+    "" \
+    "    Move to other win/ses        " \
+    m "$mv_2_other" \
+    "#{?pane_marked_set,,-}    Swap current pane with marked" \
+    s "swap-pane $reload" \
+    "<P> Swap pane with prev" \{ "swap-pane -U $reload" \
+    "<P> Swap pane with next" \} "swap-pane -D $reload" \
+    "" \
+    "<P> Break pane to a new window" ! "$break_2_other" \
+    "" \
+    "Help  -->" H "$open_menu/help.sh $full_path_this'"
 
 ensure_menu_fits_on_screen

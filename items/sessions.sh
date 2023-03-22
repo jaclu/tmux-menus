@@ -19,47 +19,45 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 . "$SCRIPT_DIR/utils.sh"
 
 menu_name="Handling Sessions"
+full_path_this="$CURRENT_DIR/$(basename $0)"
 req_win_width=39
 req_win_height=15
 
-
-this_menu="$CURRENT_DIR/sessions.sh"
-reload="; run-shell \"$this_menu\""
+reload="; run-shell \"$full_path_this\""
 open_menu="run-shell '$CURRENT_DIR"
 
 rename="command-prompt -I '#S' 'rename-session -- \"%%\"'"
 new_ses="command-prompt -p 'Name of new session: ' 'new-session -s \"%%\"'"
 
-set --  "confirm-before -p"                                             \
-        "'Are you sure you want to kill this session? (y/n)'"           \
+set -- "confirm-before -p" \
+        "'Are you sure you want to kill this session? (y/n)'" \
         "\"set -s detach-on-destroy no-detached \\; kill-session\""
 kill_current="$*"
 
-set --  "confirm-before -p"                                             \
-        "'Are you sure you want to kill all other sessions? (y/n)'"     \
+set -- "confirm-before -p" \
+        "'Are you sure you want to kill all other sessions? (y/n)'" \
         "'kill-session -a'"
 kill_other="$*"
-
 
 t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
-$TMUX_BIN display-menu                                                  \
-    -T "#[align=centre] $menu_name "                                    \
-    -x "$menu_location_x" -y "$menu_location_y"                         \
-                                                                        \
-    "Back to Main menu  <--"  Left  "$open_menu/main.sh'"               \
-    ""                                                                  \
-    "<P> Rename this session"          \$  "$rename"                    \
-    "    New session"                   n  "$new_ses"                   \
-    ""                                                                  \
-    "<P> Last selected session"         L  "switch-client -l $reload"   \
-    "<P> Previous session (in order)"  \(  "switch-client -p $reload"   \
-    "<P> Next     session (in order)"  \)  "switch-client -n $reload"   \
-    ""                                                                  \
-    "Kill current session"              x  "$kill_current"              \
-    "Kill all other sessions"           o  "$kill_other"                \
-    ""                                                                  \
-    "Help  -->"  H  "$open_menu/help.sh $this_menu'"
+$TMUX_BIN display-menu \
+        -T "#[align=centre] $menu_name " \
+        -x "$menu_location_x" -y "$menu_location_y" \
+        \
+        "Back to Main menu  <--" Left "$open_menu/main.sh'" \
+        "" \
+        "<P> Rename this session" \$ "$rename" \
+        "    New session" n "$new_ses" \
+        "" \
+        "<P> Last selected session" L "switch-client -l $reload" \
+        "<P> Previous session (in order)" \( "switch-client -p $reload" \
+        "<P> Next     session (in order)" \) "switch-client -n $reload" \
+        "" \
+        "Kill current session" x "$kill_current" \
+        "Kill all other sessions" o "$kill_other" \
+        "" \
+        "Help  -->" H "$open_menu/help.sh $full_path_this'"
 
 ensure_menu_fits_on_screen

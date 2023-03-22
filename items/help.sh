@@ -11,7 +11,6 @@
 #  shellcheck disable=SC2034
 #  Directives for shellcheck directly after bang path are global
 
-
 # shellcheck disable=SC1007
 CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
@@ -20,9 +19,9 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 . "$SCRIPT_DIR/utils.sh"
 
 menu_name="Help summary"
+full_path_this="$CURRENT_DIR/$(basename $0)"
 req_win_width=40
 req_win_height=15
-
 
 previous_menu="$1"
 
@@ -30,26 +29,25 @@ if [ -z "$previous_menu" ]; then
     error_msg "help.sh was called without notice of what called it"
 fi
 
-
 t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
-$TMUX_BIN display-menu                                              \
-    -T "#[align=centre] $menu_name "                                \
-    -x "$menu_location_x" -y "$menu_location_y"                     \
-                                                                    \
-    "Back to Previous menu  <--"  Left  "run-shell $previous_menu"  \
-    ""                                                              \
-    "- -->  Indicates this will open a"                 "" ""       \
-    "- <--  new menu."                                  "" ""       \
-    ""                                                              \
-    "-<P> Indicates this key is a default"              "" ""       \
-    "-    key, so unless it has been"                   "" ""       \
-    "-    changed, it should be possible"               "" ""       \
-    "-    to use with <prefix> directly."               "" ""       \
-    ""                                                              \
-    "-Shortcut keys are upper case for"                 "" ""       \
-    "-menus, and lower case for actions."               "" ""       \
-    "-Unless they are defaults."                        "" ""
+$TMUX_BIN display-menu \
+    -T "#[align=centre] $menu_name " \
+    -x "$menu_location_x" -y "$menu_location_y" \
+    \
+    "Back to Previous menu  <--" Left "run-shell $previous_menu" \
+    "" \
+    "- -->  Indicates this will open a" "" "" \
+    "- <--  new menu." "" "" \
+    "" \
+    "-<P> Indicates this key is a default" "" "" \
+    "-    key, so unless it has been" "" "" \
+    "-    changed, it should be possible" "" "" \
+    "-    to use with <prefix> directly." "" "" \
+    "" \
+    "-Shortcut keys are upper case for" "" "" \
+    "-menus, and lower case for actions." "" "" \
+    "-Unless they are defaults." "" ""
 
 ensure_menu_fits_on_screen
