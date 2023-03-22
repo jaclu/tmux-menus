@@ -8,6 +8,7 @@ experienced users, than to add more for newbies.
 
 ## Recent changes
 
+- Added Extras - iSH AOK FS, corrected main help text and some menu min sizes
 - Main menu, toggle status Line - new feature
 - Main menu, Public IP - It is simply echoed in the current pane, so that there is plenty of time to read and/or copy it.
 Just hit Escape to get pane to resume normal operation.
