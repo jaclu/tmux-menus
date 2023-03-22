@@ -47,7 +47,7 @@ else
     current_login_method="disabled"
 fi
 
-if [ "$(cat /proc/ish/defaults/enable_multicore)" = "true" ]; then
+if [ "$(cat /proc/ish/defaults/enable_multicore 2>/dev/null)" = "true" ]; then
     multicore_act_lbl="disable"
     multicore_action="off"
 else
@@ -56,7 +56,7 @@ else
 fi
 
 #  Display action if elock would be triggered
-if [ "$(cat /proc/ish/defaults/enable_extralocking)" = "true" ]; then
+if [ "$(cat /proc/ish/defaults/enable_extralocking 2>/dev/null)" = "true" ]; then
     elock_act_lbl="disable"
     elock_action="off"
 else
@@ -66,7 +66,7 @@ fi
 
 open_menu="run-shell '$ITEMS_DIR"
 login_mode="run-shell '/usr/local/bin/aok -l"
-suffix=" > /dev/null' ; run-shell '$full_path_this'"
+suffix=" > /dev/null ; $full_path_this'"
 
 t_start="$(date +'%s')"
 
@@ -84,7 +84,7 @@ $TMUX_BIN display-menu \
     "$(disable_if_matching enabled)Enable login" "e" "$login_mode enable $suffix" \
     "$(disable_if_matching once)Single login session" "s" "$login_mode once $suffix" \
     "" \
-    "set Time zone" "t" "run-shell '/usr/local/bin/set-timezone ; run-shell '$full_path_this'" \
+    "set Time zone" "t" "run-shell '/usr/local/bin/set-timezone ; $full_path_this'" \
     "" \
     "${aok_kernel}= Only for iSH-AOK kernel =" "" "" \
     "$aok_kernel  kernel tweaks" "" "" \
