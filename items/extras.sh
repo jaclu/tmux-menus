@@ -57,13 +57,13 @@ $TMUX_BIN display-menu                                                  \
     -x "$menu_location_x" -y "$menu_location_y"                         \
     "Back to Main menu  <--"  Left  "$open_menu/main.sh'"               \
     ""                                                                  \
-    "$(is_aok_fs)AOK  -->"                       A                      \
+    "$(is_aok_fs)iSH with AOK File System  -->" A                       \
             "$open_extra/aok.sh'"                                       \
-    "$(is_avalable dropbox Dropbox)  -->"        D                      \
+    "$(is_avalable dropbox Dropbox)  -->"       D                       \
             "$open_extra/dropbox.sh'"                                   \
-    "$(is_avalable spotify Spotify)  -->"        S                      \
+    "$(is_avalable spotify Spotify)  -->"       S                       \
             "$open_extra/spotify.sh'"                                   \
-    "$(is_avalable mullvad "Mullvad VPN")  -->"  M                      \
+    "$(is_avalable mullvad "Mullvad VPN")  -->" M                       \
             "$open_extra/mullvad.sh'"                                   \
     ""                                                                  \
     "Help  -->"  H  "$open_menu/help_extras.sh $full_path_this'"
