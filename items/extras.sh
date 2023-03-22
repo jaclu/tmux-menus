@@ -19,11 +19,11 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 . "$SCRIPT_DIR/utils.sh"
 
 menu_name="Handling Pane"
+full_path_this="$CURRENT_DIR/$(basename $0)"
 req_win_width=33
 req_win_height=9
 
 
-this_menu="$CURRENT_DIR/extras.sh"
 reload="; run-shell '$this_menu'"
 open_menu="run-shell '$CURRENT_DIR"
 open_extra="run-shell '$CURRENT_DIR/extras"
@@ -43,6 +43,11 @@ is_avalable() {
 
 }
 
+is_aok_fs() {
+    if [ ! -d /opt/AOK ]; then
+        echo "-"
+    fi
+}
 
 t_start="$(date +'%s')"
 
@@ -52,6 +57,8 @@ $TMUX_BIN display-menu                                                  \
     -x "$menu_location_x" -y "$menu_location_y"                         \
     "Back to Main menu  <--"  Left  "$open_menu/main.sh'"               \
     ""                                                                  \
+    "$(is_aok_fs)AOK  -->"                       A                      \
+            "$open_extra/aok.sh'"                                       \
     "$(is_avalable dropbox Dropbox)  -->"        D                      \
             "$open_extra/dropbox.sh'"                                   \
     "$(is_avalable spotify Spotify)  -->"        S                      \
@@ -59,7 +66,7 @@ $TMUX_BIN display-menu                                                  \
     "$(is_avalable mullvad "Mullvad VPN")  -->"  M                      \
             "$open_extra/mullvad.sh'"                                   \
     ""                                                                  \
-    "Help  -->"  H  "$open_menu/help_extras.sh $this_menu'"
+    "Help  -->"  H  "$open_menu/help_extras.sh $full_path_this'"
 
 
 ensure_menu_fits_on_screen
