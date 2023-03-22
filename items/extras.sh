@@ -44,7 +44,7 @@ is_avalable() {
 }
 
 is_aok_fs() {
-    if [ ! -d /opt/AOK ]; then
+    if [ ! -d /opt/AOK ] || [ ! -d /proc/ish ]; then
         echo "-"
     fi
 }
