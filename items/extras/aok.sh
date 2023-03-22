@@ -84,8 +84,6 @@ $TMUX_BIN display-menu \
     "$(disable_if_matching enabled)Enable login" "e" "$login_mode enable $suffix" \
     "$(disable_if_matching once)Single login session" "s" "$login_mode once $suffix" \
     "" \
-    "set Time zone" "t" "run-shell '/usr/local/bin/set-timezone ; $full_path_this'" \
-    "" \
     "${aok_kernel}= Only for iSH-AOK kernel =" "" "" \
     "$aok_kernel  kernel tweaks" "" "" \
     "$aok_kernel$multicore_act_lbl Multicore" "m" "run-shell 'toggle_multicore $multicore_action  $suffix" \
@@ -93,5 +91,12 @@ $TMUX_BIN display-menu \
     \
     "" \
     "Help  -->" H "$open_menu/help.sh $full_path_this'"
+
+#
+#  Doesnt work yet, needs to be investigated, seems set-timezone can't
+#  access full screen from within menus
+#
+# "set Time zone" "t" "run-shell '/usr/local/bin/set-timezone ; $full_path_this'" \
+# "" \
 
 ensure_menu_fits_on_screen
