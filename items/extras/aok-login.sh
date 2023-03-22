@@ -75,25 +75,25 @@ suffix=" > /dev/null' ; run-shell '$full_path_this'"
 t_start="$(date +'%s')"
 
 # shellcheck disable=SC2154
-$TMUX_BIN display-menu \
-    -T "#[align=centre] $menu_name " \
-    -x "$menu_location_x" -y "$menu_location_y" \
-    \
-    "Back to Main menu  <==" Home "$open_menu/main.sh'" \
-    "Back to Extras     <--" Left "$open_menu/extras.sh'" \
-    "Back to AOK        <--" A "$open_menu/extras/aok.sh" \
-    "" \
-    "Current login method: $current_login_method" "" "" \
-    " " "" "" \
-    "$(disable_if_matching disabled)Disable login"    "d" "$login_mode disable $suffix" \
-    "$(disable_if_matching enabled)Enable login"      "e" "$login_mode enable $suffix" \
-    "$(disable_if_matching once)Single login session" "s" "$login_mode once $suffix" \
-    "" \
-    "Only for iSH-AOK kernel" "" "" \
-    "$aok_kernel$multicore_act_lbl Multicore" "m" "run-shell 'toggle_multicore $multicore_action  $suffix" \
-    "$aok_kernel$elock_act_lbl Extra locking" "e" "run-shell 'elock            $elock_action      $suffix" \
-    \ 
-    "" \    
+$TMUX_BIN display-menu                                                                                      \
+    -T "#[align=centre] $menu_name "                                                                        \
+    -x "$menu_location_x" -y "$menu_location_y"                                                             \
+                                                                                                            \
+    "Back to Main menu  <==" Home "$open_menu/main.sh'"                                                     \
+    "Back to Extras     <--" Left "$open_menu/extras.sh'"                                                   \
+    "Back to AOK        <--" A "$open_menu/extras/aok.sh"                                                   \
+    ""                                                                                                      \
+    "Current login method: $current_login_method" "" ""                                                     \
+    " " "" ""                                                                                               \
+    "$(disable_if_matching disabled)Disable login"    "d" "$login_mode disable $suffix"                     \
+    "$(disable_if_matching enabled)Enable login"      "e" "$login_mode enable $suffix"                      \
+    "$(disable_if_matching once)Single login session" "s" "$login_mode once $suffix"                        \
+    ""                                                                                                      \
+    "Only for iSH-AOK kernel" "" ""                                                                         \
+    "$aok_kernel$multicore_act_lbl Multicore" "m" "run-shell 'toggle_multicore $multicore_action  $suffix"  \
+    "$aok_kernel$elock_act_lbl Extra locking" "e" "run-shell 'elock            $elock_action      $suffix"  \
+                                                                                                            \
+    ""                                                                                                      \
     "Help  -->" H "$open_menu/help.sh $full_path_this'"
 
 ensure_menu_fits_on_screen
