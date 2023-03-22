@@ -29,8 +29,8 @@ SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 
 menu_name="AOK"
 full_path_this="$CURRENT_DIR/$(basename $0)"
-req_win_width=33
-req_win_height=13
+req_win_width=35
+req_win_height=18
 
 #  For items only available if kernel is AOK
 if is_aok_kernel; then
