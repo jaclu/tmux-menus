@@ -21,7 +21,7 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 menu_name="Help summary"
 full_path_this="$CURRENT_DIR/$(basename $0)"
 req_win_width=43
-req_win_height=14
+req_win_height=15
 
 previous_menu="$1"
 
