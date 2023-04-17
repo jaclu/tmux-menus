@@ -33,7 +33,7 @@ set -- \
     0.0 E p "Plugins inventory" "$SCRIPT_DIR/plugins.sh" \
     0.0 S \
     1.6 C n 'Navigate & select ses/win/pane' 'choose-tree -Z' \
-    1.0 T 'Search in all sessions & windows' \
+    1.6 T 'Search in all sessions & windows' \
     1.6 C s ' ignores case, only visible part' \
     "command-prompt -p 'Search for:' 'find-window -CNTiZ -- \"%%\"'" \
     0.0 S \
