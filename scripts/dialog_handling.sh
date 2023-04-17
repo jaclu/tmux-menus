@@ -114,7 +114,9 @@ tmux_open_menu() {
 tmux_external_cmd() {
     label="$1"
     key="$2"
-    cmd="$3"
+    # cmd="$3"
+    cmd="$(echo "$3" | sed 's/"/\\"/g')" # replace embedded " with \"
+
     # [ $menu_debug -eq 1 ] && echo "tmux_external_cmd($label,$key,$cmd)"
     #
     #  needs to be prefixed with run-shell, since this is triggered by

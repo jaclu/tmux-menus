@@ -18,7 +18,7 @@ SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/dialog_handling.sh"
 
-reload=" > /dev/null' ; $current_script"
+reload=" > /dev/null ; $current_script"
 
 if [ -z "$(command -v spotify)" ]; then
     $TMUX_BIN display "spotify bin not found!"
@@ -46,17 +46,17 @@ set -- \
     0.0 C t "$title_label" "display '$song_title' $menu_reload" \
     0.0 S \
     0.0 E Space "Pause/Resume" "spotify pause  $reload" \
-    0.0 E n "Next" "spotify             next   $reload" \
-    0.0 E p "Prev" "spotify             prev   $reload" \
-    0.0 E r "Replay" "spotify           replay $reload"
-# 0.0 E i "Copy URI to clipboard" "spotify share uri $reload" \
-# 0.0 E l "Copy URL to clipboard" "spotify share url $reload" \
-# 0.0 E s "Shuffle - toggle" "spotify toggle shuffle $reload" \
-# 0.0 E R "Repeat  - toggle" "spotify toggle repeat  $reload" \
-# 0.0 E u "vol Up" "spotify           vol up         $reload" \
-# 0.0 E d "vol Down" "spotify         vol down       $reload" \
-# 0.0 S \
-# 0.0 M H 'Help       -->' "$ITEMS_DIR/help.sh $current_script"
+    0.0 E n "Next" "spotify   next   $reload" \
+    0.0 E p "Prev" "spotify   prev   $reload" \
+    0.0 E r "Replay" "spotify replay $reload" \
+    0.0 E i "Copy URI to clipboard" "spotify share uri $reload" \
+    0.0 E l "Copy URL to clipboard" "spotify share url $reload" \
+    0.0 E s "Shuffle - toggle" "spotify toggle shuffle $reload" \
+    0.0 E R "Repeat  - toggle" "spotify toggle repeat  $reload" \
+    0.0 E u "vol Up" "spotify           vol up         $reload" \
+    0.0 E d "vol Down" "spotify         vol down       $reload" \
+    0.0 S \
+    0.0 M H 'Help       -->' "$ITEMS_DIR/help.sh $current_script"
 
 req_win_width=33
 req_win_height=13
