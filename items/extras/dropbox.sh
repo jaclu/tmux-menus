@@ -32,8 +32,8 @@ set -- \
     0.0 M Home "Back to Main menu  <==" "$ITEMS_DIR/main.sh" \
     0.0 M Left "Back to Extras     <--" "$ITEMS_DIR/extras.sh" \
     0.0 S \
-    0.0 C "Status" "display \"$(dropbox status)\" $menu_reload" \
-    0.0 C t "$tgl_lbl" "$CURRENT_DIR/_dropbox_toggle.sh" \
+    0.0 C s "Status" "display \"$(dropbox status)\" $menu_reload" \
+    0.0 E t "$tgl_lbl" "$CURRENT_DIR/_dropbox_toggle.sh $menu_reload" \
     0.0 S \
     0.0 M H "Help  -->" "$ITEMS_DIR/help.sh $current_script'"
 

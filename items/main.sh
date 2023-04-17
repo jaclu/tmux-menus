@@ -25,7 +25,7 @@ set -- \
     0.0 M S "Handling Sessions -->" sessions.sh \
     0.0 M L "Layouts           -->" layouts.sh \
     0.0 M V "Split view        -->" split_view.sh \
-    7.0 M E "Extras            -->" extras.sh \
+    1.0 M E "Extras            -->" extras.sh \
     0.0 M A "Advanced Options  -->" advanced.sh \
     0.0 S \
     0.0 C l "toggle status Line" "set status" \

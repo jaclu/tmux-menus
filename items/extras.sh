@@ -35,16 +35,16 @@ is_aok_fs() {
     fi
 }
 
-menu_name="Handling Pane"
+menu_name="Extras"
 
 #  shellcheck disable=SC2154
 set -- \
     0.0 M Left "Back to Main menu  <--" main.sh \
     0.0 S \
-    0.0 M A "$(is_aok_fs)iSH with AOK FS  -->" "$CURRENT_DIR"/extras/aok.sh \
+    7.0 M A "$(is_aok_fs)iSH with AOK FS  -->" "$CURRENT_DIR"/extras/aok.sh \
     0.0 M D "$(is_avalable dropbox)Dropbox  -->" "$CURRENT_DIR"/extras/dropbox.sh \
-    0.0 M S "$(is_avalable spotify)Spotify  -->" "$CURRENT_DIR"/extras/spotify.sh \
-    0.0 M M "$(is_avalable mullvad)Mullvad VPN  -->" "$CURRENT_DIR"/extras/mullvad.sh \
+    7.0 M S "$(is_avalable spotify)Spotify  -->" "$CURRENT_DIR"/extras/spotify.sh \
+    7.0 M M "$(is_avalable mullvad)Mullvad VPN  -->" "$CURRENT_DIR"/extras/mullvad.sh \
     0.0 S \
     0.0 M H 'Help       -->' "$CURRENT_DIR/help.sh $current_script"
 

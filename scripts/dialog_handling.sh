@@ -204,6 +204,14 @@ whiptail_open_menu() {
     label="$1"
     key="$2"
     menu="$3"
+
+    #
+    #  labels starting with - indicates disabled feature in tmux notation,
+    #  whiptail can not handle labels starting with -, so just skip
+    #  those lines
+    #
+    starting_with_dash "$label" && return
+
     menu_items="$menu_items $key \"$label\""
     wt_actions="$wt_actions $key | $menu $whiptail_action_separator"
 }
@@ -420,7 +428,7 @@ parse_menu() {
         echo "Would run:"
         echo "$@"
         if [ -n "$wt_actions" ]; then
-            echo "Whiptail actions"
+            echo "Whiptail actions:"
             echo "$wt_actions"
         fi
     fi
