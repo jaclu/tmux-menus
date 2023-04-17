@@ -44,11 +44,11 @@ set -- \
     0.0 M Left "Back to Extras     <--" "$ITEMS_DIR/extras.sh" \
     0.0 S \
     0.0 C t "$title_label" "display '$song_title' $menu_reload" \
-    0.0 S
-# 0.0 E Space "Pause/Resume" "spotify pause  $reload" \
-# 0.0 E n "Next" "spotify             next   $reload" \
-# 0.0 E p "Prev" "spotify             prev   $reload" \
-# 0.0 E r "Replay" "spotify           replay $reload" \
+    0.0 S \
+    0.0 E Space "Pause/Resume" "spotify pause  $reload" \
+    0.0 E n "Next" "spotify             next   $reload" \
+    0.0 E p "Prev" "spotify             prev   $reload" \
+    0.0 E r "Replay" "spotify           replay $reload"
 # 0.0 E i "Copy URI to clipboard" "spotify share uri $reload" \
 # 0.0 E l "Copy URL to clipboard" "spotify share url $reload" \
 # 0.0 E s "Shuffle - toggle" "spotify toggle shuffle $reload" \

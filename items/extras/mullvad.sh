@@ -56,12 +56,19 @@ fi
 menu_name="Mullvad VPN"
 
 set -- \
-    0.0 M Home "Back to Main menu  <==" "$ITEMS_DIR/main.sh" \
+    0.0 M Home "'Back to Main menu  <=='" "$ITEMS_DIR/main.sh" \
     0.0 M Left "Back to Extras     <--" "$ITEMS_DIR/extras.sh" \
     0.0 S \
-    0.0 C s "Status" "display '$(mullvad status)' $menu_reload" \
-    0.0 E c "Connect" "mullvad connect ; $current_script" \
-    0.0 E d "Disconnect" "mullvad disconnect ; $current_script" \
+    0.0 C s Status "display '$(mullvad status)' $menu_reload"
+
+#  Add conditional lines
+if mullvad status | grep -q Connected; then
+    set -- "$@" 0.0 E d Disconnect "mullvad disconnect ; $current_script"
+else
+    set -- "$@" 0.0 E c Connect "mullvad connect ; $current_script"
+fi
+
+set -- "$@" \
     0.0 E l "$lan_label LAN sharing" "mullvad lan set $lan_cmd; $current_script" \
     0.0 S \
     0.0 M H 'Help       -->' "$ITEMS_DIR/help.sh $current_script"
