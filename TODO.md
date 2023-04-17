@@ -1,7 +1,7 @@
-# Issues
+# Plan
 
-I have disabled Extras for now, havent had time to rework them to
-fit into the dynamic menus notation
+just reworked the menu generation, will monitor bugs for now, no new
+features planned ATM.
 
 ## Simple millisecond timing test
 
