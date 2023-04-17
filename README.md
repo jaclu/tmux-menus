@@ -250,7 +250,8 @@ next time you start tmux automatically.
 ## Menu building
 
 Each item consists of at least two params
-- min version for this feature, set to 1.0 if assumed to allways work
+
+- min version for this item, set to 0.0 if assumed to allways work
 - Type of menu item, see below
 - Additional params depending on item type
 
@@ -260,7 +261,7 @@ Item types
 - C - run tmux Command
 - E - run External command
 - T - Display text line
-- S - Separator/Spacer line line
+- S - Separator/Spacer line line (ignored in whiptail)
 
 ## Contributing
 
