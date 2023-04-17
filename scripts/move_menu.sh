@@ -13,10 +13,8 @@
 #  shellcheck disable=SC2034
 #  Directives for shellcheck directly after bang path are global
 
-if [ -z "$CURRENT_DIR" ] || [ -z "$SCRIPT_DIR" ]; then
-    echo "ERROR: CURRENT_DIR & SCRIPT_DIR must be defined!"
-    exit 1
-fi
+CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
+SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
