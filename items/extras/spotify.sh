@@ -44,7 +44,7 @@ set -- \
     0.0 M Left "Back to Extras     <--" "$ITEMS_DIR/extras.sh" \
     0.0 S \
     0.0 C t "$title_label" "display '$song_title' $menu_reload" \
-    1.0 S
+    0.0 S
 # 0.0 E Space "Pause/Resume" "spotify pause  $reload" \
 # 0.0 E n "Next" "spotify             next   $reload" \
 # 0.0 E p "Prev" "spotify             prev   $reload" \

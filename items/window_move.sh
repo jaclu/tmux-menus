@@ -35,7 +35,7 @@ set -- \
     0.0 M Left "Back to Handling Window  <--" windows.sh \
     0.0 S \
     0.0 C m "Move window to other location" "$to_other" \
-    1.0 T "${other_pane_is_marked}Swap current window with window" \
+    0.0 T "${other_pane_is_marked}Swap current window with window" \
     0.0 C s "$other_pane_is_marked containing marked pane" swap-window \
     0.0 C "\<" "Swap window Left" "swap-window -dt:-1 $menu_reload" \
     0.0 C "\>" "Swap window Right" "swap-window -dt:+1 $menu_reload" \

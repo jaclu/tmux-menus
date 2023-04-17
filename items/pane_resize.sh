@@ -27,12 +27,12 @@ set -- \
     0.0 M Left "Back to Handling Pane  <--" panes.sh \
     0.0 S \
     1.7 C s "Specify width & height" "$set_size" \
-    1.0 T " #[align=centre]-------  resize by 1  ------" \
+    0.0 T " #[align=centre]-------  resize by 1  ------" \
     1.7 C u "up     " "resize-pane -U $menu_reload" \
     1.7 C d "down   " "resize-pane -D $menu_reload" \
     1.7 C l "left   " "resize-pane -L $menu_reload" \
     1.7 C r "right  " "resize-pane -R $menu_reload" \
-    1.0 T " #[align=centre]-------  resize by 5  ------" \
+    0.0 T " #[align=centre]-------  resize by 5  ------" \
     1.7 C U "up" "resize-pane -U 5 $menu_reload" \
     1.7 C D "down" "resize-pane -D 5 $menu_reload" \
     1.7 C L "left" "resize-pane -L 5 $menu_reload" \

@@ -49,7 +49,7 @@ set -- \
     0.0 C m "Toggle mouse to: $new_mouse_status" "$toggle_mouse $menu_reload" \
     0.0 C p "Change prefix <$current_prefix>" "$change_prefix" \
     0.0 S \
-    1.0 T "-#[nodim]Kill server - all your sessions" \
+    0.0 T "-#[nodim]Kill server - all your sessions" \
     0.0 C x " on this host are terminated    " "$kill_server" \
     0.0 S \
     0.0 M H "Help  -->" "$CURRENT_DIR/help.sh $current_script"

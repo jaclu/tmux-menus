@@ -68,14 +68,14 @@ set -- \
     0.0 M Home "Back to Main menu  <==" "$ITEMS_DIR/main.sh" \
     0.0 M Left "Back to Extras     <--" "$ITEMS_DIR/extras.sh" \
     0.0 S \
-    1.0 T "-Current login method: $current_login_method" \
-    1.0 T "- " \
+    0.0 T "-Current login method: $current_login_method" \
+    0.0 T "- " \
     0.0 E d "$(disable_if_matching disabled)Disable login" "$login_mode disable $suffix" \
     0.0 E e "$(disable_if_matching enabled)Enable login" "$login_mode enable $suffix" \
     0.0 E s "$(disable_if_matching once)Single login session" "$login_mode once $suffix" \
     0.0 S \
-    1.0 T "= Only for iSH-AOK kernel =" \
-    1.0 T "  kernel tweaks" "" "" \
+    0.0 T "= Only for iSH-AOK kernel =" \
+    0.0 T "  kernel tweaks" "" "" \
     0.0 S \
     0.0 E m "$aok_kernel$multicore_act_lbl Multicore" "toggle_multicore $multicore_action $suffix" \
     0.0 E l "$aok_kernel$elock_act_lbl extra Locking" "elock $elock_action $suffix" \

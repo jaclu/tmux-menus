@@ -45,8 +45,8 @@ set -- \
 # 0.0 S \
 # 0.0 C s "set coordinates" "$set_coordinates" \
 # 0.0 S \
-# 1.0 T "-When using coordinates" \
-# 1.0 T "-lower left corner is set!"
+# 0.0 T "-When using coordinates" \
+# 0.0 T "-lower left corner is set!"
 
 req_win_width=37
 req_win_height=13
