@@ -33,9 +33,7 @@ if [ "$(uname)" != "Darwin" ]; then
     title_key=""
 fi
 
-# song_title="$($SCRIPT_DIR/spotify-now-playing | sed "s/'/*/g" | sed 's/"/*/g')"
-song_title="Ay - Arema Arega - Gilles Peterson Presents: Havana Cultura the Search Continues"
-# song_title="Ay - Arema Arega - Gilles Peterson Presents"
+song_title="$($SCRIPT_DIR/spotify-now-playing | sed "s/'/*/g" | sed 's/"/*/g')"
 
 menu_name="Spotify"
 
