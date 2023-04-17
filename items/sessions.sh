@@ -38,10 +38,12 @@ set -- \
         'set -s detach-on-destroy"
 
 if tmux_vers_compare 3.2; then
-    # added param for compatible versions
+    #  added param for compatible versions
+    #  shellcheck disable=SC2145
     set -- "$@ no-detached"
 fi
 
+#  shellcheck disable=SC2145,SC2154
 set -- "$@ ; kill-session'" \
     2.0 C o "Kill all other sessions" "confirm-before -p \
         'Are you sure you want to kill all other sessions? (y/n)' \

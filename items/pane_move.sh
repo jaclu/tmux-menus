@@ -28,10 +28,12 @@ set -- \
         \"run-shell '$SCRIPT_DIR/relocate_pane.sh P M %%'\""
 
 if tmux display-message -p '#{pane_marked_set}' | grep -q '1'; then
+    #  shellcheck disable=SC2154
     set -- "$@" \
         1.7 C s "Swap current pane with marked" "swap-pane $menu_reload"
 fi
 
+#  shellcheck disable=SC2154
 set -- "$@" \
     1.7 C "{" "<P> Swap pane with prev" "swap-pane -U $menu_reload" \
     1.7 C "}" "<P> Swap pane with next" "swap-pane -D $menu_reload" \

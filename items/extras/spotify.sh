@@ -36,7 +36,7 @@ if [ "$(uname)" = "Darwin" ]; then
     # This title check is a MacOS script
     set -- "$@" \
         0.0 C t "Title - now playing" "display \
-            '$($SCRIPT_DIR/spotify-now-playing | sed "s/'/*/g" | sed 's/"/*/g')' \
+            '$("$SCRIPT_DIR"/spotify-now-playing | sed "s/'/*/g" | sed 's/"/*/g')' \
             $menu_reload"
 fi
 
