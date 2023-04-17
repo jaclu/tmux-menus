@@ -5,6 +5,10 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
+#  THIS DOES NOT WORK RIGHT NOW!
+#
+#  I havent had time to update it to use dynamic menus...
+#
 #   Live configuration. So far only menu location is available
 #
 
