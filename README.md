@@ -251,7 +251,7 @@ next time you start tmux automatically.
 
 Each item consists of at least two params
 
-- min version for this item, set to 0.0 if assumed to allways work
+- min tmux version for this item, set to 0.0 if assumed to allways work
 - Type of menu item, see below
 - Additional params depending on item type
 
