@@ -18,7 +18,7 @@ SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/dialog_handling.sh"
 
-[ -z "$(command -v dropbox)" ] && error_msg "dropbox bin not found!"
+[ -z "$(command -v dropbox)" ] && error_msg "dropbox bin not found!" 1
 
 if is_dropbox_running; then
     tgl_lbl="sTop"
