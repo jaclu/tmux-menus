@@ -11,51 +11,45 @@
 #  shellcheck disable=SC2034
 #  Directives for shellcheck directly after bang path are global
 
-# shellcheck disable=SC1007
-CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
 # shellcheck disable=SC1091
-. "$SCRIPT_DIR/utils.sh"
+. "$SCRIPT_DIR/dialog_handling.sh"
 
 menu_name="Paste buffers"
-full_path_this="$CURRENT_DIR/$(basename $0)"
+
+#  shellcheck disable=SC2154
+set -- \
+    0.0 M Home "Back to Main menu      <==" main.sh \
+    0.0 M Left "Back to Handling Pane  <--" panes.sh \
+    1.0 T "#[align=centre,nodim]-----------   Commands   -----------" \
+    1.0 T "This assumes at least one tmux buffer is assigned!" \
+    1.0 T " " \
+    1.0 T "Enter - Paste selected buffer" \
+    1.0 T "Up    - Select previous buffer" \
+    1.0 T "Down  - Select next buffer" \
+    1.0 T "C-s   - Search by name or content" \
+    1.0 T "n     Repeat last search" \
+    1.0 T "t     Toggle if buffer is tagged" \
+    1.0 T "T     Tag no buffers" \
+    1.0 T "C-t   Tag all buffers" \
+    1.0 T "p     Paste selected buffer" \
+    1.0 T "P     Paste tagged buffers" \
+    1.0 T "d     Delete selected buffer" \
+    1.0 T "D     Delete tagged buffers" \
+    1.0 T "e     Open the buffer in an editor" \
+    1.0 T "f     Enter a format to filter items" \
+    1.0 T "O     Change sort field" \
+    1.0 T "r     Reverse sort order" \
+    1.0 T "v     Toggle preview" \
+    1.0 T "q     Exit mode" \
+    1.0 T " " \
+    1.9 C = "<P>" "choose-buffer" \
+    0.0 S \
+    0.0 M H "Help  -->" "$CURRENT_DIR/help.sh $current_script"
+
 req_win_width=41
 req_win_height=27
 
-open_menu="run-shell '$CURRENT_DIR"
-
-t_start="$(date +'%s')"
-
-# shellcheck disable=SC2154
-$TMUX_BIN display-menu \
-    -T "#[align=centre] $menu_name " \
-    -x "$menu_location_x" -y "$menu_location_y" \
-    \
-    "Back to Main menu      <==" Home "$open_menu/main.sh'" \
-    "Back to Handling Pane  <--" Left "$open_menu/panes.sh'" \
-    "-#[align=centre,nodim]-----------   Commands   -----------" "" "" \
-    "-Enter Paste selected buffer" "" "" \
-    "-Up    Select previous buffer" "" "" \
-    "-Down  Select next buffer" "" "" \
-    "-C-s   Search by name or content" "" "" \
-    "-n     Repeat last search" "" "" \
-    "-t     Toggle if buffer is tagged" "" "" \
-    "-T     Tag no buffers" "" "" \
-    "-C-t   Tag all buffers" "" "" \
-    "-p     Paste selected buffer" "" "" \
-    "-P     Paste tagged buffers" "" "" \
-    "-d     Delete selected buffer" "" "" \
-    "-D     Delete tagged buffers" "" "" \
-    "-e     Open the buffer in an editor" "" "" \
-    "-f     Enter a format to filter items" "" "" \
-    "-O     Change sort field" "" "" \
-    "-r     Reverse sort order" "" "" \
-    "-v     Toggle preview" "" "" \
-    "-q     Exit mode" "" "" \
-    "-" "" "" \
-    "<P>" = "choose-buffer -Z" \
-    "" \
-    "Help  -->" H "$open_menu/help.sh $full_path_this'"
-
-ensure_menu_fits_on_screen
+parse_menu "$@"

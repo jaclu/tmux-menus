@@ -2,19 +2,21 @@
 
 Popup menus to help with managing your environment.
 
+Can use whiptail as alternate menu system.
+
 Not to hard to adopt to fit your needs. Items that some
 might find slightly redundant are included, easier to remove excess for more
 experienced users, than to add more for newbies.
 
 ## Recent changes
 
+- Total rework, now the menus are generated dynamically, both for tmux
+and whiptail, added version limits to most actions. Using whiptail the
+menus can be used on all older versions of tmux.
 - Added Extras - iSH AOK FS, corrected main help text and some menu min sizes
 - Main menu, toggle status Line - new feature
 - Main menu, Public IP - It is simply echoed in the current pane, so that there is plenty of time to read and/or copy it.
 Just hit Escape to get pane to resume normal operation.
-- Plugin inventory lists uninstalled plugins, and gives instructions howto
-uninstall not used plugins
-- Added Plugins inventory - (main menu) Lists defined plugins, install status and items not supposed to be in plugins dir
 
 ## Purpose
 
@@ -58,16 +60,32 @@ Default is `<prefix> \` see Configuration below for how to change it.
 ![Session](https://user-images.githubusercontent.com/5046648/200143930-e27f063f-c054-47d5-9640-502f4127cb14.png)
 ![Help Summary](https://user-images.githubusercontent.com/5046648/200149023-619deff0-8d66-45e2-be3e-a6def82e9fbc.png)
 
+## whiptail
+
+These menus can also be displayed using whiptail, be aware that the
+whiptail menus can't be triggered by the shortcut. I havent figured out
+how to trigger things displayed inside a pane via shortcut.
+So using whiptail, it can't really be considered a traditional tmux plugin,
+you have to launch it manually or by some other means.
+But once started, the menu system works the same using whiptail, the
+menu shortcuts are not as effective, since whiptail does not differentiate
+between upper and lower case letters, and does not at all support special
+keys like 'Left' or 'Home'
+
+If tmux is < 3.0 whiptail will automatically be used.
+If you want to use whiptail on modern tmuxes set this env variable: `export
+FORCE_WHIPTAIL=1`
+
 ## Compatibility
 
 <table><tr><th>Version<th>Notice</th></tr>
 <tr>
   <td> 3.2 -<td>Fully compatible</td>
-</tr>
-<tr>
+</tr><tr>
   <td>3.0 ⁠- 3.1c<td>Menu centering not supported, it's displayed top left
-  if C is menu location. Some actions might not work depending on version.
-  There should be a notification message about "unknown command" in such cases.
+  if C is menu location.
+</td></tr><tr>
+  <td>< 3.0<td>Only available using whiptail
 </td></tr></table>
 
 ## Installation
@@ -143,7 +161,7 @@ set -g @menus_location_x 'C'
 set -g @menus_location_y 'C'
 ```
 
-### Live config
+### Live config (disabled for now)
 
 If you want to be able to dynamically edit menu settings from within menus,
 set this
@@ -228,6 +246,21 @@ If you want to go back to your installed version for now, either reload
 configs, or run `~/.tmux/plugins/tmux-menus/menus.tmux` to rebind those
 menus to the trigger. Regardless the installed version is activated
 next time you start tmux automatically.
+
+## Menu building
+
+Each item consists of at least two params
+- min version for this feature, set to 1.0 if assumed to allways work
+- Type of menu item, see below
+- Additional params depending on item type
+
+Item types
+
+- M - Open another menu
+- C - run tmux Command
+- E - run External command
+- T - Display text line
+- S - Separator/Spacer line line
 
 ## Contributing
 

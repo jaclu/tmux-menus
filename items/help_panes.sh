@@ -11,38 +11,31 @@
 #  shellcheck disable=SC2034
 #  Directives for shellcheck directly after bang path are global
 
-# shellcheck disable=SC1007
-CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
 # shellcheck disable=SC1091
-. "$SCRIPT_DIR/utils.sh"
-
-menu_name="Help Panes"
-full_path_this="$CURRENT_DIR/$(basename $0)"
-req_win_width=39
-req_win_height=10
+. "$SCRIPT_DIR/dialog_handling.sh"
 
 previous_menu="$1"
 
 if [ -z "$previous_menu" ]; then
-    error_msg "help.sh was called without notice of what called it"
+    error_msg "help_panes.sh was called without notice of what called it"
 fi
 
-t_start="$(date +'%s')"
+menu_name="Help Panes"
 
-# shellcheck disable=SC2154
-$TMUX_BIN display-menu \
-    -T "#[align=centre] $menu_name " \
-    -x "$menu_location_x" -y "$menu_location_y" \
-    \
-    "Back to Previous menu  <--" Left "run-shell $previous_menu" \
-    "" \
-    "-When saving history with escapes" "" "" \
-    "-less/most will not be able" "" "" \
-    "-to display the content." "" "" \
-    "- " "" "" \
-    "-You would have to use tools like" "" "" \
-    "-cat/bat in order to see the colors" "" ""
+set -- \
+    0.0 M Left "Back to Previous menu  <--" "$previous_menu" \
+    0.0 S \
+    1.0 T "When saving history with escapes" \
+    1.0 T "less/most will not be able" \
+    1.0 T "to display the content." \
+    0.0 S \
+    1.0 T "You would have to use tools like" \
+    1.0 T "cat/bat in order to see the colors"
 
-ensure_menu_fits_on_screen
+req_win_width=39
+req_win_height=10
+
+parse_menu "$@"

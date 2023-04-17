@@ -19,18 +19,12 @@ is_aok_kernel() {
     grep -qi aok /proc/ish/version 2>/dev/null
 }
 
-# shellcheck disable=SC1007
-CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 ITEMS_DIR="$(dirname "$CURRENT_DIR")"
 SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 
 # shellcheck disable=SC1091
-. "$SCRIPT_DIR/utils.sh"
-
-menu_name="AOK FS tools"
-full_path_this="$CURRENT_DIR/$(basename $0)"
-req_win_width=35
-req_win_height=18
+. "$SCRIPT_DIR/dialog_handling.sh"
 
 #  For items only available if kernel is AOK
 if is_aok_kernel; then
@@ -39,6 +33,7 @@ else
     aok_kernel="-"
 fi
 
+#  shellcheck disable=SC2010
 if ls -l /bin/login | grep -q login.loop; then
     current_login_method="enabled"
 elif ls -l /bin/login | grep -q login.once; then
@@ -64,40 +59,37 @@ else
     elock_action="on"
 fi
 
-open_menu="run-shell '$ITEMS_DIR"
-login_mode="run-shell '/usr/local/bin/aok -l"
-suffix=" > /dev/null ; $full_path_this'"
+login_mode="'/usr/local/bin/aok -l"
+suffix=" > /dev/null ; $current_script"
 
-t_start="$(date +'%s')"
+menu_name="AOK FS tools"
 
-# shellcheck disable=SC2154
-$TMUX_BIN display-menu \
-    -T "#[align=centre] $menu_name " \
-    -x "$menu_location_x" -y "$menu_location_y" \
-    \
-    "Back to Main menu  <==" Home "$open_menu/main.sh'" \
-    "Back to Extras     <--" Left "$open_menu/extras.sh'" \
-    "" \
-    "-Current login method: $current_login_method" "" "" \
-    "- " "" "" \
-    "$(disable_if_matching disabled)Disable login" "d" "$login_mode disable $suffix" \
-    "$(disable_if_matching enabled)Enable login" "e" "$login_mode enable $suffix" \
-    "$(disable_if_matching once)Single login session" "s" "$login_mode once $suffix" \
-    "" \
-    "-= Only for iSH-AOK kernel =" "" "" \
-    "-  kernel tweaks" "" "" \
-    "-" "" "" \
-    "$aok_kernel$multicore_act_lbl Multicore" "m" "run-shell 'toggle_multicore $multicore_action  $suffix" \
-    "$aok_kernel$elock_act_lbl extra Locking" "l" "run-shell 'elock            $elock_action      $suffix" \
-    \
-    "" \
-    "Help  -->" H "$open_menu/help.sh $full_path_this'"
+set -- \
+    0.0 M Home "Back to Main menu  <==" "$ITEMS_DIR/main.sh" \
+    0.0 M Left "Back to Extras     <--" "$ITEMS_DIR/extras.sh" \
+    0.0 S \
+    1.0 T "-Current login method: $current_login_method" \
+    1.0 T "- " \
+    0.0 E d "$(disable_if_matching disabled)Disable login" "$login_mode disable $suffix" \
+    0.0 E e "$(disable_if_matching enabled)Enable login" "$login_mode enable $suffix" \
+    0.0 E s "$(disable_if_matching once)Single login session" "$login_mode once $suffix" \
+    0.0 S \
+    1.0 T "= Only for iSH-AOK kernel =" \
+    1.0 T "  kernel tweaks" "" "" \
+    0.0 S \
+    0.0 E m "$aok_kernel$multicore_act_lbl Multicore" "toggle_multicore $multicore_action $suffix" \
+    0.0 E l "$aok_kernel$elock_act_lbl extra Locking" "elock $elock_action $suffix" \
+    0.0 S \
+    0.0 M H "Help  -->" "$ITEMS_DIR/help.sh $current_script'"
 
 #
 #  Doesnt work yet, needs to be investigated, seems set-timezone can't
 #  access full screen from within menus
 #
-# "set Time zone" "t" "run-shell '/usr/local/bin/set-timezone ; $full_path_this'" \
+# 0.0 E t "set Time zone" "/usr/local/bin/set-timezone $suffix" \
 # "" \
 
-ensure_menu_fits_on_screen
+req_win_width=35
+req_win_height=18
+
+parse_menu "$@"

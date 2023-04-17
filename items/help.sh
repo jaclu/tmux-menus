@@ -11,17 +11,11 @@
 #  shellcheck disable=SC2034
 #  Directives for shellcheck directly after bang path are global
 
-# shellcheck disable=SC1007
-CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
 # shellcheck disable=SC1091
-. "$SCRIPT_DIR/utils.sh"
-
-menu_name="Help summary"
-full_path_this="$CURRENT_DIR/$(basename $0)"
-req_win_width=43
-req_win_height=15
+. "$SCRIPT_DIR/dialog_handling.sh"
 
 previous_menu="$1"
 
@@ -29,25 +23,24 @@ if [ -z "$previous_menu" ]; then
     error_msg "help.sh was called without notice of what called it"
 fi
 
-t_start="$(date +'%s')"
+menu_name="Help summary"
 
-# shellcheck disable=SC2154
-$TMUX_BIN display-menu \
-    -T "#[align=centre] $menu_name " \
-    -x "$menu_location_x" -y "$menu_location_y" \
-    \
-    "Back to Previous menu  <--" Left "run-shell $previous_menu" \
-    "" \
-    "- -->  Indicates this will open a" "" "" \
-    "- <--  new menu." "" "" \
-    "" \
-    "-<P> Indicates this key is a default" "" "" \
-    "-    key, so unless it has been" "" "" \
-    "-    changed, it should be possible" "" "" \
-    "-    to use with <prefix> directly." "" "" \
-    "" \
-    "-Shortcut keys are usually upper case" "" "" \
-    "-for menus, and lower case for actions." "" "" \
-    "-Exit menus with ESC or q" "" ""
+set -- \
+    0.0 M Left "Back to Previous menu  <--" "$previous_menu" \
+    0.0 S \
+    1.0 T "'-->'  Indicates this will open a" \
+    1.0 T "'<--'  new menu." \
+    0.0 S \
+    1.0 T "<P> Indicates this key is a default" \
+    1.0 T "    key, so unless it has been" \
+    1.0 T "    changed, it should be possible" \
+    1.0 T "    to use with <prefix> directly." \
+    0.0 S \
+    1.0 T "Shortcut keys are usually upper case" \
+    1.0 T "for menus, and lower case for actions." \
+    1.0 T "Exit menus with ESC or q"
 
-ensure_menu_fits_on_screen
+req_win_width=43
+req_win_height=15
+
+parse_menu "$@"

@@ -11,40 +11,31 @@
 #  shellcheck disable=SC2034
 #  Directives for shellcheck directly after bang path are global
 
-# shellcheck disable=SC1007
-CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
 # shellcheck disable=SC1091
-. "$SCRIPT_DIR/utils.sh"
+. "$SCRIPT_DIR/dialog_handling.sh"
 
 menu_name="Split view"
-full_path_this="$CURRENT_DIR/$(basename $0)"
+
+#  shellcheck disable=SC2154
+set -- \
+    0.0 M Left "Back to Main menu  <--" main.sh \
+    1.0 T "-#[align=centre,nodim]----  Split Pane  ----" \
+    2.0 C l "    Left" "split-window     -hb -c '#{pane_current_path}' $menu_reload" \
+    1.7 C "\%" "<P> Right" "split-window -h  -c '#{pane_current_path}' $menu_reload" \
+    2.0 C a "    Above" "split-window    -vb -c '#{pane_current_path}' $menu_reload" \
+    1.7 C '\"' "<P> Below" "split-window -v  -c '#{pane_current_path}' $menu_reload" \
+    1.0 T "-#[align=centre,nodim]---  Split Window  ---" \
+    2.4 C L "    Left" "split-window -fhb -c '#{pane_current_path}' $menu_reload" \
+    2.4 C R "    Right" "split-window -fh  -c '#{pane_current_path}' $menu_reload" \
+    2.4 C A "    Above" "split-window -fvb -c '#{pane_current_path}' $menu_reload" \
+    2.4 C B "    Below" "split-window -fv  -c '#{pane_current_path}' $menu_reload" \
+    0.0 S \
+    0.0 M H "Help  -->" "$CURRENT_DIR/help_split.sh $current_script"
+
 req_win_width=33
 req_win_height=15
 
-reload="; run-shell \"$full_path_this\""
-open_menu="run-shell '$CURRENT_DIR"
-
-t_start="$(date +'%s')"
-
-# shellcheck disable=SC2154
-$TMUX_BIN display-menu \
-    -T "#[align=centre] $menu_name " \
-    -x "$menu_location_x" -y "$menu_location_y" \
-    \
-    "Back to Main menu  <--" Left "$open_menu/main.sh'" \
-    "-#[align=centre,nodim]----  Split Pane  ----" "" "" \
-    "    Left" l "split-window -hb  -c '#{pane_current_path}' $reload" \
-    "<P> Right" % "split-window -h   -c '#{pane_current_path}' $reload" \
-    "    Above" a "split-window -vb  -c '#{pane_current_path}' $reload" \
-    "<P> Below" \" "split-window -v   -c '#{pane_current_path}' $reload" \
-    "-#[align=centre,nodim]---  Split Window  ---" "" "" \
-    "    Left" L "split-window -fhb -c '#{pane_current_path}' $reload" \
-    "    Right" R "split-window -fh  -c '#{pane_current_path}' $reload" \
-    "    Above" A "split-window -fvb -c '#{pane_current_path}' $reload" \
-    "    Below" B "split-window -fv  -c '#{pane_current_path}' $reload" \
-    "" \
-    "Help  -->" H "$open_menu/help_split.sh $full_path_this'"
-
-ensure_menu_fits_on_screen
+parse_menu "$@"

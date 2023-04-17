@@ -11,52 +11,44 @@
 #  shellcheck disable=SC2034
 #  Directives for shellcheck directly after bang path are global
 
-# shellcheck disable=SC1007
-CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
 # shellcheck disable=SC1091
-. "$SCRIPT_DIR/utils.sh"
+. "$SCRIPT_DIR/dialog_handling.sh"
 
 menu_name="Client Management"
-full_path_this="$CURRENT_DIR/$(basename $0)"
+
+#  shellcheck disable=SC2154
+set -- \
+    0.0 M Home "Back to Main menu         <==" main.sh \
+    0.0 M Left "Back to Advanced options  <--" advanced.sh \
+    1.0 T "-#[align=centre,nodim]-----------   Commands   -----------" \
+    1.0 T "-Enter Choose selected client" \
+    1.0 T "-Up    Select previous client" \
+    1.0 T "-Down  Select next client" \
+    1.0 T "-C-s   Search by name" \
+    1.0 T "-n     Repeat last search" \
+    1.0 T "-t     Toggle if client is tagged" \
+    1.0 T "-T     Tag no clients". \
+    1.0 T "-C-t   Tag all clients" \
+    1.0 T "-d     Detach selected client" \
+    1.0 T "-D     Detach tagged clients" \
+    1.0 T "-x     Detach and HUP selected client" \
+    1.0 T "-X     Detach and HUP tagged clients" \
+    1.0 T "-z     Suspend selected client" \
+    1.0 T "-Z     Suspend tagged clients" \
+    1.0 T "-f     Enter a format to filter items" \
+    1.0 T "-O     Change sort field" \
+    1.0 T "-r     Reverse sort order" \
+    1.0 T "-v     Toggle preview" \
+    1.0 T "-q     Exit mode" \
+    1.0 T "-" \
+    0.0 C D "<P>" "choose-client -Z" \
+    0.0 S \
+    0.0 M H "Help  -->" "$SCRIPT_DIR/help.sh $current_script'"
+
 req_win_width=41
 req_win_height=28
 
-open_menu="run-shell '$CURRENT_DIR"
-
-t_start="$(date +'%s')"
-
-# shellcheck disable=SC2154
-$TMUX_BIN display-menu \
-    -T "#[align=centre] $menu_name " \
-    -x "$menu_location_x" -y "$menu_location_y" \
-    \
-    "Back to Main menu         <==" Home "$open_menu/main.sh'" \
-    "Back to Advanced options  <--" Left "$open_menu/advanced.sh'" \
-    "-#[align=centre,nodim]-----------   Commands   -----------" "" "" \
-    "-Enter Choose selected client" "" "" \
-    "-Up    Select previous client" "" "" \
-    "-Down  Select next client" "" "" \
-    "-C-s   Search by name" "" "" \
-    "-n     Repeat last search" "" "" \
-    "-t     Toggle if client is tagged" "" "" \
-    "-T     Tag no clients". "" "" \
-    "-C-t   Tag all clients" "" "" \
-    "-d     Detach selected client" "" "" \
-    "-D     Detach tagged clients" "" "" \
-    "-x     Detach and HUP selected client" "" "" \
-    "-X     Detach and HUP tagged clients" "" "" \
-    "-z     Suspend selected client" "" "" \
-    "-Z     Suspend tagged clients" "" "" \
-    "-f     Enter a format to filter items" "" "" \
-    "-O     Change sort field" "" "" \
-    "-r     Reverse sort order" "" "" \
-    "-v     Toggle preview" "" "" \
-    "-q     Exit mode" "" "" \
-    "-" "" "" \
-    "<P>" D "choose-client -Z" \
-    "" \
-    "Help  -->" H "$open_menu/help.sh $full_path_this'"
-
-ensure_menu_fits_on_screen
+parse_menu "$@"

@@ -1,25 +1,21 @@
 #!/bin/sh
 #
-#   Copyright (c) 2022: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
-#
-#   Version: 1.0.2 2022-09-17
 #
 #   toggle dropbox on/off
 #
 # Global check exclude
 # shellcheck disable=SC2154
 
-
-# shellcheck disable=SC1007
-CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 ITEMS_DIR="$(dirname "$CURRENT_DIR")"
 SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 
 # shellcheck disable=SC1091
-. "$SCRIPT_DIR/utils.sh"
+. "$SCRIPT_DIR/dialog_handling.sh"
 
 dropbox_status_check() {
     is_dropbox_running && run_stat=0 || run_stat=1
@@ -30,7 +26,6 @@ dropbox_status_check() {
     fi
 }
 
-
 if is_dropbox_running; then
     action="stop"
     new_run_stat=1
@@ -38,7 +33,6 @@ else
     action="start"
     new_run_stat=0
 fi
-
 
 #
 #  Temp set a very high disp time, org value
@@ -48,7 +42,6 @@ org_disp_time="$($TMUX_BIN show -g display-time | cut -d' ' -f 2)"
 $TMUX_BIN set-option -g display-time 30000
 
 $TMUX_BIN display "Doing dropbox $action ..."
-
 
 if [ "$action" = "start" ]; then
     #
@@ -62,11 +55,9 @@ if [ "$action" = "start" ]; then
     done
 fi
 
-
 log_it "dropbox_toggle.sh $action  ------"
 
-
-dropbox "$action" > /dev/null 2>&1 &
+dropbox "$action" >/dev/null 2>&1 &
 log_it " action done, waiting for run stat: $new_run_stat"
 while dropbox_status_check "$new_run_stat"; do
     log_it " waiting for dropbox to change status into $new_run_stat..."
@@ -75,13 +66,11 @@ done
 
 log_it "status change completed"
 
-
 #
 # Hack to clear msg
 #
 $TMUX_BIN set-option -g display-time 1
 $TMUX_BIN display ""
-
 
 # Restore org value
 $TMUX_BIN set-option -g display-time "$org_disp_time"

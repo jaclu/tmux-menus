@@ -8,37 +8,31 @@
 #   Handling pane
 #
 
-#  shellcheck disable=SC2034
+#  shellcheck disable=SC1091,SC2034
 #  Directives for shellcheck directly after bang path are global
 
-# shellcheck disable=SC1007
-CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
-# shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
 
-menu_name="Handling Pane"
-full_path_this="$CURRENT_DIR/$(basename $0)"
-req_win_width=38
-req_win_height=23
-
-reload="; run-shell '$full_path_this'"
-open_menu="run-shell '$CURRENT_DIR"
+. "$SCRIPT_DIR/dialog_handling.sh"
 
 title="command-prompt -I '#T'  -p 'Title: '  'select-pane -T \"%%\"'"
 pane_size="display-message 'Pane: #P size: #{pane_width}x#{pane_height}'"
 
+new_mark_state="$(tmux display -p '#{?pane_marked,Unmark,Mark}')"
+new_sync_state="$(tmux display -p '#{?pane_synchronized,Disable,Activate}')"
 #
 #  adding -e to capture-pane saves escape sequences, but then less/most fails
 #  to display, cat/bat history-file will display the included colors correctly.
 #
 set -- "command-prompt -p 'Save to (no escapes):' -I '~/tmux.history'" \
-        "'capture-pane -S - -E - ; save-buffer %1 ; delete-buffer'"
+    "'capture-pane -S - -E - ; save-buffer %1 ; delete-buffer'"
 hist_no_esc="$*"
 
 set -- "command-prompt -p 'Save to (with escapes):' -I '~/tmux.history'" \
-        "'capture-pane -S - -E - -e ; save-buffer %1 ; delete-buffer'"
+    "'capture-pane -S - -E - -e ; save-buffer %1 ; delete-buffer'"
 hist_w_esc="$*"
 
 respawn="confirm-before -p 'respawn-pane #P? (y/n)' 'respawn-pane -k'"
@@ -50,35 +44,33 @@ kill_this="confirm-before -p 'kill-pane #T (#P)? (y/n)' kill-pane"
 kill_others="confirm-before -p 'Are you sure you want to kill "
 kill_others="$kill_others all other panes? (y/n)' 'kill-pane -a'"
 
-t_start="$(date +'%s')"
+menu_name="Handling Pane"
 
-# shellcheck disable=SC2154
-$TMUX_BIN display-menu \
-        -T "#[align=centre] Handling Pane " \
-        -x "$menu_location_x" -y "$menu_location_y" \
-        \
-        "Back to Main menu  <--" Left "$open_menu/main.sh'" \
-        "Move pane          -->" M "$open_menu/pane_move.sh'" \
-        "Resize pane        -->" R "$open_menu/pane_resize.sh'" \
-        "Paste buffers      -->" B "$open_menu/pane_buffers.sh'" \
-        "" \
-        "    Set Title" t "$title" \
-        "<P> Zoom pane toggle" z "resize-pane -Z $reload" \
-        "<P> Display pane numbers" q "display-panes $reload" \
-        '<P> Copy mode - "history"' "[" "copy-mode" \
-        "<P> #{?pane_marked,Unmark,Mark} current pane" \
-        m "select-pane -m $reload" \
-        "    Display pane size" s "$pane_size" \
-        "" \
-        "#{?pane_synchronized,Disable,Activate} synchronized panes" \
-        y "set -w synchronize-panes $reload" \
-        "Save pane history no escapes" h "$hist_no_esc" \
-        "Save pane history with escapes" e "$hist_w_esc" \
-        "" \
-        "    Respawn current pane" r "$respawn" \
-        "<P> Kill current pane" x "$kill_this" \
-        "    Kill all other panes" o "$kill_others" \
-        "" \
-        "Help  -->" H "$open_menu/help_panes.sh $full_path_this'"
+#  shellcheck disable=SC2154
+set -- \
+    0.0 M Left "Back to Main menu  <--" main.sh \
+    0.0 M M "Move pane             -->" pane_move.sh \
+    0.0 M R "Resize pane           -->" pane_resize.sh \
+    2.0 M B "Paste buffers         -->" pane_buffers.sh \
+    0.0 S \
+    2.6 C t "    Set Title" "$title $menu_reload" \
+    1.8 C z "<P> Zoom pane toggle" "resize-pane -Z $menu_reload" \
+    1.7 C q "<P> Display pane numbers" "display-panes $menu_reload" \
+    2.0 C "[" '<P> Copy mode - "history"' "copy-mode" \
+    2.1 C m "<P> $new_mark_state current pane" "select-pane -m $menu_reload" \
+    1.7 C s "    Display pane size" "$pane_size $menu_reload" \
+    0.0 S \
+    1.9 C y " $new_sync_state synchronized panes" "set -w synchronize-panes" \
+    2.0 C h "Save pane history no escapes" "$hist_no_esc" \
+    2.0 C e "Save pane history with escapes" "$hist_w_esc" \
+    0.0 S \
+    2.0 C r "    Respawn current pane" "$respawn" \
+    2.0 C x "<P> Kill current pane" "$kill_this" \
+    2.0 C o "    Kill all other panes" "$kill_others" \
+    0.0 S \
+    0.0 M H 'Help  -->' "$CURRENT_DIR/help_panes.sh $current_script"
 
-ensure_menu_fits_on_screen
+req_win_width=38
+req_win_height=23
+
+parse_menu "$@"

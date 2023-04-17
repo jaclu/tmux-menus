@@ -8,53 +8,36 @@
 #   Move a pane
 #
 
-#  shellcheck disable=SC2034
-#  Directives for shellcheck directly after bang path are global
+# Global directives
+# shellcheck disable=SC2034
 
-# shellcheck disable=SC1007
-CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
 # shellcheck disable=SC1091
-. "$SCRIPT_DIR/utils.sh"
+. "$SCRIPT_DIR/dialog_handling.sh"
+
+to_other="choose-tree -Gw \"run-shell '$SCRIPT_DIR/relocate_pane.sh P M %%'\""
+
+other_pane_is_marked="$(tmux display -p '#{?pane_marked_set,,-}')"
 
 menu_name="Move Pane"
-full_path_this="$CURRENT_DIR/$(basename $0)"
+
+# shellcheck disable=SC2154
+set -- \
+    0.0 M Home "Back to Main menu      <==" main.sh \
+    0.0 M Left "Back to Handling Pane  <--" panes.sh \
+    0.0 S \
+    2.7 C m "    Move to other win/ses        " "$to_other" \
+    1.7 C s "$other_pane_is_marked    Swap current pane with marked" "swap-pane $menu_reload" \
+    1.7 C "{" "<P> Swap pane with prev" "swap-pane -U $menu_reload" \
+    1.7 C "}" "<P> Swap pane with next" "swap-pane -D $menu_reload" \
+    0.0 S \
+    1.7 E ! "<P> Break pane to a new window" "$SCRIPT_DIR/break_pane.sh" \
+    0.0 S \
+    0.0 M H "Help  -->" "$CURRENT_DIR/help.sh $current_script"
+
 req_win_width=41
 req_win_height=13
 
-reload="; run-shell '$full_path_this'"
-
-set -- "choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_pane.sh" \
-    "P M %%\"'"
-mv_2_other="$*"
-
-break_2_other="run-shell $SCRIPT_DIR/break_pane.sh"
-open_menu="run-shell '$CURRENT_DIR"
-
-t_start="$(date +'%s')"
-
-#
-#  Added spacing for move to other in order for Swap current label
-#  not to expand into the shortcuts if no pane is marked
-#
-# shellcheck disable=SC2154
-$TMUX_BIN display-menu \
-    -T "#[align=centre] $menu_name " \
-    -x "$menu_location_x" -y "$menu_location_y" \
-    \
-    "Back to Main menu      <==" Home "$open_menu/main.sh'" \
-    "Back to Handling Pane  <--" Left "$open_menu/panes.sh'" \
-    "" \
-    "    Move to other win/ses        " \
-    m "$mv_2_other" \
-    "#{?pane_marked_set,,-}    Swap current pane with marked" \
-    s "swap-pane $reload" \
-    "<P> Swap pane with prev" \{ "swap-pane -U $reload" \
-    "<P> Swap pane with next" \} "swap-pane -D $reload" \
-    "" \
-    "<P> Break pane to a new window" ! "$break_2_other" \
-    "" \
-    "Help  -->" H "$open_menu/help.sh $full_path_this'"
-
-ensure_menu_fits_on_screen
+parse_menu "$@"

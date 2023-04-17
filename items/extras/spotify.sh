@@ -11,23 +11,14 @@
 # Global check exclude
 # shellcheck disable=SC2034,SC2154
 
-# shellcheck disable=SC1007
-CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 ITEMS_DIR="$(dirname "$CURRENT_DIR")"
 SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 
 # shellcheck disable=SC1091
-. "$SCRIPT_DIR/utils.sh"
+. "$SCRIPT_DIR/dialog_handling.sh"
 
-menu_name="Spotify"
-full_path_this="$CURRENT_DIR/$(basename $0)"
-req_win_width=33
-req_win_height=13
-
-open_menu="run-shell '$ITEMS_DIR"
-
-prefix="run-shell 'spotify "
-suffix=" > /dev/null' ; run-shell '$full_path_this'"
+reload=" > /dev/null' ; $current_script"
 
 if [ -z "$(command -v spotify)" ]; then
     $TMUX_BIN display "spotify bin not found!"
@@ -42,32 +33,32 @@ if [ "$(uname)" != "Darwin" ]; then
     title_key=""
 fi
 
-t_start="$(date +'%s')"
+# song_title="$($SCRIPT_DIR/spotify-now-playing | sed "s/'/*/g" | sed 's/"/*/g')"
+song_title="Ay - Arema Arega - Gilles Peterson Presents: Havana Cultura the Search Continues"
+# song_title="Ay - Arema Arega - Gilles Peterson Presents"
 
-# shellcheck disable=SC2154
-$TMUX_BIN display-menu \
-    -T "#[align=centre] $menu_name " \
-    -x "$menu_location_x" -y "$menu_location_y" \
-    \
-    "Back to Main menu  <==" Home "$open_menu/main.sh'" \
-    "Back to Extras     <--" Left "$open_menu/extras.sh'" \
-    "" \
-    "$title_label" "$title_key" \
-    \
-    "display \"$("$SCRIPT_DIR"/spotify-now-playing)\" ;             \
-        run-shell \"$full_path_this\"" \
-    \
-    "Pause/Resume" " " "$prefix pause           $suffix" \
-    "Next" n "$prefix next            $suffix" \
-    "Prev" p "$prefix prev            $suffix" \
-    "Replay" r "$prefix replay          $suffix" \
-    "Copy URI to clipboard" i "$prefix share uri       $suffix" \
-    "Copy URL to clipboard" l "$prefix share url       $suffix" \
-    "Shuffle - toggle" s "$prefix toggle shuffle  $suffix" \
-    "Repeat  - toggle" R "$prefix toggle repeat   $suffix" \
-    "vol Up" u "$prefix vol up          $suffix" \
-    "vol Down" d "$prefix vol down        $suffix" \
-    "" \
-    "Help  -->" H "$open_menu/help.sh $full_path_this'"
+menu_name="Spotify"
 
-ensure_menu_fits_on_screen
+set -- \
+    0.0 M Home "Back to Main menu  <==" "$ITEMS_DIR/main.sh" \
+    0.0 M Left "Back to Extras     <--" "$ITEMS_DIR/extras.sh" \
+    0.0 S \
+    0.0 C t "$title_label" "display '$song_title' $menu_reload" \
+    1.0 S
+# 0.0 E Space "Pause/Resume" "spotify pause  $reload" \
+# 0.0 E n "Next" "spotify             next   $reload" \
+# 0.0 E p "Prev" "spotify             prev   $reload" \
+# 0.0 E r "Replay" "spotify           replay $reload" \
+# 0.0 E i "Copy URI to clipboard" "spotify share uri $reload" \
+# 0.0 E l "Copy URL to clipboard" "spotify share url $reload" \
+# 0.0 E s "Shuffle - toggle" "spotify toggle shuffle $reload" \
+# 0.0 E R "Repeat  - toggle" "spotify toggle repeat  $reload" \
+# 0.0 E u "vol Up" "spotify           vol up         $reload" \
+# 0.0 E d "vol Down" "spotify         vol down       $reload" \
+# 0.0 S \
+# 0.0 M H 'Help       -->' "$ITEMS_DIR/help.sh $current_script"
+
+req_win_width=33
+req_win_height=13
+
+parse_menu "$@"

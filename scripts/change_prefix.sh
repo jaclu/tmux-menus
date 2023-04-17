@@ -5,20 +5,16 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Version: 1.2.3 2022-09-17
-#
 #   Updates global prefix, if prefix param is given
 #
 # Global check exclude, ignoring: is referenced but not assigned
 # shellcheck disable=SC2154
 
-
-# shellcheck disable=SC1007
-CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
+SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
 # shellcheck disable=SC1091
-. "$CURRENT_DIR/utils.sh"
-
+. "$SCRIPT_DIR/utils.sh"
 
 #
 #  Since this is a critical param, make extra sure we have valid input
@@ -29,7 +25,6 @@ if [ -z "$prefix_char" ]; then
 elif [ "$(printf '%s' "$prefix_char" | wc -m)" -ne 1 ]; then
     error_msg "Must be exactly one char! Was:[$prefix_char]" 1
 fi
-
 
 prefix="C-${prefix_char}"
 

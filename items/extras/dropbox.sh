@@ -11,26 +11,14 @@
 # Global check exclude
 # shellcheck disable=SC2034,SC2154
 
-# shellcheck disable=SC1007
-CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 ITEMS_DIR="$(dirname "$CURRENT_DIR")"
 SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 
 # shellcheck disable=SC1091
-. "$SCRIPT_DIR/utils.sh"
+. "$SCRIPT_DIR/dialog_handling.sh"
 
-menu_name="Dropbox"
-full_path_this="$CURRENT_DIR/$(basename $0)"
-req_win_width=33
-req_win_height=9
-
-reload="; run-shell '$full_path_this'"
-open_menu="run-shell '$ITEMS_DIR"
-
-if [ -z "$(command -v dropbox)" ]; then
-    $TMUX_BIN display "dropbox bin not found!"
-    exit 1
-fi
+[ -z "$(command -v dropbox)" ] && error_msg "dropbox bin not found!"
 
 if is_dropbox_running; then
     tgl_lbl="sTop"
@@ -38,20 +26,18 @@ else
     tgl_lbl="sTart"
 fi
 
-t_start="$(date +'%s')"
+menu_name="Dropbox"
 
-# shellcheck disable=SC2154
-$TMUX_BIN display-menu \
-    -T "#[align=centre] $menu_name " \
-    -x "$menu_location_x" -y "$menu_location_y" \
-    \
-    "Back to Main menu  <==" Home "$open_menu/main.sh'" \
-    "Back to Extras     <--" Left "$open_menu/extras.sh'" \
-    "" \
-    "Status" s "display \"$(dropbox status)\" $reload" \
-    "$tgl_lbl" t "run-shell \"$CURRENT_DIR/_dropbox_toggle.sh\"  \
-                      $reload" \
-    "" \
-    "Help  -->" H "$open_menu/help.sh $full_path_this'"
+set -- \
+    0.0 M Home "Back to Main menu  <==" "$ITEMS_DIR/main.sh" \
+    0.0 M Left "Back to Extras     <--" "$ITEMS_DIR/extras.sh" \
+    0.0 S \
+    0.0 C "Status" "display \"$(dropbox status)\" $menu_reload" \
+    0.0 C t "$tgl_lbl" "$CURRENT_DIR/_dropbox_toggle.sh" \
+    0.0 S \
+    0.0 M H "Help  -->" "$ITEMS_DIR/help.sh $current_script'"
 
-ensure_menu_fits_on_screen
+req_win_width=33
+req_win_height=9
+
+parse_menu "$@"

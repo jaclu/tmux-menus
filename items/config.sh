@@ -11,21 +11,14 @@
 #  shellcheck disable=SC2034,SC2154
 #  Directives for shellcheck directly after bang path are global
 
-# shellcheck disable=SC1007
-CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
 # shellcheck disable=SC1091
-. "$SCRIPT_DIR/utils.sh"
+. "$SCRIPT_DIR/dialog_handling.sh"
 
-menu_name="Configure Menu Location"
-full_path_this="$CURRENT_DIR/$(basename $0)"
-req_win_width=37
-req_win_height=13
-
-reload="; $full_path_this"
+reload="; $current_script"
 change_location="run-shell '$SCRIPT_DIR/move_menu.sh"
-open_menu="run-shell '$CURRENT_DIR"
 
 #
 #  The -p sequence will get wrecked by lnie breaks,
@@ -37,26 +30,25 @@ prompt2="vertical pos (max: #{window_height}):"
 set -- "command-prompt" \
     "-I \"$location_x\",\"$location_y\"" \
     "-p \"$prompt1\",\"$prompt2\"" \
-    "\"$change_location coord %1 %2 $reload'\""
+    "\"$change_location coord %1 %2 $menu_reload'\""
 set_coordinates="$*"
 
-t_start="$(date +'%s')" #  if the menu closed in < 1s assume it didnt fit
+menu_name="Configure Menu Location"
 
-# shellcheck disable=SC2154
-$TMUX_BIN display-menu \
-    -T "#[align=centre] $menu_name " \
-    -x "$menu_location_x" -y "$menu_location_y" \
-    \
-    "Back to Previous menu  <--" Left "$open_menu/advanced.sh'" \
-    "" \
-    "Center" c "$change_location  C  $reload'" \
-    "win Right edge" r "$change_location  R  $reload'" \
-    "Pane bottom left" p "$change_location  P  $reload'" \
-    "Win pos status line" w "$change_location  W  $reload'" \
-    "" \
-    "set coordinates" s "$set_coordinates" \
-    "" \
-    "-When using coordinates" "" "" \
-    "-lower left corner is set!" "" ""
+set -- \
+    0.0 M Left "Back to Previous menu  <--" advanced.sh \
+    0.0 S \
+    0.0 C c "Center" "$change_location  C  $menu_reload'"
+# 0.0 E r "win Right edge" "$change_location  R  $menu_reload'" \
+# 0.0 E p "Pane bottom left" "$change_location  P  $menu_reload'" \
+# 0.0 E w "Win pos status line" "$change_location  W  $menu_reload'" \
+# 0.0 S \
+# 0.0 C s "set coordinates" "$set_coordinates" \
+# 0.0 S \
+# 1.0 T "-When using coordinates" \
+# 1.0 T "-lower left corner is set!"
 
-ensure_menu_fits_on_screen
+req_win_width=37
+req_win_height=13
+
+parse_menu "$@"

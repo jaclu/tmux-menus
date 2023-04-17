@@ -6,11 +6,11 @@
 #   Part of https://github.com/jaclu/tmux-menus
 #
 
-# shellcheck disable=SC1007
-CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
+SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
 # shellcheck disable=SC1091
-. "$CURRENT_DIR/utils.sh"
+. "$SCRIPT_DIR/utils.sh"
 
 echo
 
@@ -21,14 +21,13 @@ else
     plugins_dir="$(dirname "$TMUX_CONF")/plugins"
 fi
 
-names=(tpm)  # plugin manager
-
+names=(tpm) # plugin manager
 
 #
 #  Generate list of plugins defined in config file
 #
 #  shellcheck disable=SC2207
-plugins=( $(grep "set -g @plugin" "$TMUX_CONF" | awk '{ print $4 }' | sed s/\"//g) )
+plugins=($(grep "set -g @plugin" "$TMUX_CONF" | awk '{ print $4 }' | sed s/\"//g))
 if [[ ${#plugins[@]} -gt 0 ]]; then
     echo "Defined plugins:"
 else
@@ -39,9 +38,9 @@ fi
 #  Check if they are installed or not
 #
 plugin_missing=false
-for plugin in "${plugins[@]}" ; do
+for plugin in "${plugins[@]}"; do
     name="$(echo "$plugin" | cut -d/ -f2)"
-    names+=("$name")  # add item supposed to be in plugins dir
+    names+=("$name") # add item supposed to be in plugins dir
     if [[ -d "$plugins_dir/$name" ]]; then
         echo "    $plugin"
     else
@@ -65,14 +64,14 @@ for file in "$plugins_dir"/*; do
     fi
 done
 
-if $plugin_missing ; then
+if $plugin_missing; then
     if [[ -d "$plugins_dir/tpm" ]]; then
         echo
         echo "You can install plugins listed as NOT INSTALLED with <prefix> I"
     fi
 fi
 
-if $undefined_item ; then
+if $undefined_item; then
     if [[ -d "$plugins_dir/tpm" ]]; then
         echo
         echo "You can remove undefined items with <prefix> M-u"

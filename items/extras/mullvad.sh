@@ -11,23 +11,14 @@
 # Global check exclude
 # shellcheck disable=SC2034,SC2154
 
-# shellcheck disable=SC1007
-CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 ITEMS_DIR="$(dirname "$CURRENT_DIR")"
 SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 
 # shellcheck disable=SC1091
-. "$SCRIPT_DIR/utils.sh"
+. "$SCRIPT_DIR/dialog_handling.sh"
 
-menu_name="Mullvad VPN"
-full_path_this="$CURRENT_DIR/$(basename $0)"
-req_win_width=33
-req_win_height=10
-
-open_menu="run-shell '$ITEMS_DIR"
-
-prefix="run-shell 'mullvad "
-suffix=" > /dev/null' ; run-shell '$full_path_this'"
+suffix=" > /dev/null' ; run-shell '$current_script'"
 
 if [ -z "$(command -v mullvad)" ]; then
     $TMUX_BIN display "mullvad bin not found!"
@@ -62,21 +53,22 @@ fi
 #     fi
 # }
 
-t_start="$(date +'%s')"
+menu_name="Mullvad VPN"
 
-# shellcheck disable=SC2154
-$TMUX_BIN display-menu \
-    -T "#[align=centre] $menu_name " \
-    -x "$menu_location_x" -y "$menu_location_y" \
-    \
-    "Back to Main menu  <==" Home "$open_menu/main.sh'" \
-    "Back to Extras     <--" Left "$open_menu/extras.sh'" \
-    "" \
-    "Status" s "display \"$(mullvad status)\" ;           \
-                                    run-shell '$full_path_this'" \
-    "Connect" c "$prefix connect $suffix" \
-    "Disconnect" d "$prefix disconnect $suffix" \
-    "$lan_label LAN sharing" l "$prefix lan set $lan_cmd $suffix" \
-    "Select Location  -->" L "$full_path_this'"
+set -- \
+    0.0 M Home "Back to Main menu  <==" "$ITEMS_DIR/main.sh" \
+    0.0 M Left "Back to Extras     <--" "$ITEMS_DIR/extras.sh" \
+    0.0 S \
+    0.0 C s "Status" "display '$(mullvad status)' $menu_reload" \
+    0.0 E c "Connect" "mullvad connect ; $current_script" \
+    0.0 E d "Disconnect" "mullvad disconnect ; $current_script" \
+    0.0 E l "$lan_label LAN sharing" "mullvad lan set $lan_cmd; $current_script" \
+    0.0 S \
+    0.0 M H 'Help       -->' "$ITEMS_DIR/help.sh $current_script"
 
-ensure_menu_fits_on_screen
+# 0.0 C L "Select Location  -->" "$menu_reload'"
+
+req_win_width=33
+req_win_height=10
+
+parse_menu "$@"

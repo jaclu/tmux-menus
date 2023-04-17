@@ -1,20 +1,16 @@
 #!/usr/bin/env bash
 #
-#  Copyright (c) 2022: Jacob.Lundqvist@gmail.com
+#  Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #  License: MIT
 #
 #  Part of https://github.com/jaclu/tmux-menus
 #
-#  Version: 1.1.0  2022-07-28
-#
 #  Does shellcheck on all relevant scripts in this project
 #
 
-#  shellcheck disable=SC1007
-CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 
 cd "$CURRENT_DIR" || return
-
 
 checkables=(
 
@@ -59,9 +55,9 @@ for script in "${checkables[@]}"; do
     #  abort as soon as one lists issues
     echo "Checking: ${script}"
     if [[ "${do_shellcheck}" != "" ]]; then
-        shellcheck -x -a -o all -e SC2250,SC2312 "${script}"  || exit 1
+        shellcheck -x -a -o all -e SC2250,SC2312 "${script}" || exit 1
     fi
     if [[ "${do_checkbashisms}" != "" ]]; then
-        checkbashisms -n -e -x "${script}"  || exit 1
+        checkbashisms -n -e -x "${script}" || exit 1
     fi
 done

@@ -7,64 +7,49 @@
 #
 #   Handling Window
 #
-#  shellcheck disable=SC2034
+#  shellcheck disable=SC1091,SC2034
 #  Directives for shellcheck directly after bang path are global
 
-# shellcheck disable=SC1007
-CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+# shel  lcheck disable=SC1007
 
+CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
-# shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
+. "$SCRIPT_DIR/dialog_handling.sh"
+
+rename_window="command-prompt -I '#W'  -p 'New window name: ' 'rename-window %%'"
+new_aft="command-prompt -p 'Name of new window: ' 'new-window -a -n \"%%\"'"
+new_at_end="command-prompt -p 'Name of new window: ' 'new-window -n \"%%\"'"
+disp_size="display-message 'Window size: #{window_width}x#{window_height}'"
+kill_current="confirm-before -p 'kill-window #W? (y/n)' kill-window"
+kill_other="confirm-before -p 'Are you sure you want to kill all other windows? (y/n)' 'run-shell \"${SCRIPT_DIR}/kill_other_windows.sh\"'"
 
 menu_name="Handling Window"
-full_path_this="$CURRENT_DIR/$(basename $0)"
+
+#  shellcheck disable=SC2154
+set -- \
+    0.0 M Left "Back to Main menu  <--" main.sh \
+    0.0 M M "Move window        -->" window_move.sh \
+    0.0 S \
+    1.7 C "," "<P> Rename window" "$rename_window" \
+    1.7 C a "    New window after current" "$new_aft" \
+    1.7 C c "<P> New window at the end" "$new_at_end" \
+    1.7 C s "    Display Window size" "$disp_size" \
+    0.0 S \
+    1.7 C l "<P> Last selected window" "last-window     $menu_reload" \
+    1.7 C p "<P> Previous window [in order]" "previous-window $menu_reload" \
+    1.7 C n "<P> Next     window (in order)" "next-window     $menu_reload" \
+    0.0 S \
+    1.7 C P "Previous window with an alert" "previous-window -a $menu_reload" \
+    1.7 C N "Next window with an alert" "next-window     -a $menu_reload" \
+    0.0 S \
+    1.7 C "\&" "<P> Kill current window" "$kill_current" \
+    1.7 C o "    Kill all other windows" "$kill_other" \
+    0.0 S \
+    0.0 M H "Help  -->" "$CURRENT_DIR/help.sh $current_script"
+
 req_win_width=38
 req_win_height=21
 
-reload="; run-shell \"$full_path_this\""
-open_menu="run-shell '$CURRENT_DIR"
-
-set -- "command-prompt -I \"#W\"  -p \"New window name: \"" \
-        "\"rename-window '%%'\""
-rename_window="$*"
-
-new_aft="command-prompt -p \"Name of new window: \" \"new-window -a -n '%%'\""
-new_at_end="command-prompt -p 'Name of new window: ' 'new-window -n \"%%\"'"
-disp_size="display-message \"Window size: #{window_width}x#{window_height}\""
-kill_current="confirm-before -p \"kill-window #W? (y/n)\" kill-window"
-
-set -- "confirm-before -p" \
-        "'Are you sure you want to kill all other windows? (y/n)'" \
-        "'run \"${SCRIPT_DIR}/kill_other_windows.sh\"'"
-kill_other="$*"
-
-t_start="$(date +'%s')"
-
-# shellcheck disable=SC2154
-$TMUX_BIN display-menu \
-        -T "#[align=centre] $menu_name   " \
-        -x "$menu_location_x" -y "$menu_location_y" \
-        \
-        "Back to Main menu  <--" Left "$open_menu/main.sh'" \
-        "Move window        -->" M "$open_menu/window_move.sh'" \
-        "" \
-        "<P> Rename window" , "$rename_window" \
-        "    New window after current" a "$new_aft" \
-        "<P> New window at the end" c "$new_at_end" \
-        "    Display Window size" s "$disp_size" \
-        "" \
-        "<P> Last selected window" l "last-window     $reload" \
-        "<P> Previous window [in order]" p "previous-window $reload" \
-        "<P> Next     window (in order)" n "next-window     $reload" \
-        "" \
-        "Previous window with an alert" P "previous-window -a $reload" \
-        "Next window with an alert" N "next-window     -a $reload" \
-        "" \
-        "<P> Kill current window" \& "$kill_current" \
-        "    Kill all other windows" o "$kill_other" \
-        "" \
-        "Help  -->" H "$open_menu/help.sh $full_path_this'"
-
-ensure_menu_fits_on_screen
+parse_menu "$@"

@@ -11,20 +11,11 @@
 # Global check exclude
 # shellcheck disable=SC2034,SC2154
 
-# shellcheck disable=SC1007
-CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
 # shellcheck disable=SC1091
-. "$SCRIPT_DIR/utils.sh"
-
-menu_name="Advanced options"
-full_path_this="$CURRENT_DIR/$(basename $0)"
-req_win_width=40
-req_win_height=19
-
-reload="; run-shell '$full_path_this'"
-open_menu="run-shell '$CURRENT_DIR"
+. "$SCRIPT_DIR/dialog_handling.sh"
 
 #
 #  Gather some info in order to be able to show states
@@ -36,41 +27,39 @@ else
     new_mouse_status="on"
 fi
 current_prefix="$($TMUX_BIN show-option -g prefix | cut -d'-' -f2)"
+plugin_conf_prompt="#{?@menus_config_overrides,Plugin configuration  -->,-Configuration disabled}"
+
 describe_prefix="command-prompt -k -p key 'list-keys -1N \"%%%\"'"
+change_prefix="command-prompt -1 -p 'prefix (will take effect imeditally)' 'run-shell \"$SCRIPT_DIR/change_prefix.sh %%\"'"
 toggle_mouse="set-option -g mouse $new_mouse_status"
 kill_server="confirm-before -p 'kill tmux server on #H ? (y/n)' kill-server"
 
-set -- "command-prompt -1 -p \"prefix (will take effect imeditally)\"" \
-    "'run \"$SCRIPT_DIR/change_prefix.sh %%\"'"
-change_prefix="$*"
+menu_name="Advanced options"
 
-set -- "#{?@menus_config_overrides,Plugin configuration" \
-    " -->,-Configuration disabled}"
-plugin_conf_prompt="$*"
+set -- \
+    0.0 M Left "Back to Main menu  <--" main.sh \
+    0.0 M M "Manage clients     -->" advanced_manage_clients.sh \
+    0.0 S \
+    0.0 C ? "<P> List all key bindings" "list-keys -N" \
+    0.0 C / "<P> Describe (prefix) key" "$describe_prefix" \
+    0.0 C "\~" "<P> Show messages" show-messages \
+    0.0 C C "<P> Customize options" "customize-mode -Z" \
+    0.0 C : "<P> Prompt for a command" command-prompt \
+    0.0 S \
+    0.0 C m "Toggle mouse to: $new_mouse_status" "$toggle_mouse $menu_reload" \
+    0.0 C p "Change prefix <$current_prefix>" "$change_prefix" \
+    0.0 S \
+    1.0 T "-#[nodim]Kill server - all your sessions" \
+    0.0 C x " on this host are terminated    " "$kill_server" \
+    0.0 S \
+    0.0 M H "Help  -->" "$CURRENT_DIR/help.sh $current_script"
 
-t_start="$(date +'%s')"
+#
+#  Disabled until I have time to investigate
+#
+# 0.0 M P "$plugin_conf_prompt" config.sh \
 
-# shellcheck disable=SC2154,SC2140
-$TMUX_BIN display-menu \
-    -T "#[align=centre] $menu_name " \
-    -x "$menu_location_x" -y "$menu_location_y" \
-    \
-    "Back to Main menu  <--" Left "$open_menu/main.sh'" \
-    "Manage clients     -->" M "$open_menu/advanced_manage_clients.sh'" \
-    "" \
-    "<P> List all key bindings" \? "list-keys -N" \
-    "<P> Describe (prefix) key" / "$describe_prefix" \
-    "<P> Show messages" \~ show-messages \
-    "<P> Customize options" C "customize-mode -Z" \
-    "<P> Prompt for a command" : command-prompt \
-    "" \
-    "Toggle mouse to: $new_mouse_status" m "$toggle_mouse $reload" \
-    "Change prefix <$current_prefix>" p "$change_prefix" \
-    "" \
-    "-#[nodim]Kill server - all your sessions" "" "" \
-    " on this host are terminated    " x "$kill_server" \
-    "" \
-    "$plugin_conf_prompt" P "$open_menu/config.sh'" \
-    "Help  -->" H "$open_menu/help.sh $full_path_this'"
+req_win_width=40
+req_win_height=19
 
-ensure_menu_fits_on_screen
+parse_menu "$@"

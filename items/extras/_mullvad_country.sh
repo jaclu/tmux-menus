@@ -1,11 +1,9 @@
 #!/bin/sh
 #
-#   Copyright (c) 2022: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
-#
-#   Version: 1.1.7  2022-09-17
 #
 #   Select country for mullvad VPN
 #
@@ -13,33 +11,27 @@
 # Global check exclude
 # shellcheck disable=SC2034,SC2154
 
-# shellcheck disable=SC1007
-CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 ITEMS_DIR="$(dirname "$CURRENT_DIR")"
 SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 
 # shellcheck disable=SC1091
-. "$SCRIPT_DIR/utils.sh"
-
+. "$SCRIPT_DIR/dialog_handling.sh"
 
 nav_add() {
     [ -z "$nav" ] && nav="\"\""
     nav="$nav \"$1  -->\" '$2' \"$open_menu/extras/mullvad_country.sh $3\""
 }
 
-
 menu_name="Mullvad Select Country"
 req_win_width=28
 req_win_height=9
 
-
-open_menu="run-shell '$ITEMS_DIR"
-
-offset="${1:-0}"  #  optional param indicating first item to display
+offset="${1:-0}" #  optional param indicating first item to display
 
 lines="$($TMUX_BIN display -p '#{window_height}')"
-display_items=$(( lines - 7 ))
-max_item=$(( offset + display_items ))
+display_items=$((lines - 7))
+max_item=$((offset + display_items))
 
 if [ "$display_items" -lt 1 ]; then
     #  Screen not high enough to display even one item from the list
@@ -48,30 +40,27 @@ if [ "$display_items" -lt 1 ]; then
     exit 1
 fi
 
-
 if [ "$offset" -gt 0 ]; then
-    previous_page=$(( offset - display_items ))
+    previous_page=$((offset - display_items))
     [ "$previous_page" -lt 0 ] && previous_page=0
     nav_add "Back" B "$previous_page"
 fi
-
 
 #  shellcheck disable=SC2089
 menu_items="'Back to Main menu'  Home  \"$open_menu/main.sh'\" \
     'Back to Mullvad'  Left  \"$open_menu/extras/mullvad.sh'\" \"\" "
 
-
 #
 #  BSD & GNU grep regexp differs...
 #
-if grep -V | grep -q BSD ; then
+if grep -V | grep -q BSD; then
     grep_gnu=""
 else
     grep_gnu="-P"
 fi
 # shellcheck disable=SC2248
-countries="$(mullvad relay list | grep -v $grep_gnu '^\t' | \
-             grep -v '^$' | awk '{printf "%s|",$0}')"
+countries="$(mullvad relay list | grep -v $grep_gnu '^\t' |
+    grep -v '^$' | awk '{printf "%s|",$0}')"
 
 s="1234567890abcdefghijklmnopqrstuvwxyz"
 s="${s}ACDEGHIJKLMNOPQRSTUVWXYZ"
@@ -82,7 +71,7 @@ while true; do
     country="${countries%%|*}"
     countries="${countries#*|}"
 
-    [ -z "$country" ] && break  #  skpp empty lines
+    [ -z "$country" ] && break #  skpp empty lines
 
     #
     #  Limit list size if screen is to small to handle entire list
@@ -93,7 +82,7 @@ while true; do
         break
     fi
 
-    idx=$(( idx + 1 ))
+    idx=$((idx + 1))
 
     #  loop until we come to first item to display
     [ "$idx" -le "$offset" ] && continue
@@ -109,7 +98,7 @@ while true; do
     menu_items="$menu_items '$country' '$key' \
         \"run-shell 'mullvad relay set location $country_code > /dev/null'\""
 
-    [ "$countries" = "$country" ] && break  # we have processed last item
+    [ "$countries" = "$country" ] && break # we have processed last item
 
     if [ -z "$available_keys" ]; then
         #
@@ -124,15 +113,11 @@ while true; do
     fi
 done
 
-
 menu_items="$menu_items $nav"
 
-
-t_start="$(date +'%s')"
-
 #  shellcheck disable=SC2086,SC2090,SC2154
-echo $menu_items | xargs $TMUX_BIN display-menu      \
-    -T "#[align=centre] $menu_name "                 \
+echo $menu_items | xargs $TMUX_BIN display-menu \
+    -T "#[align=centre] $menu_name " \
     -x $menu_location_x -y $menu_location_y
 
 ensure_menu_fits_on_screen

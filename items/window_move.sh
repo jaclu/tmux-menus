@@ -10,51 +10,42 @@
 #  shellcheck disable=SC2034
 #  Directives for shellcheck directly after bang path are global
 
-# shellcheck disable=SC1007
-CURRENT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
 # shellcheck disable=SC1091
-. "$SCRIPT_DIR/utils.sh"
-
-menu_name="Move Window"
-full_path_this="$CURRENT_DIR/$(basename $0)"
-req_win_width=41
-req_win_height=15
-
-reload="; run-shell \"$full_path_this\""
+. "$SCRIPT_DIR/dialog_handling.sh"
 
 common_param="choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_window.sh"
 to_other="$common_param W M %%\"'"
 link_other="$common_param W L %%\"'"
+
+other_pane_is_marked="$(tmux display -p '#{?pane_marked_set,,-}')"
+
 #
 #  when referred, close reference with '" in order to allow extra
 #  run-shell params
 #
-open_menu="run-shell '$CURRENT_DIR"
 
-t_start="$(date +'%s')"
+menu_name="Move Window"
 
 # shellcheck disable=SC2154
-$TMUX_BIN display-menu \
-    -T "#[align=centre] $menu_name " \
-    -x "$menu_location_x" -y "$menu_location_y" \
-    \
-    "Back to Main menu        <==" Home "$open_menu/main.sh'" \
-    "Back to Handling Window  <--" Left "$open_menu/windows.sh'" \
-    "" \
-    "Move window to other location" m "$to_other" \
-    "#{?pane_marked_set,-#[nodim],-}Swap current window with window" \
-    "" "" \
-    "#{?pane_marked_set,,-} containing marked pane" \
-    s swap-window \
-    "Swap window Left" \< "swap-window -dt:-1 $reload" \
-    "Swap window Right" \> "swap-window -dt:+1 $reload" \
-    "" \
-    "Link window to other session" l "$link_other" \
-    "Unlink window from this session" u "unlink-window" \
-    "" \
-    "Help, explaining move & link  -->" \
-    H "$open_menu/help_window_move.sh $full_path_this'"
+set -- \
+    0.0 M Home "Back to Main menu        <==" main.sh \
+    0.0 M Left "Back to Handling Window  <--" windows.sh \
+    0.0 S \
+    0.0 C m "Move window to other location" "$to_other" \
+    1.0 T "${other_pane_is_marked}Swap current window with window" \
+    0.0 C s "$other_pane_is_marked containing marked pane" swap-window \
+    0.0 C "\<" "Swap window Left" "swap-window -dt:-1 $menu_reload" \
+    0.0 C "\>" "Swap window Right" "swap-window -dt:+1 $menu_reload" \
+    0.0 S \
+    0.0 C l "Link window to other session" "$link_other" \
+    0.0 C u "Unlink window from this session" "unlink-window" \
+    0.0 S \
+    0.0 M H "Help, explaining move & link  -->" "$CURRENT_DIR/help_window_move.sh $current_script"
 
-ensure_menu_fits_on_screen
+req_win_width=41
+req_win_height=15
+
+parse_menu "$@"
