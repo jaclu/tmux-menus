@@ -17,8 +17,6 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/dialog_handling.sh"
 
-set_size="command-prompt -p 'Pane width,Pane height' 'resize-pane -x %1 -y %2'"
-
 menu_name="Resize Pane"
 
 #  shellcheck disable=SC2154
@@ -26,7 +24,8 @@ set -- \
     0.0 M Home "Back to Main menu      <==" main.sh \
     0.0 M Left "Back to Handling Pane  <--" panes.sh \
     0.0 S \
-    1.7 C s "Specify width & height" "$set_size" \
+    1.7 C s "Specify width & height" "command-prompt -p \
+        'Pane width,Pane height' 'resize-pane -x %1 -y %2'" \
     0.0 T " #[align=centre]-------  resize by 1  ------" \
     1.7 C u "up     " "resize-pane -U $menu_reload" \
     1.7 C d "down   " "resize-pane -D $menu_reload" \
