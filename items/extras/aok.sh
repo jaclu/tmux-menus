@@ -65,7 +65,7 @@ if is_aok_kernel; then
         mc_act_lbl="disable"
 	mc_action="off"
     else
-        mc_act_lbl="enable"
+        mc_act_lbl="enable "
 	mc_action="on"
     fi
     
@@ -74,14 +74,14 @@ if is_aok_kernel; then
         e_act_lbl="disable"
 	e_action="off"
     else
-        elock_act_lbl="enable"
-	elock_action="on"
+        e_act_lbl="enable "
+	e_action="on"
     fi
     
     set -- "$@" \
         0.0 S \
 	0.0 T "== Only for iSH-AOK kernel ==" \
-	0.0 T "  kernel tweaks" "" "" \
+	0.0 T "  kernel tweaks" \
 	0.0 S \
 	0.0 E m "$mc_act_lbl Multicore" "toggle_multicore $mc_action $suffix" \
 	0.0 E l "$e_act_lbl extra Locking" "elock $e_action $suffix"
