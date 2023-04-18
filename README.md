@@ -258,17 +258,75 @@ Each item consists of at least two params
 Item types and their parameters
 
 - M - Open another menu
+  - shortcut for this item, or "" if none wanted
   - label for menu
   - menu script
 - C - run tmux Command
+  - shortcut for this item, or "" if none wanted
   - label for command
   - tmux command
 - E - run External command
+  - shortcut for this item, or "" if none wanted
   - label for external command
   - external command
 - T - Display text line
   - label to display
-- S - Separator/Spacer line line (ignored in whiptail)
+- S - Separator/Spacer line line
+  - no params
+
+### Sample script
+
+```shell
+#!/bin/sh
+
+#
+#  This script is assumed to have been placed in the items folder of
+#  this repo, if not, you will need to change the paths to the support
+#  scripts below.
+#
+CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
+SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
+
+# shellcheck disable=SC1091
+. "$SCRIPT_DIR/dialog_handling.sh"
+
+menu_name="Simple Test"
+
+set -- \
+    0.0 M Left "Back to Main menu  <==" "main.sh" \
+    0.0 S \
+    0.0 T "Example of line extending action" \
+    2.0 C "\$" "<P> Rename this session" "command-prompt -I '#S' \
+        'rename-session -- \"%%\"'" \
+    0.0 S \
+    0.0 T "Example of action reloading the menu" \
+    1.8 C z "<P> Zoom pane toggle" "resize-pane -Z $menu_reload" \
+
+parse_menu "$@"
+```
+
+### Complex param building for menu items
+
+If whilst building the parameters, you need to take a break and check some
+condition, you just pause the `set --` param assignments, do the check
+and then resume param assignment using `set -- "$@"`
+
+Something like this:
+
+```shell
+...
+    1.8 C z "<P> Zoom pane toggle" "resize-pane -Z $menu_reload"
+
+if tmux display-message -p '#{pane_marked_set}' | grep -q '1'; then
+    set -- "$@" \
+        1.7 C s "Swap current pane with marked" "swap-pane $menu_reload"
+fi
+
+set -- "$@" \
+    1.7 C "{" "<P> Swap pane with prev" "swap-pane -U $menu_reload" \
+...
+```
+
 
 ## Contributing
 
