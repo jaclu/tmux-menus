@@ -11,7 +11,7 @@ experienced users, than to add more for newbies.
 ## Recent changes
 
 - Total rework, now the menus are generated dynamically, both for tmux
-and whiptail, added version limits to most actions. Using whiptail the
+and whiptail, added version limits to actions. Using whiptail the
 menus can be used on all older versions of tmux.
 - Added Extras - iSH AOK FS, corrected main help text and some menu min sizes
 - Main menu, toggle status Line - new feature
@@ -255,12 +255,19 @@ Each item consists of at least two params
 - Type of menu item, see below
 - Additional params depending on item type
 
-Item types
+Item types and their parameters
 
 - M - Open another menu
+  - label for menu
+  - menu script
 - C - run tmux Command
+  - label for command
+  - tmux command
 - E - run External command
+  - label for external command
+  - external command
 - T - Display text line
+  - label to display
 - S - Separator/Spacer line line (ignored in whiptail)
 
 ## Contributing
