@@ -15,7 +15,6 @@
 
 menu_type="whiptail" #  fallback if tmux can't be used
 
-#menu_do_it=1 #  If 0 menu action will just be displayed
 menu_debug=0 #  Display progress as menu is being built
 
 if [ -z "$FORCE_WHIPTAIL" ] || [ "$FORCE_WHIPTAIL" = "0" ]; then
@@ -428,6 +427,7 @@ parse_menu() {
             echo "$wt_actions"
         fi
     fi
+
     if [ "$menu_type" = "tmux" ]; then
         #  shellcheck disable=SC2034
 	t_start="$(date +'%s')"
