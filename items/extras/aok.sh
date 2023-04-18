@@ -63,28 +63,28 @@ fi
 if is_aok_kernel; then
     if [ "$(cat /proc/ish/defaults/enable_multicore 2>/dev/null)" = "true" ]; then
         mc_act_lbl="disable"
-	mc_action="off"
+        mc_action="off"
     else
         mc_act_lbl="enable "
-	mc_action="on"
+        mc_action="on"
     fi
-    
+
     #  Display action if elock would be triggered
     if [ "$(cat /proc/ish/defaults/enable_extralocking 2>/dev/null)" = "true" ]; then
         e_act_lbl="disable"
-	e_action="off"
+        e_action="off"
     else
         e_act_lbl="enable "
-	e_action="on"
+        e_action="on"
     fi
-    
+
     set -- "$@" \
         0.0 S \
-	0.0 T "== Only for iSH-AOK kernel ==" \
-	0.0 T "  kernel tweaks" \
-	0.0 S \
-	0.0 E m "$mc_act_lbl Multicore" "toggle_multicore $mc_action $suffix" \
-	0.0 E l "$e_act_lbl extra Locking" "elock $e_action $suffix"
+        0.0 T "== Only for iSH-AOK kernel ==" \
+        0.0 T "  kernel tweaks" \
+        0.0 S \
+        0.0 E m "$mc_act_lbl Multicore" "toggle_multicore $mc_action $suffix" \
+        0.0 E l "$e_act_lbl extra Locking" "elock $e_action $suffix"
 fi
 
 set -- "$@" \
@@ -101,4 +101,4 @@ set -- "$@" \
 req_win_width=35
 req_win_height=18
 
-parse_menu "$@"
+menu_parse "$@"

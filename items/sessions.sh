@@ -54,4 +54,4 @@ set -- "$@ ; kill-session'" \
 req_win_width=39
 req_win_height=15
 
-parse_menu "$@"
+menu_parse "$@"

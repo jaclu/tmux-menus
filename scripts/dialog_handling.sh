@@ -276,14 +276,14 @@ whiptail_spacer() {
     menu_items="$menu_items '' ' '"
 }
 
-parse_menu() {
+menu_parse() {
     #
     #  Since the various menu entries have different numbers of params
     #  we first identify all the params used by the different options,
     #  only then can we continue if the min_vers does not match running tmux
     #
     [ -z "$menu_name" ] && error_msg "$current_script - menu_name must be set!"
-    [ $menu_debug -eq 1 ] && echo ">> parse_menu($*)"
+    [ $menu_debug -eq 1 ] && echo ">> menu_parse($*)"
     while [ -n "$1" ]; do
         min_vers="$1"
         shift

@@ -43,4 +43,4 @@ set -- \
 req_win_width=43
 req_win_height=15
 
-parse_menu "$@"
+menu_parse "$@"

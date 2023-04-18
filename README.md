@@ -302,7 +302,7 @@ set -- \
     0.0 T "Example of action reloading the menu" \
     1.8 C z "<P> Zoom pane toggle" "resize-pane -Z $menu_reload" \
 
-parse_menu "$@"
+menu_parse "$@"
 ```
 
 ### Complex param building for menu items
