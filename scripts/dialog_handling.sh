@@ -23,8 +23,8 @@ if [ -z "$FORCE_WHIPTAIL" ] || [ "$FORCE_WHIPTAIL" = "0" ]; then
     #
     if tmux_vers_compare 3.0; then
         menu_type="tmux"
-    else
-        echo "--->  tmux older than 3.0, switching to whiptail  <---"
+    # else
+    #     echo "--->  tmux older than 3.0, switching to whiptail  <---"
     fi
 fi
 
@@ -272,6 +272,10 @@ whiptail_text_line() {
     menu_items="$menu_items '' \"$txt\""
 }
 
+whiptail_spacer() {
+    menu_items="$menu_items '' ' '"
+}
+
 parse_menu() {
     #
     #  Since the various menu entries have different numbers of params
@@ -395,6 +399,8 @@ parse_menu() {
             # Whiptail/dialog does not have a concept of spacer lines
             if [ "$menu_type" = "tmux" ]; then
                 tmux_spacer
+            else
+                whiptail_spacer
             fi
             ;;
 
@@ -430,16 +436,16 @@ parse_menu() {
 
     if [ "$menu_type" = "tmux" ]; then
         #  shellcheck disable=SC2034
-	t_start="$(date +'%s')"
-	# tmux can trigger actions by it self
-	#  shellcheck disable=SC2068,SC2294
-	eval $@
-	ensure_menu_fits_on_screen
+        t_start="$(date +'%s')"
+        # tmux can trigger actions by it self
+        #  shellcheck disable=SC2068,SC2294
+        eval $@
+        ensure_menu_fits_on_screen
     else
         #  shellcheck disable=SC2294
-	menu_selection=$(eval "$@" 3>&2 2>&1 1>&3) # skip - for non MacOS
-	# echo "selection[$menu_selection]"
-	whiptail_parse_selection
+        menu_selection=$(eval "$@" 3>&2 2>&1 1>&3) # skip - for non MacOS
+        # echo "selection[$menu_selection]"
+        whiptail_parse_selection
     fi
 }
 
