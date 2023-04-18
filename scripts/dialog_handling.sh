@@ -15,7 +15,7 @@
 
 menu_type="whiptail" #  fallback if tmux can't be used
 
-menu_do_it=1 #  If 0 menu action will just be displayed
+#menu_do_it=1 #  If 0 menu action will just be displayed
 menu_debug=0 #  Display progress as menu is being built
 
 if [ -z "$FORCE_WHIPTAIL" ] || [ "$FORCE_WHIPTAIL" = "0" ]; then
@@ -222,6 +222,14 @@ whiptail_external_cmd() {
     label="$1"
     key="$2"
     cmd="$3"
+
+    #
+    #  labels starting with - indicates disabled feature in tmux notation,
+    #  whiptail can not handle labels starting with -, so just skip
+    #  those lines
+    #
+    starting_with_dash "$label" && return
+
     if echo "$cmd" | grep -vq /; then
         script="$CURRENT_DIR/$script"
     fi
@@ -278,7 +286,7 @@ parse_menu() {
         shift
         action="$1"
         shift
-        [ $menu_debug -eq 1 ] && echo "[$min_vers] [$action] \c"
+        [ $menu_debug -eq 1 ] && echo "[$min_vers] [$action]"
         case "$action" in
 
         "M") #  Open another menu
@@ -412,27 +420,26 @@ parse_menu() {
     #  shellcheck disable=SC2086,SC2090
     set -- $menu_prefix $menu_items
 
-    if [ "$menu_do_it" -eq 1 ]; then
-        if [ "$menu_type" = "tmux" ]; then
-            #  shellcheck disable=SC2034
-            t_start="$(date +'%s')"
-            # tmux can trigger actions by it self
-            #  shellcheck disable=SC2068,SC2294
-            eval $@
-            ensure_menu_fits_on_screen
-        else
-            #  shellcheck disable=SC2294
-            menu_selection=$(eval "$@" 3>&2 2>&1 1>&3) # skip - for non MacOS
-            # echo "selection[$menu_selection]"
-            whiptail_parse_selection
-        fi
-    else
+    if [ "$menu_debug" -eq 1 ]; then
         echo "Would run:"
         echo "$@"
         if [ -n "$wt_actions" ]; then
             echo "Whiptail actions:"
             echo "$wt_actions"
         fi
+    fi
+    if [ "$menu_type" = "tmux" ]; then
+        #  shellcheck disable=SC2034
+	t_start="$(date +'%s')"
+	# tmux can trigger actions by it self
+	#  shellcheck disable=SC2068,SC2294
+	eval $@
+	ensure_menu_fits_on_screen
+    else
+        #  shellcheck disable=SC2294
+	menu_selection=$(eval "$@" 3>&2 2>&1 1>&3) # skip - for non MacOS
+	# echo "selection[$menu_selection]"
+	whiptail_parse_selection
     fi
 }
 

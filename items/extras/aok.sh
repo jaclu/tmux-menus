@@ -26,13 +26,6 @@ SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/dialog_handling.sh"
 
-#  For items only available if kernel is AOK
-if is_aok_kernel; then
-    aok_kernel=""
-else
-    aok_kernel="-"
-fi
-
 #  shellcheck disable=SC2010
 if ls -l /bin/login | grep -q login.loop; then
     current_login_method="enabled"
@@ -42,24 +35,7 @@ else
     current_login_method="disabled"
 fi
 
-if [ "$(cat /proc/ish/defaults/enable_multicore 2>/dev/null)" = "true" ]; then
-    multicore_act_lbl="disable"
-    multicore_action="off"
-else
-    multicore_act_lbl="enable"
-    multicore_action="on"
-fi
-
-#  Display action if elock would be triggered
-if [ "$(cat /proc/ish/defaults/enable_extralocking 2>/dev/null)" = "true" ]; then
-    elock_act_lbl="disable"
-    elock_action="off"
-else
-    elock_act_lbl="enable"
-    elock_action="on"
-fi
-
-login_mode="'/usr/local/bin/aok -l"
+login_mode="/usr/local/bin/aok -l"
 suffix=" > /dev/null ; $current_script"
 
 menu_name="AOK FS tools"
@@ -68,17 +44,50 @@ set -- \
     0.0 M Home "Back to Main menu  <==" "$ITEMS_DIR/main.sh" \
     0.0 M Left "Back to Extras     <--" "$ITEMS_DIR/extras.sh" \
     0.0 S \
-    0.0 T "-Current login method: $current_login_method" \
-    0.0 T "- " \
-    0.0 E d "$(disable_if_matching disabled)Disable login" "$login_mode disable $suffix" \
-    0.0 E e "$(disable_if_matching enabled)Enable login" "$login_mode enable $suffix" \
-    0.0 E s "$(disable_if_matching once)Single login session" "$login_mode once $suffix" \
-    0.0 S \
-    0.0 T "= Only for iSH-AOK kernel =" \
-    0.0 T "  kernel tweaks" "" "" \
-    0.0 S \
-    0.0 E m "$aok_kernel$multicore_act_lbl Multicore" "toggle_multicore $multicore_action $suffix" \
-    0.0 E l "$aok_kernel$elock_act_lbl extra Locking" "elock $elock_action $suffix" \
+    0.0 T "Current login method: $current_login_method" \
+    0.0 T "- "
+
+if [ ! "$current_login_method" = "disabled" ]; then
+    set -- "$@" \
+        0.0 E d "Disable login" "$login_mode disable $suffix"
+fi
+if [ ! "$current_login_method" = "enabled" ]; then
+    set -- "$@" \
+        0.0 E e "Enable login" "$login_mode enable $suffix"
+fi
+if [ ! "$current_login_method" = "once" ]; then
+    set -- "$@" \
+        0.0 E s "Single login session" "$login_mode once $suffix"
+fi
+
+if is_aok_kernel; then
+    if [ "$(cat /proc/ish/defaults/enable_multicore 2>/dev/null)" = "true" ]; then
+        mc_act_lbl="disable"
+	mc_action="off"
+    else
+        mc_act_lbl="enable"
+	mc_action="on"
+    fi
+    
+    #  Display action if elock would be triggered
+    if [ "$(cat /proc/ish/defaults/enable_extralocking 2>/dev/null)" = "true" ]; then
+        e_act_lbl="disable"
+	e_action="off"
+    else
+        elock_act_lbl="enable"
+	elock_action="on"
+    fi
+    
+    set -- "$@" \
+        0.0 S \
+	0.0 T "== Only for iSH-AOK kernel ==" \
+	0.0 T "  kernel tweaks" "" "" \
+	0.0 S \
+	0.0 E m "$mc_act_lbl Multicore" "toggle_multicore $mc_action $suffix" \
+	0.0 E l "$e_act_lbl extra Locking" "elock $e_action $suffix"
+fi
+
+set -- "$@" \
     0.0 S \
     0.0 M H "Help  -->" "$ITEMS_DIR/help.sh $current_script'"
 
