@@ -104,7 +104,7 @@ tmux_open_menu() {
     key="$2"
     menu="$3"
 
-    # [ $menu_debug -eq 1 ] && echo "tmux_open_menu($label,$key,$menu)"
+    # [ "$menu_debug" = "1" ] && echo "tmux_open_menu($label,$key,$menu)"
 
     # shellcheck disable=SC2089
     menu_items="$menu_items \"$label\" $key \"run-shell '$menu'\""
@@ -116,7 +116,7 @@ tmux_external_cmd() {
     # cmd="$3"
     cmd="$(echo "$3" | sed 's/"/\\"/g')" # replace embedded " with \"
 
-    # [ $menu_debug -eq 1 ] && echo "tmux_external_cmd($label,$key,$cmd)"
+    # [ "$menu_debug" = "1" ] && echo "tmux_external_cmd($label,$key,$cmd)"
     #
     #  needs to be prefixed with run-shell, since this is triggered by
     #  tmux
@@ -130,7 +130,7 @@ tmux_command() {
     # cmd="$3"
     cmd="$(echo "$3" | sed 's/"/\\"/g')" # replace embedded " with \"
 
-    [ $menu_debug -eq 1 ] && echo "tmux_command($label,$key,$cmd)"
+    [ "$menu_debug" = "1" ] && echo "tmux_command($label,$key,$cmd)"
     menu_items="$menu_items \"$label\" $key \"$cmd\""
 }
 
@@ -283,13 +283,13 @@ menu_parse() {
     #  only then can we continue if the min_vers does not match running tmux
     #
     [ -z "$menu_name" ] && error_msg "$current_script - menu_name must be set!" 1
-    [ $menu_debug -eq 1 ] && echo ">> menu_parse($*)"
+    [ "$menu_debug" = "1" ] && echo ">> menu_parse($*)"
     while [ -n "$1" ]; do
         min_vers="$1"
         shift
         action="$1"
         shift
-        [ $menu_debug -eq 1 ] && echo "[$min_vers] [$action]"
+        [ "$menu_debug" = "1" ] && echo "[$min_vers] [$action]"
         case "$action" in
 
         "M") #  Open another menu
@@ -311,7 +311,7 @@ menu_parse() {
                 menu="$CURRENT_DIR/$menu"
             fi
 
-            [ $menu_debug -eq 1 ] && echo "key[$key] label[$label] menu[$menu]"
+            [ "$menu_debug" = "1" ] && echo "key[$key] label[$label] menu[$menu]"
 
             if [ "$menu_type" = "tmux" ]; then
                 tmux_open_menu "$label" "$key" "$menu"
@@ -330,7 +330,7 @@ menu_parse() {
 
             ! tmux_vers_compare "$min_vers" && continue
 
-            [ $menu_debug -eq 1 ] && echo "key[$key] label[$label] command[$cmd]"
+            [ "$menu_debug" = "1" ] && echo "key[$key] label[$label] command[$cmd]"
 
             if [ "$menu_type" = "tmux" ]; then
                 tmux_command "$label" "$key" "$cmd"
@@ -367,7 +367,7 @@ menu_parse() {
             #     cmd="$CURRENT_DIR/$cmd"
             # fi
 
-            [ $menu_debug -eq 1 ] && echo "key[$key] label[$label] command[$cmd]"
+            [ "$menu_debug" = "1" ] && echo "key[$key] label[$label] command[$cmd]"
 
             if [ "$menu_type" = "tmux" ]; then
                 tmux_external_cmd "$label" "$key" "$cmd"
@@ -382,7 +382,7 @@ menu_parse() {
 
             ! tmux_vers_compare "$min_vers" && continue
 
-            [ $menu_debug -eq 1 ] && echo "text line [$txt]"
+            [ "$menu_debug" = "1" ] && echo "text line [$txt]"
             if [ "$menu_type" = "tmux" ]; then
                 tmux_text_line "$txt"
             else
@@ -394,7 +394,7 @@ menu_parse() {
 
             ! tmux_vers_compare "$min_vers" && continue
 
-            [ $menu_debug -eq 1 ] && echo "Spacer line"
+            [ "$menu_debug" = "1" ] && echo "Spacer line"
 
             # Whiptail/dialog does not have a concept of spacer lines
             if [ "$menu_type" = "tmux" ]; then
@@ -425,7 +425,7 @@ menu_parse() {
     #  shellcheck disable=SC2086,SC2090
     set -- $menu_prefix $menu_items
 
-    if [ "$menu_debug" -eq 1 ]; then
+    if [ "$menu_debug" = "1" ]; then
         echo "Would run:"
         echo "$@"
         if [ -n "$wt_actions" ]; then
