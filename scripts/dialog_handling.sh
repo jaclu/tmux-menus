@@ -282,7 +282,7 @@ menu_parse() {
     #  we first identify all the params used by the different options,
     #  only then can we continue if the min_vers does not match running tmux
     #
-    [ -z "$menu_name" ] && error_msg "$current_script - menu_name must be set!"
+    [ -z "$menu_name" ] && error_msg "$current_script - menu_name must be set!" 1
     [ $menu_debug -eq 1 ] && echo ">> menu_parse($*)"
     while [ -n "$1" ]; do
         min_vers="$1"
