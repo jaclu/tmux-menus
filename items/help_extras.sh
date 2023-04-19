@@ -28,10 +28,10 @@ menu_name="Help Extras"
 set -- \
     0.0 M Left "Back to Previous menu  <--" "$previous_menu" \
     0.0 S \
-    0.0 T "Extras are menus manipulating" \
-    0.0 T "other software." \
-    0.0 T "If a specific app is not found," \
-    0.0 T "that entry is gryed out."
+    0.0 T "-#[nodim]Extras are menus manipulating" \
+    0.0 T "-#[nodim]other software." \
+    0.0 T "-#[nodim]If a specific app is not found," \
+    0.0 T "-#[nodim]that entry is gryed out."
 
 req_win_width=37
 req_win_height=8

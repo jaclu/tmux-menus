@@ -28,17 +28,17 @@ menu_name="Help, Move/Link Window"
 set -- \
     0.0 M Left "Back to Previous menu  <--" "$previous_menu" \
     0.0 S \
-    0.0 T "Displays a navigation tree" \
-    0.0 T "1 - Chose a session." \
-    0.0 T " Current window will be put as" \
-    0.0 T " the last window in that session." \
-    0.0 T "2 - Choose a window in a session." \
-    0.0 T " Current window will be inserted" \
-    0.0 T " on that location, pushing other" \
-    0.0 T " windows one step to the right." \
-    0.0 T "3 - If you choose a pane," \
-    0.0 T " the pane part of the selection" \
-    0.0 T " is ignored."
+    0.0 T "-#[nodim]Displays a navigation tree" \
+    0.0 T "-#[nodim]1 - Chose a session." \
+    0.0 T "-#[nodim] Current window will be put as" \
+    0.0 T "-#[nodim] the last window in that session." \
+    0.0 T "-#[nodim]2 - Choose a window in a session." \
+    0.0 T "-#[nodim] Current window will be inserted" \
+    0.0 T "-#[nodim] on that location, pushing other" \
+    0.0 T "-#[nodim] windows one step to the right." \
+    0.0 T "-#[nodim]3 - If you choose a pane," \
+    0.0 T "-#[nodim] the pane part of the selection" \
+    0.0 T "-#[nodim] is ignored."
 
 req_win_width=38
 req_win_height=15

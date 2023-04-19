@@ -28,12 +28,12 @@ menu_name="Help Panes"
 set -- \
     0.0 M Left "Back to Previous menu  <--" "$previous_menu" \
     0.0 S \
-    0.0 T "When saving history with escapes" \
-    0.0 T "less/most will not be able" \
-    0.0 T "to display the content." \
+    0.0 T "-#[nodim]When saving history with escapes" \
+    0.0 T "-#[nodim]less/most will not be able" \
+    0.0 T "-#[nodim]to display the content." \
     0.0 S \
-    0.0 T "You would have to use tools like" \
-    0.0 T "cat/bat in order to see the colors"
+    0.0 T "-#[nodim]You would have to use tools like" \
+    0.0 T "-#[nodim]cat/bat in order to see the colors"
 
 req_win_width=39
 req_win_height=10

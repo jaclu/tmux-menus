@@ -23,10 +23,10 @@ menu_name="Layouts"
 set -- \
     0.0 M Left "Back to Main menu  <--" main.sh \
     0.0 S \
-    0.0 T "-Most of these defaults" \
-    0.0 T "-can't be used in menus." \
-    0.0 T "-They are just listed" \
-    0.0 T "-" \
+    0.0 T "-#[nodim]Most of these defaults" \
+    0.0 T "-#[nodim]can't be used in menus." \
+    0.0 T "-#[nodim]They are just listed" \
+    0.0 T "-#[nodim] " \
     0.0 C 1 "#[fg=red]<P> M-1#[default] Even horizontal" "select-layout even-horizontal $menu_reload" \
     0.0 C 2 "#[fg=red]<P> M-2#[default] Even vertical" "select-layout even-vertical   $menu_reload" \
     0.0 C 3 "#[fg=red]<P> M-3#[default] Main horizontal" "select-layout main-horizontal $menu_reload" \

@@ -28,17 +28,17 @@ menu_name="Help summary"
 set -- \
     0.0 M Left "Back to Previous menu  <--" "$previous_menu" \
     0.0 S \
-    0.0 T "'-->'  Indicates this will open a" \
-    0.0 T "'<--'  new menu." \
+    0.0 T "-#[nodim]'-->'  Indicates this will open a" \
+    0.0 T "-#[nodim]'<--'  new menu." \
     0.0 S \
-    0.0 T "<P> Indicates this key is a default" \
-    0.0 T "    key, so unless it has been" \
-    0.0 T "    changed, it should be possible" \
-    0.0 T "    to use with <prefix> directly." \
+    0.0 T "-#[nodim]<P> Indicates this key is a default" \
+    0.0 T "-#[nodim]    key, so unless it has been" \
+    0.0 T "-#[nodim]    changed, it should be possible" \
+    0.0 T "-#[nodim]    to use with <prefix> directly." \
     0.0 S \
-    0.0 T "Shortcut keys are usually upper case" \
-    0.0 T "for menus, and lower case for actions." \
-    0.0 T "Exit menus with ESC or q"
+    0.0 T "-#[nodim]Shortcut keys are usually upper case" \
+    0.0 T "-#[nodim]for menus, and lower case for actions." \
+    0.0 T "-#[nodim]Exit menus with ESC or q"
 
 req_win_width=43
 req_win_height=15

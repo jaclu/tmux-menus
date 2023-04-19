@@ -33,12 +33,12 @@ menu_name="Help, Split view"
 set -- \
     0.0 M Left "Back to Previous menu  <--" "$previous_menu" \
     0.0 S \
-    0.0 T "Creating a new pane by" \
-    0.0 T "splitting current Pane or" \
-    0.0 T "Window." \
-    0.0 T " " \
-    0.0 T "Window refers to the entire" \
-    0.0 T "display."
+    0.0 T "-#[nodim]Creating a new pane by" \
+    0.0 T "-#[nodim]splitting current Pane or" \
+    0.0 T "-#[nodim]Window." \
+    0.0 T "-#[nodim] " \
+    0.0 T "-#[nodim]Window refers to the entire" \
+    0.0 T "-#[nodim]display."
 
 req_win_width=37
 req_win_height=10

@@ -18,7 +18,7 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
 select_location="choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_window.sh"
 
-other_pane_is_marked="$($TMUX_BIN display -p '#{?pane_marked_set,,-}')"
+other_pane_is_marked="$($TMUX_BIN display -p '#{?pane_marked_set, ,}')"
 
 menu_name="Move Window"
 
@@ -27,9 +27,15 @@ set -- \
     0.0 M Home "Back to Main menu        <==" main.sh \
     0.0 M Left "Back to Handling Window  <--" windows.sh \
     0.0 S \
-    2.0 C m "Move window to other location" "$select_location W M %%\"'" \
-    0.0 T "${other_pane_is_marked}Swap current window with window" \
-    0.0 C s "$other_pane_is_marked containing marked pane" swap-window \
+    2.0 C m "Move window to other location" "$select_location W M %%\"'"
+
+if [ -n "$other_pane_is_marked" ]; then
+    set -- "$@" \
+        0.0 T "-#[nodim]Swap current window with window" \
+        0.0 C s " containing marked pane" swap-window
+fi
+
+set -- "$@" \
     0.0 C "\<" "Swap window Left" "swap-window -dt:-1 $menu_reload" \
     0.0 C "\>" "Swap window Right" "swap-window -dt:+1 $menu_reload" \
     0.0 S \
