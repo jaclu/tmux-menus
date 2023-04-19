@@ -267,7 +267,13 @@ whiptail_text_line() {
     #  whiptail can not handle labels starting with -, so just skip
     #  those lines
     #
-    starting_with_dash "$txt" && return
+    # starting_with_dash "$txt" && return
+
+    # first_char=$(printf '%s' "$txt" | cut -c1)
+    # second_onwards=${string#?}
+    if [ "$(printf '%s' "$txt" | cut -c1)" = "-" ]; then
+        txt=" ${txt#?}"
+    fi
 
     menu_items="$menu_items '' \"$txt\""
 }
@@ -426,7 +432,7 @@ menu_parse() {
     set -- $menu_prefix $menu_items
 
     if [ "$menu_debug" = "1" ]; then
-        echo "Would run:"
+        echo "Will run:"
         echo "$@"
         if [ -n "$wt_actions" ]; then
             echo "Whiptail actions:"
