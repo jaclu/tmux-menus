@@ -17,6 +17,10 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/dialog_handling.sh"
 
+if ! tmux_vers_compare 2.0; then
+    error_msg "This menu needs at least tmux 2.0" 1
+fi
+
 menu_name="Handling Sessions"
 
 #  shellcheck disable=SC2154
@@ -27,7 +31,7 @@ set -- \
         'rename-session -- \"%%\"'" \
     2.0 C n "    New session" "command-prompt -p \
         'Name of new session: ' \
-        'new-session -d -s \"%%\" ; switch-client -t \"%%\"'" \
+        'new-session -d -s \"%1\" ; switch-client -t \"%1\"'" \
     0.0 S \
     2.0 C L "<P> Last selected session" "switch-client -l $menu_reload" \
     2.0 C "\(" "<P> Previous session (in order)" "switch-client -p $menu_reload" \
