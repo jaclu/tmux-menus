@@ -37,11 +37,11 @@ if [ "$(uname)" = "Darwin" ]; then
     set -- "$@" \
         0.0 C t "Title - now playing" "display \
             '$("$SCRIPT_DIR"/spotify-now-playing | sed "s/'/*/g" | sed 's/"/*/g')' \
-            $menu_reload"
+            $menu_reload" \
+        0.0 S
 fi
 
 set -- "$@" \
-    0.0 S \
     0.0 E Space "Pause/Resume" "spotify pause  $reload_no_output" \
     0.0 E n "Next" "spotify   next   $reload_no_output" \
     0.0 E p "Prev" "spotify   prev   $reload_no_output" \
