@@ -46,7 +46,7 @@ set -- \
     0.0 M S "$(is_avalable spotify)Spotify  -->" "$CURRENT_DIR"/extras/spotify.sh \
     0.0 M M "$(is_avalable mullvad)Mullvad VPN  -->" "$CURRENT_DIR"/extras/mullvad.sh \
     0.0 S \
-    0.0 M H 'Help       -->' "$CURRENT_DIR/help.sh $current_script"
+    0.0 M H 'Help       -->' "$CURRENT_DIR/help_extras.sh $current_script"
 
 req_win_width=33
 req_win_height=10
