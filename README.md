@@ -85,7 +85,7 @@ FORCE_WHIPTAIL=1`
   <td>3.0 ⁠- 3.1c<td>Menu centering not supported, it's displayed top left
   if C is menu location.
 </td></tr><tr>
-  <td>< 3.0<td>Only available using whiptail
+  <td>1.8-3.0<td>Only available using whiptail
 </td></tr></table>
 
 ## Installation

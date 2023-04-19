@@ -184,6 +184,10 @@ is_dropbox_running() {
     fi
 }
 
+if ! tmux_vers_compare 1.8; then
+    error_msg "This needs at least tmux 1.8 to work!" 1
+fi
+
 current_script="$CURRENT_DIR/$(basename "$0")"
 
 #
