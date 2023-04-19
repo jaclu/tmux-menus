@@ -43,7 +43,7 @@ set -- \
     2.7 T "r     Reverse sort order" \
     2.7 T "v     Toggle preview" \
     2.7 T "q     Exit mode" \
-    2.7 T "" \
+    2.7 T " " \
     2.7 C D "<P>" "choose-client -Z" \
     2.7 S \
     2.7 M H "Help  -->" "$SCRIPT_DIR/help.sh $current_script'"
