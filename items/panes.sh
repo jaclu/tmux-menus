@@ -36,7 +36,8 @@ set -- \
     1.7 C q "<P> Display pane numbers" "display-panes $menu_reload" \
     1.8 C "[" '<P> Copy mode - "history"' "copy-mode" \
     2.1 C m "<P> $new_mark_state current pane" "select-pane -m $menu_reload" \
-    1.7 C s "    Display pane size" "display-message 'Pane: #P size: #{pane_width}x#{pane_height}' $menu_reload" \
+    1.7 C s "    Display pane size" "display-message \
+        'Pane: #P size: #{pane_width}x#{pane_height}' $menu_reload" \
     0.0 S \
     1.9 C y " $new_sync_state synchronized panes" "set -w synchronize-panes" \
     2.0 C h "Save pane history no escapes" "command-prompt -p \
