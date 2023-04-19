@@ -44,7 +44,7 @@ if tmux_vers_compare 2.7; then
 fi
 
 set -- "$@" \
-    0.0 T "Search in all sessions & windows" \
+    0.0 T "-#[nodim]Search in all sessions & windows" \
     0.0 C s "only visible part"
 
 if tmux_vers_compare 3.2; then
