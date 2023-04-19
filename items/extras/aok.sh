@@ -44,7 +44,7 @@ set -- \
     0.0 M Home "Back to Main menu  <==" "$ITEMS_DIR/main.sh" \
     0.0 M Left "Back to Extras     <--" "$ITEMS_DIR/extras.sh" \
     0.0 S \
-    0.0 T "Current login method: $current_login_method" \
+    0.0 T "-#[nodim]Current login method: $current_login_method" \
     0.0 T "- "
 
 if [ ! "$current_login_method" = "disabled" ]; then
@@ -80,8 +80,8 @@ if is_aok_kernel; then
 
     set -- "$@" \
         0.0 S \
-        0.0 T "== Only for iSH-AOK kernel ==" \
-        0.0 T "  kernel tweaks" \
+        0.0 T "-#[nodim]== Only for iSH-AOK kernel ==" \
+        0.0 T "-#[nodim]  kernel tweaks" \
         0.0 S \
         0.0 E m "$mc_act_lbl Multicore" "toggle_multicore $mc_action $suffix" \
         0.0 E l "$e_act_lbl extra Locking" "elock $e_action $suffix"
