@@ -49,7 +49,7 @@ set -- \
         $new_mouse_status $menu_reload" \
     2.4 C p "Change prefix <$current_prefix>" "command-prompt -1 -p \
         'prefix (will take effect imeditally)' \
-        'run-shell \"$SCRIPT_DIR/change_prefix.sh %%\"'" \
+        'run-shell \"$SCRIPT_DIR/change_prefix.sh %1\"'" \
     0.0 S \
     1.8 C x "Kill server" "confirm-before -p \
         'kill tmux server defined in($TMUX_SOURCE) ? (y/n)' kill-server" \
