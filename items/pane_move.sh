@@ -38,7 +38,7 @@ set -- "$@" \
     1.7 C "{" "<P> Swap pane with prev" "swap-pane -U $menu_reload" \
     1.7 C "}" "<P> Swap pane with next" "swap-pane -D $menu_reload" \
     0.0 S \
-    1.7 E ! "<P> Break pane to a new window" "$SCRIPT_DIR/break_pane.sh" \
+    2.4 E ! "<P> Break pane to a new window" "$SCRIPT_DIR/break_pane.sh" \
     0.0 S \
     0.0 M H "Help  -->" "$CURRENT_DIR/help.sh $current_script"
 
