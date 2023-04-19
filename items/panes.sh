@@ -18,8 +18,8 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
 . "$SCRIPT_DIR/dialog_handling.sh"
 
-new_mark_state="$(tmux display -p '#{?pane_marked,Unmark,Mark}')"
-new_sync_state="$(tmux display -p '#{?pane_synchronized,Disable,Activate}')"
+new_mark_state="$($TMUX_BIN display -p '#{?pane_marked,Unmark,Mark}')"
+new_sync_state="$($TMUX_BIN display -p '#{?pane_synchronized,Disable,Activate}')"
 
 menu_name="Handling Pane"
 
