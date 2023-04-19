@@ -19,6 +19,9 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
 menu_name="Main menu"
 
+# 1.6 C s " only visible part" "command-prompt \
+#     -p 'Search for:' 'find-window -CNTZ"
+
 set -- \
     0.0 M P "Handling Pane     -->" panes.sh \
     0.0 M W "Handling Window   -->" windows.sh \
@@ -32,14 +35,39 @@ set -- \
     0.0 E i "public IP" "$SCRIPT_DIR/public_ip.sh" \
     0.0 E p "Plugins inventory" "$SCRIPT_DIR/plugins.sh" \
     0.0 S \
-    1.6 C n 'Navigate & select ses/win/pane' 'choose-tree -Z' \
-    1.6 T 'Search in all sessions & windows' \
-    1.6 C s ' ignores case, only visible part' \
-    "command-prompt -p 'Search for:' 'find-window -CNTiZ -- \"%%\"'" \
+    0.0 C n "Navigate & select ses/win/pane" "choose-tree"
+
+if tmux_vers_compare 2.7; then
+    #  adds ignore case
+    # shellcheck disable=SC2145
+    set -- "$@ -Z"
+fi
+
+set -- "$@" \
+    0.0 T "Search in all sessions & windows" \
+    0.0 C s "only visible part"
+
+if tmux_vers_compare 3.2; then
+    #  adds ignore case
+    # shellcheck disable=SC2145
+    set -- "$@, ignores case"
+fi
+
+set -- "$@" \
+    "command-prompt -p 'Search for:' 'find-window"
+
+if tmux_vers_compare 3.2; then
+    #  adds ignore case, and zooms the pane
+    # shellcheck disable=SC2145
+    set -- "$@ -Zi"
+fi
+
+# shellcheck disable=SC2145
+set -- "$@  -- \"%%\"'" \
     0.0 S \
     0.0 E r '    Reload configuration file' "$SCRIPT_DIR/reload_conf.sh" \
     0.0 S \
-    1.6 C d '<P> Detach from tmux' detach-client \
+    0.0 C d '<P> Detach from tmux' detach-client \
     0.0 S \
     0.0 M H 'Help       -->' "$CURRENT_DIR/help.sh $current_script"
 
