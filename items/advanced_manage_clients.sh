@@ -21,32 +21,32 @@ menu_name="Client Management"
 
 #  shellcheck disable=SC2154
 set -- \
-    0.0 M Home "Back to Main menu         <==" main.sh \
-    0.0 M Left "Back to Advanced options  <--" advanced.sh \
-    0.0 T "-#[align=centre,nodim]-----------   Commands   -----------" \
-    0.0 T "-Enter Choose selected client" \
-    0.0 T "-Up    Select previous client" \
-    0.0 T "-Down  Select next client" \
-    0.0 T "-C-s   Search by name" \
-    0.0 T "-n     Repeat last search" \
-    0.0 T "-t     Toggle if client is tagged" \
-    0.0 T "-T     Tag no clients". \
-    0.0 T "-C-t   Tag all clients" \
-    0.0 T "-d     Detach selected client" \
-    0.0 T "-D     Detach tagged clients" \
-    0.0 T "-x     Detach and HUP selected client" \
-    0.0 T "-X     Detach and HUP tagged clients" \
-    0.0 T "-z     Suspend selected client" \
-    0.0 T "-Z     Suspend tagged clients" \
-    0.0 T "-f     Enter a format to filter items" \
-    0.0 T "-O     Change sort field" \
-    0.0 T "-r     Reverse sort order" \
-    0.0 T "-v     Toggle preview" \
-    0.0 T "-q     Exit mode" \
-    0.0 T "-" \
-    0.0 C D "<P>" "choose-client -Z" \
-    0.0 S \
-    0.0 M H "Help  -->" "$SCRIPT_DIR/help.sh $current_script'"
+    2.7 M Home "Back to Main menu         <==" main.sh \
+    2.7 M Left "Back to Advanced options  <--" advanced.sh \
+    2.7 T "#[align=centre,nodim]-----------   Commands   -----------" \
+    2.7 T "Enter Choose selected client" \
+    2.7 T "Up    Select previous client" \
+    2.7 T "Down  Select next client" \
+    2.7 T "C-s   Search by name" \
+    2.7 T "n     Repeat last search" \
+    2.7 T "t     Toggle if client is tagged" \
+    2.7 T "T     Tag no clients". \
+    2.7 T "C-t   Tag all clients" \
+    2.7 T "d     Detach selected client" \
+    2.7 T "D     Detach tagged clients" \
+    2.7 T "x     Detach and HUP selected client" \
+    2.7 T "X     Detach and HUP tagged clients" \
+    2.7 T "z     Suspend selected client" \
+    2.7 T "Z     Suspend tagged clients" \
+    2.7 T "f     Enter a format to filter items" \
+    2.7 T "O     Change sort field" \
+    2.7 T "r     Reverse sort order" \
+    2.7 T "v     Toggle preview" \
+    2.7 T "q     Exit mode" \
+    2.7 T "" \
+    2.7 C D "<P>" "choose-client -Z" \
+    2.7 S \
+    2.7 M H "Help  -->" "$SCRIPT_DIR/help.sh $current_script'"
 
 req_win_width=41
 req_win_height=28

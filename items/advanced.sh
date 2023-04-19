@@ -20,43 +20,46 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 #
 #  Gather some info in order to be able to show states
 #
-current_mouse_status="$($TMUX_BIN show-option -g mouse | cut -d' ' -f2)"
-if [ "$current_mouse_status" = "on" ]; then
-    new_mouse_status="off"
-else
-    new_mouse_status="on"
+if tmux_vers_compare 2.1; then
+    current_mouse_status="$($TMUX_BIN show-option -g mouse | cut -d' ' -f2)"
+    if [ "$current_mouse_status" = "on" ]; then
+        new_mouse_status="off"
+    else
+        new_mouse_status="on"
+    fi
 fi
-current_prefix="$($TMUX_BIN show-option -g prefix | cut -d'-' -f2)"
-plugin_conf_prompt="#{?@menus_config_overrides,Plugin configuration  -->,-Configuration disabled}"
 
-describe_prefix="command-prompt -k -p key 'list-keys -1N \"%%%\"'"
-change_prefix="command-prompt -1 -p 'prefix (will take effect imeditally)' 'run-shell \"$SCRIPT_DIR/change_prefix.sh %%\"'"
-toggle_mouse="set-option -g mouse $new_mouse_status"
-kill_server="confirm-before -p 'kill tmux server on #H ? (y/n)' kill-server"
+current_prefix="$($TMUX_BIN show-option -g prefix | cut -d'-' -f2)"
 
 menu_name="Advanced options"
 
 set -- \
     0.0 M Left "Back to Main menu  <--" main.sh \
-    0.0 M M "Manage clients     -->" advanced_manage_clients.sh \
+    2.7 M M "Manage clients     -->" advanced_manage_clients.sh \
     0.0 S \
-    0.0 C ? "<P> List all key bindings" "list-keys -N" \
-    0.0 C / "<P> Describe (prefix) key" "$describe_prefix" \
-    0.0 C "\~" "<P> Show messages" show-messages \
-    0.0 C C "<P> Customize options" "customize-mode -Z" \
-    0.0 C : "<P> Prompt for a command" command-prompt \
+    0.0 C b "List all key bindings" "list-keys" \
+    3.1 C n "List key bindings with notes" "list-keys -N" \
+    3.1 C / "<P> Describe (prefix) key" "command-prompt -k \
+        -p key 'list-keys -N \"%%%\"'" \
+    3.2 C "\~" "<P> Show messages" show-messages \
+    3.2 C C "<P> Customize options" "customize-mode -Z" \
+    1.8 C : "<P> Prompt for a command" command-prompt \
     0.0 S \
-    0.0 C m "Toggle mouse to: $new_mouse_status" "$toggle_mouse $menu_reload" \
-    0.0 C p "Change prefix <$current_prefix>" "$change_prefix" \
+    2.1 C m "Toggle mouse to: $new_mouse_status" "set-option -g mouse \
+        $new_mouse_status $menu_reload" \
+    2.4 C p "Change prefix <$current_prefix>" "command-prompt -1 -p \
+        'prefix (will take effect imeditally)' \
+        'run-shell \"$SCRIPT_DIR/change_prefix.sh %%\"'" \
     0.0 S \
-    0.0 T "-#[nodim]Kill server - all your sessions" \
-    0.0 C x " on this host are terminated    " "$kill_server" \
+    1.8 C x "Kill server" "confirm-before -p \
+        'kill tmux server defined in($TMUX_SOURCE) ? (y/n)' kill-server" \
     0.0 S \
     0.0 M H "Help  -->" "$CURRENT_DIR/help.sh $current_script"
 
 #
 #  Disabled until I have time to investigate
 #
+# plugin_conf_prompt="#{?@menus_config_overrides,Plugin configuration  -->,-Configuration disabled}"
 # 0.0 M P "$plugin_conf_prompt" config.sh \
 
 req_win_width=40
