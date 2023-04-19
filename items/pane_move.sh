@@ -27,7 +27,7 @@ set -- \
     2.7 C m "    Move to other win/ses        " "choose-tree -Gw \
         \"run-shell '$SCRIPT_DIR/relocate_pane.sh P M %%'\""
 
-if tmux display-message -p '#{pane_marked_set}' | grep -q '1'; then
+if $TMUX_BIN display-message -p '#{pane_marked_set}' | grep -q '1'; then
     #  shellcheck disable=SC2154
     set -- "$@" \
         1.7 C s "Swap current pane with marked" "swap-pane $menu_reload"

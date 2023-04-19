@@ -18,7 +18,7 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
 select_location="choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_window.sh"
 
-other_pane_is_marked="$(tmux display -p '#{?pane_marked_set,,-}')"
+other_pane_is_marked="$($TMUX_BIN display -p '#{?pane_marked_set,,-}')"
 
 menu_name="Move Window"
 
