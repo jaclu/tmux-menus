@@ -23,15 +23,11 @@ menu_name="Layouts"
 set -- \
     0.0 M Left "Back to Main menu  <--" main.sh \
     0.0 S \
-    0.0 T "-#[nodim]Most of these defaults" \
-    0.0 T "-#[nodim]can't be used in menus." \
-    0.0 T "-#[nodim]They are just listed" \
-    0.0 T "-#[nodim] " \
-    0.0 C 1 "#[fg=red]<P> M-1#[default] Even horizontal" "select-layout even-horizontal $menu_reload" \
-    0.0 C 2 "#[fg=red]<P> M-2#[default] Even vertical" "select-layout even-vertical   $menu_reload" \
-    0.0 C 3 "#[fg=red]<P> M-3#[default] Main horizontal" "select-layout main-horizontal $menu_reload" \
-    0.0 C 4 "#[fg=red]<P> M-4#[default] Main vertical" "select-layout main-vertical   $menu_reload" \
-    0.0 C 5 "#[fg=red]<P> M-5#[default] Tiled" "select-layout tiled           $menu_reload" \
+    0.0 C M-1 "<P> Even horizontal" "select-layout even-horizontal $menu_reload" \
+    0.0 C M-2 "<P> Even vertical" "select-layout even-vertical   $menu_reload" \
+    0.0 C M-3 "<P> Main horizontal" "select-layout main-horizontal $menu_reload" \
+    0.0 C M-4 "<P> Main vertical" "select-layout main-vertical   $menu_reload" \
+    0.0 C M-5 "<P> Tiled" "select-layout tiled           $menu_reload" \
     0.0 C E "<P> Spread evenly" "select-layout -E  $menu_reload" \
     0.0 S \
     0.0 M H "Help  -->" "$CURRENT_DIR/help.sh $current_script"
