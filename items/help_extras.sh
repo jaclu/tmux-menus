@@ -31,7 +31,7 @@ set -- \
     0.0 T "-#[nodim]Extras are menus manipulating" \
     0.0 T "-#[nodim]other software." \
     0.0 T "-#[nodim]If a specific app is not found," \
-    0.0 T "-#[nodim]that entry is gryed out."
+    0.0 T "-#[nodim]that entry is grayed out."
 
 req_win_width=37
 req_win_height=8
