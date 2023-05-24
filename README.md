@@ -77,16 +77,11 @@ If you want to use whiptail on modern tmuxes set this env variable: `export
 FORCE_WHIPTAIL=1`
 
 ## Compatibility
-
-<table><tr><th>Version<th>Notice</th></tr>
-<tr>
-  <td> 3.2 -<td>Fully compatible</td>
-</tr><tr>
-  <td>3.0 ⁠- 3.1c<td>Menu centering not supported, it's displayed top left
-  if C is menu location.
-</td></tr><tr>
-  <td>1.8-3.0<td>Only available using whiptail
-</td></tr></table>
+| Version | Notice
+| - | - |
+3.2 | Fully compatible
+3.0 - 3.1c | Menu centering not supported, it's displayed top left if C is menu location.
+1.8 - 3.0 | Only available using whiptail
 
 ## Installation
 
