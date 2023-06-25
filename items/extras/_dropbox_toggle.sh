@@ -10,13 +10,6 @@
 # Global check exclude
 # shellcheck disable=SC1091,SC2154
 
-CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-ITEMS_DIR="$(dirname "$CURRENT_DIR")"
-SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
-
-. "$SCRIPT_DIR"/dialog_handling.sh
-. "$SCRIPT_DIR"/dropbox_tools.sh
-
 dropbox_status_check() {
     is_dropbox_running && run_stat=0 || run_stat=1
     if [ "$run_stat" -ne "$1" ]; then
@@ -25,6 +18,13 @@ dropbox_status_check() {
         return 1
     fi
 }
+
+CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
+ITEMS_DIR="$(dirname "$CURRENT_DIR")"
+SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
+
+. "$SCRIPT_DIR"/dialog_handling.sh
+. "$SCRIPT_DIR"/dropbox_tools.sh
 
 if is_dropbox_running; then
     action="stop"
