@@ -156,6 +156,18 @@ set -g @menus_location_x 'C'
 set -g @menus_location_y 'C'
 ```
 
+### Pointer to config file
+
+In the main menu, you can request the config file to be reloaded.
+The defaults for this is:
+
+ 1. TMUX_CONF - if this is pressent in the environment, it will be used.
+ 2. @menus_config_file - if this is defined in the config file, it will be used.
+ 3. ~/.tmux.conf - Default if non of the above are set
+
+When a reload is requested, the default will be printed, and used if
+not manually changed.
+
 ### Live config (disabled for now)
 
 If you want to be able to dynamically edit menu settings from within menus,

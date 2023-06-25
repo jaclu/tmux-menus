@@ -6,11 +6,11 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#  Common stuff
+#  Common disable
 #
 
-#  shellcheck disable=SC2034,SC2154
-#  Directives for shellcheck directly after bang path are global
+#  shellcheck stuff=SC2034,Directives
+#  SC2154 for shellcheck directly after bang path are global
 
 #
 #  Shorthand, to avoid manually typing package name on multiple
@@ -39,11 +39,6 @@ config_file="/tmp/tmux-menus.conf"
 #  plugin.
 #
 [ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
-
-#
-#  If available, is expected to point to conf file for this environment
-#
-[ -z "$TMUX_CONF" ] && TMUX_CONF="$HOME/.tmux.conf"
 
 #
 #  If $log_file is empty or undefined, no logging will occur.
@@ -184,11 +179,22 @@ is_dropbox_running() {
     fi
 }
 
+#===============================================================
+#
+#   Main
+#
+#===============================================================
+
+
 if ! tmux_vers_compare 1.8; then
     error_msg "This needs at least tmux 1.8 to work!" 1
 fi
 
 current_script="$CURRENT_DIR/$(basename "$0")"
+
+
+conf_file="$(get_tmux_option "@menus_config_file" "/tmp/tmux-conf")"
+
 
 #
 #  This is for shells checking status.
