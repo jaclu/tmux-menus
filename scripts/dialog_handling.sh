@@ -10,24 +10,6 @@
 #  Global exclusions
 #  shellcheck disable=SC2154
 
-#  shellcheck disable=SC1091
-. "$SCRIPT_DIR/utils.sh"
-
-menu_type="whiptail" #  fallback if tmux can't be used
-
-menu_debug=0 #  Display progress as menu is being built
-
-if [ -z "$FORCE_WHIPTAIL" ] || [ "$FORCE_WHIPTAIL" = "0" ]; then
-    #
-    #  tmux built in popup menus requires tmux 3.0
-    #
-    if tmux_vers_compare 3.0; then
-        menu_type="tmux"
-    # else
-    #     echo "--->  tmux older than 3.0, switching to whiptail  <---"
-    fi
-fi
-
 ensure_menu_fits_on_screen() {
     #
     #  Since tmux display-menu returns 0 even if it failed to display the menu
@@ -76,18 +58,16 @@ ensure_menu_fits_on_screen() {
 
 starting_with_dash() {
     #
-    #  in whiptail, an initial '-'' in a label causes the menu to fail
-    #  in tmux menus this is used to indicate dimmed entries
-    #  for whiptail entries with such labels are just ignored
+    #  In whiptail/dialog, an initial '-'' in a label causes the menu to
+    #  fail, in tmux menus this is used to indicate dimmed (disabled)
+    #  entries, for whiptail/dialog entries with such labels are just
+    #  ignored
     #
     if [ "$(printf '%s' "$1" | cut -c 1)" = "-" ]; then
         return 0
     else
         return 1
     fi
-
-    #  another aproach doing the same
-    # if [ "$(printf '%s\n' "${label%"${label#?}"}")" = "-" ]; then
 }
 
 #
@@ -144,16 +124,88 @@ tmux_spacer() {
     menu_items="$menu_items \"\""
 }
 
-#
-#  using whiptail --menu
-#
-
-whiptail_dialog_prefix() {
+alt_dialog_prefix() {
     #  shellcheck disable=SC2089
     menu_prefix="$dialog_app --menu \"$menu_name\" 0 0 0 "
 }
 
-whiptail_parse_selection() {
+alt_dialog_open_menu() {
+    label="$1"
+    key="$2"
+    menu="$3"
+
+    #
+    #  labels starting with - indicates disabled feature in tmux notation,
+    #  whiptail can not handle labels starting with -, so just skip
+    #  those lines
+    #
+    starting_with_dash "$label" && return
+
+    menu_items="$menu_items $key \"$label\""
+    wt_actions="$wt_actions $key | $menu $alt_dialog_action_separator"
+}
+
+alt_dialog_external_cmd() {
+    label="$1"
+    key="$2"
+    cmd="$3"
+
+    #
+    #  labels starting with - indicates disabled feature in tmux notation,
+    #  whiptail can not handle labels starting with -, so just skip
+    #  those lines
+    #
+    starting_with_dash "$label" && return
+
+    if echo "$cmd" | grep -vq /; then
+        script="$CURRENT_DIR/$script"
+    fi
+    menu_items="$menu_items $key \"$label\""
+    # This will run outside tmux, so should not have run-shell prefix
+    wt_actions="$wt_actions $key | $cmd $alt_dialog_action_separator"
+}
+
+alt_dialog_command() {
+    # filtering out tmux #{...} & #[...] sequences
+    label="$(echo "$1" | sed 's/#{[^}]*}//g' | sed 's/#\[[^}]*\]//g')"
+
+    key="$2"
+    cmd="$3"
+
+    #
+    #  labels starting with - indicates disabled feature in tmux notation,
+    #  whiptail can not handle labels starting with -, so just skip
+    #  those lines
+    #
+    starting_with_dash "$label" && return
+
+    # filer out backslashes prefixing special chars
+    key_action="$(echo "$key" | sed 's/\\//')"
+
+    menu_items="$menu_items $key \"$label\""
+    wt_actions="$wt_actions $key_action | $TMUX_BIN $cmd $alt_dialog_action_separator"
+}
+
+alt_dialog_text_line() {
+    #
+    #  filtering out tmux #{...} sequences and initial -
+    #  labels starting with - indicates disabled feature,
+    #  whiptail can not handle labels starting with -, so remove it
+    #
+    txt="$(echo "$1" | sed 's/#{[^}]*}//g' | sed 's/#\[[^}]*\]//g' | sed 's/^[-]//')"
+
+    if [ "$(printf '%s' "$txt" | cut -c1)" = "-" ]; then
+        txt=" ${txt#?}"
+    fi
+
+    menu_items="$menu_items '' \"$txt\""
+}
+
+alt_dialog_spacer() {
+    menu_items="$menu_items '' ' '"
+}
+
+alt_dialog_parse_selection() {
     #
     #  Whiptail/dialog can only display selected keyword,
     #  so a post dialog step is needed matching keyword with intended
@@ -170,8 +222,8 @@ whiptail_parse_selection() {
     i=0
     while true; do
         # POSIX way to handle array types of data
-        section="${lst%%"${whiptail_action_separator}"*}" # up to first colon excluding it
-        lst="${lst#*"${whiptail_action_separator}"}"      # after fist colon
+        section="${lst%%"${alt_dialog_action_separator}"*}" # up to first colon excluding it
+        lst="${lst#*"${alt_dialog_action_separator}"}"      # after fist colon
 
         #  strip leading and trailing spaces
         # section=${section#"${string%%[![:space:]]*}"}
@@ -199,87 +251,6 @@ whiptail_parse_selection() {
         [ "$lst" = "" ] && break # we have processed last group
         # echo
     done
-}
-
-whiptail_open_menu() {
-    label="$1"
-    key="$2"
-    menu="$3"
-
-    #
-    #  labels starting with - indicates disabled feature in tmux notation,
-    #  whiptail can not handle labels starting with -, so just skip
-    #  those lines
-    #
-    starting_with_dash "$label" && return
-
-    menu_items="$menu_items $key \"$label\""
-    wt_actions="$wt_actions $key | $menu $whiptail_action_separator"
-}
-
-whiptail_external_cmd() {
-    label="$1"
-    key="$2"
-    cmd="$3"
-
-    #
-    #  labels starting with - indicates disabled feature in tmux notation,
-    #  whiptail can not handle labels starting with -, so just skip
-    #  those lines
-    #
-    starting_with_dash "$label" && return
-
-    if echo "$cmd" | grep -vq /; then
-        script="$CURRENT_DIR/$script"
-    fi
-    menu_items="$menu_items $key \"$label\""
-    # This will run outside tmux, so should not have run-shell prefix
-    wt_actions="$wt_actions $key | $cmd $whiptail_action_separator"
-}
-
-whiptail_command() {
-    # filtering out tmux #{...} & #[...] sequences
-    label="$(echo "$1" | sed 's/#{[^}]*}//g' | sed 's/#\[[^}]*\]//g')"
-
-    key="$2"
-    cmd="$3"
-
-    #
-    #  labels starting with - indicates disabled feature in tmux notation,
-    #  whiptail can not handle labels starting with -, so just skip
-    #  those lines
-    #
-    starting_with_dash "$label" && return
-
-    # filer out backslashes prefixing special chars
-    key_action="$(echo "$key" | sed 's/\\//')"
-
-    menu_items="$menu_items $key \"$label\""
-    wt_actions="$wt_actions $key_action | $TMUX_BIN $cmd $whiptail_action_separator"
-}
-
-whiptail_text_line() {
-    # filtering out tmux #{...} sequences
-    txt="$(echo "$1" | sed 's/#{[^}]*}//g' | sed 's/#\[[^}]*\]//g')"
-
-    #
-    #  labels starting with - indicates disabled feature,
-    #  whiptail can not handle labels starting with -, so just skip
-    #  those lines
-    #
-    # starting_with_dash "$txt" && return
-
-    # first_char=$(printf '%s' "$txt" | cut -c1)
-    # second_onwards=${string#?}
-    if [ "$(printf '%s' "$txt" | cut -c1)" = "-" ]; then
-        txt=" ${txt#?}"
-    fi
-
-    menu_items="$menu_items '' \"$txt\""
-}
-
-whiptail_spacer() {
-    menu_items="$menu_items '' ' '"
 }
 
 menu_parse() {
@@ -322,7 +293,7 @@ menu_parse() {
             if [ "$menu_type" = "tmux" ]; then
                 tmux_open_menu "$label" "$key" "$menu"
             else
-                whiptail_open_menu "$label" "$key" "$menu"
+                alt_dialog_open_menu "$label" "$key" "$menu"
             fi
             ;;
 
@@ -341,7 +312,7 @@ menu_parse() {
             if [ "$menu_type" = "tmux" ]; then
                 tmux_command "$label" "$key" "$cmd"
             else
-                whiptail_command "$label" "$key" "$cmd"
+                alt_dialog_command "$label" "$key" "$cmd"
             fi
             ;;
 
@@ -378,7 +349,7 @@ menu_parse() {
             if [ "$menu_type" = "tmux" ]; then
                 tmux_external_cmd "$label" "$key" "$cmd"
             else
-                whiptail_external_cmd "$label" "$key" "$cmd"
+                alt_dialog_external_cmd "$label" "$key" "$cmd"
             fi
             ;;
 
@@ -392,7 +363,7 @@ menu_parse() {
             if [ "$menu_type" = "tmux" ]; then
                 tmux_text_line "$txt"
             else
-                whiptail_text_line "$txt"
+                alt_dialog_text_line "$txt"
             fi
             ;;
 
@@ -406,7 +377,7 @@ menu_parse() {
             if [ "$menu_type" = "tmux" ]; then
                 tmux_spacer
             else
-                whiptail_spacer
+                alt_dialog_spacer
             fi
             ;;
 
@@ -424,7 +395,7 @@ menu_parse() {
     if [ "$menu_type" = "tmux" ]; then
         tmux_dialog_prefix
     else
-        whiptail_dialog_prefix
+        alt_dialog_prefix
     fi
 
     #  prepend cmd line with menu prefix
@@ -435,7 +406,7 @@ menu_parse() {
         echo "Will run:"
         echo "$@"
         if [ -n "$wt_actions" ]; then
-            echo "Whiptail actions:"
+            echo "alt-dialog actions:"
             echo "$wt_actions"
         fi
     fi
@@ -449,19 +420,46 @@ menu_parse() {
         ensure_menu_fits_on_screen
     else
         #  shellcheck disable=SC2294
-        menu_selection=$(eval "$@" 3>&2 2>&1 1>&3) # skip - for non MacOS
+        menu_selection=$(eval "$@" 3>&2 2>&1 1>&3)
         # echo "selection[$menu_selection]"
-        whiptail_parse_selection
+        alt_dialog_parse_selection
     fi
 }
+
+#===============================================================
+#
+#   Main
+#
+#===============================================================
+
+# SCRIPT_DIR/utils.sh must be sourced before this
 
 if [ -z "$CURRENT_DIR" ] || [ -z "$SCRIPT_DIR" ]; then
     echo "ERROR: CURRENT_DIR & SCRIPT_DIR must be defined!"
     exit 1
 fi
 
-dialog_app="whiptail"
-whiptail_action_separator=":/:/:/:"
+#
+#  Despite this being sourced and utils.sh must have been sourced,
+#  utils.sh must still be sourced here in order for this to run
+#
+#  shellcheck disable=SC1091
+. "$SCRIPT_DIR/utils.sh"
+
+menu_type="alternate" #  fallback if tmux can't be used
+
+if [ -z "$FORCE_ALT_DIALOG" ] || [ "$FORCE_ALT_DIALOG" = "0" ]; then
+    #
+    #  tmux built in popup menus requires tmux 3.0
+    #  this falls back to the alternate on older tmux versions
+    #
+    if tmux_vers_compare 3.0; then
+        menu_type="tmux"
+    else
+        # echo "--->  tmux older than 3.0, using whiptail  <---"
+        menu_type="alternate"
+    fi
+fi
 
 #
 #  Define a variable that can be used as suffix on commands, to reload
@@ -473,3 +471,13 @@ else
     # shellcheck disable=SC2034
     menu_reload="; '$current_script'"
 fi
+
+#
+#  What alternate dialog app to use, if tmux built in dialogs will not
+#  be used, options: whiptail dialog
+#
+dialog_app="whiptail"
+
+alt_dialog_action_separator=":/:/:/:"
+
+menu_debug=0 #  Display progress as menu is being built

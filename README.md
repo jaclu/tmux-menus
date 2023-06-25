@@ -2,7 +2,8 @@
 
 Popup menus to help with managing your environment.
 
-Can use whiptail as alternate menu system.
+Can use whiptail/dialog as alternate menu system, default alternate
+dialog env is whiptail
 
 Not to hard to adopt to fit your needs. Items that some
 might find slightly redundant are included, easier to remove excess for more
@@ -63,8 +64,10 @@ Default is `<prefix> \` see Configuration below for how to change it.
 ## whiptail
 
 These menus can also be displayed using whiptail, be aware that the
-whiptail menus can't be triggered by the shortcut. I havent figured out
-how to trigger things displayed inside a pane via shortcut.
+whiptail menus can't be triggered by the shortcut. When run via "run-shell"
+It complains about running in a non-interactive shell. It might be
+possible to find a work-arround, however I havent figured that out.
+
 So using whiptail, it can't really be considered a traditional tmux plugin,
 you have to launch it manually or by some other means.
 But once started, the menu system works the same using whiptail, the
@@ -74,7 +77,7 @@ keys like 'Left' or 'Home'
 
 If tmux is < 3.0 whiptail will automatically be used.
 If you want to use whiptail on modern tmuxes set this env variable: `export
-FORCE_WHIPTAIL=1`
+FORCE_ALT_DIALOG=1`
 
 ## Compatibility
 | Version | Notice
