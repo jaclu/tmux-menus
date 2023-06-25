@@ -12,7 +12,7 @@ MENUS_DIR="$CURRENT_DIR/items"
 SCRIPTS_DIR="$CURRENT_DIR/scripts"
 
 
-#  shellcheck disable=SC2154
+#  shellcheck disable=SC1091
 . "$SCRIPTS_DIR/utils.sh"
 
 if ! tmux_vers_compare 3.0; then

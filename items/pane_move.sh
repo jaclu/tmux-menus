@@ -9,7 +9,7 @@
 #
 
 # Global directives
-# shellcheck disable=SC2034
+# shellcheck disable=SC2034,SC2154
 
 CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
@@ -19,7 +19,6 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 
 menu_name="Move Pane"
 
-# shellcheck disable=SC2154
 set -- \
     0.0 M Home "Back to Main menu      <==" main.sh \
     0.0 M Left "Back to Handling Pane  <--" panes.sh \
@@ -28,12 +27,10 @@ set -- \
         \"run-shell '$SCRIPT_DIR/relocate_pane.sh P M %%'\""
 
 if $TMUX_BIN display-message -p '#{pane_marked_set}' | grep -q '1'; then
-    #  shellcheck disable=SC2154
     set -- "$@" \
         1.7 C s "Swap current pane with marked" "swap-pane $menu_reload"
 fi
 
-#  shellcheck disable=SC2154
 set -- "$@" \
     1.7 C "{" "<P> Swap pane with prev" "swap-pane -U $menu_reload" \
     1.7 C "}" "<P> Swap pane with next" "swap-pane -D $menu_reload" \

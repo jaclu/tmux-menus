@@ -7,7 +7,7 @@
 #
 #   Move Window
 #
-#  shellcheck disable=SC2034
+#  shellcheck disable=SC2034,SC2154
 #  Directives for shellcheck directly after bang path are global
 
 CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
@@ -22,7 +22,6 @@ other_pane_is_marked="$($TMUX_BIN display -p '#{?pane_marked_set, ,}')"
 
 menu_name="Move Window"
 
-# shellcheck disable=SC2154
 set -- \
     0.0 M Home "Back to Main menu        <==" main.sh \
     0.0 M Left "Back to Handling Window  <--" windows.sh \

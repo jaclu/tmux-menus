@@ -232,11 +232,11 @@ alt_dialog_parse_selection() {
         # echo ">> section [$section]"
         i=$((i + 1))
         # echo "i $i"
-        [ $i -gt 50 ] && break
+        [ "$i" -gt 50 ] && break
         [ -z "$section" ] && continue # skip blank lines
         # echo ">> reimainder [$lst]"
 
-        key="$(echo "$section" | cut -d'|' -f 1 | awk '{$1=$1};1')" # | tr '[:upper:]' '[:lower:]')"
+        key="$(echo "$section" | cut -d'|' -f 1 | awk '{$1=$1};1')"
         action="$(echo "$section" | cut -d'|' -f 2 | awk '{$1=$1};1')"
 
         # echo ">> section [$section]"

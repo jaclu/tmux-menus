@@ -8,7 +8,7 @@
 #   Handling pane
 #
 
-#  shellcheck disable=SC1091,SC2034
+#  shellcheck disable=SC1091,SC2034,SC2154
 #  Directives for shellcheck directly after bang path are global
 
 CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
@@ -23,7 +23,6 @@ new_sync_state="$($TMUX_BIN display -p '#{?pane_synchronized,Disable,Activate}')
 
 menu_name="Handling Pane"
 
-#  shellcheck disable=SC2154
 set -- \
     0.0 M Left "Back to Main menu  <--" main.sh \
     0.0 M M "Move pane             -->" pane_move.sh \
