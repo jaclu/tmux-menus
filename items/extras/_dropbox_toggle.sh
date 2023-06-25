@@ -15,7 +15,7 @@ ITEMS_DIR="$(dirname "$CURRENT_DIR")"
 SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 
 . "$SCRIPT_DIR"/dialog_handling.sh
-. "$CURRENT_DIR"/_dropbox_tools.sh
+. "$SCRIPT_DIR"/dropbox_tools.sh
 
 dropbox_status_check() {
     is_dropbox_running && run_stat=0 || run_stat=1
