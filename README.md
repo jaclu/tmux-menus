@@ -2,7 +2,8 @@
 
 Popup menus to help with managing your environment.
 
-Can use whiptail as alternate menu system.
+Can use whiptail/dialog as alternate menu system, default alternate
+dialog env is whiptail
 
 Not to hard to adopt to fit your needs. Items that some
 might find slightly redundant are included, easier to remove excess for more
@@ -10,13 +11,14 @@ experienced users, than to add more for newbies.
 
 ## Recent changes
 
+- Now you can pre-define config file, so that you don't have to
+type it in every time you choose `Reload configuration file` check
+section `Pointer to config file` below for details.
 - Total rework, now the menus are generated dynamically, both for tmux
 and whiptail, added version limits to actions. Using whiptail the
 menus can be used on all older versions of tmux.
 - Added Extras - iSH AOK FS, corrected main help text and some menu min sizes
 - Main menu, toggle status Line - new feature
-- Main menu, Public IP - It is simply echoed in the current pane, so that there is plenty of time to read and/or copy it.
-Just hit Escape to get pane to resume normal operation.
 
 ## Purpose
 
@@ -63,8 +65,10 @@ Default is `<prefix> \` see Configuration below for how to change it.
 ## whiptail
 
 These menus can also be displayed using whiptail, be aware that the
-whiptail menus can't be triggered by the shortcut. I havent figured out
-how to trigger things displayed inside a pane via shortcut.
+whiptail menus can't be triggered by the shortcut. When run via "run-shell"
+It complains about running in a non-interactive shell. It might be
+possible to find a work-arround, however I havent figured that out.
+
 So using whiptail, it can't really be considered a traditional tmux plugin,
 you have to launch it manually or by some other means.
 But once started, the menu system works the same using whiptail, the
@@ -74,7 +78,7 @@ keys like 'Left' or 'Home'
 
 If tmux is < 3.0 whiptail will automatically be used.
 If you want to use whiptail on modern tmuxes set this env variable: `export
-FORCE_WHIPTAIL=1`
+FORCE_ALT_DIALOG=1`
 
 ## Compatibility
 | Version | Notice
@@ -154,6 +158,23 @@ confusing, the coordinate defines lower left of the menus placement…
 ```tmux
 set -g @menus_location_x 'C'
 set -g @menus_location_y 'C'
+```
+
+### Pointer to config file
+
+In the main menu, you can request the config file to be reloaded.
+The defaults for this is:
+
+ 1. $TMUX_CONF - if this is pressent in the environment, it will be used.
+ 2. @menus_config_file - if this is defined in the tmux config file,
+ it will be used.
+ 3. ~/.tmux.conf - Default if none of the above are set
+
+When a reload is requested, the default will be printed, and used if
+not manually changed.
+
+```tmux
+set -g @menus_config_file "$XDG_CONFIG_HOME/tmux/tmux.conf"
 ```
 
 ### Live config (disabled for now)

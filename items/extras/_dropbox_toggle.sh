@@ -8,14 +8,7 @@
 #   toggle dropbox on/off
 #
 # Global check exclude
-# shellcheck disable=SC2154
-
-CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-ITEMS_DIR="$(dirname "$CURRENT_DIR")"
-SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
-
-# shellcheck disable=SC1091
-. "$SCRIPT_DIR/dialog_handling.sh"
+# shellcheck disable=SC1091,SC2154
 
 dropbox_status_check() {
     is_dropbox_running && run_stat=0 || run_stat=1
@@ -25,6 +18,13 @@ dropbox_status_check() {
         return 1
     fi
 }
+
+CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
+ITEMS_DIR="$(dirname "$CURRENT_DIR")"
+SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
+
+. "$SCRIPT_DIR"/dialog_handling.sh
+. "$SCRIPT_DIR"/dropbox_tools.sh
 
 if is_dropbox_running; then
     action="stop"

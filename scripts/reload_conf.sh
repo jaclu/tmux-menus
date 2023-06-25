@@ -15,12 +15,7 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR"/utils.sh
 
-#
-#  I use https://github.com/jaclu/my_tmux_conf.git to generate my
-#  config, there I set TMUX_CONF to point at the current config
-#  file. If this is not found, it defaults to the standard config.
-#
-conf="${TMUX_CONF:-~/.tmux.conf}"
+conf="${TMUX_CONF:-$conf_file}"
 
 # shellcheck disable=SC2154
 $TMUX_BIN command-prompt -I "$conf" -p "Source file:" \
