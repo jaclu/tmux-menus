@@ -16,7 +16,7 @@ ITEMS_DIR="$(dirname "$CURRENT_DIR")"
 SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 
 . "$SCRIPT_DIR"/dialog_handling.sh
-. "$CURRENT_DIR"/_dropbox_toggle.sh
+. "$SCRIPT_DIR"/dropbox_tools.sh
 
 [ -z "$(command -v dropbox)" ] && error_msg "dropbox bin not found!" 1
 
