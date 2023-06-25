@@ -12,7 +12,7 @@ MENUS_DIR="$CURRENT_DIR/items"
 SCRIPTS_DIR="$CURRENT_DIR/scripts"
 
 
-#  shellcheck disable=SC1091
+#  shellcheck disable=SC2154
 . "$SCRIPTS_DIR/utils.sh"
 
 #
