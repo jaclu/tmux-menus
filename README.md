@@ -81,11 +81,16 @@ If you want to use whiptail on modern tmuxes set this env variable: `export
 FORCE_ALT_DIALOG=1`
 
 ## Compatibility
+
 | Version | Notice
 | - | - |
 3.2 | Fully compatible
 3.0 - 3.1c | Menu centering not supported, it's displayed top left if C is menu location.
 1.8 - 3.0 | Only available using whiptail
+
+The above table covers compatability for the general tool. Each item
+has a min tmux version set, if the running tmux doesn't match this,
+that item will be skipped.
 
 ## Installation
 
