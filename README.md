@@ -11,13 +11,14 @@ experienced users, than to add more for newbies.
 
 ## Recent changes
 
+- Now you can pre-define config file, so that you don't have to
+type it in every time you choose `Reload configuration file` check
+section `Pointer to config file` below for details.
 - Total rework, now the menus are generated dynamically, both for tmux
 and whiptail, added version limits to actions. Using whiptail the
 menus can be used on all older versions of tmux.
 - Added Extras - iSH AOK FS, corrected main help text and some menu min sizes
 - Main menu, toggle status Line - new feature
-- Main menu, Public IP - It is simply echoed in the current pane, so that there is plenty of time to read and/or copy it.
-Just hit Escape to get pane to resume normal operation.
 
 ## Purpose
 
@@ -164,12 +165,17 @@ set -g @menus_location_y 'C'
 In the main menu, you can request the config file to be reloaded.
 The defaults for this is:
 
- 1. TMUX_CONF - if this is pressent in the environment, it will be used.
- 2. @menus_config_file - if this is defined in the config file, it will be used.
- 3. ~/.tmux.conf - Default if non of the above are set
+ 1. $TMUX_CONF - if this is pressent in the environment, it will be used.
+ 2. @menus_config_file - if this is defined in the tmux config file,
+ it will be used.
+ 3. ~/.tmux.conf - Default if none of the above are set
 
 When a reload is requested, the default will be printed, and used if
 not manually changed.
+
+```tmux
+set -g @menus_config_file "$XDG_CONFIG_HOME/tmux/tmux.conf"
+```
 
 ### Live config (disabled for now)
 
