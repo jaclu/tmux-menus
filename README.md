@@ -286,9 +286,7 @@ Item types and their parameters
   - label for external command
   - external command
 - T - Display text line
-  - label to display. Since whiptail is more limited in handling labels,
-    any initial "-" (making it unselectable in tmux menus) will be
-    replaced by " ", leading "-" causes whiptail to crash.
+  - label to display. Any initial "-" (making it unselectable in tmux menus) will be skipped if whiptail is used, since leading "-" would cause it to crash.
 - S - Separator/Spacer line line
   - no params
 
