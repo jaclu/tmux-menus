@@ -15,14 +15,6 @@ SCRIPTS_DIR="$CURRENT_DIR/scripts"
 #  shellcheck disable=SC1091
 . "$SCRIPTS_DIR/utils.sh"
 
-if ! tmux_vers_compare 3.0; then
-    echo "tmux-menus can't be triggered by a shortcut on versions < 3.0"
-    echo "due to display-menu not beeing available."
-    echo "In such cases this can't be used as a typical plugin."
-    echo "However you can still manually run the menus from the command-line"
-    exit 0
-fi
-
 #
 #  In shell script unlike in tmux, backslash needs to be doubled inside quotes.
 #
@@ -70,5 +62,19 @@ else
     log_it "Menus bound to: <prefix> $trigger_key"
 fi
 
+if bool_param "$(get_tmux_option "@menus_force_whiptail" "No")"; then
+    force_whiptail=1
+else
+    force_whiptail=0
+fi
+log_it "force_whiptail=[$force_whiptail]"
+
+
+if tmux_vers_compare 3.0 && [ $force_whiptail != 1 ]; then
+    cmd="$MENUS_DIR/main.sh"
+else
+    cmd="$SCRIPTS_DIR/do_whiptail.sh"
+fi
+
 #  shellcheck disable=SC2154,SC2086
-$TMUX_BIN bind $params $trigger_key run-shell "$MENUS_DIR/main.sh"
+$TMUX_BIN bind $params $trigger_key run-shell "$cmd"
