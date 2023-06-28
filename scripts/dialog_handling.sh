@@ -290,10 +290,10 @@ menu_parse() {
 
             [ "$menu_debug" = "1" ] && echo "key[$key] label[$label] menu[$menu]"
 
-            if [ "$menu_type" = "tmux" ]; then
-                tmux_open_menu "$label" "$key" "$menu"
-            else
+            if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
                 alt_dialog_open_menu "$label" "$key" "$menu"
+            else
+                tmux_open_menu "$label" "$key" "$menu"
             fi
             ;;
 
@@ -309,10 +309,10 @@ menu_parse() {
 
             [ "$menu_debug" = "1" ] && echo "key[$key] label[$label] command[$cmd]"
 
-            if [ "$menu_type" = "tmux" ]; then
-                tmux_command "$label" "$key" "$cmd"
-            else
+            if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
                 alt_dialog_command "$label" "$key" "$cmd"
+            else
+                tmux_command "$label" "$key" "$cmd"
             fi
             ;;
 
@@ -346,10 +346,10 @@ menu_parse() {
 
             [ "$menu_debug" = "1" ] && echo "key[$key] label[$label] command[$cmd]"
 
-            if [ "$menu_type" = "tmux" ]; then
-                tmux_external_cmd "$label" "$key" "$cmd"
-            else
+            if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
                 alt_dialog_external_cmd "$label" "$key" "$cmd"
+            else
+                tmux_external_cmd "$label" "$key" "$cmd"
             fi
             ;;
 
@@ -360,10 +360,10 @@ menu_parse() {
             ! tmux_vers_compare "$min_vers" && continue
 
             [ "$menu_debug" = "1" ] && echo "text line [$txt]"
-            if [ "$menu_type" = "tmux" ]; then
-                tmux_text_line "$txt"
-            else
+            if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
                 alt_dialog_text_line "$txt"
+            else
+                tmux_text_line "$txt"
             fi
             ;;
 
@@ -374,10 +374,10 @@ menu_parse() {
             [ "$menu_debug" = "1" ] && echo "Spacer line"
 
             # Whiptail/dialog does not have a concept of spacer lines
-            if [ "$menu_type" = "tmux" ]; then
-                tmux_spacer
-            else
+            if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
                 alt_dialog_spacer
+            else
+                tmux_spacer
             fi
             ;;
 
@@ -392,10 +392,10 @@ menu_parse() {
         esac
     done
 
-    if [ "$menu_type" = "tmux" ]; then
-        tmux_dialog_prefix
-    else
+    if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
         alt_dialog_prefix
+    else
+        tmux_dialog_prefix
     fi
 
     #  prepend cmd line with menu prefix
@@ -411,18 +411,18 @@ menu_parse() {
         fi
     fi
 
-    if [ "$menu_type" = "tmux" ]; then
+    if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+        #  shellcheck disable=SC2294
+        menu_selection=$(eval "$@" 3>&2 2>&1 1>&3)
+        # echo "selection[$menu_selection]"
+        alt_dialog_parse_selection
+    else
         #  shellcheck disable=SC2034
         t_start="$(date +'%s')"
         # tmux can trigger actions by it self
         #  shellcheck disable=SC2068,SC2294
         eval $@
         ensure_menu_fits_on_screen
-    else
-        #  shellcheck disable=SC2294
-        menu_selection=$(eval "$@" 3>&2 2>&1 1>&3)
-        # echo "selection[$menu_selection]"
-        alt_dialog_parse_selection
     fi
 }
 
@@ -432,6 +432,11 @@ menu_parse() {
 #
 #===============================================================
 
+if [ -z "$TMUX" ]; then
+    echo "ERROR: tmux-menus can only be used inside tmux!"
+    exit 1
+fi
+
 # SCRIPT_DIR/utils.sh must be sourced before this
 
 if [ -z "$CURRENT_DIR" ] || [ -z "$SCRIPT_DIR" ]; then
@@ -440,36 +445,34 @@ if [ -z "$CURRENT_DIR" ] || [ -z "$SCRIPT_DIR" ]; then
 fi
 
 #
-#  Despite this being sourced and utils.sh must have been sourced,
+#  Despite this being sourced and utils.sh should have been sourced,
 #  utils.sh must still be sourced here in order for this to run
 #
 #  shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
 
-menu_type="alternate" #  fallback if tmux can't be used
+! tmux_vers_compare 3.0 && FORCE_WHIPTAIL_MENUS=1
 
-if [ -z "$FORCE_ALT_DIALOG" ] || [ "$FORCE_ALT_DIALOG" = "0" ]; then
-    #
-    #  tmux built in popup menus requires tmux 3.0
-    #  this falls back to the alternate on older tmux versions
-    #
-    if tmux_vers_compare 3.0; then
-        menu_type="tmux"
-    else
-        # echo "--->  tmux older than 3.0, using whiptail  <---"
-        menu_type="alternate"
-    fi
-fi
+# menu_type="alternate" #  fallback if tmux menus shouldn't be used
+
+# if [ "$FORCE_WHIPTAIL_MENUS" != "1" ]; then
+#     #
+#     #  tmux built in popup menus requires tmux 3.0
+#     #  this falls back to the alternate on older tmux versions
+#     #
+#     tmux_vers_compare 3.0 && [ -n "$TMUX" ] && menu_type="tmux"
+# fi
 
 #
-#  Define a variable that can be used as suffix on commands, to reload
-#  the same menu in calling scripts
+#  Define a variable that can be used as suffix on commands in dialog
+#  items, to reload the same menu in calling scripts
 #
-if [ "$menu_type" = "tmux" ]; then
-    menu_reload="; run-shell '$current_script'"
-else
+if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
     # shellcheck disable=SC2034
     menu_reload="; '$current_script'"
+else
+    # shellcheck disable=SC2034
+    menu_reload="; run-shell '$current_script'"
 fi
 
 #
