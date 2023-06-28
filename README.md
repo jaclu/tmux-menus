@@ -2,8 +2,8 @@
 
 Popup menus to help with managing your environment.
 
-Can use whiptail/dialog as alternate menu system, default alternate
-dialog env is whiptail
+For tmux < 3.0 whiptail will be used instead of the tmux feature
+`display-menu`.
 
 Not to hard to adopt to fit your needs. Items that some
 might find slightly redundant are included, easier to remove excess for more
@@ -11,9 +11,11 @@ experienced users, than to add more for newbies.
 
 ## Recent changes
 
+- whiptail menus can be used via the shortcut
 - Now you can pre-define config file, so that you don't have to
-type it in every time you choose `Reload configuration file` check
-section `Pointer to config file` below for details.
+type it in every time you choose `Reload configuration file` in case
+you are not using `~/.tmux.conf` check section `Pointer to config file`
+below for details.
 - Total rework, now the menus are generated dynamically, both for tmux
 and whiptail, added version limits to actions. Using whiptail the
 menus can be used on all older versions of tmux.
@@ -23,7 +25,7 @@ menus can be used on all older versions of tmux.
 ## Purpose
 
 Some basic popup menus come as default
-(See *Configuration* on how to turn them off)
+(See *Configuration* for how to disable them)
 
 - `<prefix> <` displays some windows handling options
 - `<prefix> >` displays some pane handling options
@@ -56,29 +58,12 @@ Default is `<prefix> \` see Configuration below for how to change it.
 ## Screenshots of some menus
 
 ![main](https://user-images.githubusercontent.com/5046648/220794673-6504f675-0b89-41a6-9fa9-16387dada883.png)
+![Whiptail main](https://github.com/jaclu/tmux-menus/assets/5046648/11ac1c9f-cb19-4dba-a29d-7106ec854fea)
 ![Pane](https://user-images.githubusercontent.com/5046648/200143811-d4e3b254-310e-4207-82b6-a7bd527fcb47.png)
 ![Window](https://user-images.githubusercontent.com/5046648/200143848-eb7c0c3e-837c-4393-b761-d8424eaa782e.png)
 ![Advanced](https://user-images.githubusercontent.com/5046648/200143879-4973d4d2-2c74-47a2-9110-d87b5765707a.png)
 ![Session](https://user-images.githubusercontent.com/5046648/200143930-e27f063f-c054-47d5-9640-502f4127cb14.png)
 ![Help Summary](https://user-images.githubusercontent.com/5046648/200149023-619deff0-8d66-45e2-be3e-a6def82e9fbc.png)
-
-## whiptail
-
-These menus can also be displayed using whiptail, be aware that the
-whiptail menus can't be triggered by the shortcut. When run via "run-shell"
-It complains about running in a non-interactive shell. It might be
-possible to find a work-arround, however I havent figured that out.
-
-So using whiptail, it can't really be considered a traditional tmux plugin,
-you have to launch it manually or by some other means.
-But once started, the menu system works the same using whiptail, the
-menu shortcuts are not as effective, since whiptail does not differentiate
-between upper and lower case letters, and does not at all support special
-keys like 'Left' or 'Home'
-
-If tmux is < 3.0 whiptail will automatically be used.
-If you want to use whiptail on modern tmuxes set this env variable: `export
-FORCE_ALT_DIALOG=1`
 
 ## Compatibility
 
@@ -86,41 +71,70 @@ FORCE_ALT_DIALOG=1`
 | - | - |
 3.2 | Fully compatible
 3.0 - 3.1c | Menu centering not supported, it's displayed top left if C is menu location.
-1.8 - 3.0 | Only available using whiptail
+1.8 - 3.0 | Only available using whiptail, menu location setting ignored.
 
 The above table covers compatability for the general tool. Each item
 has a min tmux version set, if the running tmux doesn't match this,
 that item will be skipped.
 
-## Installation
+## Installing
 
-### Installation with [Tmux Plugin Manager](https://github.com/tmux-plugins/tpm) (recommended)
+### Via TPM (recommended)
 
-Add plugin to the list of TPM plugins in `.tmux.conf`:
+The easiest way to install `tmux-menus` is via the [Tmux Plugin
+Manager](https://github.com/tmux-plugins/tpm).
 
-```tmux
-set -g @plugin 'jaclu/tmux-menus'
-```
+1.  Add plugin to the list of TPM plugins in `.tmux.conf`:
 
-Hit `<prefix> + I` to install the plugin and activate it. You should now be able to
-use the plugin.
+    ``` tmux
+    set -g @plugin 'jaclu/tmux-menus'
+    ```
 
-### Manual installation
+2.  Hit `<prefix> + I` to install the plugin and activate it. You should
+    now be able to use the plugin.
 
-Clone the repository:
+### Manual Installation
 
-```bash
-git clone https://github.com/jaclu/tmux-menus.git ~/clone/path
-```
+1.  Clone the repository
 
-Add this line to the bottom of `.tmux.conf`:
+    ``` sh
+    $ git clone https://github.com/jaclu/tmux-menus ~/clone/path
+    ```
 
-```tmux
-run-shell ~/clone/path/menus.tmux
-```
+2.  Add this line to the bottom of `.tmux.conf`
 
-Reload TMUX environment with `tmux source-file ~/.tmux.conf`.
-You should now be able to use the plugin.
+    ``` tmux
+    run-shell ~/clone/path/menus.tmux
+    ```
+
+3.  Reload the `tmux` environment
+
+    ``` sh
+    # type this inside tmux
+    $ tmux source-file ~/.tmux.conf
+    ```
+
+You should now be able to use `tmux-menus` immediately.
+
+## whiptail
+
+These menus can also be displayed using whiptail, be aware that in order
+to run whiptail dialogs via a shortcut, the current (if any) task is
+suspended, dialogs are run, and when done the suspended task is
+reactivated.
+
+The downside of this is that if there were no current task running in
+the active pane, you will see `fg: no current job` being printed.
+This can be ignored.
+
+The menu system works the same using whiptail, however the menu
+shortcuts are not as convenient, since whiptail does not differentiate
+between upper and lower case letters, and does not at all support
+special keys like 'Left' or 'Home'
+
+If tmux is < 3.0 whiptail will automatically be used.
+If you want to use whiptail on modern tmuxes set this env variable:
+`export FORCE_WHIPTAIL_MENUS=1`
 
 ## Configuration
 
@@ -132,8 +146,8 @@ The default trigger is `<prefix> \`. Trigger is selected like this:
 set -g @menus_trigger 'F9'
 ```
 
-Please note that non standard keys, like the default backslash needs to be noted
-in a specific way in order not to confuse tmux.
+Please note that non standard keys, like the default backslash needs to
+be noted in a specific way in order not to confuse tmux.
 Either `'\'` or without quotes as `\\`. Quoting `'\\'` won't make sense
 for tmux and fail to bind the key.
 
@@ -147,7 +161,7 @@ This param can be either 0 (the default) or 1
 
 ### Menu location
 
-Default location is: P, compatible with older tmux versions
+Default location is: P, compatible with tmux 3.0 and up
 
 Locations can be one of:
 
@@ -182,22 +196,10 @@ not manually changed.
 set -g @menus_config_file "$XDG_CONFIG_HOME/tmux/tmux.conf"
 ```
 
-### Live config (disabled for now)
-
-If you want to be able to dynamically edit menu settings from within menus,
-set this
-
-```tmux
-set -g @menus_config_overrides 1
-```
-
-This param can be either 0 (the default) or 1
-
-configurable items: menu location
-
 ### Default menus
 
-To disable the rather limited default popup menus, add the following
+To disable the rather limited default popup menus, you can add the
+following
 
 ```tmux
 unbind-key -n MouseDown3Pane
@@ -221,13 +223,6 @@ not intended.
 ```
 
 ## Modifications
-
-If you want to experiment with changing the menus,
-first clone/copy this repository to a different location on your system.
-
-Then by running `~/path/to/alternate-tmux-menus/menus.tmux`, your
-trigger key binds to this alternate menu set.
-Next time you trigger the menus, this in-development menu tree is used.
 
 Each menu is a script, so you can edit a menu script and once saved,
 the new content is displayed next time you trigger that menu.
@@ -259,14 +254,6 @@ To trigger log output, add lines like:
 ```bash
 log_it "foo is now [$foo]"
 ```
-
-When done, first unset log_file, then copy or commit your changes to the
-default location, this is used from now on.
-
-If you want to go back to your installed version for now, either reload
-configs, or run `~/.tmux/plugins/tmux-menus/menus.tmux` to rebind those
-menus to the trigger. Regardless the installed version is activated
-next time you start tmux automatically.
 
 ## Menu building
 
@@ -328,7 +315,7 @@ menu_parse "$@"
 
 ### Complex param building for menu items
 
-If whilst building the parameters, you need to take a break and check some
+If whilst building the dialog, you need to take a break and check some
 condition, you just pause the `set --` param assignments, do the check
 and then resume param assignment using `set -- "$@"`
 
@@ -348,7 +335,6 @@ set -- "$@" \
 ...
 ```
 
-
 ## Contributing
 
 Contributions are welcome, and they're appreciated.
@@ -361,6 +347,7 @@ The best way to send feedback is to file an [issue](https://github.com/jaclu/tmu
 - [giddie](https://github.com/giddie) for suggesting "Re-spawn current pane"
 - [wilddog64](https://github.com/wilddog64) for suggesting adding a prefix
 to the curl that probes public IP
+
 #### License
 
 [MIT](LICENSE)

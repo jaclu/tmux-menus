@@ -78,5 +78,4 @@ if $undefined_item; then
     fi
 fi
 
-echo
-echo "Press <Escape> to clear this output"
+wait_to_close_display

@@ -8,7 +8,13 @@
 #   Displays public IP
 #
 
+CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
+SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
+
+# shellcheck disable=SC1091
+. "$SCRIPT_DIR/utils.sh"
+
 echo # Extra LF to avoid cursor placed over text
 echo "Public IP: $(curl https://ifconfig.me 2>/dev/null)"
-echo
-echo "Press Escape to exit this output"
+
+wait_to_close_display
