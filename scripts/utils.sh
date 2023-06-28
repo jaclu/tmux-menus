@@ -142,6 +142,17 @@ tmux_vers_compare() {
     return 0
 }
 
+wait_to_close_display() {
+    echo
+    # shellcheck disable=SC2009
+    if ps ax | grep -q whiptail; then
+        echo "Press <Enter> to clear this output"
+        read -r
+    else
+        echo "Press <Escape> to clear this output"
+    fi
+}
+
 #===============================================================
 #
 #   Main
@@ -158,7 +169,7 @@ plugin_name="tmux-menus"
 #  If log_file is empty or undefined, no logging will occur,
 #  so comment it out for normal usage.
 #
-# log_file="/tmp/$plugin_name.log"
+log_file="/tmp/$plugin_name.log"
 
 #
 #  If @menus_config_overrides is 1, this file is used to store
