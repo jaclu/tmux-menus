@@ -79,4 +79,9 @@ if $undefined_item; then
 fi
 
 echo
-echo "Press <Escape> to clear this output"
+if ps ax | grep -q whiptail; then
+    echo "Press <Enter> to clear this output"
+    read -r
+else
+    echo "Press <Escape> to clear this output"
+fi
