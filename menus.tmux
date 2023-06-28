@@ -62,19 +62,16 @@ else
     log_it "Menus bound to: <prefix> $trigger_key"
 fi
 
-if bool_param "$(get_tmux_option "@menus_force_whiptail" "No")"; then
-    force_whiptail=1
-else
-    force_whiptail=0
-fi
-log_it "force_whiptail=[$force_whiptail]"
-
-
-if tmux_vers_compare 3.0 && [ $force_whiptail != 1 ]; then
+if tmux_vers_compare 3.0 && [ "$FORCE_WHIPTAIL_MENUS" != "1" ]; then
     cmd="$MENUS_DIR/main.sh"
 else
+    if [ -z "$(command -v whiptail)" ]; then
+        error_msg "whiptail is not installed!" 1
+    fi
     cmd="$SCRIPTS_DIR/do_whiptail.sh"
 fi
 
 #  shellcheck disable=SC2154,SC2086
 $TMUX_BIN bind $params $trigger_key run-shell "$cmd"
+
+export export SUNE123="YES"
