@@ -169,7 +169,7 @@ plugin_name="tmux-menus"
 #  If log_file is empty or undefined, no logging will occur,
 #  so comment it out for normal usage.
 #
-log_file="/tmp/$plugin_name.log"
+# log_file="/tmp/$plugin_name.log"
 
 #
 #  If @menus_config_overrides is 1, this file is used to store
