@@ -36,7 +36,22 @@ menu_name="Advanced options"
 set -- \
     0.0 M Left "Back to Main menu  <--" main.sh \
     2.7 M M "Manage clients     -->" advanced_manage_clients.sh \
-    0.0 S \
+    0.0 S
+
+if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+    #
+    #  The tmux output down to Customize options will be displayed
+    #  then disapear instantly since whiptail restarts the foreground
+    #  app. Avoid this by not switching away to the fg app
+    #
+    set -- "$@" \
+        0.0 T "Most outputs for this dialog will disapear if this is run" \
+        0.0 T "in the background of another app. Recomended workarround" \
+        0.0 T "is to run this from a pane with a prompt." \
+        0.0 S
+fi
+
+set -- "$@" \
     0.0 C b "List all key bindings" "list-keys" \
     3.1 C n "List key bindings with notes" "list-keys -N" \
     3.1 C / "<P> Describe (prefix) key" "command-prompt -k \
