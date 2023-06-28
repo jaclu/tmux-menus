@@ -11,6 +11,7 @@ experienced users, than to add more for newbies.
 
 ## Recent changes
 
+- whiptail menus can be displayed via the shortcut, so now
 - Now you can pre-define config file, so that you don't have to
 type it in every time you choose `Reload configuration file` check
 section `Pointer to config file` below for details.
@@ -182,6 +183,14 @@ not manually changed.
 set -g @menus_config_file "$XDG_CONFIG_HOME/tmux/tmux.conf"
 ```
 
+### Forcing whiptail to be used
+
+This forces whiptail to be used even if tmux has the feature display-menu
+
+```tmux
+set -g @menus_force_whiptail "Yes"
+```
+
 ### Live config (disabled for now)
 
 If you want to be able to dynamically edit menu settings from within menus,
@@ -348,7 +357,6 @@ set -- "$@" \
 ...
 ```
 
-
 ## Contributing
 
 Contributions are welcome, and they're appreciated.
@@ -361,6 +369,7 @@ The best way to send feedback is to file an [issue](https://github.com/jaclu/tmu
 - [giddie](https://github.com/giddie) for suggesting "Re-spawn current pane"
 - [wilddog64](https://github.com/wilddog64) for suggesting adding a prefix
 to the curl that probes public IP
+
 #### License
 
 [MIT](LICENSE)
