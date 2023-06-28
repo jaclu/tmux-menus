@@ -125,7 +125,7 @@ tmux_vers_compare() {
     #  can be used in this env
     #
     check_vers="$1"
-    tmux_vers_file="$SCRIPT_DIR/.tmux_version"
+
     #
     #  The time to generate it each time is pretty much the same
     #  as reading the value from a cached file, so just not worth the
