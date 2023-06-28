@@ -15,4 +15,4 @@ ITEMS_DIR="$(dirname "$CURRENT_DIR")/items"
 . "$CURRENT_DIR/utils.sh"
 
 #  shellcheck disable=SC2154
-"$TMUX_BIN" send-keys C-z "FORCE_ALT_DIALOG=1 $ITEMS_DIR/main.sh ; fg" Enter
+"$TMUX_BIN" send-keys C-z "$ITEMS_DIR/main.sh ; fg" Enter
