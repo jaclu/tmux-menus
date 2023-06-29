@@ -84,30 +84,30 @@ that item will be skipped.
 The easiest way to install `tmux-menus` is via the [Tmux Plugin
 Manager](https://github.com/tmux-plugins/tpm).
 
-1.  Add plugin to the list of TPM plugins in `.tmux.conf`:
+1. Add plugin to the list of TPM plugins in `.tmux.conf`:
 
     ``` tmux
     set -g @plugin 'jaclu/tmux-menus'
     ```
 
-2.  Hit `<prefix> + I` to install the plugin and activate it. You should
+2. Hit `<prefix> + I` to install the plugin and activate it. You should
     now be able to use the plugin.
 
 ### Manual Installation
 
-1.  Clone the repository
+1. Clone the repository
 
     ``` sh
-    $ git clone https://github.com/jaclu/tmux-menus ~/clone/path
+    git clone https://github.com/jaclu/tmux-menus ~/clone/path
     ```
 
-2.  Add this line to the bottom of `.tmux.conf`
+2. Add this line to the bottom of `.tmux.conf`
 
     ``` tmux
     run-shell ~/clone/path/menus.tmux
     ```
 
-3.  Reload the `tmux` environment
+3. Reload the `tmux` environment
 
     ``` sh
     # type this inside tmux
@@ -210,7 +210,7 @@ unbind-key <
 unbind-key >
 ```
 
-## If a menu doesn't fit the screen...
+## If a menu doesn't fit the screen
 
 tmux does not give any error if a menu doesn't fit the available
 screen. The only hint is that the menu is terminated instantaneously.
