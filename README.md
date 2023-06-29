@@ -210,6 +210,17 @@ unbind-key <
 unbind-key >
 ```
 
+## If a menu doesn't fit the screen...
+
+tmux does not give any error if a menu doesn't fit the available
+screen. The only hint is that the menu is terminated instantaneously.
+For this reason a menu that is closed right away is assumed to have
+failed due to lacking screen real estate,
+and then the required min screen size for this dialog is printed.
+Starting with tmux 3.2 menus will be shrunk to some extent
+to make them fit, so for later versions of tmux you might get away
+with a slightly narrower screen than the required size.
+
 ## Making synchronized panes stand out
 
 Not directly related to this plugin, but since it does have an option to
