@@ -11,6 +11,7 @@ experienced users, than to add more for newbies.
 
 ## Recent changes
 
+- Added Clear history & sceeen to panes menu
 - whiptail menus can be used via the shortcut
 - Now you can pre-define config file, so that you don't have to
 type it in every time you choose `Reload configuration file` in case
@@ -20,7 +21,6 @@ below for details.
 and whiptail, added version limits to actions. Using whiptail the
 menus can be used on all older versions of tmux.
 - Added Extras - iSH AOK FS, corrected main help text and some menu min sizes
-- Main menu, toggle status Line - new feature
 
 ## Purpose
 

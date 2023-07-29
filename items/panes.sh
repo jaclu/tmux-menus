@@ -31,6 +31,8 @@ set -- \
     0.0 S \
     2.6 C t "    Set Title" "command-prompt -I '#T'  -p 'Title: '  \
         'select-pane -T \"%%\"' $menu_reload" \
+    2.6 C c "    Clear history & screen" \
+            "send-keys C-l ; run \"sleep 0.3\" ; clear-history" \
     1.8 C z "<P> Zoom pane toggle" "resize-pane -Z $menu_reload" \
     1.7 C q "<P> Display pane numbers" "display-panes $menu_reload" \
     1.8 C "[" '<P> Copy mode - "history"' "copy-mode" \
