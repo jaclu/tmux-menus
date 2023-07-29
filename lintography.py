@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+""" .
     version:   0.2.1 2022-09-17
     Copyright: Jacob.Lundqvist@gmail.com
     License:   MIT
@@ -138,7 +138,7 @@ class LinterCore:
         except CalledProcessError:
             do_exit = True
         else:
-            if res.returncode != 0 or res.stdout or res.stderr:
+            if res.returncode or res.stdout or res.stderr:
                 do_exit = True
         if do_exit:
             print(f'error found:  {mthd}  {fname}')

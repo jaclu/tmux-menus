@@ -146,7 +146,7 @@ wait_to_close_display() {
     echo
     if [ "$FORCE_WHIPTAIL_MENUS" = 1 ] || ! tmux_vers_compare 3.0; then
         echo "Press <Enter> to clear this output"
-        read -r
+        read -r foo
     else
         echo "Press <Escape> to clear this output"
     fi

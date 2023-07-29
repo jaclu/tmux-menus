@@ -5,6 +5,8 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
+#  shellcheck disable=SC2154
+
 
 CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 
@@ -52,7 +54,7 @@ log_it "use_notes=[$use_notes]"
 
 params=""
 if [ "$use_notes" -eq 1 ]; then
-    #  shellcheck disable=SC2089,SC2154
+    #  shellcheck disable=SC2089
     params="$params -N plugin:$plugin_name"
 fi
 if [ "$without_prefix" -eq 1 ]; then
@@ -71,7 +73,5 @@ else
     cmd="$SCRIPTS_DIR/do_whiptail.sh"
 fi
 
-#  shellcheck disable=SC2154,SC2086
+#  shellcheck disable=SC2086
 $TMUX_BIN bind $params $trigger_key run-shell "$cmd"
-
-export export SUNE123="YES"

@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-    Lints Py and shell files
+""" Lints Py and shell files
 """
 
 import lintography
