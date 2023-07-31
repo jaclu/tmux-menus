@@ -40,7 +40,7 @@ set_coordinates="$*"
 menu_name="Configure Menu Location"
 
 set -- \
-    0.0 M Left "Back to Previous menu  <--" advanced.sh \
+    0.0 M Left "Back to Previous menu <--" advanced.sh \
     0.0 S \
     0.0 C c "Center" "$change_location  C  $menu_reload'"
 # 0.0 E r "win Right edge" "$change_location  R  $menu_reload'" \

@@ -22,8 +22,8 @@ menu_name="Handling Window"
 
 #  shellcheck disable=SC2154
 set -- \
-    0.0 M Left "Back to Main menu  <--" main.sh \
-    0.0 M M "Move window        -->" window_move.sh \
+    0.0 M Left "Back to Main menu <--" main.sh \
+    0.0 M M    "Move window       -->" window_move.sh \
     0.0 S \
     1.7 C "," "<P> Rename window" "command-prompt -I '#W'  \
         -p 'New window name: ' 'rename-window %%'" \
@@ -47,7 +47,7 @@ set -- \
         'Are you sure you want to kill all other windows? (y/n)' \
         'run-shell \"${SCRIPT_DIR}/kill_other_windows.sh\"'" \
     0.0 S \
-    0.0 M H "Help  -->" "$CURRENT_DIR/help.sh $current_script"
+    0.0 M H "Help -->" "$CURRENT_DIR/help.sh $current_script"
 
 req_win_width=38
 req_win_height=21

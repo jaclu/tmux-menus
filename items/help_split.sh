@@ -31,7 +31,7 @@ fi
 menu_name="Help, Split view"
 
 set -- \
-    0.0 M Left "Back to Previous menu  <--" "$previous_menu" \
+    0.0 M Left "Back to Previous menu <--" "$previous_menu" \
     0.0 S \
     0.0 T "-#[nodim]Creating a new pane by" \
     0.0 T "-#[nodim]splitting current Pane or" \

@@ -24,10 +24,10 @@ new_sync_state="$($TMUX_BIN display -p '#{?pane_synchronized,Disable,Activate}')
 menu_name="Handling Pane"
 
 set -- \
-    0.0 M Left "Back to Main menu  <--" main.sh \
-    0.0 M M "Move pane             -->" pane_move.sh \
-    0.0 M R "Resize pane           -->" pane_resize.sh \
-    2.0 M B "Paste buffers         -->" pane_buffers.sh \
+    0.0 M Left "Back to Main menu <--" main.sh \
+    0.0 M M    "Move pane         -->" pane_move.sh \
+    0.0 M R    "Resize pane       -->" pane_resize.sh \
+    2.0 M B    "Paste buffers     -->" pane_buffers.sh \
     0.0 S \
     2.6 C t " Set Title" "command-prompt -I '#T'  -p 'Title: '  \
         'select-pane -T \"%%\"' $menu_reload" \
@@ -56,7 +56,7 @@ set -- \
         'Are you sure you want to kill all other panes? (y/n)' \
         'kill-pane -a'" \
     0.0 S \
-    0.0 M H 'Help  -->' "$CURRENT_DIR/help_panes.sh $current_script"
+    0.0 M H 'Help -->' "$CURRENT_DIR/help_panes.sh $current_script"
 
 req_win_width=38
 req_win_height=23

@@ -21,7 +21,7 @@ menu_name="Layouts"
 
 #  shellcheck disable=SC2154
 set -- \
-    0.0 M Left "Back to Main menu  <--" main.sh \
+    0.0 M Left "Back to Main menu <--" main.sh \
     0.0 S \
     0.0 C M-1 "<P> Even horizontal" "select-layout even-horizontal $menu_reload" \
     0.0 C M-2 "<P> Even vertical" "select-layout even-vertical   $menu_reload" \
@@ -30,7 +30,7 @@ set -- \
     0.0 C M-5 "<P> Tiled" "select-layout tiled           $menu_reload" \
     0.0 C E   "<P> Spread evenly" "select-layout -E  $menu_reload" \
     0.0 S \
-    0.0 M H   "Help  -->" "$CURRENT_DIR/help.sh $current_script"
+    0.0 M H   "Help -->" "$CURRENT_DIR/help.sh $current_script"
 
 req_win_width=33
 req_win_height=16

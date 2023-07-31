@@ -26,7 +26,7 @@ fi
 menu_name="Help summary"
 
 set -- \
-    0.0 M Left "Back to Previous menu  <--" "$previous_menu" \
+    0.0 M Left "Back to Previous menu <--" "$previous_menu" \
     0.0 S \
     0.0 T "-#[nodim]'-->'  Indicates this will open a" \
     0.0 T "-#[nodim]'<--'  new menu." \

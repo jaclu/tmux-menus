@@ -20,8 +20,8 @@ SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
 menu_name="Move Pane"
 
 set -- \
-    0.0 M Home "Back to Main menu      <==" main.sh \
-    0.0 M Left "Back to Handling Pane  <--" panes.sh \
+    0.0 M Home "Back to Main menu     <==" main.sh \
+    0.0 M Left "Back to Handling Pane <--" panes.sh \
     0.0 S \
     2.7 C m " Move to other win/ses        " "choose-tree -Gw \
         \"run-shell '$SCRIPT_DIR/relocate_pane.sh P M %%'\""
@@ -37,7 +37,7 @@ set -- "$@" \
     0.0 S \
     2.4 E ! "<P> Break pane to a new window" "$SCRIPT_DIR/break_pane.sh" \
     0.0 S \
-    0.0 M H "Help  -->" "$CURRENT_DIR/help.sh $current_script"
+    0.0 M H "Help -->" "$CURRENT_DIR/help.sh $current_script"
 
 req_win_width=41
 req_win_height=13

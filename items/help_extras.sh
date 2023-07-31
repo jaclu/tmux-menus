@@ -26,7 +26,7 @@ fi
 menu_name="Help Extras"
 
 set -- \
-    0.0 M Left "Back to Previous menu  <--" "$previous_menu" \
+    0.0 M Left "Back to Previous menu <--" "$previous_menu" \
     0.0 S \
     0.0 T "-#[nodim]Extras are menus manipulating" \
     0.0 T "-#[nodim]other software." \

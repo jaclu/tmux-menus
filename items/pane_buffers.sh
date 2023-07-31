@@ -21,8 +21,8 @@ menu_name="Paste buffers"
 
 #  shellcheck disable=SC2154
 set -- \
-    2.0 M Home "Back to Main menu      <==" main.sh \
-    2.0 M Left "Back to Handling Pane  <--" panes.sh \
+    2.0 M Home "Back to Main menu     <==" main.sh \
+    2.0 M Left "Back to Handling Pane <--" panes.sh \
     2.0 T "-#[align=centre,nodim]-----------   Commands   -----------" \
     2.0 T "-#[nodim]This assumes at least one tmux buffer is assigned!" \
     2.0 T "-#[nodim] " \
@@ -47,7 +47,7 @@ set -- \
     2.0 T "-#[nodim] " \
     1.9 C = "<P>" "choose-buffer" \
     2.0 S \
-    2.0 M H "Help  -->" "$CURRENT_DIR/help.sh $current_script"
+    2.0 M H "Help -->" "$CURRENT_DIR/help.sh $current_script"
 
 req_win_width=41
 req_win_height=27

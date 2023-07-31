@@ -25,7 +25,7 @@ menu_name="Handling Sessions"
 
 #  shellcheck disable=SC2154
 set -- \
-    0.0 M Left "Back to Main menu  <--" main.sh \
+    0.0 M Left "Back to Main menu <--" main.sh \
     0.0 S \
     2.0 C "\$" "<P> Rename this session" "command-prompt -I '#S' \
         'rename-session -- \"%%\"'" \
@@ -53,7 +53,7 @@ set -- "$@ ; kill-session'" \
         'Are you sure you want to kill all other sessions? (y/n)' \
         'kill-session -a'" \
     0.0 S \
-    0.0 M H "Help  -->" "$CURRENT_DIR/help.sh $current_script"
+    0.0 M H "Help -->" "$CURRENT_DIR/help.sh $current_script"
 
 req_win_width=39
 req_win_height=15

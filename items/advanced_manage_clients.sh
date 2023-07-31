@@ -21,8 +21,8 @@ menu_name="Client Management"
 
 #  shellcheck disable=SC2154
 set -- \
-    2.7 M Home "Back to Main menu         <==" main.sh \
-    2.7 M Left "Back to Advanced options  <--" advanced.sh \
+    2.7 M Home "Back to Main menu        <==" main.sh \
+    2.7 M Left "Back to Advanced options <--" advanced.sh \
     2.7 T "-#[align=centre,nodim]-----------   Commands   -----------" \
     2.7 T "-#[nodim]Enter Choose selected client" \
     2.7 T "-#[nodim]Up    Select previous client" \
@@ -46,7 +46,7 @@ set -- \
     2.7 T "-#[nodim] " \
     2.7 C D "<P>" "choose-client -Z" \
     2.7 S \
-    2.7 M H "Help  -->" "$SCRIPT_DIR/help.sh $current_script'"
+    2.7 M H "Help -->" "$SCRIPT_DIR/help.sh $current_script'"
 
 req_win_width=41
 req_win_height=28

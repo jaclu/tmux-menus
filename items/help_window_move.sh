@@ -26,7 +26,7 @@ fi
 menu_name="Help, Move/Link Window"
 
 set -- \
-    0.0 M Left "Back to Previous menu  <--" "$previous_menu" \
+    0.0 M Left "Back to Previous menu <--" "$previous_menu" \
     0.0 S \
     0.0 T "-#[nodim]Displays a navigation tree" \
     0.0 T "-#[nodim]1 - Chose a session." \

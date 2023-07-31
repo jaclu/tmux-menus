@@ -26,7 +26,7 @@ fi
 menu_name="Help Panes"
 
 set -- \
-    0.0 M Left "Back to Previous menu  <--" "$previous_menu" \
+    0.0 M Left "Back to Previous menu <--" "$previous_menu" \
     0.0 S \
     0.0 T "-#[nodim]When saving history with escapes" \
     0.0 T "-#[nodim]less/most will not be able" \

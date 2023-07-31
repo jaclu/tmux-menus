@@ -69,7 +69,7 @@ set -- "$@  -- \"%%\"'" \
     0.0 S \
     0.0 C d '<P> Detach from tmux' detach-client \
     0.0 S \
-    0.0 M H 'Help       -->' "$CURRENT_DIR/help.sh $current_script"
+    0.0 M H 'Help -->' "$CURRENT_DIR/help.sh $current_script"
 
 # tmux 3.2+ crops text to make dialogs fit in tighter spaces
 req_win_width=40
