@@ -29,11 +29,11 @@ set -- \
     0.0 S \
     2.0 C "\$" "<P> Rename this session" "command-prompt -I '#S' \
         'rename-session -- \"%%\"'" \
-    2.0 C n "    New session" "command-prompt -p \
+    2.0 C n " New session" "command-prompt -p \
         'Name of new session: ' \
         'new-session -d -s \"%1\" ; switch-client -t \"%1\"'" \
     0.0 S \
-    2.0 C L "<P> Last selected session" "switch-client -l $menu_reload" \
+    2.0 C L    "<P> Last selected session" "switch-client -l $menu_reload" \
     2.0 C "\(" "<P> Previous session (in order)" "switch-client -p $menu_reload" \
     2.0 C "\)" "<P> Next     session (in order)" "switch-client -n $menu_reload" \
     0.0 S \

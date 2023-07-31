@@ -27,11 +27,11 @@ set -- \
     0.0 S \
     1.7 C "," "<P> Rename window" "command-prompt -I '#W'  \
         -p 'New window name: ' 'rename-window %%'" \
-    1.7 C a "    New window after current" "command-prompt -p \
+    1.7 C a " New window after current" "command-prompt -p \
         'Name of new window: ' 'new-window -a -n \"%%\"'" \
     1.7 C c "<P> New window at the end" "command-prompt -p \
         'Name of new window: ' 'new-window -n \"%%\"'" \
-    1.7 C s "    Display Window size" "display-message \
+    1.7 C s " Display Window size" "display-message \
         'Window size: #{window_width}x#{window_height}'" \
     0.0 S \
     1.7 C l "<P> Last selected window" "last-window     $menu_reload" \
@@ -43,7 +43,7 @@ set -- \
     0.0 S \
     1.7 C "\&" "<P> Kill current window" "confirm-before -p \
         'kill-window #W? (y/n)' kill-window" \
-    1.7 C o "    Kill all other windows" "confirm-before -p \
+    1.7 C o " Kill all other windows" "confirm-before -p \
         'Are you sure you want to kill all other windows? (y/n)' \
         'run-shell \"${SCRIPT_DIR}/kill_other_windows.sh\"'" \
     0.0 S \

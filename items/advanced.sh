@@ -52,13 +52,13 @@ if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
 fi
 
 set -- "$@" \
-    0.0 C b "List all key bindings" "list-keys" \
-    3.1 C n "List key bindings with notes" "list-keys -N" \
-    3.1 C / "<P> Describe (prefix) key" "command-prompt -k \
+    0.0 C b    " List all key bindings" "list-keys" \
+    3.1 C n    " List key bindings with notes" "list-keys -N" \
+    3.1 C /    "<P> Describe (prefix) key" "command-prompt -k \
         -p key 'list-keys -N \"%%%\"'" \
     3.2 C "\~" "<P> Show messages" show-messages \
-    3.2 C C "<P> Customize options" "customize-mode -Z" \
-    1.8 C : "<P> Prompt for a command" command-prompt \
+    3.2 C C    "<P> Customize options" "customize-mode -Z" \
+    1.8 C :    "<P> Prompt for a command" command-prompt \
     0.0 S \
     2.1 C m "Toggle mouse to: $new_mouse_status" "set-option -g mouse \
         $new_mouse_status $menu_reload" \

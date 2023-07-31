@@ -23,12 +23,12 @@ set -- \
     0.0 M Home "Back to Main menu      <==" main.sh \
     0.0 M Left "Back to Handling Pane  <--" panes.sh \
     0.0 S \
-    2.7 C m "    Move to other win/ses        " "choose-tree -Gw \
+    2.7 C m " Move to other win/ses        " "choose-tree -Gw \
         \"run-shell '$SCRIPT_DIR/relocate_pane.sh P M %%'\""
 
 if $TMUX_BIN display-message -p '#{pane_marked_set}' | grep -q '1'; then
     set -- "$@" \
-        1.7 C s "Swap current pane with marked" "swap-pane $menu_reload"
+        1.7 C s " Swap current pane with marked" "swap-pane $menu_reload"
 fi
 
 set -- "$@" \

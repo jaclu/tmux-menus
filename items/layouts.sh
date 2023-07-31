@@ -28,9 +28,9 @@ set -- \
     0.0 C M-3 "<P> Main horizontal" "select-layout main-horizontal $menu_reload" \
     0.0 C M-4 "<P> Main vertical" "select-layout main-vertical   $menu_reload" \
     0.0 C M-5 "<P> Tiled" "select-layout tiled           $menu_reload" \
-    0.0 C E "<P> Spread evenly" "select-layout -E  $menu_reload" \
+    0.0 C E   "<P> Spread evenly" "select-layout -E  $menu_reload" \
     0.0 S \
-    0.0 M H "Help  -->" "$CURRENT_DIR/help.sh $current_script"
+    0.0 M H   "Help  -->" "$CURRENT_DIR/help.sh $current_script"
 
 req_win_width=33
 req_win_height=16
