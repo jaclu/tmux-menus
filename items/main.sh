@@ -65,7 +65,7 @@ fi
 # shellcheck disable=SC2145
 set -- "$@  -- \"%%\"'" \
     0.0 S \
-    0.0 E r '    Reload configuration file' "$SCRIPT_DIR/reload_conf.sh" \
+    0.0 E r 'Reload configuration file' "$SCRIPT_DIR/reload_conf.sh" \
     0.0 S \
     0.0 C d '<P> Detach from tmux' detach-client \
     0.0 S \
