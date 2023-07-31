@@ -34,8 +34,8 @@ current_prefix="$($TMUX_BIN show-option -g prefix | cut -d'-' -f2)"
 menu_name="Advanced options"
 
 set -- \
-    0.0 M Left "Back to Main menu  <--" main.sh \
-    2.7 M M "Manage clients     -->" advanced_manage_clients.sh \
+    0.0 M Left "Back to Main menu <--" main.sh \
+    2.7 M M    "Manage clients    -->" advanced_manage_clients.sh \
     0.0 S
 
 if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
@@ -69,7 +69,7 @@ set -- "$@" \
     1.8 C x "Kill server" "confirm-before -p \
         'kill tmux server defined in($TMUX_SOURCE) ? (y/n)' kill-server" \
     0.0 S \
-    0.0 M H "Help  -->" "$CURRENT_DIR/help.sh $current_script"
+    0.0 M H "Help -->" "$CURRENT_DIR/help.sh $current_script"
 
 #
 #  Disabled until I have time to investigate
