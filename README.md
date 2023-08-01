@@ -118,7 +118,7 @@ Manager](https://github.com/tmux-plugins/tpm).
 
 You should now be able to use `tmux-menus` immediately.
 
-## whiptail
+## Whiptail
 
 These menus can also be displayed using Whiptail, be aware that in order
 to run whiptail dialogs via a shortcut, the current (if any) task is
@@ -126,8 +126,8 @@ suspended, dialogs are run, and when done the suspended task is
 reactivated.
 
 The downside of this is that if there were no current task running in
-the active pane, you will see `fg: no current job` being printed.
-This can be ignored.
+the active pane, you will see `fg: no current job` being printed when 
+the dialog is exited. This can be ignored.
 
 The menu system works the same using Whiptail, however the menu
 shortcuts are not as convenient, since Whiptail does not differentiate
