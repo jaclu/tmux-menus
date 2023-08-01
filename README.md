@@ -5,44 +5,44 @@ Popup menus to help with managing your environment.
 For tmux < 3.0 whiptail will be used instead of the tmux feature
 `display-menu`.
 
-Not to hard to adopt to fit your needs. Items that some
+Not too hard to adapt to fit your needs. Items that some
 might find slightly redundant are included, easier to remove excess for more
-experienced users, than to add more for newbies.
+experienced users, then add more for newbies.
 
 ## Recent changes
 
-- Added Clear history & sceeen to panes menu
+- Added Clear history & screen to panes menu
 - whiptail menus can be used via the shortcut
 - Now you can pre-define config file, so that you don't have to
 type it in every time you choose `Reload configuration file` in case
 you are not using `~/.tmux.conf` check section `Pointer to config file`
 below for details.
 - Total rework, now the menus are generated dynamically, both for tmux
-and whiptail, added version limits to actions. Using whiptail the
+and Whiptail, added version limits to actions. Using Whiptail the
 menus can be used on all older versions of tmux.
 - Added Extras - iSH AOK FS, corrected main help text and some menu min sizes
 
 ## Purpose
 
-Some basic popup menus come as default
+Some basic popup menus come as the default
 (See *Configuration* for how to disable them)
 
-- `<prefix> <` displays some windows handling options
+- `<prefix> <` displays some Windows handling options
 - `<prefix> >` displays some pane handling options
-- Right click on pane, ALT-right click on pane, status or status left.
+- Right-click on pane, ALT-right click on pane, status or status left.
 
-Rather lacking and since they're written as hard to read one-liners,
+Rather lacking and since they're written as hard-to-read one-liners,
 a more integrated approach with navigation and adaptability seemed
 the way to go, also covering more than panes and windows.
 
-Not solely meant for beginners, use it myself all the time:
+Not solely meant for beginners, I use it myself all the time:
 
 - When connecting using terminals without much support for Meta or Ctrl,
-then this gives access to all the actions that aren't available with the
-normal shortcuts. For instance when running iSH the console keyboard is
-limited.
+this gives access to all the actions that aren't available with the
+regular shortcuts. For instance, when running iSH the console keyboard is
+pretty limited.
 - Tasks that would need external scripts to avoid hard to read
-complex bind one-liners, such as kill current session, without getting
+complex bind one-liners, such as kill the current session, without getting
 disconnected.
 - When direct typing would be much longer.
 Example: Kill the server directly is min 12 keys:
@@ -52,28 +52,30 @@ with the menus 5 keys: `<prefix> \ A x y`
 
 ## Usage
 
-Once installed, hit the trigger to get the main menu to popup.
-Default is `<prefix> \` see Configuration below for how to change it.
+Once installed, hit the trigger to get the main menu to pop up.
+The default is `<prefix> \` see Configuration below for how to change it.
 
 ## Screenshots of some menus
 
-![main](https://user-images.githubusercontent.com/5046648/220794673-6504f675-0b89-41a6-9fa9-16387dada883.png)
-![Whiptail main](https://github.com/jaclu/tmux-menus/assets/5046648/11ac1c9f-cb19-4dba-a29d-7106ec854fea)
-![Pane](https://user-images.githubusercontent.com/5046648/200143811-d4e3b254-310e-4207-82b6-a7bd527fcb47.png)
-![Window](https://user-images.githubusercontent.com/5046648/200143848-eb7c0c3e-837c-4393-b761-d8424eaa782e.png)
-![Advanced](https://user-images.githubusercontent.com/5046648/200143879-4973d4d2-2c74-47a2-9110-d87b5765707a.png)
-![Session](https://user-images.githubusercontent.com/5046648/200143930-e27f063f-c054-47d5-9640-502f4127cb14.png)
-![Help Summary](https://user-images.githubusercontent.com/5046648/200149023-619deff0-8d66-45e2-be3e-a6def82e9fbc.png)
+The grey one is generated with whiptail, the rest by tmux built-in `display-menu`
+
+![main](https://github.com/jaclu/tmux-menus/assets/5046648/5ed4fd3f-25fc-4449-9c8a-6fc27b35fdc1.png)
+![Whiptail main](https://github.com/jaclu/tmux-menus/assets/5046648/11ac1c9f-cb19-4dba-a29d-7106ec854fea.png)
+![Pane](https://github.com/jaclu/tmux-menus/assets/5046648/68a390be-f4d7-44bc-a9d4-9082ad2c718a.png)
+![Window](https://github.com/jaclu/tmux-menus/assets/5046648/34ed1a9b-9ee0-48e9-8b6a-2a28421fd880.png)
+![Advanced](https://github.com/jaclu/tmux-menus/assets/5046648/9c9f6198-f78c-4aca-8b67-145caf4adbb2.png)
+![Session](https://github.com/jaclu/tmux-menus/assets/5046648/e9cc442f-27c8-458a-88fb-aa558fd08235.png)
+![Help Summary](https://github.com/jaclu/tmux-menus/assets/5046648/ccd5da05-a3a6-4f11-910c-855158fefd35.png)
 
 ## Compatibility
 
 | Version | Notice
 | - | - |
 3.2 | Fully compatible
-3.0 - 3.1c | Menu centering not supported, it's displayed top left if C is menu location.
-1.8 - 3.0 | Only available using whiptail, menu location setting ignored.
+3.0 - 3.1c | Menu centering is not supported, it's displayed top left if C is selected.
+1.8 - 3.0 | Only available using Whiptail, menu location setting ignored.
 
-The above table covers compatability for the general tool. Each item
+The above table covers compatibility for the general tool. Each item
 has a min tmux version set, if the running tmux doesn't match this,
 that item will be skipped.
 
@@ -118,7 +120,7 @@ You should now be able to use `tmux-menus` immediately.
 
 ## whiptail
 
-These menus can also be displayed using whiptail, be aware that in order
+These menus can also be displayed using Whiptail, be aware that in order
 to run whiptail dialogs via a shortcut, the current (if any) task is
 suspended, dialogs are run, and when done the suspended task is
 reactivated.
@@ -127,26 +129,26 @@ The downside of this is that if there were no current task running in
 the active pane, you will see `fg: no current job` being printed.
 This can be ignored.
 
-The menu system works the same using whiptail, however the menu
-shortcuts are not as convenient, since whiptail does not differentiate
+The menu system works the same using Whiptail, however the menu
+shortcuts are not as convenient, since Whiptail does not differentiate
 between upper and lower case letters, and does not at all support
 special keys like 'Left' or 'Home'
 
 If tmux is < 3.0 whiptail will automatically be used.
-If you want to use whiptail on modern tmuxes set this env variable:
+If you want to use Whiptail on modern tmuxes set this env variable:
 `export FORCE_WHIPTAIL_MENUS=1`
 
 ## Configuration
 
-### Changing the key-bindings for this plugin
+### Changing the key bindings for this plugin
 
-The default trigger is `<prefix> \`. Trigger is selected like this:
+The default trigger is `<prefix> \`. The trigger is selected like this:
 
 ```tmux
 set -g @menus_trigger 'F9'
 ```
 
-Please note that non standard keys, like the default backslash needs to
+Please note that non-standard keys, like the default backslash needs to
 be noted in a specific way in order not to confuse tmux.
 Either `'\'` or without quotes as `\\`. Quoting `'\\'` won't make sense
 for tmux and fail to bind the key.
@@ -161,35 +163,35 @@ This param can be either 0 (the default) or 1
 
 ### Menu location
 
-Default location is: P, compatible with tmux 3.0 and up
+The default location is: P, compatible with tmux 3.0 and up
 
 Locations can be one of:
 
 - W - By the current window name in the status line
-- P - Lower left of current pane
-- C - Centered in window (tmux 3.2 and up)
+- P - Lower left of the current pane
+- C - Centered in the window (tmux 3.2 and up)
 - M - Mouse position (doesn't seem to work as intended…)
-- R - Right edge of terminal (x)
-- S - Next to status line (y)
-- Number - In window coordinates 0,0 is top left. To make it even more
-confusing, the coordinate defines lower left of the menus placement…
+- R - Right edge of the terminal (x)
+- S - Next to the status line (y)
+- Number - In window coordinates 0,0 is the top left. To make it even more
+confusing, the coordinate defines the lower left of the placement of the menu…
 
 ```tmux
 set -g @menus_location_x 'C'
 set -g @menus_location_y 'C'
 ```
 
-### Pointer to config file
+### Pointer to the config file
 
 In the main menu, you can request the config file to be reloaded.
-The defaults for this is:
+The defaults for this are:
 
- 1. $TMUX_CONF - if this is pressent in the environment, it will be used.
+ 1. $TMUX_CONF - if this is present in the environment, it will be used.
  2. @menus_config_file - if this is defined in the tmux config file,
  it will be used.
  3. ~/.tmux.conf - Default if none of the above are set
 
-When a reload is requested, the default will be printed, and used if
+When a reload is requested, the default will be printed and used if
 not manually changed.
 
 ```tmux
@@ -214,7 +216,7 @@ unbind-key >
 
 tmux does not give any error if a menu doesn't fit the available
 screen. The only hint is that the menu is terminated instantaneously.
-For this reason a menu that is closed right away is assumed to have
+For this reason, a menu that is closed right away is assumed to have
 failed due to lacking screen real estate,
 and then the required min screen size for this dialog is printed.
 Starting with tmux 3.2 menus will be shrunk to some extent
@@ -235,13 +237,13 @@ not intended.
 
 ## Modifications
 
-Each menu is a script, so you can edit a menu script and once saved,
-the new content is displayed next time you trigger that menu.
+Each menu is a script, so you can edit a menu script, and once saved,
+the new content is displayed the next time you trigger that menu.
 
 Rapid development with minimal fuzz.
 
 If you are struggling with a menu edit, run that menu item in a pane
-of the tmux session your working on, something like
+of the tmux session you are working on, something like
 
 ```bash
 ./items/sessions.sh
@@ -256,7 +258,7 @@ If not defined, nothing happens. log_it lines can be left in the code.
 
 If you are triggering a menu from the command line, you can use direct echo,
 but then you need to remove it before deploying, since tmux sees any
-script output as an potential error and display it in a scroll back buffer.
+script output as a potential error and display it in a scroll-back buffer.
 If tailing a log file is unpractical, a more scalable way to achieve the
 same result as echo would be to set `log_file='/dev/stdout'`
 
@@ -270,19 +272,19 @@ log_it "foo is now [$foo]"
 
 Each item consists of at least two params
 
-- min tmux version for this item, set to 0.0 if assumed to allways work
+- min tmux version for this item, set to 0.0 if assumed to always work
 - Type of menu item, see below
-- Additional params depending on item type
+- Additional params depending on the item type
 
 Item types and their parameters
 
 - M - Open another menu
   - shortcut for this item, or "" if none wanted
-  - label for menu
+  - label for the menu
   - menu script
 - C - run tmux Command
   - shortcut for this item, or "" if none wanted
-  - label for command
+  - label for the command
   - tmux command
 - E - run External command
   - shortcut for this item, or "" if none wanted
