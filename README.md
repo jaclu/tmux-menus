@@ -173,7 +173,7 @@ Locations can be one of:
 - M - Mouse position (doesn't seem to work as intended…)
 - R - Right edge of the terminal (x)
 - S - Next to the status line (y)
-- Number - In window coordinates 0,0 is the top left. To make it even more
+- Number - In pane coordinates 0,0 is the top left. To make it even more
 confusing, the coordinate defines the lower left of the placement of the menu…
 
 ```tmux
