@@ -19,6 +19,12 @@ dropbox_status_check() {
     fi
 }
 
+#===============================================================
+#
+#   Main
+#
+#===============================================================
+
 CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 ITEMS_DIR="$(dirname "$CURRENT_DIR")"
 SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"

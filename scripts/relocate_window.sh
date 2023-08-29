@@ -18,11 +18,13 @@
 #   If a pane is selected, that part of the selection is simply ignored.
 #
 
-CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
+SCRIPT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
+
+# safety check to ensure it is defined
+[ -z "$TMUX_BIN" ] && echo "ERROR: relocate_window.sh - TMUX_BIN is not defined!"
 
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/relocate_param_check.sh"

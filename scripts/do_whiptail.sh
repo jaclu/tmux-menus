@@ -24,11 +24,14 @@
 #  send-keys to generate the intended sequence seems to be beyond me
 #
 
-CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-ITEMS_DIR="$(dirname "$CURRENT_DIR")/items"
+SCRIPT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
+ITEMS_DIR="$(dirname "$SCRIPT_DIR")/items"
 
 #  shellcheck disable=SC1091
-. "$CURRENT_DIR/utils.sh"
+. "$SCRIPT_DIR/utils.sh"
+
+# safety check to ensure it is defined
+[ -z "$TMUX_BIN" ] && echo "ERROR: do_whiptail.sh - TMUX_BIN is not defined!"
 
 #  shellcheck disable=SC2154
 "$TMUX_BIN" send-keys C-z "$ITEMS_DIR/main.sh ; fg" Enter

@@ -10,11 +10,13 @@
 # Global check exclude, ignoring: is referenced but not assigned
 # shellcheck disable=SC2154
 
-CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
+SCRIPT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
+
+# safety check to ensure it is defined
+[ -z "$TMUX_BIN" ] && echo "ERROR: change_prefix.sh - TMUX_BIN is not defined!"
 
 #
 #  Since this is a critical param, make extra sure we have valid input

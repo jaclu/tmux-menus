@@ -3,6 +3,14 @@
 just reworked the menu generation, will monitor bugs for now, no new
 features planned ATM.
 
+## Pane titles
+
+Add items, enable/disable show pane titles
+
+## Window - Move - link/unlink
+
+seems buggy, need to investigate
+
 ## Simple millisecond timing test
 
 true && t_start="$(date +%s.%N)"

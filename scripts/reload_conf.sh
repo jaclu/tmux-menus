@@ -9,11 +9,13 @@
 #   Gives prompt to correct if need-be
 #
 
-CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
+SCRIPT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR"/utils.sh
+
+# safety check to ensure it is defined
+[ -z "$TMUX_BIN" ] && echo "ERROR: reload_conf.sh - TMUX_BIN is not defined!"
 
 conf="${TMUX_CONF:-$conf_file}"
 

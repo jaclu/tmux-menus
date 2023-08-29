@@ -19,6 +19,12 @@ is_aok_kernel() {
     grep -qi aok /proc/ish/version 2>/dev/null
 }
 
+#===============================================================
+#
+#   Main
+#
+#===============================================================
+
 CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 ITEMS_DIR="$(dirname "$CURRENT_DIR")"
 SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"

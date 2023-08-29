@@ -13,6 +13,14 @@
 # Global check exclude, ignoring: is referenced but not assigned
 # shellcheck disable=SC2154
 
+SCRIPT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
+
+# shellcheck disable=SC1091
+. "$SCRIPT_DIR/utils.sh"
+
+# safety check to ensure it is defined
+[ -z "$TMUX_BIN" ] && echo "ERROR: relocate_param_check.sh - TMUX_BIN is not defined!"
+
 param_check() {
     item_type="$1"
 

@@ -6,11 +6,13 @@
 #   Part of https://github.com/jaclu/tmux-menus
 #
 
-CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
+SCRIPT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
+
+# safety check to ensure it is defined
+[[ -z "$TMUX_BIN" ]] && echo "ERROR: plugins.sh - TMUX_BIN is not defined!"
 
 echo
 

@@ -8,11 +8,13 @@
 #   Displays public IP
 #
 
-CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
+SCRIPT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
+
+# safety check to ensure it is defined
+[ -z "$TMUX_BIN" ] && echo "ERROR: public_ip.sh - TMUX_BIN is not defined!"
 
 echo # Extra LF to avoid cursor placed over text
 echo "Public IP: $(curl https://ifconfig.me 2>/dev/null)"

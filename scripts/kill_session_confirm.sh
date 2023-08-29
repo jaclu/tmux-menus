@@ -13,10 +13,13 @@
 # Global check exclude, ignoring: is referenced but not assigned
 # shellcheck disable=SC2154
 
-if [ -z "$CURRENT_DIR" ] || [ -z "$SCRIPT_DIR" ]; then
-        echo "ERROR: CURRENT_DIR & SCRIPT_DIR must be defined!"
-        exit 1
-fi
+SCRIPT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
+
+# shellcheck disable=SC1091
+. "$SCRIPT_DIR/utils.sh"
+
+# safety check to ensure it is defined
+[ -z "$TMUX_BIN" ] && echo "ERROR: kill_session_confirm.sh - TMUX_BIN is not defined!"
 
 set -- "Only one session, you will be disconnected if you continue." \
         "Proceed? (y/n)"

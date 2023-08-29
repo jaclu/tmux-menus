@@ -11,17 +11,23 @@
 # Global check exclude
 # shellcheck disable=SC2034,SC2154
 
+nav_add() {
+    [ -z "$nav" ] && nav="\"\""
+    nav="$nav \"$1  -->\" '$2' \"$open_menu/extras/mullvad_country.sh $3\""
+}
+
+#===============================================================
+#
+#   Main
+#
+#===============================================================
+
 CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 ITEMS_DIR="$(dirname "$CURRENT_DIR")"
 SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/dialog_handling.sh"
-
-nav_add() {
-    [ -z "$nav" ] && nav="\"\""
-    nav="$nav \"$1  -->\" '$2' \"$open_menu/extras/mullvad_country.sh $3\""
-}
 
 menu_name="Mullvad Select Country"
 req_win_width=28

@@ -432,24 +432,28 @@ menu_parse() {
 #
 #===============================================================
 
+#
+#  since scripts and items are in the same dir, first going one step up
+#  will find scripts in both cases
+#
+CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
+SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
+
+#  shellcheck disable=SC1091
+. "$SCRIPT_DIR/utils.sh"
+
+# safety check to ensure it is defined
+[ -z "$TMUX_BIN" ] && echo "ERROR: dialog_handling.sh - TMUX_BIN is not defined!"
+
 if [ -z "$TMUX" ]; then
     echo "ERROR: tmux-menus can only be used inside tmux!"
     exit 1
 fi
 
-# SCRIPT_DIR/utils.sh must be sourced before this
-
 if [ -z "$CURRENT_DIR" ] || [ -z "$SCRIPT_DIR" ]; then
     echo "ERROR: CURRENT_DIR & SCRIPT_DIR must be defined!"
     exit 1
 fi
-
-#
-#  Despite this being sourced and utils.sh should have been sourced,
-#  utils.sh must still be sourced here in order for this to run
-#
-#  shellcheck disable=SC1091
-. "$SCRIPT_DIR/utils.sh"
 
 ! tmux_vers_compare 3.0 && FORCE_WHIPTAIL_MENUS=1
 

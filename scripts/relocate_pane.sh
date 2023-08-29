@@ -10,14 +10,16 @@
 #   Moving current pane within same session or to other session.
 #
 
-CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
+SCRIPT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
 
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/relocate_param_check.sh"
+
+# safety check to ensure it is defined
+[ -z "$TMUX_BIN" ] && echo "ERROR: relocate_pane.sh - TMUX_BIN is not defined!"
 
 param_check "$@"
 
