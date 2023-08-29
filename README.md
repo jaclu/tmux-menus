@@ -11,16 +11,14 @@ experienced users, then add more for newbies.
 
 ## Recent changes
 
+- pane zoom only offered if more than one pane in window
+- Added check that TMUX_BIN has been set
 - Added Clear history & screen to panes menu
 - whiptail menus can be used via the shortcut
 - Now you can pre-define config file, so that you don't have to
 type it in every time you choose `Reload configuration file` in case
 you are not using `~/.tmux.conf` check section `Pointer to config file`
 below for details.
-- Total rework, now the menus are generated dynamically, both for tmux
-and Whiptail, added version limits to actions. Using Whiptail the
-menus can be used on all older versions of tmux.
-- Added Extras - iSH AOK FS, corrected main help text and some menu min sizes
 
 ## Purpose
 
@@ -357,6 +355,9 @@ The best way to send feedback is to file an [issue](https://github.com/jaclu/tmu
 
 ### Thanks to
 
+- [phdoerfler](https://github.com/phdoerfler) for noticing TMUX_BIN was often not set,
+I had it defined in my .tmux.conf, so totally missed such errors, in future testing I
+will make sure not to rely on env variables.
 - [giddie](https://github.com/giddie) for suggesting "Re-spawn current pane"
 - [wilddog64](https://github.com/wilddog64) for suggesting adding a prefix
 to the curl that probes public IP
