@@ -17,6 +17,7 @@ SCRIPT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 [ -z "$TMUX_BIN" ] && echo "ERROR: public_ip.sh - TMUX_BIN is not defined!"
 
 echo # Extra LF to avoid cursor placed over text
-echo "Public IP: $(curl https://ifconfig.me 2>/dev/null)"
+echo "Public IPv4: $(curl -4 https://ifconfig.me 2>/dev/null)"
+echo "Public IPv6: $(curl -6 https://ifconfig.me 2>/dev/null)"
 
 wait_to_close_display
