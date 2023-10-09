@@ -1,4 +1,7 @@
 #!/bin/sh
+# This is sourced. Fake bang-path to help editors and linters
+#  Global exclusions
+#  shellcheck disable=SC2154
 #
 #   Copyright (c) 2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -6,9 +9,14 @@
 #   Part of https://github.com/jaclu/tmux-menus
 #
 #  Parses params and generates tmux or whiptail menus
+#  Two variables are expected to have been set by the caller
 #
-#  Global exclusions
-#  shellcheck disable=SC2154
+#  ITEMS_DIR  base location for dialog entries, prepended if a menu
+#             param is not a full path
+#
+#  SCRIPT_DIR base location for external commands, prepended if a script
+#             param is not a full path
+#
 
 ensure_menu_fits_on_screen() {
     #
@@ -31,13 +39,6 @@ ensure_menu_fits_on_screen() {
     #
     #  Param checks
     #
-    msg="ensure_menu_fits_on_screen() req_win_width not set"
-    [ "$req_win_width" = "" ] && error_msg "$msg" 1
-    msg="ensure_menu_fits_on_screen() req_win_height not set"
-    [ "$req_win_height" = "" ] && error_msg "$msg" 1
-    msg="ensure_menu_fits_on_screen() menu_name not set"
-    [ "$menu_name" = "" ] && error_msg "$msg" 1
-
     set -- "ensure_menu_fits_on_screen() '$menu_name'" \
         "w:$req_win_width h:$req_win_height"
     log_it "$*"
@@ -157,9 +158,6 @@ alt_dialog_external_cmd() {
     #
     starting_with_dash "$label" && return
 
-    if echo "$cmd" | grep -vq /; then
-        script="$CURRENT_DIR/$script"
-    fi
     menu_items="$menu_items $key \"$label\""
     # This will run outside tmux, so should not have run-shell prefix
     wt_actions="$wt_actions $key | $cmd $alt_dialog_action_separator"
@@ -259,7 +257,8 @@ menu_parse() {
     #  we first identify all the params used by the different options,
     #  only then can we continue if the min_vers does not match running tmux
     #
-    [ -z "$menu_name" ] && error_msg "$current_script - menu_name must be set!" 1
+    [ -z "$menu_name" ] && error_missing_param "menu_name"
+
     [ "$menu_debug" = "1" ] && echo ">> menu_parse($*)"
     while [ -n "$1" ]; do
         min_vers="$1"
@@ -280,12 +279,11 @@ menu_parse() {
             ! tmux_vers_compare "$min_vers" && continue
 
             #
-            #  If no path separators pressent in a menu name
-            #  assume it is located in the same dir as the script
-            #  defining the menu, and prepend with its path
+            #  If menu is not full PATH, assume it to be a tmux-menus
+            #  item
             #
             if echo "$menu" | grep -vq /; then
-                menu="$CURRENT_DIR/$menu"
+                menu="$ITEMS_DIR/$menu"
             fi
 
             [ "$menu_debug" = "1" ] && echo "key[$key] label[$label] menu[$menu]"
@@ -319,7 +317,7 @@ menu_parse() {
         "E") #  Run external command - params: key label cmd
             #
             #  If no / is found in the script param, it will be prefixed with
-            #  $CURRENT_DIR
+            #  $SCRIPT_DIR
             #  This means that if you give full path to something in this
             #  param, all scriptd needs to have full path pre-pended.
             #  For example help menus, which takes the full path to the
@@ -337,12 +335,12 @@ menu_parse() {
             ! tmux_vers_compare "$min_vers" && continue
 
             #
-            #  Not sure if this would make sense for external commands
-            #  they could be intentionally path-less
+            #  Expand relative PATH at one spot, before calling the
+            #  various implementations
             #
-            # if echo "$cmd" | grep -vq /; then
-            #     cmd="$CURRENT_DIR/$cmd"
-            # fi
+            if echo "$cmd" | grep -vq /; then
+                cmd="$SCRIPT_DIR/$cmd"
+            fi
 
             [ "$menu_debug" = "1" ] && echo "key[$key] label[$label] command[$cmd]"
 
@@ -395,6 +393,8 @@ menu_parse() {
     if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
         alt_dialog_prefix
     else
+        [ -z "$req_win_width" ] && error_missing_param "req_win_width"
+        [ -z "$req_win_height" ] && error_missing_param "req_win_height"
         tmux_dialog_prefix
     fi
 
@@ -426,46 +426,40 @@ menu_parse() {
     fi
 }
 
+error_missing_param() {
+    #
+    #  Shortcut for repeatedly used error message type
+    #
+    param_name="$1"
+    if [ -z "$param_name" ]; then
+        error_msg "dialog_handling.sh:error_missing_param() called without parameter" 1
+    fi
+    error_msg "dialog_handling.sh: $param_name must be defined!" 1
+}
+
 #===============================================================
 #
 #   Main
 #
 #===============================================================
 
-#
-#  since scripts and items are in the same dir, first going one step up
-#  will find scripts in both cases
-#
-CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
-
 #  shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
 
-# safety check to ensure it is defined
-[ -z "$TMUX_BIN" ] && echo "ERROR: dialog_handling.sh - TMUX_BIN is not defined!"
+#
+#  First some param checks
+#
+[ -z "$TMUX_BIN" ] && error_missing_param "TMUX_BIN"
+if [ -z "$SCRIPT_DIR" ] || [ -z "$ITEMS_DIR" ]; then
+    error_missing_param "SCRIPT_DIR & ITEMS_DIR"
+fi
 
 if [ -z "$TMUX" ]; then
     echo "ERROR: tmux-menus can only be used inside tmux!"
     exit 1
 fi
 
-if [ -z "$CURRENT_DIR" ] || [ -z "$SCRIPT_DIR" ]; then
-    echo "ERROR: CURRENT_DIR & SCRIPT_DIR must be defined!"
-    exit 1
-fi
-
 ! tmux_vers_compare 3.0 && FORCE_WHIPTAIL_MENUS=1
-
-# menu_type="alternate" #  fallback if tmux menus shouldn't be used
-
-# if [ "$FORCE_WHIPTAIL_MENUS" != "1" ]; then
-#     #
-#     #  tmux built in popup menus requires tmux 3.0
-#     #  this falls back to the alternate on older tmux versions
-#     #
-#     tmux_vers_compare 3.0 && [ -n "$TMUX" ] && menu_type="tmux"
-# fi
 
 #
 #  Define a variable that can be used as suffix on commands in dialog

@@ -33,6 +33,12 @@ ITEMS_DIR="$(dirname "$SCRIPT_DIR")/items"
 # safety check to ensure it is defined
 [ -z "$TMUX_BIN" ] && echo "ERROR: do_whiptail.sh - TMUX_BIN is not defined!"
 
+#
+#  This is run from the tmux env, so FORCE_WHIPTAIL_MENUS can not be
+#  forced on here, or I guess it could, but it would not modify the env
+#  where the menu is run
+#
+
 #  shellcheck disable=SC2154
 "$TMUX_BIN" send-keys C-z "$ITEMS_DIR/main.sh ; fg" Enter
 

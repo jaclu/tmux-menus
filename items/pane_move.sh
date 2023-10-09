@@ -1,4 +1,5 @@
 #!/bin/sh
+# shellcheck disable=SC2034,SC2154
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -8,11 +9,8 @@
 #   Move a pane
 #
 
-# Global directives
-# shellcheck disable=SC2034,SC2154
-
-CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
+ITEMS_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
+SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/dialog_handling.sh"
@@ -37,9 +35,9 @@ set -- "$@" \
     0.0 S \
     2.4 E ! "<P> Break pane to a new window" "$SCRIPT_DIR/break_pane.sh" \
     0.0 S \
-    0.0 M H "Help -->" "$CURRENT_DIR/help.sh $current_script"
+    0.0 M H "Help -->" "$ITEMS_DIR/help.sh $current_script"
 
-req_win_width=41
-req_win_height=13
+req_win_width=38
+req_win_height=12
 
 menu_parse "$@"

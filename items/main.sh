@@ -1,4 +1,5 @@
 #!/bin/sh
+#  shellcheck disable=SC2034
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -8,19 +9,13 @@
 #   Main menu, the one popping up when you hit the trigger
 #
 
-# Global check exclude
-# shellcheck disable=SC2034,SC2154
-
-CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
+ITEMS_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
+SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/dialog_handling.sh"
 
 menu_name="Main menu"
-
-# 1.6 C s " only visible part" "command-prompt \
-#     -p 'Search for:' 'find-window -CNTZ"
 
 set -- \
     0.0 M P "Handling Pane     -->" panes.sh \
@@ -62,17 +57,16 @@ if tmux_vers_compare 3.2; then
     set -- "$@ -Zi"
 fi
 
-# shellcheck disable=SC2145
+#  shellcheck disable=SC2145,SC2154
 set -- "$@  -- \"%%\"'" \
     0.0 S \
     0.0 E r 'Reload configuration file' "$SCRIPT_DIR/reload_conf.sh" \
     0.0 S \
     0.0 C d '<P> Detach from tmux' detach-client \
     0.0 S \
-    0.0 M H 'Help -->' "$CURRENT_DIR/help.sh $current_script"
+    0.0 M H 'Help -->' "$ITEMS_DIR/help.sh $current_script"
 
-# tmux 3.2+ crops text to make dialogs fit in tighter spaces
-req_win_width=40
-req_win_height=22
+req_win_width=39
+req_win_height=23
 
 menu_parse "$@"

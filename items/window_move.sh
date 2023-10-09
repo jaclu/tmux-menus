@@ -1,4 +1,5 @@
 #!/bin/sh
+#  shellcheck disable=SC2034,SC2154
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -7,20 +8,18 @@
 #
 #   Move Window
 #
-#  shellcheck disable=SC2034,SC2154
-#  Directives for shellcheck directly after bang path are global
 
-CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
+ITEMS_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
+SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/dialog_handling.sh"
 
+menu_name="Move Window"
+
 select_location="choose-tree -Gw 'run-shell \"$SCRIPT_DIR/relocate_window.sh"
 
 other_pane_is_marked="$($TMUX_BIN display -p '#{?pane_marked_set, ,}')"
-
-menu_name="Move Window"
 
 set -- \
     0.0 M Home "Back to Main menu       <==" main.sh \
@@ -41,9 +40,9 @@ set -- "$@" \
     2.0 C l "Link window to other session" "$select_location W L %%\"'" \
     0.0 C u "Unlink window from this session" "unlink-window" \
     0.0 S \
-    0.0 M H "Help, explaining move & link -->" "$CURRENT_DIR/help_window_move.sh $current_script"
+    0.0 M H "Help, explaining move & link -->" "$ITEMS_DIR/help_window_move.sh $current_script"
 
-req_win_width=41
-req_win_height=15
+req_win_width=40
+req_win_height=13
 
 menu_parse "$@"

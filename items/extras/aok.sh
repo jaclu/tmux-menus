@@ -1,4 +1,5 @@
 #!/bin/sh
+#  shellcheck disable=SC2034,SC2154
 #
 #   Copyright (c) 2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -7,9 +8,6 @@
 #
 #   Directly control iSH-AOK
 #
-
-# Global check exclude
-# shellcheck disable=SC2034,SC2154
 
 disable_if_matching() {
     [ "$1" = "$current_login_method" ] && echo "-"
@@ -25,8 +23,8 @@ is_aok_kernel() {
 #
 #===============================================================
 
-CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-ITEMS_DIR="$(dirname "$CURRENT_DIR")"
+ITEMS_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
+ITEMS_DIR="$(dirname "$ITEMS_DIR")"
 SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 
 # shellcheck disable=SC1091

@@ -1,4 +1,5 @@
 #!/bin/sh
+#  shellcheck disable=SC2034,SC2154
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -8,11 +9,8 @@
 #   Advanced options
 #
 
-# Global check exclude
-# shellcheck disable=SC2034,SC2154
-
-CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
+ITEMS_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
+SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/dialog_handling.sh"
@@ -35,7 +33,7 @@ menu_name="Advanced options"
 
 set -- \
     0.0 M Left "Back to Main menu <--" main.sh \
-    2.7 M M    "Manage clients    -->" advanced_manage_clients.sh \
+    2.7 M M "Manage clients    -->" advanced_manage_clients.sh \
     0.0 S
 
 if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
@@ -52,13 +50,13 @@ if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
 fi
 
 set -- "$@" \
-    0.0 C b    " List all key bindings" "list-keys" \
-    3.1 C n    " List key bindings with notes" "list-keys -N" \
-    3.1 C /    "<P> Describe (prefix) key" "command-prompt -k \
+    0.0 C b " List all key bindings" "list-keys" \
+    3.1 C n " List key bindings with notes" "list-keys -N" \
+    3.1 C / "<P> Describe (prefix) key" "command-prompt -k \
         -p key 'list-keys -N \"%%%\"'" \
     3.2 C "\~" "<P> Show messages" show-messages \
-    3.2 C C    "<P> Customize options" "customize-mode -Z" \
-    1.8 C :    "<P> Prompt for a command" command-prompt \
+    3.2 C C "<P> Customize options" "customize-mode -Z" \
+    1.8 C : "<P> Prompt for a command" command-prompt \
     0.0 S \
     2.1 C m "Toggle mouse to: $new_mouse_status" "set-option -g mouse \
         $new_mouse_status $menu_reload" \
@@ -69,7 +67,7 @@ set -- "$@" \
     1.8 C x "Kill server" "confirm-before -p \
         'kill tmux server defined in($TMUX_SOURCE) ? (y/n)' kill-server" \
     0.0 S \
-    0.0 M H "Help -->" "$CURRENT_DIR/help.sh $current_script"
+    0.0 M H "Help -->" "$ITEMS_DIR/help.sh $current_script"
 
 #
 #  Disabled until I have time to investigate
@@ -77,7 +75,7 @@ set -- "$@" \
 # plugin_conf_prompt="#{?@menus_config_overrides,Plugin configuration  -->,-Configuration disabled}"
 # 0.0 M P "$plugin_conf_prompt" config.sh \
 
-req_win_width=40
-req_win_height=19
+req_win_width=37
+req_win_height=18
 
 menu_parse "$@"

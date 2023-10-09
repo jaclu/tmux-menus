@@ -1,4 +1,5 @@
 #!/bin/sh
+#  shellcheck disable=SC2034
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -8,11 +9,8 @@
 #   Resize a pane
 #
 
-#  shellcheck disable=SC2034
-#  Directives for shellcheck directly after bang path are global
-
-CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
+ITEMS_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
+SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/dialog_handling.sh"
@@ -37,9 +35,9 @@ set -- \
     1.7 C L "left" "resize-pane -L 5 $menu_reload" \
     1.7 C R "right" "resize-pane -R 5 $menu_reload" \
     0.0 S \
-    0.0 M H "Help -->" "$CURRENT_DIR/help.sh $current_script"
+    0.0 M H "Help -->" "$ITEMS_DIR/help.sh $current_script"
 
-req_win_width=37
+req_win_width=36
 req_win_height=18
 
 menu_parse "$@"

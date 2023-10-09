@@ -11,6 +11,8 @@ experienced users, then add more for newbies.
 
 ## Recent changes
 
+- ITEMS_DIR & SCRIPT_DIR must be defined before sourcing dialog_handling.sh, updated for all menus
+- current_script is correctly defined when script is run from other locations than items/
 - pane zoom only offered if more than one pane in window
 - Added check that TMUX_BIN has been set
 - Added Clear history & screen to panes menu
@@ -124,7 +126,7 @@ suspended, dialogs are run, and when done the suspended task is
 reactivated.
 
 The downside of this is that if there were no current task running in
-the active pane, you will see `fg: no current job` being printed when 
+the active pane, you will see `fg: no current job` being printed when
 the dialog is exited. This can be ignored.
 
 The menu system works the same using Whiptail, however the menu
@@ -303,11 +305,11 @@ Item types and their parameters
 #  this repo, if not, you will need to change the paths to the support
 #  scripts below.
 #
-CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
+ITEMS_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
+SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 
 # shellcheck disable=SC1091
-. "$SCRIPT_DIR/dialog_handling.sh"
+. "$SCRIPT_DIR"/dialog_handling.sh
 
 menu_name="Simple Test"
 
@@ -320,6 +322,9 @@ set -- \
     0.0 S \
     0.0 T "Example of action reloading the menu" \
     1.8 C z "<P> Zoom pane toggle" "resize-pane -Z $menu_reload" \
+
+req_win_width=39
+req_win_height=23
 
 menu_parse "$@"
 ```

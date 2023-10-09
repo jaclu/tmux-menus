@@ -1,4 +1,5 @@
 #!/bin/sh
+#  shellcheck disable=SC2034,SC2154
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -8,11 +9,8 @@
 #   Directly control Spotify
 #
 
-# Global check exclude
-# shellcheck disable=SC2034,SC2154
-
-CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-ITEMS_DIR="$(dirname "$CURRENT_DIR")"
+extras_dir=$(cd -- "$(dirname -- "$0")" && pwd)
+ITEMS_DIR="$(dirname "$extras_dir")"
 SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 
 # shellcheck disable=SC1091

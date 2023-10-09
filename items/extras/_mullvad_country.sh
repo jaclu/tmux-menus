@@ -1,4 +1,5 @@
 #!/bin/sh
+#  shellcheck disable=SC2034,SC2154
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -7,9 +8,6 @@
 #
 #   Select country for mullvad VPN
 #
-
-# Global check exclude
-# shellcheck disable=SC2034,SC2154
 
 nav_add() {
     [ -z "$nav" ] && nav="\"\""
@@ -22,8 +20,8 @@ nav_add() {
 #
 #===============================================================
 
-CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-ITEMS_DIR="$(dirname "$CURRENT_DIR")"
+ITEMS_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
+ITEMS_DIR="$(dirname "$ITEMS_DIR")"
 SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 
 # shellcheck disable=SC1091

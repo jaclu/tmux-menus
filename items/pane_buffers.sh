@@ -1,4 +1,5 @@
 #!/bin/sh
+#  shellcheck disable=SC2034
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -8,11 +9,8 @@
 #   Select and modify paste buffers
 #
 
-#  shellcheck disable=SC2034
-#  Directives for shellcheck directly after bang path are global
-
-CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
+ITEMS_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
+SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/dialog_handling.sh"
@@ -47,9 +45,9 @@ set -- \
     2.0 T "-#[nodim] " \
     1.9 C = "<P>" "choose-buffer" \
     2.0 S \
-    2.0 M H "Help -->" "$CURRENT_DIR/help.sh $current_script"
+    2.0 M H "Help -->" "$ITEMS_DIR/help.sh $current_script"
 
-req_win_width=41
-req_win_height=27
+req_win_width=55
+req_win_height=29
 
 menu_parse "$@"

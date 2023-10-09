@@ -1,4 +1,5 @@
 #!/bin/sh
+#  shellcheck disable=SC2034
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -8,16 +9,14 @@
 #   General Help
 #
 
-#  shellcheck disable=SC2034
-#  Directives for shellcheck directly after bang path are global
-
-CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
+ITEMS_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
+SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/dialog_handling.sh"
 
 previous_menu="$1"
+log_it "Help detected previous menu to be: $previous_menu"
 
 if [ -z "$previous_menu" ]; then
     error_msg "help.sh was called without notice of what called it"

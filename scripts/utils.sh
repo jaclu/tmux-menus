@@ -190,7 +190,8 @@ if ! tmux_vers_compare 1.8; then
     error_msg "This needs at least tmux 1.8 to work!" 1
 fi
 
-current_script="$CURRENT_DIR/$(basename "$0")"
+#  Convert script name to full actual path notation
+current_script="$(cd -- "$(dirname -- "$0")" && pwd)/$(basename "$0")"
 
 conf_file="$(get_tmux_option "@menus_config_file" "$HOME/tmux.conf")"
 

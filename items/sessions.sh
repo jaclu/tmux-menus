@@ -1,4 +1,5 @@
 #!/bin/sh
+#  shellcheck disable=SC2034
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -8,11 +9,8 @@
 #   Handling Sessions
 #
 
-#  shellcheck disable=SC2034
-#  Directives for shellcheck directly after bang path are global
-
-CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
+ITEMS_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
+SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/dialog_handling.sh"
@@ -33,7 +31,7 @@ set -- \
         'Name of new session: ' \
         'new-session -d -s \"%1\" ; switch-client -t \"%1\"'" \
     0.0 S \
-    2.0 C L    "<P> Last selected session" "switch-client -l $menu_reload" \
+    2.0 C L "<P> Last selected session" "switch-client -l $menu_reload" \
     2.0 C "\(" "<P> Previous session (in order)" "switch-client -p $menu_reload" \
     2.0 C "\)" "<P> Next     session (in order)" "switch-client -n $menu_reload" \
     0.0 S \
@@ -53,7 +51,7 @@ set -- "$@ ; kill-session'" \
         'Are you sure you want to kill all other sessions? (y/n)' \
         'kill-session -a'" \
     0.0 S \
-    0.0 M H "Help -->" "$CURRENT_DIR/help.sh $current_script"
+    0.0 M H "Help -->" "$ITEMS_DIR/help.sh $current_script"
 
 req_win_width=39
 req_win_height=15

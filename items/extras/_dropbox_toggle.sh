@@ -1,4 +1,5 @@
 #!/bin/sh
+#  shellcheck disable=SC1091,SC2154
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -7,8 +8,6 @@
 #
 #   toggle dropbox on/off
 #
-# Global check exclude
-# shellcheck disable=SC1091,SC2154
 
 dropbox_status_check() {
     is_dropbox_running && run_stat=0 || run_stat=1
@@ -25,8 +24,8 @@ dropbox_status_check() {
 #
 #===============================================================
 
-CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-ITEMS_DIR="$(dirname "$CURRENT_DIR")"
+ITEMS_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
+ITEMS_DIR="$(dirname "$ITEMS_DIR")"
 SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 
 . "$SCRIPT_DIR"/dialog_handling.sh

@@ -1,4 +1,5 @@
 #!/bin/sh
+#  shellcheck disable=SC2034,SC2154
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -8,13 +9,10 @@
 #   Handling pane
 #
 
-#  shellcheck disable=SC1091,SC2034,SC2154
-#  Directives for shellcheck directly after bang path are global
+ITEMS_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
+SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 
-CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-SCRIPT_DIR="$(dirname "$CURRENT_DIR")/scripts"
-
-. "$SCRIPT_DIR/utils.sh"
+#  shellcheck disable=SC1091
 . "$SCRIPT_DIR/dialog_handling.sh"
 
 new_mark_state="$($TMUX_BIN display -p '#{?pane_marked,Unmark,Mark}')"
@@ -22,13 +20,11 @@ new_sync_state="$($TMUX_BIN display -p '#{?pane_synchronized,Disable,Activate}')
 
 menu_name="Handling Pane"
 
-
-
 set -- \
     0.0 M Left "Back to Main menu <--" main.sh \
-    0.0 M M    "Move pane         -->" pane_move.sh \
-    0.0 M R    "Resize pane       -->" pane_resize.sh \
-    2.0 M B    "Paste buffers     -->" pane_buffers.sh \
+    0.0 M M "Move pane         -->" pane_move.sh \
+    0.0 M R "Resize pane       -->" pane_resize.sh \
+    2.0 M B "Paste buffers     -->" pane_buffers.sh \
     0.0 S \
     2.6 C t " Set Title" "command-prompt -I '#T'  -p 'Title: '  \
         'select-pane -T \"%%\"' $menu_reload" \
@@ -37,13 +33,13 @@ set -- \
 
 if tmux_vers_compare 2.0 && [ "$(tmux list-panes | wc -l)" -gt 1 ]; then
     if [ "$($TMUX_BIN display -p '#{window_zoomed_flag}')" -eq 0 ]; then
-	zoom_action="Zoom"
+        zoom_action="Zoom"
     else
-	zoom_action="Un-Zoom"
+        zoom_action="Un-Zoom"
     fi
     # since vers compare has already been done, skip it here
     set -- "$@" \
-	0.0 C z "<P> $zoom_action pane" "resize-pane -Z $menu_reload"
+        0.0 C z "<P> $zoom_action pane" "resize-pane -Z $menu_reload"
 fi
 
 set -- "$@" \
@@ -69,7 +65,7 @@ set -- "$@" \
         'Are you sure you want to kill all other panes? (y/n)' \
         'kill-pane -a'" \
     0.0 S \
-    0.0 M H 'Help -->' "$CURRENT_DIR/help_panes.sh $current_script"
+    0.0 M H 'Help -->' "$ITEMS_DIR/help_panes.sh $current_script"
 
 req_win_width=38
 req_win_height=23
