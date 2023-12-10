@@ -28,11 +28,22 @@ error_msg() {
     #
     em_msg="ERROR: $1"
     em_exit_code="${2:-0}"
-
-    log_it "$em_msg"
     em_msg="$plugin_name $em_msg"
     em_msg_len="$(printf "%s" "$em_msg" | wc -m)"
     em_screen_width="$($TMUX_BIN display -p "#{window_width}")"
+
+    if [ -n "$log_file" ]; then
+        log_it "$em_msg"
+    else
+        #
+        #  Error msgs should always be displayed. If logging is not on
+        #  print to stdout
+        #
+        echo
+        echo "$em_msg"
+        echo
+    fi
+
     if [ "$em_msg_len" -le "$em_screen_width" ]; then
         $TMUX_BIN display-message "$em_msg"
     else
@@ -168,7 +179,7 @@ plugin_name="tmux-menus"
 #  If log_file is empty or undefined, no logging will occur,
 #  so comment it out for normal usage.
 #
-# log_file="/tmp/$plugin_name.log"
+log_file="/tmp/$plugin_name.log"
 
 #
 #  If @menus_config_overrides is 1, this file is used to store

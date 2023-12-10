@@ -1,7 +1,6 @@
 # Plan
 
-just reworked the menu generation, will monitor bugs for now, no new
-features planned ATM.
+See if instead of just displaying defaults as (x) , displaying current binding as [x] is possible
 
 ## Pane titles
 

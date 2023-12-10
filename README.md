@@ -11,16 +11,10 @@ experienced users, then add more for newbies.
 
 ## Recent changes
 
+- Added menu "Missing Keys" for inserting keys not available on the keyboard.
 - ITEMS_DIR & SCRIPT_DIR must be defined before sourcing dialog_handling.sh, updated for all menus
 - current_script is correctly defined when script is run from other locations than items/
 - pane zoom only offered if more than one pane in window
-- Added check that TMUX_BIN has been set
-- Added Clear history & screen to panes menu
-- whiptail menus can be used via the shortcut
-- Now you can pre-define config file, so that you don't have to
-type it in every time you choose `Reload configuration file` in case
-you are not using `~/.tmux.conf` check section `Pointer to config file`
-below for details.
 
 ## Purpose
 

@@ -18,6 +18,21 @@
 #             param is not a full path
 #
 
+debug_print() {
+    case "$menu_debug" in
+    1) echo "$1" ;;
+    2) log_it "$1" ;;
+    *)
+        echo "$1"
+        echo
+        echo "ERROR: dialog_handling:debug_print()"
+        echo "       \$menu_debug state invalid [$menu_debug] shoule be 1 or 2!"
+        echo
+        exit 1
+        ;;
+    esac
+}
+
 ensure_menu_fits_on_screen() {
     #
     #  Since tmux display-menu returns 0 even if it failed to display the menu
@@ -85,7 +100,7 @@ tmux_open_menu() {
     key="$2"
     menu="$3"
 
-    # [ "$menu_debug" = "1" ] && echo "tmux_open_menu($label,$key,$menu)"
+    # [ -n "$menu_debug" ] && debug_print "tmux_open_menu($label,$key,$menu)"
 
     # shellcheck disable=SC2089
     menu_items="$menu_items \"$label\" $key \"run-shell '$menu'\""
@@ -96,8 +111,8 @@ tmux_external_cmd() {
     key="$2"
     # cmd="$3"
     cmd="$(echo "$3" | sed 's/"/\\"/g')" # replace embedded " with \"
+    # [ -n "$menu_debug" ] && debug_print "tmux_external_cmd($label,$key,$cmd)"
 
-    # [ "$menu_debug" = "1" ] && echo "tmux_external_cmd($label,$key,$cmd)"
     #
     #  needs to be prefixed with run-shell, since this is triggered by
     #  tmux
@@ -111,7 +126,7 @@ tmux_command() {
     # cmd="$3"
     cmd="$(echo "$3" | sed 's/"/\\"/g')" # replace embedded " with \"
 
-    [ "$menu_debug" = "1" ] && echo "tmux_command($label,$key,$cmd)"
+    # [ -n "$menu_debug" ] && debug_print "tmux_command($label,$key,$cmd)"
     menu_items="$menu_items \"$label\" $key \"$cmd\""
 }
 
@@ -259,13 +274,13 @@ menu_parse() {
     #
     [ -z "$menu_name" ] && error_missing_param "menu_name"
 
-    [ "$menu_debug" = "1" ] && echo ">> menu_parse($*)"
+    # [ -n "$menu_debug" ] && debug_print ">> menu_parse($*)"
     while [ -n "$1" ]; do
         min_vers="$1"
         shift
         action="$1"
         shift
-        [ "$menu_debug" = "1" ] && echo "[$min_vers] [$action]"
+        # [ -n "$menu_debug" ] && debug_print "[$min_vers] [$action]"
         case "$action" in
 
         "M") #  Open another menu
@@ -286,7 +301,7 @@ menu_parse() {
                 menu="$ITEMS_DIR/$menu"
             fi
 
-            [ "$menu_debug" = "1" ] && echo "key[$key] label[$label] menu[$menu]"
+            # [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] menu[$menu]"
 
             if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
                 alt_dialog_open_menu "$label" "$key" "$menu"
@@ -305,7 +320,7 @@ menu_parse() {
 
             ! tmux_vers_compare "$min_vers" && continue
 
-            [ "$menu_debug" = "1" ] && echo "key[$key] label[$label] command[$cmd]"
+            # [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
 
             if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
                 alt_dialog_command "$label" "$key" "$cmd"
@@ -342,7 +357,7 @@ menu_parse() {
                 cmd="$SCRIPT_DIR/$cmd"
             fi
 
-            [ "$menu_debug" = "1" ] && echo "key[$key] label[$label] command[$cmd]"
+            # [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
 
             if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
                 alt_dialog_external_cmd "$label" "$key" "$cmd"
@@ -357,7 +372,7 @@ menu_parse() {
 
             ! tmux_vers_compare "$min_vers" && continue
 
-            [ "$menu_debug" = "1" ] && echo "text line [$txt]"
+            # [ -n "$menu_debug" ] && debug_print "text line [$txt]"
             if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
                 alt_dialog_text_line "$txt"
             else
@@ -369,7 +384,7 @@ menu_parse() {
 
             ! tmux_vers_compare "$min_vers" && continue
 
-            [ "$menu_debug" = "1" ] && echo "Spacer line"
+            # [ -n "$menu_debug" ] && debug_print "Spacer line"
 
             # Whiptail/dialog does not have a concept of spacer lines
             if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
@@ -402,14 +417,12 @@ menu_parse() {
     #  shellcheck disable=SC2086,SC2090
     set -- $menu_prefix $menu_items
 
-    if [ "$menu_debug" = "1" ]; then
-        echo "Will run:"
-        echo "$@"
-        if [ -n "$wt_actions" ]; then
-            echo "alt-dialog actions:"
-            echo "$wt_actions"
-        fi
-    fi
+    # if [ -n "$menu_debug" ]; then
+    #     debug_print "Will run: $@"
+    #     if [ -n "$wt_actions" ]; then
+    #         debug_print "alt-dialog actions: $wt_actions"
+    #     fi
+    # fi
 
     if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
         #  shellcheck disable=SC2294
@@ -481,4 +494,4 @@ dialog_app="whiptail"
 
 alt_dialog_action_separator=":/:/:/:"
 
-menu_debug=0 #  Display progress as menu is being built
+menu_debug="" # Set to 1 to use echo 2 to use log_it
