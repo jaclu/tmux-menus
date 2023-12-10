@@ -53,7 +53,8 @@ The default is `<prefix> \` see Configuration below for how to change it.
 
 The grey one is generated with whiptail, the rest by tmux built-in `display-menu`
 
-![main](https://github.com/jaclu/tmux-menus/assets/5046648/5ed4fd3f-25fc-4449-9c8a-6fc27b35fdc1.png)
+
+![main](https://github.com/jaclu/tmux-menus/assets/5046648/5985d53b-cd55-4b33-81e3-2d7811131ed2)
 ![Whiptail main](https://github.com/jaclu/tmux-menus/assets/5046648/11ac1c9f-cb19-4dba-a29d-7106ec854fea.png)
 ![Pane](https://github.com/jaclu/tmux-menus/assets/5046648/68a390be-f4d7-44bc-a9d4-9082ad2c718a.png)
 ![Window](https://github.com/jaclu/tmux-menus/assets/5046648/34ed1a9b-9ee0-48e9-8b6a-2a28421fd880.png)
