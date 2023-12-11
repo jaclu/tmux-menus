@@ -11,6 +11,7 @@ experienced users, then add more for newbies.
 
 ## Recent changes
 
+- Added Configuration of Border lines in the Layouts menu
 - Added menu "Missing Keys" for inserting keys not available on the keyboard.
 - ITEMS_DIR & SCRIPT_DIR must be defined before sourcing dialog_handling.sh, updated for all menus
 - current_script is correctly defined when script is run from other locations than items/
