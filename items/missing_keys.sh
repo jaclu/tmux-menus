@@ -115,13 +115,9 @@ if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
         0.0 T "directly into the pane." \
         0.0 T "Instead a tmux buffer is used." \
         0.0 T "Once you have selected one or more keys to use" \
-        0.0 T "Cancel this menu. Once back in your pane,"
-    if tmux_vers_compare 3.2; then
-        set -- "$@" \
-            0.0 T "paste the key(-s). If normal paste doesn't" \
-            0.0 T "work, you can instead"
-    fi
-    set -- "$@" \
+        0.0 T "Cancel this menu. Once back in your pane," \
+        3.2 T "paste the key(-s). If normal paste doesn't" \
+        3.2 T "work, you can instead"
         0.0 T "use $()<prefix> ]$() to paste the key(-s)." \
         0.0 S
 fi
