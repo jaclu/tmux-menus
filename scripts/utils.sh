@@ -1,5 +1,5 @@
 #!/bin/sh
-# Always sourced file - Fake bangpath to help editors
+# Always sourced file - Fake bang path to help editors
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -23,8 +23,8 @@ log_it() {
 
 error_msg() {
     #
-    #  Display $1 as an error message in log and as a tmux display-message
-    #  If no $2 or set to 0, process is not exited
+    #  Display $1 as an error message in the log and as a tmux display-message
+    #  If no $2 or set to 0, the process is not exited
     #
     em_msg="ERROR: $1"
     em_exit_code="${2:-0}"
@@ -48,7 +48,7 @@ error_msg() {
         $TMUX_BIN display-message "$em_msg"
     else
         #
-        #  Screen is to narrow to use display message
+        #  Screen is too narrow to use display message
         #  By echoing it, it will be displayed in a copy-mode
         #
         echo
@@ -61,7 +61,7 @@ bool_param() {
     #
     #  Aargh in shell boolean true is 0, but to make the boolean parameters
     #  more relatable for users 1 is yes and 0 is no, so we need to switch
-    #  them here in order for assignment to follow boolean logic in caller
+    #  them here for assignment to follow boolean logic in the caller
     #
     case "$1" in
 
@@ -170,7 +170,7 @@ wait_to_close_display() {
 #===============================================================
 
 #
-#  Shorthand, to avoid manually typing package name on multiple
+#  Shorthand, to avoid manually typing package names on multiple
 #  locations, easily getting out of sync.
 #
 plugin_name="tmux-menus"
@@ -179,7 +179,7 @@ plugin_name="tmux-menus"
 #  If log_file is empty or undefined, no logging will occur,
 #  so comment it out for normal usage.
 #
-log_file="/tmp/$plugin_name.log"
+# log_file="/tmp/$plugin_name.log"
 
 #
 #  If @menus_config_overrides is 1, this file is used to store
@@ -189,9 +189,9 @@ custom_config_file="/tmp/tmux-menus.conf"
 
 #
 #  I use an env var TMUX_BIN to point at the current tmux, defined in my
-#  tmux.conf, in order to pick the version matching the server running.
-#  This is needed when checking backwards compatability with various versions.
-#  If not found, it is set to whatever is in path, so should have no negative
+#  tmux.conf, to pick the version matching the server running.
+#  This is needed when checking backward compatibility with various versions.
+#  If not found, it is set to whatever is in the path, so should have no negative
 #  impact. In all calls to tmux I use $TMUX_BIN instead in the rest of this
 #  plugin.
 #
