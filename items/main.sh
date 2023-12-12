@@ -1,22 +1,25 @@
 #!/bin/sh
 #  shellcheck disable=SC2034
 #
-#   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
-#   License: MIT
+#  Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
+#  License: MIT
 #
-#   Part of https://github.com/jaclu/tmux-menus
+#  Part of https://github.com/jaclu/tmux-menus
 #
-#   Main menu, the one popping up when you hit the trigger
+#  Main menu, the one popping up when you hit the trigger
 #
 
+#  Use variables for flexible paths
 ITEMS_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 
+#  Source dialog handling script
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/dialog_handling.sh"
 
 menu_name="Main menu"
 
+#  Menu items definition
 set -- \
     0.0 M P "Handling Pane     -->" panes.sh \
     0.0 M W "Handling Window   -->" windows.sh \
@@ -35,7 +38,7 @@ set -- \
 
 if tmux_vers_compare 2.7; then
     #  adds ignore case
-    # shellcheck disable=SC2145
+    #  shellcheck disable=SC2145
     set -- "$@ -Z"
 fi
 
@@ -58,8 +61,8 @@ if tmux_vers_compare 3.2; then
     set -- "$@ -Zi"
 fi
 
-#  shellcheck disable=SC2145,SC2154
-set -- "$@  -- \"%%\"'" \
+#  shellcheck disable=SC2154
+set -- "$@" \
     0.0 S \
     0.0 E r 'Reload configuration file' "$SCRIPT_DIR/reload_conf.sh" \
     0.0 S \
