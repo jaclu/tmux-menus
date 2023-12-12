@@ -9,13 +9,9 @@
 #   Part of https://github.com/jaclu/tmux-menus
 #
 #  Parses params and generates tmux or whiptail menus
-#  Two variables are expected to have been set by the caller
+#  One variable is expected to have been set by the caller
 #
-#  ITEMS_DIR  base location for dialog entries, prepended if a menu
-#             param is not a full path
-#
-#  SCRIPT_DIR base location for external commands, prepended if a script
-#             param is not a full path
+#  D_TM_BASE_PATH - base location for tmux-menus plugin
 #
 
 debug_print() {
@@ -298,7 +294,7 @@ menu_parse() {
             #  item
             #
             if echo "$menu" | grep -vq /; then
-                menu="$ITEMS_DIR/$menu"
+                menu="$D_TM_ITEMS/$menu"
             fi
 
             # [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] menu[$menu]"
@@ -332,7 +328,7 @@ menu_parse() {
         "E") #  Run external command - params: key label cmd
             #
             #  If no / is found in the script param, it will be prefixed with
-            #  $SCRIPT_DIR
+            #  $D_TM_SCRIPTS
             #  This means that if you give full path to something in this
             #  param, all scriptd needs to have full path pre-pended.
             #  For example help menus, which takes the full path to the
@@ -354,7 +350,7 @@ menu_parse() {
             #  various implementations
             #
             if echo "$cmd" | grep -vq /; then
-                cmd="$SCRIPT_DIR/$cmd"
+                cmd="$D_TM_SCRIPTS/$cmd"
             fi
 
             # [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
@@ -456,15 +452,21 @@ error_missing_param() {
 #
 #===============================================================
 
+if [ -z "$D_TM_BASE_PATH" ]; then
+    echo "ERROR: dialog_handling.sh - D_TM_BASE_PATH must be set!"
+    exit 1
+fi
+
+#  Dont rely on D_TM_SCRIPTS having been set before sourcing utils.sh
 #  shellcheck disable=SC1091
-. "$SCRIPT_DIR/utils.sh"
+. "$D_TM_BASE_PATH"/scripts/utils.sh
 
 #
 #  First some param checks
 #
 [ -z "$TMUX_BIN" ] && error_missing_param "TMUX_BIN"
-if [ -z "$SCRIPT_DIR" ] || [ -z "$ITEMS_DIR" ]; then
-    error_missing_param "SCRIPT_DIR & ITEMS_DIR"
+if [ -z "$D_TM_SCRIPTS" ] || [ -z "$D_TM_ITEMS" ]; then
+    error_missing_param "D_TM_SCRIPTS & D_TM_ITEMS"
 fi
 
 if [ -z "$TMUX" ]; then

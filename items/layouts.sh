@@ -9,11 +9,12 @@
 #   Choose layout
 #
 
-ITEMS_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
+#  Should point to tmux-menux plugin
+D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
 
+#  Source dialog handling script
 # shellcheck disable=SC1091
-. "$SCRIPT_DIR/dialog_handling.sh"
+. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 
 menu_name="Layouts"
 
@@ -35,7 +36,7 @@ set -- \
     3.2 C "S" "simple" "setw pane-border-lines  simple  $menu_reload" \
     3.2 C "n" "number" "setw pane-border-lines  number  $menu_reload" \
     0.0 S \
-    0.0 M H "Help -->" "$ITEMS_DIR/help.sh $current_script"
+    0.0 M H "Help -->" "$D_TM_ITEMS/help.sh $current_script"
 
 req_win_width=32
 req_win_height=12

@@ -10,10 +10,16 @@
 # Global check exclude, ignoring: is referenced but not assigned
 # shellcheck disable=SC2154
 
-SCRIPT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
+_this="kill_other_windows.sh"
+if [ "$(basename "$0")" != "$_this" ]; then
+    echo "ERROR: $_this should NOT be sourced"
+    exit 1
+fi
+
+D_TM_SCRIPTS="$(cd -- "$(dirname -- "$0")" && pwd)"
 
 # shellcheck disable=SC1091
-. "$SCRIPT_DIR/utils.sh"
+. "$D_TM_SCRIPTS/utils.sh"
 
 # safety check to ensure it is defined
 [ -z "$TMUX_BIN" ] && echo "ERROR: kill_other_windows.sh - TMUX_BIN is not defined!"

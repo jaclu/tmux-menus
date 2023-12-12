@@ -9,11 +9,12 @@
 #   Handling pane
 #
 
-ITEMS_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
+#  Should point to tmux-menux plugin
+D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
 
-#  shellcheck disable=SC1091
-. "$SCRIPT_DIR/dialog_handling.sh"
+#  Source dialog handling script
+# shellcheck disable=SC1091
+. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 
 new_mark_state="$($TMUX_BIN display -p '#{?pane_marked,Unmark,Mark}')"
 new_sync_state="$($TMUX_BIN display -p '#{?pane_synchronized,Disable,Activate}')"
@@ -65,7 +66,7 @@ set -- "$@" \
         'Are you sure you want to kill all other panes? (y/n)' \
         'kill-pane -a'" \
     0.0 S \
-    0.0 M H 'Help -->' "$ITEMS_DIR/help_panes.sh $current_script"
+    0.0 M H 'Help -->' "$D_TM_ITEMS/help_panes.sh $current_script"
 
 req_win_width=38
 req_win_height=23

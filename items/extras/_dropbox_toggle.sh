@@ -24,12 +24,14 @@ dropbox_status_check() {
 #
 #===============================================================
 
-ITEMS_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-ITEMS_DIR="$(dirname "$ITEMS_DIR")"
-SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
+#  Should point to tmux-menux plugin
+D_TM_BASE_PATH="$(dirname "$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")")"
 
-. "$SCRIPT_DIR"/dialog_handling.sh
-. "$SCRIPT_DIR"/dropbox_tools.sh
+#  Source dialog handling script
+# shellcheck disable=SC1091
+. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
+
+. "$D_TM_SCRIPTS"/dropbox_tools.sh
 
 if is_dropbox_running; then
     action="stop"

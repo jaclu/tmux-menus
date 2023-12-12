@@ -9,11 +9,12 @@
 #   Handling Sessions
 #
 
-ITEMS_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
+#  Should point to tmux-menux plugin
+D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
 
+#  Source dialog handling script
 # shellcheck disable=SC1091
-. "$SCRIPT_DIR/dialog_handling.sh"
+. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 
 if ! tmux_vers_compare 2.0; then
     error_msg "This menu needs at least tmux 2.0" 1
@@ -51,7 +52,7 @@ set -- "$@ ; kill-session'" \
         'Are you sure you want to kill all other sessions? (y/n)' \
         'kill-session -a'" \
     0.0 S \
-    0.0 M H "Help -->" "$ITEMS_DIR/help.sh $current_script"
+    0.0 M H "Help -->" "$D_TM_ITEMS/help.sh $current_script"
 
 req_win_width=39
 req_win_height=15

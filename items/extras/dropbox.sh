@@ -10,11 +10,15 @@
 #
 
 extras_dir=$(cd -- "$(dirname -- "$0")" && pwd)
-ITEMS_DIR="$(dirname "$extras_dir")"
-SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 
-. "$SCRIPT_DIR"/dialog_handling.sh
-. "$SCRIPT_DIR"/dropbox_tools.sh
+#  Should point to tmux-menux plugin
+D_TM_BASE_PATH="$(dirname "$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")")"
+
+#  Source dialog handling script
+# shellcheck disable=SC1091
+. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
+
+. "$D_TM_SCRIPTS"/dropbox_tools.sh
 
 [ -z "$(command -v dropbox)" ] && error_msg "dropbox bin not found!" 1
 
@@ -27,13 +31,13 @@ fi
 menu_name="Dropbox"
 
 set -- \
-    0.0 M Home "Back to Main menu  <==" "$ITEMS_DIR/main.sh" \
-    0.0 M Left "Back to Extras     <--" "$ITEMS_DIR/extras.sh" \
+    0.0 M Home "Back to Main menu  <==" "$D_TM_ITEMS/main.sh" \
+    0.0 M Left "Back to Extras     <--" "$D_TM_ITEMS/extras.sh" \
     0.0 S \
     0.0 C s "Status" "display \"$(dropbox status)\" $menu_reload" \
     0.0 E t "$tgl_lbl" "$extras_dir/_dropbox_toggle.sh $menu_reload" \
     0.0 S \
-    0.0 M H "Help  -->" "$ITEMS_DIR/help.sh $current_script'"
+    0.0 M H "Help  -->" "$D_TM_ITEMS/help.sh $current_script'"
 
 req_win_width=33
 req_win_height=9

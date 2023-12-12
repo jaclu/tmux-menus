@@ -10,11 +10,12 @@
 #
 
 extras_dir=$(cd -- "$(dirname -- "$0")" && pwd)
-ITEMS_DIR="$(dirname "$extras_dir")"
-SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
+#  Should point to tmux-menux plugin
+D_TM_BASE_PATH="$(dirname "$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")")"
 
+#  Source dialog handling script
 # shellcheck disable=SC1091
-. "$SCRIPT_DIR/dialog_handling.sh"
+. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 
 suffix=" > /dev/null' ; run-shell '$current_script'"
 
@@ -54,8 +55,8 @@ fi
 menu_name="Mullvad VPN"
 
 set -- \
-    0.0 M Home "'Back to Main menu  <=='" "$ITEMS_DIR/main.sh" \
-    0.0 M Left "Back to Extras     <--" "$ITEMS_DIR/extras.sh" \
+    0.0 M Home "'Back to Main menu  <=='" "$D_TM_ITEMS/main.sh" \
+    0.0 M Left "Back to Extras     <--" "$D_TM_ITEMS/extras.sh" \
     0.0 S \
     0.0 C s Status "display '$(mullvad status)' $menu_reload"
 
@@ -69,7 +70,7 @@ fi
 set -- "$@" \
     0.0 E l "$lan_label LAN sharing" "mullvad lan set $lan_cmd; $current_script" \
     0.0 S \
-    0.0 M H 'Help       -->' "$ITEMS_DIR/help.sh $current_script"
+    0.0 M H 'Help       -->' "$D_TM_ITEMS/help.sh $current_script"
 
 # 0.0 C L "Select Location  -->" "$menu_reload'"
 

@@ -9,11 +9,12 @@
 #   Modify Clients
 #
 
-ITEMS_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
+#  Should point to tmux-menux plugin
+D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
 
+#  Source dialog handling script
 # shellcheck disable=SC1091
-. "$SCRIPT_DIR/dialog_handling.sh"
+. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 
 menu_name="Client Management"
 
@@ -44,7 +45,7 @@ set -- \
     2.7 T "-#[nodim] " \
     2.7 C D "<P>" "choose-client -Z" \
     2.7 S \
-    2.7 M H "Help -->" "$SCRIPT_DIR/help.sh $current_script'"
+    2.7 M H "Help -->" "$D_TM_ITEMS/help.sh $current_script'"
 
 req_win_width=39
 req_win_height=28

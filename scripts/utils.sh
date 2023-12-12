@@ -1,5 +1,6 @@
 #!/bin/sh
 # Always sourced file - Fake bang path to help editors
+#  shellcheck disable=SC2034,SC2154
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -8,8 +9,6 @@
 #
 #  Common tools and settings for this plugins
 #
-
-#  shellcheck disable=SC2034,SC2154
 
 log_it() {
     #
@@ -26,7 +25,7 @@ error_msg() {
     #  Display $1 as an error message in the log and as a tmux display-message
     #  If no $2 or set to 0, the process is not exited
     #
-    em_msg="ERROR: $plugin_name:$(basename "$0") $1"
+    em_msg="ERROR: tmux-menus:$(basename "$0") $1"
     em_exit_code="${2:-0}"
     em_msg_len="$(printf "%s" "$em_msg" | wc -m)"
     em_screen_width="$($TMUX_BIN display -p "#{window_width}")"
@@ -168,17 +167,20 @@ wait_to_close_display() {
 #
 #===============================================================
 
-#
-#  Shorthand, to avoid manually typing package names on multiple
-#  locations, easily getting out of sync.
-#
-plugin_name="tmux-menus"
+if [ -z "$D_TM_BASE_PATH" ]; then
+    if [ -n "$D_TM_SCRIPTS" ]; then
+        #  As Long as D_TM_SCRIPTS is set, all is fine
+        D_TM_BASE_PATH="$(dirname "$D_TM_SCRIPTS")"
+    else
+        error_msg "D_TM_BASE_PATH - undefined" 1
+    fi
+fi
 
 #
 #  If log_file is empty or undefined, no logging will occur,
 #  so comment it out for normal usage.
 #
-# log_file="/tmp/$plugin_name.log"
+log_file="/tmp/tmux-menus.log"
 
 #
 #  If @menus_config_overrides is 1, this file is used to store
@@ -228,3 +230,24 @@ else
     menu_location_x="$(get_tmux_option "@menus_location_x" "P")"
     menu_location_y="$(get_tmux_option "@menus_location_y" "P")"
 fi
+
+#
+#  All calling scripts must provide
+#
+
+[ -z "$D_TM_BASE_PATH" ] && error_msg "D_TM_BASE_PATH undefined" 1
+
+D_TM_SCRIPTS="$D_TM_BASE_PATH"/scripts
+D_TM_ITEMS="$D_TM_BASE_PATH"/items
+
+#  Cache is not implemented yet...
+# D_TM_MENUS_CACHE="$D_TM_BASE_PATH"/cache
+
+# if [ "$(basename "$0")" != "menus.tmux" ]; then
+#     #
+#     #  Except for during init, ensure D_TM_MENUS_CACHE exists
+#     #
+#     if [ ! -d "$D_TM_MENUS_CACHE" ]; then
+#         error_msg "D_TM_MENUS_CACHE folder missing: '$D_TM_MENUS_CACHE'" 1
+#     fi
+# fi

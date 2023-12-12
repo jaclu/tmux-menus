@@ -9,11 +9,12 @@
 #   Advanced options
 #
 
-ITEMS_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
+#  Should point to tmux-menux plugin
+D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
 
+#  Source dialog handling script
 # shellcheck disable=SC1091
-. "$SCRIPT_DIR/dialog_handling.sh"
+. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 
 #
 #  Gather some info in order to be able to show states
@@ -62,12 +63,12 @@ set -- "$@" \
         $new_mouse_status $menu_reload" \
     2.4 C p "Change prefix <$current_prefix>" "command-prompt -1 -p \
         'prefix (will take effect imeditally)' \
-        'run-shell \"$SCRIPT_DIR/change_prefix.sh %1\"'" \
+        'run-shell \"$D_TM_SCRIPTS/change_prefix.sh %1\"'" \
     0.0 S \
     1.8 C x "Kill server" "confirm-before -p \
         'kill tmux server defined in($TMUX_SOURCE) ? (y/n)' kill-server" \
     0.0 S \
-    0.0 M H "Help -->" "$ITEMS_DIR/help.sh $current_script"
+    0.0 M H "Help -->" "$D_TM_ITEMS/help.sh $current_script"
 
 #
 #  Disabled until I have time to investigate

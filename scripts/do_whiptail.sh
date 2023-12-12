@@ -24,11 +24,16 @@
 #  send-keys to generate the intended sequence seems to be beyond me
 #
 
-SCRIPT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-ITEMS_DIR="$(dirname "$SCRIPT_DIR")/items"
+_this="do_whiptail.sh"
+if [ "$(basename "$0")" != "$_this" ]; then
+    echo "ERROR: $_this should NOT be sourced"
+    exit 1
+fi
+
+D_TM_SCRIPTS="$(cd -- "$(dirname -- "$0")" && pwd)"
 
 #  shellcheck disable=SC1091
-. "$SCRIPT_DIR/utils.sh"
+. "$D_TM_SCRIPTS/utils.sh"
 
 # safety check to ensure it is defined
 [ -z "$TMUX_BIN" ] && echo "ERROR: do_whiptail.sh - TMUX_BIN is not defined!"
@@ -40,6 +45,6 @@ ITEMS_DIR="$(dirname "$SCRIPT_DIR")/items"
 #
 
 #  shellcheck disable=SC2154
-"$TMUX_BIN" send-keys C-z "$ITEMS_DIR/main.sh ; fg" Enter
+"$TMUX_BIN" send-keys C-z "$D_TM_ITEMS/main.sh ; fg" Enter
 
-#"$TMUX_BIN" send-keys C-z $ITEMS_DIR/main.sh ' [ -n "$(jobs)" ] && fg ' Enter
+#"$TMUX_BIN" send-keys C-z $D_TM_ITEMS/main.sh ' [ -n "$(jobs)" ] && fg ' Enter

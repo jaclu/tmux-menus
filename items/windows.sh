@@ -9,11 +9,12 @@
 #   Handling Window
 #
 
-ITEMS_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
+#  Should point to tmux-menux plugin
+D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
 
+#  Source dialog handling script
 # shellcheck disable=SC1091
-. "$SCRIPT_DIR/dialog_handling.sh"
+. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 
 menu_name="Handling Window"
 
@@ -42,9 +43,9 @@ set -- \
         'kill-window #W? (y/n)' kill-window" \
     1.7 C o " Kill all other windows" "confirm-before -p \
         'Are you sure you want to kill all other windows? (y/n)' \
-        'run-shell \"${SCRIPT_DIR}/kill_other_windows.sh\"'" \
+        'run-shell \"${D_TM_SCRIPTS}/kill_other_windows.sh\"'" \
     0.0 S \
-    0.0 M H "Help -->" "$ITEMS_DIR/help.sh $current_script"
+    0.0 M H "Help -->" "$D_TM_ITEMS/help.sh $current_script"
 
 req_win_width=38
 req_win_height=21

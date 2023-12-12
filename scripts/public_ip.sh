@@ -8,10 +8,16 @@
 #   Displays public IP
 #
 
-SCRIPT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
+_this="public_ip.sh"
+if [ "$(basename "$0")" != "$_this" ]; then
+    echo "ERROR: $_this should NOT be sourced"
+    exit 1
+fi
+
+D_TM_SCRIPTS="$(cd -- "$(dirname -- "$0")" && pwd)"
 
 # shellcheck disable=SC1091
-. "$SCRIPT_DIR/utils.sh"
+. "$D_TM_SCRIPTS/utils.sh"
 
 # safety check to ensure it is defined
 [ -z "$TMUX_BIN" ] && echo "ERROR: public_ip.sh - TMUX_BIN is not defined!"

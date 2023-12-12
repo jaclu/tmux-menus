@@ -13,13 +13,14 @@
 #   Live configuration. So far only menu location is available
 #
 
-ITEMS_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
+#  Should point to tmux-menux plugin
+D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
 
+#  Source dialog handling script
 # shellcheck disable=SC1091
-. "$SCRIPT_DIR/dialog_handling.sh"
+. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 
-change_location="run-shell '$SCRIPT_DIR/move_menu.sh"
+change_location="run-shell '$D_TM_SCRIPTS/move_menu.sh"
 
 #
 #  The -p sequence will get wrecked by lnie breaks,

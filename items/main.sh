@@ -9,13 +9,12 @@
 #  Main menu, the one popping up when you hit the trigger
 #
 
-#  Use variables for flexible paths
-ITEMS_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
+#  Should point to tmux-menux plugin
+D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
 
 #  Source dialog handling script
 # shellcheck disable=SC1091
-. "$SCRIPT_DIR/dialog_handling.sh"
+. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 
 menu_name="Main menu"
 
@@ -31,8 +30,8 @@ set -- \
     0.0 M A "Advanced Options  -->" advanced.sh \
     0.0 S \
     0.0 C l "toggle status Line" "set status" \
-    0.0 E i "public IP" "$SCRIPT_DIR/public_ip.sh" \
-    0.0 E p "Plugins inventory" "$SCRIPT_DIR/plugins.sh" \
+    0.0 E i "public IP" "$D_TM_SCRIPTS/public_ip.sh" \
+    0.0 E p "Plugins inventory" "$D_TM_SCRIPTS/plugins.sh" \
     0.0 S \
     0.0 C n "Navigate & select ses/win/pane" "choose-tree"
 
@@ -64,11 +63,11 @@ fi
 #  shellcheck disable=SC2154
 set -- "$@" \
     0.0 S \
-    0.0 E r 'Reload configuration file' "$SCRIPT_DIR/reload_conf.sh" \
+    0.0 E r 'Reload configuration file' "$D_TM_SCRIPTS/reload_conf.sh" \
     0.0 S \
     0.0 C d '<P> Detach from tmux' detach-client \
     0.0 S \
-    0.0 M H 'Help -->' "$ITEMS_DIR/help.sh $current_script"
+    0.0 M H 'Help -->' "$D_TM_ITEMS/help.sh $current_script"
 
 req_win_width=39
 req_win_height=23

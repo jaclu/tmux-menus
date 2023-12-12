@@ -10,11 +10,13 @@
 #
 
 extras_dir=$(cd -- "$(dirname -- "$0")" && pwd)
-ITEMS_DIR="$(dirname "$extras_dir")"
-SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 
+#  Should point to tmux-menux plugin
+D_TM_BASE_PATH="$(dirname "$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")")"
+
+#  Source dialog handling script
 # shellcheck disable=SC1091
-. "$SCRIPT_DIR/dialog_handling.sh"
+. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 
 reload_no_output=" > /dev/null ; $current_script"
 
@@ -26,15 +28,15 @@ fi
 menu_name="Spotify"
 
 set -- \
-    0.0 M Home "Back to Main menu  <==" "$ITEMS_DIR/main.sh" \
-    0.0 M Left "Back to Extras     <--" "$ITEMS_DIR/extras.sh" \
+    0.0 M Home "Back to Main menu  <==" "$D_TM_ITEMS/main.sh" \
+    0.0 M Left "Back to Extras     <--" "$D_TM_ITEMS/extras.sh" \
     0.0 S
 
 if [ "$(uname)" = "Darwin" ]; then
     # This title check is a MacOS script
     set -- "$@" \
         0.0 C t "Title - now playing" "display \
-            '$("$SCRIPT_DIR"/spotify-now-playing | sed "s/'/*/g" | sed 's/"/*/g')' \
+            '$("$D_TM_SCRIPTS"/spotify-now-playing | sed "s/'/*/g" | sed 's/"/*/g')' \
             $menu_reload" \
         0.0 S
 fi
@@ -51,7 +53,7 @@ set -- "$@" \
     0.0 E u "vol Up" "spotify           vol up         $reload_no_output" \
     0.0 E d "vol Down" "spotify         vol down       $reload_no_output" \
     0.0 S \
-    0.0 M H 'Help       -->' "$ITEMS_DIR/help.sh $current_script"
+    0.0 M H 'Help       -->' "$D_TM_ITEMS/help.sh $current_script"
 
 req_win_width=33
 req_win_height=13

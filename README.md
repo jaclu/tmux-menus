@@ -11,6 +11,7 @@ experienced users, then add more for newbies.
 
 ## Recent changes
 
+- Simplified path handling, now only D_TM_BASE_PATH needs to be set in each menu
 - Added Configuration of Border lines in the Layouts menu
 - Added menu "Missing Keys" for inserting keys not available on the keyboard.
 - ITEMS_DIR & SCRIPT_DIR must be defined before sourcing dialog_handling.sh, updated for all menus
@@ -301,11 +302,12 @@ Item types and their parameters
 #  this repo, if not, you will need to change the paths to the support
 #  scripts below.
 #
-ITEMS_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
+#  Should point to tmux-menux plugin
+D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
 
+#  Source dialog handling script
 # shellcheck disable=SC1091
-. "$SCRIPT_DIR"/dialog_handling.sh
+. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 
 menu_name="Simple Test"
 
