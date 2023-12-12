@@ -29,7 +29,7 @@ set -- \
     2.6 C t " Set Title" "command-prompt -I '#T'  -p 'Title: '  \
         'select-pane -T \"%%\"' $menu_reload" \
     2.6 C c " Clear history & screen" \
-    "send-keys C-l ; run \"sleep 0.3\" ; clear-history"
+    "send-keys C-l ; run 'sleep 0.3' ; clear-history"
 
 if tmux_vers_compare 2.0 && [ "$(tmux list-panes | wc -l)" -gt 1 ]; then
     if [ "$($TMUX_BIN display -p '#{window_zoomed_flag}')" -eq 0 ]; then
@@ -37,7 +37,7 @@ if tmux_vers_compare 2.0 && [ "$(tmux list-panes | wc -l)" -gt 1 ]; then
     else
         zoom_action="Un-Zoom"
     fi
-    # since vers compare has already been done, skip it here
+    #  Skip version comparison as it has been done previously
     set -- "$@" \
         0.0 C z "<P> $zoom_action pane" "resize-pane -Z $menu_reload"
 fi
