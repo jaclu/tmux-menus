@@ -25,7 +25,7 @@ display_char() {
     #  buffer, that can later be pasted.
     #
     c="$1"
-    [ -z "$c" ] && error_msg "$0:display_char() - no param"
+    [ -z "$c" ] && error_msg "display_char() - no param"
     if [ "$FORCE_WHIPTAIL_MENUS" != 1 ]; then
         $TMUX_BIN send-keys "$c"
     else
@@ -47,18 +47,24 @@ display_char() {
 #  line parameter
 #
 handle_char() {
-    chr="$1"
-    [ -z "$chr" ] && error_msg "$0:handle_char() - no param"
+    s_in="$1"
+    [ -z "$s_in" ] && error_msg "handle_char() - no param"
 
-    case $chr in
+    case "$s_in" in
     0x*)
+        # handle it as a hex code
         # shellcheck disable=SC2059
-        s="$(printf "\\$(printf "%o" "0x${1#0x}")")"
+        s="$(printf "\\$(printf "%o" "0x${s_in#0x}")")"
         ;;
     *)
-        s="$chr"
-        if [ -n "${s#?}" ]; then
-            error_msg "$0 param can only be single char!"
+        s="$s_in"
+        #
+        #  On Linux, it seems checking str length the normal way
+        #  doesnt work for some chars, like §
+        #  This seems more resiliant
+        #
+        if [ "$(expr length "$s_in")" -gt 1 ]; then
+            error_msg "param can only be single char! [$s]"
         fi
         ;;
     esac
