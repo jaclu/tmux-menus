@@ -6,16 +6,17 @@
 #
 #  Part of https://github.com/jaclu/tmux-menus
 #
-#  Sending keys that might not always be accesible, depending on
+#  Sending keys that might not always be accessible, depending on
 #  keyboards or their mappings.
 #
-#  Especially when using tablets with keyboars, the number row might
+#  Especially when using tablets with keyboards, the number row might
 #  be mapped to function keys, thus blocking several keys.
 #  For some, me include. It is often quicker to use a menu to generate
 #  missing keys, vs fiddling with cut and paste from some other source
 #  for such keys.
 #
 
+#  Function to display a character, considering Whiptail limitations
 display_char() {
     #
     #  Normally the char is just sent into the current buffer
@@ -41,64 +42,46 @@ display_char() {
     fi
 }
 
+#
+#  Function to handle a character, mainly used when script has a command
+#  line parameter
+#
 handle_char() {
-    #
-    #  Since this menu is re-displayed anyhow, in case more special
-    #  chars need to be printed. I use this perhaps a bit odd aproach
-    #  of param handling.
-    #  Instead of creating a separate print_hex_char script, adding
-    #  maintenane complexity by having to make sure both files are in sync.
-    #  I do the printing here in case this menu has a cmd line parameter
-    #
     chr="$1"
     [ -z "$chr" ] && error_msg "$0:handle_char() - no param"
 
     case $chr in
-
     0x*)
-        #
-        #  the end of the line first strips potential 0x prefix from $chr
-        #  then mandatory adds a 0x prefix. This to ensure %o is fed
-        #  a hex code in 0x notation.
-        #
-
         # shellcheck disable=SC2059
         s="$(printf "\\$(printf "%o" "0x${1#0x}")")"
         ;;
-
     *)
         s="$chr"
         if [ -n "${s#?}" ]; then
             error_msg "$0 param can only be single char!"
         fi
         ;;
-
     esac
     display_char "$s"
 }
 
 #===============================================================
 #
-#   Main
+#  Main
 #
 #===============================================================
 
 ITEMS_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
 
-# echo "><> curr scr 1 [$current_script]"
-# shellcheck disable=SC1091
+#  shellcheck disable=SC1091
 . "$SCRIPT_DIR/dialog_handling.sh"
 
 if [ -n "$1" ]; then
     handle_char "$1"
 else
     if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
-        #
-        #  Clear the buffer from previous content
-        #
         log_it "clearing buffer missing_keys"
-
         $TMUX_BIN delete-buffer -b missing_keys
     fi
 fi
@@ -117,7 +100,7 @@ if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
         0.0 T "Once you have selected one or more keys to use" \
         0.0 T "Cancel this menu. Once back in your pane," \
         3.2 T "paste the key(-s). If normal paste doesn't" \
-        3.2 T "work, you can instead"
+        3.2 T "work, you can instead" \
         0.0 T "use $()<prefix> ]$() to paste the key(-s)." \
         0.0 S
 fi
