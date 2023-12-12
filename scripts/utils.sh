@@ -26,9 +26,8 @@ error_msg() {
     #  Display $1 as an error message in the log and as a tmux display-message
     #  If no $2 or set to 0, the process is not exited
     #
-    em_msg="ERROR: $1"
+    em_msg="ERROR: $plugin_name:$(basename "$0") $1"
     em_exit_code="${2:-0}"
-    em_msg="$plugin_name $em_msg"
     em_msg_len="$(printf "%s" "$em_msg" | wc -m)"
     em_screen_width="$($TMUX_BIN display -p "#{window_width}")"
 
