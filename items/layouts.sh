@@ -29,11 +29,11 @@ set -- \
     0.0 C E "<P> Spread evenly" "select-layout -E  $menu_reload" \
     3.2 S \
     3.2 T "-#[align=centre,nodim]Border lines" \
-    3.2 C "s" "single" "set pane-border-lines  single  $menu_reload" \
-    3.2 C "d" "double" "set pane-border-lines  double  $menu_reload" \
-    3.2 C "h" "heavy"  "set pane-border-lines  heavy   $menu_reload" \
-    3.2 C "S" "simple" "set pane-border-lines  simple  $menu_reload" \
-    3.2 C "n" "number" "set pane-border-lines  number  $menu_reload" \
+    3.2 C "s" "single" "setw pane-border-lines  single  $menu_reload" \
+    3.2 C "d" "double" "setw pane-border-lines  double  $menu_reload" \
+    3.2 C "h" "heavy" "setw  pane-border-lines  heavy   $menu_reload" \
+    3.2 C "S" "simple" "setw pane-border-lines  simple  $menu_reload" \
+    3.2 C "n" "number" "setw pane-border-lines  number  $menu_reload" \
     0.0 S \
     0.0 M H "Help -->" "$ITEMS_DIR/help.sh $current_script"
 
