@@ -24,17 +24,16 @@ D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")" && pwd)
 #  since we are clearing its content...
 #
 
-# Not yet implemented...
-# [ -z "$D_TM_MENUS_CACHE" ] && error_msg "D_TM_MENUS_CACHE - empty or undefined"
-# _d="$(cd "$(dirname "$0")" && pwd)/cache"
-# if [ "$D_TM_MENUS_CACHE" != "$_d" ]; then
-#     echo "Suspicious MENUCACHE_DIR: $D_TM_MENUS_CACHE"
-#     echo "Should be:                $_d"
-#     error_msg "Suspicious D_TM_MENUS_CACHE - aborting"
-#     exit 1
-# fi
-# mkdir -p "$D_TM_MENUS_CACHE"
-# rm -rf "${D_TM_MENUS_CACHE:?}/"*
+[ -z "$D_TM_MENUS_CACHE" ] && error_msg "D_TM_MENUS_CACHE - empty or undefined"
+_d="$(cd "$(dirname "$0")" && pwd)/cache"
+if [ "$D_TM_MENUS_CACHE" != "$_d" ]; then
+    echo "Suspicious MENUCACHE_DIR: $D_TM_MENUS_CACHE"
+    echo "Should be:                $_d"
+    error_msg "Suspicious D_TM_MENUS_CACHE - aborting"
+    exit 1
+fi
+mkdir -p "$D_TM_MENUS_CACHE"
+rm -rf "${D_TM_MENUS_CACHE:?}/"*
 
 
 #

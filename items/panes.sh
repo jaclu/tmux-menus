@@ -22,10 +22,10 @@ new_sync_state="$($TMUX_BIN display -p '#{?pane_synchronized,Disable,Activate}')
 menu_name="Handling Pane"
 
 set -- \
-    0.0 M Left "Back to Main menu <--" main.sh \
-    0.0 M M "Move pane         -->" pane_move.sh \
-    0.0 M R "Resize pane       -->" pane_resize.sh \
-    2.0 M B "Paste buffers     -->" pane_buffers.sh \
+    0.0 M Left "Back to Main menu <--" "$D_TM_ITEMS/main.sh" \
+    0.0 M M "Move pane         -->" "$D_TM_ITEMS/pane_move.sh" \
+    0.0 M R "Resize pane       -->" "$D_TM_ITEMS/pane_resize.sh" \
+    2.0 M B "Paste buffers     -->" "$D_TM_ITEMS/pane_buffers.sh" \
     0.0 S \
     2.6 C t " Set Title" "command-prompt -I '#T'  -p 'Title: '  \
         'select-pane -T \"%%\"' $menu_reload" \

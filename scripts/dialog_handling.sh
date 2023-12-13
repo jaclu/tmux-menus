@@ -52,12 +52,9 @@ ensure_menu_fits_on_screen() {
     #
     set -- "ensure_menu_fits_on_screen() '$menu_name'" \
         "w:$req_win_width h:$req_win_height"
-    log_it "$*"
 
     cur_width="$($TMUX_BIN display -p "#{window_width}")"
-    log_it "Current width: $cur_width"
     cur_height="$($TMUX_BIN display -p "#{window_height}")"
-    log_it "Current height: $cur_height"
 
     if [ "$cur_width" -lt "$req_win_width" ] ||
         [ "$cur_height" -lt "$req_win_height" ]; then
@@ -268,7 +265,15 @@ menu_parse() {
     #  we first identify all the params used by the different options,
     #  only then can we continue if the min_vers does not match running tmux
     #
+
     [ -z "$menu_name" ] && error_missing_param "menu_name"
+
+    if [ "$1" = "-c" ]; then
+        #  it is requested to make a cached menu
+        shift
+        f_menu_cache="$1"
+        shift
+    fi
 
     # [ -n "$menu_debug" ] && debug_print ">> menu_parse($*)"
     while [ -n "$1" ]; do
@@ -276,7 +281,7 @@ menu_parse() {
         shift
         action="$1"
         shift
-        # [ -n "$menu_debug" ] && debug_print "[$min_vers] [$action]"
+        ##[ -n "$menu_debug" ] && debug_print "parsing an item [$min_vers] [$action]"
         case "$action" in
 
         "M") #  Open another menu
@@ -293,11 +298,11 @@ menu_parse() {
             #  If menu is not full PATH, assume it to be a tmux-menus
             #  item
             #
-            if echo "$menu" | grep -vq /; then
-                menu="$D_TM_ITEMS/$menu"
-            fi
+            # if echo "$menu" | grep -vq /; then
+            #     menu="$D_TM_ITEMS/$menu"
+            # fi
 
-            # [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] menu[$menu]"
+            ##[ -n "$menu_debug" ] && debug_print "key[$key] label[$label] menu[$menu]"
 
             if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
                 alt_dialog_open_menu "$label" "$key" "$menu"
@@ -316,7 +321,7 @@ menu_parse() {
 
             ! tmux_vers_compare "$min_vers" && continue
 
-            # [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
+            ##[ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
 
             if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
                 alt_dialog_command "$label" "$key" "$cmd"
@@ -349,11 +354,11 @@ menu_parse() {
             #  Expand relative PATH at one spot, before calling the
             #  various implementations
             #
-            if echo "$cmd" | grep -vq /; then
-                cmd="$D_TM_SCRIPTS/$cmd"
-            fi
+            # if echo "$cmd" | grep -vq /; then
+            #     cmd="$D_TM_SCRIPTS/$cmd"
+            # fi
 
-            # [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
+            ##[ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
 
             if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
                 alt_dialog_external_cmd "$label" "$key" "$cmd"
@@ -368,7 +373,7 @@ menu_parse() {
 
             ! tmux_vers_compare "$min_vers" && continue
 
-            # [ -n "$menu_debug" ] && debug_print "text line [$txt]"
+            ##[ -n "$menu_debug" ] && debug_print "text line [$txt]"
             if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
                 alt_dialog_text_line "$txt"
             else
@@ -380,7 +385,7 @@ menu_parse() {
 
             ! tmux_vers_compare "$min_vers" && continue
 
-            # [ -n "$menu_debug" ] && debug_print "Spacer line"
+            ##[ -n "$menu_debug" ] && debug_print "Spacer line"
 
             # Whiptail/dialog does not have a concept of spacer lines
             if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
@@ -426,12 +431,20 @@ menu_parse() {
         # echo "selection[$menu_selection]"
         alt_dialog_parse_selection
     else
-        #  shellcheck disable=SC2034
-        t_start="$(date +'%s')"
-        # tmux can trigger actions by it self
-        #  shellcheck disable=SC2068,SC2294
-        eval $@
-        ensure_menu_fits_on_screen
+        if [ -n "$f_menu_cache" ]; then
+            rm -f "$f_menu_cache" # flush it
+            while [ -n "$1" ]; do
+                echo "$1" >>"$f_menu_cache"
+                shift
+            done
+        else
+            #  shellcheck disable=SC2034
+            t_start="$(date +'%s')"
+            # tmux can trigger actions by it self
+            #  shellcheck disable=SC2068,SC2294
+            eval $@
+            ensure_menu_fits_on_screen
+        fi
     fi
 }
 

@@ -161,6 +161,29 @@ wait_to_close_display() {
     fi
 }
 
+cache_read() {
+    #
+    #  Except for during init, ensure D_TM_MENUS_CACHE exists
+    #
+    if [ ! -d "$D_TM_MENUS_CACHE" ]; then
+        error_msg "D_TM_MENUS_CACHE folder missing: '$D_TM_MENUS_CACHE'" 1
+    fi
+    cache_was_read=0 # Becomes 0 if a cache was found and sourced
+
+    #  Calculate the relative path,
+    rel_path=$(echo "$d_current_script" | sed "s|$D_TM_BASE_PATH/||")
+
+    #  items/main.sh -> items_main
+    f_cache_file="$D_TM_MENUS_CACHE/${rel_path}_$(basename "$0" | sed 's/\.[^.]*$//')"
+
+    if [ -f "$f_cache_file" ]; then
+        # log_it "><> Found cache file: $f_cache_file"
+        #  shellcheck disable=SC1090
+        . "$f_cache_file"
+        cache_was_read=1
+    fi
+}
+
 #===============================================================
 #
 #   Main
@@ -202,8 +225,12 @@ if ! tmux_vers_compare 1.8; then
     error_msg "This needs at least tmux 1.8 to work!" 1
 fi
 
-#  Convert script name to full actual path notation
-current_script="$(cd -- "$(dirname -- "$0")" && pwd)/$(basename "$0")"
+#
+#  Convert script name to full actual path notation the path is used
+#  for caching, so save it to a variable as well
+#
+d_current_script="$(cd -- "$(dirname -- "$0")" && pwd)"
+current_script="$d_current_script/$(basename "$0")"
 
 conf_file="$(get_tmux_option "@menus_config_file" "$HOME/tmux.conf")"
 
@@ -241,13 +268,8 @@ D_TM_SCRIPTS="$D_TM_BASE_PATH"/scripts
 D_TM_ITEMS="$D_TM_BASE_PATH"/items
 
 #  Cache is not implemented yet...
-# D_TM_MENUS_CACHE="$D_TM_BASE_PATH"/cache
+D_TM_MENUS_CACHE="$D_TM_BASE_PATH"/cache
 
-# if [ "$(basename "$0")" != "menus.tmux" ]; then
-#     #
-#     #  Except for during init, ensure D_TM_MENUS_CACHE exists
-#     #
-#     if [ ! -d "$D_TM_MENUS_CACHE" ]; then
-#         error_msg "D_TM_MENUS_CACHE folder missing: '$D_TM_MENUS_CACHE'" 1
-#     fi
-# fi
+[ "$(basename "$0")" = "menus.tmux" ] && return
+
+cache_read
