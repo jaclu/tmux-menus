@@ -168,7 +168,7 @@ cache_read() {
     if [ ! -d "$D_TM_MENUS_CACHE" ]; then
         error_msg "D_TM_MENUS_CACHE folder missing: '$D_TM_MENUS_CACHE'" 1
     fi
-    cache_was_read=0 # Becomes 0 if a cache was found and sourced
+    # cache_was_read=0 # Becomes 0 if a cache was found and sourced
 
     #  Calculate the relative path,
     rel_path=$(echo "$d_current_script" | sed "s|$D_TM_BASE_PATH/||")
@@ -176,12 +176,12 @@ cache_read() {
     #  items/main.sh -> items_main
     f_cache_file="$D_TM_MENUS_CACHE/${rel_path}_$(basename "$0" | sed 's/\.[^.]*$//')"
 
-    if [ -f "$f_cache_file" ]; then
-        # log_it "><> Found cache file: $f_cache_file"
-        #  shellcheck disable=SC1090
-        . "$f_cache_file"
-        cache_was_read=1
-    fi
+    # if [ -f "$f_cache_file" ]; then
+    #     # log_it "><> Found cache file: $f_cache_file"
+    #     #  shellcheck disable=SC1090
+    #     . "$f_cache_file"
+    #     cache_was_read=1
+    # fi
 }
 
 #===============================================================

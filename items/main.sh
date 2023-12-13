@@ -10,22 +10,20 @@
 #
 
 generate_content() {
-    menu_name="Main menu"
-
     #  Menu items definition
     set -- \
-        0.0 M P "Handling Pane     -->" "$D_TM_ITEMS"/panes.sh \
-        0.0 M W "Handling Window   -->" "$D_TM_ITEMS"/windows.sh \
-        2.0 M S "Handling Sessions -->" "$D_TM_ITEMS"/sessions.sh \
-        0.0 M L "Layouts           -->" "$D_TM_ITEMS"/layouts.sh \
-        0.0 M V "Split view        -->" "$D_TM_ITEMS"/split_view.sh \
-        0.0 M M "Missing Keys      -->" "$D_TM_ITEMS"/missing_keys.sh \
-        0.0 M E "Extras            -->" "$D_TM_ITEMS"/extras.sh \
-        0.0 M A "Advanced Options  -->" "$D_TM_ITEMS"/advanced.sh \
+        0.0 M P "Handling Pane     -->" panes.sh \
+        0.0 M W "Handling Window   -->" windows.sh \
+        2.0 M S "Handling Sessions -->" sessions.sh \
+        0.0 M L "Layouts           -->" layouts.sh \
+        0.0 M V "Split view        -->" split_view.sh \
+        0.0 M M "Missing Keys      -->" missing_keys.sh \
+        0.0 M E "Extras            -->" extras.sh \
+        0.0 M A "Advanced Options  -->" advanced.sh \
         0.0 S \
         0.0 C l "toggle status Line" "set status" \
-        0.0 E i "public IP" "$D_TM_SCRIPTS/public_ip.sh" \
-        0.0 E p "Plugins inventory" "$D_TM_SCRIPTS/plugins.sh" \
+        0.0 E i "public IP" public_ip.sh \
+        0.0 E p "Plugins inventory" plugins.sh \
         0.0 S \
         0.0 C n "Navigate & select ses/win/pane" "choose-tree"
 
@@ -57,33 +55,49 @@ generate_content() {
     #  shellcheck disable=SC2154
     set -- "$@" \
         0.0 S \
-        0.0 E r 'Reload configuration file' "$D_TM_SCRIPTS/reload_conf.sh" \
+        0.0 E r 'Reload configuration file' reload_conf.sh \
         0.0 S \
         0.0 C d '<P> Detach from tmux' detach-client \
         0.0 S \
-        0.0 M H 'Help -->' "$D_TM_ITEMS/help.sh $current_script"
+        0.0 M H 'Help -->' "help.sh $current_script"
 
-    req_win_width=39
-    req_win_height=23
-    cache_it
-    menu_parse -c "$f_cache_file_menu" "$@"
+    menu_parse -c "$f_cache_file" "$@"
 }
 
-cache_it() {
-    (
-        echo "#$(date)"
-        echo "menu_name='$menu_name'"
-        echo "req_win_width='$req_win_width'"
-        echo "req_win_height='$req_win_height'"
-    ) >"$f_cache_file"
+m_display_menu() {
+    # log_it "reading menu from: $f_cache_file"
 
-    # # clear it
-    # rm -f "$f_cache_file_menu"
-    # while [ -n "$1" ]; do
-    #     echo "$1" >>"$f_cache_file_menu"
-    #     shift
-    # done
-    log_it "><> updated cache: $f_cache_file"
+    # ---  works  ---
+
+    # while IFS= read -r line; do
+    #     set -- "$@" "$line"
+    # done <"$f_cache_file"
+    # eval "$@"
+
+    IFS=$'\n'
+    set -- $(cat "$f_cache_file")
+    eval "$@"
+
+    # IFS=$'\n'
+    # menu_parse $(cat "$f_cache_file")
+
+    # ---  testing  ---
+
+    # IFS=$'\n'
+    # menu_parse $(cat "$f_cache_file")
+
+    #     IFS='
+    # '
+    #     menu_parse $(cat "$f_cache_file")
+
+    # menu_parse $(cat "$f_cache_file")
+    # set -- "$(IFS=$'\n' cat "$f_cache_file")"
+    # menu_parse $@
+
+    # menu_parse "$(cat "$f_cache_file")"
+
+    # dbt_duration=$(echo "$(gdate +%s.%3N) - $t_parse" | bc)
+    # echo "Duration: [$dbt_duration]"
 }
 
 #===============================================================
@@ -99,50 +113,21 @@ D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
 # shellcheck disable=SC1091
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 
-f_cache_file_menu="${f_cache_file}-menu"
+menu_name="Main menu"
+
+req_win_width=39
+req_win_height=23
 
 # t_parse="$(gdate +%s.%3N)"
 
 # shellcheck disable=SC2154
-if [ "$cache_was_read" != 1 ]; then
+if [ ! -f "$f_cache_file" ]; then
     generate_content
 fi
 
-if [ -f "$f_cache_file_menu" ]; then
-    log_it "reading menu from: $f_cache_file_menu"
-
-    # ---  works  ---
-
-    # while IFS= read -r line; do
-    #     set -- "$@" "$line"
-    # done <"$f_cache_file_menu"
-    # eval "$@"
-
-    IFS=$'\n'
-    set -- $(cat "$f_cache_file_menu")
-    eval "$@"
-
-    # IFS=$'\n'
-    # menu_parse $(cat "$f_cache_file_menu")
-
-    # ---  testing  ---
-
-    # IFS=$'\n'
-    # menu_parse $(cat "$f_cache_file_menu")
-
-    #     IFS='
-    # '
-    #     menu_parse $(cat "$f_cache_file_menu")
-
-    # menu_parse $(cat "$f_cache_file_menu")
-    # set -- "$(IFS=$'\n' cat "$f_cache_file_menu")"
-    # menu_parse $@
-
-    # menu_parse "$(cat "$f_cache_file_menu")"
-
-    # dbt_duration=$(echo "$(gdate +%s.%3N) - $t_parse" | bc)
-    # echo "Duration: [$dbt_duration]"
+if [ -f "$f_cache_file" ]; then
+    m_display_menu
+    ensure_menu_fits_on_screen
 else
-    error_msg "menu cache not found: [$f_cache_file_menu]" 1
+    error_msg "menu cache not found: [$f_cache_file]" 1
 fi
-exit 0

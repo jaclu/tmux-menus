@@ -268,20 +268,29 @@ menu_parse() {
 
     [ -z "$menu_name" ] && error_missing_param "menu_name"
 
+    if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+        alt_dialog_prefix
+    else
+        [ -z "$req_win_width" ] && error_missing_param "req_win_width"
+        [ -z "$req_win_height" ] && error_missing_param "req_win_height"
+        tmux_dialog_prefix
+    fi
+
     if [ "$1" = "-c" ]; then
         #  it is requested to make a cached menu
         shift
         f_menu_cache="$1"
         shift
+        cache_idx=1
     fi
 
-    # [ -n "$menu_debug" ] && debug_print ">> menu_parse($*)"
+    [ -n "$menu_debug" ] && debug_print ">> menu_parse()"
     while [ -n "$1" ]; do
         min_vers="$1"
         shift
         action="$1"
         shift
-        ##[ -n "$menu_debug" ] && debug_print "parsing an item [$min_vers] [$action]"
+        [ -n "$menu_debug" ] && debug_print "-- parsing an item [$min_vers] [$action]"
         case "$action" in
 
         "M") #  Open another menu
@@ -298,11 +307,11 @@ menu_parse() {
             #  If menu is not full PATH, assume it to be a tmux-menus
             #  item
             #
-            # if echo "$menu" | grep -vq /; then
-            #     menu="$D_TM_ITEMS/$menu"
-            # fi
+            if echo "$menu" | grep -vq /; then
+                menu="$D_TM_ITEMS/$menu"
+            fi
 
-            ##[ -n "$menu_debug" ] && debug_print "key[$key] label[$label] menu[$menu]"
+            [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] menu[$menu]"
 
             if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
                 alt_dialog_open_menu "$label" "$key" "$menu"
@@ -321,7 +330,7 @@ menu_parse() {
 
             ! tmux_vers_compare "$min_vers" && continue
 
-            ##[ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
+            [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
 
             if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
                 alt_dialog_command "$label" "$key" "$cmd"
@@ -354,11 +363,11 @@ menu_parse() {
             #  Expand relative PATH at one spot, before calling the
             #  various implementations
             #
-            # if echo "$cmd" | grep -vq /; then
-            #     cmd="$D_TM_SCRIPTS/$cmd"
-            # fi
+            if echo "$cmd" | grep -vq /; then
+                cmd="$D_TM_SCRIPTS/$cmd"
+            fi
 
-            ##[ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
+            [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
 
             if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
                 alt_dialog_external_cmd "$label" "$key" "$cmd"
@@ -373,7 +382,7 @@ menu_parse() {
 
             ! tmux_vers_compare "$min_vers" && continue
 
-            ##[ -n "$menu_debug" ] && debug_print "text line [$txt]"
+            [ -n "$menu_debug" ] && debug_print "text line [$txt]"
             if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
                 alt_dialog_text_line "$txt"
             else
@@ -385,7 +394,7 @@ menu_parse() {
 
             ! tmux_vers_compare "$min_vers" && continue
 
-            ##[ -n "$menu_debug" ] && debug_print "Spacer line"
+            [ -n "$menu_debug" ] && debug_print "Spacer line"
 
             # Whiptail/dialog does not have a concept of spacer lines
             if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
@@ -393,6 +402,26 @@ menu_parse() {
             else
                 tmux_spacer
             fi
+            ;;
+
+        "Split")
+            #
+            #  PlaceHolder - Used for dynamic content in cached menus
+            #  When reading the cache line by line, replace this with
+            #  corresponding dynamic content
+            #
+            if [ "$cache_idx" = "1" ]; then
+                set -- $menu_prefix $menu_items
+            else
+                set -- $menu_items
+            fi
+            f_cache_tmp="$f_menu_cache-$cache_idx"
+            rm -f "$f_cache_tmp" # flush it
+            while [ -n "$1" ]; do
+                echo "$1" >>"$f_cache_tmp"
+                shift
+            done
+            cache_idx=$((cache_idx + 1))
             ;;
 
         *) # Error
@@ -406,17 +435,17 @@ menu_parse() {
         esac
     done
 
-    if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
-        alt_dialog_prefix
+    if [ -z "$cache_idx" ]; then
+        #  prepend cmd line with menu prefix
+        #  shellcheck disable=SC2086,SC2090
+        set -- $menu_prefix $menu_items
     else
-        [ -z "$req_win_width" ] && error_missing_param "req_win_width"
-        [ -z "$req_win_height" ] && error_missing_param "req_win_height"
-        tmux_dialog_prefix
+        #
+        #  This is a multipart cache, so prefix has already been saved
+        #
+        #  shellcheck disable=SC2086,SC2090
+        set -- $menu_items
     fi
-
-    #  prepend cmd line with menu prefix
-    #  shellcheck disable=SC2086,SC2090
-    set -- $menu_prefix $menu_items
 
     # if [ -n "$menu_debug" ]; then
     #     debug_print "Will run: $@"
@@ -425,18 +454,28 @@ menu_parse() {
     #     fi
     # fi
 
-    if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
-        #  shellcheck disable=SC2294
-        menu_selection=$(eval "$@" 3>&2 2>&1 1>&3)
-        # echo "selection[$menu_selection]"
-        alt_dialog_parse_selection
+    if [ -n "$f_menu_cache" ]; then
+        #
+        #  Dont display the menu, just store all the menu build
+        #  steps to this cache file
+        #
+        if [ -z "$cache_idx" ]; then
+            f_cache_tmp="$f_menu_cache"
+        else
+            f_cache_tmp="$f_menu_cache-$cache_idx"
+        fi
+
+        rm -f "$f_menu_cache" # flush it
+        while [ -n "$1" ]; do
+            echo "$1" >>"$f_menu_cache"
+            shift
+        done
     else
-        if [ -n "$f_menu_cache" ]; then
-            rm -f "$f_menu_cache" # flush it
-            while [ -n "$1" ]; do
-                echo "$1" >>"$f_menu_cache"
-                shift
-            done
+        if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+            #  shellcheck disable=SC2294
+            menu_selection=$(eval "$@" 3>&2 2>&1 1>&3)
+            # echo "selection[$menu_selection]"
+            alt_dialog_parse_selection
         else
             #  shellcheck disable=SC2034
             t_start="$(date +'%s')"
