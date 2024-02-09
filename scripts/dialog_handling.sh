@@ -516,7 +516,7 @@ display_menu() {
         generate_content_static
     fi
 
-    # 2 handle dynamic parts
+    # 2 handle dynamic parts (if any)
     if is_function_defined "generate_content_dynamic"; then
         generate_content_dynamic
     fi
