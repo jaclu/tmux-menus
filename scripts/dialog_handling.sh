@@ -498,6 +498,45 @@ error_missing_param() {
     error_msg "dialog_handling.sh: $param_name must be defined!" 1
 }
 
+is_function_defined() {
+    # Use type command to check if the function is defined
+    type "$1" 2>/dev/null | grep -q 'function'
+    return $?
+}
+
+display_menu() {
+    if
+        [ ! -f "$d_cache_file"/1 ] ||
+            [ "$(stat -c %Y "$0")" -gt "$(stat -c %Y "$d_cache_file"/1)" ]
+    then
+        # clear cache (if present)
+        rm -rf "$d_cache_file"
+        # 1 if not cached, cache static parts
+        # read each file in d_cache_file/1 2 3 ...
+        generate_content_static
+    fi
+
+    # 2 handle dynamic parts
+    if is_function_defined "generate_content_dynamic"; then
+        generate_content_dynamic
+    fi
+
+    # 3 read cache
+
+    # 4 Display menu
+
+    # shellcheck disable=SC2154
+    if [ ! -f "$f_cache_file" ]; then
+        generate_content
+    fi
+
+    if [ -f "$f_cache_file" ]; then
+        p_display_menu
+    else
+        error_msg "menu cache not found: [$f_cache_file]" 1
+    fi
+}
+
 #===============================================================
 #
 #   Main

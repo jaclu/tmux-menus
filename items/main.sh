@@ -9,7 +9,12 @@
 #  Main menu, the one popping up when you hit the trigger
 #
 
-generate_content() {
+generate_content_static() {
+    menu_name="Main menu"
+
+    req_win_width=39
+    req_win_height=23
+
     #  Menu items definition
     set -- \
         0.0 M P "Handling Pane     -->" panes.sh \
@@ -61,7 +66,7 @@ generate_content() {
         0.0 S \
         0.0 M H 'Help -->' "help.sh $current_script"
 
-    menu_parse -c "$f_cache_file" "$@"
+    menu_parse -c 1 "$@"
 }
 
 m_display_menu() {
@@ -113,21 +118,21 @@ D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
 # shellcheck disable=SC1091
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 
-menu_name="Main menu"
+display_menu
 
-req_win_width=39
-req_win_height=23
+# time1=$(stat -c %Y "$file1")
+# time2=$(stat -c %Y "$file2")
 
-# t_parse="$(gdate +%s.%3N)"
+# # t_parse="$(gdate +%s.%3N)"
 
-# shellcheck disable=SC2154
-if [ ! -f "$f_cache_file" ]; then
-    generate_content
-fi
+# # shellcheck disable=SC2154
+# if [ ! -f "$f_cache_file" ] || [ "$(stat -c %Y "$0")" -gt "$(stat -c %Y "$f_cache_file")" ]; then
+#     generate_content
+# fi
 
-if [ -f "$f_cache_file" ]; then
-    m_display_menu
-    ensure_menu_fits_on_screen
-else
-    error_msg "menu cache not found: [$f_cache_file]" 1
-fi
+# if [ -f "$f_cache_file" ]; then
+#     m_display_menu
+#     ensure_menu_fits_on_screen
+# else
+#     error_msg "menu cache not found: [$f_cache_file]" 1
+# fi

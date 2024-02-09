@@ -13,6 +13,35 @@ generate dynamic content into a variable, read next segment, if more
 dynamic parts rinse - repeat
 once everyting is read in, feed all parts into eval - Should be quick!?!
 
+### General
+
+#### No cache
+
+- cache non dynamic part
+- generate dynamic part
+- cache other static part
+- generate dynamic part
+- cache other static part
+
+#### is cached
+
+- if item file newer than cache, 1st drop cache
+- grab cache - 1
+- generate dynamic
+- graab cache -2
+- rinse repeat
+
+#### display current stuff
+
+display cached & live parts
+
+
+### Variables
+
+D_TM_BASE_PATH - base path of tmux-menus
+f_cache_file - the cache file currently being processed
+
+
 ## Renames that should happen
 
 current_script -> f_current_script
