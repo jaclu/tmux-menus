@@ -71,62 +71,63 @@ handle_char() {
     display_char "$s"
 }
 
+generate_content_static() {
+    menu_name="Missing Keys"
+    req_win_width=37
+    req_win_height=18
+
+    set -- \
+        0.0 M Left "Back to Main menu <--" main.sh \
+        0.0 S
+
+    if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+        set -- "$@" \
+            0.0 T "When using whiptail it is not possible to paste" \
+            0.0 T "directly into the pane." \
+            0.0 T "Instead a tmux buffer is used." \
+            0.0 T "Once you have selected one or more keys to use" \
+            0.0 T "Cancel this menu. Once back in your pane," \
+            3.2 T "paste the key(-s). If normal paste doesn't" \
+            3.2 T "work, you can instead" \
+            0.0 T "use $()<prefix> ]$() to paste the key(-s)." \
+            0.0 S
+    fi
+
+    set -- "$@" \
+        0.0 E e " Send ESC" "$current_script  0x1b" \
+        0.0 E t " Send ~ (tilde)" "$current_script  0x7e" \
+        0.0 E b " Send $() (back-tick)" "$current_script  0x60" \
+        0.0 S \
+        0.0 E p " Send § (paragraph)" "$current_script  §" \
+        0.0 E a " Send @ (at)" "$current_script  @" \
+        0.0 E E " Send € (Euro sign)" "$current_script  €" \
+        0.0 E y " Send ¥ (Yen and yuan sign)" "$current_script  ¥" \
+        0.0 E P " Send £ (Pound sign)" "$current_script  £" \
+        0.0 E c " Send ¢ (Cent sign)" "$current_script  ¢" \
+        0.0 S \
+        0.0 M H "Help -->" "$D_TM_ITEMS/help.sh $current_script"
+
+    menu_generate_part 1 "$@"
+
+    if [ -n "$menu_param" ]; then
+        handle_char "$menu_param"
+    else
+        if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+            log_it "clearing buffer missing_keys"
+            $TMUX_BIN delete-buffer -b missing_keys
+        fi
+    fi
+}
+
 #===============================================================
 #
-#  Main
+#   Main
 #
 #===============================================================
 
-#  Should point to tmux-menux plugin
+#  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
 
 #  Source dialog handling script
 # shellcheck disable=SC1091
-. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
-
-if [ -n "$1" ]; then
-    handle_char "$1"
-else
-    if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
-        log_it "clearing buffer missing_keys"
-        $TMUX_BIN delete-buffer -b missing_keys
-    fi
-fi
-
-menu_name="Missing Keys"
-
-set -- \
-    0.0 M Left "Back to Main menu <--" main.sh \
-    0.0 S
-
-if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
-    set -- "$@" \
-        0.0 T "When using whiptail it is not possible to paste" \
-        0.0 T "directly into the pane." \
-        0.0 T "Instead a tmux buffer is used." \
-        0.0 T "Once you have selected one or more keys to use" \
-        0.0 T "Cancel this menu. Once back in your pane," \
-        3.2 T "paste the key(-s). If normal paste doesn't" \
-        3.2 T "work, you can instead" \
-        0.0 T "use $()<prefix> ]$() to paste the key(-s)." \
-        0.0 S
-fi
-
-set -- "$@" \
-    0.0 E e " Send ESC" "$current_script  0x1b" \
-    0.0 E t " Send ~ (tilde)" "$current_script  0x7e" \
-    0.0 E b " Send $() (back-tick)" "$current_script  0x60" \
-    0.0 S \
-    0.0 E p " Send § (paragraph)" "$current_script  §" \
-    0.0 E a " Send @ (at)" "$current_script  @" \
-    0.0 E E " Send € (Euro sign)" "$current_script  €" \
-    0.0 E y " Send ¥ (Yen and yuan sign)" "$current_script  ¥" \
-    0.0 E P " Send £ (Pound sign)" "$current_script  £" \
-    0.0 E c " Send ¢ (Cent sign)" "$current_script  ¢" \
-    0.0 S \
-    0.0 M H "Help -->" "$D_TM_ITEMS/help.sh $current_script"
-
-req_win_width=37
-req_win_height=18
-
-menu_parse "$@"
+. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh "$1"

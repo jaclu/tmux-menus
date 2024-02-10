@@ -12,8 +12,6 @@
 generate_content_dynamic() {
     # Things that change dependent on various states
 
-    # echo "><> generate_content_dynamic()"
-
     # dynamic -2
     if tmux_vers_compare 2.0 && [ "$(tmux list-panes | wc -l)" -gt 1 ]; then
         if [ "$($TMUX_BIN display -p '#{window_zoomed_flag}')" -eq 0 ]; then
@@ -29,12 +27,9 @@ generate_content_dynamic() {
         set --
     fi
     menu_generate_part 2 "$@"
-    # echo "><> generate_content_dynamic() - done"
 }
 
 generate_content_static() {
-    # echo "><> generate_content_static()"
-
     menu_name="Handling Pane"
     req_win_width=38
     req_win_height=23
@@ -82,12 +77,9 @@ generate_content_static() {
             'Are you sure you want to kill all other panes? (y/n)' \
             'kill-pane -a'" \
         0.0 S \
-        0.0 M H 'Help -->' "$ITEMS_DIR/help_panes.sh $current_script"
+        0.0 M H 'Help -->' "$D_TM_ITEMS/help_panes.sh $current_script"
 
     menu_generate_part 3 "$@"
-
-    # echo "><> generate_content_static() - done"
-
 }
 
 #===============================================================

@@ -11,7 +11,6 @@
 
 generate_content_static() {
     menu_name="Main menu"
-
     req_win_width=39
     req_win_height=23
 
@@ -28,7 +27,7 @@ generate_content_static() {
         0.0 S \
         0.0 C l "toggle status Line" "set status" \
         0.0 E i "public IP" public_ip.sh \
-        0.0 E p "Plugins inventory" plugins.sh \
+        0.0 E p "Plugins inventory" "$D_TM_SCRIPTS/plugins.sh" \
         0.0 S \
         0.0 C n "Navigate & select ses/win/pane" "choose-tree"
 
@@ -64,7 +63,7 @@ generate_content_static() {
         0.0 S \
         0.0 C d '<P> Detach from tmux' detach-client \
         0.0 S \
-        0.0 M H 'Help -->' "help.sh $current_script"
+        0.0 M H 'Help -->' "$D_TM_ITEMS/help.sh $current_script"
 
     menu_generate_part 1 "$@"
 }

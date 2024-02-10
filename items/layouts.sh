@@ -9,36 +9,43 @@
 #   Choose layout
 #
 
-#  Should point to tmux-menux plugin
+generate_content_static() {
+    menu_name="Layouts"
+    req_win_width=32
+    req_win_height=12
+
+    #  shellcheck disable=SC2154
+    set -- \
+        0.0 M Left "Back to Main menu <--" main.sh \
+        0.0 S \
+        0.0 C M-1 "<P> Even horizontal" "select-layout even-horizontal $menu_reload" \
+        0.0 C M-2 "<P> Even vertical" "select-layout even-vertical   $menu_reload" \
+        0.0 C M-3 "<P> Main horizontal" "select-layout main-horizontal $menu_reload" \
+        0.0 C M-4 "<P> Main vertical" "select-layout main-vertical   $menu_reload" \
+        0.0 C M-5 "<P> Tiled" "select-layout tiled           $menu_reload" \
+        0.0 C E "<P> Spread evenly" "select-layout -E  $menu_reload" \
+        3.2 S \
+        3.2 T "-#[align=centre,nodim]Border lines" \
+        3.2 C "s" "single" "setw pane-border-lines  single  $menu_reload" \
+        3.2 C "d" "double" "setw pane-border-lines  double  $menu_reload" \
+        3.2 C "h" "heavy" "setw  pane-border-lines  heavy   $menu_reload" \
+        3.2 C "S" "simple" "setw pane-border-lines  simple  $menu_reload" \
+        3.2 C "n" "number" "setw pane-border-lines  number  $menu_reload" \
+        0.0 S \
+        0.0 M H "Help -->" "$D_TM_ITEMS/help.sh $current_script"
+
+    menu_generate_part 1 "$@"
+}
+
+#===============================================================
+#
+#   Main
+#
+#===============================================================
+
+#  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
 
 #  Source dialog handling script
 # shellcheck disable=SC1091
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
-
-menu_name="Layouts"
-
-#  shellcheck disable=SC2154
-set -- \
-    0.0 M Left "Back to Main menu <--" main.sh \
-    0.0 S \
-    0.0 C M-1 "<P> Even horizontal" "select-layout even-horizontal $menu_reload" \
-    0.0 C M-2 "<P> Even vertical" "select-layout even-vertical   $menu_reload" \
-    0.0 C M-3 "<P> Main horizontal" "select-layout main-horizontal $menu_reload" \
-    0.0 C M-4 "<P> Main vertical" "select-layout main-vertical   $menu_reload" \
-    0.0 C M-5 "<P> Tiled" "select-layout tiled           $menu_reload" \
-    0.0 C E "<P> Spread evenly" "select-layout -E  $menu_reload" \
-    3.2 S \
-    3.2 T "-#[align=centre,nodim]Border lines" \
-    3.2 C "s" "single" "setw pane-border-lines  single  $menu_reload" \
-    3.2 C "d" "double" "setw pane-border-lines  double  $menu_reload" \
-    3.2 C "h" "heavy" "setw  pane-border-lines  heavy   $menu_reload" \
-    3.2 C "S" "simple" "setw pane-border-lines  simple  $menu_reload" \
-    3.2 C "n" "number" "setw pane-border-lines  number  $menu_reload" \
-    0.0 S \
-    0.0 M H "Help -->" "$D_TM_ITEMS/help.sh $current_script"
-
-req_win_width=32
-req_win_height=12
-
-menu_parse "$@"

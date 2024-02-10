@@ -15,7 +15,6 @@
 #
 
 debug_print() {
-    # echo "><> debug_print()"
     case "$menu_debug" in
     1) echo "$1" ;;
     2) log_it "$1" ;;
@@ -28,7 +27,6 @@ debug_print() {
         exit 1
         ;;
     esac
-    # echo "><> debug_print() - done"
 }
 
 ensure_menu_fits_on_screen() {
@@ -267,7 +265,6 @@ menu_parse() {
     #  we first identify all the params used by the different options,
     #  only then can we continue if the min_vers does not match running tmux
     #
-    # echo "><> menu_parse()"
 
     [ "$menu_idx" -eq 1 ] && {
         [ -z "$menu_name" ] && error_missing_param "menu_name"
@@ -287,7 +284,7 @@ menu_parse() {
         shift
         action="$1"
         shift
-        # echo "><> min_vers [$min_vers] action [$action]"
+
         [ -n "$menu_debug" ] && debug_print "-- parsing an item [$min_vers] [$action]"
         case "$action" in
 
@@ -424,16 +421,18 @@ is_function_defined() {
 }
 
 menu_generate_part() {
-    # echo "><> menu_generate_part($1)"
     menu_idx="$1"
     shift # get rid of the idx
     f_cache_file="$d_cache_file/$menu_idx"
     menu_parse "$@"
-    # echo "><> menu_generate_part() - done"
+
+    if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+        echo "$wt_actions" >>"$d_cache_file/wt_actions"
+    fi
 }
 
 handle_menu() {
-    # echo "><> handle_menu()"
+    menu_param="$1" # help menus needs an indicator where to go back
 
     #  Calculate the relative path, to avoid name collitions if
     #  two items with same name in different rel paths are used
@@ -445,7 +444,6 @@ handle_menu() {
     if
         [ ! -f "$d_cache_file"/1 ] ||
             [ "$(get_mtime "$0")" -gt "$(get_mtime "$d_cache_file"/1)" ]
-    # true
     then
         # Ensure d_cache_file seems to be valid before doing erase
         case "$d_cache_file" in
@@ -457,28 +455,42 @@ handle_menu() {
         mkdir -p "$d_cache_file" || error_msg "Failed to create: $d_cache_file"
 
         # 1 if not cached, cache static parts
-        # read each file in d_cache_file/1 2 3 ...
-        generate_content_static
+        generate_content_static "$1"
     fi
 
     # 2 handle dynamic parts (if any)
     if is_function_defined "generate_content_dynamic"; then
-        generate_content_dynamic
+        generate_content_dynamic "$1"
     fi
 
     # 3 read cache - Loop through each file in the d_cache directory
     for file in "$d_cache_file"/*; do
+        # skip special files
+        fn="$(basename "$file")"
+        [ "${#fn}" -gt "2" ] && continue
+
         # Check if the file is a regular file
         if [ -f "$file" ]; then
             # Read the content of the file and append it to the dialog variable
-            menu_items="$menu_items$(cat "$file")"
+            menu_items="$menu_items $(cat "$file")"
         fi
     done
 
     # 4 Display menu
-    eval "$menu_items"
-
-    # echo "><> handle_menu() - done"
+    if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+        #  shellcheck disable=SC2294
+        menu_selection=$(eval "$menu_items" 3>&2 2>&1 1>&3)
+        # echo "selection[$menu_selection]"
+        wt_actions="$(cat "$d_cache_file/wt_actions")"
+        alt_dialog_parse_selection
+    else
+        #  shellcheck disable=SC2034
+        t_start="$(date +'%s')"
+        # tmux can trigger actions by it self
+        #  shellcheck disable=SC2068,SC2294
+        eval "$menu_items"
+        ensure_menu_fits_on_screen
+    fi
 }
 
 #===============================================================
@@ -531,4 +543,4 @@ alt_dialog_action_separator=":/:/:/:"
 
 menu_debug="" # Set to 1 to use echo 2 to use log_it
 
-handle_menu
+handle_menu "$1"

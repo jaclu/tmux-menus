@@ -179,14 +179,7 @@ wait_to_close_display() {
 #
 #===============================================================
 
-if [ -z "$D_TM_BASE_PATH" ]; then
-    if [ -n "$D_TM_SCRIPTS" ]; then
-        #  As Long as D_TM_SCRIPTS is set, all is fine
-        D_TM_BASE_PATH="$(dirname "$D_TM_SCRIPTS")"
-    else
-        error_msg "D_TM_BASE_PATH - undefined" 1
-    fi
-fi
+[ -z "$D_TM_BASE_PATH" ] && error_msg "D_TM_BASE_PATH undefined" 1
 
 #
 #  If log_file is empty or undefined, no logging will occur,
@@ -218,6 +211,7 @@ fi
 #  Convert script name to full actual path notation the path is used
 #  for caching, so save it to a variable as well
 #
+
 d_current_script="$(cd -- "$(dirname -- "$0")" && pwd)"
 current_script="$d_current_script/$(basename "$0")"
 
@@ -250,8 +244,6 @@ fi
 #
 #  All calling scripts must provide
 #
-
-[ -z "$D_TM_BASE_PATH" ] && error_msg "D_TM_BASE_PATH undefined" 1
 
 D_TM_SCRIPTS="$D_TM_BASE_PATH"/scripts
 D_TM_ITEMS="$D_TM_BASE_PATH"/items

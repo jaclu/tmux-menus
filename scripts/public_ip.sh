@@ -8,6 +8,9 @@
 #   Displays public IP
 #
 
+#  Full path to tmux-menux plugin
+D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
+
 _this="public_ip.sh"
 if [ "$(basename "$0")" != "$_this" ]; then
     echo "ERROR: $_this should NOT be sourced"

@@ -9,33 +9,46 @@
 #   Help regarding panes menu
 #
 
-#  Should point to tmux-menux plugin
+generate_content_dynamic() {
+    # Things that change dependent on various states
+
+    menu_name="Help Panes"
+    req_win_width=39
+    req_win_height=10
+
+    if [ -z "$menu_param" ]; then
+        error_msg "help_panes.sh was called without notice of what called it"
+    fi
+
+    set -- \
+        0.0 M Left "Back to Previous menu <--" "$menu_param"
+
+    menu_generate_part 1 "$@"
+}
+
+generate_content_static() {
+
+    set -- \
+        0.0 S \
+        0.0 T "-#[nodim]When saving history with escapes" \
+        0.0 T "-#[nodim]less/most will not be able" \
+        0.0 T "-#[nodim]to display the content." \
+        0.0 S \
+        0.0 T "-#[nodim]You would have to use tools like" \
+        0.0 T "-#[nodim]cat/bat in order to see the colors"
+
+    menu_generate_part 2 "$@"
+}
+
+#===============================================================
+#
+#   Main
+#
+#===============================================================
+
+#  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
 
 #  Source dialog handling script
 # shellcheck disable=SC1091
-. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
-
-previous_menu="$1"
-log_it "help_panes detected previous menu to be: $previous_menu"
-
-if [ -z "$previous_menu" ]; then
-    error_msg "help_panes.sh was called without notice of what called it"
-fi
-
-menu_name="Help Panes"
-
-set -- \
-    0.0 M Left "Back to Previous menu <--" "$previous_menu" \
-    0.0 S \
-    0.0 T "-#[nodim]When saving history with escapes" \
-    0.0 T "-#[nodim]less/most will not be able" \
-    0.0 T "-#[nodim]to display the content." \
-    0.0 S \
-    0.0 T "-#[nodim]You would have to use tools like" \
-    0.0 T "-#[nodim]cat/bat in order to see the colors"
-
-req_win_width=39
-req_win_height=10
-
-menu_parse "$@"
+. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh "$1"
