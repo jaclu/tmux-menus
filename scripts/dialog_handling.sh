@@ -544,4 +544,4 @@ alt_dialog_action_separator=":/:/:/:"
 
 menu_debug="" # Set to 1 to use echo 2 to use log_it
 
-handle_menu "$1"
+handle_menu
