@@ -10,6 +10,8 @@
 #
 
 dynamic_content() {
+    . "$D_TM_SCRIPTS"/dropbox_tools.sh
+
     if is_dropbox_running; then
         tgl_lbl="sTop"
     else
@@ -28,8 +30,6 @@ static_content() {
     req_win_height=9
 
     [ -z "$(command -v dropbox)" ] && error_msg "dropbox bin not found!"
-
-    . "$D_TM_SCRIPTS"/dropbox_tools.sh
 
     set -- \
         0.0 M Home "Back to Main menu  <==" "$D_TM_ITEMS/main.sh" \

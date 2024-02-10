@@ -8,7 +8,6 @@
 #
 #  Common tools for handling dropbox
 #
-
 is_dropbox_running() {
     #
     #  Convert to boolean status from the dropox (python?) status logic
