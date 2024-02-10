@@ -16,6 +16,8 @@ dynamic_content() {
         tgl_lbl="sTart"
     fi
 
+    error_msg "menu_reload [$menu_reload]"
+
     set -- \
         0.0 E t "$tgl_lbl" "$d_current_script/_dropbox_toggle.sh $menu_reload"
 
