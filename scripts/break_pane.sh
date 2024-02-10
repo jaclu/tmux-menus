@@ -11,6 +11,7 @@
 # shellcheck disable=SC2154
 
 #  Full path to tmux-menux plugin
+# shellcheck disable=SC2034
 D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
 
 _this="break_pane.sh"

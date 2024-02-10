@@ -32,6 +32,7 @@ static_content() {
     #        in order to actually print one, figure out what's going on
     #
 
+    # shellcheck disable=SC2154
     set -- \
         0.0 M Left "Back to Previous menu <--" "$previous_menu" \
         0.0 S \
@@ -54,6 +55,8 @@ static_content() {
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
 
+menu_param="$1"
+
 #  Source dialog handling script
 # shellcheck disable=SC1091
-. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh "$1"
+. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh

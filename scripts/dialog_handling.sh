@@ -432,7 +432,8 @@ menu_generate_part() {
 }
 
 handle_menu() {
-    menu_param="$1" # help menus needs an indicator where to go back
+    [ -n "$1" ] && error_msg "handle_menu() got a param [$1]"
+    #menu_param="$1" # help menus needs an indicator where to go back
 
     #  Calculate the relative path, to avoid name collitions if
     #  two items with same name in different rel paths are used

@@ -54,7 +54,7 @@ handle_char() {
     0x*)
         # handle it as a hex code
         # shellcheck disable=SC2059
-        s="$(printf "\\$(printf "%o" "0x${s_in#0x}")")"
+        s="$(printf "\\$(printf "%o" "0x${s_in#0x}")")"z
         ;;
     *)
         s="$s_in"
@@ -63,7 +63,7 @@ handle_char() {
         #  doesnt work for some chars, like §
         #  This seems more resiliant
         #
-        if [ "$(expr length "$s_in")" -gt 1 ]; then
+        if [ "${#s_in}" -gt 1 ]; then
             error_msg "param can only be single char! [$s]"
         fi
         ;;
@@ -128,6 +128,7 @@ static_content() {
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
 
+menu_param="$1"
 #  Source dialog handling script
 # shellcheck disable=SC1091
-. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh "$1"
+. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
