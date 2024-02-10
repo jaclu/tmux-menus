@@ -9,7 +9,7 @@
 #   Move Window
 #
 
-generate_content_dynamic() {
+dynamic_content() {
     # Things that change dependent on various states
 
     other_pane_is_marked="$($TMUX_BIN display -p '#{?pane_marked_set, ,}')"
@@ -23,7 +23,7 @@ generate_content_dynamic() {
     menu_generate_part 2 "$@"
 }
 
-generate_content_static() {
+static_content() {
     menu_name="Move Window"
     req_win_width=40
     req_win_height=13

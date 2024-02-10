@@ -455,12 +455,12 @@ handle_menu() {
         mkdir -p "$d_cache_file" || error_msg "Failed to create: $d_cache_file"
 
         # 1 if not cached, cache static parts
-        generate_content_static "$1"
+        static_content "$1"
     fi
 
     # 2 handle dynamic parts (if any)
-    if is_function_defined "generate_content_dynamic"; then
-        generate_content_dynamic "$1"
+    if is_function_defined "dynamic_content"; then
+        dynamic_content "$1"
     fi
 
     # 3 read cache - Loop through each file in the d_cache directory

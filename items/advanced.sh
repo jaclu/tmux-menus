@@ -9,7 +9,7 @@
 #   Advanced options
 #
 
-generate_content_dynamic() {
+dynamic_content() {
     # Things that change dependent on various states
 
     #
@@ -32,7 +32,7 @@ generate_content_dynamic() {
 
 }
 
-generate_content_static() {
+static_content() {
 
     current_prefix="$($TMUX_BIN show-option -g prefix | cut -d'-' -f2)"
 

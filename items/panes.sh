@@ -9,7 +9,7 @@
 #   Handling pane
 #
 
-generate_content_dynamic() {
+dynamic_content() {
     # Things that change dependent on various states
 
     # dynamic -2
@@ -29,7 +29,7 @@ generate_content_dynamic() {
     menu_generate_part 2 "$@"
 }
 
-generate_content_static() {
+static_content() {
     menu_name="Handling Pane"
     req_win_width=38
     req_win_height=23

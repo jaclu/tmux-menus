@@ -9,7 +9,7 @@
 #   Directly control DropBox
 #
 
-generate_content_static() {
+static_content() {
     menu_name="Dropbox"
     req_win_width=33
     req_win_height=9

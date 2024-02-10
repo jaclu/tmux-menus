@@ -9,7 +9,7 @@
 #   Resize a pane
 #
 
-generate_content_static() {
+static_content() {
     menu_name="Resize Pane"
     req_win_width=36
     req_win_height=18

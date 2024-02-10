@@ -9,7 +9,7 @@
 #   Directly control Spotify
 #
 
-generate_content_dynamic() {
+dynamic_content() {
     if [ "$(uname)" = "Darwin" ]; then
         # This title check is a MacOS script
         set -- \
@@ -21,7 +21,7 @@ generate_content_dynamic() {
     fi
 }
 
-generate_content_static() {
+static_content() {
     menu_name="Spotify"
     req_win_width=33
     req_win_height=13

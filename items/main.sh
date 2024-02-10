@@ -9,7 +9,7 @@
 #  Main menu, the one popping up when you hit the trigger
 #
 
-generate_content_static() {
+static_content() {
     menu_name="Main menu"
     req_win_width=39
     req_win_height=23

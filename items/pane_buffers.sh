@@ -9,7 +9,7 @@
 #   Select and modify paste buffers
 #
 
-generate_content_static() {
+static_content() {
     menu_name="Paste buffers"
     req_win_width=55
     req_win_height=29

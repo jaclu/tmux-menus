@@ -9,7 +9,7 @@
 #   Handling Sessions
 #
 
-generate_content_static() {
+static_content() {
 
     menu_name="Handling Sessions"
     req_win_width=39

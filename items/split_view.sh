@@ -9,7 +9,7 @@
 #   Split display
 #
 
-generate_content_static() {
+static_content() {
     menu_name="Split view"
     req_win_width=32
     req_win_height=15

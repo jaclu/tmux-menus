@@ -71,7 +71,7 @@ handle_char() {
     display_char "$s"
 }
 
-generate_content_static() {
+static_content() {
     menu_name="Missing Keys"
     req_win_width=37
     req_win_height=18

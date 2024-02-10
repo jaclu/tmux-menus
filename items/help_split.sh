@@ -9,7 +9,7 @@
 #   Help about splitting the view
 #
 
-generate_content_dynamic() {
+dynamic_content() {
     # Things that change dependent on various states
 
     menu_name="Help, Split view"
@@ -26,7 +26,7 @@ generate_content_dynamic() {
     menu_generate_part 1 "$@"
 }
 
-generate_content_static() {
+static_content() {
     #
     #  TODO: For odd reasons this title needs multiple right padding spaces,
     #        in order to actually print one, figure out what's going on

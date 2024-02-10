@@ -13,7 +13,7 @@
 #   Live configuration. So far only menu location is available
 #
 
-generate_content_static() {
+static_content() {
 
     menu_name="Configure Menu Location"
     req_win_width=37

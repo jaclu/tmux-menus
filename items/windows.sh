@@ -9,7 +9,7 @@
 #   Handling Window
 #
 
-generate_content_static() {
+static_content() {
     menu_name="Handling Window"
     req_win_width=38
     req_win_height=21

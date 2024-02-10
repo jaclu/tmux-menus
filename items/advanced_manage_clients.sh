@@ -9,7 +9,7 @@
 #   Modify Clients
 #
 
-generate_content_static() {
+static_content() {
 
     menu_name="Client Management"
     req_win_width=39

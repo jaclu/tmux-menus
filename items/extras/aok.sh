@@ -17,7 +17,7 @@ is_aok_kernel() {
     grep -qi aok /proc/ish/version 2>/dev/null
 }
 
-generate_content_dynamic() {
+dynamic_content() {
     # Things that change dependent on various states
 
     #  shellcheck disable=SC2010
@@ -52,7 +52,7 @@ generate_content_dynamic() {
     menu_generate_part 2 "$@"
 }
 
-generate_content_static() {
+static_content() {
     menu_name="AOK FS tools"
     req_win_width=35
     req_win_height=18

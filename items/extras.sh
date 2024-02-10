@@ -27,7 +27,7 @@ is_avalable() {
     fi
 }
 
-generate_content_static() {
+static_content() {
     menu_name="Extras"
     req_win_width=32
     req_win_height=10

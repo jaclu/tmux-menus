@@ -9,7 +9,7 @@
 #   Configure mullvad VPN
 #
 
-generate_content_dynamic() {
+dynamic_content() {
 
     if [ "$(mullvad lan get | awk 'NF>1{print $NF}')" = "allow" ]; then
         lan_label="Disable"
@@ -32,7 +32,7 @@ generate_content_dynamic() {
     menu_generate_part 2 "$@"
 }
 
-generate_content_static() {
+static_content() {
     menu_name="Mullvad VPN"
     req_win_width=33
     req_win_height=10

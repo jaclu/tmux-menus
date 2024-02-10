@@ -9,7 +9,7 @@
 #   Move a pane
 #
 
-generate_content_dynamic() {
+dynamic_content() {
     # Things that change dependent on various states
 
     if $TMUX_BIN display-message -p '#{pane_marked_set}' | grep -q '1'; then
@@ -21,7 +21,7 @@ generate_content_dynamic() {
     menu_generate_part 2 "$@"
 }
 
-generate_content_static() {
+static_content() {
     menu_name="Move Pane"
     req_win_width=38
     req_win_height=12

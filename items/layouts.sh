@@ -9,7 +9,7 @@
 #   Choose layout
 #
 
-generate_content_static() {
+static_content() {
     menu_name="Layouts"
     req_win_width=32
     req_win_height=12

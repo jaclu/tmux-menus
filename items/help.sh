@@ -9,7 +9,7 @@
 #   General Help
 #
 
-generate_content_dynamic() {
+dynamic_content() {
     # Things that change dependent on various states
 
     menu_name="Help summary"
@@ -26,7 +26,7 @@ generate_content_dynamic() {
     menu_generate_part 1 "$@"
 }
 
-generate_content_static() {
+static_content() {
     set -- \
         0.0 S \
         0.0 T "-#[nodim]'-->'  Indicates this will open a" \
