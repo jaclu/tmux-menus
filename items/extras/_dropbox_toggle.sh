@@ -85,4 +85,5 @@ $TMUX_BIN display ""
 # Restore org value
 $TMUX_BIN set-option -g display-time "$org_disp_time"
 
+echo "><> will run [$next_menu]"
 eval "$next_menu"
