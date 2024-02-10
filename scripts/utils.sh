@@ -26,7 +26,7 @@ error_msg() {
     #  If no $2 or set to 0, the process is not exited
     #
     em_msg="ERROR: tmux-menus:$(basename "$0") $1"
-    em_exit_code="${2:-0}"
+    em_exit_code="${2:-1}"
     em_msg_len="$(printf "%s" "$em_msg" | wc -m)"
     em_screen_width="$($TMUX_BIN display -p "#{window_width}")"
 
@@ -42,17 +42,29 @@ error_msg() {
         echo
     fi
 
-    if [ "$em_msg_len" -le "$em_screen_width" ]; then
-        $TMUX_BIN display-message "$em_msg"
-    else
-        #
-        #  Screen is too narrow to use display message
-        #  By echoing it, it will be displayed in a copy-mode
-        #
-        echo
-        echo "$em_msg"
-    fi
     [ "$em_exit_code" -ne 0 ] && exit "$em_exit_code"
+}
+
+get_mtime() {
+    _fname="$1"
+    if [ "$(uname)" = "Darwin" ]; then
+        # macOS version
+        stat -f "%m" "$_fname"
+    else
+        # Linux version
+        stat -c "%Y" "$_fname"
+    fi
+}
+
+error_missing_param() {
+    #
+    #  Shortcut for repeatedly used error message type
+    #
+    param_name="$1"
+    if [ -z "$param_name" ]; then
+        error_msg "dialog_handling.sh:error_missing_param() called without parameter" 1
+    fi
+    error_msg "dialog_handling.sh: $param_name must be defined!" 1
 }
 
 bool_param() {
@@ -161,29 +173,6 @@ wait_to_close_display() {
     fi
 }
 
-cache_read() {
-    #
-    #  Except for during init, ensure D_TM_MENUS_CACHE exists
-    #
-    if [ ! -d "$D_TM_MENUS_CACHE" ]; then
-        error_msg "D_TM_MENUS_CACHE folder missing: '$D_TM_MENUS_CACHE'" 1
-    fi
-    # cache_was_read=0 # Becomes 0 if a cache was found and sourced
-
-    #  Calculate the relative path,
-    rel_path=$(echo "$d_current_script" | sed "s|$D_TM_BASE_PATH/||")
-
-    #  items/main.sh -> items_main
-    f_cache_file="$D_TM_MENUS_CACHE/${rel_path}_$(basename "$0" | sed 's/\.[^.]*$//')"
-
-    # if [ -f "$f_cache_file" ]; then
-    #     # log_it "><> Found cache file: $f_cache_file"
-    #     #  shellcheck disable=SC1090
-    #     . "$f_cache_file"
-    #     cache_was_read=1
-    # fi
-}
-
 #===============================================================
 #
 #   Main
@@ -203,7 +192,7 @@ fi
 #  If log_file is empty or undefined, no logging will occur,
 #  so comment it out for normal usage.
 #
-log_file="/tmp/tmux-menus.log"
+# log_file="/tmp/tmux-menus.log"
 
 #
 #  If @menus_config_overrides is 1, this file is used to store
@@ -271,5 +260,3 @@ D_TM_ITEMS="$D_TM_BASE_PATH"/items
 D_TM_MENUS_CACHE="$D_TM_BASE_PATH"/cache
 
 [ "$(basename "$0")" = "menus.tmux" ] && return
-
-cache_read

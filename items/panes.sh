@@ -10,6 +10,10 @@
 #
 
 generate_content_dynamic() {
+    # Things that change dependent on various states
+
+    # echo "><> generate_content_dynamic()"
+
     # dynamic -2
     if tmux_vers_compare 2.0 && [ "$(tmux list-panes | wc -l)" -gt 1 ]; then
         if [ "$($TMUX_BIN display -p '#{window_zoomed_flag}')" -eq 0 ]; then
@@ -17,14 +21,20 @@ generate_content_dynamic() {
         else
             zoom_action="Un-Zoom"
         fi
-        #  Skip version comparison as it has been done previously
+
         set -- \
-            0.0 C z "<P> $zoom_action pane" "resize-pane -Z $menu_reload"
+            2.0 C z "<P> $zoom_action pane" "resize-pane -Z $menu_reload"
+    else
+        # empty item
+        set --
     fi
-    menu_parse 2 "$@"
+    menu_generate_part 2 "$@"
+    # echo "><> generate_content_dynamic() - done"
 }
 
 generate_content_static() {
+    # echo "><> generate_content_static()"
+
     menu_name="Handling Pane"
     req_win_width=38
     req_win_height=23
@@ -46,7 +56,7 @@ generate_content_static() {
         2.6 C c " Clear history & screen" \
         "send-keys C-l ; run 'sleep 0.3' ; clear-history"
 
-    menu_parse 1 "$@"
+    menu_generate_part 1 "$@"
 
     # static -3
     set -- \
@@ -74,7 +84,10 @@ generate_content_static() {
         0.0 S \
         0.0 M H 'Help -->' "$ITEMS_DIR/help_panes.sh $current_script"
 
-    menu_parse 3 "$@"
+    menu_generate_part 3 "$@"
+
+    # echo "><> generate_content_static() - done"
+
 }
 
 #===============================================================
@@ -83,11 +96,9 @@ generate_content_static() {
 #
 #===============================================================
 
-#  Should point to tmux-menux plugin
+#  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
 
 #  Source dialog handling script
 # shellcheck disable=SC1091
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
-
-display_menu

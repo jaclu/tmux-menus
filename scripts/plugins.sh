@@ -7,7 +7,7 @@
 #
 
 _this="plugins.sh"
-if [ "$(basename "$0")" != "$_this" ]; then
+if [[ "$(basename "$0")" != "$_this" ]]; then
     echo "ERROR: $_this should NOT be sourced"
     exit 1
 fi

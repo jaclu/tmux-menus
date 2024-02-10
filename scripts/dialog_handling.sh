@@ -15,6 +15,7 @@
 #
 
 debug_print() {
+    # echo "><> debug_print()"
     case "$menu_debug" in
     1) echo "$1" ;;
     2) log_it "$1" ;;
@@ -27,6 +28,7 @@ debug_print() {
         exit 1
         ;;
     esac
+    # echo "><> debug_print() - done"
 }
 
 ensure_menu_fits_on_screen() {
@@ -84,8 +86,8 @@ starting_with_dash() {
 #
 tmux_dialog_prefix() {
     #  shellcheck disable=SC2154
-    menu_prefix="$TMUX_BIN display-menu -T \"#[align=centre] $menu_name \"
-                 -x \"$menu_location_x\" -y \"$menu_location_y\""
+    menu_items="$TMUX_BIN display-menu -T \"#[align=centre] $menu_name \" \
+        -x \"$menu_location_x\" -y \"$menu_location_y\""
 }
 
 tmux_open_menu() {
@@ -135,7 +137,7 @@ tmux_spacer() {
 
 alt_dialog_prefix() {
     #  shellcheck disable=SC2089
-    menu_prefix="$dialog_app --menu \"$menu_name\" 0 0 0 "
+    menu_items="$dialog_app --menu \"$menu_name\" 0 0 0 "
 }
 
 alt_dialog_open_menu() {
@@ -265,24 +267,19 @@ menu_parse() {
     #  we first identify all the params used by the different options,
     #  only then can we continue if the min_vers does not match running tmux
     #
+    # echo "><> menu_parse()"
 
-    [ -z "$menu_name" ] && error_missing_param "menu_name"
-
-    if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
-        alt_dialog_prefix
-    else
-        [ -z "$req_win_width" ] && error_missing_param "req_win_width"
-        [ -z "$req_win_height" ] && error_missing_param "req_win_height"
-        tmux_dialog_prefix
-    fi
-
-    if [ "$1" = "-c" ]; then
-        #  it is requested to make a cached menu
-        shift
-        f_menu_cache="$1"
-        shift
-        cache_idx=1
-    fi
+    [ "$menu_idx" -eq 1 ] && {
+        [ -z "$menu_name" ] && error_missing_param "menu_name"
+        # set prefix for item 1
+        if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+            alt_dialog_prefix
+        else
+            [ -z "$req_win_width" ] && error_missing_param "req_win_width"
+            [ -z "$req_win_height" ] && error_missing_param "req_win_height"
+            tmux_dialog_prefix
+        fi
+    }
 
     [ -n "$menu_debug" ] && debug_print ">> menu_parse()"
     while [ -n "$1" ]; do
@@ -290,6 +287,7 @@ menu_parse() {
         shift
         action="$1"
         shift
+        # echo "><> min_vers [$min_vers] action [$action]"
         [ -n "$menu_debug" ] && debug_print "-- parsing an item [$min_vers] [$action]"
         case "$action" in
 
@@ -404,26 +402,6 @@ menu_parse() {
             fi
             ;;
 
-        "Split")
-            #
-            #  PlaceHolder - Used for dynamic content in cached menus
-            #  When reading the cache line by line, replace this with
-            #  corresponding dynamic content
-            #
-            if [ "$cache_idx" = "1" ]; then
-                set -- $menu_prefix $menu_items
-            else
-                set -- $menu_items
-            fi
-            f_cache_tmp="$f_menu_cache-$cache_idx"
-            rm -f "$f_cache_tmp" # flush it
-            while [ -n "$1" ]; do
-                echo "$1" >>"$f_cache_tmp"
-                shift
-            done
-            cache_idx=$((cache_idx + 1))
-            ;;
-
         *) # Error
             echo
             echo "ERROR: [$1]"
@@ -435,67 +413,8 @@ menu_parse() {
         esac
     done
 
-    if [ -z "$cache_idx" ]; then
-        #  prepend cmd line with menu prefix
-        #  shellcheck disable=SC2086,SC2090
-        set -- $menu_prefix $menu_items
-    else
-        #
-        #  This is a multipart cache, so prefix has already been saved
-        #
-        #  shellcheck disable=SC2086,SC2090
-        set -- $menu_items
-    fi
-
-    # if [ -n "$menu_debug" ]; then
-    #     debug_print "Will run: $@"
-    #     if [ -n "$wt_actions" ]; then
-    #         debug_print "alt-dialog actions: $wt_actions"
-    #     fi
-    # fi
-
-    if [ -n "$f_menu_cache" ]; then
-        #
-        #  Dont display the menu, just store all the menu build
-        #  steps to this cache file
-        #
-        if [ -z "$cache_idx" ]; then
-            f_cache_tmp="$f_menu_cache"
-        else
-            f_cache_tmp="$f_menu_cache-$cache_idx"
-        fi
-
-        rm -f "$f_menu_cache" # flush it
-        while [ -n "$1" ]; do
-            echo "$1" >>"$f_menu_cache"
-            shift
-        done
-    else
-        if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
-            #  shellcheck disable=SC2294
-            menu_selection=$(eval "$@" 3>&2 2>&1 1>&3)
-            # echo "selection[$menu_selection]"
-            alt_dialog_parse_selection
-        else
-            #  shellcheck disable=SC2034
-            t_start="$(date +'%s')"
-            # tmux can trigger actions by it self
-            #  shellcheck disable=SC2068,SC2294
-            eval $@
-            ensure_menu_fits_on_screen
-        fi
-    fi
-}
-
-error_missing_param() {
-    #
-    #  Shortcut for repeatedly used error message type
-    #
-    param_name="$1"
-    if [ -z "$param_name" ]; then
-        error_msg "dialog_handling.sh:error_missing_param() called without parameter" 1
-    fi
-    error_msg "dialog_handling.sh: $param_name must be defined!" 1
+    echo "$menu_items" >"$f_cache_file" || error_msg "Failed to write to: $f_cache_file"
+    menu_items=""
 }
 
 is_function_defined() {
@@ -504,13 +423,39 @@ is_function_defined() {
     return $?
 }
 
-display_menu() {
+menu_generate_part() {
+    # echo "><> menu_generate_part($1)"
+    menu_idx="$1"
+    shift # get rid of the idx
+    f_cache_file="$d_cache_file/$menu_idx"
+    menu_parse "$@"
+    # echo "><> menu_generate_part() - done"
+}
+
+handle_menu() {
+    # echo "><> handle_menu()"
+
+    #  Calculate the relative path, to avoid name collitions if
+    #  two items with same name in different rel paths are used
+    rel_path=$(echo "$d_current_script" | sed "s|$D_TM_BASE_PATH/||")
+
+    #  items/main.sh -> items_main
+    d_cache_file="$D_TM_MENUS_CACHE/${rel_path}_$(basename "$0" | sed 's/\.[^.]*$//')"
+
     if
         [ ! -f "$d_cache_file"/1 ] ||
-            [ "$(stat -c %Y "$0")" -gt "$(stat -c %Y "$d_cache_file"/1)" ]
+            [ "$(get_mtime "$0")" -gt "$(get_mtime "$d_cache_file"/1)" ]
+    # true
     then
+        # Ensure d_cache_file seems to be valid before doing erase
+        case "$d_cache_file" in
+        *tmux-menus*) ;;
+        *) error_msg "d_cache_file seems wrong [$d_cache_file]" ;;
+        esac
         # clear cache (if present)
-        rm -rf "$d_cache_file"
+        rm -rf "$d_cache_file" || error_msg "Failed to remove: $d_cache_file"
+        mkdir -p "$d_cache_file" || error_msg "Failed to create: $d_cache_file"
+
         # 1 if not cached, cache static parts
         # read each file in d_cache_file/1 2 3 ...
         generate_content_static
@@ -521,18 +466,19 @@ display_menu() {
         generate_content_dynamic
     fi
 
-    # 3 read cache
-
-    #     # Loop through each file in the folder
-    #     find "$folder" -maxdepth 1 -type f -exec sh -c '
-    #     for file do
-    #         # Process each file here
-    #         echo "Processing file: $file"
-    #         # You can perform any action you want on each file
-    #     done
-    # ' sh {} +
+    # 3 read cache - Loop through each file in the d_cache directory
+    for file in "$d_cache_file"/*; do
+        # Check if the file is a regular file
+        if [ -f "$file" ]; then
+            # Read the content of the file and append it to the dialog variable
+            menu_items="$menu_items$(cat "$file")"
+        fi
+    done
 
     # 4 Display menu
+    eval "$menu_items"
+
+    # echo "><> handle_menu() - done"
 }
 
 #===============================================================
@@ -542,6 +488,7 @@ display_menu() {
 #===============================================================
 
 if [ -z "$D_TM_BASE_PATH" ]; then
+    # utils not yet sourced, so error_missing_param() not yet available
     echo "ERROR: dialog_handling.sh - D_TM_BASE_PATH must be set!"
     exit 1
 fi
@@ -550,17 +497,14 @@ fi
 #  shellcheck disable=SC1091
 . "$D_TM_BASE_PATH"/scripts/utils.sh
 
+[ -z "$TMUX" ] && error_msg "tmux-menus can only be used inside tmux!"
+
 #
 #  First some param checks
 #
 [ -z "$TMUX_BIN" ] && error_missing_param "TMUX_BIN"
 if [ -z "$D_TM_SCRIPTS" ] || [ -z "$D_TM_ITEMS" ]; then
     error_missing_param "D_TM_SCRIPTS & D_TM_ITEMS"
-fi
-
-if [ -z "$TMUX" ]; then
-    echo "ERROR: tmux-menus can only be used inside tmux!"
-    exit 1
 fi
 
 ! tmux_vers_compare 3.0 && FORCE_WHIPTAIL_MENUS=1
@@ -586,3 +530,5 @@ dialog_app="whiptail"
 alt_dialog_action_separator=":/:/:/:"
 
 menu_debug="" # Set to 1 to use echo 2 to use log_it
+
+handle_menu

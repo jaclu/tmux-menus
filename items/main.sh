@@ -66,43 +66,7 @@ generate_content_static() {
         0.0 S \
         0.0 M H 'Help -->' "help.sh $current_script"
 
-    menu_parse -c 1 "$@"
-}
-
-m_display_menu() {
-    # log_it "reading menu from: $f_cache_file"
-
-    # ---  works  ---
-
-    # while IFS= read -r line; do
-    #     set -- "$@" "$line"
-    # done <"$f_cache_file"
-    # eval "$@"
-
-    IFS=$'\n'
-    set -- $(cat "$f_cache_file")
-    eval "$@"
-
-    # IFS=$'\n'
-    # menu_parse $(cat "$f_cache_file")
-
-    # ---  testing  ---
-
-    # IFS=$'\n'
-    # menu_parse $(cat "$f_cache_file")
-
-    #     IFS='
-    # '
-    #     menu_parse $(cat "$f_cache_file")
-
-    # menu_parse $(cat "$f_cache_file")
-    # set -- "$(IFS=$'\n' cat "$f_cache_file")"
-    # menu_parse $@
-
-    # menu_parse "$(cat "$f_cache_file")"
-
-    # dbt_duration=$(echo "$(gdate +%s.%3N) - $t_parse" | bc)
-    # echo "Duration: [$dbt_duration]"
+    menu_generate_part 1 "$@"
 }
 
 #===============================================================
@@ -111,28 +75,9 @@ m_display_menu() {
 #
 #===============================================================
 
-#  Should point to tmux-menux plugin
+#  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
 
 #  Source dialog handling script
 # shellcheck disable=SC1091
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
-
-display_menu
-
-# time1=$(stat -c %Y "$file1")
-# time2=$(stat -c %Y "$file2")
-
-# # t_parse="$(gdate +%s.%3N)"
-
-# # shellcheck disable=SC2154
-# if [ ! -f "$f_cache_file" ] || [ "$(stat -c %Y "$0")" -gt "$(stat -c %Y "$f_cache_file")" ]; then
-#     generate_content
-# fi
-
-# if [ -f "$f_cache_file" ]; then
-#     m_display_menu
-#     ensure_menu_fits_on_screen
-# else
-#     error_msg "menu cache not found: [$f_cache_file]" 1
-# fi
