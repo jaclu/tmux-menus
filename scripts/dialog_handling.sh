@@ -432,7 +432,6 @@ menu_generate_part() {
 }
 
 handle_menu() {
-    [ -n "$1" ] && error_msg "handle_menu() got a param [$1]"
     #menu_param="$1" # help menus needs an indicator where to go back
 
     #  Calculate the relative path, to avoid name collitions if
@@ -456,12 +455,12 @@ handle_menu() {
         mkdir -p "$d_cache_file" || error_msg "Failed to create: $d_cache_file"
 
         # 1 if not cached, cache static parts
-        static_content "$1"
+        static_content
     fi
 
     # 2 handle dynamic parts (if any)
     if is_function_defined "dynamic_content"; then
-        dynamic_content "$1"
+        dynamic_content
     fi
 
     # 3 read cache - Loop through each file in the d_cache directory

@@ -14,6 +14,9 @@ static_content() {
     req_win_width=32
     req_win_height=12
 
+    # make it global so it changes all windows in all sessions
+    setw_cmd="setw -g"
+
     #  shellcheck disable=SC2154
     set -- \
         0.0 M Left "Back to Main menu <--" main.sh \
@@ -26,11 +29,11 @@ static_content() {
         0.0 C E "<P> Spread evenly" "select-layout -E  $menu_reload" \
         3.2 S \
         3.2 T "-#[align=centre,nodim]Border lines" \
-        3.2 C "s" "single" "setw pane-border-lines  single  $menu_reload" \
-        3.2 C "d" "double" "setw pane-border-lines  double  $menu_reload" \
-        3.2 C "h" "heavy" "setw  pane-border-lines  heavy   $menu_reload" \
-        3.2 C "S" "simple" "setw pane-border-lines  simple  $menu_reload" \
-        3.2 C "n" "number" "setw pane-border-lines  number  $menu_reload" \
+        3.2 C "s" "single" "$setw_cmd pane-border-lines  single  $menu_reload" \
+        3.2 C "d" "double" "$setw_cmd pane-border-lines  double  $menu_reload" \
+        3.2 C "h" "heavy" "$setw_cmd  pane-border-lines  heavy   $menu_reload" \
+        3.2 C "S" "simple" "$setw_cmd pane-border-lines  simple  $menu_reload" \
+        3.2 C "n" "number" "$setw_cmd pane-border-lines  number  $menu_reload" \
         0.0 S \
         0.0 M H "Help -->" "$D_TM_ITEMS/help.sh $current_script"
 
