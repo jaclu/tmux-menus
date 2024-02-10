@@ -523,18 +523,16 @@ display_menu() {
 
     # 3 read cache
 
+    #     # Loop through each file in the folder
+    #     find "$folder" -maxdepth 1 -type f -exec sh -c '
+    #     for file do
+    #         # Process each file here
+    #         echo "Processing file: $file"
+    #         # You can perform any action you want on each file
+    #     done
+    # ' sh {} +
+
     # 4 Display menu
-
-    # shellcheck disable=SC2154
-    if [ ! -f "$f_cache_file" ]; then
-        generate_content
-    fi
-
-    if [ -f "$f_cache_file" ]; then
-        p_display_menu
-    else
-        error_msg "menu cache not found: [$f_cache_file]" 1
-    fi
 }
 
 #===============================================================
