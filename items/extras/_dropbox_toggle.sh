@@ -25,13 +25,16 @@ dropbox_status_check() {
 #===============================================================
 
 #  Should point to tmux-menux plugin
-D_TM_BASE_PATH="$(dirname "$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")")"
+#D_TM_BASE_PATH="$(dirname "$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")")"
+D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname "$(dirname -- "$0")")" && pwd)")"
 
 #  Source dialog handling script
 # shellcheck disable=SC1091
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 
 . "$D_TM_SCRIPTS"/dropbox_tools.sh
+
+next_menu="$1"
 
 if is_dropbox_running; then
     action="stop"
@@ -82,4 +85,4 @@ $TMUX_BIN display ""
 # Restore org value
 $TMUX_BIN set-option -g display-time "$org_disp_time"
 
-exit 0
+eval "$next_menu"
