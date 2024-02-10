@@ -242,6 +242,18 @@ else
 fi
 
 #
+#  Define a variable that can be used as suffix on commands in dialog
+#  items, to reload the same menu in calling scripts
+#
+if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+    # shellcheck disable=SC2034
+    menu_reload="; '$current_script'"
+else
+    # shellcheck disable=SC2034
+    menu_reload="; run-shell '$current_script'"
+fi
+
+#
 #  All calling scripts must provide
 #
 

@@ -34,8 +34,6 @@ D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname "$(dirname -- "$0")")" && pwd)")"
 
 . "$D_TM_SCRIPTS"/dropbox_tools.sh
 
-next_menu="$1"
-
 if is_dropbox_running; then
     action="stop"
     new_run_stat=1
@@ -84,6 +82,3 @@ $TMUX_BIN display ""
 
 # Restore org value
 $TMUX_BIN set-option -g display-time "$org_disp_time"
-
-echo "><> will run [$next_menu]"
-eval "$next_menu"
