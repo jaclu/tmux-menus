@@ -9,31 +9,41 @@
 #   Directly control DropBox
 #
 
-static_content() {
-    menu_name="Dropbox"
-    req_win_width=33
-    req_win_height=9
-
-    . "$D_TM_SCRIPTS"/dropbox_tools.sh
-
-    [ -z "$(command -v dropbox)" ] && error_msg "dropbox bin not found!" 1
-
+dynamic_content() {
     if is_dropbox_running; then
         tgl_lbl="sTop"
     else
         tgl_lbl="sTart"
     fi
 
+    set --
+    0.0 E t "$tgl_lbl" "$d_current_script/_dropbox_toggle.sh $menu_reload"
+
+    menu_generate_part 2 "$@"
+}
+
+static_content() {
+    menu_name="Dropbox"
+    req_win_width=33
+    req_win_height=9
+
+    [ -z "$(command -v dropbox)" ] && error_msg "dropbox bin not found!"
+
+    . "$D_TM_SCRIPTS"/dropbox_tools.sh
+
     set -- \
         0.0 M Home "Back to Main menu  <==" "$D_TM_ITEMS/main.sh" \
         0.0 M Left "Back to Extras     <--" "$D_TM_ITEMS/extras.sh" \
         0.0 S \
-        0.0 C s "Status" "display \"$(dropbox status)\" $menu_reload" \
-        0.0 E t "$tgl_lbl" "$d_current_script/_dropbox_toggle.sh $menu_reload" \
+        0.0 C s "Status" "display \"$(dropbox status)\" $menu_reload"
+
+    menu_generate_part 1 "$@"
+
+    set -- \
         0.0 S \
         0.0 M H "Help  -->" "$D_TM_ITEMS/help.sh $current_script'"
 
-    menu_generate_part 1 "$@"
+    menu_generate_part 3 "$@"
 }
 
 #===============================================================
