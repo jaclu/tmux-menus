@@ -9,37 +9,52 @@
 #   General Help
 #
 
-ITEMS_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
+dynamic_content() {
+    # Things that change dependent on various states
 
+    menu_name="Help summary"
+    req_win_width=43
+    req_win_height=15
+
+    if [ -z "$menu_param" ]; then
+        error_msg "help_split.sh was called without notice of what called it"
+    fi
+
+    set -- \
+        0.0 M Left "Back to Previous menu <--" "$menu_param"
+
+    menu_generate_part 1 "$@"
+}
+
+static_content() {
+    set -- \
+        0.0 S \
+        0.0 T "-#[nodim]'-->'  Indicates this will open a" \
+        0.0 T "-#[nodim]'<--'  new menu." \
+        0.0 S \
+        0.0 T "-#[nodim]<P> Indicates this key is a default" \
+        0.0 T "-#[nodim]    key, so unless it has been" \
+        0.0 T "-#[nodim]    changed, it should be possible" \
+        0.0 T "-#[nodim]    to use with <prefix> directly." \
+        0.0 S \
+        0.0 T "-#[nodim]Shortcut keys are usually upper case" \
+        0.0 T "-#[nodim]for menus, and lower case for actions." \
+        0.0 T "-#[nodim]Exit menus with ESC or q"
+
+    menu_generate_part 2 "$@"
+}
+
+#===============================================================
+#
+#   Main
+#
+#===============================================================
+
+#  Full path to tmux-menux plugin
+D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
+
+menu_param="$1"
+
+#  Source dialog handling script
 # shellcheck disable=SC1091
-. "$SCRIPT_DIR/dialog_handling.sh"
-
-previous_menu="$1"
-log_it "Help detected previous menu to be: $previous_menu"
-
-if [ -z "$previous_menu" ]; then
-    error_msg "help.sh was called without notice of what called it"
-fi
-
-menu_name="Help summary"
-
-set -- \
-    0.0 M Left "Back to Previous menu <--" "$previous_menu" \
-    0.0 S \
-    0.0 T "-#[nodim]'-->'  Indicates this will open a" \
-    0.0 T "-#[nodim]'<--'  new menu." \
-    0.0 S \
-    0.0 T "-#[nodim]<P> Indicates this key is a default" \
-    0.0 T "-#[nodim]    key, so unless it has been" \
-    0.0 T "-#[nodim]    changed, it should be possible" \
-    0.0 T "-#[nodim]    to use with <prefix> directly." \
-    0.0 S \
-    0.0 T "-#[nodim]Shortcut keys are usually upper case" \
-    0.0 T "-#[nodim]for menus, and lower case for actions." \
-    0.0 T "-#[nodim]Exit menus with ESC or q"
-
-req_win_width=43
-req_win_height=15
-
-menu_parse "$@"
+. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh

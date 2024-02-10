@@ -54,7 +54,7 @@ handle_char() {
     0x*)
         # handle it as a hex code
         # shellcheck disable=SC2059
-        s="$(printf "\\$(printf "%o" "0x${s_in#0x}")")"
+        s="$(printf "\\$(printf "%o" "0x${s_in#0x}")")"z
         ;;
     *)
         s="$s_in"
@@ -63,7 +63,7 @@ handle_char() {
         #  doesnt work for some chars, like §
         #  This seems more resiliant
         #
-        if [ "$(expr length "$s_in")" -gt 1 ]; then
+        if [ "${#s_in}" -gt 1 ]; then
             error_msg "param can only be single char! [$s]"
         fi
         ;;
@@ -71,61 +71,64 @@ handle_char() {
     display_char "$s"
 }
 
-#===============================================================
-#
-#  Main
-#
-#===============================================================
+static_content() {
+    menu_name="Missing Keys"
+    req_win_width=37
+    req_win_height=18
 
-ITEMS_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
-
-#  shellcheck disable=SC1091
-. "$SCRIPT_DIR/dialog_handling.sh"
-
-if [ -n "$1" ]; then
-    handle_char "$1"
-else
-    if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
-        log_it "clearing buffer missing_keys"
-        $TMUX_BIN delete-buffer -b missing_keys
-    fi
-fi
-
-menu_name="Missing Keys"
-
-set -- \
-    0.0 M Left "Back to Main menu <--" main.sh \
-    0.0 S
-
-if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
-    set -- "$@" \
-        0.0 T "When using whiptail it is not possible to paste" \
-        0.0 T "directly into the pane." \
-        0.0 T "Instead a tmux buffer is used." \
-        0.0 T "Once you have selected one or more keys to use" \
-        0.0 T "Cancel this menu. Once back in your pane," \
-        3.2 T "paste the key(-s). If normal paste doesn't" \
-        3.2 T "work, you can instead" \
-        0.0 T "use $()<prefix> ]$() to paste the key(-s)." \
+    set -- \
+        0.0 M Left "Back to Main menu <--" main.sh \
         0.0 S
-fi
 
-set -- "$@" \
-    0.0 E e " Send ESC" "$current_script  0x1b" \
-    0.0 E t " Send ~ (tilde)" "$current_script  0x7e" \
-    0.0 E b " Send $() (back-tick)" "$current_script  0x60" \
-    0.0 S \
-    0.0 E p " Send § (paragraph)" "$current_script  §" \
-    0.0 E a " Send @ (at)" "$current_script  @" \
-    0.0 E E " Send € (Euro sign)" "$current_script  €" \
-    0.0 E y " Send ¥ (Yen and yuan sign)" "$current_script  ¥" \
-    0.0 E P " Send £ (Pound sign)" "$current_script  £" \
-    0.0 E c " Send ¢ (Cent sign)" "$current_script  ¢" \
-    0.0 S \
-    0.0 M H "Help -->" "$ITEMS_DIR/help.sh $current_script"
+    if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+        set -- "$@" \
+            0.0 T "When using whiptail it is not possible to paste" \
+            0.0 T "directly into the pane." \
+            0.0 T "Instead a tmux buffer is used." \
+            0.0 T "Once you have selected one or more keys to use" \
+            0.0 T "Cancel this menu. Once back in your pane," \
+            3.2 T "paste the key(-s). If normal paste doesn't" \
+            3.2 T "work, you can instead" \
+            0.0 T "use $()<prefix> ]$() to paste the key(-s)." \
+            0.0 S
+    fi
 
-req_win_width=37
-req_win_height=18
+    set -- "$@" \
+        0.0 E e " Send ESC" "$current_script  0x1b" \
+        0.0 E t " Send ~ (tilde)" "$current_script  0x7e" \
+        0.0 E b " Send $() (back-tick)" "$current_script  0x60" \
+        0.0 S \
+        0.0 E p " Send § (paragraph)" "$current_script  §" \
+        0.0 E a " Send @ (at)" "$current_script  @" \
+        0.0 E E " Send € (Euro sign)" "$current_script  €" \
+        0.0 E y " Send ¥ (Yen and yuan sign)" "$current_script  ¥" \
+        0.0 E P " Send £ (Pound sign)" "$current_script  £" \
+        0.0 E c " Send ¢ (Cent sign)" "$current_script  ¢" \
+        0.0 S \
+        0.0 M H "Help -->" "$D_TM_ITEMS/help.sh $current_script"
 
-menu_parse "$@"
+    menu_generate_part 1 "$@"
+
+    if [ -n "$menu_param" ]; then
+        handle_char "$menu_param"
+    else
+        if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+            log_it "clearing buffer missing_keys"
+            $TMUX_BIN delete-buffer -b missing_keys
+        fi
+    fi
+}
+
+#===============================================================
+#
+#   Main
+#
+#===============================================================
+
+#  Full path to tmux-menux plugin
+D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
+
+menu_param="$1"
+#  Source dialog handling script
+# shellcheck disable=SC1091
+. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh

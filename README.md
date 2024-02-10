@@ -11,11 +11,10 @@ experienced users, then add more for newbies.
 
 ## Recent changes
 
+- Implemented caching, for fast machines not much difference, for slower machines quite noticeable!
+- Simplified path handling, now only D_TM_BASE_PATH needs to be set in each menu
 - Added Configuration of Border lines in the Layouts menu
 - Added menu "Missing Keys" for inserting keys not available on the keyboard.
-- ITEMS_DIR & SCRIPT_DIR must be defined before sourcing dialog_handling.sh, updated for all menus
-- current_script is correctly defined when script is run from other locations than items/
-- pane zoom only offered if more than one pane in window
 
 ## Purpose
 
@@ -56,12 +55,12 @@ The grey one is generated with whiptail, the rest by tmux built-in `display-menu
 
 
 ![main](https://github.com/jaclu/tmux-menus/assets/5046648/5985d53b-cd55-4b33-81e3-2d7811131ed2)
-![Whiptail main](https://github.com/jaclu/tmux-menus/assets/5046648/11ac1c9f-cb19-4dba-a29d-7106ec854fea.png)
-![Pane](https://github.com/jaclu/tmux-menus/assets/5046648/68a390be-f4d7-44bc-a9d4-9082ad2c718a.png)
-![Window](https://github.com/jaclu/tmux-menus/assets/5046648/34ed1a9b-9ee0-48e9-8b6a-2a28421fd880.png)
-![Advanced](https://github.com/jaclu/tmux-menus/assets/5046648/9c9f6198-f78c-4aca-8b67-145caf4adbb2.png)
-![Session](https://github.com/jaclu/tmux-menus/assets/5046648/e9cc442f-27c8-458a-88fb-aa558fd08235.png)
-![Help Summary](https://github.com/jaclu/tmux-menus/assets/5046648/ccd5da05-a3a6-4f11-910c-855158fefd35.png)
+![Whiptail main](https://github.com/jaclu/tmux-menus/assets/5046648/11ac1c9f-cb19-4dba-a29d-7106ec854fea)
+![Pane](https://github.com/jaclu/tmux-menus/assets/5046648/68a390be-f4d7-44bc-a9d4-9082ad2c718)
+![Window](https://github.com/jaclu/tmux-menus/assets/5046648/34ed1a9b-9ee0-48e9-8b6a-2a28421fd880)
+![Advanced](https://github.com/jaclu/tmux-menus/assets/5046648/9c9f6198-f78c-4aca-8b67-145caf4adbb2)
+![Session](https://github.com/jaclu/tmux-menus/assets/5046648/e9cc442f-27c8-458a-88fb-aa558fd08235)
+![Help Summary](https://github.com/jaclu/tmux-menus/assets/5046648/ccd5da05-a3a6-4f11-910c-855158fefd35)
 
 ## Compatibility
 
@@ -301,15 +300,12 @@ Item types and their parameters
 #  this repo, if not, you will need to change the paths to the support
 #  scripts below.
 #
-ITEMS_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
+static_content() {
+  menu_name="Simple Test"
+  req_win_width=39
+  req_win_height=23
 
-# shellcheck disable=SC1091
-. "$SCRIPT_DIR"/dialog_handling.sh
-
-menu_name="Simple Test"
-
-set -- \
+  set -- \
     0.0 M Left "Back to Main menu  <==" "main.sh" \
     0.0 S \
     0.0 T "Example of line extending action" \
@@ -317,12 +313,23 @@ set -- \
         'rename-session -- \"%%\"'" \
     0.0 S \
     0.0 T "Example of action reloading the menu" \
-    1.8 C z "<P> Zoom pane toggle" "resize-pane -Z $menu_reload" \
+    1.8 C z "<P> Zoom pane toggle" "resize-pane -Z $menu_reload"
 
-req_win_width=39
-req_win_height=23
+  menu_generate_part 1 "$@"
+}
 
-menu_parse "$@"
+#===============================================================
+#
+#   Main
+#
+#===============================================================
+
+#  Full path to tmux-menux plugin
+D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
+
+#  Source dialog handling script
+# shellcheck disable=SC1091
+. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 ```
 
 ### Complex param building for menu items

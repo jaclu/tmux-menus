@@ -1,5 +1,6 @@
 #!/bin/sh
 # Always sourced file - Fake bang path to help editors
+#  shellcheck disable=SC2034,SC2154
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -8,8 +9,6 @@
 #
 #  Common tools and settings for this plugins
 #
-
-#  shellcheck disable=SC2034,SC2154
 
 log_it() {
     #
@@ -26,8 +25,8 @@ error_msg() {
     #  Display $1 as an error message in the log and as a tmux display-message
     #  If no $2 or set to 0, the process is not exited
     #
-    em_msg="ERROR: $plugin_name:$(basename "$0") $1"
-    em_exit_code="${2:-0}"
+    em_msg="ERROR: tmux-menus:$(basename "$0") $1"
+    em_exit_code="${2:-1}"
     em_msg_len="$(printf "%s" "$em_msg" | wc -m)"
     em_screen_width="$($TMUX_BIN display -p "#{window_width}")"
 
@@ -43,17 +42,29 @@ error_msg() {
         echo
     fi
 
-    if [ "$em_msg_len" -le "$em_screen_width" ]; then
-        $TMUX_BIN display-message "$em_msg"
-    else
-        #
-        #  Screen is too narrow to use display message
-        #  By echoing it, it will be displayed in a copy-mode
-        #
-        echo
-        echo "$em_msg"
-    fi
     [ "$em_exit_code" -ne 0 ] && exit "$em_exit_code"
+}
+
+get_mtime() {
+    _fname="$1"
+    if [ "$(uname)" = "Darwin" ]; then
+        # macOS version
+        stat -f "%m" "$_fname"
+    else
+        # Linux version
+        stat -c "%Y" "$_fname"
+    fi
+}
+
+error_missing_param() {
+    #
+    #  Shortcut for repeatedly used error message type
+    #
+    param_name="$1"
+    if [ -z "$param_name" ]; then
+        error_msg "dialog_handling.sh:error_missing_param() called without parameter" 1
+    fi
+    error_msg "dialog_handling.sh: $param_name must be defined!" 1
 }
 
 bool_param() {
@@ -168,17 +179,13 @@ wait_to_close_display() {
 #
 #===============================================================
 
-#
-#  Shorthand, to avoid manually typing package names on multiple
-#  locations, easily getting out of sync.
-#
-plugin_name="tmux-menus"
+[ -z "$D_TM_BASE_PATH" ] && error_msg "D_TM_BASE_PATH undefined" 1
 
 #
 #  If log_file is empty or undefined, no logging will occur,
 #  so comment it out for normal usage.
 #
-# log_file="/tmp/$plugin_name.log"
+# log_file="/tmp/tmux-menus.log"
 
 #
 #  If @menus_config_overrides is 1, this file is used to store
@@ -200,8 +207,13 @@ if ! tmux_vers_compare 1.8; then
     error_msg "This needs at least tmux 1.8 to work!" 1
 fi
 
-#  Convert script name to full actual path notation
-current_script="$(cd -- "$(dirname -- "$0")" && pwd)/$(basename "$0")"
+#
+#  Convert script name to full actual path notation the path is used
+#  for caching, so save it to a variable as well
+#
+
+d_current_script="$(cd -- "$(dirname -- "$0")" && pwd)"
+current_script="$d_current_script/$(basename "$0")"
 
 conf_file="$(get_tmux_option "@menus_config_file" "$HOME/tmux.conf")"
 
@@ -228,3 +240,27 @@ else
     menu_location_x="$(get_tmux_option "@menus_location_x" "P")"
     menu_location_y="$(get_tmux_option "@menus_location_y" "P")"
 fi
+
+#
+#  Define a variable that can be used as suffix on commands in dialog
+#  items, to reload the same menu in calling scripts
+#
+if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+    # shellcheck disable=SC2034
+    menu_reload="; '$current_script'"
+else
+    # shellcheck disable=SC2034
+    menu_reload="; run-shell '$current_script'"
+fi
+
+#
+#  All calling scripts must provide
+#
+
+D_TM_SCRIPTS="$D_TM_BASE_PATH"/scripts
+D_TM_ITEMS="$D_TM_BASE_PATH"/items
+
+#  Cache is not implemented yet...
+D_TM_MENUS_CACHE="$D_TM_BASE_PATH"/cache
+
+[ "$(basename "$0")" = "menus.tmux" ] && return

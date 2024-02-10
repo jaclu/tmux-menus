@@ -10,10 +10,17 @@
 # Global check exclude, ignoring: is referenced but not assigned
 # shellcheck disable=SC2154
 
-SCRIPT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
+#  Full path to tmux-menux plugin
+D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
+
+_this="change_prefix.sh"
+if [ "$(basename "$0")" != "$_this" ]; then
+    echo "ERROR: $_this should NOT be sourced"
+    exit 1
+fi
 
 # shellcheck disable=SC1091
-. "$SCRIPT_DIR/utils.sh"
+. "$D_TM_BASE_PATH"/scripts/utils.sh
 
 # safety check to ensure it is defined
 [ -z "$TMUX_BIN" ] && echo "ERROR: change_prefix.sh - TMUX_BIN is not defined!"

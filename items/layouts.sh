@@ -9,11 +9,13 @@
 #   Choose layout
 #
 
-ITEMS_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
-SCRIPT_DIR="$(dirname "$ITEMS_DIR")/scripts"
+static_content() {
+    menu_name="Layouts"
+    req_win_width=32
+    req_win_height=12
 
-# shellcheck disable=SC1091
-. "$SCRIPT_DIR/dialog_handling.sh"
+    # make it global so it changes all windows in all sessions
+    setw_cmd="setw -g"
 
 #
 # Odd, initially setw -g failed on my macbook, but now it seems
@@ -48,7 +50,15 @@ set -- \
     0.0 S \
     0.0 M H "Help -->" "$ITEMS_DIR/help.sh $current_script"
 
-req_win_width=32
-req_win_height=12
+#===============================================================
+#
+#   Main
+#
+#===============================================================
 
-menu_parse "$@"
+#  Full path to tmux-menux plugin
+D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
+
+#  Source dialog handling script
+# shellcheck disable=SC1091
+. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh

@@ -13,10 +13,23 @@
 # Global check exclude, ignoring: is referenced but not assigned
 # shellcheck disable=SC2154
 
-SCRIPT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
+# Should be sourced
+
+if [ -z "$D_TM_BASE_PATH" ]; then
+    this_script="relocate_param_check.sh"
+    if [ "$(basename "$0")" = "$this_script" ]; then
+        msg="$this_script should be sourced"
+    else
+        msg="$this_script should be sourced after utils.sh"
+    fi
+    echo "ERROR: $msg"
+    exit 1
+fi
+
+D_TM_SCRIPTS="$(cd -- "$(dirname -- "$0")" && pwd)"
 
 # shellcheck disable=SC1091
-. "$SCRIPT_DIR/utils.sh"
+. "$D_TM_SCRIPTS/utils.sh"
 
 # safety check to ensure it is defined
 [ -z "$TMUX_BIN" ] && echo "ERROR: relocate_param_check.sh - TMUX_BIN is not defined!"

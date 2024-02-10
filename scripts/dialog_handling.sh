@@ -9,13 +9,9 @@
 #   Part of https://github.com/jaclu/tmux-menus
 #
 #  Parses params and generates tmux or whiptail menus
-#  Two variables are expected to have been set by the caller
+#  One variable is expected to have been set by the caller
 #
-#  ITEMS_DIR  base location for dialog entries, prepended if a menu
-#             param is not a full path
-#
-#  SCRIPT_DIR base location for external commands, prepended if a script
-#             param is not a full path
+#  D_TM_BASE_PATH - base location for tmux-menus plugin
 #
 
 debug_print() {
@@ -56,12 +52,9 @@ ensure_menu_fits_on_screen() {
     #
     set -- "ensure_menu_fits_on_screen() '$menu_name'" \
         "w:$req_win_width h:$req_win_height"
-    log_it "$*"
 
     cur_width="$($TMUX_BIN display -p "#{window_width}")"
-    log_it "Current width: $cur_width"
     cur_height="$($TMUX_BIN display -p "#{window_height}")"
-    log_it "Current height: $cur_height"
 
     if [ "$cur_width" -lt "$req_win_width" ] ||
         [ "$cur_height" -lt "$req_win_height" ]; then
@@ -91,8 +84,8 @@ starting_with_dash() {
 #
 tmux_dialog_prefix() {
     #  shellcheck disable=SC2154
-    menu_prefix="$TMUX_BIN display-menu -T \"#[align=centre] $menu_name \"
-                 -x \"$menu_location_x\" -y \"$menu_location_y\""
+    menu_items="$TMUX_BIN display-menu -T \"#[align=centre] $menu_name \" \
+        -x \"$menu_location_x\" -y \"$menu_location_y\""
 }
 
 tmux_open_menu() {
@@ -142,7 +135,7 @@ tmux_spacer() {
 
 alt_dialog_prefix() {
     #  shellcheck disable=SC2089
-    menu_prefix="$dialog_app --menu \"$menu_name\" 0 0 0 "
+    menu_items="$dialog_app --menu \"$menu_name\" 0 0 0 "
 }
 
 alt_dialog_open_menu() {
@@ -272,15 +265,27 @@ menu_parse() {
     #  we first identify all the params used by the different options,
     #  only then can we continue if the min_vers does not match running tmux
     #
-    [ -z "$menu_name" ] && error_missing_param "menu_name"
 
-    # [ -n "$menu_debug" ] && debug_print ">> menu_parse($*)"
+    [ "$menu_idx" -eq 1 ] && {
+        [ -z "$menu_name" ] && error_missing_param "menu_name"
+        # set prefix for item 1
+        if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+            alt_dialog_prefix
+        else
+            [ -z "$req_win_width" ] && error_missing_param "req_win_width"
+            [ -z "$req_win_height" ] && error_missing_param "req_win_height"
+            tmux_dialog_prefix
+        fi
+    }
+
+    [ -n "$menu_debug" ] && debug_print ">> menu_parse()"
     while [ -n "$1" ]; do
         min_vers="$1"
         shift
         action="$1"
         shift
-        # [ -n "$menu_debug" ] && debug_print "[$min_vers] [$action]"
+
+        [ -n "$menu_debug" ] && debug_print "-- parsing an item [$min_vers] [$action]"
         case "$action" in
 
         "M") #  Open another menu
@@ -298,10 +303,10 @@ menu_parse() {
             #  item
             #
             if echo "$menu" | grep -vq /; then
-                menu="$ITEMS_DIR/$menu"
+                menu="$D_TM_ITEMS/$menu"
             fi
 
-            # [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] menu[$menu]"
+            [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] menu[$menu]"
 
             if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
                 alt_dialog_open_menu "$label" "$key" "$menu"
@@ -320,7 +325,7 @@ menu_parse() {
 
             ! tmux_vers_compare "$min_vers" && continue
 
-            # [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
+            [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
 
             if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
                 alt_dialog_command "$label" "$key" "$cmd"
@@ -332,7 +337,7 @@ menu_parse() {
         "E") #  Run external command - params: key label cmd
             #
             #  If no / is found in the script param, it will be prefixed with
-            #  $SCRIPT_DIR
+            #  $D_TM_SCRIPTS
             #  This means that if you give full path to something in this
             #  param, all scriptd needs to have full path pre-pended.
             #  For example help menus, which takes the full path to the
@@ -354,10 +359,10 @@ menu_parse() {
             #  various implementations
             #
             if echo "$cmd" | grep -vq /; then
-                cmd="$SCRIPT_DIR/$cmd"
+                cmd="$D_TM_SCRIPTS/$cmd"
             fi
 
-            # [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
+            [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
 
             if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
                 alt_dialog_external_cmd "$label" "$key" "$cmd"
@@ -372,7 +377,7 @@ menu_parse() {
 
             ! tmux_vers_compare "$min_vers" && continue
 
-            # [ -n "$menu_debug" ] && debug_print "text line [$txt]"
+            [ -n "$menu_debug" ] && debug_print "text line [$txt]"
             if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
                 alt_dialog_text_line "$txt"
             else
@@ -384,7 +389,7 @@ menu_parse() {
 
             ! tmux_vers_compare "$min_vers" && continue
 
-            # [ -n "$menu_debug" ] && debug_print "Spacer line"
+            [ -n "$menu_debug" ] && debug_print "Spacer line"
 
             # Whiptail/dialog does not have a concept of spacer lines
             if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
@@ -405,49 +410,87 @@ menu_parse() {
         esac
     done
 
+    echo "$menu_items" >"$f_cache_file" || error_msg "Failed to write to: $f_cache_file"
+    menu_items=""
+}
+
+is_function_defined() {
+    # Use type command to check if the function is defined
+    type "$1" 2>/dev/null | grep -q 'function'
+    return $?
+}
+
+menu_generate_part() {
+    menu_idx="$1"
+    shift # get rid of the idx
+    f_cache_file="$d_cache_file/$menu_idx"
+    menu_parse "$@"
+
     if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
-        alt_dialog_prefix
-    else
-        [ -z "$req_win_width" ] && error_missing_param "req_win_width"
-        [ -z "$req_win_height" ] && error_missing_param "req_win_height"
-        tmux_dialog_prefix
+        echo "$wt_actions" >>"$d_cache_file/wt_actions"
+    fi
+}
+
+handle_menu() {
+    #menu_param="$1" # help menus needs an indicator where to go back
+
+    #  Calculate the relative path, to avoid name collitions if
+    #  two items with same name in different rel paths are used
+    rel_path=$(echo "$d_current_script" | sed "s|$D_TM_BASE_PATH/||")
+
+    #  items/main.sh -> items_main
+    d_cache_file="$D_TM_MENUS_CACHE/${rel_path}_$(basename "$0" | sed 's/\.[^.]*$//')"
+
+    if
+        [ ! -f "$d_cache_file"/1 ] ||
+            [ "$(get_mtime "$0")" -gt "$(get_mtime "$d_cache_file"/1)" ]
+    then
+        # Ensure d_cache_file seems to be valid before doing erase
+        case "$d_cache_file" in
+        *tmux-menus*) ;;
+        *) error_msg "d_cache_file seems wrong [$d_cache_file]" ;;
+        esac
+        # clear cache (if present)
+        rm -rf "$d_cache_file" || error_msg "Failed to remove: $d_cache_file"
+        mkdir -p "$d_cache_file" || error_msg "Failed to create: $d_cache_file"
+
+        # 1 if not cached, cache static parts
+        static_content
     fi
 
-    #  prepend cmd line with menu prefix
-    #  shellcheck disable=SC2086,SC2090
-    set -- $menu_prefix $menu_items
+    # 2 handle dynamic parts (if any)
+    if is_function_defined "dynamic_content"; then
+        dynamic_content
+    fi
 
-    # if [ -n "$menu_debug" ]; then
-    #     debug_print "Will run: $@"
-    #     if [ -n "$wt_actions" ]; then
-    #         debug_print "alt-dialog actions: $wt_actions"
-    #     fi
-    # fi
+    # 3 read cache - Loop through each file in the d_cache directory
+    for file in "$d_cache_file"/*; do
+        # skip special files
+        fn="$(basename "$file")"
+        [ "${#fn}" -gt "2" ] && continue
 
+        # Check if the file is a regular file
+        if [ -f "$file" ]; then
+            # Read the content of the file and append it to the dialog variable
+            menu_items="$menu_items $(cat "$file")"
+        fi
+    done
+
+    # 4 Display menu
     if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
         #  shellcheck disable=SC2294
-        menu_selection=$(eval "$@" 3>&2 2>&1 1>&3)
+        menu_selection=$(eval "$menu_items" 3>&2 2>&1 1>&3)
         # echo "selection[$menu_selection]"
+        wt_actions="$(cat "$d_cache_file/wt_actions")"
         alt_dialog_parse_selection
     else
         #  shellcheck disable=SC2034
         t_start="$(date +'%s')"
         # tmux can trigger actions by it self
         #  shellcheck disable=SC2068,SC2294
-        eval $@
+        eval "$menu_items"
         ensure_menu_fits_on_screen
     fi
-}
-
-error_missing_param() {
-    #
-    #  Shortcut for repeatedly used error message type
-    #
-    param_name="$1"
-    if [ -z "$param_name" ]; then
-        error_msg "dialog_handling.sh:error_missing_param() called without parameter" 1
-    fi
-    error_msg "dialog_handling.sh: $param_name must be defined!" 1
 }
 
 #===============================================================
@@ -456,35 +499,27 @@ error_missing_param() {
 #
 #===============================================================
 
+if [ -z "$D_TM_BASE_PATH" ]; then
+    # utils not yet sourced, so error_missing_param() not yet available
+    echo "ERROR: dialog_handling.sh - D_TM_BASE_PATH must be set!"
+    exit 1
+fi
+
+#  Dont rely on D_TM_SCRIPTS having been set before sourcing utils.sh
 #  shellcheck disable=SC1091
-. "$SCRIPT_DIR/utils.sh"
+. "$D_TM_BASE_PATH"/scripts/utils.sh
+
+[ -z "$TMUX" ] && error_msg "tmux-menus can only be used inside tmux!"
 
 #
 #  First some param checks
 #
 [ -z "$TMUX_BIN" ] && error_missing_param "TMUX_BIN"
-if [ -z "$SCRIPT_DIR" ] || [ -z "$ITEMS_DIR" ]; then
-    error_missing_param "SCRIPT_DIR & ITEMS_DIR"
-fi
-
-if [ -z "$TMUX" ]; then
-    echo "ERROR: tmux-menus can only be used inside tmux!"
-    exit 1
+if [ -z "$D_TM_SCRIPTS" ] || [ -z "$D_TM_ITEMS" ]; then
+    error_missing_param "D_TM_SCRIPTS & D_TM_ITEMS"
 fi
 
 ! tmux_vers_compare 3.0 && FORCE_WHIPTAIL_MENUS=1
-
-#
-#  Define a variable that can be used as suffix on commands in dialog
-#  items, to reload the same menu in calling scripts
-#
-if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
-    # shellcheck disable=SC2034
-    menu_reload="; '$current_script'"
-else
-    # shellcheck disable=SC2034
-    menu_reload="; run-shell '$current_script'"
-fi
 
 #
 #  What alternate dialog app to use, if tmux built in dialogs will not
@@ -495,3 +530,5 @@ dialog_app="whiptail"
 alt_dialog_action_separator=":/:/:/:"
 
 menu_debug="" # Set to 1 to use echo 2 to use log_it
+
+handle_menu

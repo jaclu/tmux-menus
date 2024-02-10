@@ -13,9 +13,28 @@ CURRENT_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
 MENUS_DIR="$CURRENT_DIR/items"
 SCRIPTS_DIR="$CURRENT_DIR/scripts"
 
+#  Should point to tmux-menux plugin
+D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")" && pwd)
 
-#  shellcheck disable=SC1091
-. "$SCRIPTS_DIR/utils.sh"
+. "$D_TM_BASE_PATH"/scripts/utils.sh
+
+
+#
+#  Sanity check that D_TM_MENUS_CACHE seems valid,
+#  since we are clearing its content...
+#
+
+[ -z "$D_TM_MENUS_CACHE" ] && error_msg "D_TM_MENUS_CACHE - empty or undefined"
+_d="$(cd "$(dirname "$0")" && pwd)/cache"
+if [ "$D_TM_MENUS_CACHE" != "$_d" ]; then
+    echo "Suspicious MENUCACHE_DIR: $D_TM_MENUS_CACHE"
+    echo "Should be:                $_d"
+    error_msg "Suspicious D_TM_MENUS_CACHE - aborting"
+    exit 1
+fi
+mkdir -p "$D_TM_MENUS_CACHE"
+rm -rf "${D_TM_MENUS_CACHE:?}/"*
+
 
 #
 #  In shell script unlike in tmux, backslash needs to be doubled inside quotes.
@@ -55,7 +74,7 @@ log_it "use_notes=[$use_notes]"
 params=""
 if [ "$use_notes" -eq 1 ]; then
     #  shellcheck disable=SC2089
-    params="$params -N plugin:$plugin_name"
+    params="$params -N plugin:tmux-menus"
 fi
 if [ "$without_prefix" -eq 1 ]; then
     params="$params -n"
