@@ -72,11 +72,12 @@ handle_char() {
 }
 
 dynamic_content() {
+    #
+    #  In this case this is just used to process any param - key to send
+    #
     if [ -n "$menu_param" ]; then
-        log_it "1 [$menu_param]"
         handle_char "$menu_param"
     else
-        log_it "no param"
         if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
             log_it "clearing buffer missing_keys"
             $TMUX_BIN delete-buffer -b missing_keys
@@ -87,7 +88,7 @@ dynamic_content() {
 static_content() {
     menu_name="Missing Keys"
     req_win_width=37
-    req_win_height=18
+    req_win_height=22
 
     set -- \
         0.0 M Left "Back to Main menu <--" main.sh \
@@ -104,9 +105,14 @@ static_content() {
             3.2 T "work, you can instead" \
             0.0 T "use $()<prefix> ]$() to paste the key(-s)." \
             0.0 S
+    else
+        set -- "$@" \
+            0.0 T "Use this to send keys that" \
+            0.0 T "might not be available" \
+            0.0 T "In the keyboard layout" \
+            0.0 T " "
     fi
 
-    # ` 0x60
     set -- "$@" \
         0.0 E e " Send ESC" "$current_script  0x1b" \
         0.0 E t " Send ~ (tilde)" "$current_script  0x7e" \
