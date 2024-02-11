@@ -16,7 +16,7 @@ static_content() {
     req_win_height=15
 
     if ! tmux_vers_compare 2.0; then
-        error_msg "This menu needs at least tmux 2.0" 1
+        error_msg "This menu needs at least tmux 2.0"
     fi
 
     #  shellcheck disable=SC2154

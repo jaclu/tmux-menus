@@ -9,22 +9,13 @@
 #
 
 #  Full path to tmux-menux plugin
-# shellcheck disable=SC2034
 D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
 
+#  shellcheck disable=SC1091
+. "$D_TM_BASE_PATH/scripts/utils.sh"
+
 _this="public_ip.sh"
-if [ "$(basename "$0")" != "$_this" ]; then
-    echo "ERROR: $_this should NOT be sourced"
-    exit 1
-fi
-
-D_TM_SCRIPTS="$(cd -- "$(dirname -- "$0")" && pwd)"
-
-# shellcheck disable=SC1091
-. "$D_TM_SCRIPTS/utils.sh"
-
-# safety check to ensure it is defined
-[ -z "$TMUX_BIN" ] && echo "ERROR: public_ip.sh - TMUX_BIN is not defined!"
+[ "$(basename "$0")" != "$_this" ] && error_msg "$_this should NOT be sourced"
 
 echo # Extra LF to avoid cursor placed over text
 echo "Public IPv4: $(curl -4 https://ifconfig.me 2>/dev/null)"

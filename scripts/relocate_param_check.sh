@@ -13,26 +13,15 @@
 # Global check exclude, ignoring: is referenced but not assigned
 # shellcheck disable=SC2154
 
+#  Full path to tmux-menux plugin
+D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
+
+#  shellcheck disable=SC1091
+. "$D_TM_BASE_PATH/scripts/utils.sh"
+
 # Should be sourced
-
-if [ -z "$D_TM_BASE_PATH" ]; then
-    this_script="relocate_param_check.sh"
-    if [ "$(basename "$0")" = "$this_script" ]; then
-        msg="$this_script should be sourced"
-    else
-        msg="$this_script should be sourced after utils.sh"
-    fi
-    echo "ERROR: $msg"
-    exit 1
-fi
-
-D_TM_SCRIPTS="$(cd -- "$(dirname -- "$0")" && pwd)"
-
-# shellcheck disable=SC1091
-. "$D_TM_SCRIPTS/utils.sh"
-
-# safety check to ensure it is defined
-[ -z "$TMUX_BIN" ] && echo "ERROR: relocate_param_check.sh - TMUX_BIN is not defined!"
+_this="relocate_param_check.sh"
+[ "$(basename "$0")" = "$_this" ] && error_msg "$_this should be sourced"
 
 param_check() {
     item_type="$1"
@@ -43,7 +32,7 @@ param_check() {
 
     *)
         # NEEDS TESTING
-        error_msg "param_check($1) First param must be W or P!" 1
+        error_msg "param_check($1) First param must be W or P!"
         ;;
 
     esac
@@ -57,7 +46,7 @@ param_check() {
     "L")
         if [ "$item_type" = "P" ]; then
             # NEEDS TESTING
-            error_msg "param_check() Panes can not be linked!" 1
+            error_msg "param_check() Panes can not be linked!"
         fi
         ;;
 
@@ -80,7 +69,7 @@ param_check() {
 
     if [ -z "$raw_dest" ]; then
         # NEEDS TESTING
-        error_msg "param_check() - no destination param (\$3) given!" 1
+        error_msg "param_check() - no destination param (\$3) given!"
     fi
 
     cur_ses="$($TMUX_BIN display-message -p '#S')"

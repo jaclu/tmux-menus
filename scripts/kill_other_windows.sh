@@ -10,19 +10,14 @@
 # Global check exclude, ignoring: is referenced but not assigned
 # shellcheck disable=SC2154
 
+#  Full path to tmux-menux plugin
+D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
+
+#  shellcheck disable=SC1091
+. "$D_TM_BASE_PATH/scripts/utils.sh"
+
 _this="kill_other_windows.sh"
-if [ "$(basename "$0")" != "$_this" ]; then
-    echo "ERROR: $_this should NOT be sourced"
-    exit 1
-fi
-
-D_TM_SCRIPTS="$(cd -- "$(dirname -- "$0")" && pwd)"
-
-# shellcheck disable=SC1091
-. "$D_TM_SCRIPTS/utils.sh"
-
-# safety check to ensure it is defined
-[ -z "$TMUX_BIN" ] && echo "ERROR: kill_other_windows.sh - TMUX_BIN is not defined!"
+[ "$(basename "$0")" != "$_this" ] && error_msg "$_this should NOT be sourced"
 
 window_list="$(IFS=" " $TMUX_BIN list-windows -F '#{window_id}')"
 current_window="$($TMUX_BIN display-message -p '#{window_id}')"

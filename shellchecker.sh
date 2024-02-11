@@ -102,7 +102,7 @@ identify_available_linters() {
 
 do_shellcheck() {
     local fn2="$1"
-    [[ -z "$fn2" ]] && error_msg "do_shellcheck() - no paran given!" 1
+    [[ -z "$fn2" ]] && error_msg "do_shellcheck() - no paran given!"
     if [[ -n "${shellcheck_p}" ]]; then
         #  shellcheck disable=SC2086
         shellcheck -a -x -e SC2039,SC2250,SC2312 $sc_extra "$fn2" || exit 1
@@ -112,7 +112,7 @@ do_shellcheck() {
 
 do_checkbashisms() {
     local fn="$1"
-    [[ -z "$fn" ]] && error_msg "do_checkbashisms() - no paran given!" 1
+    [[ -z "$fn" ]] && error_msg "do_checkbashisms() - no paran given!"
     if [[ -n "${checkbashisms_p}" ]]; then
         checkbashisms -n -e -x "$fn" || exit 1
     fi
@@ -120,7 +120,7 @@ do_checkbashisms() {
 
 lint_posix() {
     local fn="$1"
-    [[ -z "$fn" ]] && error_msg "lint_posix() - no paran given!" 1
+    [[ -z "$fn" ]] && error_msg "lint_posix() - no paran given!"
     echo "checking posix: $fn"
     do_shellcheck "$fn"
     do_checkbashisms "$fn"
@@ -128,7 +128,7 @@ lint_posix() {
 
 lint_bash() {
     local fn="$1"
-    [[ -z "$fn" ]] && error_msg "lint_bash() - no paran given!" 1
+    [[ -z "$fn" ]] && error_msg "lint_bash() - no paran given!"
     echo "checking bash: $fn"
     do_shellcheck "$fn"
 }
@@ -364,7 +364,7 @@ esac
 #  Ensure this is run in the intended location in case this was launched from
 #  somewhere else.
 #
-#cd /opt/AOK || error_msg "The AOK file tools needs to be saved to /opt/AOK for things to work!" 1
+#cd /opt/AOK || error_msg "The AOK file tools needs to be saved to /opt/AOK for things to work!"
 
 #
 #  Specifix excludes
@@ -381,7 +381,7 @@ prefixes=(
 
 suffixes=(
 
- )
+)
 
 identify_available_linters
 process_file_tree

@@ -259,6 +259,12 @@ alt_dialog_parse_selection() {
     done
 }
 
+is_function_defined() {
+    # Use type command to check if the function is defined
+    type "$1" 2>/dev/null | grep -q 'function'
+    return $?
+}
+
 menu_parse() {
     #
     #  Since the various menu entries have different numbers of params
@@ -414,12 +420,6 @@ menu_parse() {
     menu_items=""
 }
 
-is_function_defined() {
-    # Use type command to check if the function is defined
-    type "$1" 2>/dev/null | grep -q 'function'
-    return $?
-}
-
 menu_generate_part() {
     menu_idx="$1"
     shift # get rid of the idx
@@ -508,19 +508,10 @@ if [ -z "$D_TM_BASE_PATH" ]; then
     exit 1
 fi
 
-#  Dont rely on D_TM_SCRIPTS having been set before sourcing utils.sh
 #  shellcheck disable=SC1091
 . "$D_TM_BASE_PATH"/scripts/utils.sh
 
 [ -z "$TMUX" ] && error_msg "tmux-menus can only be used inside tmux!"
-
-#
-#  First some param checks
-#
-[ -z "$TMUX_BIN" ] && error_missing_param "TMUX_BIN"
-if [ -z "$D_TM_SCRIPTS" ] || [ -z "$D_TM_ITEMS" ]; then
-    error_missing_param "D_TM_SCRIPTS & D_TM_ITEMS"
-fi
 
 ! tmux_vers_compare 3.0 && FORCE_WHIPTAIL_MENUS=1
 

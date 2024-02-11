@@ -45,26 +45,15 @@ error_msg() {
     [ "$em_exit_code" -ne 0 ] && exit "$em_exit_code"
 }
 
-get_mtime() {
-    _fname="$1"
-    if [ "$(uname)" = "Darwin" ]; then
-        # macOS version
-        stat -f "%m" "$_fname"
-    else
-        # Linux version
-        stat -c "%Y" "$_fname"
-    fi
-}
-
 error_missing_param() {
     #
     #  Shortcut for repeatedly used error message type
     #
     param_name="$1"
     if [ -z "$param_name" ]; then
-        error_msg "dialog_handling.sh:error_missing_param() called without parameter" 1
+        error_msg "dialog_handling.sh:error_missing_param() called without parameter"
     fi
-    error_msg "dialog_handling.sh: $param_name must be defined!" 1
+    error_msg "dialog_handling.sh: $param_name must be defined!"
 }
 
 bool_param() {
@@ -99,6 +88,17 @@ bool_param() {
     return 1 # default to False
 }
 
+get_mtime() {
+    _fname="$1"
+    if [ "$(uname)" = "Darwin" ]; then
+        # macOS version
+        stat -f "%m" "$_fname"
+    else
+        # Linux version
+        stat -c "%Y" "$_fname"
+    fi
+}
+
 get_tmux_option() {
     gtm_option=$1
     gtm_default=$2
@@ -111,16 +111,6 @@ get_tmux_option() {
     unset gtm_option
     unset gtm_default
     unset gtm_value
-}
-
-write_config() {
-    #
-    #  When config_overrides is set this saves such settings
-    #
-    [ "$config_overrides" -ne 1 ] && return
-    #log_it "write_config() x[$location_x] y[$location_y]"
-    echo "location_x=$location_x" >"$custom_config_file"
-    echo "location_y=$location_y" >>"$custom_config_file"
 }
 
 read_config() {
@@ -179,7 +169,7 @@ wait_to_close_display() {
 #
 #===============================================================
 
-[ -z "$D_TM_BASE_PATH" ] && error_msg "D_TM_BASE_PATH undefined" 1
+[ -z "$D_TM_BASE_PATH" ] && error_msg "D_TM_BASE_PATH undefined"
 
 #
 #  If log_file is empty or undefined, no logging will occur,
@@ -204,7 +194,7 @@ custom_config_file="/tmp/tmux-menus.conf"
 [ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
 
 if ! tmux_vers_compare 1.8; then
-    error_msg "This needs at least tmux 1.8 to work!" 1
+    error_msg "This needs at least tmux 1.8 to work!"
 fi
 
 #
@@ -215,8 +205,6 @@ fi
 d_current_script="$(cd -- "$(dirname -- "$0")" && pwd)"
 current_script="$d_current_script/$(basename "$0")"
 
-conf_file="$(get_tmux_option "@menus_config_file" "$HOME/tmux.conf")"
-
 #
 #  This is for shells checking status.
 #  In tmux code #{?@menus_config_overrides,,} can be used
@@ -226,7 +214,6 @@ if bool_param "$(get_tmux_option "@menus_config_overrides" "0")"; then
 else
     config_overrides=0
 fi
-#log_it "config_overrides=[$config_overrides]"
 
 if [ "$config_overrides" -eq 1 ] && [ -f "$custom_config_file" ]; then
     read_config
@@ -248,9 +235,11 @@ fi
 if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
     # shellcheck disable=SC2034
     menu_reload="; '$current_script'"
+    D_TM_MENUS_CACHE="$D_TM_BASE_PATH"/cache/whiptail
 else
     # shellcheck disable=SC2034
     menu_reload="; run-shell '$current_script'"
+    D_TM_MENUS_CACHE="$D_TM_BASE_PATH"/cache
 fi
 
 #
@@ -260,7 +249,4 @@ fi
 D_TM_SCRIPTS="$D_TM_BASE_PATH"/scripts
 D_TM_ITEMS="$D_TM_BASE_PATH"/items
 
-#  Cache is not implemented yet...
-D_TM_MENUS_CACHE="$D_TM_BASE_PATH"/cache
-
-[ "$(basename "$0")" = "menus.tmux" ] && return
+# [ "$(basename "$0")" = "menus.tmux" ] && return

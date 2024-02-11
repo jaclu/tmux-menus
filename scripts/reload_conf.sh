@@ -9,20 +9,26 @@
 #   Gives prompt to correct if need-be
 #
 
-_this="reload_conf.sh"
-if [ "$(basename "$0")" != "$_this" ]; then
-    echo "ERROR: $_this should NOT be sourced"
-    exit 1
-fi
+write_config() {
+    #
+    #  When config_overrides is set this saves such settings
+    #
+    [ "$config_overrides" -ne 1 ] && return
+    #log_it "write_config() x[$location_x] y[$location_y]"
+    echo "location_x=$location_x" >"$custom_config_file"
+    echo "location_y=$location_y" >>"$custom_config_file"
+}
 
-D_TM_SCRIPTS="$(cd -- "$(dirname -- "$0")" && pwd)"
+#  Full path to tmux-menux plugin
+D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
 
 # shellcheck disable=SC1091
-. "$D_TM_SCRIPTS"/utils.sh
+. "$D_TM_SCRIPTS"/scripts/utils.sh
 
-# safety check to ensure it is defined
-[ -z "$TMUX_BIN" ] && echo "ERROR: reload_conf.sh - TMUX_BIN is not defined!"
+_this="reload_conf.sh"
+[ "$(basename "$0")" != "$_this" ] && error_msg "$_this should NOT be sourced"
 
+conf_file="$(get_tmux_option "@menus_config_file" "$HOME/tmux.conf")"
 conf="${TMUX_CONF:-$conf_file}"
 
 # shellcheck disable=SC2154

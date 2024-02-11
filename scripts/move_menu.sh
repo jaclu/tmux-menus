@@ -10,29 +10,24 @@
 #   Moving current pane within same session or to other session.
 #
 
+#  Full path to tmux-menux plugin
+D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
+
+#  shellcheck disable=SC1091
+. "$D_TM_BASE_PATH/scripts/utils.sh"
+
 #  shellcheck disable=SC2034
 #  Directives for shellcheck directly after bang path are global
 
 _this="move_menu.sh"
-if [ "$(basename "$0")" != "$_this" ]; then
-    echo "ERROR: $_this should NOT be sourced"
-    exit 1
-fi
-
-D_TM_SCRIPTS="$(cd -- "$(dirname -- "$0")" && pwd)"
-
-# shellcheck disable=SC1091
-. "$D_TM_SCRIPTS/utils.sh"
-
-# safety check to ensure it is defined
-[ -z "$TMUX_BIN" ] && echo "ERROR: move_menu.sh - TMUX_BIN is not defined!"
+[ "$(basename "$0")" != "$_this" ] && error_msg "$_this should NOT be sourced"
 
 action="$1"
 param_1="$2"
 param_2="$3"
 
 if [ -z "$action" ]; then
-    error_msg "move_menu.sh was called without action param" 1
+    error_msg "move_menu.sh was called without action param"
 fi
 
 #  It will be created with defaults if not present

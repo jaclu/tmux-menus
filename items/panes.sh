@@ -12,20 +12,21 @@
 dynamic_content() {
     # Things that change dependent on various states
 
-    # dynamic -2
-    if tmux_vers_compare 2.0 && [ "$(tmux list-panes | wc -l)" -gt 1 ]; then
-        if [ "$($TMUX_BIN display -p '#{window_zoomed_flag}')" -eq 0 ]; then
-            zoom_action="Zoom"
-        else
-            zoom_action="Un-Zoom"
-        fi
+    new_mark_state="$($TMUX_BIN display -p '#{?pane_marked,Unmark,Mark}')"
+    new_sync_state="$($TMUX_BIN display -p '#{?pane_synchronized,Disable,Activate}')"
 
-        set -- \
-            2.0 C z "<P> $zoom_action pane" "resize-pane -Z $menu_reload"
+    # dynamic -2
+    if [ "$($TMUX_BIN display -p '#{window_zoomed_flag}')" -eq 0 ]; then
+        zoom_action="Zoom"
     else
-        # empty item
-        set --
+        zoom_action="Un-Zoom"
     fi
+
+    set -- \
+        2.0 C z "<P> $zoom_action pane" "resize-pane -Z $menu_reload" \
+        2.1 C m "<P> $new_mark_state current pane" "select-pane -m $menu_reload" \
+        1.9 C y "$new_sync_state synchronized panes" "set -w synchronize-panes"
+
     menu_generate_part 2 "$@"
 }
 
@@ -35,9 +36,6 @@ static_content() {
     req_win_height=23
     # # f_cache_file_panes="${f_cache_file}-panes"
     # zoom_action_placeholder="===Zoom-or-UnZoom==="
-
-    new_mark_state="$($TMUX_BIN display -p '#{?pane_marked,Unmark,Mark}')"
-    new_sync_state="$($TMUX_BIN display -p '#{?pane_synchronized,Disable,Activate}')"
 
     # static - 1
     set -- \
@@ -49,19 +47,17 @@ static_content() {
         2.6 C t " Set Title" "command-prompt -I '#T'  -p 'Title: '  \
             'select-pane -T \"%%\"' $menu_reload" \
         2.6 C c " Clear history & screen" \
-        "send-keys C-l ; run 'sleep 0.3' ; clear-history"
+        "send-keys C-l ; run 'sleep 0.3' ; clear-history" \
+        1.7 C q "<P> Display pane numbers" "display-panes $menu_reload" \
+        1.8 C "[" '<P> Copy mode - "history"' "copy-mode" \
+        1.7 C s " Display pane size" "display-message \
+            'Pane: #P size: #{pane_width}x#{pane_height}' $menu_reload"
 
     menu_generate_part 1 "$@"
 
     # static -3
     set -- \
-        1.7 C q "<P> Display pane numbers" "display-panes $menu_reload" \
-        1.8 C "[" '<P> Copy mode - "history"' "copy-mode" \
-        2.1 C m "<P> $new_mark_state current pane" "select-pane -m $menu_reload" \
-        1.7 C s " Display pane size" "display-message \
-            'Pane: #P size: #{pane_width}x#{pane_height}' $menu_reload" \
         0.0 S \
-        1.9 C y "$new_sync_state synchronized panes" "set -w synchronize-panes" \
         2.0 C h "Save pane history no escapes" "command-prompt -p \
             'Save to (no escapes):' -I '~/tmux.history' \
             'capture-pane -S - -E - ; save-buffer %1 ; delete-buffer'" \

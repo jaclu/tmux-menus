@@ -27,19 +27,11 @@
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
 
-_this="do_whiptail.sh"
-if [ "$(basename "$0")" != "$_this" ]; then
-    echo "ERROR: $_this should NOT be sourced"
-    exit 1
-fi
-
-D_TM_SCRIPTS="$(cd -- "$(dirname -- "$0")" && pwd)"
-
 #  shellcheck disable=SC1091
-. "$D_TM_SCRIPTS/utils.sh"
+. "$D_TM_BASE_PATH/scripts/utils.sh"
 
-# safety check to ensure it is defined
-[ -z "$TMUX_BIN" ] && echo "ERROR: do_whiptail.sh - TMUX_BIN is not defined!"
+_this="do_whiptail.sh"
+[ "$(basename "$0")" != "$_this" ] && error_msg "$_this should NOT be sourced"
 
 #
 #  This is run from the tmux env, so FORCE_WHIPTAIL_MENUS can not be

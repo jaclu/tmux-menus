@@ -11,22 +11,13 @@
 # shellcheck disable=SC2154
 
 #  Full path to tmux-menux plugin
-# shellcheck disable=SC2034
 D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
 
+#  shellcheck disable=SC1091
+. "$D_TM_BASE_PATH/scripts/utils.sh"
+
 _this="break_pane.sh"
-if [ "$(basename "$0")" != "$_this" ]; then
-    echo "ERROR: $_this should NOT be sourced"
-    exit 1
-fi
-
-D_TM_SCRIPTS="$(cd -- "$(dirname -- "$0")" && pwd)"
-
-# shellcheck disable=SC1091
-. "$D_TM_SCRIPTS/utils.sh"
-
-# safety check to ensure it is defined
-[ -z "$TMUX_BIN" ] && echo "ERROR: break_pane.sh - TMUX_BIN is not defined!"
+[ "$(basename "$0")" != "$_this" ] && error_msg "$_this should NOT be sourced"
 
 if [ "$($TMUX_BIN list-panes | wc -l)" -lt 2 ]; then
     $TMUX_BIN display-message "Only one pane!"
