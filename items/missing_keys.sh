@@ -54,7 +54,7 @@ handle_char() {
     0x*)
         # handle it as a hex code
         # shellcheck disable=SC2059
-        s="$(printf "\\$(printf "%o" "0x${s_in#0x}")")"z
+        s="$(printf "\\$(printf "%o" "0x${s_in#0x}")")"
         ;;
     *)
         s="$s_in"
@@ -69,6 +69,19 @@ handle_char() {
         ;;
     esac
     display_char "$s"
+}
+
+dynamic_content() {
+    if [ -n "$menu_param" ]; then
+        log_it "1 [$menu_param]"
+        handle_char "$menu_param"
+    else
+        log_it "no param"
+        if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+            log_it "clearing buffer missing_keys"
+            $TMUX_BIN delete-buffer -b missing_keys
+        fi
+    fi
 }
 
 static_content() {
@@ -93,30 +106,23 @@ static_content() {
             0.0 S
     fi
 
+    # ` 0x60
     set -- "$@" \
         0.0 E e " Send ESC" "$current_script  0x1b" \
         0.0 E t " Send ~ (tilde)" "$current_script  0x7e" \
         0.0 E b " Send $() (back-tick)" "$current_script  0x60" \
         0.0 S \
-        0.0 E p " Send § (paragraph)" "$current_script  §" \
-        0.0 E a " Send @ (at)" "$current_script  @" \
-        0.0 E E " Send € (Euro sign)" "$current_script  €" \
-        0.0 E y " Send ¥ (Yen and yuan sign)" "$current_script  ¥" \
-        0.0 E P " Send £ (Pound sign)" "$current_script  £" \
-        0.0 E c " Send ¢ (Cent sign)" "$current_script  ¢" \
+        0.0 E p " Send § (paragraph)" "$current_script §" \
+        0.0 E a " Send @ (at)" "$current_script @" \
+        0.0 E E " Send € (Euro sign)" "$current_script €" \
+        0.0 E y " Send ¥ (Yen and yuan sign)" "$current_script ¥" \
+        0.0 E P " Send £ (Pound sign)" "$current_script £" \
+        0.0 E c " Send ¢ (Cent sign)" "$current_script ¢" \
         0.0 S \
         0.0 M H "Help -->" "$D_TM_ITEMS/help.sh $current_script"
 
     menu_generate_part 1 "$@"
 
-    if [ -n "$menu_param" ]; then
-        handle_char "$menu_param"
-    else
-        if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
-            log_it "clearing buffer missing_keys"
-            $TMUX_BIN delete-buffer -b missing_keys
-        fi
-    fi
 }
 
 #===============================================================
@@ -129,6 +135,7 @@ static_content() {
 D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
 
 menu_param="$1"
+
 #  Source dialog handling script
 # shellcheck disable=SC1091
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh

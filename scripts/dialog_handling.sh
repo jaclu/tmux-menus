@@ -435,7 +435,11 @@ menu_generate_part() {
 }
 
 handle_menu() {
-    #menu_param="$1" # help menus needs an indicator where to go back
+    #
+    #  If a menu needs to handle a param, save it before sourcing this using:
+    #  menu_param="$1"
+    #  then process it in dynamic_content()
+    #
 
     #  Calculate the relative path, to avoid name collitions if
     #  two items with same name in different rel paths are used
