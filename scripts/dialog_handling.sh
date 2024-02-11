@@ -427,6 +427,9 @@ menu_generate_part() {
     menu_parse "$@"
 
     if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+        # clear actions
+        [ "$menu_idx" -eq 1 ] && rm -f "$d_cache_file/wt_actions"
+
         echo "$wt_actions" >>"$d_cache_file/wt_actions"
     fi
 }
