@@ -115,7 +115,6 @@ static_content() {
         set -- "$@" \
             0.0 T "Use this to send keys that" \
             0.0 T "might not be available" \
-            0.0 T "In the keyboard layout" \
             0.0 T " "
     fi
 
