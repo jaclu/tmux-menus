@@ -58,12 +58,18 @@ handle_char() {
         ;;
     *)
         s="$s_in"
-        #
-        #  On Linux, it seems checking str length the normal way
-        #  doesnt work for some chars, like §
-        #  This seems more resiliant
-        #
-        if [ "${#s_in}" -gt 1 ]; then
+        if [ "$(uname)" = "Darwin" ]; then
+            _check="${#s_in}"
+        else
+            #
+            #  On Linux, it seems checking str length the normal way
+            #  doesnt work for some chars, like §
+            #  This seems more resiliant
+            #
+            # shellcheck disable=SC2308
+            _check="$(expr length "$s_in")"
+        fi
+        if [ "$_check" -gt 1 ]; then
             error_msg "param can only be single char! [$s]"
         fi
         ;;
