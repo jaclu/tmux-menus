@@ -69,7 +69,8 @@ The grey one is generated with whiptail, the rest by tmux built-in `display-menu
 | - | - |
 3.2 | Fully compatible
 3.0 - 3.1c | Menu centering is not supported, it's displayed top left if C is selected.
-1.7 - 3.0 | Only available using Whiptail, menu location setting ignored.
+1.8 - 3.0 | Only available using Whiptail, menu location setting ignored.
+1.7       | tpm not available, so needs to be initiated by running [path to plugins]/tmux-menus/menus.tmux directly from the conf file
 
 The above table covers compatibility for the general tool. Each item
 has a min tmux version set, if the running tmux doesn't match this,
