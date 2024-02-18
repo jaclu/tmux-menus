@@ -96,6 +96,8 @@ static_content() {
     req_win_width=37
     req_win_height=22
 
+    tmux_vers_compare 2.0 || error_msg "needs tmux 2.0"
+    
     set -- \
         0.0 M Left "Back to Main menu <--" main.sh \
         0.0 S

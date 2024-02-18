@@ -11,11 +11,11 @@ experienced users, then add more for newbies.
 
 ## Recent changes
 
-- Made it backwards compatible down to tmux 1.7 (was 1.8)
+- Menu 'Missing Keys' limited to tmux >= 2.0
+- Made it backward compatible down to tmux 1.7 (was 1.8)
 - Implemented caching, for fast machines not much difference, for slower machines quite noticeable!
 - Simplified path handling, now only D_TM_BASE_PATH needs to be set in each menu
-- Added Configuration of Border lines in the Layouts menu
-- Added menu "Missing Keys" for inserting keys not available on the keyboard.
+- Added Configuration of Borderlines in the Layouts menu
 
 ## Purpose
 
@@ -24,7 +24,7 @@ Some basic popup menus come as the default
 
 - `<prefix> <` displays some Windows handling options
 - `<prefix> >` displays some pane handling options
-- Right-click on pane, ALT-right click on pane, status or status left.
+- Right-click on a pane, ALT-right-click on a pane, status or status left.
 
 Rather lacking and since they're written as hard-to-read one-liners,
 a more integrated approach with navigation and adaptability seemed
@@ -36,14 +36,14 @@ Not solely meant for beginners, I use it myself all the time:
 this gives access to all the actions that aren't available with the
 regular shortcuts. For instance, when running iSH the console keyboard is
 pretty limited.
-- Tasks that would need external scripts to avoid hard to read
-complex bind one-liners, such as kill the current session, without getting
+- Tasks that would need external scripts to avoid hard-to-read
+complex bind one-liners, such as killing the current session, without getting
 disconnected.
 - When direct typing would be much longer.
-Example: Kill the server directly is min 12 keys:
+Example: Kill the server directly with 12 keys:
 `<prefix> : kill-ser <tab> <enter>`
 with the menus 5 keys: `<prefix> \ A x y`
-- Actions used to seldom to remember as shortcuts.
+- Actions used to seldom to be remembered as shortcuts.
 
 ## Usage
 
@@ -69,8 +69,8 @@ The grey one is generated with whiptail, the rest by tmux built-in `display-menu
 | - | - |
 3.2 | Fully compatible
 3.0 - 3.1c | Menu centering is not supported, it's displayed top left if C is selected.
-1.8 - 3.0 | Only available using Whiptail, menu location setting ignored.
-1.7       | tpm not available, so needs to be initiated by running [path to plugins]/tmux-menus/menus.tmux directly from the conf file
+1.8 - 2.9a | Only available using Whiptail, menu location setting ignored.
+1.7        | tpm is not available, so the plugin needs to be initialized by running [path to tmux-menus]/menus.tmux directly from the conf file
 
 The above table covers compatibility for the general tool. Each item
 has a min tmux version set, if the running tmux doesn't match this,
@@ -122,7 +122,7 @@ to run whiptail dialogs via a shortcut, the current (if any) task is
 suspended, dialogs are run, and when done the suspended task is
 reactivated.
 
-The downside of this is that if there were no current task running in
+The downside of this is that if no current tasks were running in
 the active pane, you will see `fg: no current job` being printed when
 the dialog is exited. This can be ignored.
 
@@ -145,7 +145,7 @@ The default trigger is `<prefix> \`. The trigger is selected like this:
 set -g @menus_trigger 'F9'
 ```
 
-Please note that non-standard keys, like the default backslash needs to
+Please note that non-standard keys, like the default backslash need to
 be noted in a specific way in order not to confuse tmux.
 Either `'\'` or without quotes as `\\`. Quoting `'\\'` won't make sense
 for tmux and fail to bind the key.
@@ -249,12 +249,12 @@ of the tmux session you are working on, something like
 This directly triggers that menu and displays any syntax errors on the
 command line.
 
-In `scripts/utils.sh` there is a function log_it, and a variable log_file.
+In `scripts/utils.sh` there is a function log_it and a variable log_file.
 If log_file is defined, any call to log_it is printed there.
 If not defined, nothing happens. log_it lines can be left in the code.
 
 If you are triggering a menu from the command line, you can use direct echo,
-but then you need to remove it before deploying, since tmux sees any
+but then you need to remove it before deploying since tmux sees any
 script output as a potential error and display it in a scroll-back buffer.
 If tailing a log file is unpractical, a more scalable way to achieve the
 same result as echo would be to set `log_file='/dev/stdout'`
@@ -310,7 +310,7 @@ static_content() {
   set -- \
     0.0 M Left "Back to Main menu  <==" "main.sh" \
     0.0 S \
-    0.0 T "Example of line extending action" \
+    0.0 T "Example of a line extending action" \
     2.0 C "\$" "<P> Rename this session" "command-prompt -I '#S' \
         'rename-session -- \"%%\"'" \
     0.0 S \
