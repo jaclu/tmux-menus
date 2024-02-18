@@ -11,6 +11,7 @@ experienced users, then add more for newbies.
 
 ## Recent changes
 
+- Made it backwards compatible down to tmux 1.7 (was 1.8)
 - Implemented caching, for fast machines not much difference, for slower machines quite noticeable!
 - Simplified path handling, now only D_TM_BASE_PATH needs to be set in each menu
 - Added Configuration of Border lines in the Layouts menu
@@ -68,7 +69,7 @@ The grey one is generated with whiptail, the rest by tmux built-in `display-menu
 | - | - |
 3.2 | Fully compatible
 3.0 - 3.1c | Menu centering is not supported, it's displayed top left if C is selected.
-1.8 - 3.0 | Only available using Whiptail, menu location setting ignored.
+1.7 - 3.0 | Only available using Whiptail, menu location setting ignored.
 
 The above table covers compatibility for the general tool. Each item
 has a min tmux version set, if the running tmux doesn't match this,

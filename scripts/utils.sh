@@ -102,7 +102,7 @@ get_mtime() {
 get_tmux_option() {
     gtm_option=$1
     gtm_default=$2
-    gtm_value=$($TMUX_BIN show-option -gqv "$gtm_option")
+    gtm_value=$($TMUX_BIN show-option -gv "$gtm_option" 2>/dev/null)
     if [ -z "$gtm_value" ]; then
         echo "$gtm_default"
     else
@@ -193,8 +193,8 @@ custom_config_file="/tmp/tmux-menus.conf"
 #
 [ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
 
-if ! tmux_vers_compare 1.8; then
-    error_msg "This needs at least tmux 1.8 to work!"
+if ! tmux_vers_compare 1.7; then
+    error_msg "This needs at least tmux 1.7 to work!"
 fi
 
 #
