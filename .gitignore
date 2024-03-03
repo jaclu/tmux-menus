@@ -1,9 +1,10 @@
+# temp files
 *~
 \#*
 .shellchecker.cache
+cache/
 
 tests/
 .DS_Store
 __pycache__
 
-cache/
