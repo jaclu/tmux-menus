@@ -1,7 +1,11 @@
 # temp files
 *~
 \#*
-.shellchecker.cache
+
+# olint linter config
+.cache.olint
+
+# tmux-menus cache
 cache/
 
 tests/
