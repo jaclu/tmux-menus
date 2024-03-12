@@ -47,10 +47,10 @@ static_content() {
 #===============================================================
 
 #  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
+D_TM_BASE_PATH=$(dirname "$(dirname -- "$(readlink -f -- "$0")")")
 
 menu_param="$1"
 
-#  Source dialog handling script
-# shellcheck disable=SC1091
+#  Generate and display the menu
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
+
