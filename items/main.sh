@@ -19,7 +19,7 @@ static_content() {
         0.0 M P "Handling Pane     -->" panes.sh \
         0.0 M W "Handling Window   -->" windows.sh \
         2.0 M S "Handling Sessions -->" sessions.sh \
-        2.0 M B "Paste buffers     -->" paste_buffers.sh \
+        1.8 M B "Paste buffers     -->" paste_buffers.sh \
         0.0 M L "Layouts           -->" layouts.sh \
         0.0 M V "Split view        -->" split_view.sh \
         2.0 M M "Missing Keys      -->" missing_keys.sh \
