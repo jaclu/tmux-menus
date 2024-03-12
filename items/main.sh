@@ -11,22 +11,22 @@
 
 static_content() {
     menu_name="Main menu"
-    req_win_width=39
-    req_win_height=23
+    req_win_width=38
+    req_win_height=24
 
     #  Menu items definition
     set -- \
         0.0 M P "Handling Pane     -->" panes.sh \
         0.0 M W "Handling Window   -->" windows.sh \
         2.0 M S "Handling Sessions -->" sessions.sh \
+        2.0 M B "Paste buffers     -->" paste_buffers.sh \
         0.0 M L "Layouts           -->" layouts.sh \
         0.0 M V "Split view        -->" split_view.sh \
         2.0 M M "Missing Keys      -->" missing_keys.sh \
-        0.0 M E "Extras            -->" extras.sh \
         0.0 M A "Advanced Options  -->" advanced.sh \
+        0.0 M E "Extras            -->" extras.sh \
         0.0 S \
         0.0 C l "toggle status Line" "set status" \
-        0.0 E i "public IP" public_ip.sh \
         0.0 E p "Plugins inventory" "$D_TM_SCRIPTS/plugins.sh" \
         0.0 S \
         0.0 C n "Navigate & select ses/win/pane" "choose-tree"

@@ -29,19 +29,20 @@ is_avalable() {
 
 static_content() {
     menu_name="Extras"
-    req_win_width=32
-    req_win_height=10
+    req_win_width=33
+    req_win_height=11
 
     d_extras="$D_TM_ITEMS"/extras
 
     #  shellcheck disable=SC2154
     set -- \
         0.0 M Left "Back to Main menu  <--" main.sh \
-        0.0 S \
         0.0 M A "$(is_aok_fs)iSH with AOK FS        -->" "$d_extras"/aok.sh \
         0.0 M D "$(is_avalable dropbox)Dropbox      -->" "$d_extras"/dropbox.sh \
         0.0 M S "$(is_avalable spotify)Spotify      -->" "$d_extras"/spotify.sh \
         0.0 M M "$(is_avalable mullvad)Mullvad VPN  -->" "$d_extras"/mullvad.sh \
+        0.0 S \
+        0.0 E i "public IP" public_ip.sh \
         0.0 S \
         0.0 M H 'Help -->' "$D_TM_ITEMS/help_extras.sh $current_script"
 

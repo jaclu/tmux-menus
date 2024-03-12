@@ -11,6 +11,7 @@ experienced users, then add more for newbies.
 
 ## Recent changes
 
+- Moved Paste Buffers to main & public IP to Extras. Checked and updated min sizes
 - Menu 'Missing Keys' limited to tmux >= 2.0
 - Made it backward compatible down to tmux 1.7 (was 1.8)
 - Implemented caching, for fast machines not much difference, for slower machines quite noticeable!
@@ -54,7 +55,6 @@ The default is `<prefix> \` see Configuration below for how to change it.
 
 The grey one is generated with whiptail, the rest by tmux built-in `display-menu`
 
-
 ![main](https://github.com/jaclu/tmux-menus/assets/5046648/5985d53b-cd55-4b33-81e3-2d7811131ed2)
 ![Whiptail main](https://github.com/jaclu/tmux-menus/assets/5046648/11ac1c9f-cb19-4dba-a29d-7106ec854fea)
 ![Pane](https://github.com/jaclu/tmux-menus/assets/5046648/68a390be-f4d7-44bc-a9d4-9082ad2c718)
@@ -65,8 +65,8 @@ The grey one is generated with whiptail, the rest by tmux built-in `display-menu
 
 ## Compatibility
 
-| Version | Notice
-| - | - |
+Version | Notice
+-|-
 3.2 | Fully compatible
 3.0 - 3.1c | Menu centering is not supported, it's displayed top left if C is selected.
 1.8 - 2.9a | Only available using Whiptail, menu location setting ignored.

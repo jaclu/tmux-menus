@@ -12,7 +12,7 @@
 static_content() {
 
     menu_name="Client Management"
-    req_win_width=39
+    req_win_width=41
     req_win_height=28
 
     #  shellcheck disable=SC2154

@@ -26,7 +26,7 @@ dynamic_content() {
 static_content() {
     menu_name="Move Window"
     req_win_width=40
-    req_win_height=13
+    req_win_height=17
 
     select_location="choose-tree -Gw 'run-shell \"$D_TM_SCRIPTS/relocate_window.sh"
 

@@ -34,6 +34,7 @@ static_content() {
     menu_name="Handling Pane"
     req_win_width=38
     req_win_height=23
+    
     # # f_cache_file_panes="${f_cache_file}-panes"
     # zoom_action_placeholder="===Zoom-or-UnZoom==="
 
@@ -42,7 +43,6 @@ static_content() {
         0.0 M Left "Back to Main menu <--" main.sh \
         0.0 M M "Move pane         -->" pane_move.sh \
         0.0 M R "Resize pane       -->" pane_resize.sh \
-        2.0 M B "Paste buffers     -->" pane_buffers.sh \
         0.0 S \
         2.6 C t " Set Title" "command-prompt -I '#T'  -p 'Title: '  \
             'select-pane -T \"%%\"' $menu_reload" \

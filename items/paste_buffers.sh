@@ -12,12 +12,11 @@
 static_content() {
     menu_name="Paste buffers"
     req_win_width=55
-    req_win_height=29
+    req_win_height=28
 
     #  shellcheck disable=SC2154
     set -- \
         2.0 M Home "Back to Main menu     <==" main.sh \
-        2.0 M Left "Back to Handling Pane <--" panes.sh \
         2.0 T "-#[align=centre,nodim]-----------   Commands   -----------" \
         2.0 T "-#[nodim]This assumes at least one tmux buffer is assigned!" \
         2.0 T "-#[nodim] " \
