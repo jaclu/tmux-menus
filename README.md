@@ -267,8 +267,6 @@ log_it "foo is now [$foo]"
 
 ## Menu building
 
-
-
 Each item consists of at least two params
 
 - min tmux version for this item, set to 0.0 if assumed to always work
