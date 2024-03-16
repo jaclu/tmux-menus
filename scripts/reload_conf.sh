@@ -1,4 +1,5 @@
 #!/bin/sh
+# shellcheck disable=SC2034,SC2154
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -31,7 +32,6 @@ _this="reload_conf.sh"
 conf_file="$(get_tmux_option "@menus_config_file" "$HOME/tmux.conf")"
 conf="${TMUX_CONF:-$conf_file}"
 
-# shellcheck disable=SC2154
 $TMUX_BIN command-prompt -I "$conf" -p "Source file:" \
     "run-shell \"$TMUX_BIN source-file %% &&                        \
     $TMUX_BIN display 'Sourced it!' ||                              \

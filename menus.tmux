@@ -10,6 +10,7 @@
 #  Should point to tmux-menux plugin
 D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")" && pwd)
 
+#  shellcheck source=/dev/null
 . "$D_TM_BASE_PATH"/scripts/utils.sh
 
 #
