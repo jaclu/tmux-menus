@@ -260,9 +260,16 @@ alt_dialog_parse_selection() {
 }
 
 is_function_defined() {
-    # Use type command to check if the function is defined
-    type "$1" 2>/dev/null | grep -q 'function'
-    return $?
+    # Check if the given name is a function
+
+    if command -v "$1" >/dev/null 2>&1; then
+        case "$(command -v "$1" 2>/dev/null)" in
+        *function*) return 0 ;;
+        *) return 1 ;;
+        esac
+    else
+        return 1
+    fi
 }
 
 menu_parse() {
