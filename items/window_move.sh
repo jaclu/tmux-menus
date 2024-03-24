@@ -33,12 +33,12 @@ static_content() {
     set -- \
         0.0 M Home "Back to Main menu       <==" main.sh \
         0.0 M Left "Back to Handling Window <--" windows.sh \
-        0.0 S \
-        2.0 C m "Move window to other location" "$select_location W M %%\"'"
+        0.0 S
 
     menu_generate_part 1 "$@"
 
-    set -- "$@" \
+    set -- \
+        2.0 C m "Move window to other location" "$select_location W M %%\"'" \
         0.0 C "\<" "Swap window Left" "swap-window -dt:-1 $menu_reload" \
         0.0 C "\>" "Swap window Right" "swap-window -dt:+1 $menu_reload" \
         0.0 S \

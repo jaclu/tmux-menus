@@ -80,6 +80,8 @@ handle_char() {
 dynamic_content() {
     #
     #  In this case this is just used to process any param - key to send
+    #  by using the dynamic_content hook, no need to do includes in order
+    #  to get access to log_it, $FORCE_WHIPTAIL_MENUS and $TMUX_BIN
     #
     if [ -n "$menu_param" ]; then
         handle_char "$menu_param"
