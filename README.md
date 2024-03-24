@@ -307,6 +307,13 @@ static_content() {
   req_win_width=39
   req_win_height=23
 
+  #
+  # Be aware:
+  #   The first 'set' to define a new menu segment should not use
+  #   'set -- "@" \', if that is done, it will just continue to build on
+  #   what was defined in the previous menu segment!
+  #   'set -- \' creates a new set of parameters for menu_generate_part
+  #
   set -- \
     0.0 M Left "Back to Main menu  <==" "main.sh" \
     0.0 S \
