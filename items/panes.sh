@@ -34,7 +34,7 @@ static_content() {
     menu_name="Handling Pane"
     req_win_width=38
     req_win_height=23
-    
+
     # # f_cache_file_panes="${f_cache_file}-panes"
     # zoom_action_placeholder="===Zoom-or-UnZoom==="
 

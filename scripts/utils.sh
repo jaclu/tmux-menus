@@ -215,6 +215,12 @@ else
     config_overrides=0
 fi
 
+if bool_param "$(get_tmux_option "@menus_use_cache" "yes")"; then
+    use_cache=true
+else
+    use_cache=false
+fi
+
 if [ "$config_overrides" -eq 1 ] && [ -f "$custom_config_file" ]; then
     read_config
     menu_location_x="$location_x"
