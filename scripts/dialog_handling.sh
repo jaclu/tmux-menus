@@ -457,13 +457,13 @@ generate_menu_items_in_sorted_order() {
     while true; do
         case "$uncached_menu" in
         "$idx "*)
-            this_section="${uncached_menu#*${idx} }"
-            this_section="${this_section%%${uncached_item_splitter}*}"
+            this_section="${uncached_menu#*"${idx}" }"
+            this_section="${this_section%%"${uncached_item_splitter}"*}"
             menu_items="$menu_items $this_section"
             ;;
         *"$uncached_item_splitter$idx"*)
-            this_section="${uncached_menu#*${uncached_item_splitter}${idx} }"
-            this_section="${this_section%%${uncached_item_splitter}*}"
+            this_section="${uncached_menu#*"${uncached_item_splitter}""${idx}" }"
+            this_section="${this_section%%"${uncached_item_splitter}"*}"
             menu_items="$menu_items $this_section"
             ;;
         *) break ;; # no more sections
