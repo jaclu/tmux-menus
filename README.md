@@ -11,12 +11,11 @@ experienced users, then add more for newbies.
 
 ## Recent changes
 
+- Added option to disable caching.
+- Fixed a glitch with dynamic content on some platforms.
 - Moved Paste Buffers to main & public IP to Extras. Checked and updated min sizes
 - Menu 'Missing Keys' limited to tmux >= 2.0
 - Made it backward compatible down to tmux 1.7 (was 1.8)
-- Implemented caching, for fast machines not much difference, for slower machines quite noticeable!
-- Simplified path handling, now only D_TM_BASE_PATH needs to be set in each menu
-- Added Configuration of Borderlines in the Layouts menu
 
 ## Purpose
 
@@ -176,6 +175,14 @@ confusing, the coordinate defines the lower left of the placement of the menu…
 ```tmux
 set -g @menus_location_x 'C'
 set -g @menus_location_y 'C'
+```
+
+### Disable caching
+
+By default all menus are cached, use this to disable caching.
+
+```tmux
+set -g @menus_use_cache 'no'
 ```
 
 ### Pointer to the config file

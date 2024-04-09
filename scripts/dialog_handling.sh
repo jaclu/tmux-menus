@@ -217,12 +217,10 @@ alt_dialog_parse_selection() {
     #  so a post dialog step is needed matching keyword with intended
     #  action, and then perform it
     #
-
-    # echo "selected item: [$menu_selection]"
-    # echo "wt_actions [$wt_actions]"
-    # echo
-    # echo "Parsing actions:"
-    # echo
+    wt_actions="$1"
+    [ -z "$wt_actions" ] && {
+        error_msg "alt_dialog_parse_selection() - called without param" 1
+    }
 
     lst=$wt_actions
     i=0
@@ -260,16 +258,9 @@ alt_dialog_parse_selection() {
 }
 
 is_function_defined() {
-    # Check if the given name is a function
-
-    if command -v "$1" >/dev/null 2>&1; then
-        case "$(command -v "$1" 2>/dev/null)" in
-        *function*) return 0 ;;
-        *) return 1 ;;
-        esac
-    else
-        return 1
-    fi
+    # Use type command to check if the function is defined
+    type "$1" 2>/dev/null | grep -q 'function'
+    return $?
 }
 
 menu_parse() {
@@ -423,8 +414,19 @@ menu_parse() {
         esac
     done
 
-    echo "$menu_items" >"$f_cache_file" || error_msg "Failed to write to: $f_cache_file"
-    menu_items=""
+    if $use_cache; then
+        # clear cache (if present)
+        echo "$menu_items" >"$f_cache_file" || error_msg "Failed to write to: $f_cache_file"
+    else
+        _new_item="$menu_idx $menu_items"
+        if [ -n "$uncached_menu" ]; then
+            uncached_menu="$uncached_menu$uncached_item_splitter$_new_item"
+        else
+            uncached_menu="$_new_item"
+        fi
+        unset _new_item
+    fi
+    unset menu_items
 }
 
 menu_generate_part() {
@@ -434,11 +436,40 @@ menu_generate_part() {
     menu_parse "$@"
 
     if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
-        # clear actions
-        [ "$menu_idx" -eq 1 ] && rm -f "$d_cache_file/wt_actions"
-
-        echo "$wt_actions" >>"$d_cache_file/wt_actions"
+        if $use_cache; then
+            # clear actions
+            [ "$menu_idx" -eq 1 ] && rm -f "$d_cache_file/wt_actions"
+            echo "$wt_actions" >>"$d_cache_file/wt_actions"
+        else
+            uncached_wt_actions="$uncached_wt_actions $wt_actions"
+        fi
     fi
+}
+
+generate_menu_items_in_sorted_order() {
+    #
+    #  Since dynamic content is generated after static content
+    #  $uncached_menu might be out of order, this extracts each item
+    #  incrementally, in order to display the menu as intended
+    #
+    menu_items=""
+    idx=1
+    while true; do
+        case "$uncached_menu" in
+        "$idx "*)
+            this_section="${uncached_menu#*${idx} }"
+            this_section="${this_section%%${uncached_item_splitter}*}"
+            menu_items="$menu_items $this_section"
+            ;;
+        *"$uncached_item_splitter$idx"*)
+            this_section="${uncached_menu#*${uncached_item_splitter}${idx} }"
+            this_section="${this_section%%${uncached_item_splitter}*}"
+            menu_items="$menu_items $this_section"
+            ;;
+        *) break ;; # no more sections
+        esac
+        idx=$((idx + 1))
+    done
 }
 
 handle_menu() {
@@ -448,55 +479,67 @@ handle_menu() {
     #  then process it in dynamic_content()
     #
 
-    #  Calculate the relative path, to avoid name collitions if
-    #  two items with same name in different rel paths are used
-    rel_path=$(echo "$d_current_script" | sed "s|$D_TM_BASE_PATH/||")
+    # 1 - Handle static parts, use cache if enabled and available
+    if $use_cache; then
+        #  Calculate the relative path, to avoid name collitions if
+        #  two items with same name in different rel paths are used
+        rel_path=$(echo "$d_current_script" | sed "s|$D_TM_BASE_PATH/||")
 
-    #  items/main.sh -> items_main
-    d_cache_file="$D_TM_MENUS_CACHE/${rel_path}_$(basename "$0" | sed 's/\.[^.]*$//')"
+        #  items/main.sh -> items_main
+        d_cache_file="$D_TM_MENUS_CACHE/${rel_path}_$(basename "$0" | sed 's/\.[^.]*$//')"
 
-    if
-        [ ! -f "$d_cache_file"/1 ] ||
-            [ "$(get_mtime "$0")" -gt "$(get_mtime "$d_cache_file"/1)" ]
-    then
-        # Ensure d_cache_file seems to be valid before doing erase
-        case "$d_cache_file" in
-        *tmux-menus*) ;;
-        *) error_msg "d_cache_file seems wrong [$d_cache_file]" ;;
-        esac
-        # clear cache (if present)
-        rm -rf "$d_cache_file" || error_msg "Failed to remove: $d_cache_file"
-        mkdir -p "$d_cache_file" || error_msg "Failed to create: $d_cache_file"
+        if
+            [ ! -f "$d_cache_file"/1 ] ||
+                [ "$(get_mtime "$0")" -gt "$(get_mtime "$d_cache_file"/1)" ]
+        then
+            # Ensure d_cache_file seems to be valid before doing erase
+            case "$d_cache_file" in
+            *tmux-menus*) ;;
+            *) error_msg "d_cache_file seems wrong [$d_cache_file]" ;;
+            esac
 
-        # 1 if not cached, cache static parts
+            rm -rf "$d_cache_file" || error_msg "Failed to remove: $d_cache_file"
+            mkdir -p "$d_cache_file" || error_msg "Failed to create: $d_cache_file"
+            # 1 - if not cached, cache static parts
+            static_content
+        fi
+    else
         static_content
     fi
 
-    # 2 handle dynamic parts (if any)
+    # 2 - Handle dynamic parts (if any)
     if is_function_defined "dynamic_content"; then
         dynamic_content
     fi
 
-    # 3 read cache - Loop through each file in the d_cache directory
-    for file in "$d_cache_file"/*; do
-        # skip special files
-        fn="$(basename "$file")"
-        [ "${#fn}" -gt "2" ] && continue
+    # 3 - Gather each item in correct order
+    if $use_cache; then
+        for file in "$d_cache_file"/*; do
+            # skip special files
+            fn="$(basename "$file")"
+            [ "${#fn}" -gt "2" ] && continue
 
-        # Check if the file is a regular file
-        if [ -f "$file" ]; then
-            # Read the content of the file and append it to the dialog variable
-            menu_items="$menu_items $(cat "$file")"
-        fi
-    done
+            # Check if the file is a regular file
+            if [ -f "$file" ]; then
+                # Read the content of the file and append it to the dialog variable
+                menu_items="$menu_items $(cat "$file")"
+            fi
+        done
+    else
+        generate_menu_items_in_sorted_order
+    fi
 
     # 4 Display menu
     if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
         #  shellcheck disable=SC2294
         menu_selection=$(eval "$menu_items" 3>&2 2>&1 1>&3)
         # echo "selection[$menu_selection]"
-        wt_actions="$(cat "$d_cache_file/wt_actions")"
-        alt_dialog_parse_selection
+        if $use_cache; then
+            all_wt_actions="$(cat "$d_cache_file/wt_actions")"
+        else
+            all_wt_actions="$uncached_wt_actions"
+        fi
+        alt_dialog_parse_selection "$all_wt_actions"
     else
         #  shellcheck disable=SC2034
         t_start="$(date +'%s')"
@@ -533,6 +576,11 @@ fi
 dialog_app="whiptail"
 
 alt_dialog_action_separator=":/:/:/:"
+
+# only used when caching is disabled - @menus_use_cache is false
+uncached_menu=""
+uncached_wt_actions=""
+uncached_item_splitter="||||"
 
 menu_debug="" # Set to 1 to use echo 2 to use log_it
 
