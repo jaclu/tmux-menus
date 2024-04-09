@@ -379,6 +379,7 @@ The best way to send feedback is to file an [issue](https://github.com/jaclu/tmu
 
 ### Thanks to
 
+- [JuanGarcia345](https://github.com/JuanGarcia345) for suggesting to make menu-cache optional.
 - [phdoerfler](https://github.com/phdoerfler) for noticing TMUX_BIN was often not set,
 I had it defined in my .tmux.conf, so totally missed such errors, in future testing I
 will make sure not to rely on env variables.
