@@ -45,16 +45,11 @@ error_msg() {
     [ "$em_exit_code" -ne 0 ] && exit "$em_exit_code"
 }
 
-error_missing_param() {
-    #
-    #  Shortcut for repeatedly used error message type
-    #
-    param_name="$1"
-    if [ -z "$param_name" ]; then
-        error_msg "dialog_handling.sh:error_missing_param() called without parameter"
-    fi
-    error_msg "dialog_handling.sh: $param_name must be defined!"
-}
+#---------------------------------------------------------------
+#
+#   bool params
+#
+#---------------------------------------------------------------
 
 bool_param() {
     #

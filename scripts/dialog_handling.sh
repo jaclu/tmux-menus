@@ -14,6 +14,28 @@
 #  D_TM_BASE_PATH - base location for tmux-menus plugin
 #
 
+error_missing_param() {
+    #
+    #  Shortcut for repeatedly used error message type
+    #
+    param_name="$1"
+    if [ -z "$param_name" ]; then
+        error_msg "dialog_handling.sh:error_missing_param() called without parameter"
+    fi
+    error_msg "dialog_handling.sh: $param_name must be defined!"
+}
+
+get_mtime() {
+    _fname="$1"
+    if [ "$(uname)" = "Darwin" ]; then
+        # macOS version
+        stat -f "%m" "$_fname"
+    else
+        # Linux version
+        stat -c "%Y" "$_fname"
+    fi
+}
+
 debug_print() {
     case "$menu_debug" in
     1) echo "$1" ;;
