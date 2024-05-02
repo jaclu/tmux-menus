@@ -10,17 +10,72 @@
 #  Common tools and settings for this plugins
 #
 
+#---------------------------------------------------------------
+#
+#   Logging and error msgs
+#
+#---------------------------------------------------------------
+
 log_it() {
+    [ -z "$cfg_log_file" ] && return #  early abort if no logging
     #
-    #  If $log_file is empty or undefined, no logging will occur.
+    #  If @packet-loss-log_file is defined, it will be read into the
+    #  cfg_log_file variable and used for logging.
     #
-    if [ -z "$log_file" ]; then
+    #  Logging should normally be disabled, since it causes some overhead.
+    #
+
+    $log_interactive_to_stderr && [ -t 0 ] && {
+        printf "log: %s%*s%s\n" "$log_prefix" "$log_indent" "" \
+            "$@" >/dev/stderr
         return
+    }
+
+    if [ "$log_ppid" = "true" ]; then
+        proc_id="$(tmux display -p "#{session_id}"):$PPID"
+    else
+        proc_id="$$"
     fi
-    printf "[%s] %s\n" "$(date '+%H:%M:%S')" "$@" >>"$log_file"
+
+    #  needs leading space for compactness in the printf if empty
+    socket=" $(get_tmux_socket)"
+    #  only show socket name if not default
+    # [[ "$socket" = " default" ]] && socket=""
+
+    # printf "[%s] %s\n" "$(date '+%H:%M:%S')" "$@" >>"$log_file"
+    printf "%s%s %s %s%*s%s\n" "$(date +%H:%M:%S)" "$socket" "$proc_id" \
+        "$log_prefix" "$log_indent" "" "$@" >>"$cfg_log_file"
+    unset socket
 }
 
 error_msg() {
+    #
+    #  Display $1 as an error message in log and as a tmux display-message
+    #  If $2 is set to 0, process is not exited
+    #
+    msg="ERROR: $1"
+    exit_code="${2:-1}"
+    display_message=${3:-false}
+
+    if $log_interactive_to_stderr && [ -t 0 ]; then
+        echo "$msg" >/dev/stderr
+    else
+        log_it
+        log_it "$msg"
+        log_it
+        $display_message && {
+            # only display exit triggering errors on status bar
+            $TMUX_BIN display-message -d 0 "tmux-menus:$msg"
+        }
+    fi
+    [ "$exit_code" -gt 0 ] && exit "$exit_code"
+
+    unset msg
+    unset exit_code
+    unset display_message
+}
+
+old_error_msg() {
     #
     #  Display $1 as an error message in the log and as a tmux display-message
     #  If no $2 or set to 0, the process is not exited
@@ -83,16 +138,11 @@ bool_param() {
     return 1 # default to False
 }
 
-get_mtime() {
-    _fname="$1"
-    if [ "$(uname)" = "Darwin" ]; then
-        # macOS version
-        stat -f "%m" "$_fname"
-    else
-        # Linux version
-        stat -c "%Y" "$_fname"
-    fi
-}
+#---------------------------------------------------------------
+#
+#   tmux env handling
+#
+#---------------------------------------------------------------
 
 get_tmux_option() {
     gtm_option=$1
@@ -125,7 +175,44 @@ read_config() {
     [ -z "$location_y" ] && location_y="P"
 }
 
+compare_floats() {
+    awk -v n1="$1" -v n2="$2" 'BEGIN { exit !(n1 >= n2) }'
+}
+
 tmux_vers_compare() {
+    v1="$1"
+    v2="${2:-$tmux_vers}"
+
+    # insert . between each char for consistent notation
+    tvc_vers1="$(echo "$1" | sed 's/[^.]/.&/g' | sed 's/\.\././g' | sed 's/^\.//;s/\.$//')"
+    tvc_vers2="$(echo "$2" | sed 's/[^.]/.&/g' | sed 's/\.\././g' | sed 's/^\.//;s/\.$//')"
+
+    tvc_i=1
+    while true; do
+        tvc_c="$(echo "$tvc_vers1" | cut -d. -f $tvc_i)"
+        tvc_v1="$(printf "%d" "'$tvc_c")"
+        tvc_c="$(echo "$tvc_vers2" | cut -d. -f $tvc_i)"
+        tvc_v2="$(printf "%d" "'$tvc_c")"
+        if [ "$tvc_v2" = 0 ] || [ "$tvc_v1" -gt "$tvc_v2" ]; then
+            tvc_rslt=0
+            break
+        elif [ "$tvc_v1" = 0 ] || [ "$tvc_v1" -lt "$tvc_v2" ]; then
+            tvc_rslt=1
+            break
+        fi
+        tvc_i=$((tvc_i + 1))
+    done
+
+    unset tvc_i
+    unset tvc_c
+    unset tvc_vers1
+    unset tvc_vers2
+    unset tvc_v1
+    unset tvc_v2z
+    return "$tvc_rslt"
+}
+
+old_tmux_vers_compare() {
     #
     #  Compares running vs required version, to define if a feature
     #  can be used in this env
@@ -147,6 +234,12 @@ tmux_vers_compare() {
     # echo ">> version ok"
     return 0
 }
+
+#---------------------------------------------------------------
+#
+#   Other
+#
+#---------------------------------------------------------------
 
 wait_to_close_display() {
     echo
@@ -199,6 +292,8 @@ fi
 
 d_current_script="$(cd -- "$(dirname -- "$0")" && pwd)"
 current_script="$d_current_script/$(basename "$0")"
+
+tmux_vers="$($TMUX_BIN -V | cut -d ' ' -f 2)"
 
 #
 #  This is for shells checking status.
