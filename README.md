@@ -152,7 +152,7 @@ for tmux and fail to bind the key.
 If you want to trigger menus without first hitting `<prefix>`
 
 ```tmux
-set -g @menus_without_prefix 1
+set -g @menus_without_prefix Yes
 ```
 
 This param can be either 0 (the default) or 1

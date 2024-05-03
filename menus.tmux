@@ -19,11 +19,18 @@ else
     tmux_vers_in_cache=""
 fi
 
+echo "Current tmux:$tmux_vers - cache built for: $tmux_vers_in_cache"
+#
 #  Clear cache if it was not created with current tmux version,
 #  Then tag cachdir with current tmux version
-[ "$tmux_vers" = "$tmux_vers_in_cache" ] || rm -rf "$d_cache"
-mkdir -b "$d_cache"
-echo "$tmux_vers" >"$f_cached_tmux"
+#
+[ "$tmux_vers" = "$tmux_vers_in_cache" ] || {
+    log_it "Clearing incompatible cache"
+    rm -rf "$d_cache"
+    mkdir -p "$d_cache"
+    echo "$tmux_vers" >"$f_cached_tmux"
+}
+
 
 
 #
@@ -41,11 +48,14 @@ log_it "$(date)"
 trigger_key=$(get_tmux_option "@menus_trigger" "$default_key")
 log_it "trigger_key=[$trigger_key]"
 
-if bool_param "$(get_tmux_option "@menus_without_prefix" "0")"; then
-    without_prefix=1
-else
-    without_prefix=0
-fi
+normalize_bool_param "@menus_without_prefix" "No" &&
+    without_prefix=true || without_prefix=false
+# if bool_param "$(get_tmux_option "@menus_without_prefix" "0")"; then
+#     without_prefix=1
+# else
+#     without_prefix=0
+# fi
+
 log_it "without_prefix=[$without_prefix]"
 
 #
@@ -55,19 +65,25 @@ log_it "without_prefix=[$without_prefix]"
 #  bind-key Notes were added in tmux 3.1, so should not be used on
 #  older versions!
 #
-if bool_param "$(get_tmux_option "@use_bind_key_notes_in_plugins" "No")"; then
-    use_notes=1
-else
-    use_notes=0
-fi
+normalize_bool_param "@use_bind_key_notes_in_plugins" "No" &&
+            use_notes=true || use_notes=false
+# if bool_param "$(get_tmux_option "@use_bind_key_notes_in_plugins" "No")"; then
+#     use_notes=1
+# else
+#     use_notes=0
+# fi
+
 log_it "use_notes=[$use_notes]"
 
 params=""
-if [ "$use_notes" -eq 1 ]; then
-    #  shellcheck disable=SC2089
-    params="$params -N plugin:tmux-menus"
-fi
-if [ "$without_prefix" -eq 1 ]; then
+$use_notes && params="$params -N plugin:tmux-menus"
+# if [ "$use_notes" -eq 1 ]; then
+#     #  shellcheck disable=SC2089
+#     params="$params -N plugin:tmux-menus"
+# fi
+
+# if [ "$without_prefix" -eq 1 ]; then
+if $without_prefix; then
     params="$params -n"
     log_it "Menus bound to: $trigger_key"
 else

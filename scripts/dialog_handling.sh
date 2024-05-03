@@ -436,6 +436,7 @@ menu_parse() {
         esac
     done
 
+    # if $use_cache; then
     if $use_cache; then
         # clear cache (if present)
         echo "$menu_items" >"$f_cache_file" || error_msg "Failed to write to: $f_cache_file"
@@ -458,6 +459,7 @@ menu_generate_part() {
     menu_parse "$@"
 
     if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+        # if $use_cache; then
         if $use_cache; then
             # clear actions
             [ "$menu_idx" -eq 1 ] && rm -f "$d_cache_file/wt_actions"
@@ -502,6 +504,7 @@ handle_menu() {
     #
 
     # 1 - Handle static parts, use cache if enabled and available
+    # if $use_cache; then
     if $use_cache; then
         #  Calculate the relative path, to avoid name collitions if
         #  two items with same name in different rel paths are used
@@ -535,6 +538,7 @@ handle_menu() {
     fi
 
     # 3 - Gather each item in correct order
+    # if $use_cache; then
     if $use_cache; then
         for file in "$d_cache_file"/*; do
             # skip special files
@@ -556,6 +560,7 @@ handle_menu() {
         #  shellcheck disable=SC2294
         menu_selection=$(eval "$menu_items" 3>&2 2>&1 1>&3)
         # echo "selection[$menu_selection]"
+        # if $use_cache; then
         if $use_cache; then
             all_wt_actions="$(cat "$d_cache_file/wt_actions")"
         else

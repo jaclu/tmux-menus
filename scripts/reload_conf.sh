@@ -14,7 +14,9 @@ write_config() {
     #
     #  When config_overrides is set this saves such settings
     #
-    [ "$config_overrides" -ne 1 ] && return
+    $config_overrides || return
+    # [ "$config_overrides" -ne 1 ] && return
+
     #log_it "write_config() x[$location_x] y[$location_y]"
     echo "location_x=$location_x" >"$custom_config_file"
     echo "location_y=$location_y" >>"$custom_config_file"

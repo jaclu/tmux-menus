@@ -106,7 +106,45 @@ old_error_msg() {
 #
 #---------------------------------------------------------------
 
-bool_param() {
+param_as_bool() {
+    #  Used to parse variables assigned "true" or "false" as booleans
+    [ "$1" = "true" ] && return 0
+    return 1
+}
+# FOO123
+normalize_bool_param() {
+    #
+    #  Ensure boolean style params use consistent states
+    #
+    case "$1" in
+    #
+    #  First handle the mindboggling tradition by tmux to use
+    #  1 to indicate selected / active.
+    #  This means 1 is 0 and 0 is 1, how Orwellian...
+    #
+    "1" | "yes" | "Yes" | "YES" | "true" | "True" | "TRUE")
+        #  Be a nice guy and accept some common positive notations
+        return 0
+        ;;
+
+    "0" | "no" | "No" | "NO" | "false" | "False" | "FALSE")
+        #  Be a nice guy and accept some common false notations
+        return 1
+        ;;
+
+    *)
+        log_it "Invalid parameter normalize_bool_param($1)"
+        error_msg \
+            "normalize_bool_param($1) - should be yes/true/1 or no/false/0" \
+            1 true
+        ;;
+
+    esac
+
+    return 2
+}
+
+NOT_bool_param() {
     #
     #  Aargh in shell boolean true is 0, but to make the boolean parameters
     #  more relatable for users 1 is yes and 0 is no, so we need to switch
@@ -131,7 +169,7 @@ bool_param() {
         ;;
 
     *)
-        error_msg "bool_param($1) - should be 1/yes/true or 0/no/false"
+        error_msg "NOT_bool_param($1) - should be 1/yes/true or 0/no/false"
         ;;
 
     esac
@@ -173,7 +211,8 @@ read_config() {
     #
     #  When config_overrides is set this reads such settings
     #
-    [ "$config_overrides" -ne 1 ] && return
+    $config_overrides || return
+    # [ "$config_overrides" -ne 1 ] && return
     #log_it "read_config()"
     if [ ! -f "$custom_config_file" ]; then
         location_x=P
@@ -342,19 +381,25 @@ f_cached_tmux="$d_cache"/tmux-vers
 #  This is for shells checking status.
 #  In tmux code #{?@menus_config_overrides,,} can be used
 #
-if bool_param "$(get_tmux_option "@menus_config_overrides" "0")"; then
-    config_overrides=1
-else
-    config_overrides=0
-fi
 
-if bool_param "$(get_tmux_option "@menus_use_cache" "yes")"; then
-    use_cache=true
-else
-    use_cache=false
-fi
+normalize_bool_param "@menus_config_overrides" "No" &&
+    config_overrides=true || config_overrides=false
+# if bool_param "$(get_tmux_option "@menus_config_overrides" "0")"; then
+#     config_overrides=1
+# else
+#     config_overrides=0
+# fi
 
-if [ "$config_overrides" -eq 1 ] && [ -f "$custom_config_file" ]; then
+normalize_bool_param "@menus_use_cache" "Yes" &&
+    use_cache=true || use_cache=false
+# if bool_param "$(get_tmux_option "@menus_use_cache" "yes")"; then
+#     use_cache=true
+# else
+#     use_cache=false
+# fi
+
+# if [ "$config_overrides" -eq 1 ] && [ -f "$custom_config_file" ]; then
+if $config_overrides && [ -f "$custom_config_file" ]; then
     read_config
     menu_location_x="$location_x"
     menu_location_y="$location_y"
