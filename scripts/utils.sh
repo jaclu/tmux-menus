@@ -191,35 +191,43 @@ compare_floats() {
 }
 
 tmux_vers_compare() {
-    v1="$1"
-    v2="${2:-$tmux_vers}"
+    #
+    #  This returns true if v1 <= v2
+    #  If only one param is given it is compared vs version of running tmux
+    #
+    tvc_v1="$1"
+    tvc_v2="${2:-$tmux_vers}"
+
+    # log_it "tmux_vers_compare($v1, $v2)"
 
     # insert . between each char for consistent notation
-    tvc_vers1="$(echo "$1" | sed 's/[^.]/.&/g' | sed 's/\.\././g' | sed 's/^\.//;s/\.$//')"
-    tvc_vers2="$(echo "$2" | sed 's/[^.]/.&/g' | sed 's/\.\././g' | sed 's/^\.//;s/\.$//')"
+    tvc_v1="$(echo "$tvc_v1" | sed 's/[^.]/.&/g' | sed 's/\.\././g' | sed 's/^\.//;s/\.$//')"
+    tvc_v2="$(echo "$tvc_v2" | sed 's/[^.]/.&/g' | sed 's/\.\././g' | sed 's/^\.//;s/\.$//')"
 
-    tvc_i=1
+    tvc_idx=1
     while true; do
-        tvc_c="$(echo "$tvc_vers1" | cut -d. -f $tvc_i)"
-        tvc_v1="$(printf "%d" "'$tvc_c")"
-        tvc_c="$(echo "$tvc_vers2" | cut -d. -f $tvc_i)"
-        tvc_v2="$(printf "%d" "'$tvc_c")"
-        if [ "$tvc_v2" = 0 ] || [ "$tvc_v1" -gt "$tvc_v2" ]; then
+        tvc_c="$(echo "$tvc_v1" | cut -d. -f $tvc_idx)"
+        tvc_i1="$(printf "%d" "'$tvc_c")"
+        tvc_c="$(echo "$tvc_v2" | cut -d. -f $tvc_idx)"
+        tvc_i2="$(printf "%d" "'$tvc_c")"
+        if [ "$tvc_i2" = 0 ] || [ "$tvc_i1" -lt "$tvc_i2" ]; then
             tvc_rslt=0
             break
-        elif [ "$tvc_v1" = 0 ] || [ "$tvc_v1" -lt "$tvc_v2" ]; then
+        elif [ "$tvc_i1" = 0 ] || [ "$tvc_i1" -gt "$tvc_i2" ]; then
             tvc_rslt=1
             break
         fi
-        tvc_i=$((tvc_i + 1))
+        tvc_idx=$((tvc_idx + 1))
     done
 
-    unset tvc_i
-    unset tvc_c
-    unset tvc_vers1
-    unset tvc_vers2
+    # log_it "tmux_vers_compare: $v1 <= $v2 -  $tvc_rslt"
+
     unset tvc_v1
-    unset tvc_v2z
+    unset tvc_v2
+    unset tvc_idx
+    unset tvc_c
+    unset tvc_i1
+    unset tvc_i2
     return "$tvc_rslt"
 }
 
