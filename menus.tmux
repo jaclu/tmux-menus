@@ -13,6 +13,20 @@ D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")" && pwd)
 #  shellcheck source=/dev/null
 . "$D_TM_BASE_PATH"/scripts/utils.sh
 
+if [ -s "$f_cached_tmux" ]; then
+    tmux_vers_in_cache="$(cat "$f_cached_tmux")"
+else
+    tmux_vers_in_cache=""
+fi
+
+#  Clear cache if it was not created with current tmux version,
+#  Then tag cachdir with current tmux version
+[ "$tmux_vers" = "$tmux_vers_in_cache" ] || rm -rf "$d_cache"
+mkdir -b "$d_cache"
+echo "$tmux_vers" >"$f_cached_tmux"
+
+
+#
 #
 #  In shell script unlike in tmux, backslash needs to be doubled inside quotes.
 #

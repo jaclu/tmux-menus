@@ -313,6 +313,7 @@ d_current_script="$(cd -- "$(dirname -- "$0")" && pwd)"
 current_script="$d_current_script/$(basename "$0")"
 
 tmux_vers="$($TMUX_BIN -V | cut -d ' ' -f 2)"
+
 cfg_log_file="$(get_tmux_option "@menus_log_file" "")"
 log_interactive_to_stderr=false
 
@@ -330,6 +331,12 @@ else
     d_cache="$D_TM_BASE_PATH"/cache
 fi
 
+#
+#  The plugin init script checks this at startup
+#  if the running tmux version is not the same as the one that created
+#  the cache, the cache is deleted
+#
+f_cached_tmux="$d_cache"/tmux-vers
 
 #
 #  This is for shells checking status.

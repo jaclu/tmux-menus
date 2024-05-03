@@ -40,6 +40,6 @@ _this="do_whiptail.sh"
 #
 
 #  shellcheck disable=SC2154
-"$TMUX_BIN" send-keys C-z "$D_TM_ITEMS/main.sh ; fg" Enter
+$TMUX_BIN send-keys C-z "$D_TM_ITEMS/main.sh ; fg" Enter
 
-#"$TMUX_BIN" send-keys C-z $D_TM_ITEMS/main.sh ' [ -n "$(jobs)" ] && fg ' Enter
+#$TMUX_BIN send-keys C-z $D_TM_ITEMS/main.sh ' [ -n "$(jobs)" ] && fg ' Enter

@@ -508,7 +508,7 @@ handle_menu() {
         rel_path=$(echo "$d_current_script" | sed "s|$D_TM_BASE_PATH/||")
 
         #  items/main.sh -> items_main
-        d_cache_file="$D_TM_MENUS_CACHE/${rel_path}_$(basename "$0" | sed 's/\.[^.]*$//')"
+        d_cache_file="$d_cache/${rel_path}_$(basename "$0" | sed 's/\.[^.]*$//')"
 
         if
             [ ! -f "$d_cache_file"/1 ] ||
