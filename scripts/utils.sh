@@ -206,9 +206,9 @@ tmux_vers_compare() {
 
     tvc_idx=1
     while true; do
-        tvc_c="$(echo "$tvc_v1" | cut -d. -f $tvc_idx)"
+        tvc_c="$(echo "$tvc_v1" | cut -d. -f "$tvc_idx")"
         tvc_i1="$(printf "%d" "'$tvc_c")"
-        tvc_c="$(echo "$tvc_v2" | cut -d. -f $tvc_idx)"
+        tvc_c="$(echo "$tvc_v2" | cut -d. -f "$tvc_idx")"
         tvc_i2="$(printf "%d" "'$tvc_c")"
         if [ "$tvc_i2" = 0 ] || [ "$tvc_i1" -lt "$tvc_i2" ]; then
             tvc_rslt=0
