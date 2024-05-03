@@ -144,6 +144,17 @@ bool_param() {
 #
 #---------------------------------------------------------------
 
+get_tmux_socket() {
+    #
+    #  returns name of tmux socket being used
+    #
+    if [ -n "$TMUX" ]; then
+        echo "$TMUX" | sed 's#/# #g' | cut -d, -f 1 | awk 'NF>1{print $NF}'
+    else
+        echo "standalone"
+    fi
+}
+
 get_tmux_option() {
     gtm_option=$1
     gtm_default=$2
