@@ -313,6 +313,23 @@ d_current_script="$(cd -- "$(dirname -- "$0")" && pwd)"
 current_script="$d_current_script/$(basename "$0")"
 
 tmux_vers="$($TMUX_BIN -V | cut -d ' ' -f 2)"
+cfg_log_file="$(get_tmux_option "@menus_log_file" "")"
+log_interactive_to_stderr=false
+
+#
+#  Define a variable that can be used as suffix on commands in dialog
+#  items, to reload the same menu in calling scripts
+#
+if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+    # shellcheck disable=SC2034
+    menu_reload="; '$current_script'"
+    d_cache="$D_TM_BASE_PATH"/cache/whiptail
+else
+    # shellcheck disable=SC2034
+    menu_reload="; run-shell '$current_script'"
+    d_cache="$D_TM_BASE_PATH"/cache
+fi
+
 
 #
 #  This is for shells checking status.
@@ -341,20 +358,6 @@ else
     #
     menu_location_x="$(get_tmux_option "@menus_location_x" "P")"
     menu_location_y="$(get_tmux_option "@menus_location_y" "P")"
-fi
-
-#
-#  Define a variable that can be used as suffix on commands in dialog
-#  items, to reload the same menu in calling scripts
-#
-if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
-    # shellcheck disable=SC2034
-    menu_reload="; '$current_script'"
-    D_TM_MENUS_CACHE="$D_TM_BASE_PATH"/cache/whiptail
-else
-    # shellcheck disable=SC2034
-    menu_reload="; run-shell '$current_script'"
-    D_TM_MENUS_CACHE="$D_TM_BASE_PATH"/cache
 fi
 
 #
