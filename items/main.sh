@@ -14,6 +14,25 @@ static_content() {
     req_win_width=38
     req_win_height=24
 
+    choose_tree_cmd="choose-tree"
+    if tmux_vers_compare 2.7; then
+        #  zooms the pane
+        choose_tree_cmd="$choose_tree_cmd -Z"
+    fi
+
+    fw_label_cont=" only visible part"
+    if tmux_vers_compare 3.2; then
+        #  adds ignore case, and zooms the pane
+        fw_label_cont="$fw_label_cont, ignores case"
+        fw_flags="-Zi "
+    elif tmux_vers_compare 2.9; then
+        #  zooms the pane
+        fw_flags="-Z"
+    else
+        fw_flags=""
+    fi
+    fw_cmd="command-prompt -p 'Search for:' 'find-window $fw_flags %%'"
+
     #  Menu items definition
     set -- \
         0.0 M P "Handling Pane     -->" panes.sh \
@@ -29,35 +48,9 @@ static_content() {
         0.0 C l "toggle status Line" "set status" \
         0.0 E p "Plugins inventory" "$D_TM_SCRIPTS/plugins.sh" \
         0.0 S \
-        0.0 C n "Navigate & select ses/win/pane" "choose-tree"
-
-    if tmux_vers_compare 2.7; then
-        #  adds ignore case
-        #  shellcheck disable=SC2145
-        set -- "$@ -Z"
-    fi
-
-    set -- "$@" \
+        0.0 C n "Navigate & select ses/win/pane" "$choose_tree_cmd" \
         0.0 T "-#[nodim]Search in all sessions & windows" \
-        0.0 C s "only visible part"
-
-    if tmux_vers_compare 3.2; then
-        #  adds ignore case
-        # shellcheck disable=SC2145
-        set -- "$@, ignores case"
-    fi
-
-    set -- "$@" \
-        "command-prompt -p 'Search for:' 'find-window"
-
-    if tmux_vers_compare 3.2; then
-        #  adds ignore case, and zooms the pane
-        # shellcheck disable=SC2145
-        set -- "$@ -Zi"
-    fi
-
-    #  shellcheck disable=SC2154
-    set -- "$@" \
+        0.0 C s "$fw_label_cont" "$fw_cmd" \
         0.0 S \
         0.0 E r 'Reload configuration file' reload_conf.sh \
         0.0 S \
