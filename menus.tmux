@@ -32,12 +32,10 @@ echo "Current tmux:$tmux_vers - cache built for: $tmux_vers_in_cache"
 }
 
 
+D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$0")")"
 
-#
-#
-#  In shell script unlike in tmux, backslash needs to be doubled inside quotes.
-#
-default_key="\\"
+# shellcheck source=scripts/utils.sh
+. "$D_TM_BASE_PATH"/scripts/utils.sh
 
 #
 #  By printing a NL and date, its easier to keep separate runs apart
