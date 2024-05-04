@@ -26,7 +26,7 @@ write_config() {
 D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
 
 # shellcheck disable=SC1091
-. "$D_TM_SCRIPTS"/scripts/utils.sh
+. "$D_TM_BASE_PATH"/scripts/utils.sh
 
 _this="reload_conf.sh"
 [ "$(basename "$0")" != "$_this" ] && error_msg "$_this should NOT be sourced"
