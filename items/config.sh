@@ -31,7 +31,7 @@ static_content() {
         "-I \"$location_x\",\"$location_y\"" \
         "-p \"$prompt1\",\"$prompt2\"" \
         "\"$change_location coord %1 %2 $menu_reload'\""
-    set_coordinates="$*"
+    # set_coordinates="$*"
 
     set -- "$@" \
         0.0 M Left "Back to Previous menu <--" advanced.sh \
