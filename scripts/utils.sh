@@ -1,6 +1,5 @@
 #!/bin/sh
 # Always sourced file - Fake bang path to help editors
-#  shellcheck disable=SC2034,SC2154
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -9,6 +8,7 @@
 #
 #  Common tools and settings for this plugins
 #
+# shellcheck disable=SC2034
 
 #---------------------------------------------------------------
 #
@@ -361,11 +361,9 @@ log_interactive_to_stderr=false
 #  items, to reload the same menu in calling scripts
 #
 if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
-    # shellcheck disable=SC2034
     menu_reload="; '$current_script'"
     d_cache="$D_TM_BASE_PATH"/cache/whiptail
 else
-    # shellcheck disable=SC2034
     menu_reload="; run-shell '$current_script'"
     d_cache="$D_TM_BASE_PATH"/cache
 fi

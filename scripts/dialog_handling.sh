@@ -1,7 +1,5 @@
 #!/bin/sh
 # This is sourced. Fake bang-path to help editors and linters
-#  Global exclusions
-#  shellcheck disable=SC2154
 #
 #   Copyright (c) 2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -105,9 +103,8 @@ starting_with_dash() {
 #  tmux 3.0+ built in menu handling using display-menu
 #
 tmux_dialog_prefix() {
-    #  shellcheck disable=SC2154
     menu_items="$TMUX_BIN display-menu -T \"#[align=centre] $menu_name \" \
-        -x \"$menu_location_x\" -y \"$menu_location_y\""
+        -x \"$cfg_mnu_loc_x\" -y \"$cfg_mnu_loc_y\""
 }
 
 tmux_open_menu() {
@@ -117,7 +114,6 @@ tmux_open_menu() {
 
     # [ -n "$menu_debug" ] && debug_print "tmux_open_menu($label,$key,$menu)"
 
-    # shellcheck disable=SC2089
     menu_items="$menu_items \"$label\" $key \"run-shell '$menu'\""
 }
 
@@ -151,12 +147,10 @@ tmux_text_line() {
 }
 
 tmux_spacer() {
-    #  shellcheck disable=SC2089
     menu_items="$menu_items \"\""
 }
 
 alt_dialog_prefix() {
-    #  shellcheck disable=SC2089
     menu_items="$dialog_app --menu \"$menu_name\" 0 0 0 "
 }
 
@@ -436,8 +430,8 @@ menu_parse() {
         esac
     done
 
-    # if $use_cache; then
-    if $use_cache; then
+    # if $cfg_use_cache; then
+    if $cfg_use_cache; then
         # clear cache (if present)
         echo "$menu_items" >"$f_cache_file" || error_msg "Failed to write to: $f_cache_file"
     else
@@ -459,8 +453,8 @@ menu_generate_part() {
     menu_parse "$@"
 
     if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
-        # if $use_cache; then
-        if $use_cache; then
+        # if $cfg_use_cache; then
+        if $cfg_use_cache; then
             # clear actions
             [ "$menu_idx" -eq 1 ] && rm -f "$d_cache_file/wt_actions"
             echo "$wt_actions" >>"$d_cache_file/wt_actions"
@@ -504,8 +498,8 @@ handle_menu() {
     #
 
     # 1 - Handle static parts, use cache if enabled and available
-    # if $use_cache; then
-    if $use_cache; then
+    # if $cfg_use_cache; then
+    if $cfg_use_cache; then
         #  Calculate the relative path, to avoid name collitions if
         #  two items with same name in different rel paths are used
         rel_path=$(echo "$d_current_script" | sed "s|$D_TM_BASE_PATH/||")
@@ -538,8 +532,8 @@ handle_menu() {
     fi
 
     # 3 - Gather each item in correct order
-    # if $use_cache; then
-    if $use_cache; then
+    # if $cfg_use_cache; then
+    if $cfg_use_cache; then
         for file in "$d_cache_file"/*; do
             # skip special files
             fn="$(basename "$file")"
@@ -557,21 +551,18 @@ handle_menu() {
 
     # 4 Display menu
     if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
-        #  shellcheck disable=SC2294
         menu_selection=$(eval "$menu_items" 3>&2 2>&1 1>&3)
         # echo "selection[$menu_selection]"
-        # if $use_cache; then
-        if $use_cache; then
+        # if $cfg_use_cache; then
+        if $cfg_use_cache; then
             all_wt_actions="$(cat "$d_cache_file/wt_actions")"
         else
             all_wt_actions="$uncached_wt_actions"
         fi
         alt_dialog_parse_selection "$all_wt_actions"
     else
-        #  shellcheck disable=SC2034
         t_start="$(date +'%s')"
         # tmux can trigger actions by it self
-        #  shellcheck disable=SC2068,SC2294
         eval "$menu_items"
         ensure_menu_fits_on_screen
     fi
@@ -589,7 +580,7 @@ if [ -z "$D_TM_BASE_PATH" ]; then
     exit 1
 fi
 
-#  shellcheck disable=SC1091
+# shellcheck source=scripts/utils.sh
 . "$D_TM_BASE_PATH"/scripts/utils.sh
 
 [ -z "$TMUX" ] && error_msg "tmux-menus can only be used inside tmux!"
