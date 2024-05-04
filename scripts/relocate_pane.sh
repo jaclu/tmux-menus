@@ -1,5 +1,4 @@
 #!/bin/sh
-#  shellcheck disable=SC2154
 #  Directives for shellcheck directly after bang path are global
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com

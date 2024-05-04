@@ -1,5 +1,4 @@
 #!/bin/sh
-#  shellcheck disable=SC2034,SC2154
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -34,7 +33,6 @@ static_content() {
 
     d_extras="$D_TM_ITEMS"/extras
 
-    #  shellcheck disable=SC2154
     set -- \
         0.0 M Left "Back to Main menu  <--" main.sh \
         0.0 M A "$(is_aok_fs)iSH with AOK FS        -->" "$d_extras"/aok.sh \

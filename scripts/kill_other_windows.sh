@@ -8,7 +8,6 @@
 #   Kill all other windows
 #
 # Global check exclude, ignoring: is referenced but not assigned
-# shellcheck disable=SC2154
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"

@@ -1,5 +1,4 @@
 #!/bin/sh
-#  shellcheck disable=SC2034
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -15,7 +14,6 @@ static_content() {
     req_win_width=41
     req_win_height=28
 
-    #  shellcheck disable=SC2154
     set -- \
         2.7 M Home "Back to Main menu        <==" main.sh \
         2.7 M Left "Back to Advanced options <--" advanced.sh \

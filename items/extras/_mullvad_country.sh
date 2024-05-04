@@ -1,5 +1,4 @@
 #!/bin/sh
-#  shellcheck disable=SC2034,SC2154
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -49,7 +48,6 @@ if [ "$offset" -gt 0 ]; then
     nav_add "Back" B "$previous_page"
 fi
 
-#  shellcheck disable=SC2089
 menu_items="'Back to Main menu'  Home  \"$open_menu/main.sh'\" \
     'Back to Mullvad'  Left  \"$open_menu/extras/mullvad.sh'\" \"\" "
 
@@ -61,7 +59,6 @@ if grep -V | grep -q BSD; then
 else
     grep_gnu="-P"
 fi
-# shellcheck disable=SC2248
 countries="$(mullvad relay list | grep -v $grep_gnu '^\t' |
     grep -v '^$' | awk '{printf "%s|",$0}')"
 
@@ -97,7 +94,6 @@ while true; do
     available_keys="$(echo "$available_keys" | cut -c2-)"
 
     #  Add a line to the menu
-    #  shellcheck disable=SC2089
     menu_items="$menu_items '$country' '$key' \
         \"run-shell 'mullvad relay set location $country_code > /dev/null'\""
 
@@ -118,7 +114,6 @@ done
 
 menu_items="$menu_items $nav"
 
-#  shellcheck disable=SC2086,SC2090,SC2154
 echo $menu_items | xargs $TMUX_BIN display-menu \
     -T "#[align=centre] $menu_name " \
     -x $cfg_mnu_loc_x -y $cfg_mnu_loc_y

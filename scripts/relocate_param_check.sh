@@ -1,5 +1,4 @@
 #!/bin/sh
-# shellcheck disable=SC2034
 #  Directives for shellcheck directly after bang path are global
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
@@ -11,7 +10,6 @@
 #   Validates parameters
 #
 # Global check exclude, ignoring: is referenced but not assigned
-# shellcheck disable=SC2154
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"

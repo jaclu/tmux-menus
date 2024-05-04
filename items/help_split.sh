@@ -1,5 +1,4 @@
 #!/bin/sh
-#  shellcheck disable=SC2034
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -32,7 +31,6 @@ static_content() {
     #        in order to actually print one, figure out what's going on
     #
 
-    # shellcheck disable=SC2154
     set -- \
         0.0 M Left "Back to Previous menu <--" "$previous_menu" \
         0.0 S \

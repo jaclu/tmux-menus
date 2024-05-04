@@ -1,5 +1,4 @@
 #!/bin/sh
-#  shellcheck disable=SC2034
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -17,7 +16,6 @@ static_content() {
     # make it global so it changes all windows in all sessions
     setw_cmd="setw -g"
 
-    #  shellcheck disable=SC2154
     set -- \
         0.0 M Left "Back to Main menu <--" main.sh \
         0.0 S \

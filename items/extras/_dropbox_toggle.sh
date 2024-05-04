@@ -1,5 +1,4 @@
 #!/bin/sh
-#  shellcheck disable=SC1091,SC2154
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #   License: MIT

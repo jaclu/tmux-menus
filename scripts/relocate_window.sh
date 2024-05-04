@@ -1,5 +1,4 @@
 #!/bin/sh
-# shellcheck disable=SC2154
 #  Directives for shellcheck directly after bang path are global
 
 #
@@ -32,7 +31,6 @@ _this="relocate_window.sh"
 
 param_check "$@"
 
-# shellcheck disable=SC2154
 if [ "$cur_ses" = "$dest_ses" ]; then
     #
     #  to same session

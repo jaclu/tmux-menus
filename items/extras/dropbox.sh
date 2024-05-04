@@ -1,5 +1,4 @@
 #!/bin/sh
-#  shellcheck disable=SC1091,SC2034,SC2154
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -10,7 +9,8 @@
 #
 
 dynamic_content() {
-    . "$D_TM_SCRIPTS"/dropbox_tools.sh
+    # shellcheck source=scripts/dropbox_tools.sh
+    . "$D_TM_BASE_PATH"/dropbox_tools.sh
 
     if is_dropbox_running; then
         tgl_lbl="sTop"

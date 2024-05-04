@@ -1,5 +1,4 @@
 #!/bin/sh
-#  shellcheck disable=SC2034,SC2154
 #  Directives for shellcheck directly after bang path are global
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
@@ -16,7 +15,6 @@ D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
 #  shellcheck disable=SC1091
 . "$D_TM_BASE_PATH/scripts/utils.sh"
 
-#  shellcheck disable=SC2034
 #  Directives for shellcheck directly after bang path are global
 
 _this="move_menu.sh"

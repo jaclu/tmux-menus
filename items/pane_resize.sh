@@ -1,5 +1,4 @@
 #!/bin/sh
-#  shellcheck disable=SC2034
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -14,7 +13,6 @@ static_content() {
     req_win_width=36
     req_win_height=18
 
-    #  shellcheck disable=SC2154
     set -- \
         0.0 M Home "Back to Main menu     <==" main.sh \
         0.0 M Left "Back to Handling Pane <--" panes.sh \

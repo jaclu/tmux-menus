@@ -1,5 +1,4 @@
 #!/bin/sh
-#  shellcheck disable=SC2034
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -19,7 +18,13 @@ static_content() {
         error_msg "This menu needs at least tmux 2.0"
     fi
 
-    #  shellcheck disable=SC2154
+    if tmux_vers_compare 3.2; then
+        _s="no-detached"
+    else
+        _s="off"
+    fi
+    cli_dtch_mode="set -s detach-on-destroy $_s"
+
     set -- \
         0.0 M Left "Back to Main menu <--" main.sh \
         0.0 S \
@@ -35,16 +40,7 @@ static_content() {
         0.0 S \
         2.0 C x "Kill current session" "confirm-before -p \
             'Are you sure you want to kill this session? (y/n)' \
-            'set -s detach-on-destroy"
-
-    if tmux_vers_compare 3.2; then
-        #  added param for compatible versions
-        #  shellcheck disable=SC2145
-        set -- "$@ no-detached"
-    fi
-
-    #  shellcheck disable=SC2145,SC2154
-    set -- "$@ ; kill-session'" \
+            '$cli_dtch_mode ; kill-session'" \
         2.0 C o "Kill all other sessions" "confirm-before -p \
             'Are you sure you want to kill all other sessions? (y/n)' \
             'kill-session -a'" \
