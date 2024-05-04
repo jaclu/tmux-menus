@@ -288,9 +288,42 @@ old_tmux_vers_compare() {
     if [ "$check_vers" \> "$tmux_vers" ]; then
         # echo ">> vers mismatch"
         return 1
+prepare_plugin_conf_overrides() { # not used ATM
+    #
+    #  Still too buggy not used ATM
+    #  tmux-menus can use its own cfg file to dynamically change settings
+    #
+    normalize_bool_param "@menus_config_overrides" "$default_conf_overrides" &&
+        cfg_overrides=true || cfg_overrides=false
+    log_it "cfg_overrides [$cfg_overrides]"
+    if $cfg_overrides && [ -f "$custom_config_file" ]; then
+        read_custom_config
+        cfg_mnu_loc_x="$location_x"
+        cfg_mnu_loc_y="$location_y"
+    else
+        cfg_mnu_loc_x="$(get_tmux_option "@menus_location_x" "$default_location_x")"
+        cfg_mnu_loc_y="$(get_tmux_option "@menus_location_y" "$default_location_y")"
     fi
-    # echo ">> version ok"
-    return 0
+}
+
+read_custom_config() { # not used ATM
+    #
+    #  Still too buggy not used ATM
+    #  When cfg_overrides is set this reads such settings
+    #
+    $cfg_overrides || return
+    # [ "$cfg_overrides" -ne 1 ] && return
+    #log_it "read_config()"
+
+    cfg_mnu_loc_x=P
+    cfg_mnu_loc_x=P
+    if [ ! -f "$custom_config_file" ]; then
+        write_config
+    fi
+    # shellcheck source=/dev/null
+    . "$custom_config_file"
+    [ -z "$location_x" ] && location_x="P"
+    [ -z "$location_y" ] && location_y="P"
 }
 
 #---------------------------------------------------------------

@@ -122,6 +122,6 @@ menu_items="$menu_items $nav"
 #  shellcheck disable=SC2086,SC2090,SC2154
 echo $menu_items | xargs $TMUX_BIN display-menu \
     -T "#[align=centre] $menu_name " \
-    -x $menu_location_x -y $menu_location_y
+    -x $cfg_mnu_loc_x -y $cfg_mnu_loc_y
 
 ensure_menu_fits_on_screen
