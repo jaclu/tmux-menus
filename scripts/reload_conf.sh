@@ -12,10 +12,10 @@
 
 write_config() {
     #
-    #  When config_overrides is set this saves such settings
+    #  When cfg_overrides is set this saves such settings
     #
-    $config_overrides || return
-    # [ "$config_overrides" -ne 1 ] && return
+    $cfg_overrides || return
+    # [ "$cfg_overrides" -ne 1 ] && return
 
     #log_it "write_config() x[$location_x] y[$location_y]"
     echo "location_x=$location_x" >"$custom_config_file"
@@ -31,8 +31,12 @@ D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
 _this="reload_conf.sh"
 [ "$(basename "$0")" != "$_this" ] && error_msg "$_this should NOT be sourced"
 
-conf_file="$(get_tmux_option "@menus_config_file" "$HOME/tmux.conf")"
-conf="${TMUX_CONF:-$conf_file}"
+if [ -n "$TMUX_CONF" ]; then
+    conf="$TMUX_CONF"
+else
+    # only ever used in this single script, so not loaded in utils
+    conf="$(get_tmux_option "@menus_config_file" "$HOME/tmux.conf")"
+fi
 
 $TMUX_BIN command-prompt -I "$conf" -p "Source file:" \
     "run-shell \"$TMUX_BIN source-file %% &&                        \

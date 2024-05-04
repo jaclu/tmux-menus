@@ -5,32 +5,58 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#  shellcheck disable=SC2154
 
-#  Should point to tmux-menux plugin
-D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")" && pwd)
+get_local_config() {
+    #
+    #  only used in this file
+    #
+    log_it "get_local_config()"
+    normalize_bool_param "@use_bind_key_notes_in_plugins" No &&
+        cfg_use_notes=true || cfg_use_notes=false
+    log_it "cfg_use_notes=[$cfg_use_notes]"
 
-#  shellcheck source=/dev/null
-. "$D_TM_BASE_PATH"/scripts/utils.sh
+    normalize_bool_param "@menus_without_prefix" "$default_no_prefix" &&
+        cfg_no_prefix=true || cfg_no_prefix=false
+    log_it "cfg_no_prefix=[$cfg_no_prefix]"
 
-if [ -s "$f_cached_tmux" ]; then
-    tmux_vers_in_cache="$(cat "$f_cached_tmux")"
-else
-    tmux_vers_in_cache=""
-fi
+    #
+    #  In shell script unlike in tmux, backslash needs to be doubled inside quotes.
+    #
+    # default_key=\\
 
-echo "Current tmux:$tmux_vers - cache built for: $tmux_vers_in_cache"
-#
-#  Clear cache if it was not created with current tmux version,
-#  Then tag cachdir with current tmux version
-#
-[ "$tmux_vers" = "$tmux_vers_in_cache" ] || {
-    log_it "Clearing incompatible cache"
+    cfg_trigger_key=$(get_tmux_option "@menus_trigger" "$default_trigger_key")
+    log_it "cfg_trigger_key=[$cfg_trigger_key]"
+}
+
+clear_cache() {
+    log_it "$1" # log msg
+
     rm -rf "$d_cache"
     mkdir -p "$d_cache"
     echo "$tmux_vers" >"$f_cached_tmux"
 }
 
+cache_validation() {
+    if [ -s "$f_cached_tmux" ]; then
+        tmux_vers_in_cache="$(cat "$f_cached_tmux")"
+        #
+        #  Clear cache if it was not created with current tmux version,
+        #  Then tag cachdir with current tmux version
+        #
+        [ "$tmux_vers" = "$tmux_vers_in_cache" ] || {
+            clear_cache \
+                "Clearing incompatible cache for tmux $tmux_vers_in_cache"
+        }
+    else
+        clear_cache "Clearing unidentified cache"
+    fi
+}
+
+#===============================================================
+#
+#   Main
+#
+#===============================================================
 
 D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$0")")"
 
@@ -43,49 +69,25 @@ D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$0")")"
 log_it ""
 log_it "$(date)"
 
-trigger_key=$(get_tmux_option "@menus_trigger" "$default_key")
-log_it "trigger_key=[$trigger_key]"
+default_trigger_key=\\
+default_no_prefix=No
 
-normalize_bool_param "@menus_without_prefix" "No" &&
-    without_prefix=true || without_prefix=false
-# if bool_param "$(get_tmux_option "@menus_without_prefix" "0")"; then
-#     without_prefix=1
-# else
-#     without_prefix=0
-# fi
+get_local_config
+cache_validation
 
-log_it "without_prefix=[$without_prefix]"
 
-#
-#  Generic plugin setting I use to add Notes to keys that are bound
-#  This makes this key binding show up when doing <prefix> ?
-#  If not set to "Yes", no attempt at adding notes will happen
-#  bind-key Notes were added in tmux 3.1, so should not be used on
-#  older versions!
-#
-normalize_bool_param "@use_bind_key_notes_in_plugins" "No" &&
-            use_notes=true || use_notes=false
-# if bool_param "$(get_tmux_option "@use_bind_key_notes_in_plugins" "No")"; then
-#     use_notes=1
-# else
-#     use_notes=0
-# fi
 
-log_it "use_notes=[$use_notes]"
 
 params=""
-$use_notes && params="$params -N plugin:tmux-menus"
-# if [ "$use_notes" -eq 1 ]; then
-#     #  shellcheck disable=SC2089
-#     params="$params -N plugin:tmux-menus"
-# fi
+# -N params cant have spaces in this plugin for rasons...
+$cfg_use_notes && params="-N plugin:tmux-menus"
 
-# if [ "$without_prefix" -eq 1 ]; then
-if $without_prefix; then
+# if [ "$cfg_no_prefix" -eq 1 ]; then
+if $cfg_no_prefix; then
     params="$params -n"
-    log_it "Menus bound to: $trigger_key"
+    log_it "Menus bound to: $cfg_trigger_key"
 else
-    log_it "Menus bound to: <prefix> $trigger_key"
+    log_it "Menus bound to: <prefix> $cfg_trigger_key"
 fi
 
 if tmux_vers_compare 3.0 && [ "$FORCE_WHIPTAIL_MENUS" != "1" ]; then
@@ -97,5 +99,5 @@ else
     cmd="$D_TM_SCRIPTS/do_whiptail.sh"
 fi
 
-#  shellcheck disable=SC2086
-$TMUX_BIN bind $params $trigger_key run-shell "$cmd"
+# works sans -N spaces
+$TMUX_BIN bind-key "$params" "$cfg_trigger_key"  run-shell "$cmd"

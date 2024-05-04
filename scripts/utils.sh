@@ -26,26 +26,11 @@ log_it() {
     #
 
     $log_interactive_to_stderr && [ -t 0 ] && {
-        printf "log: %s%*s%s\n" "$log_prefix" "$log_indent" "" \
-            "$@" >/dev/stderr
+        printf "log: %s\n" "$@" >/dev/stderr
         return
     }
 
-    if [ "$log_ppid" = "true" ]; then
-        proc_id="$(tmux display -p "#{session_id}"):$PPID"
-    else
-        proc_id="$$"
-    fi
-
-    #  needs leading space for compactness in the printf if empty
-    socket=" $(get_tmux_socket)"
-    #  only show socket name if not default
-    # [[ "$socket" = " default" ]] && socket=""
-
-    # printf "[%s] %s\n" "$(date '+%H:%M:%S')" "$@" >>"$log_file"
-    printf "%s%s %s %s%*s%s\n" "$(date +%H:%M:%S)" "$socket" "$proc_id" \
-        "$log_prefix" "$log_indent" "" "$@" >>"$cfg_log_file"
-    unset socket
+    printf "[%s] %s\n" "$(date '+%H:%M:%S')" "$@" >>"$cfg_log_file"
 }
 
 error_msg() {
@@ -75,159 +60,11 @@ error_msg() {
     unset display_message
 }
 
-old_error_msg() {
-    #
-    #  Display $1 as an error message in the log and as a tmux display-message
-    #  If no $2 or set to 0, the process is not exited
-    #
-    em_msg="ERROR: tmux-menus:$(basename "$0") $1"
-    em_exit_code="${2:-1}"
-    em_msg_len="$(printf "%s" "$em_msg" | wc -m)"
-    em_screen_width="$($TMUX_BIN display -p "#{window_width}")"
-
-    if [ -n "$log_file" ]; then
-        log_it "$em_msg"
-    else
-        #
-        #  Error msgs should always be displayed. If logging is not on
-        #  print to stdout
-        #
-        echo
-        echo "$em_msg"
-        echo
-    fi
-
-    [ "$em_exit_code" -ne 0 ] && exit "$em_exit_code"
-}
-
-#---------------------------------------------------------------
-#
-#   bool params
-#
-#---------------------------------------------------------------
-
-param_as_bool() {
-    #  Used to parse variables assigned "true" or "false" as booleans
-    [ "$1" = "true" ] && return 0
-    return 1
-}
-# FOO123
-normalize_bool_param() {
-    #
-    #  Ensure boolean style params use consistent states
-    #
-    case "$1" in
-    #
-    #  First handle the mindboggling tradition by tmux to use
-    #  1 to indicate selected / active.
-    #  This means 1 is 0 and 0 is 1, how Orwellian...
-    #
-    "1" | "yes" | "Yes" | "YES" | "true" | "True" | "TRUE")
-        #  Be a nice guy and accept some common positive notations
-        return 0
-        ;;
-
-    "0" | "no" | "No" | "NO" | "false" | "False" | "FALSE")
-        #  Be a nice guy and accept some common false notations
-        return 1
-        ;;
-
-    *)
-        log_it "Invalid parameter normalize_bool_param($1)"
-        error_msg \
-            "normalize_bool_param($1) - should be yes/true/1 or no/false/0" \
-            1 true
-        ;;
-
-    esac
-
-    return 2
-}
-
-NOT_bool_param() {
-    #
-    #  Aargh in shell boolean true is 0, but to make the boolean parameters
-    #  more relatable for users 1 is yes and 0 is no, so we need to switch
-    #  them here for assignment to follow boolean logic in the caller
-    #
-    case "$1" in
-
-    "0") return 1 ;;
-
-    "1") return 0 ;;
-
-    "yes" | "Yes" | "YES" | "true" | "True" | "TRUE")
-        #  Be a nice guy and accept some common positives
-        log_it "Converted positive [$1] to 0"
-        return 0
-        ;;
-
-    "no" | "No" | "NO" | "false" | "False" | "FALSE")
-        #  Be a nice guy and accept some common negatives
-        log_it "Converted negative [$1] to 1"
-        return 1
-        ;;
-
-    *)
-        error_msg "NOT_bool_param($1) - should be 1/yes/true or 0/no/false"
-        ;;
-
-    esac
-    return 1 # default to False
-}
-
 #---------------------------------------------------------------
 #
 #   tmux env handling
 #
 #---------------------------------------------------------------
-
-get_tmux_socket() {
-    #
-    #  returns name of tmux socket being used
-    #
-    if [ -n "$TMUX" ]; then
-        echo "$TMUX" | sed 's#/# #g' | cut -d, -f 1 | awk 'NF>1{print $NF}'
-    else
-        echo "standalone"
-    fi
-}
-
-get_tmux_option() {
-    gtm_option=$1
-    gtm_default=$2
-    gtm_value=$($TMUX_BIN show-option -gv "$gtm_option" 2>/dev/null)
-    if [ -z "$gtm_value" ]; then
-        echo "$gtm_default"
-    else
-        echo "$gtm_value"
-    fi
-    unset gtm_option
-    unset gtm_default
-    unset gtm_value
-}
-
-read_config() {
-    #
-    #  When config_overrides is set this reads such settings
-    #
-    $config_overrides || return
-    # [ "$config_overrides" -ne 1 ] && return
-    #log_it "read_config()"
-    if [ ! -f "$custom_config_file" ]; then
-        location_x=P
-        location_y=P
-        write_config
-    fi
-    #  shellcheck disable=SC1090
-    . "$custom_config_file"
-    [ -z "$location_x" ] && location_x="P"
-    [ -z "$location_y" ] && location_y="P"
-}
-
-compare_floats() {
-    awk -v n1="$1" -v n2="$2" 'BEGIN { exit !(n1 >= n2) }'
-}
 
 tmux_vers_compare() {
     #
@@ -270,24 +107,92 @@ tmux_vers_compare() {
     return "$tvc_rslt"
 }
 
-old_tmux_vers_compare() {
-    #
-    #  Compares running vs required version, to define if a feature
-    #  can be used in this env
-    #
-    check_vers="$1"
+get_tmux_option() {
+    gto_option="$1"
+    gto_default="$2"
 
-    #
-    #  The time to generate it each time is pretty much the same
-    #  as reading the value from a cached file, so just not worth the
-    #  risk of getting the wrong version indicated after an upgrade
-    #
-    tmux_vers="$($TMUX_BIN -V | cut -d ' ' -f 2)"
+    [ -z "$gto_option" ] && error_msg "get_tmux_option() param 1 empty!"
+    # shellcheck disable=SC2154
+    [ "$TMUX" = "" ] && {
+        # this is run standalone, just report the defaults
+        echo "$gto_default"
+        return
+    }
 
-    # shellcheck disable=SC3012
-    if [ "$check_vers" \> "$tmux_vers" ]; then
-        # echo ">> vers mismatch"
+    gto_value="$($TMUX_BIN show-option -gqv "$gto_option")"
+    if [ -z "$gto_value" ]; then
+        echo "$gto_default"
+    else
+        echo "$gto_value"
+    fi
+
+    unset gto_option
+    unset gto_default
+    unset gto_value
+}
+
+normalize_bool_param() {
+    #
+    #  Ensure boolean style params use consistent states
+    #
+    param="$1"
+
+    [ "${param%"${param#?}"}" = "@" ] && {
+        # Assume tmux variable name, use $2 as default
+        [ -z "$2" ] && {
+            error_msg "normalize_bool_param($param) - no default" 1 true
+        }
+        param="$(get_tmux_option "$param" "$2")"
+    }
+
+    case "$param" in
+    #
+    #  First handle the unfortunate tradition by tmux to use
+    #  1 to indicate selected / active.
+    #  This means 1 is 0 and 0 is 1, how Orwellian...
+    #
+    1 | yes | Yes | YES | true | True | TRUE)
+        #  Be a nice guy and accept some common positive notations
+        return 0
+        ;;
+
+    0 | no | No | NO | false | False | FALSE)
+        #  Be a nice guy and accept some common false notations
         return 1
+        ;;
+
+    *)
+        error_msg \
+            "normalize_bool_param($1) - should be yes/true/1 or no/false/0" \
+            1 true
+        ;;
+
+    esac
+
+    return 2
+}
+
+get_plugin_params() {
+    #
+    #  Generic plugin setting I use to add Notes to keys that are bound
+    #  This makes this key binding show up when doing <prefix> ?
+    #  If not set to "Yes", no attempt at adding notes will happen
+    #  bind-key Notes were added in tmux 3.1, so should not be used on
+    #  older versions!
+    #
+    normalize_bool_param "@menus_use_cache" Yes &&
+        cfg_use_cache=true || cfg_use_cache=false
+    log_it "cfg_use_cache [$cfg_use_cache]"
+
+    cfg_log_file="$(get_tmux_option "@menus_log_file" "$default_log_file")"
+    log_interactive_to_stderr=false
+
+    log_it "get_config()"
+
+    #  Still too buggy not used ATM
+    # prepare_plugin_conf_overrides
+}
+
 prepare_plugin_conf_overrides() { # not used ATM
     #
     #  Still too buggy not used ATM
@@ -333,7 +238,14 @@ read_custom_config() { # not used ATM
 #---------------------------------------------------------------
 
 wait_to_close_display() {
+    #
+    #  When a menu item writes to stdout, unfortunately how to close
+    #  the output window differs depending on dialog method used...
+    #  call this to display an apropriate suggestion, and in the
+    #  whiptail case wait for that key
+    #
     echo
+    # shellcheck disable=SC2154
     if [ "$FORCE_WHIPTAIL_MENUS" = 1 ] || ! tmux_vers_compare 3.0; then
         echo "Press <Enter> to clear this output"
         read -r foo
@@ -386,9 +298,6 @@ current_script="$d_current_script/$(basename "$0")"
 
 tmux_vers="$($TMUX_BIN -V | cut -d ' ' -f 2)"
 
-cfg_log_file="$(get_tmux_option "@menus_log_file" "")"
-log_interactive_to_stderr=false
-
 #
 #  Define a variable that can be used as suffix on commands in dialog
 #  items, to reload the same menu in calling scripts
@@ -413,36 +322,6 @@ f_cached_tmux="$d_cache"/tmux-vers
 #  In tmux code #{?@menus_config_overrides,,} can be used
 #
 
-normalize_bool_param "@menus_config_overrides" "No" &&
-    config_overrides=true || config_overrides=false
-# if bool_param "$(get_tmux_option "@menus_config_overrides" "0")"; then
-#     config_overrides=1
-# else
-#     config_overrides=0
-# fi
-
-normalize_bool_param "@menus_use_cache" "Yes" &&
-    use_cache=true || use_cache=false
-# if bool_param "$(get_tmux_option "@menus_use_cache" "yes")"; then
-#     use_cache=true
-# else
-#     use_cache=false
-# fi
-
-# if [ "$config_overrides" -eq 1 ] && [ -f "$custom_config_file" ]; then
-if $config_overrides && [ -f "$custom_config_file" ]; then
-    read_config
-    menu_location_x="$location_x"
-    menu_location_y="$location_y"
-else
-    #
-    #  Must come after definition of get_tmux_option to be able
-    #  to use it.
-    #
-    menu_location_x="$(get_tmux_option "@menus_location_x" "P")"
-    menu_location_y="$(get_tmux_option "@menus_location_y" "P")"
-fi
-
 #
 #  All calling scripts must provide
 #
@@ -451,3 +330,14 @@ D_TM_SCRIPTS="$D_TM_BASE_PATH"/scripts
 D_TM_ITEMS="$D_TM_BASE_PATH"/items
 
 # [ "$(basename "$0")" = "menus.tmux" ] && return
+
+#
+#  Defaults for plugin params
+#
+
+default_log_file=""
+default_location_x=P
+default_location_y=P
+default_conf_overrides=No
+
+get_plugin_params
