@@ -1,19 +1,18 @@
 #!/usr/bin/env bash
 #
-#   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2022-2024: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
 
-#  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
-
-# shellcheck source=/dev/null
-. "$D_TM_BASE_PATH/scripts/utils.sh"
-
 _this="plugins.sh"
 [[ "$(basename "$0")" != "$_this" ]] && error_msg "$_this should NOT be sourced"
+
+[[ -n "$TMUX" ]] || {
+    echo "This expects to run inside a tmux session!"
+    exit 1
+}
 
 echo
 
@@ -29,8 +28,11 @@ names=(tpm) # plugin manager
 #
 #  Generate list of plugins defined in config file
 #
-#  shellcheck disable=SC2207
-plugins=($(grep "set -g @plugin" "$TMUX_CONF" | awk '{ print $4 }' | sed s/\"//g))
+plugins=()
+while IFS= read -r plugin; do
+    plugins+=("$plugin")
+done < <(grep "set -g @plugin" "$TMUX_CONF" | awk '{ print $4 }' | sed 's/"//g')
+
 if [[ ${#plugins[@]} -gt 0 ]]; then
     echo "Defined plugins:"
 else
@@ -69,16 +71,25 @@ done
 
 if $plugin_missing; then
     if [[ -d "$plugins_dir/tpm" ]]; then
-        echo
         echo "You can install plugins listed as NOT INSTALLED with <prefix> I"
+        echo
     fi
 fi
 
 if $undefined_item; then
     if [[ -d "$plugins_dir/tpm" ]]; then
-        echo
         echo "You can remove undefined items with <prefix> M-u"
+        echo
     fi
 fi
 
-wait_to_close_display
+[[ -t 0 ]] || {
+    # not from command-line, ie most likely called from the menus
+    #  shellcheck disable=SC2154
+    if [[ "$FORCE_WHIPTAIL_MENUS" = 1 ]]; then
+        echo "Press <Enter> to clear this output"
+        read -r _
+    else
+        echo "Press <Escape> to clear this output"
+    fi
+}
