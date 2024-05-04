@@ -15,12 +15,12 @@ dynamic_content() {
     req_win_width=36
     req_win_height=8
 
-    if [ -z "$menu_param" ]; then
+    if [ -z "$prev_menu" ]; then
         error_msg "help.sh was called without notice of what called it"
     fi
 
     set -- \
-        0.0 M Left "Back to Previous menu <--" "$menu_param"
+        0.0 M Left "Back to Previous menu <--" "$prev_menu"
 
     menu_generate_part 1 "$@"
 }
@@ -42,7 +42,7 @@ static_content() {
 #
 #===============================================================
 
-menu_param="$1"
+prev_menu="$1"
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
