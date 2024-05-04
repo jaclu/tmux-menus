@@ -12,7 +12,7 @@
 dynamic_content() {
     # Things that change dependent on various states
 
-    other_pane_is_marked="$($TMUX_BIN display -p '#{?pane_marked_set, ,}')"
+    other_pane_is_marked="$($TMUX_BIN display -p '#{?pane_marked_set,yes,}')"
 
     if [ -n "$other_pane_is_marked" ]; then
         set -- \
