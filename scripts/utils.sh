@@ -180,55 +180,79 @@ get_plugin_params() {
     #  bind-key Notes were added in tmux 3.1, so should not be used on
     #  older versions!
     #
+    echo "><> get_plugin_params()"
+
+    cfg_trigger_key=$(get_tmux_option "@menus_trigger" "$default_trigger_key")
+
+    normalize_bool_param "@menus_without_prefix" "$default_no_prefix" &&
+        cfg_no_prefix=true || cfg_no_prefix=false
+
     normalize_bool_param "@menus_use_cache" Yes &&
         cfg_use_cache=true || cfg_use_cache=false
-    log_it "cfg_use_cache [$cfg_use_cache]"
 
     cfg_log_file="$(get_tmux_option "@menus_log_file" "$default_log_file")"
     log_interactive_to_stderr=false
 
-    log_it "get_config()"
+    # log_it "get_plugin_params()"
 
-    #  Still too buggy not used ATM
-    # prepare_plugin_conf_overrides
+    cfg_tmux_conf="$(get_tmux_option "@menus_config_file" "$default_tmux_conf")"
+
+    cfg_mnu_loc_x="$(get_tmux_option "@menus_location_x" "$default_location_x")"
+    cfg_mnu_loc_y="$(get_tmux_option "@menus_location_y" "$default_location_y")"
+
+    normalize_bool_param "@use_bind_key_notes_in_plugins" No &&
+        cfg_use_notes=true || cfg_use_notes=false
 }
 
-prepare_plugin_conf_overrides() { # not used ATM
+param_cache_write() {
+    conf_file="${1:-$f_param_cache}"
+    echo "><> param_cache_write($conf_file)"
+    log_it "Generating param cache: $conf_file"
+    mkdir -p "$d_cache"
+    cat <<EOF >"$conf_file"
+    #!/bin/sh
+    # Always sourced file - Fake bang path to help editors
     #
-    #  Still too buggy not used ATM
-    #  tmux-menus can use its own cfg file to dynamically change settings
-    #
-    normalize_bool_param "@menus_config_overrides" "$default_conf_overrides" &&
-        cfg_overrides=true || cfg_overrides=false
-    log_it "cfg_overrides [$cfg_overrides]"
-    if $cfg_overrides && [ -f "$custom_config_file" ]; then
-        read_custom_config
-        cfg_mnu_loc_x="$location_x"
-        cfg_mnu_loc_y="$location_y"
+    cfg_trigger_key=$cfg_trigger_key
+    cfg_no_prefix="$cfg_no_prefix"
+    cfg_use_cache="$cfg_use_cache"
+    cfg_use_notes="$cfg_use_notes"
+    cfg_mnu_loc_x="$cfg_mnu_loc_x"
+    cfg_mnu_loc_y="$cfg_mnu_loc_y"
+    cfg_tmux_conf="$cfg_tmux_conf"
+    cfg_log_file="$cfg_log_file"
+EOF
+}
+
+generate_param_cache() {
+    echo "><> generate_param_cache()"
+    get_plugin_params
+    f_params_new="$f_param_cache".new
+    param_cache_write "$f_params_new"
+
+    if cmp -s "$f_params_new" "$f_param_cache"; then
+        rm -f "$f_params_new"
     else
-        cfg_mnu_loc_x="$(get_tmux_option "@menus_location_x" "$default_location_x")"
-        cfg_mnu_loc_y="$(get_tmux_option "@menus_location_y" "$default_location_y")"
+        mv "$f_params_new" "$f_param_cache"
     fi
+    unset f_params_new
 }
 
-read_custom_config() { # not used ATM
+get_config() {
+    echo "><> get_config()"
     #
-    #  Still too buggy not used ATM
-    #  When cfg_overrides is set this reads such settings
+    #  The plugin init .tmux script should NOT caal this!
     #
-    $cfg_overrides || return
-    # [ "$cfg_overrides" -ne 1 ] && return
-    #log_it "read_config()"
+    #  It should instead direcly call generate_param_cache to ensure
+    #  the cached configs match current tmux env, since this reads in all
+    #  current variables, the .tmux file does not need to call this.
+    #
+    #  Calls to this trusts the param cache to be valid if found
+    #
+    [ -s "$f_param_cache" ] || generate_param_cache
 
-    cfg_mnu_loc_x=P
-    cfg_mnu_loc_x=P
-    if [ ! -f "$custom_config_file" ]; then
-        write_config
-    fi
     # shellcheck source=/dev/null
-    . "$custom_config_file"
-    [ -z "$location_x" ] && location_x="P"
-    [ -z "$location_y" ] && location_y="P"
+    . "$f_param_cache"
 }
 
 #---------------------------------------------------------------
@@ -335,15 +359,20 @@ f_cached_tmux="$d_cache"/tmux-vers
 d_items="$D_TM_BASE_PATH"/items
 d_scripts="$D_TM_BASE_PATH"/scripts
 
+f_param_cache="$D_TM_BASE_PATH"/cache/plugin_params.sh
+
 # [ "$(basename "$0")" = "menus.tmux" ] && return
 
 #
 #  Defaults for plugin params
 #
 
+default_trigger_key=\\
+default_no_prefix=No
 default_log_file=""
 default_location_x=P
 default_location_y=P
 default_conf_overrides=No
+default_tmux_conf="${TMUX_CONF:-~/.tmux.conf}"
 
-get_plugin_params
+get_config

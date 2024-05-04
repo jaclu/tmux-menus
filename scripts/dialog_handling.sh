@@ -104,7 +104,7 @@ starting_with_dash() {
 #
 tmux_dialog_prefix() {
     menu_items="$TMUX_BIN display-menu -T \"#[align=centre] $menu_name \" \
-        -x \"$cfg_mnu_loc_x\" -y \"$cfg_mnu_loc_y\""
+        -x '$cfg_mnu_loc_x' -y '$cfg_mnu_loc_y'"
 }
 
 tmux_open_menu() {
@@ -582,6 +582,8 @@ fi
 
 # shellcheck source=scripts/utils.sh
 . "$D_TM_BASE_PATH"/scripts/utils.sh
+
+echo "cfg_log_file [$cfg_log_file] start static_content()"
 
 [ -z "$TMUX" ] && error_msg "tmux-menus can only be used inside tmux!"
 

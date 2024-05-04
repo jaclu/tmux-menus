@@ -6,27 +6,6 @@
 #   Part of https://github.com/jaclu/tmux-menus
 #
 
-get_local_config() {
-    #
-    #  only used in this file
-    #
-    log_it "get_local_config()"
-    normalize_bool_param "@use_bind_key_notes_in_plugins" No &&
-        cfg_use_notes=true || cfg_use_notes=false
-    log_it "cfg_use_notes=[$cfg_use_notes]"
-
-    normalize_bool_param "@menus_without_prefix" "$default_no_prefix" &&
-        cfg_no_prefix=true || cfg_no_prefix=false
-    log_it "cfg_no_prefix=[$cfg_no_prefix]"
-
-    #
-    #  In shell script unlike in tmux, backslash needs to be doubled inside quotes.
-    #
-    # default_key=\\
-
-    cfg_trigger_key=$(get_tmux_option "@menus_trigger" "$default_trigger_key")
-    log_it "cfg_trigger_key=[$cfg_trigger_key]"
-}
 
 clear_cache() {
     log_it "$1" # log msg
@@ -52,6 +31,11 @@ cache_validation() {
     fi
 }
 
+
+#
+#  then everywhere else read this conf
+#
+
 #===============================================================
 #
 #   Main
@@ -69,11 +53,10 @@ D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$0")")"
 log_it ""
 log_it "$(date)"
 
-default_trigger_key=\\
-default_no_prefix=No
+generate_param_cache
 
-get_local_config
 cache_validation
+generate_param_cache
 
 
 
