@@ -20,11 +20,10 @@ nav_add() {
 #
 #===============================================================
 
-#  Should point to tmux-menux plugin
-D_TM_BASE_PATH="$(dirname "$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")")"
+#  Full path to tmux-menux plugin
+D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$(dirname -- "$0")")")")"
 
-#  Source dialog handling script
-# shellcheck disable=SC1091
+# shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 
 menu_name="Mullvad Select Country"

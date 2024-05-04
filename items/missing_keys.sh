@@ -99,7 +99,7 @@ static_content() {
     req_win_height=19
 
     tmux_vers_compare 2.0 || error_msg "needs tmux 2.0"
-    
+
     set -- \
         0.0 M Left "Back to Main menu <--" main.sh \
         0.0 S
@@ -146,10 +146,10 @@ static_content() {
 #
 #===============================================================
 
-#  Full path to tmux-menux plugin
-D_TM_BASE_PATH=$(dirname "$(dirname -- "$(readlink -f -- "$0")")")
-
 menu_param="$1"
 
-#  Generate and display the menu
+#  Full path to tmux-menux plugin
+D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
+
+# shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
