@@ -10,10 +10,10 @@
 # Global check exclude, ignoring: is referenced but not assigned
 
 #  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
+D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
 
-#  shellcheck disable=SC1091
-. "$D_TM_BASE_PATH/scripts/utils.sh"
+# shellcheck source=scripts/utils.sh
+. "$D_TM_BASE_PATH"/scripts/utils.sh
 
 _this="kill_other_windows.sh"
 [ "$(basename "$0")" != "$_this" ] && error_msg "$_this should NOT be sourced"
