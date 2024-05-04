@@ -30,7 +30,7 @@ static_content() {
         1.7 C L "left" "resize-pane -L 5 $menu_reload" \
         1.7 C R "right" "resize-pane -R 5 $menu_reload" \
         0.0 S \
-        0.0 M H "Help -->" "$D_TM_ITEMS/help.sh $current_script"
+        0.0 M H "Help -->" "$d_items/help.sh $current_script"
 
     menu_generate_part 1 "$@"
 }

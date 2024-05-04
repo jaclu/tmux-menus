@@ -39,7 +39,7 @@ static_content() {
             'Are you sure you want to kill all other windows? (y/n)' \
             'run-shell \"${D_TM_SCRIPTS}/kill_other_windows.sh\"'" \
         0.0 S \
-        0.0 M H "Help -->" "$D_TM_ITEMS/help.sh $current_script"
+        0.0 M H "Help -->" "$d_items/help.sh $current_script"
 
     menu_generate_part 1 "$@"
 }

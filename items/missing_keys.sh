@@ -133,7 +133,7 @@ static_content() {
         0.0 E P " Send £ (Pound sign)" "$current_script £" \
         0.0 E c " Send ¢ (Cent sign)" "$current_script ¢" \
         0.0 S \
-        0.0 M H "Help -->" "$D_TM_ITEMS/help.sh $current_script"
+        0.0 M H "Help -->" "$d_items/help.sh $current_script"
 
     menu_generate_part 1 "$@"
 

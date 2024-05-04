@@ -39,7 +39,6 @@ _this="do_whiptail.sh"
 #  where the menu is run
 #
 
-#  shellcheck disable=SC2154
-$TMUX_BIN send-keys C-z "$D_TM_ITEMS/main.sh ; fg" Enter
+$TMUX_BIN send-keys C-z "$d_items/main.sh ; fg" Enter
 
-#$TMUX_BIN send-keys C-z $D_TM_ITEMS/main.sh ' [ -n "$(jobs)" ] && fg ' Enter
+#$TMUX_BIN send-keys C-z $d_items/main.sh ' [ -n "$(jobs)" ] && fg ' Enter

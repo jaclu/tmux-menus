@@ -38,14 +38,15 @@ static_content() {
         2.0 C "\(" "<P> Previous session (in order)" "switch-client -p $menu_reload" \
         2.0 C "\)" "<P> Next     session (in order)" "switch-client -n $menu_reload" \
         0.0 S \
-        2.0 C x "Kill current session" "confirm-before -p \
+        2.0 C x "Kill current session" \
+        "confirm-before -p \
             'Are you sure you want to kill this session? (y/n)' \
             '$cli_dtch_mode ; kill-session'" \
         2.0 C o "Kill all other sessions" "confirm-before -p \
             'Are you sure you want to kill all other sessions? (y/n)' \
             'kill-session -a'" \
         0.0 S \
-        0.0 M H "Help -->" "$D_TM_ITEMS/help.sh $current_script"
+        0.0 M H "Help -->" "$d_items/help.sh $current_script"
 
     menu_generate_part 1 "$@"
 }

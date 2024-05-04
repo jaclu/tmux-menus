@@ -39,7 +39,7 @@ static_content() {
         1.8 T "-#[nodim] " \
         1.8 C = "<P>" "choose-buffer" \
         0.0 S \
-        0.0 M H "Help -->" "$D_TM_ITEMS/help.sh $current_script"
+        0.0 M H "Help -->" "$d_items/help.sh $current_script"
 
     menu_generate_part 1 "$@"
 }

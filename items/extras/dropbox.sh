@@ -32,8 +32,8 @@ static_content() {
     [ -z "$(command -v dropbox)" ] && error_msg "dropbox bin not found!"
 
     set -- \
-        0.0 M Home "Back to Main menu  <==" "$D_TM_ITEMS/main.sh" \
-        0.0 M Left "Back to Extras     <--" "$D_TM_ITEMS/extras.sh" \
+        0.0 M Home "Back to Main menu  <==" "$d_items/main.sh" \
+        0.0 M Left "Back to Extras     <--" "$d_items/extras.sh" \
         0.0 S \
         0.0 C s "Status" "display \"$(dropbox status)\" $menu_reload"
 
@@ -41,7 +41,7 @@ static_content() {
 
     set -- \
         0.0 S \
-        0.0 M H "Help  -->" "$D_TM_ITEMS/help.sh $current_script'"
+        0.0 M H "Help  -->" "$d_items/help.sh $current_script'"
 
     menu_generate_part 3 "$@"
 }

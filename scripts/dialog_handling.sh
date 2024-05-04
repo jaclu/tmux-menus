@@ -323,7 +323,7 @@ menu_parse() {
             #  item
             #
             if echo "$menu" | grep -vq /; then
-                menu="$D_TM_ITEMS/$menu"
+                menu="$d_items/$menu"
             fi
 
             [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] menu[$menu]"

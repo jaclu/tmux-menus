@@ -30,8 +30,8 @@ static_content() {
     [ -z "$(command -v spotify)" ] && error_msg "spotify bin not found!"
 
     set -- \
-        0.0 M Home "Back to Main menu  <==" "$D_TM_ITEMS/main.sh" \
-        0.0 M Left "Back to Extras     <--" "$D_TM_ITEMS/extras.sh" \
+        0.0 M Home "Back to Main menu  <==" "$d_items/main.sh" \
+        0.0 M Left "Back to Extras     <--" "$d_items/extras.sh" \
         0.0 S
 
     menu_generate_part 1 "$@"
@@ -48,7 +48,7 @@ static_content() {
         0.0 E u "vol Up" "spotify           vol up         $reload_no_output" \
         0.0 E d "vol Down" "spotify         vol down       $reload_no_output" \
         0.0 S \
-        0.0 M H 'Help       -->' "$D_TM_ITEMS/help.sh $current_script"
+        0.0 M H 'Help       -->' "$d_items/help.sh $current_script"
 
     menu_generate_part 3 "$@"
 }

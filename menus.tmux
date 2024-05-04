@@ -91,7 +91,7 @@ else
 fi
 
 if tmux_vers_compare 3.0 && [ "$FORCE_WHIPTAIL_MENUS" != "1" ]; then
-    cmd="$D_TM_ITEMS/main.sh"
+    cmd="$d_items/main.sh"
 else
     if [ -z "$(command -v whiptail)" ]; then
         error_msg "whiptail is not installed!" 1

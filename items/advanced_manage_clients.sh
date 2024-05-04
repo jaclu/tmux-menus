@@ -40,7 +40,7 @@ static_content() {
         2.7 T "-#[nodim] " \
         2.7 C D "<P>" "choose-client -Z" \
         2.7 S \
-        2.7 M H "Help -->" "$D_TM_ITEMS/help.sh $current_script'"
+        2.7 M H "Help -->" "$d_items/help.sh $current_script'"
 
     menu_generate_part 1 "$@"
 }

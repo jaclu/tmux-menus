@@ -31,7 +31,7 @@ static_content() {
     req_win_width=33
     req_win_height=11
 
-    d_extras="$D_TM_ITEMS"/extras
+    d_extras="$d_items"/extras
 
     set -- \
         0.0 M Left "Back to Main menu  <--" main.sh \
@@ -42,7 +42,7 @@ static_content() {
         0.0 S \
         0.0 E i "public IP" public_ip.sh \
         0.0 S \
-        0.0 M H 'Help -->' "$D_TM_ITEMS/help_extras.sh $current_script"
+        0.0 M H 'Help -->' "$d_items/help_extras.sh $current_script"
 
     menu_generate_part 1 "$@"
 }
