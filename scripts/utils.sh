@@ -263,6 +263,12 @@ wait_to_close_display() {
 [ -z "$D_TM_BASE_PATH" ] && error_msg "D_TM_BASE_PATH undefined"
 
 #
+#  will allways refer to currently running script, ignoring what
+#  is sourced
+#
+current_scr="$(basename "$0")"
+
+#
 #  If log_file is empty or undefined, no logging will occur,
 #  so comment it out for normal usage.
 #

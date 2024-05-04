@@ -6,7 +6,7 @@
 #   Part of https://github.com/jaclu/tmux-menus
 #
 
-_this="plugins.sh"
+_this="plugins.sh" # error prone if script name is changed :(
 [[ "$(basename "$0")" != "$_this" ]] && error_msg "$_this should NOT be sourced"
 
 [[ -n "$TMUX" ]] || {

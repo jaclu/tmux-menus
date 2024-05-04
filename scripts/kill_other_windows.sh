@@ -15,8 +15,8 @@ D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
 # shellcheck source=scripts/utils.sh
 . "$D_TM_BASE_PATH"/scripts/utils.sh
 
-_this="kill_other_windows.sh"
-[ "$(basename "$0")" != "$_this" ] && error_msg "$_this should NOT be sourced"
+_this="kill_other_windows.sh" # error prone if script name is changed :(
+[ "$current_scr" != "$_this" ] && error_msg "$_this should NOT be sourced"
 
 window_list="$(IFS=" " $TMUX_BIN list-windows -F '#{window_id}')"
 current_window="$($TMUX_BIN display-message -p '#{window_id}')"

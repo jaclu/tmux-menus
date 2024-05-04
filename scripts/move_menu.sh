@@ -17,8 +17,8 @@ D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
 
 #  Directives for shellcheck directly after bang path are global
 
-_this="move_menu.sh"
-[ "$(basename "$0")" != "$_this" ] && error_msg "$_this should NOT be sourced"
+_this="move_menu.sh" # error prone if script name is changed :(
+[ "$current_scr" != "$_this" ] && error_msg "$_this should NOT be sourced"
 
 action="$1"
 param_1="$2"
