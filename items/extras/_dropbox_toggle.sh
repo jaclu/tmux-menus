@@ -29,7 +29,8 @@ D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$(dirname -- "$0")")"
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 
-. "$D_TM_SCRIPTS"/dropbox_tools.sh
+# shellcheck source=scripts/dropbox_tools.sh
+. "$d_scripts"/dropbox_tools.sh
 
 if is_dropbox_running; then
     action="stop"

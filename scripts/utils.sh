@@ -327,7 +327,7 @@ f_cached_tmux="$d_cache"/tmux-vers
 #
 
 d_items="$D_TM_BASE_PATH"/items
-D_TM_ITEMS="$D_TM_BASE_PATH"/items
+d_scripts="$D_TM_BASE_PATH"/scripts
 
 # [ "$(basename "$0")" = "menus.tmux" ] && return
 

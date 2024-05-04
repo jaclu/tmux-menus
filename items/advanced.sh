@@ -73,7 +73,7 @@ static_content() {
     set -- \
         2.4 C p "Change prefix <$current_prefix>" "command-prompt -1 -p \
             'prefix (will take effect imeditally)' \
-            'run-shell \"$D_TM_SCRIPTS/change_prefix.sh %1\"'" \
+            'run-shell \"$d_scripts/change_prefix.sh %1\"'" \
         0.0 S \
         1.8 C x "Kill server" "confirm-before -p \
             'kill tmux server defined in($TMUX_SOURCE) ? (y/n)' kill-server" \

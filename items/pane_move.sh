@@ -30,7 +30,7 @@ static_content() {
         0.0 M Left "Back to Handling Pane <--" panes.sh \
         0.0 S \
         2.7 C m " Move to other win/ses        " "choose-tree -Gw \
-            \"run-shell '$D_TM_SCRIPTS/relocate_pane.sh P M %%'\""
+            \"run-shell '$d_scripts/relocate_pane.sh P M %%'\""
 
     menu_generate_part 1 "$@"
 
@@ -38,7 +38,7 @@ static_content() {
         1.7 C "{" "<P> Swap pane with prev" "swap-pane -U $menu_reload" \
         1.7 C "}" "<P> Swap pane with next" "swap-pane -D $menu_reload" \
         0.0 S \
-        2.4 E ! "<P> Break pane to a new window" "$D_TM_SCRIPTS/break_pane.sh" \
+        2.4 E ! "<P> Break pane to a new window" "$d_scripts/break_pane.sh" \
         0.0 S \
         0.0 M H "Help -->" "$d_items/help.sh $current_script"
 

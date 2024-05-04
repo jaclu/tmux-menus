@@ -357,7 +357,7 @@ menu_parse() {
         "E") #  Run external command - params: key label cmd
             #
             #  If no / is found in the script param, it will be prefixed with
-            #  $D_TM_SCRIPTS
+            #  $d_scripts
             #  This means that if you give full path to something in this
             #  param, all scriptd needs to have full path pre-pended.
             #  For example help menus, which takes the full path to the
@@ -379,7 +379,7 @@ menu_parse() {
             #  various implementations
             #
             if echo "$cmd" | grep -vq /; then
-                cmd="$D_TM_SCRIPTS/$cmd"
+                cmd="$d_scripts/$cmd"
             fi
 
             [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"

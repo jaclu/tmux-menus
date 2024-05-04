@@ -13,7 +13,7 @@ dynamic_content() {
         # This title check is a MacOS script
         set -- \
             0.0 C t "Title - now playing" "display \
-                '$("$D_TM_SCRIPTS"/spotify-now-playing | sed "s/'/*/g" | sed 's/"/*/g')' \
+                '$("$d_scripts"/spotify-now-playing | sed "s/'/*/g" | sed 's/"/*/g')' \
                 $menu_reload" \
             0.0 S
         menu_generate_part 2 "$@"

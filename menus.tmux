@@ -96,7 +96,7 @@ else
     if [ -z "$(command -v whiptail)" ]; then
         error_msg "whiptail is not installed!" 1
     fi
-    cmd="$D_TM_SCRIPTS/do_whiptail.sh"
+    cmd="$d_scripts/do_whiptail.sh"
 fi
 
 # works sans -N spaces

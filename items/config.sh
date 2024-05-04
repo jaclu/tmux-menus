@@ -18,7 +18,7 @@ static_content() {
     req_win_width=37
     req_win_height=13
 
-    change_location="run-shell '$D_TM_SCRIPTS/move_menu.sh"
+    change_location="run-shell '$d_scripts/move_menu.sh"
 
     #
     #  The -p sequence will get wrecked by lnie breaks,

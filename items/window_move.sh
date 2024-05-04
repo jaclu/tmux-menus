@@ -27,7 +27,7 @@ static_content() {
     req_win_width=40
     req_win_height=17
 
-    select_location="choose-tree -Gw 'run-shell \"$D_TM_SCRIPTS/relocate_window.sh"
+    select_location="choose-tree -Gw 'run-shell \"$d_scripts/relocate_window.sh"
 
     set -- \
         0.0 M Home "Back to Main menu       <==" main.sh \
