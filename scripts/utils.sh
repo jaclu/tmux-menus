@@ -404,6 +404,4 @@ default_conf_overrides=No
 default_tmux_conf="${TMUX_CONF:-~/.tmux.conf}"
 log_interactive_to_stderr=false
 
-log_it "><> utils calling get_config"
 get_config
-log_it "><> utils returned from get_config"

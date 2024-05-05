@@ -583,8 +583,6 @@ fi
 # shellcheck source=scripts/utils.sh
 . "$D_TM_BASE_PATH"/scripts/utils.sh
 
-echo "cfg_log_file [$cfg_log_file] start static_content()"
-
 [ -z "$TMUX" ] && error_msg "tmux-menus can only be used inside tmux!"
 
 ! tmux_vers_compare 3.0 && FORCE_WHIPTAIL_MENUS=1

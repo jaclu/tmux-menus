@@ -31,8 +31,6 @@ dynamic_content() {
             'prefix (will take effect imeditally)' \
             'run-shell \"$d_scripts/change_prefix.sh %1\" $menu_reload'"
 
-    echo "><> menu_reload [$menu_reload]"
-
     menu_generate_part 2 "$@"
 
 }
