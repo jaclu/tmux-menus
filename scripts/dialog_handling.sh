@@ -452,12 +452,30 @@ menu_parse() {
     # if $cfg_use_cache; then
     if $cfg_use_cache; then
         # clear cache (if present)
-        # log_it "><> Updating $f_cache_file"
         echo "$menu_items" >"$f_cache_file" || error_msg "Failed to write to: $f_cache_file"
     else
         add_uncached_item
     fi
     unset menu_items
+}
+
+update_wt_actions() {
+    # if $cfg_use_cache; then
+    if $cfg_use_cache; then
+        # clear actions
+        [ "$menu_idx" -eq 1 ] && {
+            rm -rf "$d_wt_actions"
+            mkdir -p "$d_wt_actions"
+        }
+        if $is_dynamic_content; then
+            echo "$wt_actions" >"$d_wt_actions/dynamic-$menu_idx"
+        else
+            echo "$wt_actions" >>"$d_wt_actions/static"
+        fi
+    else
+        uncached_wt_actions="$uncached_wt_actions $wt_actions"
+    fi
+
 }
 
 menu_generate_part() {
@@ -466,16 +484,7 @@ menu_generate_part() {
     f_cache_file="$d_cache_file/$menu_idx"
     menu_parse "$@"
 
-    if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
-        # if $cfg_use_cache; then
-        if $cfg_use_cache; then
-            # clear actions
-            [ "$menu_idx" -eq 1 ] && rm -f "$d_cache_file/wt_actions"
-            echo "$wt_actions" >>"$d_cache_file/wt_actions"
-        else
-            uncached_wt_actions="$uncached_wt_actions $wt_actions"
-        fi
-    fi
+    [ "$FORCE_WHIPTAIL_MENUS" = 1 ] && update_wt_actions
 }
 
 generate_menu_items_in_sorted_order() {
@@ -520,10 +529,9 @@ handle_menu() {
         #  items/main.sh -> items_main
         d_cache_file="$d_cache/${rel_path}_$(echo "$current_script" | sed 's/\.[^.]*$//')"
 
-        if
-            [ ! -f "$d_cache_file"/1 ] ||
-                [ "$(get_mtime "$0")" -gt "$(get_mtime "$d_cache_file"/1)" ]
-        then
+        [ "$FORCE_WHIPTAIL_MENUS" = 1 ] && d_wt_actions="$d_cache_file/wt_actions"
+
+        if [ ! -d "$d_cache_file" ] || [ "$(get_mtime "$0")" -gt "$(get_mtime "$d_cache_file")" ]; then
             # Ensure d_cache_file seems to be valid before doing erase
             case "$d_cache_file" in
             *tmux-menus*) ;;
@@ -541,7 +549,13 @@ handle_menu() {
 
     # 2 - Handle dynamic parts (if any)
     if is_function_defined "dynamic_content"; then
+        wt_actions_static="$wt_actions"
+        wt_actions=""
+        is_dynamic_content=true
         dynamic_content
+        is_dynamic_content=false
+        wt_actions="$wt_actions_static"
+        unset wt_actions_static
     fi
 
     # 3 - Gather each item in correct order
@@ -567,8 +581,24 @@ handle_menu() {
         menu_selection=$(eval "$menu_items" 3>&2 2>&1 1>&3)
         # echo "selection[$menu_selection]"
         # if $cfg_use_cache; then
+        all_wt_actions=""
+
         if $cfg_use_cache; then
-            all_wt_actions="$(cat "$d_cache_file/wt_actions")"
+            for file in "$d_wt_actions"/*; do
+                # skip special files
+                fn="$(basename "$file")"
+                # [ "$n" = "all" ] && continue # for debugging
+                [ "${#fn}" -le "2" ] && continue # skip . & ..
+
+                # Check if the file is a regular file
+                if [ -f "$file" ]; then
+                    all_wt_actions="$all_wt_actions $(cat "$file")"
+                    # Read the content of the file and append it to the dialog variable
+                    menu_items="$menu_items $(cat "$file")"
+                fi
+            done
+            # for debugging
+            # echo "$all_wt_actions" >"$d_wt_actions"/all
         else
             all_wt_actions="$uncached_wt_actions"
         fi
