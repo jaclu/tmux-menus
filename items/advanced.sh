@@ -67,9 +67,10 @@ static_content() {
         3.1 C / "<P> Describe (prefix) key" "command-prompt -k \
             -p key 'list-keys -N \"%%%\"'" \
         3.2 C "\~" "<P> Show messages" show-messages \
-        3.2 C C "<P> Customize options" "customize-mode -Z" \
         1.8 C : "<P> Prompt for a command" command-prompt \
         0.0 S
+
+    # 3.2 C C "<P> Customize options" "customize-mode -Z"
 
     menu_generate_part 1 "$@"
 
