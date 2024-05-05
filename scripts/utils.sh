@@ -355,8 +355,6 @@ current_script="$(basename "$0")" # name without path
 d_current_script="$(cd -- "$(dirname -- "$0")" && pwd)"
 f_current_script="$d_current_script/$current_script"
 
-tmux_vers="$($TMUX_BIN -V | cut -d ' ' -f 2)"
-
 #
 #  Define a variable that can be used as suffix on commands in dialog
 #  items, to reload the same menu in calling scripts
