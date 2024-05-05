@@ -11,8 +11,12 @@
 #
 #   Live configuration. So far only menu location is available
 #
+#   THIS IS NOT USED ATM!
+#
 
 static_content() {
+
+    error_msg "THIS IS NOT USED ATM!"
 
     menu_name="Configure Menu Location"
     req_win_width=37

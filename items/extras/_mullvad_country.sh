@@ -25,6 +25,8 @@ D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$(dirname -- "$0")")"
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 
+error_msg "THIS IS NOT USED ATM!"
+
 menu_name="Mullvad Select Country"
 req_win_width=28
 req_win_height=9

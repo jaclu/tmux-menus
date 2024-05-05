@@ -22,6 +22,8 @@ D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
 _this="move_menu.sh" # error prone if script name is changed :(
 [ "$current_script" != "$_this" ] && error_msg "$_this should NOT be sourced"
 
+error_msg "THIS IS NOT USED ATM! - $_this"
+
 action="$1"
 # param_1="$2"
 # param_2="$3"
