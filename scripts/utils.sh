@@ -203,29 +203,55 @@ get_plugin_params() {
         cfg_use_notes=true || cfg_use_notes=false
 }
 
-escape_tmux_special_chars() {
+extract_char() {
     str="$1"
+    pos="$2"
+    printf '%s\n' "$str" | cut -c "$pos"
+    unset str
+    unset pos
+}
+
+escape_tmux_special_chars() {
+    s_buffer="$1"
     escaped_str=""
-    while [ -n "$str" ]; do
-        char="$(printf '%s' "$str" | cut -c1)"
+    idx=0
+    while true; do
+        idx=$((idx + 1))
+        char="$(extract_char "$s_buffer" "$idx")"
+        [ -n "$char" ] || break
+        [ "$char" = \\ ] && {
+            # maintain \ prefixes
+            idx=$((idx + 1))
+            char="$char$(extract_char "$s_buffer" "$idx")"
+        }
+        # echo "><> idx[$idx] s_buffer[$s_buffer] char[$char]" >/dev/stderr
         case "$char" in
         \\)
-            escaped_str="${escaped_str}\\\\\\\\"
+            # echo "><> found double bslash" >/dev/stderr
+            escaped_str="${escaped_str}\\\\"
+            sleep 1
             ;;
         \")
+            # echo "><> found bslash dquote" >/dev/stderr
             escaped_str="${escaped_str}\\\""
+            sleep 1
             ;;
         \$)
+            # echo "><> found bslash dollar" >/dev/stderr
             escaped_str="${escaped_str}\\$"
+            sleep 1
             ;;
         \#)
+            # echo "><> found bslash dash" >/dev/stderr
             escaped_str="${escaped_str}\\#"
+            sleep 1
             ;;
         *)
             escaped_str="${escaped_str}${char}"
+            sleep 0.1
             ;;
         esac
-        str="$(printf '%s' "$str" | cut -c2-)"
+
     done
     printf '%s\n' "$escaped_str"
 }
@@ -240,6 +266,12 @@ param_cache_write() {
     f_conf_file="${1:-$f_param_cache}"
     echo "param_cache_write($f_conf_file)"
     mkdir -p "$d_cache"
+    # a='foo\\bar'
+    # echo "a [$a]"
+    # a="$(escape_tmux_special_chars "$a")"
+    # echo "a escaped [$a]"
+    # exit 1
+
     #region conf file
     cat <<EOF >"$f_conf_file"
 #!/bin/sh
