@@ -31,7 +31,7 @@ D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
 . "$D_TM_BASE_PATH"/scripts/utils.sh
 
 _this="do_whiptail.sh" # error prone if script name is changed :(
-[ "$current_scr" != "$_this" ] && error_msg "$_this should NOT be sourced"
+[ "$current_script" != "$_this" ] && error_msg "$_this should NOT be sourced"
 
 #
 #  This is run from the tmux env, so FORCE_WHIPTAIL_MENUS can not be

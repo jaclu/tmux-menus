@@ -16,7 +16,7 @@ D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
 . "$D_TM_BASE_PATH"/scripts/utils.sh
 
 _this="change_prefix.sh" # error prone if script name is changed :(
-[ "$current_scr" != "$_this" ] && error_msg "$_this should NOT be sourced"
+[ "$current_script" != "$_this" ] && error_msg "$_this should NOT be sourced"
 
 #
 #  Since this is a critical param, make extra sure we have valid input

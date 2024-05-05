@@ -287,12 +287,6 @@ wait_to_close_display() {
 [ -z "$D_TM_BASE_PATH" ] && error_msg "D_TM_BASE_PATH undefined"
 
 #
-#  will allways refer to currently running script, ignoring what
-#  is sourced
-#
-current_scr="$(basename "$0")"
-
-#
 #  If log_file is empty or undefined, no logging will occur,
 #  so comment it out for normal usage.
 #
@@ -319,12 +313,17 @@ if ! tmux_vers_compare 1.7; then
 fi
 
 #
+#  will allways refer to currently running script, ignoring what
+#  is sourced
+#
+current_script="$(basename "$0")"
+
+#
 #  Convert script name to full actual path notation the path is used
 #  for caching, so save it to a variable as well
 #
 
 d_current_script="$(cd -- "$(dirname -- "$0")" && pwd)"
-current_script="$d_current_script/$(basename "$0")"
 
 tmux_vers="$($TMUX_BIN -V | cut -d ' ' -f 2)"
 

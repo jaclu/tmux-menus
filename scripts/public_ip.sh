@@ -15,7 +15,7 @@ D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
 . "$D_TM_BASE_PATH"/scripts/utils.sh
 
 _this="public_ip.sh" # error prone if script name is changed :(
-[ "$current_scr" != "$_this" ] && error_msg "$_this should NOT be sourced"
+[ "$current_script" != "$_this" ] && error_msg "$_this should NOT be sourced"
 
 echo # Extra LF to avoid cursor placed over text
 echo "Public IPv4: $(curl -4 https://ifconfig.me 2>/dev/null)"

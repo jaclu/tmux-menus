@@ -24,7 +24,7 @@ D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
 . "$D_TM_BASE_PATH"/scripts/utils.sh
 
 _this="relocate_window.sh" # error prone if script name is changed :(
-[ "$current_scr" != "$_this" ] && error_msg "$_this should NOT be sourced"
+[ "$current_script" != "$_this" ] && error_msg "$_this should NOT be sourced"
 
 # shellcheck source=scripts/relocate_param_check.sh
 . "$d_scripts"/relocate_param_check.sh
