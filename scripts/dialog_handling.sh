@@ -283,7 +283,7 @@ is_function_defined() {
 #  Add one item to $uncached_menu
 #
 add_uncached_item() {
-    log_it "><> add_uncached_item() $current_script-$menu_idx"
+    # log_it "><> add_uncached_item() $current_script-$menu_idx"
     _new_item="$menu_idx $menu_items"
     if [ -n "$uncached_menu" ]; then
         uncached_menu="$uncached_menu$uncached_item_splitter$_new_item"
@@ -447,7 +447,7 @@ menu_parse() {
     # if $cfg_use_cache; then
     if $cfg_use_cache; then
         # clear cache (if present)
-        log_it "><> Updating $f_cache_file"
+        # log_it "><> Updating $f_cache_file"
         echo "$menu_items" >"$f_cache_file" || error_msg "Failed to write to: $f_cache_file"
     else
         add_uncached_item

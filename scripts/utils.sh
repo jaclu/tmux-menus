@@ -180,7 +180,7 @@ get_plugin_params() {
     #  bind-key Notes were added in tmux 3.1, so should not be used on
     #  older versions!
     #
-    log_it "><> get_plugin_params()"
+    # log_it "><> get_plugin_params()"
 
     cfg_trigger_key=$(get_tmux_option "@menus_trigger" "$default_trigger_key")
 
@@ -264,7 +264,7 @@ escape_tmux_special_chars() {
 
 param_cache_write() {
     f_conf_file="${1:-$f_param_cache}"
-    echo "param_cache_write($f_conf_file)"
+    # echo "><> param_cache_write($f_conf_file)"
     mkdir -p "$d_cache"
     # a='foo\\bar'
     # echo "a [$a]"
@@ -289,7 +289,7 @@ EOF
 }
 
 generate_param_cache() {
-    log_it "><> generate_param_cache()"
+    # log_it "><> generate_param_cache()"
     get_plugin_params
 
     # echo "orig: [$cfg_trigger_key]"
@@ -301,14 +301,14 @@ generate_param_cache() {
     if cmp -s "$f_params_new" "$f_param_cache"; then
         rm -f "$f_params_new"
     else
-        echo "renaming $(basename "$f_params_new") > $(basename "$f_param_cache")"
+        # echo "><> renaming $(basename "$f_params_new") > $(basename "$f_param_cache")"
         mv "$f_params_new" "$f_param_cache"
     fi
     unset f_params_new
 }
 
 get_config() {
-    log_it "><> get_config()"
+    # log_it "><> get_config()"
     #
     #  The plugin init .tmux script should NOT call this!
     #
@@ -319,7 +319,7 @@ get_config() {
     #
     [ -s "$f_param_cache" ] || generate_param_cache
 
-    log_it "><> sourcing $f_param_cache"
+    # log_it "><> sourcing $f_param_cache"
     # shellcheck source=/dev/null
     . "$f_param_cache"
 }

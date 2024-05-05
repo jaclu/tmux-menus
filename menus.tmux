@@ -27,7 +27,7 @@ clear_cache() {
     #
     #  Create and tag cachedir with current tmux version
     #
-    log_it "><> clear_cache()"
+    # log_it "><> clear_cache()"
     log_it "$1" # log msg
 
     rm -rf "$d_cache"
@@ -41,7 +41,7 @@ cache_validation() {
     #  Clear (and recreate) cache if it was not created with current
     #  tmux version
     #
-    log_it "><> cache_validation()"
+    # log_it "><> cache_validation()"
     if [ -s "$f_cached_tmux" ]; then
         tmux_vers_in_cache="$(cat "$f_cached_tmux")"
         [ "$tmux_vers" = "$tmux_vers_in_cache" ] || {
