@@ -15,6 +15,7 @@ dynamic_content() {
     #  Gather some info in order to be able to show states
     #
     if tmux_vers_compare 2.1; then
+        current_prefix="$($TMUX_BIN show-option -g prefix | cut -d'-' -f2)"
         current_mouse_status="$($TMUX_BIN show-option -g mouse | cut -d' ' -f2)"
         if [ "$current_mouse_status" = "on" ]; then
             new_mouse_status="off"
@@ -25,15 +26,18 @@ dynamic_content() {
 
     set -- \
         2.1 C m "Toggle mouse to: $new_mouse_status" "set-option -g mouse \
-        $new_mouse_status $menu_reload"
+        $new_mouse_status $menu_reload" \
+        2.4 C p "Change prefix <$current_prefix>" "command-prompt -1 -p \
+            'prefix (will take effect imeditally)' \
+            'run-shell \"$d_scripts/change_prefix.sh %1\" $menu_reload'"
+
+    echo "><> menu_reload [$menu_reload]"
 
     menu_generate_part 2 "$@"
 
 }
 
 static_content() {
-
-    current_prefix="$($TMUX_BIN show-option -g prefix | cut -d'-' -f2)"
 
     menu_name="Advanced options"
     req_win_width=37
@@ -71,9 +75,6 @@ static_content() {
 
     # shellcheck disable=SC2154
     set -- \
-        2.4 C p "Change prefix <$current_prefix>" "command-prompt -1 -p \
-            'prefix (will take effect imeditally)' \
-            'run-shell \"$d_scripts/change_prefix.sh %1\"'" \
         0.0 S \
         1.8 C x "Kill server" "confirm-before -p \
             'kill tmux server defined in($TMUX_SOURCE) ? (y/n)' kill-server" \
