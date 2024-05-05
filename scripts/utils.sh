@@ -396,11 +396,20 @@ f_current_script="$d_current_script/$current_script"
 #  items, to reload the same menu in calling scripts
 #
 if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
-    menu_reload="; '$f_current_script'"
     d_cache="$D_TM_BASE_PATH"/cache/whiptail
+    menu_reload="; \"$f_current_script\""
+    #
+    #  in whiptail run-shell cant chain to another menu, so instead
+    #  reload script is written to a tmp file, and if it is found
+    #  it will be exeuted
+    #
+    f_reload_script="$d_cache"/reload
+    reload_in_runshell=" ; echo $f_current_script > $f_reload_script"
+
 else
-    menu_reload="; run-shell '$f_current_script'"
     d_cache="$D_TM_BASE_PATH"/cache
+    menu_reload="; run-shell \"$f_current_script\""
+    reload_in_runshell=" ; $f_current_script"
 fi
 
 #

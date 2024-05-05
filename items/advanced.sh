@@ -29,7 +29,7 @@ dynamic_content() {
         $new_mouse_status $menu_reload" \
         2.4 C p "Change prefix <$current_prefix>" "command-prompt -1 -p \
             'prefix (will take effect imeditally)' \
-            'run-shell \"$d_scripts/change_prefix.sh %1\" $menu_reload'"
+            'run-shell \"$d_scripts/change_prefix.sh %1 $reload_in_runshell\"'"
 
     menu_generate_part 2 "$@"
 

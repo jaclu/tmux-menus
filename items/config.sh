@@ -34,16 +34,16 @@ static_content() {
     set -- "command-prompt" \
         "-I \"$location_x\",\"$location_y\"" \
         "-p \"$prompt1\",\"$prompt2\"" \
-        "\"$change_location coord %1 %2 $menu_reload'\""
+        "\"$change_location coord %1 %2 $reload_in_runshell'\""
     # set_coordinates="$*"
 
     set -- "$@" \
         0.0 M Left "Back to Previous menu <--" advanced.sh \
         0.0 S \
-        0.0 C c "Center" "$change_location  C  $menu_reload'"
-    # 0.0 E r "win Right edge" "$change_location  R  $menu_reload'" \
-    # 0.0 E p "Pane bottom left" "$change_location  P  $menu_reload'" \
-    # 0.0 E w "Win pos status line" "$change_location  W  $menu_reload'" \
+        0.0 C c "Center" "$change_location  C  $reload_in_runshell'"
+    # 0.0 E r "win Right edge" "$change_location  R  $reload_in_runshell'" \
+    # 0.0 E p "Pane bottom left" "$change_location  P  $reload_in_runshell'" \
+    # 0.0 E w "Win pos status line" "$change_location  W  $reload_in_runshell'" \
     # 0.0 S \
     # 0.0 C s "set coordinates" "$set_coordinates" \
     # 0.0 S \
