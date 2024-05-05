@@ -9,35 +9,13 @@
 #   Gives prompt to correct if need-be
 #
 
-write_config() {
-    #
-    #  When cfg_overrides is set this saves such settings
-    #
-    $cfg_overrides || return
-    # [ "$cfg_overrides" -ne 1 ] && return
-
-    #log_it "write_config() x[$location_x] y[$location_y]"
-    echo "location_x=$location_x" >"$custom_config_file"
-    echo "location_y=$location_y" >>"$custom_config_file"
-}
-
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
 
 # shellcheck source=scripts/utils.sh
 . "$D_TM_BASE_PATH"/scripts/utils.sh
 
-_this="reload_conf.sh" # error prone if script name is changed :(
-[ "$current_script" != "$_this" ] && error_msg "$_this should NOT be sourced"
-
-if [ -n "$TMUX_CONF" ]; then
-    conf="$TMUX_CONF"
-else
-    # only ever used in this single script, so not loaded in utils
-    conf="$(get_tmux_option "@menus_config_file" "$HOME/tmux.conf")"
-fi
-
-$TMUX_BIN command-prompt -I "$conf" -p "Source file:" \
-    "run-shell \"$TMUX_BIN source-file %% &&                        \
-    $TMUX_BIN display 'Sourced it!' ||                              \
+$TMUX_BIN command-prompt -I "$cfg_tmux_conf" -p "Source file:" \
+    "run-shell \"$TMUX_BIN source-file %% &&                   \
+    $TMUX_BIN display 'Sourced it!' ||                         \
     $TMUX_BIN display 'File could not be sourced - not found?'"
