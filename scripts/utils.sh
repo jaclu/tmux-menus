@@ -237,19 +237,23 @@ escape_tmux_special_chars() {
 #---------------------------------------------------------------
 
 param_cache_write() {
-    conf_file="${1:-$f_param_cache}"
-    echo "param_cache_write($conf_file)"
+    f_conf_file="${1:-$f_param_cache}"
+    echo "param_cache_write($f_conf_file)"
     mkdir -p "$d_cache"
-    echo "#!/bin/sh # Always sourced file - Fake bang path to help editors
-    cfg_trigger_key=\"$(escape_tmux_special_chars "$cfg_trigger_key")\"
-    cfg_no_prefix=\"$cfg_no_prefix\"
-    cfg_use_cache=\"$cfg_use_cache\"
-    cfg_use_notes=\"$cfg_use_notes\"
-    cfg_mnu_loc_x=\"$cfg_mnu_loc_x\"
-    cfg_mnu_loc_y=\"$cfg_mnu_loc_y\"
-    cfg_tmux_conf=\"$cfg_tmux_conf\"
-    cfg_log_file=\"$cfg_log_file\"
-    " >"$conf_file"
+    #region conf file
+    cat <<EOF >"$f_conf_file"
+#!/bin/sh
+# Always sourced file - Fake bang path to help editors
+cfg_trigger_key="$(escape_tmux_special_chars "$cfg_trigger_key")"
+cfg_no_prefix="$cfg_no_prefix"
+cfg_use_cache="$cfg_use_cache"
+cfg_use_notes="$cfg_use_notes"
+cfg_mnu_loc_x="$cfg_mnu_loc_x"
+cfg_mnu_loc_y="$cfg_mnu_loc_y"
+cfg_tmux_conf="$cfg_tmux_conf"
+cfg_log_file="$cfg_log_file"
+EOF
+    #endregion
 }
 
 generate_param_cache() {
