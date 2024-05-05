@@ -322,7 +322,8 @@ menu_parse() {
         [ -n "$menu_debug" ] && debug_print "-- parsing an item [$min_vers] [$action]"
         case "$action" in
 
-        "M") #  Open another menu
+        "M")
+            #  Open another menu
             key="$1"
             shift
             label="$1"
@@ -349,7 +350,8 @@ menu_parse() {
             fi
             ;;
 
-        "C") #  direct tmux command - params: key label task
+        "C")
+            #  direct tmux command - params: key label task
             key="$1"
             shift
             label="$1"
@@ -368,7 +370,8 @@ menu_parse() {
             fi
             ;;
 
-        "E") #  Run external command - params: key label cmd
+        E)
+            #  Run external command - params: key label cmd
             #
             #  If no / is found in the script param, it will be prefixed with
             #  $d_scripts
@@ -405,7 +408,8 @@ menu_parse() {
             fi
             ;;
 
-        "T") #  text line - params: txt
+        "T")
+            #  text line - params: txt
             txt="$1"
             shift
 
@@ -419,7 +423,8 @@ menu_parse() {
             fi
             ;;
 
-        "S") #  Spacer line - params: none
+        "S")
+            #  Spacer line - params: none
 
             ! tmux_vers_compare "$min_vers" && continue
 
@@ -433,7 +438,8 @@ menu_parse() {
             fi
             ;;
 
-        *) # Error
+        *)
+            # Error
             echo
             echo "ERROR: [$1]"
             echo "--- Menu created so far ---"
@@ -507,7 +513,6 @@ handle_menu() {
     #
 
     # 1 - Handle static parts, use cache if enabled and available
-    # if $cfg_use_cache; then
     if $cfg_use_cache; then
         #  Calculate the relative path, to avoid name collitions if
         #  two items with same name in different rel paths are used
