@@ -283,7 +283,6 @@ is_function_defined() {
 #  Add one item to $uncached_menu
 #
 add_uncached_item() {
-    # log_it "><> add_uncached_item() $current_script-$menu_idx"
     _new_item="$menu_idx $menu_items"
     if [ -n "$uncached_menu" ]; then
         uncached_menu="$uncached_menu$uncached_item_splitter$_new_item"
@@ -597,6 +596,11 @@ fi
 # shellcheck source=scripts/utils.sh
 . "$D_TM_BASE_PATH"/scripts/utils.sh
 
+[ "$FORCE_WHIPTAIL_MENUS" = 1 ] && {
+    rm -f "$f_reload_script"
+}
+log_it "><> FORCE_WHIPTAIL_MENUS[$FORCE_WHIPTAIL_MENUS]"
+
 [ -z "$TMUX" ] && error_msg "tmux-menus can only be used inside tmux!"
 
 ! tmux_vers_compare 3.0 && FORCE_WHIPTAIL_MENUS=1
@@ -617,3 +621,13 @@ uncached_item_splitter="||||"
 menu_debug="" # Set to 1 to use echo 2 to use log_it
 
 handle_menu
+
+#
+#  in whiptail run-shell cant chain to another menu, so instead
+#  reload script is written to a tmp file, and if it is found
+#  it will be exeuted
+#
+[ "$FORCE_WHIPTAIL_MENUS" = 1 ] && [ -f "$f_reload_script" ] && {
+    log_it "Will run f_reload_script[$f_reload_script]"
+    /bin/sh "$f_reload_script"
+}
