@@ -6,16 +6,18 @@
 #   Part of https://github.com/jaclu/tmux-menus
 #
 
-
 clear_cache() {
+    log_it "><> clear_cache()"
     log_it "$1" # log msg
 
     rm -rf "$d_cache"
     mkdir -p "$d_cache"
+    generate_param_cache
     echo "$tmux_vers" >"$f_cached_tmux"
 }
 
 cache_validation() {
+    log_it "><> cache_validation()"
     if [ -s "$f_cached_tmux" ]; then
         tmux_vers_in_cache="$(cat "$f_cached_tmux")"
         #
@@ -30,7 +32,6 @@ cache_validation() {
         clear_cache "Clearing unidentified cache"
     fi
 }
-
 
 #
 #  then everywhere else read this conf
@@ -53,13 +54,8 @@ D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$0")")"
 log_it ""
 log_it "$(date)"
 
-generate_param_cache
-
+# generate_param_cache
 cache_validation
-generate_param_cache
-
-
-
 
 params=""
 # -N params cant have spaces in this plugin for rasons...
@@ -83,4 +79,4 @@ else
 fi
 
 # works sans -N spaces
-$TMUX_BIN bind-key "$params" "$cfg_trigger_key"  run-shell "$cmd"
+$TMUX_BIN bind-key "$params" "$cfg_trigger_key" run-shell "$cmd"
