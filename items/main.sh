@@ -51,7 +51,7 @@ static_content() {
         0.0 T "-#[nodim]Search in all sessions & windows" \
         0.0 C s "$fw_label_cont" "$fw_cmd" \
         0.0 S \
-        0.0 E r 'Reload configuration file' reload_conf.sh \
+        0.0 E r 'Reload configuration file' "reload_conf.sh ; $f_current_script" \
         0.0 S \
         0.0 C d '<P> Detach from tmux' detach-client \
         0.0 S \
