@@ -5,8 +5,28 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
+#  tmux env is read each time this plugin init script is run, so changes
+#  in tmux version or your tmux conf file will be detected and trigger
+#  a cache replacement.
+#
+#  tpm will call this during a tmux source-file call, so this cache can
+#  be trusted by the menu items to contain current tmux env variables.
+#
+#  One thing to be aware of - If multiple tmux instances of the same version
+#  use the same folder for this plugin, this cache aproach might not work
+#  as intended, since the tmux env is just read once then this cache is used.
+#
+#  If those tmux instances do not have identical tmux-menus configuration,
+#  thing will not work as intended.
+#
+#  Therefore each instance using tmux-menus should use a separate folder
+#  for the plugin, not using soft-links to the same folder!
+#
 
 clear_cache() {
+    #
+    #  Create and tag cachedir with current tmux version
+    #
     log_it "><> clear_cache()"
     log_it "$1" # log msg
 
@@ -17,13 +37,13 @@ clear_cache() {
 }
 
 cache_validation() {
+    #
+    #  Clear (and recreate) cache if it was not created with current
+    #  tmux version
+    #
     log_it "><> cache_validation()"
     if [ -s "$f_cached_tmux" ]; then
         tmux_vers_in_cache="$(cat "$f_cached_tmux")"
-        #
-        #  Clear cache if it was not created with current tmux version,
-        #  Then tag cachdir with current tmux version
-        #
         [ "$tmux_vers" = "$tmux_vers_in_cache" ] || {
             clear_cache \
                 "Clearing incompatible cache for tmux $tmux_vers_in_cache"
@@ -32,10 +52,6 @@ cache_validation() {
         clear_cache "Clearing unidentified cache"
     fi
 }
-
-#
-#  then everywhere else read this conf
-#
 
 #===============================================================
 #
@@ -54,7 +70,6 @@ D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$0")")"
 log_it ""
 log_it "$(date)"
 
-# generate_param_cache
 cache_validation
 
 params=""
