@@ -430,7 +430,7 @@ f_param_cache="$D_TM_BASE_PATH"/cache/plugin_params
 #  Defaults for plugin params
 #
 
-default_trigger_key=F9
+default_trigger_key=\\
 default_use_cache=Yes
 default_no_prefix=No
 default_log_file=""
