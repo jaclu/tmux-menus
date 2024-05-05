@@ -40,7 +40,7 @@ static_content() {
         0.0 S \
         2.4 E ! "<P> Break pane to a new window" "$d_scripts/break_pane.sh" \
         0.0 S \
-        0.0 M H "Help -->" "$d_items/help.sh $current_script"
+        0.0 M H "Help -->" "$d_items/help.sh $f_current_script"
 
     menu_generate_part 3 "$@"
 }

@@ -46,7 +46,7 @@ static_content() {
             'Are you sure you want to kill all other sessions? (y/n)' \
             'kill-session -a'" \
         0.0 S \
-        0.0 M H "Help -->" "$d_items/help.sh $current_script"
+        0.0 M H "Help -->" "$d_items/help.sh $f_current_script"
 
     menu_generate_part 1 "$@"
 }

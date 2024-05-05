@@ -122,18 +122,18 @@ static_content() {
     fi
 
     set -- "$@" \
-        0.0 E e " Send ESC" "$current_script  0x1b" \
-        0.0 E t " Send ~ (tilde)" "$current_script  0x7e" \
-        0.0 E b " Send $() (back-tick)" "$current_script  0x60" \
+        0.0 E e " Send ESC" "$f_current_script  0x1b" \
+        0.0 E t " Send ~ (tilde)" "$f_current_script  0x7e" \
+        0.0 E b " Send $() (back-tick)" "$f_current_script  0x60" \
         0.0 S \
-        0.0 E p " Send § (paragraph)" "$current_script §" \
-        0.0 E a " Send @ (at)" "$current_script @" \
-        0.0 E E " Send € (Euro sign)" "$current_script €" \
-        0.0 E y " Send ¥ (Yen and yuan sign)" "$current_script ¥" \
-        0.0 E P " Send £ (Pound sign)" "$current_script £" \
-        0.0 E c " Send ¢ (Cent sign)" "$current_script ¢" \
+        0.0 E p " Send § (paragraph)" "$f_current_script §" \
+        0.0 E a " Send @ (at)" "$f_current_script @" \
+        0.0 E E " Send € (Euro sign)" "$f_current_script €" \
+        0.0 E y " Send ¥ (Yen and yuan sign)" "$f_current_script ¥" \
+        0.0 E P " Send £ (Pound sign)" "$f_current_script £" \
+        0.0 E c " Send ¢ (Cent sign)" "$f_current_script ¢" \
         0.0 S \
-        0.0 M H "Help -->" "$d_items/help.sh $current_script"
+        0.0 M H "Help -->" "$d_items/help.sh $f_current_script"
 
     menu_generate_part 1 "$@"
 

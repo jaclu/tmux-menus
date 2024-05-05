@@ -41,7 +41,7 @@ static_content() {
 
     set -- \
         0.0 S \
-        0.0 M H "Help  -->" "$d_items/help.sh $current_script'"
+        0.0 M H "Help  -->" "$d_items/help.sh $f_current_script'"
 
     menu_generate_part 3 "$@"
 }

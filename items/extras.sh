@@ -42,7 +42,7 @@ static_content() {
         0.0 S \
         0.0 E i "public IP" public_ip.sh \
         0.0 S \
-        0.0 M H 'Help -->' "$d_items/help_extras.sh $current_script"
+        0.0 M H 'Help -->' "$d_items/help_extras.sh $f_current_script"
 
     menu_generate_part 1 "$@"
 }

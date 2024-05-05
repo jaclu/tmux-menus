@@ -25,7 +25,7 @@ static_content() {
     req_win_width=33
     req_win_height=13
 
-    reload_no_output=" > /dev/null ; $current_script"
+    reload_no_output=" > /dev/null ; $f_current_script"
 
     [ -z "$(command -v spotify)" ] && error_msg "spotify bin not found!"
 
@@ -48,7 +48,7 @@ static_content() {
         0.0 E u "vol Up" "spotify           vol up         $reload_no_output" \
         0.0 E d "vol Down" "spotify         vol down       $reload_no_output" \
         0.0 S \
-        0.0 M H 'Help       -->' "$d_items/help.sh $current_script"
+        0.0 M H 'Help       -->' "$d_items/help.sh $f_current_script"
 
     menu_generate_part 3 "$@"
 }

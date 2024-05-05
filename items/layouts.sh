@@ -33,7 +33,7 @@ static_content() {
         3.2 C "S" "simple" "$setw_cmd pane-border-lines  simple  $menu_reload" \
         3.2 C "n" "number" "$setw_cmd pane-border-lines  number  $menu_reload" \
         0.0 S \
-        0.0 M H "Help -->" "$d_items/help.sh $current_script"
+        0.0 M H "Help -->" "$d_items/help.sh $f_current_script"
 
     menu_generate_part 1 "$@"
 }

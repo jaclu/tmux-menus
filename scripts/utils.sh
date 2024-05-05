@@ -345,18 +345,15 @@ if ! tmux_vers_compare 1.7; then
     error_msg "This needs at least tmux 1.7 to work!"
 fi
 
-#
-#  will allways refer to currently running script, ignoring what
-#  is sourced
-#
-current_script="$(basename "$0")"
+tmux_vers="$($TMUX_BIN -V | cut -d ' ' -f 2)"
 
+current_script="$(basename "$0")" # name without path
 #
 #  Convert script name to full actual path notation the path is used
 #  for caching, so save it to a variable as well
 #
-
 d_current_script="$(cd -- "$(dirname -- "$0")" && pwd)"
+f_current_script="$d_current_script/$current_script"
 
 tmux_vers="$($TMUX_BIN -V | cut -d ' ' -f 2)"
 
@@ -365,10 +362,10 @@ tmux_vers="$($TMUX_BIN -V | cut -d ' ' -f 2)"
 #  items, to reload the same menu in calling scripts
 #
 if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
-    menu_reload="; '$current_script'"
+    menu_reload="; '$f_current_script'"
     d_cache="$D_TM_BASE_PATH"/cache/whiptail
 else
-    menu_reload="; run-shell '$current_script'"
+    menu_reload="; run-shell '$f_current_script'"
     d_cache="$D_TM_BASE_PATH"/cache
 fi
 

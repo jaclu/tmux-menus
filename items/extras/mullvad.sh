@@ -20,13 +20,13 @@ dynamic_content() {
 
     #  Add conditional lines
     if mullvad status | grep -q Connected; then
-        set -- 0.0 E d Disconnect "mullvad disconnect ; $current_script"
+        set -- 0.0 E d Disconnect "mullvad disconnect ; $f_current_script"
     else
-        set -- 0.0 E c Connect "mullvad connect ; $current_script"
+        set -- 0.0 E c Connect "mullvad connect ; $f_current_script"
     fi
 
     set -- "$@" \
-        0.0 E l "$lan_label LAN sharing" "mullvad lan set $lan_cmd; $current_script"
+        0.0 E l "$lan_label LAN sharing" "mullvad lan set $lan_cmd; $f_current_script"
 
     menu_generate_part 2 "$@"
 }
@@ -36,7 +36,7 @@ static_content() {
     req_win_width=33
     req_win_height=10
 
-    # suffix=" > /dev/null' ; run-shell '$current_script'"
+    # suffix=" > /dev/null' ; run-shell '$f_current_script'"
 
     [ -z "$(command -v mullvad)" ] && error_msg "mullvad bin not found!"
 
@@ -50,7 +50,7 @@ static_content() {
 
     set -- \
         0.0 S \
-        0.0 M H 'Help       -->' "$d_items/help.sh $current_script"
+        0.0 M H 'Help       -->' "$d_items/help.sh $f_current_script"
 
     # 0.0 C L "Select Location  -->" "$menu_reload'"
 
