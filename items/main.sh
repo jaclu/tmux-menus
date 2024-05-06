@@ -31,6 +31,8 @@ static_content() {
         fw_flags=""
     fi
     fw_cmd="command-prompt -p 'Search for:' 'find-window $fw_flags %%'"
+    rld_cmd="command-prompt -I '$cfg_tmux_conf' -p 'Source file:' \
+        'run-shell \"$d_scripts/reload_conf.sh %% $reload_in_runshell\"'"
 
     #  Menu items definition
     set -- \
@@ -46,12 +48,12 @@ static_content() {
         0.0 S \
         0.0 C l "toggle status Line" "set status" \
         0.0 E p "Plugins inventory" "$d_scripts/plugins.sh" \
+        1.8 S \
+        1.8 C n "Navigate & select ses/win/pane" "$choose_tree_cmd" \
+        1.8 T "-#[nodim]Search in all sessions & windows" \
+        1.8 C s "$fw_label_cont" "$fw_cmd" \
         0.0 S \
-        0.0 C n "Navigate & select ses/win/pane" "$choose_tree_cmd" \
-        0.0 T "-#[nodim]Search in all sessions & windows" \
-        0.0 C s "$fw_label_cont" "$fw_cmd" \
-        0.0 S \
-        0.0 E r 'Reload configuration file' "reload_conf.sh ; $f_current_script" \
+        0.0 C r 'Reload configuration file' "$rld_cmd" \
         0.0 S \
         0.0 C d '<P> Detach from tmux' detach-client \
         0.0 S \
@@ -66,8 +68,11 @@ static_content() {
 #
 #===============================================================
 
+echo "><> starting main" >>/Users/jaclu/tmp/tmux-menus.log
+
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
+log_it "><> exiting main"
