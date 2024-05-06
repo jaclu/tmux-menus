@@ -68,11 +68,8 @@ static_content() {
 #
 #===============================================================
 
-echo "><> starting main" >>/Users/jaclu/tmp/tmux-menus.log
-
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
-log_it "><> exiting main"
