@@ -69,6 +69,7 @@ D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$0")")"
 #
 log_it ""
 log_it "$(date)"
+tmux_vers_compare 3.0 || log_it "tmux < 3.0 FORCE_WHIPTAIL_MENUS enabled"
 
 cache_validation
 

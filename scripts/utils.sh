@@ -427,14 +427,14 @@ fi
 #
 if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
     d_cache="$D_TM_BASE_PATH"/cache/whiptail
-    menu_reload="; \"$f_current_script\""
+    menu_reload="; $f_current_script"
     #
     #  in whiptail run-shell cant chain to another menu, so instead
     #  reload script is written to a tmp file, and if it is found
-    #  it will be exeuted
+    #  it will be exeuted at the end of dialog_handling.sh
     #
-    f_reload_script="$d_cache"/reload
-    reload_in_runshell=" ; echo $f_current_script > $f_reload_script"
+    f_wt_reload_script="$d_cache"/reload
+    reload_in_runshell=" ; echo $f_current_script > $f_wt_reload_script"
 
 else
     d_cache="$D_TM_BASE_PATH"/cache

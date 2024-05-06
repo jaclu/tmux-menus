@@ -534,7 +534,7 @@ handle_menu() {
         if [ ! -d "$d_cache_file" ] || [ "$(get_mtime "$0")" -gt "$(get_mtime "$d_cache_file")" ]; then
             # Ensure d_cache_file seems to be valid before doing erase
             case "$d_cache_file" in
-            *tmux-menus*) ;;
+            *"$plugin_name"*) ;;
             *) error_msg "d_cache_file seems wrong [$d_cache_file]" ;;
             esac
 
@@ -627,9 +627,8 @@ fi
 . "$D_TM_BASE_PATH"/scripts/utils.sh
 
 [ "$FORCE_WHIPTAIL_MENUS" = 1 ] && {
-    rm -f "$f_reload_script"
+    rm -f "$f_wt_reload_script"
 }
-log_it "><> FORCE_WHIPTAIL_MENUS[$FORCE_WHIPTAIL_MENUS]"
 
 [ -z "$TMUX" ] && error_msg "tmux-menus can only be used inside tmux!"
 
@@ -657,7 +656,7 @@ handle_menu
 #  reload script is written to a tmp file, and if it is found
 #  it will be exeuted
 #
-[ "$FORCE_WHIPTAIL_MENUS" = 1 ] && [ -f "$f_reload_script" ] && {
-    log_it "Will run f_reload_script[$f_reload_script]"
-    /bin/sh "$f_reload_script"
+[ "$FORCE_WHIPTAIL_MENUS" = 1 ] && [ -f "$f_wt_reload_script" ] && {
+    log_it "Will run f_wt_reload_script[$f_wt_reload_script]"
+    /bin/sh "$f_wt_reload_script"
 }
