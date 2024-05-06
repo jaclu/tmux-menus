@@ -34,7 +34,7 @@ error_msg() {
     #
     msg="ERROR: $1"
     exit_code="${2:-1}"
-    display_message=${3:-false}
+    do_display_message=${3:-false}
 
     if $log_interactive_to_stderr && [ -t 0 ]; then
         echo "$msg" >/dev/stderr
@@ -42,16 +42,13 @@ error_msg() {
         log_it
         log_it "$msg"
         log_it
-        $display_message && {
-            # only display exit triggering errors on status bar
-            $TMUX_BIN display-message -d 0 "tmux-menus:$msg"
-        }
+        $do_display_message && display_message_hold "$plugin_name $msg"
     fi
     [ "$exit_code" -gt 0 ] && exit "$exit_code"
 
     unset msg
     unset exit_code
-    unset display_message
+    unset do_display_message
 }
 
 #---------------------------------------------------------------
@@ -99,6 +96,26 @@ tmux_vers_compare() {
     unset tvc_i1
     unset tvc_i2
     return "$tvc_rslt"
+}
+
+display_message_hold() {
+    #
+    #  display a message and hold until key-press
+    #
+    msg="$1"
+
+    if tmux_vers_compare 3.2; then
+        $TMUX_BIN display-message -d 0 "$msg"
+    else
+        # Manually make the error msg stay on screen a long time
+        org_display_time="$($TMUX_BIN show-option -gv display-time)"
+        $TMUX_BIN set -g display-time 120000 >/dev/null
+        $TMUX_BIN display-message "$msg"
+
+        posix_get_char >/dev/null # wait for keypress
+        $TMUX_BIN set -g display-time "$org_display_time" >/dev/null
+        unset org_display_time
+    fi
 }
 
 get_tmux_option() {
@@ -327,6 +344,19 @@ get_config() {
 #
 #---------------------------------------------------------------
 
+posix_get_char() {
+    #
+    #  Configure terminal to read a single character without echoing,
+    #  restoring the terminal and returning the char
+    #
+    old_stty_cfg=$(stty -g)
+    stty raw -echo
+    dd bs=1 count=1 2>/dev/null
+    stty "$old_stty_cfg"
+
+    unset old_stty_cfg
+}
+
 wait_to_close_display() {
     #
     #  When a menu item writes to stdout, unfortunately how to close
@@ -350,13 +380,14 @@ wait_to_close_display() {
 #
 #===============================================================
 
+plugin_name="tmux-menus"
 #
 #  If log_file is empty or undefined, no logging will occur,
 #  so comment it out for normal usage.
 #
 #  Logging should normally be disabled, since it causes some overhead.
 #
-log_file="$HOME/tmp/tmux-menus.log"
+log_file="$HOME/tmp/$plugin_name.log"
 
 log_interactive_to_stderr=false
 
@@ -373,6 +404,7 @@ log_interactive_to_stderr=false
 [ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
 
 tmux_vers="$($TMUX_BIN -V | cut -d ' ' -f 2)"
+min_tmux_vers="1.7"
 
 current_script="$(basename "$0")" # name without path
 #
@@ -383,9 +415,8 @@ d_current_script="$(cd -- "$(dirname -- "$0")" && pwd)"
 f_current_script="$d_current_script/$current_script"
 
 if ! tmux_vers_compare 3.0; then
-    log_it "tmux < 3.0 FORCE_WHIPTAIL_MENUS enabled"
-    if ! tmux_vers_compare 1.7; then
-        error_msg "This needs at least tmux 1.7 to work!"
+    if ! tmux_vers_compare "$min_tmux_vers"; then
+        error_msg "need at least tmux $min_tmux_vers to work!" 1 true
     fi
     FORCE_WHIPTAIL_MENUS=1
 fi
