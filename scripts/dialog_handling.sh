@@ -193,6 +193,7 @@ alt_dialog_command() {
 
     key="$2"
     cmd="$3"
+    keep_cmd="${4:-false}"
 
     #
     #  labels starting with - indicates disabled feature in tmux notation,
@@ -205,7 +206,18 @@ alt_dialog_command() {
     key_action="$(echo "$key" | sed 's/\\//')"
 
     menu_items="$menu_items $key \"$label\""
-    wt_actions="$wt_actions $key_action | $TMUX_BIN $cmd $alt_dialog_action_separator"
+    if $keep_cmd; then
+        # use command unmodified as given
+        # log_it "><> alt_dialog_command() - keep set"
+        wt_actions="$wt_actions $key_action | $cmd $alt_dialog_action_separator"
+    else
+        wt_actions="$wt_actions $key_action | $TMUX_BIN $cmd $alt_dialog_action_separator"
+    fi
+    unset label
+    unset key
+    unset cmd
+    unset keep_cmd
+    unset key_action
 }
 
 alt_dialog_text_line() {
@@ -357,16 +369,25 @@ menu_parse() {
             shift
             cmd="$1"
             shift
+            if [ "$1" = "keep" ]; then
+                #  keep cmd as is
+                keep_cmd=true
+                shift
+            else
+                keep_cmd=false
+            fi
 
             ! tmux_vers_compare "$min_vers" && continue
 
             [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
 
             if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
-                alt_dialog_command "$label" "$key" "$cmd"
+                # log_it "><> menu_parse() C - keep is [$keep_cmd]"
+                alt_dialog_command "$label" "$key" "$cmd" "$keep_cmd"
             else
                 tmux_command "$label" "$key" "$cmd"
             fi
+            unset keep_cmd
             ;;
 
         E)

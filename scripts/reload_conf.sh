@@ -20,3 +20,5 @@ if $TMUX_BIN source-file "$1"; then
 else
     $TMUX_BIN display 'File could not be sourced - not found?'
 fi
+
+# log_it "><> $current_script done!"

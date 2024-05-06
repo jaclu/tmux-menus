@@ -31,8 +31,21 @@ static_content() {
         fw_flags=""
     fi
     fw_cmd="command-prompt -p 'Search for:' 'find-window $fw_flags %%'"
-    rld_cmd="command-prompt -I '$cfg_tmux_conf' -p 'Source file:' \
+
+    if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+        #
+        #  I must be misisng something, why would it be so hard to do this
+        #  in whiptail?? I even had to create a custom cmd, and add a keep
+        #  feature, so that whiptail cmds can be hardcoded without the
+        #  default handling that works in all simpler cases
+        #
+        rld_cmd="echo $f_current_script > $f_wt_reload_script ;  \
+            $TMUX_BIN command-prompt -I '$cfg_tmux_conf' -p 'Source file:' \
+            'run-shell \"$d_scripts/reload_conf.sh %% >/dev/null\"'"
+    else
+        rld_cmd="command-prompt -I '$cfg_tmux_conf' -p 'Source file:' \
         'run-shell \"$d_scripts/reload_conf.sh %% $reload_in_runshell\"'"
+    fi
 
     #  Menu items definition
     set -- \
@@ -53,7 +66,7 @@ static_content() {
         1.8 T "-#[nodim]Search in all sessions & windows" \
         1.8 C s "$fw_label_cont" "$fw_cmd" \
         0.0 S \
-        0.0 C r 'Reload configuration file' "$rld_cmd" \
+        0.0 C r "Reload configuration file" "$rld_cmd" keep \
         0.0 S \
         0.0 C d '<P> Detach from tmux' detach-client \
         0.0 S \
