@@ -17,20 +17,14 @@
 #---------------------------------------------------------------
 
 log_it() {
-    [ -z "$cfg_log_file" ] && return #  early abort if no logging
-    #
-    #  If @packet-loss-log_file is defined, it will be read into the
-    #  cfg_log_file variable and used for logging.
-    #
-    #  Logging should normally be disabled, since it causes some overhead.
-    #
+    [ -z "$log_file" ] && return #  early abort if no logging
 
     $log_interactive_to_stderr && [ -t 0 ] && {
         printf "log: %s\n" "$@" >/dev/stderr
         return
     }
 
-    printf "[%s] %s\n" "$(date '+%H:%M:%S')" "$@" >>"$cfg_log_file"
+    printf "[%s] %s\n" "$(date '+%H:%M:%S')" "$@" >>"$log_file"
 }
 
 error_msg() {
@@ -196,8 +190,6 @@ get_plugin_params() {
     normalize_bool_param "@menus_use_cache" "$default_use_cache" &&
         cfg_use_cache=true || cfg_use_cache=false
 
-    cfg_log_file="$(get_tmux_option "@menus_log_file" "$default_log_file")"
-
     # log_it "get_plugin_params()"
 
     cfg_tmux_conf="$(get_tmux_option "@menus_config_file" "$default_tmux_conf")"
@@ -289,7 +281,6 @@ cfg_use_notes="$cfg_use_notes"
 cfg_mnu_loc_x="$cfg_mnu_loc_x"
 cfg_mnu_loc_y="$cfg_mnu_loc_y"
 cfg_tmux_conf="$cfg_tmux_conf"
-cfg_log_file="$cfg_log_file"
 EOF
     #endregion
 }
@@ -359,19 +350,17 @@ wait_to_close_display() {
 #
 #===============================================================
 
-[ -z "$D_TM_BASE_PATH" ] && error_msg "D_TM_BASE_PATH undefined"
-
 #
 #  If log_file is empty or undefined, no logging will occur,
 #  so comment it out for normal usage.
 #
-# log_file="/tmp/tmux-menus.log"
+#  Logging should normally be disabled, since it causes some overhead.
+#
+log_file="$HOME/tmp/tmux-menus.log"
 
-#
-#  If @menus_config_overrides is 1, this file is used to store
-#  custom settings. If it is missing, it will be re-created with defaults
-#
-custom_config_file="/tmp/tmux-menus.conf"
+log_interactive_to_stderr=false
+
+[ -z "$D_TM_BASE_PATH" ] && error_msg "D_TM_BASE_PATH undefined"
 
 #
 #  I use an env var TMUX_BIN to point at the current tmux, defined in my
@@ -452,15 +441,12 @@ f_param_cache="$D_TM_BASE_PATH"/cache/plugin_params
 #
 #  Defaults for plugin params
 #
-
 default_trigger_key=\\
 default_use_cache=Yes
 default_no_prefix=No
-default_log_file=""
 default_location_x=P
 default_location_y=P
 default_conf_overrides=No
 default_tmux_conf="${TMUX_CONF:-~/.tmux.conf}"
-log_interactive_to_stderr=false
 
 get_config
