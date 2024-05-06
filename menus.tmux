@@ -83,7 +83,6 @@ if $cfg_no_prefix; then
 else
     log_it "Menus bound to: <prefix> $cfg_trigger_key"
 fi
-
 if tmux_vers_compare 3.0 && [ "$FORCE_WHIPTAIL_MENUS" != "1" ]; then
     cmd="$d_items/main.sh"
 else
@@ -93,5 +92,9 @@ else
     cmd="$d_scripts/do_whiptail.sh"
 fi
 
-# works sans -N spaces
-$TMUX_BIN bind-key "$params" "$cfg_trigger_key" run-shell "$cmd"
+if [ -n "$params" ]; then
+    # works sans -N spaces
+    $TMUX_BIN bind-key "$params" "$cfg_trigger_key" run-shell "$cmd"
+else
+    $TMUX_BIN bind-key "$cfg_trigger_key" run-shell "$cmd"
+fi
