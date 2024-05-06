@@ -397,6 +397,14 @@ current_script="$(basename "$0")" # name without path
 d_current_script="$(cd -- "$(dirname -- "$0")" && pwd)"
 f_current_script="$d_current_script/$current_script"
 
+if ! tmux_vers_compare 3.0; then
+    log_it "tmux < 3.0 FORCE_WHIPTAIL_MENUS enabled"
+    if ! tmux_vers_compare 1.7; then
+        error_msg "This needs at least tmux 1.7 to work!"
+    fi
+    FORCE_WHIPTAIL_MENUS=1
+fi
+
 #
 #  Define a variable that can be used as suffix on commands in dialog
 #  items, to reload the same menu in calling scripts
