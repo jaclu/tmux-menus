@@ -39,12 +39,7 @@ debug_print() {
     1) echo "$1" ;;
     2) log_it "$1" ;;
     *)
-        echo "$1"
-        echo
-        echo "ERROR: dialog_handling:debug_print()"
-        echo "       \$menu_debug state invalid [$menu_debug] shoule be 1 or 2!"
-        echo
-        exit 1
+        error_msg "$menu_debug state invalid [$menu_debug] shoule be 1 or 2! p1[$1]" 1 true
         ;;
     esac
 }
@@ -460,11 +455,9 @@ menu_parse() {
 
         *)
             # Error
-            echo
-            echo "ERROR: [$1]"
-            echo "--- Menu created so far ---"
-            echo "$menu_items"
-            exit 1
+            log_it "--- Menu created so far ---"
+            log_it "$menu_items"
+            error_msg "ERROR: [$1]"
             ;;
 
         esac
@@ -640,12 +633,12 @@ handle_menu() {
 
 if [ -z "$D_TM_BASE_PATH" ]; then
     # utils not yet sourced, so error_missing_param() not yet available
-    echo "ERROR: dialog_handling.sh - D_TM_BASE_PATH must be set!"
-    exit 1
+    error_msg "ERROR: dialog_handling.sh - D_TM_BASE_PATH must be set!" 1 true
 fi
 
+# Only import if needed
 # shellcheck source=scripts/utils.sh
-. "$D_TM_BASE_PATH"/scripts/utils.sh
+[ -z "$tmux_vers" ] && . "$D_TM_BASE_PATH"/scripts/utils.sh
 
 #
 #  Delete old reload scripts, they will be created during execution
@@ -683,7 +676,18 @@ handle_menu
 #  reload script is written to a tmp file, and if it is found
 #  it will be exeuted
 #
-[ "$FORCE_WHIPTAIL_MENUS" = 1 ] && [ -f "$f_wt_reload_script" ] && {
+
+e="$?"
+if [ "$e" -ne 0 ]; then
+    log_it "><> $current_script - dialog_handling - before wt_reload [$e]"
+fi
+
+if [ "$FORCE_WHIPTAIL_MENUS" = 1 ] && [ -f "$f_wt_reload_script" ]; then
     log_it "Will run f_wt_reload_script[$f_wt_reload_script]"
     /bin/sh "$f_wt_reload_script"
-}
+fi
+
+e="$?"
+if [ "$e" -ne 0 ]; then
+    log_it "><> $current_script - dialog_handling - exiting [$e]"
+fi

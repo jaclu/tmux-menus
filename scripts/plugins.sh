@@ -10,7 +10,7 @@ _this="plugins.sh" # error prone if script name is changed :(
 [[ "$(basename "$0")" != "$_this" ]] && error_msg "$_this should NOT be sourced"
 
 [[ -n "$TMUX" ]] || {
-    echo "This expects to run inside a tmux session!"
+    echo "ERROR: This expects to run inside a tmux session!"
     exit 1
 }
 

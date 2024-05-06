@@ -281,11 +281,6 @@ param_cache_write() {
     f_conf_file="${1:-$f_param_cache}"
     # echo "><> param_cache_write($f_conf_file)"
     mkdir -p "$d_cache"
-    # a='foo\\bar'
-    # echo "a [$a]"
-    # a="$(escape_tmux_special_chars "$a")"
-    # echo "a escaped [$a]"
-    # exit 1
 
     #region conf file
     cat <<EOF >"$f_conf_file"

@@ -50,4 +50,7 @@ D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 
-exit 0 # TODO: figure out what triggers exit 1
+e="$?"
+if [ "$e" -ne 0 ]; then
+    log_it "><> $current_script exiting [$e]"
+fi
