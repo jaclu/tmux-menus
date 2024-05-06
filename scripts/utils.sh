@@ -119,7 +119,13 @@ get_tmux_option() {
         return
     }
 
-    gto_value="$($TMUX_BIN show-option -gqv "$gto_option")"
+    if tmux_vers_compare 1.8; then
+        gto_value="$($TMUX_BIN show-option -gqv "$gto_option")"
+    else
+        # pre 1.8 user variables cant be read
+        gto_value=""
+    fi
+
     if [ -z "$gto_value" ]; then
         echo "$gto_default"
     else
