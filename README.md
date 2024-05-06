@@ -68,8 +68,8 @@ Version | Notice
 -|-
 3.2 | Fully compatible
 3.0 - 3.1c | Menu centering is not supported, it's displayed top left if C is selected.
-1.8 - 2.9a | Only available using Whiptail, menu location setting ignored.
-1.7        | tpm is not available, so the plugin needs to be initialized by running [path to tmux-menus]/menus.tmux directly from the conf file
+1.9 - 2.9a | Only available using Whiptail, menu location setting ignored.
+1.7 - 1.8  | tpm is not available, so the plugin needs to be initialized by running [path to tmux-menus]/menus.tmux directly from the conf file
 
 The above table covers compatibility for the general tool. Each item
 has a min tmux version set, if the running tmux doesn't match this,
@@ -131,7 +131,7 @@ between upper and lower case letters, and does not at all support
 special keys like 'Left' or 'Home'
 
 If tmux is < 3.0 whiptail will automatically be used.
-If you want to use Whiptail on modern tmuxes set this env variable:
+If you want to use Whiptail on modern tmuxes set this env variable outside tmux:
 `export FORCE_WHIPTAIL_MENUS=1`
 
 ## Configuration
