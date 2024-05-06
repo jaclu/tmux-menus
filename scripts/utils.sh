@@ -336,7 +336,7 @@ wait_to_close_display() {
     #
     echo
     # shellcheck disable=SC2154
-    if [ "$FORCE_WHIPTAIL_MENUS" = 1 ] || ! tmux_vers_compare 3.0; then
+    if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
         echo "Press <Enter> to clear this output"
         read -r foo
     else
@@ -372,10 +372,6 @@ log_interactive_to_stderr=false
 #
 [ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
 
-if ! tmux_vers_compare 1.7; then
-    error_msg "This needs at least tmux 1.7 to work!"
-fi
-
 tmux_vers="$($TMUX_BIN -V | cut -d ' ' -f 2)"
 
 current_script="$(basename "$0")" # name without path
@@ -395,8 +391,8 @@ if ! tmux_vers_compare 3.0; then
 fi
 
 #
-#  Define a variable that can be used as suffix on commands in dialog
-#  items, to reload the same menu in calling scripts
+#  Define variables that can be used as suffix on commands in dialog
+#  items, to reload the same menu
 #
 if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
     d_cache="$D_TM_BASE_PATH"/cache/whiptail
