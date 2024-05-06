@@ -647,7 +647,13 @@ fi
 # shellcheck source=scripts/utils.sh
 . "$D_TM_BASE_PATH"/scripts/utils.sh
 
-[ "$FORCE_WHIPTAIL_MENUS" = 1 ] && {
+#
+#  Delete old reload scripts, they will be created during execution
+#  of a menu, and then if found executed at end of this one.
+#  This is most likely a leftover due to some bug.
+#
+[ "$FORCE_WHIPTAIL_MENUS" = 1 ] && [ -f "$f_wt_reload_script" ] && {
+    # log_it "><> Found reload script - deleting it"
     rm -f "$f_wt_reload_script"
 }
 
