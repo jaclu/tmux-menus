@@ -11,11 +11,11 @@ experienced users, then add more for newbies.
 
 ## Recent changes
 
+- Fixed Reload Config in Whiptail.
 - Added option to disable caching.
 - Fixed a glitch with dynamic content on some platforms.
 - Moved Paste Buffers to main & public IP to Extras. Checked and updated min sizes
 - Menu 'Missing Keys' limited to tmux >= 2.0
-- Made it backward compatible down to tmux 1.7 (was 1.8)
 
 ## Purpose
 
