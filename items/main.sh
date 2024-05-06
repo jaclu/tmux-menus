@@ -47,7 +47,7 @@ static_content() {
         0.0 M E "Extras            -->" extras.sh \
         0.0 S \
         0.0 C l "toggle status Line" "set status" \
-        0.0 E p "Plugins inventory" "$d_scripts/plugins.sh" \
+        1.8 E p "Plugins inventory" "$d_scripts/plugins.sh" \
         1.8 S \
         1.8 C n "Navigate & select ses/win/pane" "$choose_tree_cmd" \
         1.8 T "-#[nodim]Search in all sessions & windows" \

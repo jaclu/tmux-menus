@@ -64,8 +64,8 @@ static_content() {
         3.1 C n " List key bindings with notes" "list-keys -N" \
         3.1 C / "<P> Describe (prefix) key" "command-prompt -k \
             -p key 'list-keys -N \"%%%\"'" \
-        3.2 C "\~" "<P> Show messages" show-messages \
-        1.8 C : "<P> Prompt for a command" command-prompt \
+        1.7 C "\~" "<P> Show messages" show-messages \
+        1.7 C : "<P> Prompt for a command" command-prompt \
         0.0 S
 
     # 3.2 C C "<P> Customize options" "customize-mode -Z"
@@ -74,7 +74,7 @@ static_content() {
 
     # shellcheck disable=SC2154
     set -- \
-        0.0 S \
+        1.8 S \
         1.8 C x "Kill server" "confirm-before -p \
             'kill tmux server defined in($TMUX_SOURCE) ? (y/n)' kill-server" \
         0.0 S \
