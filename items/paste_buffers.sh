@@ -14,7 +14,7 @@ static_content() {
     req_win_height=28
 
     set -- \
-        0.0 M Home "Back to Main menu     <==" main.sh \
+        0.0 M Left "Back to Main menu     <==" main.sh \
         0.0 T "-#[align=centre,nodim]-----------   Commands   -----------" \
         0.0 T "-#[nodim]This assumes at least one tmux buffer is assigned!" \
         0.0 T "-#[nodim] " \
@@ -55,3 +55,5 @@ D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
+
+exit 0 # TODO: figure out what triggers exit 1
