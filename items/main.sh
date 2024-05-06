@@ -19,10 +19,14 @@ static_content() {
         choose_tree_cmd="$choose_tree_cmd -Z"
     fi
 
-    fw_label_cont=" only visible part"
+    fw_span="windows"
+    # 2.5 - only window
+    tmux_vers_compare 2.6 && fw_span="sessions & $fw_span"
+
+    fw_lbl_line2=" only visible part"
     if tmux_vers_compare 3.2; then
         #  adds ignore case, and zooms the pane
-        fw_label_cont="$fw_label_cont, ignores case"
+        fw_lbl_line2="$fw_lbl_line2, ignores case"
         fw_flags="-Zi "
     elif tmux_vers_compare 2.9; then
         #  zooms the pane
@@ -47,11 +51,12 @@ static_content() {
         'run-shell \"$d_scripts/reload_conf.sh %% $reload_in_runshell\"'"
     fi
 
+    # 12.0 M S
     #  Menu items definition
     set -- \
         0.0 M P "Handling Pane     -->" panes.sh \
         0.0 M W "Handling Window   -->" windows.sh \
-        2.0 M S "Handling Sessions -->" sessions.sh \
+        0.0 M S "Handling Sessions -->" sessions.sh \
         1.8 M B "Paste buffers     -->" paste_buffers.sh \
         0.0 M L "Layouts           -->" layouts.sh \
         0.0 M V "Split view        -->" split_view.sh \
@@ -59,12 +64,12 @@ static_content() {
         0.0 M A "Advanced Options  -->" advanced.sh \
         0.0 M E "Extras            -->" extras.sh \
         0.0 S \
-        0.0 C l "toggle status Line" "set status" \
+        0.0 C l "toggle status Line" "set status $menu_reload" \
         1.8 E p "Plugins inventory" "$d_scripts/plugins.sh" \
-        1.8 S \
+        1.7 S \
         1.8 C n "Navigate & select ses/win/pane" "$choose_tree_cmd" \
-        1.8 T "-#[nodim]Search in all sessions & windows" \
-        1.8 C s "$fw_label_cont" "$fw_cmd" \
+        1.7 T "-#[nodim]Search in all $fw_span" \
+        1.7 C s "$fw_lbl_line2" "$fw_cmd" \
         0.0 S \
         0.0 C r "Reload configuration file" "$rld_cmd" keep \
         0.0 S \
