@@ -56,7 +56,6 @@ The grey one is generated with whiptail, the rest by tmux built-in `display-menu
 
 ![main](https://github.com/jaclu/tmux-menus/assets/5046648/5985d53b-cd55-4b33-81e3-2d7811131ed2)
 ![Whiptail main](https://github.com/jaclu/tmux-menus/assets/5046648/11ac1c9f-cb19-4dba-a29d-7106ec854fea)
-![Pane](https://github.com/jaclu/tmux-menus/assets/5046648/68a390be-f4d7-44bc-a9d4-9082ad2c718)
 ![Window](https://github.com/jaclu/tmux-menus/assets/5046648/34ed1a9b-9ee0-48e9-8b6a-2a28421fd880)
 ![Advanced](https://github.com/jaclu/tmux-menus/assets/5046648/9c9f6198-f78c-4aca-8b67-145caf4adbb2)
 ![Session](https://github.com/jaclu/tmux-menus/assets/5046648/e9cc442f-27c8-458a-88fb-aa558fd08235)
@@ -212,6 +211,14 @@ unbind-key -n MouseDown3Status
 unbind-key -n MouseDown3StatusLeft
 unbind-key <
 unbind-key >
+```
+
+### Logging
+
+Per default logging is disabled. If you want to use it, provide a log file name like this
+
+```tmux
+set -g @menus_log_file ~/tmp/tmux-menus.log
 ```
 
 ## If a menu doesn't fit the screen
