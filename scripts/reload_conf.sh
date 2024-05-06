@@ -15,7 +15,8 @@ D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
 # shellcheck source=scripts/utils.sh
 . "$D_TM_BASE_PATH"/scripts/utils.sh
 
-$TMUX_BIN command-prompt -I "$cfg_tmux_conf" -p "Source file:" \
-    "run-shell \"$TMUX_BIN source-file %% &&                   \
-    $TMUX_BIN display 'Sourced it!' ||                         \
-    $TMUX_BIN display 'File could not be sourced - not found?'"
+if $TMUX_BIN source-file "$1"; then
+    $TMUX_BIN display 'Sourced it!'
+else
+    $TMUX_BIN display 'File could not be sourced - not found?'
+fi
