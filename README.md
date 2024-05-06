@@ -11,11 +11,11 @@ experienced users, then add more for newbies.
 
 ## Recent changes
 
+- Fixed Reload Config in Whiptail.
 - Added option to disable caching.
 - Fixed a glitch with dynamic content on some platforms.
 - Moved Paste Buffers to main & public IP to Extras. Checked and updated min sizes
 - Menu 'Missing Keys' limited to tmux >= 2.0
-- Made it backward compatible down to tmux 1.7 (was 1.8)
 
 ## Purpose
 
@@ -56,7 +56,6 @@ The grey one is generated with whiptail, the rest by tmux built-in `display-menu
 
 ![main](https://github.com/jaclu/tmux-menus/assets/5046648/5985d53b-cd55-4b33-81e3-2d7811131ed2)
 ![Whiptail main](https://github.com/jaclu/tmux-menus/assets/5046648/11ac1c9f-cb19-4dba-a29d-7106ec854fea)
-![Pane](https://github.com/jaclu/tmux-menus/assets/5046648/68a390be-f4d7-44bc-a9d4-9082ad2c718)
 ![Window](https://github.com/jaclu/tmux-menus/assets/5046648/34ed1a9b-9ee0-48e9-8b6a-2a28421fd880)
 ![Advanced](https://github.com/jaclu/tmux-menus/assets/5046648/9c9f6198-f78c-4aca-8b67-145caf4adbb2)
 ![Session](https://github.com/jaclu/tmux-menus/assets/5046648/e9cc442f-27c8-458a-88fb-aa558fd08235)
@@ -71,9 +70,9 @@ Version | Notice
 1.9 - 2.9a | Only available using Whiptail, menu location setting ignored.
 1.7 - 1.8  | tpm is not available, so the plugin needs to be initialized by running [path to tmux-menus]/menus.tmux directly from the conf file
 
-The above table covers compatibility for the general tool. Each item
+The above table covers compatibility for the general tool. Some items 
 has a min tmux version set, if the running tmux doesn't match this,
-that item will be skipped.
+that item will be skipped, this is by no means perfect, so if you find I set incorrect limits on some feature, please let me know!
 
 ## Installing
 
@@ -131,23 +130,20 @@ between upper and lower case letters, and does not at all support
 special keys like 'Left' or 'Home'
 
 If tmux is < 3.0 whiptail will automatically be used.
-If you want to use Whiptail on modern tmuxes set this env variable outside tmux:
-`export FORCE_WHIPTAIL_MENUS=1`
+If you want to use Whiptail on modern tmuxes set this env variable outside tmux, or in tmux conf: `export FORCE_WHIPTAIL_MENUS=1` 
 
 ## Configuration
 
 ### Changing the key bindings for this plugin
 
-The default trigger is `<prefix> \`. The trigger is selected like this:
+The default trigger is `<prefix> \`. The trigger is configured like this:
 
 ```tmux
-set -g @menus_trigger 'F9'
+set -g @menus_trigger F9
 ```
 
 Please note that non-standard keys, like the default backslash need to
-be noted in a specific way in order not to confuse tmux.
-Either `'\'` or without quotes as `\\`. Quoting `'\\'` won't make sense
-for tmux and fail to bind the key.
+be prefixed with an `\` in order not to confuse tmux. So in this case the default would be set as either `"\\"` or without quotes as `\\`. 
 
 If you want to trigger menus without first hitting `<prefix>`
 
@@ -155,11 +151,11 @@ If you want to trigger menus without first hitting `<prefix>`
 set -g @menus_without_prefix Yes
 ```
 
-This param can be either 0 (the default) or 1
+This param can be either Yes/true (the default) or No/false
 
 ### Menu location
 
-The default location is: P, compatible with tmux 3.0 and up
+The default location is: C for tmux >= 3.2 P otherwise.
 
 Locations can be one of:
 
@@ -173,34 +169,35 @@ Locations can be one of:
 confusing, the coordinate defines the lower left of the placement of the menu…
 
 ```tmux
-set -g @menus_location_x 'C'
-set -g @menus_location_y 'C'
+set -g @menus_location_x W
+set -g @menus_location_y S
 ```
 
 ### Disable caching
 
-By default all menus are cached, use this to disable caching.
+By default menu items are cached, set this to `No` to disable all caching.
 
 ```tmux
-set -g @menus_use_cache 'no'
+set -g @menus_use_cache No
 ```
 
+To be more precise, items listed inside `static_content()` are cached. Some items need to be freshly generated each time a menu is displayed, those items are defines in `dynamic_content()` see scripts/panes.sh for an example of this. The label changes between Zoom and Un-Zoom for the zooming action.
+The plugin remmebers what tmux version you used last time. If another version is detected as the plugin is initialized, the entire cache is dropped. Same if a menu script is changed, if the script is newer than the cache, that cache item is regenerated.
+
 ### Pointer to the config file
-
-In the main menu, you can request the config file to be reloaded.
-The defaults for this are:
-
- 1. $TMUX_CONF - if this is present in the environment, it will be used.
- 2. @menus_config_file - if this is defined in the tmux config file,
- it will be used.
- 3. ~/.tmux.conf - Default if none of the above are set
-
-When a reload is requested, the default will be printed and used if
-not manually changed.
 
 ```tmux
 set -g @menus_config_file "$XDG_CONFIG_HOME/tmux/tmux.conf"
 ```
+In the main menu, you can request the config file to be reloaded.
+The defaults for this are:
+
+ 1. @menus_config_file - if this is defined in the tmux config file, it will be used.
+ 2. $TMUX_CONF - if this is present in the environment, it will be used.
+ 3. ~/.tmux.conf - Default if none of the above are set.
+
+When a reload is requested, the default will be printed and used if
+not manually changed.
 
 ### Default menus
 
@@ -214,6 +211,14 @@ unbind-key -n MouseDown3Status
 unbind-key -n MouseDown3StatusLeft
 unbind-key <
 unbind-key >
+```
+
+### Logging
+
+Per default logging is disabled. If you want to use it, provide a log file name like this
+
+```tmux
+set -g @menus_log_file ~/tmp/tmux-menus.log
 ```
 
 ## If a menu doesn't fit the screen
@@ -264,7 +269,7 @@ If you are triggering a menu from the command line, you can use direct echo,
 but then you need to remove it before deploying since tmux sees any
 script output as a potential error and display it in a scroll-back buffer.
 If tailing a log file is unpractical, a more scalable way to achieve the
-same result as echo would be to set `log_file='/dev/stdout'`
+same result as echo would be to set `log_file=/dev/stdout`
 
 To trigger log output, add lines like:
 
@@ -341,10 +346,9 @@ static_content() {
 #===============================================================
 
 #  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
+D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
 
-#  Source dialog handling script
-# shellcheck disable=SC1091
+# shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 ```
 
@@ -362,7 +366,7 @@ Something like this:
 
 if tmux display-message -p '#{pane_marked_set}' | grep -q '1'; then
     set -- "$@" \
-        1.7 C s "Swap current pane with marked" "swap-pane $menu_reload"
+        2.1 C s "Swap current pane with marked" "swap-pane $menu_reload"
 fi
 
 set -- "$@" \
