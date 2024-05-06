@@ -89,7 +89,7 @@ static_content() {
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
 
-# shellcheck source=scripts/utils.sh
+# shell check source=scripts/utils.sh
 # . "$D_TM_BASE_PATH"/scripts/utils.sh  # needed for log_it before dialog_handling
 # log_it "><> $current_script starting [$?]"
 
