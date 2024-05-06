@@ -17,14 +17,14 @@
 #---------------------------------------------------------------
 
 log_it() {
-    [ -z "$log_file" ] && return #  early abort if no logging
+    [ -z "$cfg_log_file" ] && return #  early abort if no logging
 
     $log_interactive_to_stderr && [ -t 0 ] && {
         printf "log: %s\n" "$@" >/dev/stderr
         return
     }
 
-    printf "[%s] %s\n" "$(date '+%H:%M:%S')" "$@" >>"$log_file"
+    printf "[%s] %s\n" "$(date '+%H:%M:%S')" "$@" >>"$cfg_log_file"
 }
 
 error_msg() {
@@ -207,6 +207,8 @@ get_plugin_params() {
     normalize_bool_param "@menus_use_cache" "$default_use_cache" &&
         cfg_use_cache=true || cfg_use_cache=false
 
+    cfg_log_file="$(get_tmux_option "@menus_log_file" "$default_log_file")"
+
     # log_it "get_plugin_params()"
 
     cfg_tmux_conf="$(get_tmux_option "@menus_config_file" "$default_tmux_conf")"
@@ -214,8 +216,18 @@ get_plugin_params() {
     cfg_mnu_loc_x="$(get_tmux_option "@menus_location_x" "$default_location_x")"
     cfg_mnu_loc_y="$(get_tmux_option "@menus_location_y" "$default_location_y")"
 
-    normalize_bool_param "@use_bind_key_notes_in_plugins" No &&
-        cfg_use_notes=true || cfg_use_notes=false
+    #
+    #  Generic plugin setting I use to add Notes to keys that are bound
+    #  This makes this key binding show up when doing <prefix> ?
+    #  If not set to "Yes", no attempt at adding notes will happen
+    #  bind-key Notes were added in tmux 3.1, so should not be used on
+    #  older versions!
+    #
+    if tmux_vers_compare 3.1 && normalize_bool_param "@use_bind_key_notes_in_plugins" No; then
+        cfg_use_notes=true
+    else
+        cfg_use_notes=false
+    fi
 }
 
 extract_char() {
@@ -288,17 +300,38 @@ param_cache_write() {
 # Always sourced file - Fake bang path to help editors
 cfg_trigger_key="$(escape_tmux_special_chars "$cfg_trigger_key")"
 cfg_no_prefix="$cfg_no_prefix"
-cfg_use_cache="$cfg_use_cache"
-cfg_use_notes="$cfg_use_notes"
 cfg_mnu_loc_x="$cfg_mnu_loc_x"
 cfg_mnu_loc_y="$cfg_mnu_loc_y"
+cfg_use_cache="$cfg_use_cache"
 cfg_tmux_conf="$cfg_tmux_conf"
+cfg_log_file="$cfg_log_file"
+
+cfg_use_notes="$cfg_use_notes"
 EOF
     #endregion
 }
 
 generate_param_cache() {
     # log_it "><> generate_param_cache()"
+
+    #
+    #  Defaults for plugin params
+    #
+    default_trigger_key=\\
+    default_no_prefix=No
+
+    if tmux_vers_compare 3.2; then
+        default_location_x=C
+        default_location_y=C
+    else
+        default_location_x=P
+        default_location_y=P
+    fi
+
+    default_use_cache=Yes
+    default_tmux_conf="${TMUX_CONF:-~/.tmux.conf}"
+    default_log_file=""
+
     get_plugin_params
 
     # echo "orig: [$cfg_trigger_key]"
@@ -377,12 +410,10 @@ wait_to_close_display() {
 
 plugin_name="tmux-menus"
 #
-#  If log_file is empty or undefined, no logging will occur,
-#  so comment it out for normal usage.
+#  Setting a cfg_log_file here, only makes a difference until get_config
+#  is called at the end of this script, the setting will then be overridden.
 #
-#  Logging should normally be disabled, since it causes some overhead.
-#
-log_file="$HOME/tmp/$plugin_name.log"
+cfg_log_file="~/tmp/$plugin_name.log"
 
 log_interactive_to_stderr=false
 
@@ -459,16 +490,5 @@ d_scripts="$D_TM_BASE_PATH"/scripts
 f_param_cache="$D_TM_BASE_PATH"/cache/plugin_params
 
 # [ "$(basename "$0")" = "menus.tmux" ] && return
-
-#
-#  Defaults for plugin params
-#
-default_trigger_key=\\
-default_use_cache=Yes
-default_no_prefix=No
-default_location_x=P
-default_location_y=P
-default_conf_overrides=No
-default_tmux_conf="${TMUX_CONF:-~/.tmux.conf}"
 
 get_config
