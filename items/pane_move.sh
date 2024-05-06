@@ -13,7 +13,7 @@ dynamic_content() {
 
     if $TMUX_BIN display-message -p '#{pane_marked_set}' | grep -q '1'; then
         set -- \
-            1.7 C s " Swap current pane with marked" "swap-pane $menu_reload"
+            2.1 C s " Swap current pane with marked" "swap-pane $menu_reload"
     else
         set --
     fi

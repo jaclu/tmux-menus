@@ -22,7 +22,7 @@ dynamic_content() {
     fi
 
     set -- \
-        2.0 C z "<P> $zoom_action pane" "resize-pane -Z $menu_reload" \
+        1.8 C z "<P> $zoom_action pane" "resize-pane -Z $menu_reload" \
         2.1 C m "<P> $new_mark_state current pane" "select-pane -m $menu_reload" \
         1.9 C y "$new_sync_state synchronized panes" "set -w synchronize-panes"
 
