@@ -164,14 +164,14 @@ set -g @menus_location_y S
 
 For all location options see the tmux man page, search for `display-menu`. The basic options are:
 
-| Value | Flag | Meaning |
-|-|-|-|
-| C | Both | The centre of the terminal (tmux 3.2 or newer) |
-| R | -x   | The right side of the terminal |
-| P | Both | The bottom left of the pane |
-| M | Both | The mouse position |
-| W | Both | The window position on the status line |
-| S | -y   | The line above or below the status line |
+Value | Flag | Meaning
+-|-|-
+C | Both | The centre of the terminal (tmux 3.2 or newer)
+R | -x   | The right side of the terminal
+P | Both | The bottom left of the pane
+M | Both | The mouse position
+W | Both | The window position on the status line
+S | -y   | The line above or below the status line
 
 ### Disable caching
 
@@ -190,6 +190,7 @@ The plugin remmebers what tmux version you used last time. If another version is
 ```tmux
 set -g @menus_config_file '~/.configs/tmux.conf'
 ```
+
 In the main menu, you can request the config file to be reloaded.
 The defaults for this are:
 
@@ -212,12 +213,12 @@ set -g @menus_log_file '~/tmp/tmux-menus.log'
 
 tmux does not give any error if a menu doesn't fit the available screen.
 The only hint is that the menu is terminated instantaneously.
-Since this test is far from perfect, and some computers are really slow, 
-the current assumption is that if it was displayed < 0.5 seconds 
+Since this test is far from perfect, and some computers are really slow,
+the current assumption is that if it was displayed < 0.5 seconds
 (on most modern computers it will be below 0.03), it was likely due
 to screen size. And this error will be displayed on the status-bar:
 
-```
+```tmux
 tmux-menus ERROR: Screen might be too small
 ```
 
@@ -263,7 +264,6 @@ log_it "foo is now [$foo]"
 If you are triggering a menu from the command line, you can use direct echo,
 but then you need to remove it before using it via the trigger, since tmux sees any
 script output as a potential error and display it in a scroll-back buffer.
-
 
 ## Menu building
 
