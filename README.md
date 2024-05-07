@@ -70,7 +70,7 @@ Version | Notice
 1.9 - 2.9a | Only available using Whiptail, menu location setting ignored.
 1.7 - 1.8  | tpm is not available, so the plugin needs to be initialized by running [path to tmux-menus]/menus.tmux directly from the conf file
 
-The above table covers compatibility for the general tool. Some items 
+The above table covers compatibility for the general tool. Some items
 has a min tmux version set, if the running tmux doesn't match this,
 that item will be skipped, this is by no means perfect, so if you find I set incorrect limits on some feature, please let me know!
 
@@ -130,7 +130,7 @@ between upper and lower case letters, and does not at all support
 special keys like 'Left' or 'Home'
 
 If tmux is < 3.0 whiptail will automatically be used.
-If you want to use Whiptail on modern tmuxes set this env variable outside tmux, or in tmux conf: `export FORCE_WHIPTAIL_MENUS=1` 
+If you want to use Whiptail on modern tmuxes set this env variable outside tmux, or in tmux conf: `export FORCE_WHIPTAIL_MENUS=1`
 
 ## Configuration
 
@@ -210,13 +210,16 @@ set -g @menus_log_file '~/tmp/tmux-menus.log'
 
 ## If a menu doesn't fit the screen
 
-tmux does not give any error if a menu doesn't fit the available screen. 
+tmux does not give any error if a menu doesn't fit the available screen.
 The only hint is that the menu is terminated instantaneously.
-For this reason, a menu that is closed right away is assumed to have failed due to lacking screen real estate,
-and then the required min screen size for this menu is displayed.
-Starting with tmux 3.2 menus will be shrunk to some extentto make them fit, 
-so for later versions of tmux you might get away with a slightly smaller screen than the required size, 
-but some items might get so shortened that the menu is unusable.
+Since this test is far from perfect, and some computers are slow, the current
+assumption is that if it was displayed < 0.5 seconds, it was likely due
+to screen size. And this error will be displayed:
+`tmux-menus ERROR: Screen might be too small`
+
+It will also be displayed if the menu is closed right away intentionally
+or unintentionally, so there will no doubt sometimes be false positives.
+If it doesen't happen the next time the menu is attempted, it can be ignored.
 
 ## Making synchronized panes stand out
 
