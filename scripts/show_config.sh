@@ -47,7 +47,7 @@ show_item @menus_config_file "$cfg_tmux_conf" "$default_tmux_conf"
 show_item @menus_location_x "$cfg_mnu_loc_x" "$default_location_x"
 show_item @menus_location_y "$cfg_mnu_loc_y" "$default_location_y"
 
-[[ -n "$cfg_log_file" ]] && {
+[ -n "$cfg_log_file" ] && {
     echo
     echo "@menus_log_file: $cfg_log_file"
 }
