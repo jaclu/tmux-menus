@@ -161,8 +161,8 @@ The default locations are: `C` for tmux >= 3.2 `P` otherwise.
 set -g @menus_location_x W
 set -g @menus_location_y S
 ```
-For all location options see the tmux man page, search for `display-menu`. The basic options are:
 
+For all location options see the tmux man page, search for `display-menu`. The basic options are:
 
 | Value | Flag | Meaning |
 |-|-|-|
