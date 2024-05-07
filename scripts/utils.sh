@@ -150,17 +150,30 @@ get_tmux_option() {
 
 normalize_bool_param() {
     #
-    #  Ensure boolean style params use consistent states
+    #  Take a boolean style text param and convert it into an actual boolean
+    #  that can be used in your code. Example of usage:
     #
+    #  normalize_bool_param "@menus_without_prefix" "$default_no_prefix" &&
+    #      cfg_no_prefix=true || cfg_no_prefix=false
+    #
+
     param="$1"
+    _variable_name=""
 
     [ "${param%"${param#?}"}" = "@" ] && {
-        # Assume tmux variable name, use $2 as default
+        #
+        #  If it starts with "@", assume it is tmux variable name, thus
+        #  read its value from the tmux environment.
+        #  In this case $2 must be given as the default value!
+        #
         [ -z "$2" ] && {
             error_msg "normalize_bool_param($param) - no default" 1 true
         }
+        _variable_name="$param"
         param="$(get_tmux_option "$param" "$2")"
     }
+
+    param="$(lowercase_it "$param")"
 
     case "$param" in
     #
@@ -168,24 +181,28 @@ normalize_bool_param() {
     #  1 to indicate selected / active.
     #  This means 1 is 0 and 0 is 1, how Orwellian...
     #
-    1 | yes | Yes | YES | true | True | TRUE)
+    1 | yes | true)
         #  Be a nice guy and accept some common positive notations
         return 0
         ;;
 
-    0 | no | No | NO | false | False | FALSE)
+    0 | no | false)
         #  Be a nice guy and accept some common false notations
         return 1
         ;;
 
     *)
-        error_msg \
-            "normalize_bool_param($1) - should be yes/true/1 or no/false/0" \
-            1 true
+        if [ -n "$_variable_name" ]; then
+            prefix="$_variable_name=$param"
+        else
+            prefix="$param"
+        fi
+        error_msg "$prefix - should be yes/true or no/false" 1 true
         ;;
 
     esac
 
+    # Should never get here...
     return 2
 }
 
@@ -380,6 +397,10 @@ get_config() {
 #
 #---------------------------------------------------------------
 
+lowercase_it() {
+    echo "$1" | tr '[:upper:]' '[:lower:]'
+}
+
 posix_get_char() {
     #
     #  Configure terminal to read a single character without echoing,
@@ -417,11 +438,12 @@ wait_to_close_display() {
 #===============================================================
 
 plugin_name="tmux-menus"
+
 #
 #  Setting a cfg_log_file here, only makes a difference until get_config
-#  is called at the end of this script, the setting will then be overridden.
+#  is called at the end of this script, this setting will then be overridden.
 #
-cfg_log_file="~/tmp/$plugin_name.log"
+cfg_log_file="$HOME/tmp/$plugin_name.log"
 
 log_interactive_to_stderr=false
 
