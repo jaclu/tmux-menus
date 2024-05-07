@@ -208,14 +208,18 @@ Per default logging is disabled. If you want to use it, provide a log file name 
 set -g @menus_log_file '~/tmp/tmux-menus.log'
 ```
 
-## If a menu doesn't fit the screen
+## Screen might be too small
 
 tmux does not give any error if a menu doesn't fit the available screen.
 The only hint is that the menu is terminated instantaneously.
-Since this test is far from perfect, and some computers are slow, the current
-assumption is that if it was displayed < 0.5 seconds, it was likely due
-to screen size. And this error will be displayed:
-`tmux-menus ERROR: Screen might be too small`
+Since this test is far from perfect, and some computers are really slow, 
+the current assumption is that if it was displayed < 0.5 seconds 
+(on most modern computers it will be below 0.03), it was likely due
+to screen size. And this error will be displayed on the status-bar:
+
+```
+tmux-menus ERROR: Screen might be too small
+```
 
 It will also be displayed if the menu is closed right away intentionally
 or unintentionally, so there will no doubt sometimes be false positives.
