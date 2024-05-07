@@ -164,14 +164,14 @@ set -g @menus_location_y S
 For all location options see the tmux man page, search for `display-menu`. The basic options are:
 
 
-| Value | Flag | Meaning|
+| Value | Flag | Meaning |
 |-|-|-|
-| C | Both | The centre of the terminal (tmux 3.2 or newer)|
-| R | -x   | The right side of the terminal|
-| P | Both | The bottom left of the pane
-| M | Both | The mouse position|
-| W | Both | The window position on the status line|
-| S | -y   | The line above or below the status line|
+| C | Both | The centre of the terminal (tmux 3.2 or newer) |
+| R | -x   | The right side of the terminal |
+| P | Both | The bottom left of the pane |
+| M | Both | The mouse position |
+| W | Both | The window position on the status line |
+| S | -y   | The line above or below the status line |
 
 ### Disable caching
 
