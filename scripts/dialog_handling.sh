@@ -36,6 +36,7 @@ get_mtime() {
 
 debug_print() {
     case "$menu_debug" in
+    "") ;; # not active
     1) echo "$1" ;;
     2) log_it "$1" ;;
     *)
@@ -658,6 +659,12 @@ uncached_menu=""
 uncached_wt_actions=""
 uncached_item_splitter="||||"
 
+#
+#  If @menus_use_cache is not disabled, any cached items will not be
+#  fully processed, so either disable caching, or clear the cache for
+#  the itam before each run, unless of course your focus is to debug
+#  cache handling.
+#
 menu_debug="" # Set to 1 to use echo 2 to use log_it
 
 handle_menu
