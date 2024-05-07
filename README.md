@@ -161,17 +161,17 @@ The default locations are: `C` for tmux >= 3.2 `P` otherwise.
 set -g @menus_location_x W
 set -g @menus_location_y S
 ```
-Locations can be one of:
+For all location options see the tmux man page, search for `display-menu`. The basic options are:
 
-- W - By the current window name in the status line
-- P - Lower left of the current pane
-- C - Centered in the window (tmux 3.2 and up)
-- M - Mouse position (doesn't seem to work as intended…)
-- R - Right edge of the terminal (x)
-- S - Next to the status line (y)
-- Number - In pane coordinates 0,0 is the top left. To make it even more
-confusing, the coordinate defines the lower left of the placement of the menu…
 
+| Value | Flag | Meaning|
+|-|-|-|
+| C | Both | The centre of the terminal (tmux 3.2 or newer)|
+| R | -x   | The right side of the terminal|
+| P | Both | The bottom left of the pane
+| M | Both | The mouse position|
+| W | Both | The window position on the status line|
+| S | -y   | The line above or below the status line|
 
 ### Disable caching
 
@@ -210,14 +210,13 @@ set -g @menus_log_file '~/tmp/tmux-menus.log'
 
 ## If a menu doesn't fit the screen
 
-tmux does not give any error if a menu doesn't fit the available
-screen. The only hint is that the menu is terminated instantaneously.
-For this reason, a menu that is closed right away is assumed to have
-failed due to lacking screen real estate,
-and then the required min screen size for this dialog is printed.
-Starting with tmux 3.2 menus will be shrunk to some extent
-to make them fit, so for later versions of tmux you might get away
-with a slightly narrower screen than the required size.
+tmux does not give any error if a menu doesn't fit the available screen. 
+The only hint is that the menu is terminated instantaneously.
+For this reason, a menu that is closed right away is assumed to have failed due to lacking screen real estate,
+and then the required min screen size for this menu is displayed.
+Starting with tmux 3.2 menus will be shrunk to some extentto make them fit, 
+so for later versions of tmux you might get away with a slightly smaller screen than the required size, 
+but some items might get so shortened that the menu is unusable.
 
 ## Making synchronized panes stand out
 
@@ -229,20 +228,6 @@ not intended.
 
 ```tmux
 #[reverse,blink]#{?pane_synchronized,*** PANES SYNCED! ***,}#[default]
-```
-
-## Default menus
-
-To disable the rather limited default popup menus, you can add the
-following
-
-```tmux
-unbind-key -n MouseDown3Pane
-unbind-key -n M-MouseDown3Pane
-unbind-key -n MouseDown3Status
-unbind-key -n MouseDown3StatusLeft
-unbind-key <
-unbind-key >
 ```
 
 ## Modifications
