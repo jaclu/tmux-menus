@@ -632,12 +632,13 @@ fi
 # shellcheck source=scripts/utils.sh
 [ -z "$tmux_vers" ] && . "$D_TM_BASE_PATH"/scripts/utils.sh
 
-#
-#  Delete old reload scripts, they will be created during execution
-#  of a menu, and then if found executed at end of this one.
-#  This is most likely a leftover due to some bug.
-#
 [ "$FORCE_WHIPTAIL_MENUS" = 1 ] && [ -f "$f_wt_reload_script" ] && {
+    #
+    #  Delete old reload scripts, they will be created during execution
+    #  of a menu, and then if found executed at end of this one.
+    #  This is most likely a leftover due to some bug.
+    #
+
     # log_it "><> Found reload script - deleting it"
     rm -f "$f_wt_reload_script"
 }
@@ -669,18 +670,17 @@ menu_debug="" # Set to 1 to use echo 2 to use log_it
 
 handle_menu
 
-#
-#  in whiptail run-shell cant chain to another menu, so instead
-#  reload script is written to a tmp file, and if it is found
-#  it will be exeuted
-#
-
 e="$?"
 if [ "$e" -ne 0 ]; then
     log_it "><> $current_script - dialog_handling - before wt_reload [$e]"
 fi
 
 if [ "$FORCE_WHIPTAIL_MENUS" = 1 ] && [ -f "$f_wt_reload_script" ]; then
+    #
+    #  in whiptail run-shell cant chain to another menu, so instead
+    #  reload script is written to a tmp file, and if it is found
+    #  it will be exeuted
+    #
     log_it "Will run f_wt_reload_script[$f_wt_reload_script]"
     /bin/sh "$f_wt_reload_script"
 fi
