@@ -21,11 +21,11 @@ _this="change_prefix.sh" # error prone if script name is changed :(
 #
 #  Since this is a critical param, make extra sure we have valid input
 #
-prefix_char="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
+prefix_char="$1"
 if [ -z "$prefix_char" ]; then
-    error_msg "change_prefix.sh No prefix given!"
+    error_msg "change_prefix.sh No prefix given!" 1 true
 elif [ "$(printf '%s' "$prefix_char" | wc -m)" -ne 1 ]; then
-    error_msg "Must be exactly one char! Was:[$prefix_char]"
+    error_msg "Must be exactly one char! Was:[$prefix_char]" 1 true
 fi
 
 prefix="C-${prefix_char}"
