@@ -329,7 +329,15 @@ generate_param_cache() {
     fi
 
     default_use_cache=Yes
-    default_tmux_conf="${TMUX_CONF:-~/.tmux.conf}"
+
+    if [ -n "$TMUX_CONF" ]; then
+        default_tmux_conf="$TMUX_CONF"
+    elif [ -n "$XDG_CONFIG_HOME" ]; then
+        default_tmux_conf="$XDG_CONFIG_HOME/tmux/tmux.conf"
+    else
+        default_tmux_conf="$HOME/.tmux.conf"
+    fi
+
     default_log_file=""
 
     get_plugin_params
