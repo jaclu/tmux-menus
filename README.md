@@ -136,14 +136,14 @@ If you want to use Whiptail on modern tmuxes set this env variable outside tmux,
 
 ### Changing the key bindings for this plugin
 
-The default trigger is `<prefix> \`. The trigger is configured like this:
+The default trigger is `<prefix> \` The trigger is configured like this:
 
 ```tmux
 set -g @menus_trigger F9
 ```
 
 Please note that non-standard keys, like the default backslash need to
-be prefixed with an `\` in order not to confuse tmux. So in this case the default would be set as either `"\\"` or without quotes as `\\`. 
+be prefixed with an `\` in order not to confuse tmux.
 
 If you want to trigger menus without first hitting `<prefix>`
 
@@ -151,12 +151,16 @@ If you want to trigger menus without first hitting `<prefix>`
 set -g @menus_without_prefix Yes
 ```
 
-This param can be either Yes/true (the default) or No/false
+This param can be either Yes/true or No/false (the default)
 
 ### Menu location
 
-The default location is: C for tmux >= 3.2 P otherwise.
+The default locations are: `C` for tmux >= 3.2 `P` otherwise.
 
+```tmux
+set -g @menus_location_x W
+set -g @menus_location_y S
+```
 Locations can be one of:
 
 - W - By the current window name in the status line
@@ -168,10 +172,6 @@ Locations can be one of:
 - Number - In pane coordinates 0,0 is the top left. To make it even more
 confusing, the coordinate defines the lower left of the placement of the menu…
 
-```tmux
-set -g @menus_location_x W
-set -g @menus_location_y S
-```
 
 ### Disable caching
 
@@ -181,44 +181,31 @@ By default menu items are cached, set this to `No` to disable all caching.
 set -g @menus_use_cache No
 ```
 
-To be more precise, items listed inside `static_content()` are cached. Some items need to be freshly generated each time a menu is displayed, those items are defines in `dynamic_content()` see scripts/panes.sh for an example of this. The label changes between Zoom and Un-Zoom for the zooming action.
+To be more precise, items listed inside `static_content()` are cached. Some items need to be freshly generated each time a menu is displayed, those items are defines in `dynamic_content()` see [scripts/panes.sh](items/panes.sh) for an example of this. In that case, the label changes between Zoom and Un-Zoom for the zooming action.
+
 The plugin remmebers what tmux version you used last time. If another version is detected as the plugin is initialized, the entire cache is dropped. Same if a menu script is changed, if the script is newer than the cache, that cache item is regenerated.
 
 ### Pointer to the config file
 
 ```tmux
-set -g @menus_config_file "$XDG_CONFIG_HOME/tmux/tmux.conf"
+set -g @menus_config_file '~/.configs/tmux.conf'
 ```
 In the main menu, you can request the config file to be reloaded.
 The defaults for this are:
 
  1. @menus_config_file - if this is defined in the tmux config file, it will be used.
  2. $TMUX_CONF - if this is present in the environment, it will be used.
- 3. ~/.tmux.conf - Default if none of the above are set.
+ 3. $XDG_CONFIG_HOME/tmux/tmux.conf - if $XDG_CONFIG_HOME is defined.
+ 4. ~/.tmux.conf - Default if none of the above are set.
 
-When a reload is requested, the default will be printed and used if
-not manually changed.
-
-### Default menus
-
-To disable the rather limited default popup menus, you can add the
-following
-
-```tmux
-unbind-key -n MouseDown3Pane
-unbind-key -n M-MouseDown3Pane
-unbind-key -n MouseDown3Status
-unbind-key -n MouseDown3StatusLeft
-unbind-key <
-unbind-key >
-```
+When a reload is requested, the conf file will be prompted for, defaulting to the above. It can be manually changed.
 
 ### Logging
 
 Per default logging is disabled. If you want to use it, provide a log file name like this
 
 ```tmux
-set -g @menus_log_file ~/tmp/tmux-menus.log
+set -g @menus_log_file '~/tmp/tmux-menus.log'
 ```
 
 ## If a menu doesn't fit the screen
@@ -244,6 +231,20 @@ not intended.
 #[reverse,blink]#{?pane_synchronized,*** PANES SYNCED! ***,}#[default]
 ```
 
+## Default menus
+
+To disable the rather limited default popup menus, you can add the
+following
+
+```tmux
+unbind-key -n MouseDown3Pane
+unbind-key -n M-MouseDown3Pane
+unbind-key -n MouseDown3Status
+unbind-key -n MouseDown3StatusLeft
+unbind-key <
+unbind-key >
+```
+
 ## Modifications
 
 Each menu is a script, so you can edit a menu script, and once saved,
@@ -261,21 +262,16 @@ of the tmux session you are working on, something like
 This directly triggers that menu and displays any syntax errors on the
 command line.
 
-In `scripts/utils.sh` there is a function log_it and a variable log_file.
-If log_file is defined, any call to log_it is printed there.
-If not defined, nothing happens. log_it lines can be left in the code.
-
-If you are triggering a menu from the command line, you can use direct echo,
-but then you need to remove it before deploying since tmux sees any
-script output as a potential error and display it in a scroll-back buffer.
-If tailing a log file is unpractical, a more scalable way to achieve the
-same result as echo would be to set `log_file=/dev/stdout`
-
-To trigger log output, add lines like:
+If `@menus_log_file` is defined, you can use logging like this:
 
 ```bash
 log_it "foo is now [$foo]"
 ```
+
+If you are triggering a menu from the command line, you can use direct echo,
+but then you need to remove it before using it via the trigger, since tmux sees any
+script output as a potential error and display it in a scroll-back buffer.
+
 
 ## Menu building
 
@@ -289,18 +285,18 @@ Item types and their parameters
 
 - M - Open another menu
   - shortcut for this item, or "" if none wanted
-  - label for the menu
+  - label
   - menu script
 - C - run tmux Command
   - shortcut for this item, or "" if none wanted
-  - label for the command
+  - label
   - tmux command
 - E - run External command
   - shortcut for this item, or "" if none wanted
-  - label for external command
+  - label
   - external command
 - T - Display text line
-  - label to display. Any initial "-" (making it unselectable in tmux menus) will be skipped if whiptail is used, since leading "-" would cause it to crash.
+  - text to display. Any initial "-" (making it unselectable in tmux menus) will be skipped if whiptail is used, since a leading "-" would cause it to crash.
 - S - Separator/Spacer line line
   - no params
 
@@ -311,7 +307,7 @@ Item types and their parameters
 
 #
 #  This script is assumed to have been placed in the items folder of
-#  this repo, if not, you will need to change the paths to the support
+#  this repo, if not, you will need to change the s to the support
 #  scripts below.
 #
 static_content() {
@@ -346,7 +342,7 @@ static_content() {
 #===============================================================
 
 #  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
+D_TM_BASE_="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
