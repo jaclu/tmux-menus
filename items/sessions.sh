@@ -11,8 +11,6 @@
 static_content() {
 
     menu_name="Handling Sessions"
-    req_win_width=39
-    req_win_height=15
 
     if tmux_vers_compare 3.2; then
         _s="no-detached"

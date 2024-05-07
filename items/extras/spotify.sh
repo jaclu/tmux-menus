@@ -22,8 +22,6 @@ dynamic_content() {
 
 static_content() {
     menu_name="Spotify"
-    req_win_width=33
-    req_win_height=13
 
     reload_no_output=" > /dev/null ; $f_current_script"
 

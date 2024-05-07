@@ -26,8 +26,6 @@ dynamic_content() {
 
 static_content() {
     menu_name="Dropbox"
-    req_win_width=33
-    req_win_height=9
 
     [ -z "$(command -v dropbox)" ] && error_msg "dropbox bin not found!"
 

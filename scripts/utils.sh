@@ -360,6 +360,23 @@ lowercase_it() {
     echo "$1" | tr '[:upper:]' '[:lower:]'
 }
 
+safe_now() {
+    #
+    #  MacOS date only counts whole seconds, if gdate (GNU-date) is
+    #  installed, it can  display times with more precission
+    #
+    if [ "$(uname)" = "Darwin" ]; then
+        if [ -n "$(command -v gdate)" ]; then
+            gdate +%s.%N
+        else
+            date +%s
+        fi
+    else
+        #  On Linux the native date suports sub second precission
+        date +%s.%N
+    fi
+}
+
 get_defaults() {
     #
     #  Defaults for plugin params

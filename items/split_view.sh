@@ -10,8 +10,6 @@
 
 static_content() {
     menu_name="Split view"
-    req_win_width=32
-    req_win_height=15
 
     set -- \
         0.0 M Left "Back to Main menu <--" main.sh \

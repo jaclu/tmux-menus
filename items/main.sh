@@ -10,8 +10,6 @@
 
 static_content() {
     menu_name="Main menu"
-    req_win_width=38
-    req_win_height=24
 
     choose_tree_cmd="choose-tree"
     if tmux_vers_compare 2.7; then

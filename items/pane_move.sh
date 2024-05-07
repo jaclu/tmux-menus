@@ -22,8 +22,6 @@ dynamic_content() {
 
 static_content() {
     menu_name="Move Pane"
-    req_win_width=38
-    req_win_height=12
 
     set -- \
         0.0 M Home "Back to Main menu     <==" main.sh \

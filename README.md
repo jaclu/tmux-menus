@@ -300,8 +300,6 @@ Item types and their parameters
 #
 static_content() {
   menu_name="Simple Test"
-  req_win_width=39
-  req_win_height=23
 
   #
   # Be aware:

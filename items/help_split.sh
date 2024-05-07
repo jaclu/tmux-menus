@@ -12,8 +12,6 @@ dynamic_content() {
     # Things that change dependent on various states
 
     menu_name="Help, Split view"
-    req_win_width=36
-    req_win_height=11
 
     if [ -z "$prev_menu" ]; then
         error_msg "help_split.sh was called without notice of what called it"

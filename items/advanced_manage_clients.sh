@@ -9,10 +9,7 @@
 #
 
 static_content() {
-
     menu_name="Client Management"
-    req_win_width=41
-    req_win_height=28
 
     set -- \
         2.7 M Home "Back to Main menu        <==" main.sh \

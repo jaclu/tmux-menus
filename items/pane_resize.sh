@@ -10,8 +10,6 @@
 
 static_content() {
     menu_name="Resize Pane"
-    req_win_width=36
-    req_win_height=18
 
     set -- \
         0.0 M Home "Back to Main menu     <==" main.sh \

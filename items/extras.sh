@@ -28,8 +28,6 @@ is_avalable() {
 
 static_content() {
     menu_name="Extras"
-    req_win_width=33
-    req_win_height=11
 
     d_extras="$d_items"/extras
 

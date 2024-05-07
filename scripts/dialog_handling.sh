@@ -46,38 +46,30 @@ debug_print() {
 
 ensure_menu_fits_on_screen() {
     #
-    #  Since tmux display-menu returns 0 even if it failed to display the menu
-    #  due to not fitting on the screen, for now I check how long the menu
-    #  was displayed. If the seconds didn't tick up, inspect required size vs
-    #  actual screen size, and display a message if the menu doesn't fit.
+    #  Since tmux display-menu returns 0 even if it failed to display the
+    #  menu due to not fitting on the screen, the display time is checked.
+    #  If it seems to have closed right away, display a message that there
+    #  might be a screen size issue.
     #
-    #  Not perfect, but it kind of works. If you hit escape and instantly close
-    #  the menu, a time diff zero might trigger this to check sizes, but if
-    #  the menu fits on the screen, no size warning will be printed.
+    #  This is not ideal, since a very slow computer might take some time
+    #  for this, and if the user hits q right away, this message will also
+    #  be displayed.
     #
-    #  This gets slightly more complicated with tmux 3.3, since now tmux shrinks
-    #  menus that don't fit due to width, so tmux might decide it can show a menu,
-    #  but due to shrinkage, the hints in the menu might be so shortened that they
-    #  are off little help explaining what this option would do.
+    #  This gets slightly more complicated with tmux 3.3, since now tmux
+    #  shrinks menus that don't fit due to width, so tmux might decide it
+    #  can show a menu, but due to shrinkage, the labels might be so
+    #  shortened that they are off little help explaining what the option
+    #  would do.
     #
-    [ "$t_start" -ne "$(date +'%s')" ] && return # should have been displayed
+    dh_t_end="$(safe_now)"
 
-    #
-    #  Param checks
-    #
-    set -- "ensure_menu_fits_on_screen() '$menu_name'" \
-        "w:$req_win_width h:$req_win_height"
-
-    cur_width="$($TMUX_BIN display -p "#{window_width}")"
-    cur_height="$($TMUX_BIN display -p "#{window_height}")"
-
-    if [ "$cur_width" -lt "$req_win_width" ] ||
-        [ "$cur_height" -lt "$req_win_height" ]; then
-        echo
-        echo "menu '$menu_name'"
-        echo "needs a screen size"
-        echo "of at least $req_win_width x $req_win_height"
+    disp_time="$(echo "$dh_t_end - $dh_t_start" | bc)"
+    log_it "Menu $current_script Display time [$disp_time]"
+    if [ "$(echo "$disp_time < 0.5" | bc)" -eq 1 ]; then
+        error_msg "Screen might be too small" 1 true
     fi
+    unset dh_t_end
+    unset disp_time
 }
 
 starting_with_dash() {
@@ -185,7 +177,6 @@ alt_dialog_external_cmd() {
 alt_dialog_command() {
     # filtering out tmux #{...} & #[...] sequences
     label="$(echo "$1" | sed 's/#{[^}]*}//g' | sed 's/#\[[^}]*\]//g')"
-
     key="$2"
     cmd="$3"
     keep_cmd="${4:-false}"
@@ -312,8 +303,6 @@ menu_parse() {
         if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
             alt_dialog_prefix
         else
-            [ -z "$req_win_width" ] && error_missing_param "req_win_width"
-            [ -z "$req_win_height" ] && error_missing_param "req_win_height"
             tmux_dialog_prefix
         fi
     }
@@ -367,7 +356,7 @@ menu_parse() {
             if [ "$1" = "keep" ]; then
                 #  keep cmd as is
                 keep_cmd=true
-                shift
+                shift # get rid of the keep cmd
             else
                 keep_cmd=false
             fi
@@ -386,6 +375,7 @@ menu_parse() {
             ;;
 
         E)
+            #
             #  Run external command - params: key label cmd
             #
             #  If no / is found in the script param, it will be prefixed with
@@ -495,6 +485,7 @@ update_wt_actions() {
 menu_generate_part() {
     menu_idx="$1"
     shift # get rid of the idx
+
     f_cache_file="$d_cache_file/$menu_idx"
     menu_parse "$@"
 
@@ -618,10 +609,10 @@ handle_menu() {
         fi
         alt_dialog_parse_selection "$all_wt_actions"
     else
-        t_start="$(date +'%s')"
-        # tmux can trigger actions by it self
+        dh_t_start="$(safe_now)"
         eval "$menu_items"
         ensure_menu_fits_on_screen
+        unset dh_t_start
     fi
 }
 

@@ -19,8 +19,6 @@ static_content() {
     error_msg "THIS IS NOT USED ATM!"
 
     menu_name="Configure Menu Location"
-    req_win_width=37
-    req_win_height=13
 
     change_location="run-shell '$d_scripts/move_menu.sh"
 

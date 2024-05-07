@@ -28,8 +28,6 @@ D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$(dirname -- "$0")")"
 error_msg "THIS IS NOT USED ATM!"
 
 menu_name="Mullvad Select Country"
-req_win_width=28
-req_win_height=9
 
 offset="${1:-0}" #  optional param indicating first item to display
 

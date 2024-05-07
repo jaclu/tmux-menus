@@ -12,8 +12,6 @@ dynamic_content() {
     # Things that change dependent on various states
 
     menu_name="Help Panes"
-    req_win_width=39
-    req_win_height=10
 
     if [ -z "$prev_menu" ]; then
         error_msg "help_panes.sh was called without notice of what called it"

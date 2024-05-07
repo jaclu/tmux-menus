@@ -33,8 +33,6 @@ dynamic_content() {
 
 static_content() {
     menu_name="Mullvad VPN"
-    req_win_width=33
-    req_win_height=10
 
     # suffix=" > /dev/null' ; run-shell '$f_current_script'"
 

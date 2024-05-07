@@ -10,8 +10,6 @@
 
 static_content() {
     menu_name="Layouts"
-    req_win_width=32
-    req_win_height=12
 
     # make it global so it changes all windows in all sessions
     setw_cmd="setw -g"

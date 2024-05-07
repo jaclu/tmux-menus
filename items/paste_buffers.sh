@@ -10,8 +10,6 @@
 
 static_content() {
     menu_name="Paste buffers"
-    req_win_width=55
-    req_win_height=28
 
     set -- \
         0.0 M Left "Back to Main menu     <==" main.sh \

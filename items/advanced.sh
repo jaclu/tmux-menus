@@ -36,10 +36,7 @@ dynamic_content() {
 }
 
 static_content() {
-
     menu_name="Advanced options"
-    req_win_width=37
-    req_win_height=18
 
     set -- \
         0.0 M Left "Back to Main menu <--" main.sh \
