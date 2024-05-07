@@ -65,8 +65,6 @@ tmux_vers_compare() {
     tvc_v1="$1"
     tvc_v2="${2:-$tmux_vers}"
 
-    # log_it "tmux_vers_compare($v1, $v2)"
-
     # insert . between each char for consistent notation
     tvc_v1="$(echo "$tvc_v1" | sed 's/[^.]/.&/g' | sed 's/\.\././g' | sed 's/^\.//;s/\.$//')"
     tvc_v2="$(echo "$tvc_v2" | sed 's/[^.]/.&/g' | sed 's/\.\././g' | sed 's/^\.//;s/\.$//')"
@@ -86,8 +84,6 @@ tmux_vers_compare() {
         fi
         tvc_idx=$((tvc_idx + 1))
     done
-
-    # log_it "tmux_vers_compare: $v1 <= $v2 -  $tvc_rslt"
 
     unset tvc_v1
     unset tvc_v2
@@ -122,7 +118,7 @@ get_tmux_option() {
     gto_option="$1"
     gto_default="$2"
 
-    [ -z "$gto_option" ] && error_msg "get_tmux_option() param 1 empty!"
+    [ -z "$gto_option" ] && error_msg "get_tmux_option() param 1 empty!" 1 true
     # shellcheck disable=SC2154
     [ "$TMUX" = "" ] && {
         # this is run standalone, just report the defaults
@@ -214,22 +210,14 @@ get_plugin_params() {
     #  bind-key Notes were added in tmux 3.1, so should not be used on
     #  older versions!
     #
-    # log_it "><> get_plugin_params()"
 
     cfg_trigger_key=$(get_tmux_option "@menus_trigger" "$default_trigger_key")
-
     normalize_bool_param "@menus_without_prefix" "$default_no_prefix" &&
         cfg_no_prefix=true || cfg_no_prefix=false
-
     normalize_bool_param "@menus_use_cache" "$default_use_cache" &&
         cfg_use_cache=true || cfg_use_cache=false
-
     cfg_log_file="$(get_tmux_option "@menus_log_file" "$default_log_file")"
-
-    # log_it "get_plugin_params()"
-
     cfg_tmux_conf="$(get_tmux_option "@menus_config_file" "$default_tmux_conf")"
-
     cfg_mnu_loc_x="$(get_tmux_option "@menus_location_x" "$default_location_x")"
     cfg_mnu_loc_y="$(get_tmux_option "@menus_location_y" "$default_location_y")"
 
@@ -329,8 +317,6 @@ EOF
 }
 
 generate_param_cache() {
-    # log_it "><> generate_param_cache()"
-
     #
     #  Defaults for plugin params
     #
@@ -375,7 +361,6 @@ generate_param_cache() {
 }
 
 get_config() {
-    # log_it "><> get_config()"
     #
     #  The plugin init .tmux script should NOT call this!
     #
@@ -386,7 +371,6 @@ get_config() {
     #
     [ -s "$f_param_cache" ] || generate_param_cache
 
-    # log_it "><> sourcing $f_param_cache"
     # shellcheck source=/dev/null
     . "$f_param_cache"
 }
@@ -440,14 +424,14 @@ wait_to_close_display() {
 plugin_name="tmux-menus"
 
 #
-#  Setting a cfg_log_file here, only makes a difference until get_config
+#  Setting a cfg_log_file here only makes a difference until get_config
 #  is called at the end of this script, this setting will then be overridden.
 #
-cfg_log_file="$HOME/tmp/$plugin_name.log"
+# cfg_log_file="$HOME/tmp/$plugin_name.log"
 
 log_interactive_to_stderr=false
 
-[ -z "$D_TM_BASE_PATH" ] && error_msg "D_TM_BASE_PATH undefined"
+[ -z "$D_TM_BASE_PATH" ] && error_msg "D_TM_BASE_PATH undefined" 1 true
 
 #
 #  I use an env var TMUX_BIN to point at the current tmux, defined in my
