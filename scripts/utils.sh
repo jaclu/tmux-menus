@@ -210,6 +210,7 @@ get_plugin_params() {
     #  bind-key Notes were added in tmux 3.1, so should not be used on
     #  older versions!
     #
+    get_defaults
 
     cfg_trigger_key=$(get_tmux_option "@menus_trigger" "$default_trigger_key")
     normalize_bool_param "@menus_without_prefix" "$default_no_prefix" &&
@@ -317,32 +318,6 @@ EOF
 }
 
 generate_param_cache() {
-    #
-    #  Defaults for plugin params
-    #
-    default_trigger_key=\\
-    default_no_prefix=No
-
-    if tmux_vers_compare 3.2; then
-        default_location_x=C
-        default_location_y=C
-    else
-        default_location_x=P
-        default_location_y=P
-    fi
-
-    default_use_cache=Yes
-
-    if [ -n "$TMUX_CONF" ]; then
-        default_tmux_conf="$TMUX_CONF"
-    elif [ -n "$XDG_CONFIG_HOME" ]; then
-        default_tmux_conf="$XDG_CONFIG_HOME/tmux/tmux.conf"
-    else
-        default_tmux_conf="$HOME/.tmux.conf"
-    fi
-
-    default_log_file=""
-
     get_plugin_params
 
     # echo "orig: [$cfg_trigger_key]"
@@ -383,6 +358,34 @@ get_config() {
 
 lowercase_it() {
     echo "$1" | tr '[:upper:]' '[:lower:]'
+}
+
+get_defaults() {
+    #
+    #  Defaults for plugin params
+    #
+    default_trigger_key=\\
+    default_no_prefix=No
+
+    if tmux_vers_compare 3.2; then
+        default_location_x=C
+        default_location_y=C
+    else
+        default_location_x=P
+        default_location_y=P
+    fi
+
+    default_use_cache=Yes
+
+    if [ -n "$TMUX_CONF" ]; then
+        default_tmux_conf="$TMUX_CONF"
+    elif [ -n "$XDG_CONFIG_HOME" ]; then
+        default_tmux_conf="$XDG_CONFIG_HOME/tmux/tmux.conf"
+    else
+        default_tmux_conf="$HOME/.tmux.conf"
+    fi
+
+    default_log_file=""
 }
 
 posix_get_char() {
