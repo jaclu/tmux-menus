@@ -14,7 +14,15 @@ experienced users, then add more for newbies.
 - [Recent changes](#recent-changes)
 - [Purpose](#purpose)
 - [Usage](#usage)
-
+- [Screenshots of some menus](#screenshots-of-some-menus)
+- [Compatibility](#compatibility)
+- [Installing](#installing)
+- [Whiptail](#whiptail)
+- [Configuration](#configuration)
+- [Screen might be too small](#screen-might-be-too-small)
+- [Modifications](#modifications)
+- [Menu building](#menu-building)
+- [Contributions](#contributions)
 
 ## Recent changes
 
@@ -367,7 +375,7 @@ set -- "$@" \
 ...
 ```
 
-## Contributing
+## Contributions
 
 Contributions are welcome, and they're appreciated.
 Every little bit helps, and credit is always given.
