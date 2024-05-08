@@ -218,7 +218,9 @@ set -g @menus_use_cache No
 
 To be more precise, items listed inside `static_content()` are cached. Some items need to be freshly generated each time a menu is displayed, those items are defines in `dynamic_content()` see [scripts/panes.sh](items/panes.sh) for an example of this. In that case, the label changes between Zoom and Un-Zoom for the zooming action.
 
-The plugin remmebers what tmux version you used last time. If another version is detected as the plugin is initialized, the entire cache is dropped. Same if a menu script is changed, if the script is newer than the cache, that cache item is regenerated.
+The plugin remmebers what tmux version you used last time. 
+If another version is detected as the plugin is initialized, the entire cache is dropped, so that the right version dependant items can be selected as the cache is re-populated. 
+Same if a menu script is changed, if the script is newer than the cache, that cache item is regenerated.
 
 ### Pointer to the config file
 
