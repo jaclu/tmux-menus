@@ -1,5 +1,4 @@
 #!/bin/sh
-#  shellcheck disable=SC2034,SC2154
 #
 #  Copyright (c) 2023: Jacob.Lundqvist@gmail.com
 #  License: MIT
@@ -95,11 +94,9 @@ dynamic_content() {
 
 static_content() {
     menu_name="Missing Keys"
-    req_win_width=35
-    req_win_height=19
 
     tmux_vers_compare 2.0 || error_msg "needs tmux 2.0"
-    
+
     set -- \
         0.0 M Left "Back to Main menu <--" main.sh \
         0.0 S
@@ -123,18 +120,18 @@ static_content() {
     fi
 
     set -- "$@" \
-        0.0 E e " Send ESC" "$current_script  0x1b" \
-        0.0 E t " Send ~ (tilde)" "$current_script  0x7e" \
-        0.0 E b " Send $() (back-tick)" "$current_script  0x60" \
+        0.0 E e " Send ESC" "$f_current_script  0x1b" \
+        0.0 E t " Send ~ (tilde)" "$f_current_script  0x7e" \
+        0.0 E b " Send $() (back-tick)" "$f_current_script  0x60" \
         0.0 S \
-        0.0 E p " Send § (paragraph)" "$current_script §" \
-        0.0 E a " Send @ (at)" "$current_script @" \
-        0.0 E E " Send € (Euro sign)" "$current_script €" \
-        0.0 E y " Send ¥ (Yen and yuan sign)" "$current_script ¥" \
-        0.0 E P " Send £ (Pound sign)" "$current_script £" \
-        0.0 E c " Send ¢ (Cent sign)" "$current_script ¢" \
+        0.0 E p " Send § (paragraph)" "$f_current_script §" \
+        0.0 E a " Send @ (at)" "$f_current_script @" \
+        0.0 E E " Send € (Euro sign)" "$f_current_script €" \
+        0.0 E y " Send ¥ (Yen and yuan sign)" "$f_current_script ¥" \
+        0.0 E P " Send £ (Pound sign)" "$f_current_script £" \
+        0.0 E c " Send ¢ (Cent sign)" "$f_current_script ¢" \
         0.0 S \
-        0.0 M H "Help -->" "$D_TM_ITEMS/help.sh $current_script"
+        0.0 M H "Help -->" "$d_items/help.sh $f_current_script"
 
     menu_generate_part 1 "$@"
 
@@ -146,10 +143,15 @@ static_content() {
 #
 #===============================================================
 
-#  Full path to tmux-menux plugin
-D_TM_BASE_PATH=$(dirname "$(dirname -- "$(readlink -f -- "$0")")")
-
 menu_param="$1"
 
-#  Generate and display the menu
+#  Full path to tmux-menux plugin
+D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
+
+# shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
+
+e="$?"
+if [ "$e" -ne 0 ]; then
+    log_it "><> $current_script exiting [$e]"
+fi

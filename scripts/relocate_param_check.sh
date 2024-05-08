@@ -1,5 +1,4 @@
 #!/bin/sh
-# shellcheck disable=SC2034
 #  Directives for shellcheck directly after bang path are global
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
@@ -11,17 +10,16 @@
 #   Validates parameters
 #
 # Global check exclude, ignoring: is referenced but not assigned
-# shellcheck disable=SC2154
 
 #  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
+D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
 
-#  shellcheck disable=SC1091
-. "$D_TM_BASE_PATH/scripts/utils.sh"
+# shellcheck source=scripts/utils.sh
+. "$D_TM_BASE_PATH"/scripts/utils.sh
 
 # Should be sourced
-_this="relocate_param_check.sh"
-[ "$(basename "$0")" = "$_this" ] && error_msg "$_this should be sourced"
+_this="relocate_param_check.sh" # error prone if script name is changed :(
+[ "$current_script" != "$_this" ] && error_msg "$_this should NOT be sourced"
 
 param_check() {
     item_type="$1"

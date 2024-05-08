@@ -1,5 +1,4 @@
 #!/bin/sh
-#  shellcheck disable=SC2034,SC2154
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -23,7 +22,7 @@ dynamic_content() {
     fi
 
     set -- \
-        2.0 C z "<P> $zoom_action pane" "resize-pane -Z $menu_reload" \
+        1.8 C z "<P> $zoom_action pane" "resize-pane -Z $menu_reload" \
         2.1 C m "<P> $new_mark_state current pane" "select-pane -m $menu_reload" \
         1.9 C y "$new_sync_state synchronized panes" "set -w synchronize-panes"
 
@@ -32,8 +31,6 @@ dynamic_content() {
 
 static_content() {
     menu_name="Handling Pane"
-    req_win_width=38
-    req_win_height=23
 
     # # f_cache_file_panes="${f_cache_file}-panes"
     # zoom_action_placeholder="===Zoom-or-UnZoom==="
@@ -73,7 +70,7 @@ static_content() {
             'Are you sure you want to kill all other panes? (y/n)' \
             'kill-pane -a'" \
         0.0 S \
-        0.0 M H 'Help -->' "$D_TM_ITEMS/help_panes.sh $current_script"
+        0.0 M H 'Help -->' "$d_items/help_panes.sh $f_current_script"
 
     menu_generate_part 3 "$@"
 }
@@ -85,8 +82,12 @@ static_content() {
 #===============================================================
 
 #  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
+D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
 
-#  Source dialog handling script
-# shellcheck disable=SC1091
+# shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
+
+e="$?"
+if [ "$e" -ne 0 ]; then
+    log_it "><> $current_script exiting [$e]"
+fi

@@ -25,13 +25,13 @@
 #
 
 #  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
+D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
 
-#  shellcheck disable=SC1091
-. "$D_TM_BASE_PATH/scripts/utils.sh"
+# shellcheck source=scripts/utils.sh
+. "$D_TM_BASE_PATH"/scripts/utils.sh
 
-_this="do_whiptail.sh"
-[ "$(basename "$0")" != "$_this" ] && error_msg "$_this should NOT be sourced"
+_this="do_whiptail.sh" # error prone if script name is changed :(
+[ "$current_script" != "$_this" ] && error_msg "$_this should NOT be sourced"
 
 #
 #  This is run from the tmux env, so FORCE_WHIPTAIL_MENUS can not be
@@ -39,7 +39,6 @@ _this="do_whiptail.sh"
 #  where the menu is run
 #
 
-#  shellcheck disable=SC2154
-"$TMUX_BIN" send-keys C-z "$D_TM_ITEMS/main.sh ; fg" Enter
+$TMUX_BIN send-keys C-z "$d_items/main.sh ; fg" Enter
 
-#"$TMUX_BIN" send-keys C-z $D_TM_ITEMS/main.sh ' [ -n "$(jobs)" ] && fg ' Enter
+#$TMUX_BIN send-keys C-z $d_items/main.sh ' [ -n "$(jobs)" ] && fg ' Enter

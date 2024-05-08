@@ -1,5 +1,4 @@
 #!/bin/sh
-#  shellcheck disable=SC2034,SC2154
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -14,7 +13,7 @@ dynamic_content() {
         # This title check is a MacOS script
         set -- \
             0.0 C t "Title - now playing" "display \
-                '$("$D_TM_SCRIPTS"/spotify-now-playing | sed "s/'/*/g" | sed 's/"/*/g')' \
+                '$("$d_scripts"/spotify-now-playing | sed "s/'/*/g" | sed 's/"/*/g')' \
                 $menu_reload" \
             0.0 S
         menu_generate_part 2 "$@"
@@ -23,16 +22,14 @@ dynamic_content() {
 
 static_content() {
     menu_name="Spotify"
-    req_win_width=33
-    req_win_height=13
 
-    reload_no_output=" > /dev/null ; $current_script"
+    reload_no_output=" > /dev/null ; $f_current_script"
 
     [ -z "$(command -v spotify)" ] && error_msg "spotify bin not found!"
 
     set -- \
-        0.0 M Home "Back to Main menu  <==" "$D_TM_ITEMS/main.sh" \
-        0.0 M Left "Back to Extras     <--" "$D_TM_ITEMS/extras.sh" \
+        0.0 M Home "Back to Main menu  <==" "$d_items/main.sh" \
+        0.0 M Left "Back to Extras     <--" "$d_items/extras.sh" \
         0.0 S
 
     menu_generate_part 1 "$@"
@@ -49,7 +46,7 @@ static_content() {
         0.0 E u "vol Up" "spotify           vol up         $reload_no_output" \
         0.0 E d "vol Down" "spotify         vol down       $reload_no_output" \
         0.0 S \
-        0.0 M H 'Help       -->' "$D_TM_ITEMS/help.sh $current_script"
+        0.0 M H 'Help       -->' "$d_items/help.sh $f_current_script"
 
     menu_generate_part 3 "$@"
 }
@@ -61,8 +58,12 @@ static_content() {
 #===============================================================
 
 #  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname "$(dirname -- "$0")")" && pwd)")"
+D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$(dirname -- "$0")")")")"
 
-#  Source dialog handling script
-# shellcheck disable=SC1091
+# shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
+
+e="$?"
+if [ "$e" -ne 0 ]; then
+    log_it "><> $current_script exiting [$e]"
+fi

@@ -1,5 +1,4 @@
 #!/bin/sh
-#  shellcheck disable=SC1091,SC2154
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -24,15 +23,14 @@ dropbox_status_check() {
 #
 #===============================================================
 
-#  Should point to tmux-menux plugin
-#D_TM_BASE_PATH="$(dirname "$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")")"
-D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname "$(dirname -- "$0")")" && pwd)")"
+#  Full path to tmux-menux plugin
+D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$(dirname -- "$0")")")")"
 
-#  Source dialog handling script
-# shellcheck disable=SC1091
+# shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 
-. "$D_TM_SCRIPTS"/dropbox_tools.sh
+# shellcheck source=scripts/dropbox_tools.sh
+. "$d_scripts"/dropbox_tools.sh
 
 if is_dropbox_running; then
     action="stop"

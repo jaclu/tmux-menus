@@ -1,5 +1,4 @@
 #!/bin/sh
-#  shellcheck disable=SC2034,SC2154
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -20,16 +19,15 @@ nav_add() {
 #
 #===============================================================
 
-#  Should point to tmux-menux plugin
-D_TM_BASE_PATH="$(dirname "$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")")"
+#  Full path to tmux-menux plugin
+D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$(dirname -- "$0")")")")"
 
-#  Source dialog handling script
-# shellcheck disable=SC1091
+# shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 
+error_msg "THIS IS NOT USED ATM!"
+
 menu_name="Mullvad Select Country"
-req_win_width=28
-req_win_height=9
 
 offset="${1:-0}" #  optional param indicating first item to display
 
@@ -50,7 +48,6 @@ if [ "$offset" -gt 0 ]; then
     nav_add "Back" B "$previous_page"
 fi
 
-#  shellcheck disable=SC2089
 menu_items="'Back to Main menu'  Home  \"$open_menu/main.sh'\" \
     'Back to Mullvad'  Left  \"$open_menu/extras/mullvad.sh'\" \"\" "
 
@@ -62,7 +59,6 @@ if grep -V | grep -q BSD; then
 else
     grep_gnu="-P"
 fi
-# shellcheck disable=SC2248
 countries="$(mullvad relay list | grep -v $grep_gnu '^\t' |
     grep -v '^$' | awk '{printf "%s|",$0}')"
 
@@ -98,7 +94,6 @@ while true; do
     available_keys="$(echo "$available_keys" | cut -c2-)"
 
     #  Add a line to the menu
-    #  shellcheck disable=SC2089
     menu_items="$menu_items '$country' '$key' \
         \"run-shell 'mullvad relay set location $country_code > /dev/null'\""
 
@@ -119,9 +114,8 @@ done
 
 menu_items="$menu_items $nav"
 
-#  shellcheck disable=SC2086,SC2090,SC2154
 echo $menu_items | xargs $TMUX_BIN display-menu \
     -T "#[align=centre] $menu_name " \
-    -x $menu_location_x -y $menu_location_y
+    -x $cfg_mnu_loc_x -y $cfg_mnu_loc_y
 
 ensure_menu_fits_on_screen

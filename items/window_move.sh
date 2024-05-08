@@ -1,5 +1,4 @@
 #!/bin/sh
-#  shellcheck disable=SC2034,SC2154
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -12,7 +11,7 @@
 dynamic_content() {
     # Things that change dependent on various states
 
-    other_pane_is_marked="$($TMUX_BIN display -p '#{?pane_marked_set, ,}')"
+    other_pane_is_marked="$($TMUX_BIN display -p '#{?pane_marked_set,yes,}')"
 
     if [ -n "$other_pane_is_marked" ]; then
         set -- \
@@ -25,10 +24,8 @@ dynamic_content() {
 
 static_content() {
     menu_name="Move Window"
-    req_win_width=40
-    req_win_height=17
 
-    select_location="choose-tree -Gw 'run-shell \"$D_TM_SCRIPTS/relocate_window.sh"
+    select_location="choose-tree -Gw 'run-shell \"$d_scripts/relocate_window.sh"
 
     set -- \
         0.0 M Home "Back to Main menu       <==" main.sh \
@@ -45,7 +42,7 @@ static_content() {
         2.0 C l "Link window to other session" "$select_location W L %%\"'" \
         0.0 C u "Unlink window from this session" "unlink-window" \
         0.0 S \
-        0.0 M H "Help, explaining move & link -->" "$D_TM_ITEMS/help_window_move.sh $current_script"
+        0.0 M H "Help, explaining move & link -->" "$d_items/help_window_move.sh $f_current_script"
 
     menu_generate_part 3 "$@"
 }
@@ -57,7 +54,12 @@ static_content() {
 #===============================================================
 
 #  Full path to tmux-menux plugin
-D_TM_BASE_PATH=$(dirname "$(dirname -- "$(readlink -f -- "$0")")")
+D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
 
-#  Generate and display the menu
+# shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
+
+e="$?"
+if [ "$e" -ne 0 ]; then
+    log_it "><> $current_script exiting [$e]"
+fi

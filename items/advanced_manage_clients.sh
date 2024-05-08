@@ -1,5 +1,4 @@
 #!/bin/sh
-#  shellcheck disable=SC2034
 #
 #   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -10,12 +9,8 @@
 #
 
 static_content() {
-
     menu_name="Client Management"
-    req_win_width=41
-    req_win_height=28
 
-    #  shellcheck disable=SC2154
     set -- \
         2.7 M Home "Back to Main menu        <==" main.sh \
         2.7 M Left "Back to Advanced options <--" advanced.sh \
@@ -42,7 +37,7 @@ static_content() {
         2.7 T "-#[nodim] " \
         2.7 C D "<P>" "choose-client -Z" \
         2.7 S \
-        2.7 M H "Help -->" "$D_TM_ITEMS/help.sh $current_script'"
+        2.7 M H "Help -->" "$d_items/help.sh $f_current_script'"
 
     menu_generate_part 1 "$@"
 }
@@ -54,8 +49,12 @@ static_content() {
 #===============================================================
 
 #  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(dirname "$(cd -- "$(dirname -- "$0")" && pwd)")"
+D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
 
-#  Source dialog handling script
-# shellcheck disable=SC1091
+# shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
+
+e="$?"
+if [ "$e" -ne 0 ]; then
+    log_it "><> $current_script exiting [$e]"
+fi
