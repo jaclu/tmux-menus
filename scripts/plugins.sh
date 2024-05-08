@@ -28,10 +28,7 @@ names=(tpm) # plugin manager
 #
 #  Generate list of plugins defined in config file
 #
-plugins=()
-while IFS= read -r plugin; do
-    plugins+=("$plugin")
-done < <(grep "set -g @plugin" "$TMUX_CONF" | awk '{ print $4 }' | sed 's/"//g')
+plugins=($(grep "set -g @plugin" "$TMUX_CONF" | awk '{ print $4 }' | sed 's/"//g'))
 
 if [[ ${#plugins[@]} -gt 0 ]]; then
     echo "Defined plugins:"
