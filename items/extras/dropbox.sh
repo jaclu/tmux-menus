@@ -10,7 +10,7 @@
 
 dynamic_content() {
     # shellcheck source=scripts/dropbox_tools.sh
-    . "$D_TM_BASE_PATH"/dropbox_tools.sh
+    . "$d_scripts"/dropbox_tools.sh
 
     if is_dropbox_running; then
         tgl_lbl="sTop"
