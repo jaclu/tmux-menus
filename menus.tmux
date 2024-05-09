@@ -67,17 +67,16 @@ D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$0")")"
 #
 #  By printing a NL and date, its easier to keep separate runs apart
 #
-log_it ""
+log_it
 log_it "$(date)"
 tmux_vers_compare 3.0 || log_it "tmux < 3.0 FORCE_WHIPTAIL_MENUS enabled"
 
 cache_validation
 
 params=""
-# -N params cant have spaces in this plugin for rasons...
+# -N params cant have spaces in this plugin for reasons...
 $cfg_use_notes && params="-N plugin:tmux-menus"
 
-# if [ "$cfg_no_prefix" -eq 1 ]; then
 if $cfg_no_prefix; then
     params="$params -n"
     log_it "Menus bound to: $cfg_trigger_key"
