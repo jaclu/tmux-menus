@@ -8,13 +8,6 @@
 #   Handling pane
 #
 
-is_aok_fs() {
-    if [ ! -d /opt/AOK ] || [ ! -d /proc/ish ]; then
-        echo "-"
-        # echo "$(tput setaf 7)"
-    fi
-}
-
 is_avalable() {
     cmd="$1"
     if [ -z "$cmd" ]; then
@@ -33,7 +26,6 @@ static_content() {
 
     set -- \
         0.0 M Left "Back to Main menu  <--" main.sh \
-        0.0 M A "$(is_aok_fs)iSH with AOK FS        -->" "$d_extras"/aok.sh \
         0.0 M D "$(is_avalable dropbox)Dropbox      -->" "$d_extras"/dropbox.sh \
         0.0 M S "$(is_avalable spotify)Spotify      -->" "$d_extras"/spotify.sh \
         0.0 M M "$(is_avalable mullvad)Mullvad VPN  -->" "$d_extras"/mullvad.sh \
