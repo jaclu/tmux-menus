@@ -118,7 +118,7 @@ get_tmux_option() {
     gto_option="$1"
     gto_default="$2"
 
-    [ -z "$gto_option" ] && error_msg "get_tmux_option() param 1 empty!" 1 true
+    [ -z "$gto_option" ] && error_msg "get_tmux_option() param 1 empty!" 0 true
     # shellcheck disable=SC2154
     [ "$TMUX" = "" ] && {
         # this is run standalone, just report the defaults
@@ -163,7 +163,7 @@ normalize_bool_param() {
         #  In this case $2 must be given as the default value!
         #
         [ -z "$2" ] && {
-            error_msg "normalize_bool_param($param) - no default" 1 true
+            error_msg "normalize_bool_param($param) - no default" 0 true
         }
         _variable_name="$param"
         param="$(get_tmux_option "$param" "$2")"
@@ -193,7 +193,7 @@ normalize_bool_param() {
         else
             prefix="$param"
         fi
-        error_msg "$prefix - should be yes/true or no/false" 1 true
+        error_msg "$prefix - should be yes/true or no/false" 0 true
         ;;
 
     esac
@@ -451,7 +451,7 @@ plugin_name="tmux-menus"
 
 log_interactive_to_stderr=false
 
-[ -z "$D_TM_BASE_PATH" ] && error_msg "D_TM_BASE_PATH undefined" 1 true
+[ -z "$D_TM_BASE_PATH" ] && error_msg "D_TM_BASE_PATH undefined" 0 true
 
 #
 #  I use an env var TMUX_BIN to point at the current tmux, defined in my
@@ -476,7 +476,7 @@ f_current_script="$d_current_script/$current_script"
 
 if ! tmux_vers_compare 3.0; then
     if ! tmux_vers_compare "$min_tmux_vers"; then
-        error_msg "need at least tmux $min_tmux_vers to work!" 1 true
+        error_msg "need at least tmux $min_tmux_vers to work!" 0 true
     fi
     FORCE_WHIPTAIL_MENUS=1
 fi

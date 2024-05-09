@@ -23,9 +23,9 @@ _this="change_prefix.sh" # error prone if script name is changed :(
 #
 prefix_char="$1"
 if [ -z "$prefix_char" ]; then
-    error_msg "change_prefix.sh No prefix given!" 1 true
+    error_msg "change_prefix.sh No prefix given!" 0 true
 elif [ "$(printf '%s' "$prefix_char" | wc -m)" -ne 1 ]; then
-    error_msg "Must be exactly one char! Was:[$prefix_char]" 1 true
+    error_msg "Must be exactly one char! Was:[$prefix_char]" 0 true
 fi
 
 prefix="C-${prefix_char}"

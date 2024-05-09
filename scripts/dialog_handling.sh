@@ -40,7 +40,7 @@ debug_print() {
     1) echo "$1" ;;
     2) log_it "$1" ;;
     *)
-        error_msg "$menu_debug state invalid [$menu_debug] shoule be 1 or 2! p1[$1]" 1 true
+        error_msg "$menu_debug state invalid [$menu_debug] shoule be 1 or 2! p1[$1]" 0 true
         ;;
     esac
 }
@@ -67,7 +67,7 @@ ensure_menu_fits_on_screen() {
     disp_time="$(echo "$dh_t_end - $dh_t_start" | bc)"
     log_it "Menu $current_script Display time [$disp_time]"
     if [ "$(echo "$disp_time < 0.5" | bc)" -eq 1 ]; then
-        error_msg "Screen might be too small" 1 true
+        error_msg "Screen might be too small" 0 true
     fi
     unset dh_t_end
     unset disp_time
@@ -625,7 +625,7 @@ handle_menu() {
 
 if [ -z "$D_TM_BASE_PATH" ]; then
     # utils not yet sourced, so error_missing_param() not yet available
-    error_msg "ERROR: dialog_handling.sh - D_TM_BASE_PATH must be set!" 1 true
+    error_msg "ERROR: dialog_handling.sh - D_TM_BASE_PATH must be set!" 0 true
 fi
 
 # Only import if needed
