@@ -65,7 +65,7 @@ ensure_menu_fits_on_screen() {
     dh_t_end="$(safe_now)"
 
     disp_time="$(echo "$dh_t_end - $dh_t_start" | bc)"
-    log_it "Menu $current_script Display time [$disp_time]"
+    log_it "Menu $current_script_no_ext - Display time [$disp_time]"
     if [ "$(echo "$disp_time < 0.5" | bc)" -eq 1 ]; then
         error_msg "Screen might be too small" 0 true
     fi
@@ -457,6 +457,7 @@ menu_parse() {
     # if $cfg_use_cache; then
     if $cfg_use_cache; then
         # clear cache (if present)
+        log_it "Cashing ${current_script_no_ext}-$menu_idx"
         echo "$menu_items" >"$f_cache_file" || error_msg "Failed to write to: $f_cache_file"
     else
         add_uncached_item
@@ -533,7 +534,8 @@ handle_menu() {
         rel_path=$(echo "$d_current_script" | sed "s|$D_TM_BASE_PATH/||")
 
         #  items/main.sh -> items_main
-        d_cache_file="$d_cache/${rel_path}_$(echo "$current_script" | sed 's/\.[^.]*$//')"
+        current_script_no_ext="$(echo "$current_script" | sed 's/\.[^.]*$//')"
+        d_cache_file="$d_cache/${rel_path}_$current_script_no_ext"
 
         [ "$FORCE_WHIPTAIL_MENUS" = 1 ] && d_wt_actions="$d_cache_file/wt_actions"
 
