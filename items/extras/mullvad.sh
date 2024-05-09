@@ -36,7 +36,7 @@ static_content() {
 
     # suffix=" > /dev/null' ; run-shell '$f_current_script'"
 
-    [ -z "$(command -v mullvad)" ] && error_msg "mullvad bin not found!"
+    [ -z "$(command -v mullvad)" ] && error_msg "mullvad bin not found!" 1 true
 
     set -- \
         0.0 M Home "'Back to Main menu  <=='" "$d_items/main.sh" \
