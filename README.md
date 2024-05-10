@@ -13,11 +13,11 @@ experienced users, then add more for newbies.
 <summary>Recent Changes</summary>
 <br>
 
+- Using tmux_error_handler() to capture errors in tmux cmds
 - Fixed Reload Config in Whiptail.
 - Added option to disable caching.
 - Fixed a glitch with dynamic content on some platforms.
 - Moved Paste Buffers to main & public IP to Extras. Checked and updated min sizes
-- Menu 'Missing Keys' limited to tmux >= 2.0
 
 </details>
 <details>
