@@ -88,7 +88,7 @@ tmux_error_handler() {
     #  Detects any errors reported by tmux commands and gives notification
     #
     cmd="$*"
-    log_it "tmux_error_handler($cmd)"
+    # log_it "tmux_error_handler($cmd)"
 
     # only needed during debugging
     # if echo "$cmd" | grep -q "tmux_error_handler"; then

@@ -29,19 +29,21 @@ _this="relocate_window.sh" # error prone if script name is changed :(
 # shellcheck source=scripts/relocate_param_check.sh
 . "$d_scripts"/relocate_param_check.sh
 
-param_check "$@"
+relocate_param_parse "$@"
 
 if [ "$cur_ses" = "$dest_ses" ]; then
-    #
-    #  to same session
-    #
-    # NEEDS TESTING
-    [ "$action" = "L" ] && error_msg "Linking to same session is pointless!"
+    [ "$action" = "L" ] && error_msg \
+        "Linking to same session is pointless!" 0 true
 
-    #
-    #  Move within the current session
-    #
-    $TMUX_BIN move-window -b -t ":${dest_win_idx}"
+    if [ -n "$dest_win_id" ]; then
+        #  move to before selected win
+        _dest="-t :$dest_win_id" # -b
+    else
+        # put it after last window -a
+        _dest="-t :$(tmux_error_handler display-message -p "#{last_window_index}")"
+    fi
+    log_it "dest_win_id[$dest_win_id] _dest[$_dest]"
+    tmux_error_handler move-window "$_dest"
 else
     #
     #  tmux move only works in same session, so we use link & unlink for
