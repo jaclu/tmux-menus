@@ -28,7 +28,7 @@ display_char() {
     if [ "$FORCE_WHIPTAIL_MENUS" != 1 ]; then
         tmux_error_handler send-keys "$c"
     else
-        log_it "setting buffer to '$c'"
+        log_it "adding to buffer: '$c'"
         if tmux_vers_compare 3.2; then
             #
             #  Also make the buffers content available for the normal
@@ -97,8 +97,6 @@ dynamic_content() {
 static_content() {
     menu_name="Missing Keys"
 
-    tmux_vers_compare 2.0 || error_msg "needs tmux 2.0"
-
     set -- \
         0.0 M Left "Back to Main menu <--" main.sh \
         0.0 S
@@ -149,6 +147,11 @@ menu_param="$1"
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
+
+# shellcheck source=scripts/utils.sh
+. "$D_TM_BASE_PATH"/scripts/utils.sh
+
+tmux_vers_compare 2.0 || error_msg "$current_script needs tmux 2.0" 0 true
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
