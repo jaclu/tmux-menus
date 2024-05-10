@@ -634,6 +634,10 @@ fi
 # shellcheck source=scripts/utils.sh
 [ -z "$tmux_vers" ] && . "$D_TM_BASE_PATH"/scripts/utils.sh
 
+[ -z "$TMUX" ] && error_msg "$plugin_name can only be used inside tmux!"
+
+! tmux_vers_compare 3.0 && FORCE_WHIPTAIL_MENUS=1
+
 [ "$FORCE_WHIPTAIL_MENUS" = 1 ] && [ -f "$f_wt_reload_script" ] && {
     #
     #  Delete old reload scripts, they will be created during execution

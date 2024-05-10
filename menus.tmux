@@ -45,7 +45,7 @@ cache_validation
 
 params=""
 # -N params cant have spaces in this plugin for reasons...
-$cfg_use_notes && params="-N plugin:tmux-menus"
+$cfg_use_notes && params="-N plugin:$plugin_name"
 
 if $cfg_no_prefix; then
     params="$params -n"
