@@ -585,6 +585,7 @@ handle_menu() {
     fi
 
     # 4 Display menu
+    echo "$f_current_script" >"$f_last_menu_displayed"
     if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
         menu_selection=$(eval "$menu_items" 3>&2 2>&1 1>&3)
         # echo "selection[$menu_selection]"
@@ -627,7 +628,16 @@ handle_menu() {
 
 if [ -z "$D_TM_BASE_PATH" ]; then
     # utils not yet sourced, so error_missing_param() not yet available
-    error_msg "ERROR: dialog_handling.sh - D_TM_BASE_PATH must be set!" 0 true
+    msg="dialog_handling.sh - D_TM_BASE_PATH must be set!"
+    error_msg "$msg" 0 true || {
+        #
+        #  error_msg is unlikely to work in this condition, but at least
+        #  make an attempt to do a tmux notification
+        #
+        echo
+        echo "ERROR: $msg"
+    }
+    exit 1
 fi
 
 # Only import if needed
@@ -648,10 +658,6 @@ fi
     # log_it "><> Found reload script - deleting it"
     rm -f "$f_wt_reload_script"
 }
-
-[ -z "$TMUX" ] && error_msg "tmux-menus can only be used inside tmux!"
-
-! tmux_vers_compare 3.0 && FORCE_WHIPTAIL_MENUS=1
 
 #
 #  What alternate dialog app to use, if tmux built in dialogs will not
@@ -695,3 +701,4 @@ e="$?"
 if [ "$e" -ne 0 ]; then
     log_it "><> $current_script - dialog_handling - exiting [$e]"
 fi
+# log_it "exiting dialog_handling.sh"
