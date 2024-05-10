@@ -21,14 +21,14 @@ D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
 _this="relocate_pane.sh" # error prone if script name is changed :(
 [ "$current_script" != "$_this" ] && error_msg "$_this should NOT be sourced"
 
-param_check "$@"
+relocate_param_parse "$@"
 
-$TMUX_BIN move-pane -t "${dest_ses}:${dest_win_idx}.${dest_pane_idx}"
+tmux_error_handler move-pane -t "${dest_ses}:${dest_win_id}.${dest_pane_id}"
 
 if [ "$cur_ses" != "$dest_ses" ]; then
     #
     #  When Window / Pane is moved to another session, focus does not
     #  auto-switch, so this manually sets focus.
     #
-    $TMUX_BIN switch-client -t "$dest_ses" # switch focus to new location
+    tmux_error_handler switch-client -t "$dest_ses" # switch focus to new location
 fi

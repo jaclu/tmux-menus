@@ -26,7 +26,7 @@ display_char() {
     c="$1"
     [ -z "$c" ] && error_msg "display_char() - no param"
     if [ "$FORCE_WHIPTAIL_MENUS" != 1 ]; then
-        $TMUX_BIN send-keys "$c"
+        tmux_error_handler send-keys "$c"
     else
         log_it "setting buffer to '$c'"
         if tmux_vers_compare 3.2; then
@@ -34,9 +34,9 @@ display_char() {
             #  Also make the buffers content available for the normal
             #  paste method
             #
-            $TMUX_BIN set-buffer -awb missing_keys "$c"
+            tmux_error_handler set-buffer -awb missing_keys "$c"
         else
-            $TMUX_BIN set-buffer -ab missing_keys "$c"
+            tmux_error_handler set-buffer -ab missing_keys "$c"
         fi
     fi
 }
@@ -86,8 +86,10 @@ dynamic_content() {
         handle_char "$menu_param"
     else
         if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
-            log_it "clearing buffer missing_keys"
-            $TMUX_BIN delete-buffer -b missing_keys
+            if tmux_error_handler list-buffers | grep -q missing_keys; then
+                log_it "clearing buffer missing_keys"
+                tmux_error_handler delete-buffer -b missing_keys
+            fi
         fi
     fi
 }

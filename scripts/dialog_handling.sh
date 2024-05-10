@@ -91,7 +91,7 @@ starting_with_dash() {
 #  tmux 3.0+ built in menu handling using display-menu
 #
 tmux_dialog_prefix() {
-    menu_items="$TMUX_BIN display-menu -T \"#[align=centre] $menu_name \" \
+    menu_items="tmux_error_handler display-menu -T \"#[align=centre] $menu_name \" \
         -x '$cfg_mnu_loc_x' -y '$cfg_mnu_loc_y'"
 }
 
@@ -198,7 +198,7 @@ alt_dialog_command() {
         # log_it "><> alt_dialog_command() - keep set"
         wt_actions="$wt_actions $key_action | $cmd $alt_dialog_action_separator"
     else
-        wt_actions="$wt_actions $key_action | $TMUX_BIN $cmd $alt_dialog_action_separator"
+        wt_actions="$wt_actions $key_action | tmux_error_handler $cmd $alt_dialog_action_separator"
     fi
     unset label
     unset key

@@ -47,24 +47,28 @@ else
     #  tmux move only works in same session, so we use link & unlink for
     #  moving to another session
     #
-    $TMUX_BIN link-window -b -t "$dest_ses:$dest_win_idx" # Create a link to this at destination
+
+    # Create a link to this at destination
+
+    #  link-window  3.1c
+    #  -b 3.2 !3.1c
+    #  -t 2.7
+    tmux_error_handler link-window -b -t "$dest_ses:$dest_win_id"
     if [ "$action" != "L" ]; then
         #
         # Unlink window at current location, ie get rid of original instance
         # And re-indix previous session
         #
-        $TMUX_BIN unlink-window
+        tmux_error_handler unlink-window
     fi
     #
     #  When Window / Pane is moved to another session, focus does not
     #  auto-switch, so this manually sets focus.
     #
-    $TMUX_BIN switch-client -t "$dest_ses" # switch focus to new location
+    # switch-client
+    tmux_error_handler switch-client -t "$dest_ses"
 fi
 
-if [ -z "$dest_win_idx" ]; then
-    #
-    # No dest windows idx given, assume it should go last
-    #
-    $TMUX_BIN move-window -t 999
-fi
+# re-open last menu
+log_it "reloading last menu: $(cat "$f_last_menu_displayed")"
+eval cat "$f_last_menu_displayed"

@@ -64,7 +64,7 @@ fi
 
 if [ -n "$params" ]; then
     # works sans -N spaces
-    $TMUX_BIN bind-key "$params" "$cfg_trigger_key" run-shell "$cmd"
+    tmux_error_handler bind-key "$params" "$cfg_trigger_key" run-shell "$cmd"
 else
-    $TMUX_BIN bind-key "$cfg_trigger_key" run-shell "$cmd"
+    tmux_error_handler bind-key "$cfg_trigger_key" run-shell "$cmd"
 fi

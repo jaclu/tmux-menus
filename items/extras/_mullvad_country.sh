@@ -31,7 +31,7 @@ menu_name="Mullvad Select Country"
 
 offset="${1:-0}" #  optional param indicating first item to display
 
-lines="$($TMUX_BIN display -p '#{window_height}')"
+lines="$(tmux_error_handler display -p '#{window_height}')"
 display_items=$((lines - 7))
 max_item=$((offset + display_items))
 
@@ -114,7 +114,7 @@ done
 
 menu_items="$menu_items $nav"
 
-echo $menu_items | xargs $TMUX_BIN display-menu \
+echo $menu_items | xargs tmux_error_handler display-menu \
     -T "#[align=centre] $menu_name " \
     -x $cfg_mnu_loc_x -y $cfg_mnu_loc_y
 

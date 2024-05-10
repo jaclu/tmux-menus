@@ -11,7 +11,7 @@
 dynamic_content() {
     # Things that change dependent on various states
 
-    if $TMUX_BIN display-message -p '#{pane_marked_set}' | grep -q '1'; then
+    if tmux_error_handler display-message -p '#{pane_marked_set}' | grep -q '1'; then
         set -- \
             2.1 C s " Swap current pane with marked" "swap-pane $menu_reload"
     else

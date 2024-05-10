@@ -70,7 +70,7 @@ param_check() {
         error_msg "param_check() - no destination param (\$3) given!"
     fi
 
-    cur_ses="$($TMUX_BIN display-message -p '#S')"
+    cur_ses="$(tmux_error_handler display-message -p '#S')"
     dest="${raw_dest#*=}"  # skipping initial =
     dest_ses="${dest%%:*}" # up to first colon excluding it
 

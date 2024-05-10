@@ -42,13 +42,39 @@ error_msg() {
         log_it
         log_it "$msg"
         log_it
+
+        #  display-message filters out \n
+        msg="$(echo "$msg" | tr '\n' ' ')"
+
         $do_display_message && display_message_hold "$plugin_name $msg"
     fi
-    [ "$exit_code" -gt 0 ] && exit "$exit_code"
+    [ "$exit_code" -gt -1 ] && exit "$exit_code"
 
     unset msg
     unset exit_code
     unset do_display_message
+}
+
+display_message_hold() {
+    #
+    #  Display a message and hold until key-press
+    #  Can't use tmux_error_handler in this func, since that could
+    #  trigger recursion
+    #
+    msg="$1"
+
+    if tmux_vers_compare 3.2; then
+        $TMUX_BIN display-message -d 0 "$msg"
+    else
+        # Manually make the error msg stay on screen a long time
+        org_display_time="$($TMUX_BIN show-option -gv display-time)"
+        $TMUX_BIN set -g display-time 120000 >/dev/null
+        $TMUX_BIN display-message "$msg"
+
+        posix_get_char >/dev/null # wait for keypress
+        $TMUX_BIN set -g display-time "$org_display_time" >/dev/null
+        unset org_display_time
+    fi
 }
 
 #---------------------------------------------------------------
@@ -56,6 +82,43 @@ error_msg() {
 #   tmux env handling
 #
 #---------------------------------------------------------------
+
+tmux_error_handler() {
+    #
+    #  Detects any errors reported by tmux commands and gives notification
+    #
+    cmd="$*"
+    log_it "tmux_error_handler($cmd)"
+
+    # only needed during debugging
+    # if echo "$cmd" | grep -q "tmux_error_handler"; then
+    #     error_msg "Recursive call to tmux_error_handler()" 0 true
+    # fi
+
+    mkdir -p "$d_cache"
+    f_tmux_err="$d_cache"/tmux-err
+
+    $TMUX_BIN "$@" 2>"$f_tmux_err"
+
+    [ -s "$f_tmux_err" ] && {
+        #
+        #  First save the error to a n
+        idx=1
+        _f="${f_tmux_err}-$idx"
+        while [ -f "$_f" ]; do
+            idx=$((idx + 1))
+            _f="${f_tmux_err}-$idx"
+            [ "$idx" -gt 1000 ] && {
+                error_msg "Aborting runaway loop - idx=$idx"
+            }
+        done
+        log_it "saved error to: [$_f]"
+        mv "$f_tmux_err" "$_f"
+        error_msg "$(cat "$_f")" 0 true
+    }
+    rm -f "$f_tmux_err" # remove if no error
+    return 0
+}
 
 tmux_vers_compare() {
     #
@@ -94,29 +157,11 @@ tmux_vers_compare() {
     return "$tvc_rslt"
 }
 
-display_message_hold() {
-    #
-    #  display a message and hold until key-press
-    #
-    msg="$1"
-
-    if tmux_vers_compare 3.2; then
-        $TMUX_BIN display-message -d 0 "$msg"
-    else
-        # Manually make the error msg stay on screen a long time
-        org_display_time="$($TMUX_BIN show-option -gv display-time)"
-        $TMUX_BIN set -g display-time 120000 >/dev/null
-        $TMUX_BIN display-message "$msg"
-
-        posix_get_char >/dev/null # wait for keypress
-        $TMUX_BIN set -g display-time "$org_display_time" >/dev/null
-        unset org_display_time
-    fi
-}
-
 get_tmux_option() {
     gto_option="$1"
     gto_default="$2"
+
+    # log_it "get_tmux_option($gto_option, $gto_default)"
 
     [ -z "$gto_option" ] && error_msg "get_tmux_option() param 1 empty!" 0 true
     # shellcheck disable=SC2154
@@ -127,7 +172,7 @@ get_tmux_option() {
     }
 
     if tmux_vers_compare 1.8; then
-        gto_value="$($TMUX_BIN show-option -gqv "$gto_option")"
+        gto_value="$(tmux_error_handler show-option -gqv "$gto_option")"
     else
         # pre 1.8 user variables cant be read
         gto_value=""
@@ -155,6 +200,7 @@ normalize_bool_param() {
 
     param="$1"
     _variable_name=""
+    # log_it "normalize_bool_param($param, $2)"
 
     [ "${param%"${param#?}"}" = "@" ] && {
         #
@@ -428,6 +474,41 @@ posix_get_char() {
     unset old_stty_cfg
 }
 
+extract_char() {
+    str="$1"
+    pos="$2"
+    printf '%s\n' "$str" | cut -c "$pos"
+    unset str
+    unset pos
+}
+
+lowercase_it() {
+    echo "$1" | tr '[:upper:]' '[:lower:]'
+}
+
+#---------------------------------------------------------------
+#
+#   Other
+#
+#---------------------------------------------------------------
+
+safe_now() {
+    #
+    #  MacOS date only counts whole seconds, if gdate (GNU-date) is
+    #  installed, it can  display times with more precission
+    #
+    if [ "$(uname)" = "Darwin" ]; then
+        if [ -n "$(command -v gdate)" ]; then
+            gdate +%s.%N
+        else
+            date +%s
+        fi
+    else
+        #  On Linux the native date suports sub second precission
+        date +%s.%N
+    fi
+}
+
 wait_to_close_display() {
     #
     #  When a menu item writes to stdout, unfortunately how to close
@@ -484,8 +565,8 @@ current_script="$(basename "$0")" # name without path
 #
 #  Convert script name to full actual path notation the path is used
 #  for caching, so save it to a variable as well
-#
-d_current_script="$(cd -- "$(dirname -- "$0")" && pwd)"
+
+d_current_script="$(realpath -- "$(dirname -- "$0")")"
 f_current_script="$d_current_script/$current_script"
 
 if ! tmux_vers_compare 3.0; then
@@ -514,6 +595,13 @@ else
     menu_reload="; run-shell \"$f_current_script\""
     reload_in_runshell=" ; $f_current_script"
 fi
+
+#
+#  in some cases, like Move Window, the menu is exited
+#  during destination selection.
+#  This hint can be used to re-start the last one displayed
+#
+f_last_menu_displayed="$d_cache/last_menu_displayed"
 
 #
 #  The plugin init script checks this at startup

@@ -42,7 +42,7 @@ static_content() {
         #  default handling that works in all simpler cases
         #
         rld_cmd="echo $f_current_script > $f_wt_reload_script ;  \
-            $TMUX_BIN command-prompt -I '$cfg_tmux_conf' -p 'Source file:' \
+            tmux_error_handler command-prompt -I '$cfg_tmux_conf' -p 'Source file:' \
             'run-shell \"$d_scripts/reload_conf.sh %% >/dev/null\"'"
     else
         rld_cmd="command-prompt -I '$cfg_tmux_conf' -p 'Source file:' \

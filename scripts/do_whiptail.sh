@@ -39,6 +39,6 @@ _this="do_whiptail.sh" # error prone if script name is changed :(
 #  where the menu is run
 #
 
-$TMUX_BIN send-keys C-z "$d_items/main.sh ; fg" Enter
+tmux_error_handler send-keys C-z "$d_items/main.sh ; fg" Enter
 
-#$TMUX_BIN send-keys C-z $d_items/main.sh ' [ -n "$(jobs)" ] && fg ' Enter
+#tmux_error_handler send-keys C-z $d_items/main.sh ' [ -n "$(jobs)" ] && fg ' Enter

@@ -18,11 +18,11 @@ D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
 _this="kill_other_windows.sh" # error prone if script name is changed :(
 [ "$current_script" != "$_this" ] && error_msg "$_this should NOT be sourced"
 
-window_list="$(IFS=" " $TMUX_BIN list-windows -F '#{window_id}')"
-current_window="$($TMUX_BIN display-message -p '#{window_id}')"
+window_list="$(IFS=" " tmux_error_handler list-windows -F '#{window_id}')"
+current_window="$(tmux_error_handler display-message -p '#{window_id}')"
 
 for w in $window_list; do
     if [ "$w" != "$current_window" ]; then
-        $TMUX_BIN kill-window -t "$w"
+        tmux_error_handler kill-window -t "$w"
     fi
 done

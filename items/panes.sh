@@ -11,11 +11,11 @@
 dynamic_content() {
     # Things that change dependent on various states
 
-    new_mark_state="$($TMUX_BIN display -p '#{?pane_marked,Unmark,Mark}')"
-    new_sync_state="$($TMUX_BIN display -p '#{?pane_synchronized,Disable,Activate}')"
+    new_mark_state="$(tmux_error_handler display -p '#{?pane_marked,Unmark,Mark}')"
+    new_sync_state="$(tmux_error_handler display -p '#{?pane_synchronized,Disable,Activate}')"
 
     # dynamic -2
-    if [ "$($TMUX_BIN display -p '#{window_zoomed_flag}')" -eq 0 ]; then
+    if [ "$(tmux_error_handler display -p '#{window_zoomed_flag}')" -eq 0 ]; then
         zoom_action="Zoom"
     else
         zoom_action="Un-Zoom"
