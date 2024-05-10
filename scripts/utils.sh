@@ -202,48 +202,6 @@ normalize_bool_param() {
     return 2
 }
 
-get_plugin_params() {
-    #
-    #  Generic plugin setting I use to add Notes to keys that are bound
-    #  This makes this key binding show up when doing <prefix> ?
-    #  If not set to "Yes", no attempt at adding notes will happen
-    #  bind-key Notes were added in tmux 3.1, so should not be used on
-    #  older versions!
-    #
-    get_defaults
-
-    cfg_trigger_key=$(get_tmux_option "@menus_trigger" "$default_trigger_key")
-    normalize_bool_param "@menus_without_prefix" "$default_no_prefix" &&
-        cfg_no_prefix=true || cfg_no_prefix=false
-    normalize_bool_param "@menus_use_cache" "$default_use_cache" &&
-        cfg_use_cache=true || cfg_use_cache=false
-    cfg_log_file="$(get_tmux_option "@menus_log_file" "$default_log_file")"
-    cfg_tmux_conf="$(get_tmux_option "@menus_config_file" "$default_tmux_conf")"
-    cfg_mnu_loc_x="$(get_tmux_option "@menus_location_x" "$default_location_x")"
-    cfg_mnu_loc_y="$(get_tmux_option "@menus_location_y" "$default_location_y")"
-
-    #
-    #  Generic plugin setting I use to add Notes to keys that are bound
-    #  This makes this key binding show up when doing <prefix> ?
-    #  If not set to "Yes", no attempt at adding notes will happen
-    #  bind-key Notes were added in tmux 3.1, so should not be used on
-    #  older versions!
-    #
-    if tmux_vers_compare 3.1 && normalize_bool_param "@use_bind_key_notes_in_plugins" No; then
-        cfg_use_notes=true
-    else
-        cfg_use_notes=false
-    fi
-}
-
-extract_char() {
-    str="$1"
-    pos="$2"
-    printf '%s\n' "$str" | cut -c "$pos"
-    unset str
-    unset pos
-}
-
 escape_tmux_special_chars() {
     s_buffer="$1"
     escaped_str=""
@@ -289,94 +247,6 @@ escape_tmux_special_chars() {
     printf '%s\n' "$escaped_str"
 }
 
-#---------------------------------------------------------------
-#
-#   cache handling
-#
-#---------------------------------------------------------------
-
-param_cache_write() {
-    f_conf_file="${1:-$f_param_cache}"
-    # echo "><> param_cache_write($f_conf_file)"
-    mkdir -p "$d_cache"
-
-    #region conf file
-    cat <<EOF >"$f_conf_file"
-#!/bin/sh
-# Always sourced file - Fake bang path to help editors
-cfg_trigger_key="$(escape_tmux_special_chars "$cfg_trigger_key")"
-cfg_no_prefix="$cfg_no_prefix"
-cfg_mnu_loc_x="$cfg_mnu_loc_x"
-cfg_mnu_loc_y="$cfg_mnu_loc_y"
-cfg_use_cache="$cfg_use_cache"
-cfg_tmux_conf="$cfg_tmux_conf"
-cfg_log_file="$cfg_log_file"
-
-cfg_use_notes="$cfg_use_notes"
-EOF
-    #endregion
-}
-
-generate_param_cache() {
-    get_plugin_params
-
-    # echo "orig: [$cfg_trigger_key]"
-    # echo "escaped: [$(escape_tmux_special_chars "$cfg_trigger_key")]"
-
-    f_params_new="$f_param_cache".new
-    param_cache_write "$f_params_new"
-
-    if cmp -s "$f_params_new" "$f_param_cache"; then
-        rm -f "$f_params_new"
-    else
-        # echo "><> renaming $(basename "$f_params_new") > $(basename "$f_param_cache")"
-        mv "$f_params_new" "$f_param_cache"
-    fi
-    unset f_params_new
-}
-
-get_config() {
-    #
-    #  The plugin init .tmux script should NOT call this!
-    #
-    #  It should instead direcly call generate_param_cache to ensure
-    #  the cached configs match current tmux env
-    #
-    #  Calls to this trusts the param cache to be valid if found
-    #
-    [ -s "$f_param_cache" ] || generate_param_cache
-
-    # shellcheck source=/dev/null
-    . "$f_param_cache"
-}
-
-#---------------------------------------------------------------
-#
-#   Other
-#
-#---------------------------------------------------------------
-
-lowercase_it() {
-    echo "$1" | tr '[:upper:]' '[:lower:]'
-}
-
-safe_now() {
-    #
-    #  MacOS date only counts whole seconds, if gdate (GNU-date) is
-    #  installed, it can  display times with more precission
-    #
-    if [ "$(uname)" = "Darwin" ]; then
-        if [ -n "$(command -v gdate)" ]; then
-            gdate +%s.%N
-        else
-            date +%s
-        fi
-    else
-        #  On Linux the native date suports sub second precission
-        date +%s.%N
-    fi
-}
-
 get_defaults() {
     #
     #  Defaults for plugin params
@@ -404,6 +274,146 @@ get_defaults() {
 
     default_log_file=""
 }
+
+get_plugin_params() {
+    # log_it "get_plugin_params()"
+
+    #
+    #  Generic plugin setting I use to add Notes to keys that are bound
+    #  This makes this key binding show up when doing <prefix> ?
+    #  If not set to "Yes", no attempt at adding notes will happen
+    #  bind-key Notes were added in tmux 3.1, so should not be used on
+    #  older versions!
+    #
+    get_defaults
+
+    cfg_trigger_key=$(get_tmux_option "@menus_trigger" "$default_trigger_key")
+    normalize_bool_param "@menus_without_prefix" "$default_no_prefix" &&
+        cfg_no_prefix=true || cfg_no_prefix=false
+    normalize_bool_param "@menus_use_cache" "$default_use_cache" &&
+        cfg_use_cache=true || cfg_use_cache=false
+    cfg_mnu_loc_x="$(get_tmux_option "@menus_location_x" "$default_location_x")"
+    cfg_mnu_loc_y="$(get_tmux_option "@menus_location_y" "$default_location_y")"
+    cfg_tmux_conf="$(get_tmux_option "@menus_config_file" "$default_tmux_conf")"
+    cfg_log_file="$(get_tmux_option "@menus_log_file" "$default_log_file")"
+
+    #
+    #  Generic plugin setting I use to add Notes to keys that are bound
+    #  This makes this key binding show up when doing <prefix> ?
+    #  If not set to "Yes", no attempt at adding notes will happen
+    #  bind-key Notes were added in tmux 3.1, so should not be used on
+    #  older versions!
+    #
+    if tmux_vers_compare 3.1 && normalize_bool_param "@use_bind_key_notes_in_plugins" No; then
+        cfg_use_notes=true
+    else
+        cfg_use_notes=false
+    fi
+}
+
+#---------------------------------------------------------------
+#
+#   cache handling
+#
+#---------------------------------------------------------------
+
+param_cache_write() {
+    # log_it "param_cache_write()"
+    mkdir -p "$d_cache"
+
+    #region param cache file
+    cat <<EOF >"$f_param_cache"
+#!/bin/sh
+# Always sourced file - Fake bang path to help editors
+cfg_trigger_key="$(escape_tmux_special_chars "$cfg_trigger_key")"
+cfg_no_prefix="$cfg_no_prefix"
+cfg_use_cache="$cfg_use_cache"
+cfg_mnu_loc_x="$cfg_mnu_loc_x"
+cfg_mnu_loc_y="$cfg_mnu_loc_y"
+cfg_tmux_conf="$cfg_tmux_conf"
+
+cfg_log_file="$cfg_log_file"
+cfg_use_notes="$cfg_use_notes"
+EOF
+    #endregion
+}
+
+generate_param_cache() {
+    # log_it "generate_param_cache()"
+    get_plugin_params
+    param_cache_write
+}
+
+clear_cache() {
+    #
+    #  Create and tag cachedir with current tmux version
+    #
+    log_it "clear_cache() - $1"
+
+    rm -rf "$d_cache"
+    mkdir -p "$d_cache"
+    echo "$tmux_vers" >"$f_cached_tmux"
+    [ "$FORCE_WHIPTAIL_MENUS" = 1 ] && touch "$d_cache"/using-whiptail
+}
+
+cache_validation() {
+    #
+    #  Clear (and recreate) cache if it was not created with current
+    #  tmux version and WHIPTAIL settings
+    #
+    #  If there was no cache, sourcing utils will have created a minimal
+    #  one with just config params, this one will be disgarded as unidentified
+    #
+    # log_it "cache_validation()"
+
+    if [ -s "$f_cached_tmux" ]; then
+        tmux_vers_in_cache="$(cat "$f_cached_tmux")"
+        [ "$tmux_vers" != "$tmux_vers_in_cache" ] && {
+            clear_cache \
+                "Was made for tmux: $tmux_vers_in_cache now using: $tmux_vers"
+        }
+        [ -f "$d_cache"/using-whiptail ] &&
+            was_whiptail=true || was_whiptail=false
+
+        if $was_whiptail && [ "$FORCE_WHIPTAIL_MENUS" != 1 ]; then
+            clear_cache "No longer using whiptail"
+        elif ! $was_whiptail && [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+            clear_cache "Now using whiptail"
+        fi
+
+    else
+        clear_cache "failed to verify"
+    fi
+
+    # Ensure param cache is current
+    generate_param_cache
+}
+
+get_config() {
+    #
+    #  The plugin init .tmux script should NOT depend on this!
+    #
+    #  It should instead direcly call cache_validation to ensure
+    #  the cached configs match current tmux configuration
+    #
+    #  This is used by everything else sourcing utils.sh, then trusting
+    #  that the param cache is valid if found
+    #
+    # log_it "get_config()"
+    if [ ! -s "$f_param_cache" ]; then
+        # param_cache missing, dont trust current cache, replace it
+        cache_validation
+    fi
+
+    # shellcheck source=/dev/null
+    . "$f_param_cache"
+}
+
+#---------------------------------------------------------------
+#
+#   Handling of specific data types
+#
+#---------------------------------------------------------------
 
 posix_get_char() {
     #
@@ -445,9 +455,13 @@ plugin_name="tmux-menus"
 
 #
 #  Setting a cfg_log_file here only makes a difference until get_config
-#  is called at the end of this script, this setting will then be overridden.
+#  has been called at the end of this script the first time this is run
+#  in a new tmux session, after wich this setting will be overridden.
 #
-# cfg_log_file="$HOME/tmp/$plugin_name.log"
+#  So only useful to debug the early setup of the environment.
+#  For all normal cases it's enough to rely on @menus_log_file
+#
+cfg_log_file=~/tmp/$plugin_name-t2.log
 
 log_interactive_to_stderr=false
 
@@ -485,8 +499,8 @@ fi
 #  Define variables that can be used as suffix on commands in dialog
 #  items, to reload the same menu
 #
+d_cache="$D_TM_BASE_PATH"/cache
 if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
-    d_cache="$D_TM_BASE_PATH"/cache/whiptail
     menu_reload="; $f_current_script"
     #
     #  in whiptail run-shell cant chain to another menu, so instead
@@ -497,7 +511,6 @@ if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
     reload_in_runshell=" ; echo $f_current_script > $f_wt_reload_script"
 
 else
-    d_cache="$D_TM_BASE_PATH"/cache
     menu_reload="; run-shell \"$f_current_script\""
     reload_in_runshell=" ; $f_current_script"
 fi

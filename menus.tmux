@@ -23,36 +23,6 @@
 #  for the plugin, not using soft-links to the same folder!
 #
 
-clear_cache() {
-    #
-    #  Create and tag cachedir with current tmux version
-    #
-    # log_it "><> clear_cache()"
-    log_it "$1" # log msg
-
-    rm -rf "$d_cache"
-    mkdir -p "$d_cache"
-    generate_param_cache
-    echo "$tmux_vers" >"$f_cached_tmux"
-}
-
-cache_validation() {
-    #
-    #  Clear (and recreate) cache if it was not created with current
-    #  tmux version
-    #
-    # log_it "><> cache_validation()"
-    if [ -s "$f_cached_tmux" ]; then
-        tmux_vers_in_cache="$(cat "$f_cached_tmux")"
-        [ "$tmux_vers" = "$tmux_vers_in_cache" ] || {
-            clear_cache \
-                "Clearing incompatible cache for tmux $tmux_vers_in_cache"
-        }
-    else
-        clear_cache "Clearing unidentified cache"
-    fi
-}
-
 #===============================================================
 #
 #   Main
