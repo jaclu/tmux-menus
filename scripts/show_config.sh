@@ -42,10 +42,9 @@ echo "---------------------- -------  -----"
 show_item @menus_trigger "$cfg_trigger_key" "$default_trigger_key"
 show_item @menus_without_prefix "$cfg_no_prefix" "$default_no_prefix"
 show_item @menus_use_cache "$cfg_use_cache" "$default_use_cache"
-# show_item cfg_log_file "$cfg_log_file" "$default_log_file"
-show_item @menus_config_file "$cfg_tmux_conf" "$default_tmux_conf"
 show_item @menus_location_x "$cfg_mnu_loc_x" "$default_location_x"
 show_item @menus_location_y "$cfg_mnu_loc_y" "$default_location_y"
+show_item @menus_config_file "$cfg_tmux_conf" "$default_tmux_conf"
 
 [ -n "$cfg_log_file" ] && {
     echo
