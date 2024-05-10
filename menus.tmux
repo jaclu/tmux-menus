@@ -39,32 +39,35 @@ D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$0")")"
 #
 log_it
 log_it "$(date)"
-tmux_vers_compare 3.0 || log_it "tmux < 3.0 FORCE_WHIPTAIL_MENUS enabled"
 
+#
+# Update every time  plugin is initiated to ensure changes
+# to variables in tmux conf is picked up and used
+#
 cache_validation
 
-params=""
-# -N params cant have spaces in this plugin for reasons...
-$cfg_use_notes && params="-N plugin:$plugin_name"
-
-if $cfg_no_prefix; then
-    params="$params -n"
-    log_it "Menus bound to: $cfg_trigger_key"
-else
-    log_it "Menus bound to: <prefix> $cfg_trigger_key"
-fi
 if tmux_vers_compare 3.0 && [ "$FORCE_WHIPTAIL_MENUS" != "1" ]; then
     cmd="$d_items/main.sh"
 else
-    if [ -z "$(command -v whiptail)" ]; then
-        error_msg "whiptail is not installed!" 1
-    fi
+    [ -z "$(command -v whiptail)" ] && {
+        error_msg "whiptail is not installed!" 0 true
+    }
     cmd="$d_scripts/do_whiptail.sh"
+    log_it "whiptail will be used"
 fi
 
-if [ -n "$params" ]; then
-    # works sans -N spaces
-    tmux_error_handler bind-key "$params" "$cfg_trigger_key" run-shell "$cmd"
+# have to use "set --"" in order to send the selected params to tmux
+set --
+$cfg_use_notes && {
+    set -- "$@" -N "plugin:$plugin_name trigger"
+}
+
+if $cfg_no_prefix; then
+    set -- "$@" -n
+    trigger_sequence="Menus bound to: $cfg_trigger_key"
 else
-    tmux_error_handler bind-key "$cfg_trigger_key" run-shell "$cmd"
+    trigger_sequence="Menus bound to: <prefix> $cfg_trigger_key"
 fi
+
+tmux_error_handler bind-key "$@" "$cfg_trigger_key" run-shell "$cmd"
+log_it "$trigger_sequence"
