@@ -34,11 +34,6 @@ _this="do_whiptail.sh" # error prone if script name is changed :(
 [ "$current_script" != "$_this" ] && error_msg "$_this should NOT be sourced"
 
 #
-#  This is run from the tmux env, so FORCE_WHIPTAIL_MENUS can not be
-#  forced on here, or I guess it could, but it would not modify the env
-#  where the menu is run
+#  Background the current task, launch the menu, then resume the task.
 #
-
 tmux_error_handler send-keys C-z "$d_items/main.sh ; fg" Enter
-
-#tmux_error_handler send-keys C-z $d_items/main.sh ' [ -n "$(jobs)" ] && fg ' Enter
