@@ -22,12 +22,15 @@ else
     plugins_dir="$HOME/tmux/plugins"
 fi
 
-names=(tpm) # plugin manager
+plugins=()      # plugins mentioned in config file
+d_plugins=(tpm) # folders expected to be in plugins folders
 
 #
 #  Generate list of plugins defined in config file
 #
-plugins=("$(grep "set -g @plugin" "$TMUX_CONF" | awk '{ print $4 }' | sed 's/"//g')")
+
+# Read the output of the pipeline into an array
+mapfile -t plugins < <(grep "set -g @plugin" "$TMUX_CONF" | awk '{ print $4 }' | sed 's/"//g')
 
 if [[ ${#plugins[@]} -gt 0 ]]; then
     echo "Defined plugins:"
@@ -41,7 +44,7 @@ fi
 plugin_missing=false
 for plugin in "${plugins[@]}"; do
     name="$(echo "$plugin" | cut -d/ -f2)"
-    names+=("$name") # add item supposed to be in plugins dir
+    d_plugins+=("$name") # add item supposed to be in plugins dir
     if [[ -d "$plugins_dir/$name" ]]; then
         echo "    $plugin"
     else
@@ -57,8 +60,7 @@ undefined_item=false
 echo
 for file in "$plugins_dir"/*; do
     item="$(echo "$file" | sed s/'plugins'/\|/ | cut -d'|' -f2 | sed s/.//)"
-    # if [[ ! " ${names[*]} " =~ " ${item} " ]]; then
-    if [[ ! ${names[*]} =~ ${item} ]]; then
+    if [[ ! ${d_plugins[*]} =~ ${item} ]]; then
         # whatever you want to do when array doesn't contain value
         echo "Undefined item: $plugins_dir/$item"
         undefined_item=true
@@ -66,26 +68,36 @@ for file in "$plugins_dir"/*; do
 done
 
 if $plugin_missing; then
+    echo
     if [[ -d "$plugins_dir/tpm" ]]; then
         echo "You can install plugins listed as NOT INSTALLED with <prefix> I"
-        echo
+    else
+        echo "Follow the plugins instruction for manual install, and"
+        echo "save it into: $plugins_dir"
     fi
 fi
 
 if $undefined_item; then
+    echo
     if [[ -d "$plugins_dir/tpm" ]]; then
         echo "You can remove undefined items with <prefix> M-u"
-        echo
+    else
+        echo "Please manually remove the listed items"
     fi
 fi
+echo
 
-[[ -t 0 ]] || {
-    # not from command-line, ie most likely called from the menus
-    #  shellcheck disable=SC2154
-    if [[ "$FORCE_WHIPTAIL_MENUS" = 1 ]]; then
-        echo "Press <Enter> to clear this output"
-        read -r _
-    else
+#  shellcheck disable=SC2009,SC2154  #  pgrep does not provide the command line
+if ps -x "$PPID" | grep -q tmux-menus && [[ "$FORCE_WHIPTAIL_MENUS" = 1 ]]; then
+    #  called using whiptail menus
+    echo "Press <Enter> to clear this output"
+    read -r _
+else
+    if [[ ! -t 0 ]]; then
+        #
+        #  Not from command-line, ie most likely called from the menus.
+        #  Menu is already closed, so we can't check PPID or similar
+        #
         echo "Press <Escape> to clear this output"
     fi
-}
+fi
