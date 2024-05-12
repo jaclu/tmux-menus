@@ -1,7 +1,7 @@
 #!/bin/sh
 # This is sourced. Fake bang-path to help editors and linters
 #
-#   Copyright (c) 2023: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2023-2024: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
