@@ -701,4 +701,5 @@ e="$?"
 if [ "$e" -ne 0 ]; then
     log_it "><> $current_script - dialog_handling - exiting [$e]"
 fi
-# log_it "exiting dialog_handling.sh"
+
+# log_it "[$(safe_now)] exiting dialog_handling.sh"
