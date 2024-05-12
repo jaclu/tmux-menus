@@ -5,45 +5,50 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
+#  Can be used independant of tmux-menus
+#
 
 _this="plugins.sh" # error prone if script name is changed :(
-[[ "$(basename "$0")" != "$_this" ]] && error_msg "$_this should NOT be sourced"
+[[ "$(basename "$0")" != "$_this" ]] && {
+    error_msg "$_this should NOT be sourced"
+}
 
 [[ -n "$TMUX" ]] || {
     echo "ERROR: This expects to run inside a tmux session!"
     exit 1
 }
 
-echo
-
-#  shellcheck disable=SC2154
-if [[ "$TMUX_CONF" = "$HOME/.tmux.conf" ]]; then
-    plugins_dir="$HOME/.tmux/plugins"
-else
+if [[ -n "$TMUX_CONF" ]]; then
     plugins_dir="$(dirname "$TMUX_CONF")/plugins"
+elif [[ -n "$XDG_CONFIG_HOME" ]]; then
+    plugins_dir="$(dirname "$XDG_CONFIG_HOME")/tmux/plugins"
+else
+    plugins_dir="$HOME/tmux/plugins"
 fi
 
-names=(tpm) # plugin manager
+defined_plugins=() #  plugins mentioned in config file
+valid_items=(tpm)  # additional folders expected to be in plugins folders
+d_tpm="$plugins_dir"/tpm
 
 #
 #  Generate list of plugins defined in config file
 #
-plugins=("$(grep "set -g @plugin" "$TMUX_CONF" | awk '{ print $4 }' | sed 's/"//g')")
+mapfile -t defined_plugins < <(grep "set -g @plugin" "$TMUX_CONF" |
+    awk '{ print $4 }' | sed 's/"//g')
 
-if [[ ${#plugins[@]} -gt 0 ]]; then
+if [[ ${#defined_plugins[@]} -gt 0 ]]; then
     echo "Defined plugins:"
 else
     echo "No plugins defined"
 fi
-
 #
 #  Check if they are installed or not
 #
 plugin_missing=false
-for plugin in "${plugins[@]}"; do
-    name="$(echo "$plugin" | cut -d/ -f2)"
-    names+=("$name") # add item supposed to be in plugins dir
-    if [[ -d "$plugins_dir/$name" ]]; then
+for plugin in "${defined_plugins[@]}"; do
+    d_name="$(echo "$plugin" | cut -d/ -f2)"
+    valid_items+=("$d_name") # add item supposed to be in plugins dir
+    if [[ -d "$plugins_dir/$d_name" ]]; then
         echo "    $plugin"
     else
         echo "NOT INSTALLED: $plugin"
@@ -58,8 +63,7 @@ undefined_item=false
 echo
 for file in "$plugins_dir"/*; do
     item="$(echo "$file" | sed s/'plugins'/\|/ | cut -d'|' -f2 | sed s/.//)"
-    # if [[ ! " ${names[*]} " =~ " ${item} " ]]; then
-    if [[ ! ${names[*]} =~ ${item} ]]; then
+    if [[ ! ${valid_items[*]} =~ ${item} ]]; then
         # whatever you want to do when array doesn't contain value
         echo "Undefined item: $plugins_dir/$item"
         undefined_item=true
@@ -67,26 +71,39 @@ for file in "$plugins_dir"/*; do
 done
 
 if $plugin_missing; then
-    if [[ -d "$plugins_dir/tpm" ]]; then
+    echo
+    if [[ -d "$d_tpm" ]]; then
         echo "You can install plugins listed as NOT INSTALLED with <prefix> I"
-        echo
+    else
+        echo "Follow the plugins instruction for manual install, and"
+        echo "save it into: $plugins_dir"
     fi
 fi
 
 if $undefined_item; then
-    if [[ -d "$plugins_dir/tpm" ]]; then
+    echo
+    if [[ -d "$d_tpm" ]]; then
         echo "You can remove undefined items with <prefix> M-u"
-        echo
+    else
+        echo "Please manually remove the listed items"
     fi
 fi
+echo
 
-[[ -t 0 ]] || {
-    # not from command-line, ie most likely called from the menus
-    #  shellcheck disable=SC2154
-    if [[ "$FORCE_WHIPTAIL_MENUS" = 1 ]]; then
-        echo "Press <Enter> to clear this output"
-        read -r _
-    else
+#  pgrep does not provide the command line, so ignore SC2009
+#  shellcheck disable=SC2009,SC2154
+if ps -x "$PPID" | grep -q tmux-menus &&
+    [[ "$FORCE_WHIPTAIL_MENUS" = 1 ]]; then
+
+    #  called using whiptail menus
+    echo "Press <Enter> to clear this output"
+    read -r _
+else
+    if [[ ! -t 0 ]]; then
+        #
+        #  Not from command-line, ie most likely called from the menus.
+        #  Menu is already closed, so we can't check PPID or similar
+        #
         echo "Press <Escape> to clear this output"
     fi
-}
+fi
