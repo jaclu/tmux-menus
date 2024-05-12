@@ -14,13 +14,12 @@ _this="plugins.sh" # error prone if script name is changed :(
     exit 1
 }
 
-echo
-
-#  shellcheck disable=SC2154
-if [[ "$TMUX_CONF" = "$HOME/.tmux.conf" ]]; then
-    plugins_dir="$HOME/.tmux/plugins"
-else
+if [[ -n "$TMUX_CONF" ]]; then
     plugins_dir="$(dirname "$TMUX_CONF")/plugins"
+elif [[ -n "$XDG_CONFIG_HOME" ]]; then
+    plugins_dir="$(dirname "$XDG_CONFIG_HOME")/tmux/plugins"
+else
+    plugins_dir="$HOME/tmux/plugins"
 fi
 
 names=(tpm) # plugin manager
