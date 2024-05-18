@@ -10,6 +10,7 @@
 
 _this="plugins.sh" # error prone if script name is changed :(
 [[ "$(basename "$0")" != "$_this" ]] && {
+    # mostly to ensure this file isn't accidentally sourced from a menu
     error_msg "$_this should NOT be sourced"
 }
 
@@ -19,11 +20,16 @@ _this="plugins.sh" # error prone if script name is changed :(
 }
 
 if [[ -n "$TMUX_CONF" ]]; then
-    plugins_dir="$(dirname "$TMUX_CONF")/plugins"
+    d_conf="$(dirname "$TMUX_CONF")"
+    if [[ "$d_conf" = "$HOME" ]]; then
+        plugins_dir="$HOME"/.tmux/plugins
+    else
+        plugins_dir="$d_conf"/plugins
+    fi
 elif [[ -n "$XDG_CONFIG_HOME" ]]; then
     plugins_dir="$(dirname "$XDG_CONFIG_HOME")/tmux/plugins"
 else
-    plugins_dir="$HOME/tmux/plugins"
+    plugins_dir="$HOME/.tmux/plugins"
 fi
 
 defined_plugins=() #  plugins mentioned in config file
@@ -31,7 +37,7 @@ valid_items=(tpm)  # additional folders expected to be in plugins folders
 d_tpm="$plugins_dir"/tpm
 
 #
-#  Generate list of plugins defined in config file
+#  List of plugins defined in config file
 #
 mapfile -t defined_plugins < <(grep "set -g @plugin" "$TMUX_CONF" |
     awk '{ print $4 }' | sed 's/"//g')
@@ -41,6 +47,7 @@ if [[ ${#defined_plugins[@]} -gt 0 ]]; then
 else
     echo "No plugins defined"
 fi
+
 #
 #  Check if they are installed or not
 #
