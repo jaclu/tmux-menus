@@ -26,18 +26,21 @@ display_char() {
     c="$1"
     [ -z "$c" ] && error_msg "display_char() - no param"
     if [ "$FORCE_WHIPTAIL_MENUS" != 1 ]; then
-        $TMUX_BIN send-keys "$c"
+        tmux_error_handler send-keys "$c"
     else
-        log_it "setting buffer to '$c'"
-        if tmux_vers_compare 3.2; then
-            #
-            #  Also make the buffers content available for the normal
-            #  paste method
-            #
-            $TMUX_BIN set-buffer -awb missing_keys "$c"
+        normalize_bool_param "$wt_pasting" false &&
+            pending_paste=true || pending_paste=false
+
+        if $pending_paste; then
+            #  prefix with pending paste buffer
+            c="$(tmux_error_handler show-buffer)$c"
         else
-            $TMUX_BIN set-buffer -ab missing_keys "$c"
+            log_it "><> setting [$wt_pasting] to yes"
+            tmux_error_handler set-option -g "$wt_pasting" 'yes'
         fi
+
+        log_it "setting buffer to '$c'"
+        tmux_error_handler set-buffer "$c"
     fi
 }
 
@@ -74,22 +77,6 @@ handle_char() {
         ;;
     esac
     display_char "$s"
-}
-
-dynamic_content() {
-    #
-    #  In this case this is just used to process any param - key to send
-    #  by using the dynamic_content hook, no need to do includes in order
-    #  to get access to log_it, $FORCE_WHIPTAIL_MENUS and $TMUX_BIN
-    #
-    if [ -n "$menu_param" ]; then
-        handle_char "$menu_param"
-    else
-        if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
-            log_it "clearing buffer missing_keys"
-            $TMUX_BIN delete-buffer -b missing_keys
-        fi
-    fi
 }
 
 static_content() {
@@ -143,11 +130,24 @@ static_content() {
 #
 #===============================================================
 
-menu_param="$1"
-
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
 
+# shellcheck source=scripts/utils.sh
+. "$D_TM_BASE_PATH"/scripts/utils.sh
+
+wt_pasting="@menus_wt_paste_in_progress"
+
+if [ -n "$1" ]; then
+    handle_char "$1"
+else
+    [ "$FORCE_WHIPTAIL_MENUS" = 1 ] && {
+        log_it "clearing pending paste buffer indicator"
+        tmux_error_handler set-option -gqu "$wt_pasting"
+    }
+fi
+
+log_it "><> sourcing dialog_handling.sh"
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 
