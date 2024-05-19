@@ -217,10 +217,25 @@ get_plugin_params() {
         cfg_no_prefix=true || cfg_no_prefix=false
     normalize_bool_param "@menus_use_cache" "$default_use_cache" &&
         cfg_use_cache=true || cfg_use_cache=false
-    cfg_log_file="$(get_tmux_option "@menus_log_file" "$default_log_file")"
-    cfg_tmux_conf="$(get_tmux_option "@menus_config_file" "$default_tmux_conf")"
-    cfg_mnu_loc_x="$(get_tmux_option "@menus_location_x" "$default_location_x")"
-    cfg_mnu_loc_y="$(get_tmux_option "@menus_location_y" "$default_location_y")"
+
+    if [ -z "$cfg_log_file" ]; then
+        #
+        #  would only be set in debug mode, in that case ignore
+        #  tmux setting and defuault
+        #
+        cfg_log_file="$(
+            get_tmux_option "@menus_log_file"
+            "$default_log_file"
+        )"
+    else
+        log_it "utils.sh forced cfg_log_file=$cfg_log_file"
+    fi
+    cfg_tmux_conf="$(get_tmux_option "@menus_config_file" \
+        "$default_tmux_conf")"
+    cfg_mnu_loc_x="$(get_tmux_option "@menus_location_x" \
+        "$default_location_x")"
+    cfg_mnu_loc_y="$(get_tmux_option "@menus_location_y" \
+        "$default_location_y")"
 
     #
     #  Generic plugin setting I use to add Notes to keys that are bound
@@ -444,8 +459,8 @@ wait_to_close_display() {
 plugin_name="tmux-menus"
 
 #
-#  Setting a cfg_log_file here only makes a difference until get_config
-#  is called at the end of this script, this setting will then be overridden.
+#  Setting a cfg_log_file here overrides tmux config, should only
+#  be used for debugging
 #
 # cfg_log_file="$HOME/tmp/$plugin_name.log"
 
@@ -526,3 +541,5 @@ f_param_cache="$D_TM_BASE_PATH"/cache/plugin_params
 # [ "$(basename "$0")" = "menus.tmux" ] && return
 
 get_config
+
+# log_it "><> utils.sh called from $current_script"
