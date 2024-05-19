@@ -33,8 +33,8 @@ error_msg() {
     #  If $2 is set to 0, process is not exited
     #
     msg="ERROR: $1"
-    exit_code="${2:-1}"
-    do_display_message=${3:-false}
+    exit_code="${2:-0}"
+    do_display_message=${3:-true}
 
     if $log_interactive_to_stderr && [ -t 0 ]; then
         echo "$msg" >/dev/stderr
@@ -92,7 +92,7 @@ tmux_error_handler() {
 
     # only needed during debugging
     # if echo "$cmd" | grep -q "tmux_error_handler"; then
-    #     error_msg "Recursive call to tmux_error_handler()" 0 true
+    #     error_msg "Recursive call to tmux_error_handler()"
     # fi
 
     mkdir -p "$d_cache"
@@ -114,7 +114,7 @@ tmux_error_handler() {
         done
         log_it "saved error to: [$_f]"
         mv "$f_tmux_err" "$_f"
-        error_msg "$(cat "$_f")" 0 true
+        error_msg "$(cat "$_f")"
     }
     rm -f "$f_tmux_err" # remove if no error
     return 0
@@ -144,8 +144,8 @@ tmux_vers_compare() {
     #  If only one param is given it is compared vs version of running tmux
     #
     v_comp="$1"
-    v_ref="$2" # "${2:-$tmux_vers}"
-    log_it "[$current_script] tmux_vers_chek($v_comp, $v_ref) tmux_vers[$tmux_vers]"
+    v_ref="${2:-$tmux_vers}"
+    # log_it "[$current_script] tmux_vers_chek($v_comp, $v_ref) tmux_vers[$tmux_vers]"
 
     [ -z "$v_ref" ] && {
         error_msg "tmux_vers_compare() - Neither param 2 or tmux_vers defined"
@@ -190,8 +190,8 @@ get_tmux_option() {
 
     # log_it "get_tmux_option($gto_option, $gto_default)"
 
-    [ -z "$gto_option" ] && error_msg "get_tmux_option() param 1 empty!" 0 true
-    # shellcheck disable=SC2154
+    [ -z "$gto_option" ] && error_msg "get_tmux_option() param 1 empty!"
+    # shellcheck disable=SC215
     [ "$TMUX" = "" ] && {
         # this is run standalone, just report the defaults
         echo "$gto_default"
@@ -236,7 +236,7 @@ normalize_bool_param() {
         #  In this case $2 must be given as the default value!
         #
         [ -z "$2" ] && {
-            error_msg "normalize_bool_param($param) - no default" 0 true
+            error_msg "normalize_bool_param($param) - no default"
         }
         _variable_name="$param"
         param="$(get_tmux_option "$param" "$2")"
@@ -266,7 +266,7 @@ normalize_bool_param() {
         else
             prefix="$param"
         fi
-        error_msg "$prefix - should be yes/true or no/false" 0 true
+        error_msg "$prefix - should be yes/true or no/false"
         ;;
 
     esac
@@ -575,7 +575,7 @@ cfg_log_file="$HOME/tmp/$plugin_name.log"
 
 log_interactive_to_stderr=false
 
-[ -z "$D_TM_BASE_PATH" ] && error_msg "D_TM_BASE_PATH undefined" 0 true
+[ -z "$D_TM_BASE_PATH" ] && error_msg "D_TM_BASE_PATH undefined"
 
 log_it "><> sourcing utils.sh"
 
@@ -602,7 +602,7 @@ f_current_script="$d_current_script/$current_script"
 
 if ! tmux_vers_compare 3.0; then
     if ! tmux_vers_compare "$min_tmux_vers"; then
-        error_msg "need at least tmux $min_tmux_vers to work!" 0 true
+        error_msg "need at least tmux $min_tmux_vers to work!"
     fi
     FORCE_WHIPTAIL_MENUS=1
 fi

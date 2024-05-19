@@ -46,7 +46,7 @@ if tmux_vers_compare 3.0 && [ "$FORCE_WHIPTAIL_MENUS" != "1" ]; then
     cmd="$d_items/main.sh"
 else
     [ -z "$(command -v whiptail)" ] && {
-        error_msg "whiptail is not installed!" 0 true
+        error_msg "whiptail is not installed!"
     }
     cmd="$d_scripts/do_whiptail.sh"
     log_it "whiptail will be used"

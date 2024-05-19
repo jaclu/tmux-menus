@@ -52,7 +52,7 @@ param_check() {
         # NEEDS TESTING
         set -- "param_check($1,$2) 2nd param must be L or M" \
             "Indicating move or link action"
-        error_msg "$*" 1
+        error_msg "$*"
         ;;
 
     esac

@@ -40,7 +40,7 @@ debug_print() {
     1) echo "$1" ;;
     2) log_it "$1" ;;
     *)
-        error_msg "$menu_debug state invalid [$menu_debug] shoule be 1 or 2! p1[$1]" 0 true
+        error_msg "$menu_debug state invalid [$menu_debug] shoule be 1 or 2! p1[$1]"
         ;;
     esac
 }
@@ -67,7 +67,7 @@ ensure_menu_fits_on_screen() {
     disp_time="$(echo "$dh_t_end - $dh_t_start" | bc)"
     log_it "Menu $current_script_no_ext - Display time [$disp_time]"
     if [ "$(echo "$disp_time < 0.5" | bc)" -eq 1 ]; then
-        error_msg "Screen might be too small" 0 true
+        error_msg "Screen might be too small"
     fi
     unset dh_t_end
     unset disp_time
@@ -234,7 +234,7 @@ alt_dialog_parse_selection() {
     #
     wt_actions="$1"
     [ -z "$wt_actions" ] && {
-        error_msg "alt_dialog_parse_selection() - called without param" 1
+        error_msg "alt_dialog_parse_selection() - called without param"
     }
 
     lst=$wt_actions
