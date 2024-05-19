@@ -35,8 +35,12 @@ static_content() {
         0.0 T "-#[nodim]    to use with <prefix> directly." \
         0.0 S \
         0.0 T "-#[nodim]Shortcut keys are usually upper case" \
-        0.0 T "-#[nodim]for menus, and lower case for actions." \
-        0.0 T "-#[nodim]Exit menus with ESC or Ctrl-C"
+        0.0 T "-#[nodim]for menus, and lower case for actions."
+
+    [ "$FORCE_WHIPTAIL_MENUS" != 1 ] && {
+        set -- "$@" \
+            0.0 T "-#[nodim]Exit menus with ESC or Ctrl-C"
+    }
 
     menu_generate_part 2 "$@"
 }
