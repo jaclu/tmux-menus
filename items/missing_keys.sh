@@ -142,6 +142,11 @@ if [ -n "$1" ]; then
     handle_char "$1"
 else
     [ "$FORCE_WHIPTAIL_MENUS" = 1 ] && {
+        #
+        #  As long as this menu is restarted with a char param
+        #  it is added  to the paste buffer, as soon as it is called
+        #  without a param this buffer is reset
+        #
         log_it "clearing pending paste buffer indicator"
         tmux_error_handler set-option -gqu "$wt_pasting"
     }
