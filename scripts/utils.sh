@@ -30,7 +30,19 @@ log_it() {
 error_msg() {
     #
     #  Display $1 as an error message in log and as a tmux display-message
-    #  If $2 is set to 0, process is not exited
+    #  unless do_display_message is false
+    #
+    #  exit_code defaults to 0, which might seem odd for an error exit,
+    #  but in combination with display-message it makes sense.
+    #  If the script exits with something else than 0, the current pane
+    #  will be temporary replaced by an error message mentioning the exit
+    #  code. Wich is both redundant and much less informative than the
+    #  display-message that is also printed.
+    #  If display-message is not desired it would make sense to use a more
+    #  normal positive exit_code to indicate error, making the 2 & 3
+    #  params be something like: 1 false
+    #
+    #  If exit_code is set to -1, process is not exited
     #
     msg="ERROR: $1"
     exit_code="${2:-0}"
@@ -64,6 +76,7 @@ display_message_hold() {
     msg="$1"
 
     if tmux_vers_compare 3.2; then
+        # message will remain until key-press
         $TMUX_BIN display-message -d 0 "$msg"
     else
         # Manually make the error msg stay on screen a long time
@@ -75,6 +88,37 @@ display_message_hold() {
         $TMUX_BIN set -g display-time "$org_display_time" >/dev/null
         unset org_display_time
     fi
+}
+
+#---------------------------------------------------------------
+#
+#   Handling of specific data types
+#
+#---------------------------------------------------------------
+
+posix_get_char() {
+    #
+    #  Configure terminal to read a single character without echoing,
+    #  restoring the terminal and returning the char
+    #
+    old_stty_cfg=$(stty -g)
+    stty raw -echo
+    dd bs=1 count=1 2>/dev/null
+    stty "$old_stty_cfg"
+
+    unset old_stty_cfg
+}
+
+extract_char() {
+    str="$1"
+    pos="$2"
+    printf '%s\n' "$str" | cut -c "$pos"
+    unset str
+    unset pos
+}
+
+lowercase_it() {
+    echo "$1" | tr '[:upper:]' '[:lower:]'
 }
 
 #---------------------------------------------------------------
@@ -144,22 +188,32 @@ tmux_vers_compare() {
     #  If only one param is given it is compared vs version of running tmux
     #
     v_comp="$1"
-    v_ref="${2:-$tmux_vers}"
-    # log_it "[$current_script] tmux_vers_chek($v_comp, $v_ref) tmux_vers[$tmux_vers]"
-
-    [ -z "$v_ref" ] && {
-        error_msg "tmux_vers_compare() - Neither param 2 or tmux_vers defined"
-    }
+    v_ref="$2" # "${2:-$tmux_vers}"
+    log_it "[$current_script] tmux_vers_chek($v_comp, $v_ref) tmux_vers[$tmux_vers]"
 
     parse_tmux_version "$v_comp"
     comp_maj=$v_maj
     comp_min=$v_min
     comp_suf=$v_suffix
 
-    parse_tmux_version "$v_ref"
-    ref_maj=$v_maj
-    ref_min=$v_min
-    ref_suf=$v_suffix
+    if [ -z "$v_ref" ]; then
+        if [ -n "$cached_v_maj" ]; then
+            log_it "using cached ref vers"
+            ref_maj="$cached_v_maj"
+            ref_min="$cached_v_min"
+            ref_suf="$cached_v_suffix"
+        else
+            log_it "using tmux_vers"
+            v_ref="$tmux_vers"
+        fi
+    fi
+
+    if [ -n "$v_ref" ]; then
+        parse_tmux_version "$v_ref"
+        ref_maj=$v_maj
+        ref_min=$v_min
+        ref_suf=$v_suffix
+    fi
 
     # echo "><> comp_maj[$comp_maj] comp_min[$comp_min]comp_suf[$comp_suf]" >/dev/stderr
     # echo "><> ref_maj[$ref_maj] ref_min[$ref_min]ref_suf[$ref_suf]" >/dev/stderr
@@ -191,7 +245,7 @@ get_tmux_option() {
     # log_it "get_tmux_option($gto_option, $gto_default)"
 
     [ -z "$gto_option" ] && error_msg "get_tmux_option() param 1 empty!"
-    # shellcheck disable=SC215
+    # shellcheck disable=SC2154
     [ "$TMUX" = "" ] && {
         # this is run standalone, just report the defaults
         echo "$gto_default"
@@ -351,30 +405,28 @@ get_defaults() {
 get_plugin_params() {
     # log_it "get_plugin_params()"
 
-    #
-    #  Generic plugin setting I use to add Notes to keys that are bound
-    #  This makes this key binding show up when doing <prefix> ?
-    #  If not set to "Yes", no attempt at adding notes will happen
-    #  bind-key Notes were added in tmux 3.1, so should not be used on
-    #  older versions!
-    #
     get_defaults
 
-    cfg_trigger_key=$(get_tmux_option "@menus_trigger" "$default_trigger_key")
+    cfg_trigger_key=$(get_tmux_option "@menus_trigger" \
+        "$default_trigger_key")
     normalize_bool_param "@menus_without_prefix" "$default_no_prefix" &&
         cfg_no_prefix=true || cfg_no_prefix=false
     normalize_bool_param "@menus_use_cache" "$default_use_cache" &&
         cfg_use_cache=true || cfg_use_cache=false
-    cfg_mnu_loc_x="$(get_tmux_option "@menus_location_x" "$default_location_x")"
-    cfg_mnu_loc_y="$(get_tmux_option "@menus_location_y" "$default_location_y")"
-    cfg_tmux_conf="$(get_tmux_option "@menus_config_file" "$default_tmux_conf")"
+    cfg_mnu_loc_x="$(get_tmux_option "@menus_location_x" \
+        "$default_location_x")"
+    cfg_mnu_loc_y="$(get_tmux_option "@menus_location_y" \
+        "$default_location_y")"
+    cfg_tmux_conf="$(get_tmux_option "@menus_config_file" \
+        "$default_tmux_conf")"
 
     if [ -z "$cfg_log_file" ]; then
         #
         #  would only be set in debug mode, in that case ignore
         #  tmux setting and defuault
         #
-        cfg_log_file="$(get_tmux_option "@menus_log_file" "$default_log_file")"
+        cfg_log_file="$(get_tmux_option "@menus_log_file" \
+            "$default_log_file")"
     fi
 
     #
@@ -384,7 +436,9 @@ get_plugin_params() {
     #  bind-key Notes were added in tmux 3.1, so should not be used on
     #  older versions!
     #
-    if tmux_vers_compare 3.1 && normalize_bool_param "@use_bind_key_notes_in_plugins" No; then
+    if tmux_vers_compare 3.1 &&
+        normalize_bool_param "@use_bind_key_notes_in_plugins" No; then
+
         cfg_use_notes=true
     else
         cfg_use_notes=false
@@ -407,6 +461,49 @@ clear_cache() {
     mkdir -p "$d_cache"
     echo "$tmux_vers" >"$f_cached_tmux"
     [ "$FORCE_WHIPTAIL_MENUS" = 1 ] && touch "$d_cache"/using-whiptail
+}
+
+param_cache_write() {
+    # log_it "param_cache_write()"
+    mkdir -p "$d_cache"
+
+    #
+    #  Cache current tmux version breakdown into components
+    #  to speedup  calls to tmux_vers_compare without 2nd param
+    #
+    parse_tmux_version "$tmux_vers"
+    cached_v_maj=$v_maj
+    cached_v_min=$v_min
+    cached_v_suffix=$v_suffix
+    unset v_maj v_min v_suffix
+
+    #region param cache file
+    cat <<EOF >"$f_param_cache"
+#!/bin/sh
+# Always sourced file - Fake bang path to help editors
+cfg_trigger_key="$(escape_tmux_special_chars "$cfg_trigger_key")"
+cfg_no_prefix="$cfg_no_prefix"
+cfg_use_cache="$cfg_use_cache"
+cfg_mnu_loc_x="$cfg_mnu_loc_x"
+cfg_mnu_loc_y="$cfg_mnu_loc_y"
+cfg_tmux_conf="$cfg_tmux_conf"
+
+cfg_log_file="$cfg_log_file"
+cfg_use_notes="$cfg_use_notes"
+
+cached_v_maj="$cached_v_maj"
+cached_v_min="$cached_v_min"
+cached_v_suffix="$cached_v_suffix"
+
+EOF
+    #endregion
+    unset cached_v_maj cached_v_min cached_v_suffix
+}
+
+generate_param_cache() {
+    # log_it "generate_param_cache()"
+    get_plugin_params
+    param_cache_write
 }
 
 cache_validation() {
@@ -437,35 +534,8 @@ cache_validation() {
         clear_cache "failed to verify"
     fi
 
-    # Ensure param cache is current
-    generate_param_cache
-}
-
-param_cache_write() {
-    # log_it "param_cache_write()"
-    mkdir -p "$d_cache"
-
-    #region param cache file
-    cat <<EOF >"$f_param_cache"
-#!/bin/sh
-# Always sourced file - Fake bang path to help editors
-cfg_trigger_key="$(escape_tmux_special_chars "$cfg_trigger_key")"
-cfg_no_prefix="$cfg_no_prefix"
-cfg_use_cache="$cfg_use_cache"
-cfg_mnu_loc_x="$cfg_mnu_loc_x"
-cfg_mnu_loc_y="$cfg_mnu_loc_y"
-cfg_tmux_conf="$cfg_tmux_conf"
-
-cfg_log_file="$cfg_log_file"
-cfg_use_notes="$cfg_use_notes"
-EOF
-    #endregion
-}
-
-generate_param_cache() {
-    # log_it "generate_param_cache()"
-    get_plugin_params
-    param_cache_write
+    generate_param_cache #  Ensure param cache is current
+    cache_has_been_validated=true
 }
 
 get_config() {
@@ -486,37 +556,6 @@ get_config() {
 
     # shellcheck source=/dev/null
     . "$f_param_cache"
-}
-
-#---------------------------------------------------------------
-#
-#   Handling of specific data types
-#
-#---------------------------------------------------------------
-
-posix_get_char() {
-    #
-    #  Configure terminal to read a single character without echoing,
-    #  restoring the terminal and returning the char
-    #
-    old_stty_cfg=$(stty -g)
-    stty raw -echo
-    dd bs=1 count=1 2>/dev/null
-    stty "$old_stty_cfg"
-
-    unset old_stty_cfg
-}
-
-extract_char() {
-    str="$1"
-    pos="$2"
-    printf '%s\n' "$str" | cut -c "$pos"
-    unset str
-    unset pos
-}
-
-lowercase_it() {
-    echo "$1" | tr '[:upper:]' '[:lower:]'
 }
 
 #---------------------------------------------------------------
@@ -573,11 +612,22 @@ plugin_name="tmux-menus"
 #
 cfg_log_file="$HOME/tmp/$plugin_name.log"
 
+#
+#  Even if this one is used, a cfg_log_file must still be defined
+#  since log_it quick aborts if that is undefined
+#
 log_interactive_to_stderr=false
 
 [ -z "$D_TM_BASE_PATH" ] && error_msg "D_TM_BASE_PATH undefined"
 
 log_it "><> sourcing utils.sh"
+
+#
+#  Convencience shortcuts
+#
+d_items="$D_TM_BASE_PATH"/items
+d_scripts="$D_TM_BASE_PATH"/scripts
+d_cache="$D_TM_BASE_PATH"/cache
 
 #
 #  I use an env var TMUX_BIN to point at the current tmux, defined in my
@@ -592,14 +642,6 @@ log_it "><> sourcing utils.sh"
 tmux_vers="$($TMUX_BIN -V | cut -d ' ' -f 2)"
 min_tmux_vers="1.7"
 
-current_script="$(basename "$0")" # name without path
-#
-#  Convert script name to full actual path notation the path is used
-#  for caching, so save it to a variable as well
-
-d_current_script="$(realpath -- "$(dirname -- "$0")")"
-f_current_script="$d_current_script/$current_script"
-
 if ! tmux_vers_compare 3.0; then
     if ! tmux_vers_compare "$min_tmux_vers"; then
         error_msg "need at least tmux $min_tmux_vers to work!"
@@ -608,10 +650,36 @@ if ! tmux_vers_compare 3.0; then
 fi
 
 #
-#  Define variables that can be used as suffix on commands in dialog
-#  items, to reload the same menu
+#  Convert script name to full actual path notation the path is used
+#  for caching, so save it to a variable as well
 #
-d_cache="$D_TM_BASE_PATH"/cache
+current_script="$(basename "$0")" # name without path
+d_current_script="$(realpath -- "$(dirname -- "$0")")"
+f_current_script="$d_current_script/$current_script"
+
+#
+#  The plugin init script checks this at startup
+#  if the running tmux version is not the same as the one that created
+#  the cache, the cache is deleted
+#
+f_cached_tmux="$d_cache"/tmux-vers
+
+#
+#  in some cases, like Move Window, the menu is exited
+#  during destination selection.
+#  This hint can be used to re-start the last one displayed
+#
+f_last_menu_displayed="$d_cache/last_menu_displayed"
+
+# cache plugin params
+f_param_cache="$D_TM_BASE_PATH"/cache/plugin_params
+
+#
+#  Only used by menus.tmux, if f_param_cache was rewritten by utils,
+#  this is set to true, so menus.tmux does not need to repeat this action
+#
+cache_has_been_validated=false
+
 if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
     menu_reload="; $f_current_script"
     #
@@ -627,34 +695,7 @@ else
     reload_in_runshell=" ; $f_current_script"
 fi
 
-#
-#  in some cases, like Move Window, the menu is exited
-#  during destination selection.
-#  This hint can be used to re-start the last one displayed
-#
-f_last_menu_displayed="$d_cache/last_menu_displayed"
-
-#
-#  The plugin init script checks this at startup
-#  if the running tmux version is not the same as the one that created
-#  the cache, the cache is deleted
-#
-f_cached_tmux="$d_cache"/tmux-vers
-
-#
-#  This is for shells checking status.
-#  In tmux code #{?@menus_config_overrides,,} can be used
-#
-
-#
-#  All calling scripts must provide
-#
-
-d_items="$D_TM_BASE_PATH"/items
-d_scripts="$D_TM_BASE_PATH"/scripts
-
-f_param_cache="$D_TM_BASE_PATH"/cache/plugin_params
-
 # [ "$(basename "$0")" = "menus.tmux" ] && return
 
 get_config
+log_it "-----   end of utils"
