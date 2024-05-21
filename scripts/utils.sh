@@ -169,6 +169,16 @@ parse_tmux_version() {
     v_maj=$(echo "$_v" | cut -d. -f1)
     v_min=$(echo "$_v" | cut -d. -f2 | sed 's/[^0-9]//g')
     v_suffix=$(echo "$_v" | cut -d. -f2 | sed 's/[0-9]//g')
+
+    #
+    #  Handle some odd versions, and fix the params that was incorrect
+    #
+    case "$_v" in
+    3.1-rc) v_suffix="" ;; # asdf tmux 3.1 reports as this
+    next-3.4) v_maj=3 ;;   # Alpine 3.18 reports as this
+    *) ;;
+    esac
+
     unset _v
 
     if [ -z "$v_min" ]; then
@@ -189,7 +199,6 @@ tmux_vers_compare() {
     #
     v_comp="$1"
     v_ref="$2" # "${2:-$tmux_vers}"
-    log_it "[$current_script] tmux_vers_chek($v_comp, $v_ref) tmux_vers[$tmux_vers]"
 
     parse_tmux_version "$v_comp"
     comp_maj=$v_maj
@@ -214,6 +223,8 @@ tmux_vers_compare() {
         ref_min=$v_min
         ref_suf=$v_suffix
     fi
+
+    log_it "[$current_script] tmux_vers_chek($v_comp, $v_ref)"
 
     # echo "><> comp_maj[$comp_maj] comp_min[$comp_min]comp_suf[$comp_suf]" >/dev/stderr
     # echo "><> ref_maj[$ref_maj] ref_min[$ref_min]ref_suf[$ref_suf]" >/dev/stderr
@@ -610,7 +621,7 @@ plugin_name="tmux-menus"
 #  Setting a cfg_log_file here overrides tmux config, should only
 #  be used for debugging
 #
-cfg_log_file="$HOME/tmp/$plugin_name.log"
+# cfg_log_file="$HOME/tmp/$plugin_name.log"
 
 #
 #  Even if this one is used, a cfg_log_file must still be defined
@@ -639,7 +650,7 @@ d_cache="$D_TM_BASE_PATH"/cache
 #
 [ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
 
-tmux_vers="$($TMUX_BIN -V | cut -d ' ' -f 2)"
+tmux_vers="$($TMUX_BIN -V | cut -d ' ' -f 2)" # TODO: use cache
 min_tmux_vers="1.7"
 
 if ! tmux_vers_compare 3.0; then
