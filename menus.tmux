@@ -40,7 +40,10 @@ D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$0")")"
 log_it
 log_it "$(date)"
 
-$cache_has_been_validated || cache_validation
+$b_cache_has_been_validated || cache_validation
+$b_clear_cache_has_been_called || generate_param_cache
+
+log_it "><> final tmux_vers [$tmux_vers]"
 
 if tmux_vers_compare 3.0 && [ "$FORCE_WHIPTAIL_MENUS" != "1" ]; then
     cmd="$d_items/main.sh"

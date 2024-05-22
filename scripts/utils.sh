@@ -410,28 +410,22 @@ clear_cache() {
 
     rm -rf "$d_cache"
     mkdir -p "$d_cache"
-    echo "$tmux_vers" >"$f_cached_tmux"
     [ "$FORCE_WHIPTAIL_MENUS" = 1 ] && touch "$d_cache"/using-whiptail
+    b_clear_cache_has_been_called=true
 }
 
 param_cache_write() {
     # log_it "param_cache_write()"
     mkdir -p "$d_cache"
 
-    #
-    #  Cache current tmux version breakdown into components
-    #  to speedup  calls to tmux_vers_compare without 2nd param
-    #
-    parse_tmux_version "$tmux_vers"
-    cached_v_maj=$v_maj
-    cached_v_min=$v_min
-    cached_v_suffix=$v_suffix
-    unset v_maj v_min v_suffix
+    # always get the current version
+    tmux_vers="$($TMUX_BIN -V | cut -d ' ' -f 2)" # TODO: use cache
 
     #region param cache file
     cat <<EOF >"$f_param_cache"
 #!/bin/sh
-# Always sourced file - Fake bang path to help editors
+# Always sourced file - Fake bxang path to help editors
+
 cfg_trigger_key="$(escape_tmux_special_chars "$cfg_trigger_key")"
 cfg_no_prefix="$cfg_no_prefix"
 cfg_use_cache="$cfg_use_cache"
@@ -441,18 +435,17 @@ cfg_tmux_conf="$cfg_tmux_conf"
 
 cfg_log_file="$cfg_log_file"
 cfg_use_notes="$cfg_use_notes"
-
-cached_v_maj="$cached_v_maj"
-cached_v_min="$cached_v_min"
-cached_v_suffix="$cached_v_suffix"
-
+tmux_vers="$tmux_vers"
 EOF
     #endregion
-    unset cached_v_maj cached_v_min cached_v_suffix
 }
 
 generate_param_cache() {
-    # log_it "generate_param_cache()"
+    #
+    #  will also ensure current tmux conf is used, even if other
+    #  settings has already been sourced
+    #
+    log_it "generate_param_cache()"
     get_plugin_params
     param_cache_write
 }
@@ -467,11 +460,15 @@ cache_validation() {
     #
     log_it "cache_validation()"
 
-    if [ -s "$f_cached_tmux" ]; then
-        tmux_vers_in_cache="$(cat "$f_cached_tmux")"
-        [ "$tmux_vers" != "$tmux_vers_in_cache" ] && {
+    if [ -s "$f_param_cache" ]; then
+        tmux_vers_actual="$($TMUX_BIN -V | cut -d ' ' -f 2)" # TODO: use cache
+        #tmux_vers_in_cache="$(grep tmux_vers "$f_param_cache" |
+        #    sed 's/"//g' | cut -d'=' -f2)"
+
+        #  compare actual vs cached
+        [ "$tmux_vers_actual" != "$tmux_vers" ] && {
             clear_cache \
-                "Was made for tmux: $tmux_vers_in_cache now using: $tmux_vers"
+                "Was made for tmux: $tmux_vers now using: $tmux_vers_actual"
         }
         [ -f "$d_cache"/using-whiptail ] &&
             was_whiptail=true || was_whiptail=false
@@ -485,8 +482,14 @@ cache_validation() {
         clear_cache "failed to verify"
     fi
 
-    generate_param_cache #  Ensure param cache is current
-    cache_has_been_validated=true
+    [ -n "$tmux_vers" ] || {
+        # ensure it is defined, will be needed if there as no param_cache
+        tmux_vers="$($TMUX_BIN -V | cut -d ' ' -f 2)"
+    }
+
+    #  Ensure param cache is current
+    $b_clear_cache_has_been_called && generate_param_cache
+    b_cache_has_been_validated=true
 }
 
 get_config() {
@@ -505,7 +508,7 @@ get_config() {
         cache_validation
     fi
 
-    # shellcheck source=/dev/null
+    # shellcheck source=cache/plugin_params
     . "$f_param_cache"
 }
 
@@ -561,7 +564,7 @@ plugin_name="tmux-menus"
 #  Setting a cfg_log_file here overrides tmux config, should only
 #  be used for debugging
 #
-# cfg_log_file="$HOME/tmp/$plugin_name.log"
+cfg_log_file="$HOME/tmp/$plugin_name-t2.log"
 
 #
 #  Even if this one is used, a cfg_log_file must still be defined
@@ -590,16 +593,6 @@ d_cache="$D_TM_BASE_PATH"/cache
 #
 [ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
 
-tmux_vers="$($TMUX_BIN -V | cut -d ' ' -f 2)" # TODO: use cache
-min_tmux_vers="1.7"
-
-if ! tmux_vers_compare 3.0; then
-    if ! tmux_vers_compare "$min_tmux_vers"; then
-        error_msg "need at least tmux $min_tmux_vers to work!"
-    fi
-    FORCE_WHIPTAIL_MENUS=1
-fi
-
 #
 #  Convert script name to full actual path notation the path is used
 #  for caching, so save it to a variable as well
@@ -607,13 +600,6 @@ fi
 current_script="$(basename "$0")" # name without path
 d_current_script="$(realpath -- "$(dirname -- "$0")")"
 f_current_script="$d_current_script/$current_script"
-
-#
-#  The plugin init script checks this at startup
-#  if the running tmux version is not the same as the one that created
-#  the cache, the cache is deleted
-#
-f_cached_tmux="$d_cache"/tmux-vers
 
 #
 #  in some cases, like Move Window, the menu is exited
@@ -625,11 +611,22 @@ f_last_menu_displayed="$d_cache/last_menu_displayed"
 # cache plugin params
 f_param_cache="$D_TM_BASE_PATH"/cache/plugin_params
 
+b_cache_has_been_validated=false
+b_clear_cache_has_been_called=false
+
 #
-#  Only used by menus.tmux, if f_param_cache was rewritten by utils,
-#  this is set to true, so menus.tmux does not need to repeat this action
+#  at this point plugin_params is trusted if found, menus.tmux will
+#  allways always replace it with current tmux conf during plugin init
 #
-cache_has_been_validated=false
+get_config
+
+min_tmux_vers="1.7"
+if ! tmux_vers_compare 3.0; then
+    if ! tmux_vers_compare "$min_tmux_vers"; then
+        error_msg "need at least tmux $min_tmux_vers to work!"
+    fi
+    FORCE_WHIPTAIL_MENUS=1
+fi
 
 if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
     menu_reload="; $f_current_script"
@@ -648,5 +645,4 @@ fi
 
 # [ "$(basename "$0")" = "menus.tmux" ] && return
 
-get_config
 log_it "-----   end of utils"
