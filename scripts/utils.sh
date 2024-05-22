@@ -121,6 +121,16 @@ lowercase_it() {
     echo "$1" | tr '[:upper:]' '[:lower:]'
 }
 
+get_digits_from_string() {
+    # this is used to get "clean" integer version number. Examples:
+    # `tmux 1.9` => `19`
+    # `1.9a`     => `19`
+    s="$1"
+    i="$(echo "$s" | tr -dC '[:digit:]')"
+    echo "$i"
+    unset s i
+}
+
 #---------------------------------------------------------------
 #
 #   tmux env handling
@@ -164,89 +174,19 @@ tmux_error_handler() {
     return 0
 }
 
-parse_tmux_version() {
-    _v="$1"
-    v_maj=$(echo "$_v" | cut -d. -f1)
-    v_min=$(echo "$_v" | cut -d. -f2 | sed 's/[^0-9]//g')
-    v_suffix=$(echo "$_v" | cut -d. -f2 | sed 's/[0-9]//g')
-
-    #
-    #  Handle some odd versions, and fix the params that was incorrect
-    #
-    case "$_v" in
-    3.1-rc) v_suffix="" ;; # asdf tmux 3.1 reports as this
-    next-3.4) v_maj=3 ;;   # Alpine 3.18 reports as this
-    *) ;;
-    esac
-
-    unset _v
-
-    if [ -z "$v_min" ]; then
-        v_min=0
-    fi
-
-    if [ -n "$v_suffix" ]; then
-        v_suffix=$(echo "$v_suffix" | tr '[:lower:]' '1-26')
-    else
-        v_suffix=0
-    fi
-}
-
 tmux_vers_compare() {
     #
     #  This returns true if v_comp <= v_ref
     #  If only one param is given it is compared vs version of running tmux
     #
     v_comp="$1"
-    v_ref="$2" # "${2:-$tmux_vers}"
+    v_ref="${2:-$tmux_vers}"
 
-    parse_tmux_version "$v_comp"
-    comp_maj=$v_maj
-    comp_min=$v_min
-    comp_suf=$v_suffix
+    i_comp=$(get_digits_from_string "$v_comp")
+    i_ref=$(get_digits_from_string "$v_ref")
+    unset v_comp v_ref
 
-    if [ -z "$v_ref" ]; then
-        if [ -n "$cached_v_maj" ]; then
-            log_it "using cached ref vers"
-            ref_maj="$cached_v_maj"
-            ref_min="$cached_v_min"
-            ref_suf="$cached_v_suffix"
-        else
-            log_it "using tmux_vers"
-            v_ref="$tmux_vers"
-        fi
-    fi
-
-    if [ -n "$v_ref" ]; then
-        parse_tmux_version "$v_ref"
-        ref_maj=$v_maj
-        ref_min=$v_min
-        ref_suf=$v_suffix
-    fi
-
-    log_it "[$current_script] tmux_vers_chek($v_comp, $v_ref)"
-
-    # echo "><> comp_maj[$comp_maj] comp_min[$comp_min]comp_suf[$comp_suf]" >/dev/stderr
-    # echo "><> ref_maj[$ref_maj] ref_min[$ref_min]ref_suf[$ref_suf]" >/dev/stderr
-    unset v_maj v_min v_suffix
-
-    if [ "$comp_maj" -lt "$ref_maj" ]; then
-        return 0
-    elif [ "$comp_maj" -gt "$ref_maj" ]; then
-        return 1
-    fi
-
-    if [ "$comp_min" -lt "$ref_min" ]; then
-        return 0
-    elif [ "$comp_min" -gt "$ref_min" ]; then
-        return 1
-    fi
-
-    if [ "$comp_suf" -le "$ref_suf" ]; then
-        return 0
-    else
-        return 1
-    fi
+    [ "$i_comp" -le "$i_ref" ]
 }
 
 get_tmux_option() {
