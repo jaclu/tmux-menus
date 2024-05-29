@@ -15,10 +15,10 @@ D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
 # shellcheck source=scripts/utils.sh
 . "$D_TM_BASE_PATH"/scripts/utils.sh
 
-if $TMUX_BIN source-file "$1"; then
-    $TMUX_BIN display 'Sourced it!'
+if tmux_error_handler source-file "$1"; then
+    tmux_error_handler display 'Sourced it!'
 else
-    $TMUX_BIN display 'File could not be sourced - not found?'
+    tmux_error_handler display 'File could not be sourced - not found?'
 fi
 
 # log_it "><> $current_script done!"

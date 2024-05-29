@@ -23,12 +23,12 @@ _this="relocate_pane.sh" # error prone if script name is changed :(
 
 param_check "$@"
 
-$TMUX_BIN move-pane -t "${dest_ses}:${dest_win_idx}.${dest_pane_idx}"
+tmux_error_handler move-pane -t "${dest_ses}:${dest_win_idx}.${dest_pane_idx}"
 
 if [ "$cur_ses" != "$dest_ses" ]; then
     #
     #  When Window / Pane is moved to another session, focus does not
     #  auto-switch, so this manually sets focus.
     #
-    $TMUX_BIN switch-client -t "$dest_ses" # switch focus to new location
+    tmux_error_handler switch-client -t "$dest_ses" # switch focus to new location
 fi
