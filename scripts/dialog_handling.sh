@@ -69,7 +69,7 @@ ensure_menu_fits_on_screen() {
     if [ "$(echo "$disp_time < 0.5" | bc)" -eq 1 ]; then
         _s1="$(cat "$f_last_menu_displayed")"
         _s2=${_s1#"$D_TM_BASE_PATH/"}
-        error_msg "$_s2 Screen might be too small" 0 false
+        error_msg "$_s2 Screen might be too small" 0 true
     fi
     unset dh_t_end
     unset disp_time
