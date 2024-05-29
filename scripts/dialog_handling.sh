@@ -67,7 +67,9 @@ ensure_menu_fits_on_screen() {
     disp_time="$(echo "$dh_t_end - $dh_t_start" | bc)"
     log_it "Menu $current_script_no_ext - Display time [$disp_time]"
     if [ "$(echo "$disp_time < 0.5" | bc)" -eq 1 ]; then
-        error_msg "Screen might be too small"
+        _s1="$(cat "$f_last_menu_displayed")"
+        _s2=${_s1#"$D_TM_BASE_PATH/"}
+        error_msg "$_s2 Screen might be too small" 0 false
     fi
     unset dh_t_end
     unset disp_time
@@ -454,7 +456,6 @@ menu_parse() {
         esac
     done
 
-    # if $cfg_use_cache; then
     if $cfg_use_cache; then
         # clear cache (if present)
         log_it "Cashing ${current_script_no_ext}-$menu_idx"
@@ -466,7 +467,6 @@ menu_parse() {
 }
 
 update_wt_actions() {
-    # if $cfg_use_cache; then
     if $cfg_use_cache; then
         # clear actions
         [ "$menu_idx" -eq 1 ] && {
@@ -567,7 +567,6 @@ handle_menu() {
     fi
 
     # 3 - Gather each item in correct order
-    # if $cfg_use_cache; then
     if $cfg_use_cache; then
         for file in "$d_cache_file"/*; do
             # skip special files
@@ -581,18 +580,18 @@ handle_menu() {
             fi
         done
     else
+        log_it "><> menus not using cache"
         generate_menu_items_in_sorted_order
     fi
 
     # 4 Display menu
-    echo "$f_current_script" >"$f_last_menu_displayed"
+    $cfg_use_cache && echo "$f_current_script" >"$f_last_menu_displayed"
     if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
         menu_selection=$(eval "$menu_items" 3>&2 2>&1 1>&3)
         # echo "selection[$menu_selection]"
-        # if $cfg_use_cache; then
-        all_wt_actions=""
 
         if $cfg_use_cache; then
+            all_wt_actions=""
             for file in "$d_wt_actions"/*; do
                 # skip special files
                 fn="$(basename "$file")"
@@ -609,6 +608,7 @@ handle_menu() {
             # for debugging
             # echo "$all_wt_actions" >"$d_wt_actions"/all
         else
+            log_it "><> whiptail not using cache"
             all_wt_actions="$uncached_wt_actions"
         fi
         alt_dialog_parse_selection "$all_wt_actions"

@@ -18,14 +18,13 @@ static_content() {
     fi
 
     fw_span="windows"
-    # 2.5 - only window
     tmux_vers_compare 2.6 && fw_span="sessions & $fw_span"
 
     fw_lbl_line2=" only visible part"
     if tmux_vers_compare 3.2; then
         #  adds ignore case, and zooms the pane
         fw_lbl_line2="$fw_lbl_line2, ignores case"
-        fw_flags="-Zi "
+        fw_flags="-Zi"
     elif tmux_vers_compare 2.9; then
         #  zooms the pane
         fw_flags="-Z"
