@@ -942,7 +942,7 @@ f_tmux_vers_list="$d_scripts"/tmux_vers_list.sh
 #
 # shellcheck disable=SC2086
 tmpdir="${TMPDIR:-/tmp}"
-tmux_pid="$(echo $TMUX | cut -d',' -f2)"
+tmux_pid="$(echo "$TMUX" | cut -d',' -f2)"
 
 f_no_cache_hint="${tmpdir}/${plugin_name}-no_cache_hint-${tmux_pid}"
 
