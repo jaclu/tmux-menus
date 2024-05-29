@@ -142,15 +142,18 @@ get_digits_from_string() {
 #
 #---------------------------------------------------------------
 
-set_tmux_vers() {
+get_tmux_vers() {
+    $TMUX_BIN -V | cut -d ' ' -f 2
+}
+define_tmux_vers_vars() {
     #
     #  Public variables
     #   tmux_vers - currently running tmux version
     #   tmux_i_ref - integer part, used by tmux_vers_check()
     #
 
-    # log_it "set_tmux_vers()"
-    tmux_vers="$($TMUX_BIN -V | cut -d ' ' -f 2)"
+    # log_it "define_tmux_vers_vars()"
+    tmux_vers="$(get_tmux_vers)"
     tmux_i_ref=$(get_digits_from_string "$tmux_vers")
 }
 
@@ -297,7 +300,7 @@ define_tmux_vers_check_env() {
 
     log_it "define_tmux_vers_check_env($ptvcc_changes) - defines tmux_vers"
 
-    set_tmux_vers
+    define_tmux_vers_vars
 
     [ "$ptvcc_changes" != y ] && {
         # make sure we dont end up using a previous instance of this
@@ -703,7 +706,7 @@ generate_param_cache() {
     #
 
     # log_it "generate_param_cache() - defines tmux_vers"
-    set_tmux_vers
+    define_tmux_vers_vars
     get_plugin_params
     $cfg_use_cache && param_cache_write
 }
@@ -721,7 +724,7 @@ cache_validation() {
     # log_it "cache_validation()"
 
     if [ -s "$f_param_cache" ]; then
-        vers_actual="$($TMUX_BIN -V | cut -d ' ' -f 2)" # TODO: use cache
+        vers_actual="$(get_tmux_vers)"
         vers_cached="$(grep tmux_vers "$f_param_cache" |
             sed 's/"//g' | cut -d'=' -f2)"
 
@@ -766,7 +769,7 @@ get_config() {
     # log_it "get_config()"
 
     if [ -f "$f_no_cache_hint" ]; then
-        set_tmux_vers
+        define_tmux_vers_vars
         get_plugin_params
     else
         if [ ! -s "$f_param_cache" ]; then
