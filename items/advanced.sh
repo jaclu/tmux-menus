@@ -14,9 +14,9 @@ dynamic_content() {
     #
     #  Gather some info in order to be able to show states
     #
-    if tmux_vers_compare 2.1; then
-        current_prefix="$($TMUX_BIN show-option -g prefix | cut -d'-' -f2)"
-        current_mouse_status="$($TMUX_BIN show-option -g mouse | cut -d' ' -f2)"
+    if tmux_vers_check 2.1; then
+        current_prefix="$(tmux_error_handler show-option -g prefix | cut -d'-' -f2)"
+        current_mouse_status="$(tmux_error_handler show-option -g mouse | cut -d' ' -f2)"
         if [ "$current_mouse_status" = "on" ]; then
             new_mouse_status="off"
         else

@@ -12,7 +12,7 @@ static_content() {
 
     menu_name="Handling Sessions"
 
-    if tmux_vers_compare 3.2; then
+    if tmux_vers_check 3.2; then
         _s="no-detached"
     else
         _s="off"

@@ -43,9 +43,9 @@ log_it "$(date)"
 $b_cache_has_been_validated || cache_validation
 $b_clear_cache_has_been_called || generate_param_cache
 
-log_it "><> final tmux_vers [$tmux_vers]"
+# log_it "><> final tmux_vers [$tmux_vers]"
 
-if tmux_vers_compare 3.0 && [ "$FORCE_WHIPTAIL_MENUS" != "1" ]; then
+if tmux_vers_check 3.0 && [ "$FORCE_WHIPTAIL_MENUS" != "1" ]; then
     cmd="$d_items/main.sh"
 else
     [ -z "$(command -v whiptail)" ] && {

@@ -12,20 +12,20 @@ static_content() {
     menu_name="Main menu"
 
     choose_tree_cmd="choose-tree"
-    if tmux_vers_compare 2.7; then
+    if tmux_vers_check 2.7; then
         #  zooms the pane
         choose_tree_cmd="$choose_tree_cmd -Z"
     fi
 
     fw_span="windows"
-    tmux_vers_compare 2.6 && fw_span="sessions & $fw_span"
+    tmux_vers_check 2.6 && fw_span="sessions & $fw_span"
 
     fw_lbl_line2=" only visible part"
-    if tmux_vers_compare 3.2; then
+    if tmux_vers_check 3.2; then
         #  adds ignore case, and zooms the pane
         fw_lbl_line2="$fw_lbl_line2, ignores case"
         fw_flags="-Zi"
-    elif tmux_vers_compare 2.9; then
+    elif tmux_vers_check 2.9; then
         #  zooms the pane
         fw_flags="-Z"
     else
@@ -41,7 +41,7 @@ static_content() {
         #  default handling that works in all simpler cases
         #
         rld_cmd="echo $f_current_script > $f_wt_reload_script ;  \
-            $TMUX_BIN command-prompt -I '$cfg_tmux_conf' -p 'Source file:' \
+            tmux_error_handler command-prompt -I '$cfg_tmux_conf' -p 'Source file:' \
             'run-shell \"$d_scripts/reload_conf.sh %% >/dev/null\"'"
     else
         rld_cmd="command-prompt -I '$cfg_tmux_conf' -p 'Source file:' \

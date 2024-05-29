@@ -82,7 +82,7 @@ handle_char() {
 static_content() {
     menu_name="Missing Keys"
 
-    tmux_vers_compare 2.0 || error_msg "needs tmux 2.0"
+    tmux_vers_check 2.0 || error_msg "needs tmux 2.0"
 
     set -- \
         0.0 M Left "Back to Main menu <--" main.sh \
