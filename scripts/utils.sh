@@ -412,14 +412,14 @@ tmux_vers_check() {
 }
 
 is_tmux_option_defined() {
-    $TMUX_BIN show-options -g | grep -q "^$1"
+    tmux_error_handler show-options -g | grep -q "^$1"
 }
 
 get_tmux_option() {
     gto_option="$1"
     gto_default="$2"
 
-    # log_it "get_tmux_option($gto_option, $gto_default)"
+    log_it "get_tmux_option($gto_option, $gto_default)"
 
     [ -z "$gto_option" ] && error_msg "get_tmux_option() param 1 empty!"
 
@@ -858,6 +858,14 @@ wait_to_close_display() {
     fi
 }
 
+relative_path() {
+    # remove D_TM_BASE_PATH prefix
+
+    log_it "relative_path($1)"
+
+    echo "$1" | sed "s|^$D_TM_BASE_PATH/||"
+}
+
 #===============================================================
 #
 #   Main
@@ -894,7 +902,7 @@ d_cache="$D_TM_BASE_PATH"/cache
 #  tmux.conf, to pick the version matching the server running.
 #  This is needed when checking backward compatibility with various versions.
 #  If not found, it is set to whatever is in the path, so should have no negative
-#  impact. In all calls to tmux I use $TMUX_BIN instead in the rest of this
+#  impact. In all calls to tmux I use TMUX_BIN instead in the rest of this
 #  plugin.
 #
 [ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"

@@ -67,9 +67,8 @@ ensure_menu_fits_on_screen() {
     disp_time="$(echo "$dh_t_end - $dh_t_start" | bc)"
     log_it "Menu $current_script_no_ext - Display time [$disp_time]"
     if [ "$(echo "$disp_time < 0.5" | bc)" -eq 1 ]; then
-        _s1="$(cat "$f_last_menu_displayed")"
-        _s2=${_s1#"$D_TM_BASE_PATH/"}
-        error_msg "$_s2 Screen might be too small" 0 true
+        _s="$(relative_path "$(cat "$f_last_menu_displayed")")"
+        error_msg "$_s Screen might be too small" 0 true
     fi
     unset dh_t_end
     unset disp_time
@@ -674,7 +673,7 @@ if [ -z "$D_TM_BASE_PATH" ]; then
     exit 1
 fi
 
-# Only import if needed
+# Only import if needed, checking a random variable
 # shellcheck source=scripts/utils.sh
 [ -z "$tmux_vers" ] && . "$D_TM_BASE_PATH"/scripts/utils.sh
 

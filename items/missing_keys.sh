@@ -136,6 +136,8 @@ D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
 # shellcheck source=scripts/utils.sh
 . "$D_TM_BASE_PATH"/scripts/utils.sh
 
+tmux_vers_check 2.0 || error_msg "$(relative_path "$f_current_script") needs tmux 2.0"
+
 wt_pasting="@menus_wt_paste_in_progress"
 
 if [ -n "$1" ]; then
@@ -148,13 +150,13 @@ else
         #  without a param this buffer is reset
         #
         log_it "clearing pending paste buffer indicator"
-        tmux_error_handler set-option -gqu "$wt_pasting"
+        $TMUX_BIN set-option -gqu "$wt_pasting"
     }
 fi
 
 log_it "><> sourcing dialog_handling.sh"
 # shellcheck source=scripts/dialog_handling.sh
-. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
+. "$d_scripts"/dialog_handling.sh
 
 e="$?"
 if [ "$e" -ne 0 ]; then
