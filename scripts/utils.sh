@@ -161,6 +161,7 @@ tmux_error_handler() {
     #
     #  Detects any errors reported by tmux commands and gives notification
     #
+    cmd="$*"
 
     # log_it "tmux_error_handler($cmd)"
 
