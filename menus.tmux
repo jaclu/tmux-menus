@@ -31,8 +31,8 @@
 
 D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$0")")"
 
-# shellcheck source=scripts/utils.sh
-. "$D_TM_BASE_PATH"/scripts/utils.sh
+# shellcheck source=scripts/helpers.sh
+. "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 #
 #  By printing a NL and date, its easier to keep separate runs apart
@@ -41,9 +41,17 @@ log_it
 log_it "$(date)"
 
 $b_cache_has_been_validated || cache_validation
-$b_clear_cache_has_been_called || generate_param_cache
+$b_cache_clear_has_been_called || cache_update_params
 
-# log_it "><> final tmux_vers [$tmux_vers]"
+[ -f "$f_cache_tmux_known_vers" ] && { # implied check if caching is used
+    #
+    #  Add running vers to known versions if not recognized
+    #
+    if echo "$cache_ok_tmux_versions" | grep -qv "\b$tmux_vers\b"; then
+        cache_ok_tmux_versions="$cache_ok_tmux_versions $tmux_vers"
+        cache_param_write "y"
+    fi
+}
 
 if tmux_vers_check 3.0 && [ "$FORCE_WHIPTAIL_MENUS" != "1" ]; then
     cmd="$d_items/main.sh"
@@ -67,6 +75,6 @@ if $cfg_no_prefix; then
 else
     trigger_sequence="Menus bound to: <prefix> $cfg_trigger_key"
 fi
-
+log_it "trigger:[$cfg_trigger_key]"
 tmux_error_handler bind-key "$@" "$cfg_trigger_key" run-shell "$cmd"
 log_it "$trigger_sequence"

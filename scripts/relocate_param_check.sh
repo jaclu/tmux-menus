@@ -14,8 +14,8 @@
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
 
-# shellcheck source=scripts/utils.sh
-. "$D_TM_BASE_PATH"/scripts/utils.sh
+# shellcheck source=scripts/helpers.sh
+. "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 # Should be sourced
 _this="relocate_param_check.sh" # error prone if script name is changed :(

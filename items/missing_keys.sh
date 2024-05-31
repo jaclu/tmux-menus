@@ -35,7 +35,6 @@ display_char() {
             #  prefix with pending paste buffer
             c="$(tmux_error_handler show-buffer)$c"
         else
-            log_it "><> setting [$wt_pasting] to yes"
             tmux_error_handler set-option -g "$wt_pasting" 'yes'
         fi
 
@@ -133,8 +132,8 @@ static_content() {
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
 
-# shellcheck source=scripts/utils.sh
-. "$D_TM_BASE_PATH"/scripts/utils.sh
+# shellcheck source=scripts/helpers.sh
+. "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 tmux_vers_check 2.0 || error_msg "$(relative_path "$f_current_script") needs tmux 2.0"
 
@@ -154,11 +153,10 @@ else
     }
 fi
 
-log_it "><> sourcing dialog_handling.sh"
 # shellcheck source=scripts/dialog_handling.sh
 . "$d_scripts"/dialog_handling.sh
 
 e="$?"
 if [ "$e" -ne 0 ]; then
-    log_it "><> $current_script exiting [$e]"
+    log_it "$current_script exiting [$e]"
 fi

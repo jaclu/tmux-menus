@@ -68,7 +68,7 @@ ensure_menu_fits_on_screen() {
     log_it "Menu $current_script_no_ext - Display time [$disp_time]"
     if [ "$(echo "$disp_time < 0.5" | bc)" -eq 1 ]; then
         _s="$(relative_path "$(cat "$f_last_menu_displayed")")"
-        error_msg "$_s Screen might be too small" 0 true
+        error_msg "$_s Screen might be too small"
     fi
     unset dh_t_end
     unset disp_time
@@ -195,8 +195,6 @@ alt_dialog_command() {
 
     menu_items="$menu_items $key \"$label\""
     if $keep_cmd; then
-        # use command unmodified as given
-        # log_it "><> alt_dialog_command() - keep set"
         wt_actions="$wt_actions $key_action | $cmd $alt_dialog_action_separator"
     else
         wt_actions="$wt_actions $key_action | tmux_error_handler $cmd $alt_dialog_action_separator"
@@ -348,7 +346,7 @@ menu_parse() {
             ;;
 
         "C")
-            #  direct tmux command - params: key label task
+            #  direct tmux command - params: key label task [keep] [reload]
             key="$1"
             shift
             label="$1"
@@ -368,8 +366,8 @@ menu_parse() {
             [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
 
             if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
-                # log_it "><> menu_parse() C - keep is [$keep_cmd]"
                 alt_dialog_command "$label" "$key" "$cmd" "$keep_cmd"
+
             else
                 tmux_command "$label" "$key" "$cmd"
             fi
@@ -571,7 +569,7 @@ sort_menu_items() {
             fi
         done
     else
-        log_it "><> menus not using cache"
+        # log_it "><> menus not using cache"
         generate_menu_items_in_sorted_order
     fi
 }
@@ -614,7 +612,7 @@ handle_wt_selecion() {
 
 display_menu() {
     #  this is used to label menu if the might be too small is displayed
-    $cfg_use_cache && echo "$f_current_script" >"$f_last_menu_displayed"
+    echo "$f_current_script" >"$f_last_menu_displayed"
 
     if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
         # display whiptail menu
@@ -624,6 +622,7 @@ display_menu() {
     else
         dh_t_start="$(safe_now)"
         eval "$menu_items"
+
         ensure_menu_fits_on_screen
         unset dh_t_start
     fi
@@ -646,6 +645,10 @@ handle_menu() {
     # 2 - Handle dynamic parts (if any)
     handle_dynamic
 
+    $b_cache_delayed_param_write && {
+        cache_param_write "y"
+    }
+
     # 3 - Gather each item in correct order
     sort_menu_items
 
@@ -660,7 +663,7 @@ handle_menu() {
 #===============================================================
 
 if [ -z "$D_TM_BASE_PATH" ]; then
-    # utils not yet sourced, so error_missing_param() not yet available
+    # helpers not yet sourced, so error_missing_param() not yet available
     msg="dialog_handling.sh - D_TM_BASE_PATH must be set!"
     error_msg "$msg" 0 true || {
         #
@@ -674,8 +677,8 @@ if [ -z "$D_TM_BASE_PATH" ]; then
 fi
 
 # Only import if needed, checking a random variable
-# shellcheck source=scripts/utils.sh
-[ -z "$tmux_vers" ] && . "$D_TM_BASE_PATH"/scripts/utils.sh
+# shellcheck source=scripts/helpers.sh
+[ -z "$tmux_vers" ] && . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 [ -z "$TMUX" ] && error_msg "$plugin_name can only be used inside tmux!"
 
@@ -688,7 +691,7 @@ fi
     #  This is most likely a leftover due to some bug.
     #
 
-    # log_it "><> Found reload script - deleting it"
+    log_it "Found reload script - deleting it"
     rm -f "$f_wt_reload_script"
 }
 

@@ -32,10 +32,10 @@ show_item() {
 
 D_TM_BASE_PATH=$(dirname "$(dirname -- "$(realpath "$0")")")
 
-#  shellcheck source=scripts/utils.sh
-. "$D_TM_BASE_PATH"/scripts/utils.sh
+#  shellcheck source=scripts/helpers.sh
+. "$D_TM_BASE_PATH"/scripts/helpers.sh
 
-get_defaults
+tmux_get_defaults
 
 echo "config vairable        default  value"
 echo "---------------------- -------  -----"

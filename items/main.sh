@@ -86,14 +86,10 @@ static_content() {
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
 
-# shell check source=scripts/utils.sh
-# . "$D_TM_BASE_PATH"/scripts/utils.sh  # needed for log_it before dialog_handling
-# log_it "><> $current_script starting [$?]"
-
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 
 e="$?"
 if [ "$e" -ne 0 ]; then
-    log_it "><> $current_script exiting [$e]"
+    log_it "$current_script exiting [$e]"
 fi

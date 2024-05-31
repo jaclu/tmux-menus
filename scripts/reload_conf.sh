@@ -12,8 +12,8 @@
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
 
-# shellcheck source=scripts/utils.sh
-. "$D_TM_BASE_PATH"/scripts/utils.sh
+# shellcheck source=scripts/helpers.sh
+. "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 if tmux_error_handler source-file "$1"; then
     tmux_error_handler display 'Sourced it!'
