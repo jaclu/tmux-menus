@@ -143,6 +143,10 @@ normalize_bool_param() {
 }
 
 tmux_escape_special_chars() {
+    #
+    #  Will iterate over each character, and populate tesc_esc_str
+    #  with either the escaped version or the original char
+    #
     tesc_str="$1"
     tesc_idx=0
     while true; do
@@ -154,31 +158,21 @@ tmux_escape_special_chars() {
             tesc_idx=$((tesc_idx + 1))
             char="$char$(extract_char "$tesc_str" "$tesc_idx")"
         }
-        # echo "><> tesc_idx[$tesc_idx] tesc_str[$tesc_str] char[$char]" >/dev/stderr
         case "$char" in
         \\)
-            # echo "><> found double bslash" >/dev/stderr
             tesc_esc_str="${tesc_esc_str}\\\\"
-            sleep 1
             ;;
         \")
-            # echo "><> found bslash dquote" >/dev/stderr
             tesc_esc_str="${tesc_esc_str}\\\""
-            sleep 1
             ;;
         \$)
-            # echo "><> found bslash dollar" >/dev/stderr
             tesc_esc_str="${tesc_esc_str}\\$"
-            sleep 1
             ;;
         \#)
-            # echo "><> found bslash dash" >/dev/stderr
             tesc_esc_str="${tesc_esc_str}\\#"
-            sleep 1
             ;;
         *)
             tesc_esc_str="${tesc_esc_str}${char}"
-            sleep 0.1
             ;;
         esac
 
@@ -229,51 +223,61 @@ tmux_error_handler() { # cache references
 
     # log_it "tmux_error_handler($teh_cmd)"
 
+    # shellcheck disable=SC2154
     if $cfg_use_cache; then
-        # shellcheck disable=SC2154
-        mkdir -p "$d_cache"
-        f_tmux_err="$d_cache"/tmux-err
-
-        $TMUX_BIN "$@" 2>"$f_tmux_err" && rm -f "$f_tmux_err"
-
-        [ -s "$f_tmux_err" ] && {
-            #
-            #  First save the error to a n
-            base_fname="$(tr -cs '[:alnum:]._' '_' <"$f_tmux_err")"
-            [ -z "$base_fname" ] && base_fname="tmux-error"
-            f_error_log="$d_cache/error-$base_fname"
-
-            [ -f "$f_error_log" ] && {
-                cuc_i=1
-                f_error_log="${f_error_log}-$cuc_i"
-                while [ -f "$f_error_log" ]; do
-                    cuc_i=$((cuc_i + 1))
-                    f_error_log="${f_tmux_err}-$cuc_i"
-                    [ "$cuc_i" -gt 1000 ] && {
-                        error_msg "Aborting runaway loop - cuc_i=$cuc_i"
-                    }
-                done
-            }
-            log_it "Failed command: [$teh_cmd]"
-            log_it "saved error to: $f_error_log"
-            (
-                echo "$teh_cmd"
-                echo
-                echo "ERROR: $(cat "$f_tmux_err")"
-            ) >"$f_error_log"
-            #
-            #  Since this terminates, no point in unsetting variables
-            #  defined in this error handler
-            #
-            msg="$(cat "$f_tmux_err") details: $(relative_path "$f_error_log")"
-            error_msg "$msg"
-        }
-        unset f_tmux_err
+        d_errors="$d_cache"
     else
-        $TMUX_BIN "$@" || {
-            error_msg "tmux cmd gave error: $?"
-        }
+        d_errors="$d_tmp"
     fi
+    f_tmux_err="$d_errors"/tmux-err
+    log_it "><> f_tmux_err[$f_tmux_err]"
+    $TMUX_BIN "$@" 2>"$f_tmux_err" && rm -f "$f_tmux_err"
+
+    # shellcheck disable=SC2154
+    [ -s "$f_tmux_err" ] && {
+        #
+        #  First save the error to a n
+        base_fname="$(tr -cs '[:alnum:]._' '_' <"$f_tmux_err")"
+        [ -z "$base_fname" ] && base_fname="tmux-error"
+        f_error_log="$d_errors/error-$base_fname"
+
+        [ -f "$f_error_log" ] && {
+            cuc_i=1
+            f_error_log="${f_error_log}-$cuc_i"
+            while [ -f "$f_error_log" ]; do
+                cuc_i=$((cuc_i + 1))
+                f_error_log="${f_tmux_err}-$cuc_i"
+                [ "$cuc_i" -gt 1000 ] && {
+                    error_msg "Aborting runaway loop - cuc_i=$cuc_i"
+                }
+            done
+        }
+        log_it "Failed command: [$teh_cmd]"
+        log_it "saved error to: $f_error_log"
+        (
+            echo "$teh_cmd"
+            echo
+            echo "ERROR: $(cat "$f_tmux_err")"
+        ) >"$f_error_log"
+
+        set -- \
+            "\nplugin: %s:%s  [$$] - tmux cmd failed:\n\n%s\n
+                \nThe full error message has been saved in:\n%s
+                \nFull path:\n%s\n" \
+            \
+            "$plugin_name" "$current_script" \
+            "$(cat "$f_error_log")" \
+            "$(relative_path "$f_error_log")" \
+            "$f_error_log"
+
+        error_msg_formated "$@"
+    }
+    unset f_tmux_err
+    # else
+    #     $TMUX_BIN "$teh_cmd" || {
+    #         error_msg "tmux cmd[$] gave error: $?"
+    #     }
+    # fi
 
     unset teh_cmd
     return 0

@@ -32,6 +32,10 @@ error_msg() {
     #  Display $1 as an error message in log and as a tmux display-message
     #  unless do_display_message is false
     #
+    #  Using do_display_message is only practical for short one liners,
+    #  for longer error msgs, needing formating, use error_msg_formated()
+    #  instead.
+    #
     #  exit_code defaults to 0, which might seem odd for an error exit,
     #  but in combination with display-message it makes sense.
     #  If the script exits with something else than 0, the current pane
@@ -55,9 +59,6 @@ error_msg() {
         log_it "$em_msg"
         log_it
 
-        #  display-message filters out \n
-        em_msg="$(echo "$em_msg" | tr '\n' ' ')"
-
         $do_display_message && display_message_hold "$plugin_name $em_msg"
     fi
 
@@ -68,13 +69,80 @@ error_msg() {
     unset do_display_message
 }
 
+# shellcheck disable=SC2154
+error_msg_formated() {
+    #
+    #  Supply the params to a printf, and depending on tmux version
+    #  a suitable method will be used to display the formated error.
+    #  If you need to line-split the printf directive, in order for it to
+    #  not become too long, split just before a \n for example,
+    #  then the line split wont impact the display, I made it below
+    #  just as an exmple
+    #
+    #  Please dont include instructions how to close the display, that
+    #  is done here, since it depends on what tmux version is used
+    #
+    #  Sample usage:
+    #   set -- \
+    #       "\nplugin: %s:%s  [$$] - tmux cmd failed:\n\n%s\n
+    #       \nThe full error message has been saved in:\n%s
+    #       \nFull path:\n%s\n" \
+    #       \
+    #       "$plugin_name" \
+    #       "$current_script" \
+    #       "$(cat "$f_error_log")" \
+    #       "$(relative_path "$f_error_log")" \
+    #       "$f_error_log"
+    #
+    #     error_msg_formated "$@"
+    #
+    #  Cant use tmux_error_handler() here - it could lead to recursion
+    #
+    emf_err="$(printf "$@")"
+
+    [ -z "$TMUX" ] && {
+        #  with no tmux env, tmux cant be used to display the message
+        echo "$emf_err" >/dev/stderr
+        exit 1
+    }
+
+    # emf_err_q="$(
+    #     echo "$emf_err"
+    #     echo
+    #     echo "Press ESC to close this display"
+    # )"
+    # if tmux_vers_check 3.3; then # using full pane display view
+    #     # subpar cuts of long lines
+    #     $TMUX_BIN run-shell "echo '$emf_err_q'"
+    # elif tmux_vers_check 3.2; then # using display-popup
+    #     # subpar prevents checking other panes or windows
+    #     $TMUX_BIN display-popup -h 90% -w 95% "echo '$emf_err_q'"
+    # else # display in a tmp window
+    emf_err_q="$(
+        echo "$emf_err"
+        echo
+        echo "Scroll-mode: <prefix> ["
+        echo "Press Ctrl-C to close this temporary window"
+    )"
+    # posix way to wait forever - MacOS doesnt have: sleep infinity
+    $TMUX_BIN new-window -n "tmux-error" \
+        "echo '$emf_err_q' ; tail -f /dev/null "
+    # fi
+
+    # pointless since this is exiting, but that might change some day
+    unset emf_err emf_err_q
+
+    error_msg "Terminating after error_msg_formated()" 1 false
+}
+
 display_message_hold() {
     #
     #  Display a message and hold until key-press
     #  Can't use tmux_error_handler in this func, since that could
     #  trigger recursion
     #
-    dmh_msg="$1"
+    #  display-message filters out \n
+    dmh_msg="$(echo "$1" | tr '\n' ' ')"
 
     if tmux_vers_check 3.2; then
         # message will remain until key-press
@@ -279,17 +347,18 @@ fi
 if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
     menu_reload="; $f_current_script"
     #
-    #  in whiptail run-shell cant chain to another menu, so instead
-    #  reload script is written to a tmp file, and if it is found
-    #  it will be exeuted at the end of dialog_handling.sh
+    #  I havent been able do to menu reload with whiptail yet,
+    #  so disabled for now
     #
-    f_wt_reload_script="$d_tmp/${plugin_name}-reload-${tmux_pid}"
+    # f_wt_reload_script="$d_tmp/${plugin_name}-reload-${tmux_pid}"
     # reload_in_runshell="echo $f_current_script > $f_wt_reload_script ;"
     reload_in_runshell="" # TODO: try to fix this...
-
 else
     menu_reload="; run-shell \"$f_current_script\""
     reload_in_runshell=" ; $f_current_script"
 fi
 
-# log_it "-----   end of helpers.sh"
+# log_it "><> new window"
+# $TMUX_BIN new-window "htop"
+# error_msg "end of helpers.sh" 1 false
+log_it "-----   end of helpers.sh"

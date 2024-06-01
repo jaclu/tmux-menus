@@ -243,31 +243,20 @@ alt_dialog_parse_selection() {
         section="${lst%%"${alt_dialog_action_separator}"*}" # up to first colon excluding it
         lst="${lst#*"${alt_dialog_action_separator}"}"      # after fist colon
 
-        #  strip leading and trailing spaces
-        # section=${section#"${string%%[![:space:]]*}"}
-        # section=${section%%[[:space:]]*}
-
-        # echo ">> section [$section]"
         i=$((i + 1))
-        # echo "i $i"
         [ "$i" -gt 50 ] && break
         [ -z "$section" ] && continue # skip blank lines
-        # echo ">> reimainder [$lst]"
 
         key="$(echo "$section" | cut -d'|' -f 1 | awk '{$1=$1};1')"
         action="$(echo "$section" | cut -d'|' -f 2 | awk '{$1=$1};1')"
 
-        # echo ">> section [$section]"
-        # echo ">> name [$key] action [$action]"
-        if [ "$key" = "$menu_selection" ]; then
-            # echo "Will run whiptail triggered action:"
-            # echo "$action"
-            # sleep 1
+        if [ "$key" = "$menu_selection" ] && [ -n "$action" ]; then
+            # log_it "><> Will run whiptail triggered action:"
+            # log_it "><> action: $action"
             eval "$action"
             break
         fi
         [ "$lst" = "" ] && break # we have processed last group
-        # echo
     done
 }
 
@@ -369,7 +358,7 @@ menu_parse() {
                 alt_dialog_command "$label" "$key" "$cmd" "$keep_cmd"
 
             else
-                tmux_command "$label" "$key" "$cmd"
+                tmux_command "$label" "$key" "$cmd" "$keep_cmd"
             fi
             unset keep_cmd
             ;;
@@ -518,9 +507,11 @@ generate_menu_items_in_sorted_order() {
 }
 
 handle_static_cached() {
+    #
     #  Calculate the relative path, to avoid name collitions if
     #  two items with same name in different rel paths are used
-    rel_path=$(echo "$d_current_script" | sed "s|$D_TM_BASE_PATH/||")
+    #
+    rel_path="$(relative_path "$d_current_script")"
 
     #  items/main.sh -> items_main
     current_script_no_ext="$(echo "$current_script" | sed 's/\.[^.]*$//')"
@@ -665,13 +656,16 @@ handle_menu() {
 if [ -z "$D_TM_BASE_PATH" ]; then
     # helpers not yet sourced, so error_missing_param() not yet available
     msg="dialog_handling.sh - D_TM_BASE_PATH must be set!"
-    error_msg "$msg" 0 true || {
+    error_msg "$msg" || {
         #
         #  error_msg is unlikely to work in this condition, but at least
-        #  make an attempt to do a tmux notification
+        #  make an attempt to do a tmux notification, use this as fall back
         #
-        echo
-        echo "ERROR: $msg"
+        (
+            echo
+            echo "ERROR: $msg"
+            echo
+        ) >/dev/stderr
     }
     exit 1
 fi
@@ -684,16 +678,21 @@ fi
 
 ! tmux_vers_check 3.0 && FORCE_WHIPTAIL_MENUS=1
 
-[ "$FORCE_WHIPTAIL_MENUS" = 1 ] && [ -f "$f_wt_reload_script" ] && {
-    #
-    #  Delete old reload scripts, they will be created during execution
-    #  of a menu, and then if found executed at end of this one.
-    #  This is most likely a leftover due to some bug.
-    #
+# not working right now, so disabeling
+# [ "$FORCE_WHIPTAIL_MENUS" = 1 ] && {
+#     if [ -f "$f_wt_reload_script" ]; then
+#         #
+#         #  Delete old reload scripts, they will be created during execution
+#         #  of a menu, and then if found executed at end of this one.
+#         #  This is most likely a leftover due to some bug.
+#         #
 
-    log_it "Found reload script - deleting it"
-    rm -f "$f_wt_reload_script"
-}
+#         log_it "[$$]-----   Found reload script - deleting it"
+#         rm -f "$f_wt_reload_script"
+#     else
+#         log_it "><>[$$]-----   no wt_reload_script found at start fo dialog_handling"
+#     fi
+# }
 
 #
 #  What alternate dialog app to use, if tmux built in dialogs will not
@@ -723,15 +722,20 @@ if [ "$e" -ne 0 ]; then
     log_it "><> $current_script - dialog_handling - before wt_reload [$e]"
 fi
 
-if [ "$FORCE_WHIPTAIL_MENUS" = 1 ] && [ -f "$f_wt_reload_script" ]; then
-    #
-    #  in whiptail run-shell cant chain to another menu, so instead
-    #  reload script is written to a tmp file, and if it is found
-    #  it will be exeuted
-    #
-    log_it "Will run f_wt_reload_script[$f_wt_reload_script]"
-    /bin/sh "$f_wt_reload_script"
-fi
+# not working right now, so disabeling
+# [ "$FORCE_WHIPTAIL_MENUS" = 1 ] && {
+#     if [ -f "$f_wt_reload_script" ]; then
+#         #
+#         #  in whiptail run-shell cant chain to another menu, so instead
+#         #  reload script is written to a tmp file, and if it is found
+#         #  it will be exeuted
+#         #
+#         log_it "[$$]+++++   Will run f_wt_reload_script[$f_wt_reload_script]"
+#         /bin/sh "$f_wt_reload_script"
+#     else
+#         log_it "><>[$$]+++++   no wt_reload_script found at end of dialog handling"
+#     fi
+# }
 
 e="$?"
 if [ "$e" -ne 0 ]; then
