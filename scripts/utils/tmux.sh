@@ -13,16 +13,14 @@
 tmux_get_vers() {
     $TMUX_BIN -V | cut -d ' ' -f 2
 }
+
 tmux_set_vers_vars() {
     #
     #  Public variables
     #   tmux_vers - currently running tmux version
     #   tmux_i_ref - integer part, used by tmux_vers_check()
     #
-
-    # log_it "tmux_set_vers_vars()"
     tmux_vers="$(tmux_get_vers)"
-    # error_msg "><> after checking if tmux_vers is known" 1 false
     tmux_i_ref=$(get_digits_from_string "$tmux_vers")
 }
 
@@ -71,7 +69,6 @@ tmux_get_option() {
         #  All other versions correctly fails on unassigned @options
         tgo_value="$tgo_default"
     fi
-    # log_it "><> tgo_option[$tgo_option] tgo_default[$tgo_default] tgo_value[$tgo_value]"
     echo "$tgo_value"
 
     unset tgo_option
@@ -230,55 +227,47 @@ tmux_error_handler() { # cache references
         d_errors="$d_tmp"
     fi
     f_tmux_err="$d_errors"/tmux-err
-    log_it "><> f_tmux_err[$f_tmux_err]"
+
     $TMUX_BIN "$@" 2>"$f_tmux_err" && rm -f "$f_tmux_err"
 
     # shellcheck disable=SC2154
     [ -s "$f_tmux_err" ] && {
         #
-        #  First save the error to a n
+        #  First save the error to a named file
+        #
         base_fname="$(tr -cs '[:alnum:]._' '_' <"$f_tmux_err")"
         [ -z "$base_fname" ] && base_fname="tmux-error"
         f_error_log="$d_errors/error-$base_fname"
 
         [ -f "$f_error_log" ] && {
-            cuc_i=1
-            f_error_log="${f_error_log}-$cuc_i"
+            teh_i=1
+            f_error_log="${f_error_log}-$teh_i"
             while [ -f "$f_error_log" ]; do
-                cuc_i=$((cuc_i + 1))
-                f_error_log="${f_tmux_err}-$cuc_i"
-                [ "$cuc_i" -gt 1000 ] && {
-                    error_msg "Aborting runaway loop - cuc_i=$cuc_i"
+                teh_i=$((teh_i + 1))
+                f_error_log="${f_tmux_err}-$teh_i"
+                [ "$teh_i" -gt 1000 ] && {
+                    error_msg "Aborting runaway loop - teh_i=$teh_i"
                 }
             done
+            unset teh_i
         }
-        log_it "Failed command: [$teh_cmd]"
         log_it "saved error to: $f_error_log"
         (
-            echo "$teh_cmd"
+            echo "\$TMUX_BIN $teh_cmd"
             echo
-            echo "ERROR: $(cat "$f_tmux_err")"
+            cat "$f_tmux_err"
         ) >"$f_error_log"
 
-        set -- \
-            "\nplugin: %s:%s  [$$] - tmux cmd failed:\n\n%s\n
-                \nThe full error message has been saved in:\n%s
-                \nFull path:\n%s\n" \
-            \
-            "$plugin_name" "$current_script" \
-            "$(cat "$f_error_log")" \
-            "$(relative_path "$f_error_log")" \
-            "$f_error_log"
-
-        error_msg_formated "$@"
+        error_msg "$(
+            printf "tmux cmd failed:\n\n%s\n
+            \nThe full error message has been saved in:\n%s
+            \nFull path:\n%s\n" \
+                "$(cat "$f_error_log")" \
+                "$(relative_path "$f_error_log")" \
+                "$f_error_log"
+        )"
     }
     unset f_tmux_err
-    # else
-    #     $TMUX_BIN "$teh_cmd" || {
-    #         error_msg "tmux cmd[$] gave error: $?"
-    #     }
-    # fi
-
     unset teh_cmd
     return 0
 }
@@ -289,7 +278,6 @@ tmux_vers_check() { # cache references
     #  If only one param is given it is compared vs version of running tmux
     #
 
-    # log_it "><> tmux_vers_check($1,$2) tmux_vers[$tmux_vers]"
     [ -z "$2" ] && [ -z "$tmux_vers" ] && {
         tvc_msg="tmux_vers_check() called with neither \$2 or \$tmux_vers set"
         error_msg "$tvc_msg"
@@ -347,7 +335,6 @@ tmux_vers_check() { # cache references
                 b_cache_delayed_param_write=true
             }
         else
-            log_it "><> v_ref[$v_ref] not tmux_vers[$tmux_vers]"
             i_ref=$(get_digits_from_string "$v_ref")
         fi
     else
@@ -379,7 +366,6 @@ tmux_get_plugin_options() { # cache references
     #
     #  Setup env depending on if cache is used or not
     #
-    # log_it "><> use_cache: $cfg_use_cache"
     if $cfg_use_cache; then
         mkdir -p "$d_cache"
         # shellcheck disable=SC2154

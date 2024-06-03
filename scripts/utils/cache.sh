@@ -47,7 +47,7 @@ cache_define_ok_bad_tmux_vers() { # tmux stuff
     # make sure we dont end up using a previous instance of this
     unset cache_known_tmux_vers
     [ -f "$f_cache_tmux_known_vers" ] || {
-        log_it "><> no vers list found, generating it"
+        # log_it "><> no vers list found, generating it"
         cache_save_known_tmux_vers
     }
 
@@ -116,10 +116,6 @@ tmux_vers="$tmux_vers"
 tmux_i_ref="$tmux_i_ref"
 cache_ok_tmux_versions="$cache_ok_tmux_versions"
 cache_bad_tmux_versions="$cache_bad_tmux_versions"
-
-#  If logging is enabled, sourcing this will be logged
-# log_it "><> param cache was sourced"
-
 EOF
     #endregion
     unset cpw_vers_changes
@@ -175,7 +171,6 @@ cache_validation() { # tmux stuff
 
     #  Ensure param cache is current
     if $b_cache_clear_has_been_called || [ ! -f "$f_cache_params" ]; then
-        log_it "><> cache_validation() calling cache_update_params"
         cache_update_params
     fi
 
@@ -220,7 +215,6 @@ cache_save_known_tmux_vers() { # tmux stuff
         #  0.0 is a custom version used by tmux-menus, to indicate an
         #      an action that should always be done
         #
-        # log_it "><> -----  using all known versions"
         if true; then
             cache_known_tmux_vers="
             0.0
@@ -283,7 +277,6 @@ cache_known_tmux_vers="$(echo "$cache_known_tmux_vers" | sed 's/ /\n/g' | sort |
 
 EOF
     #endregion
-    # log_it "wrote $f_cache_tmux_known_vers"
 }
 
 #===============================================================

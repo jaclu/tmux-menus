@@ -75,6 +75,7 @@ if $cfg_no_prefix; then
 else
     trigger_sequence="Menus bound to: <prefix> $cfg_trigger_key"
 fi
+
 log_it "trigger:[$cfg_trigger_key]"
 tmux_error_handler bind-key "$@" "$cfg_trigger_key" run-shell "$cmd"
 log_it "$trigger_sequence"

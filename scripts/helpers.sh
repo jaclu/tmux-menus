@@ -48,18 +48,34 @@ error_msg() {
     #
     #  If exit_code is set to -1, process is not exited
     #
-    em_msg="ERROR: $1"
+    em_msg="$1"
     exit_code="${2:-0}"
     do_display_message=${3:-true}
 
+    # with no tmux env, dumping it to stderr is the only option
+    [ -z "$TMUX" ] && log_interactive_to_stderr=true
+
     if $log_interactive_to_stderr && [ -t 0 ]; then
-        echo "$em_msg" >/dev/stderr
+        [ -z "$TMUX" ] && {
+            (
+                echo
+                echo "***  This does not seem to be running in a tmux env  ***"
+                echo
+            ) >/dev/stderr
+        }
+        echo "ERROR: $em_msg" >/dev/stderr
     else
         log_it
-        log_it "$em_msg"
+        log_it "ERROR: $em_msg"
         log_it
 
-        $do_display_message && display_message_hold "$plugin_name $em_msg"
+        $do_display_message && {
+            if [ "${#em_msg}" -gt 50 ] || has_lf_not_at_end "$em_msg"; then
+                error_msg_formated "$em_msg"
+            else
+                display_message_hold "$plugin_name ERR: $em_msg"
+            fi
+        }
     fi
 
     [ "$exit_code" -gt -1 ] && exit "$exit_code"
@@ -72,67 +88,47 @@ error_msg() {
 # shellcheck disable=SC2154
 error_msg_formated() {
     #
-    #  Supply the params to a printf, and depending on tmux version
-    #  a suitable method will be used to display the formated error.
-    #  If you need to line-split the printf directive, in order for it to
-    #  not become too long, split just before a \n for example,
-    #  then the line split wont impact the display, I made it below
-    #  just as an exmple
+    #  Display an error in its own frame, supporting longer messages
+    #  and also those formated with LFs
     #
-    #  Please dont include instructions how to close the display, that
-    #  is done here, since it depends on what tmux version is used
+    #  Cant use tmux_error_handler() or error_msg() here - it could lead to
+    #  recursion
     #
-    #  Sample usage:
-    #   set -- \
-    #       "\nplugin: %s:%s  [$$] - tmux cmd failed:\n\n%s\n
-    #       \nThe full error message has been saved in:\n%s
-    #       \nFull path:\n%s\n" \
-    #       \
-    #       "$plugin_name" \
-    #       "$current_script" \
-    #       "$(cat "$f_error_log")" \
-    #       "$(relative_path "$f_error_log")" \
-    #       "$f_error_log"
-    #
-    #     error_msg_formated "$@"
-    #
-    #  Cant use tmux_error_handler() here - it could lead to recursion
-    #
-    emf_err="$(printf "$@")"
+    emf_err="$1"
 
-    [ -z "$TMUX" ] && {
-        #  with no tmux env, tmux cant be used to display the message
-        echo "$emf_err" >/dev/stderr
-        exit 1
-    }
+    # log_it "error_msg_formated($emf_err)"
 
-    # emf_err_q="$(
-    #     echo "$emf_err"
+    emf_msg="$(
+        echo "ERROR in plugin: $plugin_name:$current_script [$$]"
+        echo
+        echo "$emf_err"
+    )"
+
+    # emf_msg="$(
+    #     echo "$emf_msg"
     #     echo
     #     echo "Press ESC to close this display"
     # )"
     # if tmux_vers_check 3.3; then # using full pane display view
     #     # subpar cuts of long lines
-    #     $TMUX_BIN run-shell "echo '$emf_err_q'"
+    #     $TMUX_BIN run-shell "echo '$emf_msg'"
     # elif tmux_vers_check 3.2; then # using display-popup
     #     # subpar prevents checking other panes or windows
-    #     $TMUX_BIN display-popup -h 90% -w 95% "echo '$emf_err_q'"
+    #     $TMUX_BIN display-popup -h 90% -w 95% "echo '$emf_msg'"
     # else # display in a tmp window
-    emf_err_q="$(
-        echo "$emf_err"
+    emf_msg="$(
+        echo "$emf_msg"
         echo
         echo "Scroll-mode: <prefix> ["
         echo "Press Ctrl-C to close this temporary window"
     )"
     # posix way to wait forever - MacOS doesnt have: sleep infinity
     $TMUX_BIN new-window -n "tmux-error" \
-        "echo '$emf_err_q' ; tail -f /dev/null "
+        "echo '$emf_msg' ; tail -f /dev/null "
     # fi
 
     # pointless since this is exiting, but that might change some day
-    unset emf_err emf_err_q
-
-    error_msg "Terminating after error_msg_formated()" 1 false
+    unset emf_err emf_msg
 }
 
 display_message_hold() {
@@ -141,8 +137,8 @@ display_message_hold() {
     #  Can't use tmux_error_handler in this func, since that could
     #  trigger recursion
     #
-    #  display-message filters out \n
-    dmh_msg="$(echo "$1" | tr '\n' ' ')"
+    # log_it "display_message_hold()"
+    dmh_msg="$1"
 
     if tmux_vers_check 3.2; then
         # message will remain until key-press
@@ -155,6 +151,7 @@ display_message_hold() {
 
         posix_get_char >/dev/null # wait for keypress
         $TMUX_BIN set -g display-time "$org_display_time" >/dev/null
+
         unset org_display_time
     fi
     unset dmh_msg
@@ -200,6 +197,15 @@ get_digits_from_string() {
     # log_it "get_digits_from_string($s) -> [$i]"
     echo "$i"
     unset s i
+}
+
+has_lf_not_at_end() {
+    #
+    #  POSIX hack I came up with to check if a string contains LF
+    #  somewhere within, since I could not figure out how to to substring
+    #  search for LF in this env
+    #
+    [ "$1" != "$(printf "$1" | tr '\n' 'X')" ]
 }
 
 #---------------------------------------------------------------
@@ -295,8 +301,6 @@ log_interactive_to_stderr=false
 
 [ -z "$D_TM_BASE_PATH" ] && error_msg "D_TM_BASE_PATH undefined"
 
-# log_it "><> sourcing helpers.sh"
-
 # ensure no caching until the setting has been read
 cfg_use_cache=false
 
@@ -358,7 +362,4 @@ else
     reload_in_runshell=" ; $f_current_script"
 fi
 
-# log_it "><> new window"
-# $TMUX_BIN new-window "htop"
-# error_msg "end of helpers.sh" 1 false
-log_it "-----   end of helpers.sh"
+# log_it "-----   end of helpers.sh"

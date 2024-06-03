@@ -251,8 +251,6 @@ alt_dialog_parse_selection() {
         action="$(echo "$section" | cut -d'|' -f 2 | awk '{$1=$1};1')"
 
         if [ "$key" = "$menu_selection" ] && [ -n "$action" ]; then
-            # log_it "><> Will run whiptail triggered action:"
-            # log_it "><> action: $action"
             eval "$action"
             break
         fi
@@ -560,7 +558,6 @@ sort_menu_items() {
             fi
         done
     else
-        # log_it "><> menus not using cache"
         generate_menu_items_in_sorted_order
     fi
 }
@@ -717,10 +714,10 @@ menu_debug="" # Set to 1 to use echo 2 to use log_it
 
 handle_menu
 
-e="$?"
-if [ "$e" -ne 0 ]; then
-    log_it "><> $current_script - dialog_handling - before wt_reload [$e]"
-fi
+# e="$?"
+# if [ "$e" -ne 0 ]; then
+#     log_it "><> $current_script - dialog_handling - before wt_reload [$e]"
+# fi
 
 # not working right now, so disabeling
 # [ "$FORCE_WHIPTAIL_MENUS" = 1 ] && {
@@ -737,9 +734,9 @@ fi
 #     fi
 # }
 
-e="$?"
-if [ "$e" -ne 0 ]; then
-    log_it "><> $current_script - dialog_handling - exiting [$e]"
-fi
+# e="$?"
+# if [ "$e" -ne 0 ]; then
+#     log_it "><> $current_script - dialog_handling - exiting [$e]"
+# fi
 
 # log_it "[$(safe_now)] exiting dialog_handling.sh"
