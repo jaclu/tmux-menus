@@ -39,7 +39,7 @@ d_tpm="$plugins_dir"/tpm
 #
 #  List of plugins defined in config file
 #
-if [[ -d /proc/ishZ ]]; then
+if [[ -d /proc/ish ]]; then
     # iSH has very limited /dev impl, doesnt support mapfile
     defined_plugins=($(grep "set -g @plugin" "$TMUX_CONF" |
         awk '{ print $4 }' | sed 's/"//g'))
