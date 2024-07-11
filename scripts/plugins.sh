@@ -39,8 +39,15 @@ d_tpm="$plugins_dir"/tpm
 #
 #  List of plugins defined in config file
 #
-mapfile -t defined_plugins < <(grep "set -g @plugin" "$TMUX_CONF" |
-    awk '{ print $4 }' | sed 's/"//g')
+if [[ -d /proc/ish ]]; then
+    # iSH has very limited /dev impl, doesnt support mapfile
+    #  shellcheck disable=SC2207
+    defined_plugins=($(grep "set -g @plugin" "$TMUX_CONF" |
+        awk '{ print $4 }' | sed 's/"//g'))
+else
+    mapfile -t defined_plugins < <(grep "set -g @plugin" "$TMUX_CONF" |
+        awk '{ print $4 }' | sed 's/"//g')
+fi
 
 if [[ ${#defined_plugins[@]} -gt 0 ]]; then
     echo "Defined plugins:"

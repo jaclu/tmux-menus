@@ -10,17 +10,17 @@
 # Global check exclude, ignoring: is referenced but not assigned
 
 #  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
+D_TM_BASE_PATH="$(realpath "$(dirname -- "$(dirname -- "$0")")")"
 
-# shellcheck source=scripts/utils.sh
-. "$D_TM_BASE_PATH"/scripts/utils.sh
+# shellcheck source=scripts/helpers.sh
+. "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 _this="break_pane.sh" # error prone if script name is changed :(
 [ "$current_script" != "$_this" ] && error_msg "$_this should NOT be sourced"
 
-if [ "$($TMUX_BIN list-panes | wc -l)" -lt 2 ]; then
-    $TMUX_BIN display-message "Only one pane!"
+if [ "$(tmux_error_handler list-panes | wc -l)" -lt 2 ]; then
+    tmux_error_handler display-message "Only one pane!"
 else
-    $TMUX_BIN command-prompt -I "#W" -p "New window name: " \
+    tmux_error_handler command-prompt -I "#W" -p "New window name: " \
         "break-pane -n '%%'"
 fi

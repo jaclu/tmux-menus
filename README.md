@@ -13,11 +13,11 @@ experienced users, then add more for newbies.
 <summary>Recent Changes</summary>
 <br>
 
+- moved "Search in all Sessions & Windows" to Advanced
+- made "Paste Buffers" to fit on 23 lines
+- revorked param cache handling
 - Fixed Reload Config in Whiptail.
 - Added option to disable caching.
-- Fixed a glitch with dynamic content on some platforms.
-- Moved Paste Buffers to main & public IP to Extras. Checked and updated min sizes
-- Menu 'Missing Keys' limited to tmux >= 2.0
 
 </details>
 <details>
@@ -374,7 +374,7 @@ static_content() {
 #===============================================================
 
 #  Full path to tmux-menux plugin
-D_TM_BASE_="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
+D_TM_BASE_="$(realpath "$(dirname -- "$(dirname -- "$0")")")"
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh

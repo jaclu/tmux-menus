@@ -17,8 +17,6 @@ static_content() {
         0.0 T "-#[nodim]This assumes at least one tmux buffer is assigned!" \
         0.0 T "-#[nodim] " \
         1.8 T "-#[nodim]Enter - Paste selected buffer" \
-        1.8 T "-#[nodim]Up    - Select previous buffer" \
-        1.8 T "-#[nodim]Down  - Select next buffer" \
         2.6 T "-#[nodim]C-s   - Search by name or content" \
         2.6 T "-#[nodim]n     Repeat last search" \
         2.6 T "-#[nodim]t     Toggle if buffer is tagged" \
@@ -34,9 +32,8 @@ static_content() {
         3.1 T "-#[nodim]r     Reverse sort order" \
         2.6 T "-#[nodim]v     Toggle preview" \
         1.8 T "-#[nodim]q     Exit mode" \
-        1.8 T "-#[nodim] " \
-        1.8 C = "<P>" "choose-buffer" \
         0.0 S \
+        1.8 C = "<P>" "choose-buffer" \
         0.0 M H "Help -->" "$d_items/help.sh $f_current_script"
 
     menu_generate_part 1 "$@"
@@ -49,12 +46,12 @@ static_content() {
 #===============================================================
 
 #  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
+D_TM_BASE_PATH="$(realpath "$(dirname -- "$(dirname -- "$0")")")"
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 
 e="$?"
 if [ "$e" -ne 0 ]; then
-    log_it "><> $current_script exiting [$e]"
+    log_it "$current_script exiting [$e]"
 fi

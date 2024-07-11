@@ -12,14 +12,14 @@
 # Global check exclude, ignoring: is referenced but not assigned
 
 #  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
+D_TM_BASE_PATH="$(realpath "$(dirname -- "$(dirname -- "$0")")")"
 
-# shellcheck source=scripts/utils.sh
-. "$D_TM_BASE_PATH"/scripts/utils.sh
+# shellcheck source=scripts/helpers.sh
+. "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 # Should be sourced
 _this="relocate_param_check.sh" # error prone if script name is changed :(
-[ "$current_script" != "$_this" ] && error_msg "$_this should NOT be sourced"
+[ "$current_script" = "$_this" ] && error_msg "$_this SHOULD be sourced"
 
 param_check() {
     item_type="$1"
@@ -52,7 +52,7 @@ param_check() {
         # NEEDS TESTING
         set -- "param_check($1,$2) 2nd param must be L or M" \
             "Indicating move or link action"
-        error_msg "$*" 1
+        error_msg "$*"
         ;;
 
     esac
@@ -70,7 +70,7 @@ param_check() {
         error_msg "param_check() - no destination param (\$3) given!"
     fi
 
-    cur_ses="$($TMUX_BIN display-message -p '#S')"
+    cur_ses="$(tmux_error_handler display-message -p '#S')"
     dest="${raw_dest#*=}"  # skipping initial =
     dest_ses="${dest%%:*}" # up to first colon excluding it
 

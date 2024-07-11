@@ -11,7 +11,7 @@
 dynamic_content() {
     # Things that change dependent on various states
 
-    other_pane_is_marked="$($TMUX_BIN display -p '#{?pane_marked_set,yes,}')"
+    other_pane_is_marked="$(tmux_error_handler display -p '#{?pane_marked_set,yes,}')"
 
     if [ -n "$other_pane_is_marked" ]; then
         set -- \
@@ -54,12 +54,12 @@ static_content() {
 #===============================================================
 
 #  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
+D_TM_BASE_PATH="$(realpath "$(dirname -- "$(dirname -- "$0")")")"
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 
 e="$?"
 if [ "$e" -ne 0 ]; then
-    log_it "><> $current_script exiting [$e]"
+    log_it "$current_script exiting [$e]"
 fi

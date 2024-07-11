@@ -12,7 +12,7 @@ static_content() {
 
     menu_name="Handling Sessions"
 
-    if tmux_vers_compare 3.2; then
+    if tmux_vers_check 3.2; then
         _s="no-detached"
     else
         _s="off"
@@ -52,12 +52,12 @@ static_content() {
 #===============================================================
 
 #  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
+D_TM_BASE_PATH="$(realpath "$(dirname -- "$(dirname -- "$0")")")"
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 
 e="$?"
 if [ "$e" -ne 0 ]; then
-    log_it "><> $current_script exiting [$e]"
+    log_it "$current_script exiting [$e]"
 fi

@@ -24,7 +24,7 @@ dropbox_status_check() {
 #===============================================================
 
 #  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$(dirname -- "$0")")")")"
+D_TM_BASE_PATH="$(realpath "$(dirname -- "$(dirname -- "$(dirname -- "$0")")")")"
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
@@ -44,10 +44,10 @@ fi
 #  Temp set a very high disp time, org value
 #  will be restored when script is done
 #
-org_disp_time="$($TMUX_BIN show -g display-time | cut -d' ' -f 2)"
-$TMUX_BIN set-option -g display-time 30000
+org_disp_time="$(tmux_error_handler show -g display-time | cut -d' ' -f 2)"
+tmux_error_handler set-option -g display-time 30000
 
-$TMUX_BIN display "Doing dropbox $action ..."
+tmux_error_handler display "Doing dropbox $action ..."
 
 if [ "$action" = "start" ]; then
     #
@@ -75,8 +75,8 @@ log_it "status change completed"
 #
 # Hack to clear msg
 #
-$TMUX_BIN set-option -g display-time 1
-$TMUX_BIN display ""
+tmux_error_handler set-option -g display-time 1
+tmux_error_handler display ""
 
 # Restore org value
-$TMUX_BIN set-option -g display-time "$org_disp_time"
+tmux_error_handler set-option -g display-time "$org_disp_time"

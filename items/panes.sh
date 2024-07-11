@@ -11,11 +11,11 @@
 dynamic_content() {
     # Things that change dependent on various states
 
-    new_mark_state="$($TMUX_BIN display -p '#{?pane_marked,Unmark,Mark}')"
-    new_sync_state="$($TMUX_BIN display -p '#{?pane_synchronized,Disable,Activate}')"
+    new_mark_state="$(tmux_error_handler display -p '#{?pane_marked,Unmark,Mark}')"
+    new_sync_state="$(tmux_error_handler display -p '#{?pane_synchronized,Disable,Activate}')"
 
     # dynamic -2
-    if [ "$($TMUX_BIN display -p '#{window_zoomed_flag}')" -eq 0 ]; then
+    if [ "$(tmux_error_handler display -p '#{window_zoomed_flag}')" -eq 0 ]; then
         zoom_action="Zoom"
     else
         zoom_action="Un-Zoom"
@@ -82,12 +82,12 @@ static_content() {
 #===============================================================
 
 #  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
+D_TM_BASE_PATH="$(realpath "$(dirname -- "$(dirname -- "$0")")")"
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 
 e="$?"
 if [ "$e" -ne 0 ]; then
-    log_it "><> $current_script exiting [$e]"
+    log_it "$current_script exiting [$e]"
 fi

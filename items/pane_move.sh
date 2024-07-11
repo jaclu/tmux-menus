@@ -11,7 +11,7 @@
 dynamic_content() {
     # Things that change dependent on various states
 
-    if $TMUX_BIN display-message -p '#{pane_marked_set}' | grep -q '1'; then
+    if tmux_error_handler display-message -p '#{pane_marked_set}' | grep -q '1'; then
         set -- \
             2.1 C s " Swap current pane with marked" "swap-pane $menu_reload"
     else
@@ -50,12 +50,12 @@ static_content() {
 #===============================================================
 
 #  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(realpath -- "$(dirname -- "$(dirname -- "$0")")")"
+D_TM_BASE_PATH="$(realpath "$(dirname -- "$(dirname -- "$0")")")"
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 
 e="$?"
 if [ "$e" -ne 0 ]; then
-    log_it "><> $current_script exiting [$e]"
+    log_it "$current_script exiting [$e]"
 fi
