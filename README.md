@@ -13,6 +13,7 @@ experienced users, then add more for newbies.
 <summary>Recent Changes</summary>
 <br>
 
+- Separate Currencies menu under Missing Keys
 - moved "Search in all Sessions & Windows" to Advanced
 - made "Paste Buffers" to fit on 23 lines
 - revorked param cache handling

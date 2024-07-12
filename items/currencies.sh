@@ -1,12 +1,12 @@
 #!/bin/sh
 #
-#  Copyright (c) 2023-2024: Jacob.Lundqvist@gmail.com
+#  Copyright (c) 2024: Jacob.Lundqvist@gmail.com
 #  License: MIT
 #
 #  Part of https://github.com/jaclu/tmux-menus
 #
-#  Sending keys that might not always be accessible, depending on
-#  keyboards or their mappings.
+#  Sending currency symbolsx that might not always be accessible,
+#  depending on keyboards or their mappings.
 #
 #  Especially when using tablets with keyboards, the number row might
 #  be mapped to function keys, thus blocking several keys.
@@ -70,22 +70,35 @@ handle_char() {
             # shellcheck disable=SC2308
             _check="$(expr length "$s_in")"
         fi
-        if [ "$_check" -gt 1 ]; then
-            error_msg "param can only be single char! [$s]"
-        fi
         ;;
     esac
     display_char "$s"
 }
 
+show_label() {
+    # Some Currency symbols cant be printed in whiptail
+    if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+        case "$1" in
+            ₺ | ₴ | ₽ | ₹ )
+                echo "Send   ($2) - not printable in whiptail"
+                ;;
+            *)
+                echo "Send $1 ($2)"
+                ;;
+        esac
+    else
+        echo "Send $1 ($2)"
+    fi
+}
+
 static_content() {
-    menu_name="Missing Keys"
+    menu_name="Currency symbols"
 
     tmux_vers_check 2.0 || error_msg "needs tmux 2.0"
 
     set -- \
-        0.0 M Left "Back to Main menu <--" main.sh \
-        0.0 M C    "Currencies" currencies.sh \
+        0.0 M Home "Back to Main menu     <==" main.sh \
+        0.0 M Left "Back to Missing Keys  <--" missing_keys.sh \
         0.0 S
 
     if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
@@ -106,22 +119,30 @@ static_content() {
             0.0 T " "
     fi
 
-    #
-    #  It doesnt seem possible to reliably display an actual backtick in menus...
-    #  on some platforms it works, on others it breaks this menu
-    #
+    # how to print?
+    # ₿ (bitcoin)
+
     set -- "$@" \
-        0.0 E e " Send ESC" "$f_current_script  0x1b" \
-        0.0 E b " Send   (back-tick)" "$f_current_script  0x60" \
-        0.0 E t " Send ~ (tilde)" "$f_current_script  0x7e" \
-        0.0 E a " Send @ (at)" "$f_current_script @" \
-        0.0 E p " Send § (paragraph)" "$f_current_script §" \
+        0.0 E b "$(show_label ฿ baht)" "$f_current_script ฿" \
+        0.0 E c "$(show_label ¢ Cent)" "$f_current_script ¢" \
+        0.0 E e "$(show_label € euro)" "$f_current_script €" \
+        0.0 E h "$(show_label ₴ hryvnia)" "$f_current_script ₴" \
+        0.0 E l "$(show_label ₺ lira)" "$f_current_script ₺" \
+        0.0 E p "$(show_label £ pound)" "$f_current_script £" \
+        0.0 E i "$(show_label ៛ riel)" "$f_current_script ៛" \
+        0.0 E r "$(show_label ₽ rubel)" "$f_current_script ₽" \
+        0.0 E R "$(show_label ₹ rupee)" "$f_current_script ₹" \
+        0.0 E s "$(show_label ₪ shekel)" "$f_current_script ₪" \
+        0.0 E w "$(show_label ₩ won)"  "$f_current_script ₩" \
+        0.0 E y "$(show_label ¥ yen/yuan)" "$f_current_script ¥" \
+        0.0 E z "$(show_label zł zloty)" "$f_current_script zł" \
         0.0 S \
         0.0 M H "Help -->" "$d_items/help.sh $f_current_script"
 
     menu_generate_part 1 "$@"
 
 }
+    
 
 #===============================================================
 #
