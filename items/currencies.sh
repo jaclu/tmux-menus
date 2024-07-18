@@ -114,9 +114,10 @@ static_content() {
             0.0 S
     else
         set -- "$@" \
-            0.0 T "Use this to send keys that" \
-            0.0 T "might not be available" \
-            0.0 T " "
+            0.0 T "Even if due to font or screen settings," \
+            0.0 T "the symbol isnt visible, this should" \
+	    0.0 T "still be able to paste it in" \
+            0.0 T " " # Blank filler line
     fi
 
     # how to print?
