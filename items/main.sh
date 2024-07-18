@@ -11,18 +11,13 @@
 static_content() {
     menu_name="Main menu"
 
-    choose_tree_cmd="choose-tree"
-    if tmux_vers_check 2.7; then
-        #  zooms the pane
-        choose_tree_cmd="$choose_tree_cmd -Z"
-    fi
-
     rld_cmd="command-prompt -I '$cfg_tmux_conf' -p 'Source file:' \
         'run-shell \"$d_scripts/reload_conf.sh %% $reload_in_runshell\"'"
 
     # 12.0 M S
     #  Menu items definition
     set -- \
+        0.0 M N "Navigate & Search -->" nav_search.sh \
         0.0 M P "Handling Pane     -->" panes.sh \
         0.0 M W "Handling Window   -->" windows.sh \
         0.0 M S "Handling Sessions -->" sessions.sh \
@@ -33,7 +28,6 @@ static_content() {
         0.0 M A "Advanced Options  -->" advanced.sh \
         0.0 M E "Extras            -->" extras.sh \
         0.0 S \
-        1.8 C n "Navigate & select ses/win/pane" "$choose_tree_cmd" \
         0.0 C l "toggle status Line" "set status $menu_reload" \
         1.8 E p "Plugins inventory" "$d_scripts/plugins.sh" \
         0.0 C r "Reload configuration file" "$rld_cmd" \

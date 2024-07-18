@@ -13,12 +13,11 @@ experienced users, then add more for newbies.
 <summary>Recent Changes</summary>
 <br>
 
+- New menu: Navigate & Search
 - Separate Currencies menu under Missing Keys
 - moved "Search in all Sessions & Windows" to Advanced
 - made "Paste Buffers" to fit on 23 lines
-- revorked param cache handling
-- Fixed Reload Config in Whiptail.
-- Added option to disable caching.
+- reworked param cache handling
 
 </details>
 <details>

@@ -38,21 +38,6 @@ dynamic_content() {
 static_content() {
     menu_name="Advanced options"
 
-    fw_span="Windows"
-    tmux_vers_check 2.6 && fw_span="Sessions & $fw_span"
-    fw_lbl_line2=" only visible part"
-    if tmux_vers_check 3.2; then
-        #  adds ignore case, and zooms the pane
-        fw_lbl_line2="$fw_lbl_line2, ignores case"
-        fw_flags="-Zi"
-    elif tmux_vers_check 2.9; then
-        #  zooms the pane
-        fw_flags="-Z"
-    else
-        fw_flags=""
-    fi
-    fw_cmd="command-prompt -p 'Search for:' 'find-window $fw_flags %%'"
-
     set -- \
         0.0 M Left "Back to Main menu <--" main.sh \
         2.7 M M "Manage clients    -->" advanced_manage_clients.sh \
@@ -80,8 +65,6 @@ static_content() {
             -p key 'list-keys -N \"%%%\"'" \
         0.0 C "\~" "<P> Show messages" show-messages \
         0.0 C : "<P> Prompt for a command" command-prompt \
-        1.7 T "-#[nodim]Search in all $fw_span" \
-        1.7 C s "$fw_lbl_line2" "$fw_cmd" \
         0.0 S
 
     # 3.2 C C "<P> Customize options" "customize-mode -Z"

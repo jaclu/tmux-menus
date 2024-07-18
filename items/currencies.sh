@@ -8,12 +8,6 @@
 #  Sending currency symbolsx that might not always be accessible,
 #  depending on keyboards or their mappings.
 #
-#  Especially when using tablets with keyboards, the number row might
-#  be mapped to function keys, thus blocking several keys.
-#  For some, me included. It is often quicker to use a menu to generate
-#  missing keys, vs fiddling with cut and paste from some other source
-#  for such keys.
-#
 
 #  Function to display a character, considering Whiptail limitations
 display_char() {

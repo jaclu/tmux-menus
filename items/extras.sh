@@ -26,11 +26,11 @@ static_content() {
 
     set -- \
         0.0 M Left "Back to Main menu  <--" main.sh \
+        0.0 S \
+        0.0 E i "public IP" public_ip.sh \
         0.0 M D "$(is_avalable dropbox)Dropbox      -->" "$d_extras"/dropbox.sh \
         0.0 M S "$(is_avalable spotify)Spotify      -->" "$d_extras"/spotify.sh \
         0.0 M M "$(is_avalable mullvad)Mullvad VPN  -->" "$d_extras"/mullvad.sh \
-        0.0 S \
-        0.0 E i "public IP" public_ip.sh \
         0.0 S \
         0.0 M H 'Help -->' "$d_items/help_extras.sh $f_current_script"
 
