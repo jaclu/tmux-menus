@@ -92,7 +92,6 @@ show_label() {
 }
 
 static_content() {
-    menu_name="Currency symbols"
 
     tmux_vers_check 2.0 || error_msg "needs tmux 2.0"
 
@@ -100,25 +99,6 @@ static_content() {
         0.0 M Home "Back to Main menu     <==" main.sh \
         0.0 M Left "Back to Missing Keys  <--" missing_keys.sh \
         0.0 S
-
-    if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
-        set -- "$@" \
-            0.0 T "When using whiptail it is not possible to paste" \
-            0.0 T "directly into the pane." \
-            0.0 T "Instead a tmux buffer is used." \
-            0.0 T "Once you have selected one or more keys to use" \
-            0.0 T "Cancel this menu. Once back in your pane," \
-            3.2 T "paste the key(-s). If normal paste doesn't" \
-            3.2 T "work, you can instead" \
-            0.0 T "use $()<prefix> ]$() to paste the key(-s)." \
-            0.0 S
-    else
-        set -- "$@" \
-            0.0 T "Even if due to font or screen settings," \
-            0.0 T "the symbol isnt visible, this should" \
-	    0.0 T "still be able to paste it in" \
-            0.0 T " " # Blank filler line
-    fi
 
     # how to print?
     # ₿ (bitcoin)
@@ -138,7 +118,7 @@ static_content() {
         0.0 E y "$(show_label ¥ yen/yuan)" "$f_current_script ¥" \
         0.0 E z "$(show_label zł zloty)" "$f_current_script zł" \
         0.0 S \
-        0.0 M H "Help -->" "$d_items/help.sh $f_current_script"
+        0.0 M H "Help -->" "$d_items/help_currencies.sh $f_current_script"
 
     menu_generate_part 1 "$@"
 
@@ -156,6 +136,8 @@ D_TM_BASE_PATH="$(realpath "$(dirname -- "$(dirname -- "$0")")")"
 
 # shellcheck source=scripts/helpers.sh
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
+
+menu_name="Currency symbols"
 
 tmux_vers_check 2.0 || error_msg "$(relative_path "$f_current_script") needs tmux 2.0"
 

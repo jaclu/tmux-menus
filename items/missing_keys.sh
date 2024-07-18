@@ -79,45 +79,21 @@ handle_char() {
 }
 
 static_content() {
-    menu_name="Missing Keys"
-
-    tmux_vers_check 2.0 || error_msg "needs tmux 2.0"
-
-    set -- \
-        0.0 M Left "Back to Main menu <--" main.sh \
-        0.0 M C    "Currencies" currencies.sh \
-        0.0 S
-
-    if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
-        set -- "$@" \
-            0.0 T "When using whiptail it is not possible to paste" \
-            0.0 T "directly into the pane." \
-            0.0 T "Instead a tmux buffer is used." \
-            0.0 T "Once you have selected one or more keys to use" \
-            0.0 T "Cancel this menu. Once back in your pane," \
-            3.2 T "paste the key(-s). If normal paste doesn't" \
-            3.2 T "work, you can instead" \
-            0.0 T "use $()<prefix> ]$() to paste the key(-s)." \
-            0.0 S
-    else
-        set -- "$@" \
-            0.0 T "Use this to send keys that" \
-            0.0 T "might not be available" \
-            0.0 T " "
-    fi
-
     #
     #  It doesnt seem possible to reliably display an actual backtick in menus...
     #  on some platforms it works, on others it breaks this menu
     #
-    set -- "$@" \
+    set -- \
+        0.0 M Left "Back to Main menu <--" main.sh \
+        0.0 M C    "Currencies" currencies.sh \
+        0.0 S \
         0.0 E e " Send ESC" "$f_current_script  0x1b" \
         0.0 E b " Send   (back-tick)" "$f_current_script  0x60" \
         0.0 E t " Send ~ (tilde)" "$f_current_script  0x7e" \
         0.0 E a " Send @ (at)" "$f_current_script @" \
         0.0 E p " Send § (paragraph)" "$f_current_script §" \
         0.0 S \
-        0.0 M H "Help -->" "$d_items/help.sh $f_current_script"
+        0.0 M H "Help -->" "$d_items/help_missing_keys.sh $f_current_script"
 
     menu_generate_part 1 "$@"
 
@@ -137,6 +113,7 @@ D_TM_BASE_PATH="$(realpath "$(dirname -- "$(dirname -- "$0")")")"
 
 tmux_vers_check 2.0 || error_msg "$(relative_path "$f_current_script") needs tmux 2.0"
 
+menu_name="Missing Keys"
 wt_pasting="@menus_wt_paste_in_progress"
 
 if [ -n "$1" ]; then
