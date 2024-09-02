@@ -39,7 +39,7 @@ d_tpm="$plugins_dir"/tpm
 #
 #  List of plugins defined in config file
 #
-if [[ ! $(command -v mapfile) ]] || [[ -d /proc/ish ]]; then
+if [[ -z "$(command -v mapfile)" ]] || [[ -d /proc/ish ]]; then
     # iSH has very limited /dev impl, doesnt support mapfile
     #  shellcheck disable=SC2207
     defined_plugins=($(grep "set -g @plugin" "$TMUX_CONF" |

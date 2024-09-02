@@ -259,9 +259,7 @@ alt_dialog_parse_selection() {
 }
 
 is_function_defined() {
-    # Use type command to check if the function is defined
-    type "$1" 2>/dev/null | grep -q 'function'
-    return $?
+    [ "$(command -v "$1")" = "$1" ]
 }
 
 #
