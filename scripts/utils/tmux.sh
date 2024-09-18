@@ -216,9 +216,9 @@ tmux_error_handler() { # cache references
     #
     #  Detects any errors reported by tmux commands and gives notification
     #
-    teh_cmd="$*"
+    the_cmd="$*"
 
-    # log_it "tmux_error_handler($teh_cmd)"
+    # log_it "tmux_error_handler($the_cmd)"
 
     # shellcheck disable=SC2154
     if $cfg_use_cache; then
@@ -238,22 +238,23 @@ tmux_error_handler() { # cache references
         base_fname="$(tr -cs '[:alnum:]._' '_' <"$f_tmux_err")"
         [ -z "$base_fname" ] && base_fname="tmux-error"
         f_error_log="$d_errors/error-$base_fname"
+        unset base_fname
 
         [ -f "$f_error_log" ] && {
-            teh_i=1
-            f_error_log="${f_error_log}-$teh_i"
+            _i=1
+            f_error_log="${f_error_log}-$_i"
             while [ -f "$f_error_log" ]; do
-                teh_i=$((teh_i + 1))
-                f_error_log="${f_tmux_err}-$teh_i"
-                [ "$teh_i" -gt 1000 ] && {
-                    error_msg "Aborting runaway loop - teh_i=$teh_i"
+                _i=$((_i + 1))
+                f_error_log="${f_tmux_err}-$_i"
+                [ "$_i" -gt 1000 ] && {
+                    error_msg "Aborting runaway loop - _i=$_i"
                 }
             done
-            unset teh_i
+            unset _i
         }
         log_it "saved error to: $f_error_log"
         (
-            echo "\$TMUX_BIN $teh_cmd"
+            echo "\$TMUX_BIN $the_cmd"
             echo
             cat "$f_tmux_err"
         ) >"$f_error_log"
@@ -266,9 +267,9 @@ tmux_error_handler() { # cache references
                 "$(relative_path "$f_error_log")" \
                 "$f_error_log"
         )"
+        unset f_error_log
     }
-    unset f_tmux_err
-    unset teh_cmd
+    unset the_cmd
     return 0
 }
 
