@@ -57,6 +57,8 @@ if tmux_vers_check 3.0 && [ "$FORCE_WHIPTAIL_MENUS" != "1" ]; then
     cmd="$d_items/main.sh"
 else
     [ -z "$(command -v whiptail)" ] && {
+        tmux_error_handler bind-key "$@" "$cfg_trigger_key" \
+            display-message "DEPENDENCY: $plugin_name needs whiptail"
         error_msg "whiptail is not installed!"
     }
     cmd="$d_scripts/do_whiptail.sh"

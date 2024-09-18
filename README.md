@@ -13,36 +13,33 @@ experienced users, then add more for newbies.
 <summary>Recent Changes</summary>
 <br>
 
+- If whiptail is needed, but not installed, hitting the trigger key will display:
+`DEPENDENCY: tmux-menus needs whiptail`
 - New menu: Navigate & Search
 - Separate Currencies menu under Missing Keys
 - moved "Search in all Sessions & Windows" to Advanced
 - made "Paste Buffers" to fit on 23 lines
-- reworked param cache handling
 
 </details>
 <details>
 <summary>Purpose</summary>
 <br>
 
-Some basic popup menus come as the default
+Some basic popup menus come with tmux as the default
 (See *Configuration* for how to disable them)
-
-- `<prefix> <` displays some Windows handling options
-- `<prefix> >` displays some pane handling options
-- Right-click on a pane, ALT-right-click on a pane, status or status left.
 
 Rather lacking and since they're written as hard-to-read one-liners,
 a more integrated approach with navigation and adaptability seemed
-the way to go, also covering more than panes and windows.
+the way to go.
 
 Not solely meant for beginners, I use it myself all the time:
 
 - When connecting using terminals without much support for Meta or Ctrl,
 this gives access to all the actions that aren't available with the
-regular shortcuts. For instance, when running iSH the console keyboard is
-pretty limited.
+regular shortcuts. For instance, when running the built in Terminal on
+MacOS the console keyboard is pretty limited.
 - Tasks that would need external scripts to avoid hard-to-read
-complex bind one-liners, such as killing the current session, without getting
+complex bind one-liners, such as killing the current session without getting
 disconnected.
 - When direct typing would be much longer.
 Example: Kill the server directly with 12 keys:
@@ -95,12 +92,13 @@ Version | Notice
 -|-
 3.2 | Fully compatible
 3.0 - 3.1c | Menu centering is not supported, it's displayed top left if C is selected.
-1.9 - 2.9a | Needs whiptail. Menu location setting ignored.
+< 3.0 | Needs whiptail. Menu location setting ignored.
 1.7 - 1.8  | tpm is not available, so the plugin needs to be initialized by running [path to tmux-menus]/menus.tmux directly from the conf file
 
 The above table covers compatibility for the general tool. Some items
 has a min tmux version set, if the running tmux doesn't match this,
-that item will be skipped, this is by no means perfect, so if you find I set incorrect limits on some feature, please let me know!
+that item will be skipped, if you find I set incorrect limits on some feature,
+please let me know!
 
 </details>
 <details>
@@ -174,7 +172,7 @@ If you want to use Whiptail on modern tmuxes set this env variable outside tmux,
 The default trigger is `<prefix> \` The trigger is configured like this:
 
 ```tmux
-set -g @menus_trigger F9
+set -g @menus_trigger F12
 ```
 
 Please note that non-standard keys, like the default backslash need to
@@ -220,7 +218,8 @@ To be more precise, items listed inside `static_content()` are cached.
 Some items need to be freshly generated each time a menu is displayed,
 those items are defines in `dynamic_content()` see
 [scripts/panes.sh](items/panes.sh) for an example of this. In that case,
-the label changes between Zoom and Un-Zoom for the zooming action.
+the label changes between Zoom and Un-Zoom for the zooming action and
+mark/unmark for current pane.
 
 The plugin remmebers what tmux version you used last time.
 If another version is detected as the plugin is initialized, the entire
@@ -282,7 +281,7 @@ If it doesen't happen the next time the menu is attempted, it can be ignored.
 Each menu is a script, so you can edit a menu script, and once saved,
 the new content is displayed the next time you trigger that menu.
 
-Rapid development with minimal fuzz.
+Rapid development with minimal fuzz!
 
 If you are struggling with a menu edit, run that menu item in a pane
 of the tmux session you are working on, something like
@@ -294,16 +293,17 @@ of the tmux session you are working on, something like
 This directly triggers that menu and displays any syntax errors on the
 command line.
 
-If `@menus_log_file` is defined, you can use logging like this:
+If `@menus_log_file` is defined, either in the tmux conf, or hardcoded
+in `scripts/helpers.sh` arround line 295, you can use logging like this:
 
 ```bash
 log_it "foo is now [$foo]"
 ```
 
-If you are triggering a menu from the command line, you can use direct echo,
-but then you need to remove it before using it via the trigger, since tmux sees any
-script output as a potential error and display it in a scroll-back buffer.
-
+If having two terminals with one tailing a log file is unpractical,
+setting the log file to `/dev/stderr` would essentially make it into `echo`.
+Choosing `/dev/stderr` instead of `/dev/stdout` avoids triggering errors if
+the `log_it` is called during string assignment.
 </details>
 <details>
 <summary>Menu building</summary>
@@ -341,7 +341,7 @@ Item types and their parameters
 
 #
 #  This script is assumed to have been placed in the items folder of
-#  this repo, if not, you will need to change the s to the support
+#  this repo, if not, you will need to change the path to the support
 #  scripts below.
 #
 static_content() {
