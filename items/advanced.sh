@@ -59,8 +59,8 @@ static_content() {
     fi
 
     set -- "$@" \
-        0.0 C b " List all key bindings" "list-keys" \
         3.1 C n " List key bindings with notes" "list-keys -N" \
+        0.0 C ? "<P> List all key bindings" "list-keys" \
         3.1 C / "<P> Describe (prefix) key" "command-prompt -k \
             -p key 'list-keys -N \"%%%\"'" \
         0.0 C "\~" "<P> Show messages" show-messages \
