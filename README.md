@@ -13,12 +13,12 @@ experienced users, then add more for newbies.
 <summary>Recent Changes</summary>
 <br>
 
+- Replaced Paste Buffers menu, to list all features and default bindings.
 - If whiptail is needed, but not installed, hitting the trigger key will display:
 `DEPENDENCY: tmux-menus needs whiptail`
 - New menu: Navigate & Search
 - Separate Currencies menu under Missing Keys
 - moved "Search in all Sessions & Windows" to Advanced
-- made "Paste Buffers" to fit on 23 lines
 
 </details>
 <details>
