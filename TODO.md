@@ -2,7 +2,6 @@
 
 See if instead of just displaying defaults as (x) , displaying current binding as [x] is possible
 
-
 ## Renames that should happen
 
 current_script -> f_current_script
