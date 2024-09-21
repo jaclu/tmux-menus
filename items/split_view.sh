@@ -9,15 +9,14 @@
 #
 
 static_content() {
-    menu_name="Split view"
-
     set -- \
         0.0 M Left "Back to Main menu <--" main.sh \
+        0.0 S \
         0.0 T "-#[align=centre,nodim]----  Split Pane  ----" \
-        2.0 C l " Left" "split-window     -hb -c '#{pane_current_path}' $menu_reload" \
-        1.7 C "\%" "<P> Right" "split-window -h  -c '#{pane_current_path}' $menu_reload" \
-        2.0 C a " Above" "split-window    -vb -c '#{pane_current_path}' $menu_reload" \
-        1.7 C '\"' "<P> Below" "split-window -v  -c '#{pane_current_path}' $menu_reload" \
+        2.0 C l "Left" "split-window     -hb -c '#{pane_current_path}' $menu_reload" \
+        1.7 C r "Right" "split-window -h  -c '#{pane_current_path}' $menu_reload" \
+        2.0 C a "Above" "split-window    -vb -c '#{pane_current_path}' $menu_reload" \
+        1.7 C b "Below" "split-window -v  -c '#{pane_current_path}' $menu_reload" \
         0.0 T "-#[align=centre,nodim]---  Split Window  ---" \
         2.4 C L "Left" "split-window -fhb -c '#{pane_current_path}' $menu_reload" \
         2.4 C R "Right" "split-window -fh  -c '#{pane_current_path}' $menu_reload" \
@@ -34,6 +33,8 @@ static_content() {
 #   Main
 #
 #===============================================================
+
+menu_name="Split view"
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(realpath "$(dirname -- "$(dirname -- "$0")")")"

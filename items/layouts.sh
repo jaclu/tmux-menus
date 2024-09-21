@@ -9,20 +9,18 @@
 #
 
 static_content() {
-    menu_name="Layouts"
-
     # make it global so it changes all windows in all sessions
     setw_cmd="setw -g"
 
     set -- \
         0.0 M Left "Back to Main menu <--" main.sh \
         0.0 S \
-        0.0 C M-1 "<P> Even horizontal" "select-layout even-horizontal $menu_reload" \
-        0.0 C M-2 "<P> Even vertical" "select-layout even-vertical   $menu_reload" \
-        0.0 C M-3 "<P> Main horizontal" "select-layout main-horizontal $menu_reload" \
-        0.0 C M-4 "<P> Main vertical" "select-layout main-vertical   $menu_reload" \
-        0.0 C M-5 "<P> Tiled" "select-layout tiled           $menu_reload" \
-        0.0 C E "<P> Spread evenly" "select-layout -E  $menu_reload" \
+        0.0 C 1 "Even horizontal" "select-layout even-horizontal $menu_reload" \
+        0.0 C 2 "Even vertical" "select-layout even-vertical   $menu_reload" \
+        0.0 C 3 "Main horizontal" "select-layout main-horizontal $menu_reload" \
+        0.0 C 4 "Main vertical" "select-layout main-vertical   $menu_reload" \
+        0.0 C 5 "Tiled" "select-layout tiled           $menu_reload" \
+        0.0 C e "Spread evenly" "select-layout -E  $menu_reload" \
         3.2 S \
         3.2 T "-#[align=centre,nodim]Border lines" \
         3.2 C "s" "single" "$setw_cmd pane-border-lines  single  $menu_reload" \
@@ -41,6 +39,8 @@ static_content() {
 #   Main
 #
 #===============================================================
+
+menu_name="Layouts"
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(realpath "$(dirname -- "$(dirname -- "$0")")")"

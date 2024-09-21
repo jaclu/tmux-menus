@@ -11,8 +11,6 @@
 dynamic_content() {
     # Things that change dependent on various states
 
-    menu_name="Help summary"
-
     if [ -z "$prev_menu" ]; then
         error_msg "help_split.sh was called without notice of what called it"
     fi
@@ -28,11 +26,6 @@ static_content() {
         0.0 S \
         0.0 T "-#[nodim]'-->'  Indicates this will open a" \
         0.0 T "-#[nodim]'<--'  new menu." \
-        0.0 S \
-        0.0 T "-#[nodim]<P> Indicates this key is a default" \
-        0.0 T "-#[nodim]    key, so unless it has been" \
-        0.0 T "-#[nodim]    changed, it should be possible" \
-        0.0 T "-#[nodim]    to use with <prefix> directly." \
         0.0 S \
         0.0 T "-#[nodim]Shortcut keys are usually upper case" \
         0.0 T "-#[nodim]for menus, and lower case for actions."
@@ -52,6 +45,7 @@ static_content() {
 #===============================================================
 
 prev_menu="$1"
+menu_name="Help summary"
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(realpath "$(dirname -- "$(dirname -- "$0")")")"

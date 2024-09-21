@@ -27,7 +27,7 @@ dynamic_content() {
     set -- \
         2.1 C m "Toggle mouse to: $new_mouse_status" "set-option -g mouse \
         $new_mouse_status $menu_reload" \
-        2.4 C p "Change prefix <$current_prefix>" "command-prompt -1 -p \
+        2.4 C p "Change prefix - current: C-$current_prefix" "command-prompt -1 -p \
             'prefix (will take effect imeditally)' \
             'run-shell \"$d_scripts/change_prefix.sh %1 $reload_in_runshell\"'"
 
@@ -36,11 +36,9 @@ dynamic_content() {
 }
 
 static_content() {
-    menu_name="Advanced options"
-
+    # 2.7 M M "Manage clients    -->" advanced_manage_clients.sh \
     set -- \
         0.0 M Left "Back to Main menu <--" main.sh \
-        2.7 M M "Manage clients    -->" advanced_manage_clients.sh \
         0.0 S
 
     if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
@@ -59,21 +57,23 @@ static_content() {
     fi
 
     set -- "$@" \
-        3.1 C n " List key bindings with notes" "list-keys -N" \
-        0.0 C ? "<P> List all key bindings" "list-keys" \
-        3.1 C / "<P> Describe (prefix) key" "command-prompt -k \
+        3.1 C n "List key bindings with notes" "list-keys -N" \
+        0.0 C l "List all key bindings" "list-keys" \
+        3.1 C k "Describe (prefix) key" "command-prompt -k \
             -p key 'list-keys -N \"%%%\"'" \
-        0.0 C "\~" "<P> Show messages" show-messages \
-        0.0 C : "<P> Prompt for a command" command-prompt \
-        0.0 S
+        0.0 C d "Display tmux messages" show-messages \
+        0.0 C : "Enter a tmux command" command-prompt \
+        0.0 S \
+        0.0 C s "Toggle status line" "set status $menu_reload"
 
-    # 3.2 C C "<P> Customize options" "customize-mode -Z"
+    # 3.2 C C "Customize options" "customize-mode -Z"
 
     menu_generate_part 1 "$@"
 
     # shellcheck disable=SC2154
     set -- \
         1.8 S \
+        2.7 C c "Manage connected clients" "choose-client -Z" \
         1.8 C x "Kill server" "confirm-before -p \
             'kill tmux server defined in($TMUX_SOURCE) ? (y/n)' kill-server" \
         0.0 S \
@@ -92,6 +92,8 @@ static_content() {
 #   Main
 #
 #===============================================================
+
+menu_name="Advanced options"
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(realpath "$(dirname -- "$(dirname -- "$0")")")"
