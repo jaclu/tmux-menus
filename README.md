@@ -27,11 +27,10 @@ makes sense from a tmux-menus perspective.
 <summary>Purpose</summary>
 <br>
 
-Some basic popup menus come with tmux as defaults.
-Rather lacking and since they're written as hard-to-read mouse action one-liners, 
-rather painful to expand upon.
-A more integrated approach with navigation and adaptability seemed
-the way to go.
+Tmux provides a few basic popup menus by default, but they're quite limited and 
+difficult to extend due to their complex, mouse-based one-liner implementations.
+A more integrated, user-friendly approach with better navigation and flexibility 
+seemed like the right solution.
 
 Not solely meant for beginners, I use it myself all the time:
 
