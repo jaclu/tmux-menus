@@ -26,10 +26,8 @@ static_content() {
         0.0 M A "Advanced Options  -->" advanced.sh \
         0.0 M E "Extras            -->" extras.sh \
         0.0 S \
-        0.0 C l "Toggle status Line" "set status $menu_reload" \
         1.8 E p "Plugins inventory" "$d_scripts/plugins.sh" \
         0.0 C r "Reload configuration file" "$rld_cmd" \
-        0.0 S \
         0.0 C d 'Detach from tmux' detach-client \
         0.0 S \
         0.0 M H 'Help -->' "$d_items/help.sh $f_current_script"

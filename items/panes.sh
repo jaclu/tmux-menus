@@ -57,7 +57,7 @@ static_content() {
         2.0 C s "Save pane history no escapes" "command-prompt -p \
             'Save to (no escapes):' -I '~/tmux.history' \
             'capture-pane -S - -E - ; save-buffer %1 ; delete-buffer'" \
-        2.0 C S "Save pane history with escapes" "command-prompt -p \
+        2.0 C e "Save pane history with escapes" "command-prompt -p \
             'Save to (with escapes):' -I '~/tmux.history' \
             'capture-pane -S - -E - -e ; save-buffer %1 ; delete-buffer'" \
         0.0 S \

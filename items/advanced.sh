@@ -63,7 +63,8 @@ static_content() {
             -p key 'list-keys -N \"%%%\"'" \
         0.0 C d "Display tmux messages" show-messages \
         0.0 C : "Enter a tmux command" command-prompt \
-        0.0 S
+        0.0 S \
+        0.0 C s "Toggle status line" "set status $menu_reload"
 
     # 3.2 C C "Customize options" "customize-mode -Z"
 

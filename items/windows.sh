@@ -25,7 +25,6 @@ static_content() {
         1.7 C l "Last selected window" "last-window     $menu_reload" \
         1.7 C p "Previous window [in order]" "previous-window $menu_reload" \
         1.7 C n "Next     window [in order]" "next-window     $menu_reload" \
-        0.0 S \
         1.7 C P "Previous window with an alert" "previous-window -a $menu_reload" \
         1.7 C N "Next window with an alert" "next-window     -a $menu_reload" \
         0.0 S \
