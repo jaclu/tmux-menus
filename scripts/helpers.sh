@@ -292,7 +292,7 @@ plugin_name="tmux-menus"
 #  Setting a cfg_log_file here overrides @menus_log_file, should only
 #  be used for debugging
 #
-# cfg_log_file="$HOME/tmp/$plugin_name.log"
+# cfg_log_file="$HOME/tmp/${plugin_name}.log"
 
 #
 #  Even if this one is used, a cfg_log_file must still be defined

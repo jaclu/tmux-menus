@@ -2,18 +2,11 @@
 *~
 \#*
 
-# olint linter config
+# olint linter cache
 .cache.olint
 
 # tmux-menus cache
 cache/
-
-#
-# tmp file, created if missing, but shouldnt be in cache since
-# it might contain new data, if previously unrecognized versions
-# have been detected, so ideally should not be deleted
-#
-scripts/tmux_vers_list.sh
 
 tests/
 .DS_Store

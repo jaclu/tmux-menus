@@ -62,15 +62,15 @@ ensure_menu_fits_on_screen() {
     #  shortened that they are off little help explaining what the option
     #  would do.
     #
-    dh_t_end="$(safe_now)"
 
-    disp_time="$(echo "$dh_t_end - $dh_t_start" | bc)"
-    log_it "Menu $current_script_no_ext - Display time [$disp_time]"
+    # Display time meny was shown
+    disp_time="$(echo "$(safe_now) - $dh_t_start" | bc)"
+    log_it "Menu $current_script_no_ext - Display time:  $disp_time"
+
     if [ "$(echo "$disp_time < 0.5" | bc)" -eq 1 ]; then
         _s="$(relative_path "$(cat "$f_last_menu_displayed")")"
         error_msg "$_s Screen might be too small"
     fi
-    unset dh_t_end
     unset disp_time
 }
 
@@ -606,6 +606,10 @@ display_menu() {
         [ -n "$menu_selection" ] && handle_wt_selecion
         true #  hides none true exit if whiptail menu was cancelled
     else
+        # Display time to generate menu
+        disp_time="$(echo "$(safe_now) - $dh_t_mnu_processing_start" | bc)"
+        log_it "Menu $current_script_no_ext - processing time:  $disp_time"
+
         dh_t_start="$(safe_now)"
         eval "$menu_items"
 
@@ -620,6 +624,7 @@ handle_menu() {
     #  menu_param="$1"
     #  then process it in dynamic_content()
     #
+    dh_t_mnu_processing_start="$(safe_now)"
 
     # 1 - Handle static parts, use cache if enabled and available
     if $cfg_use_cache; then

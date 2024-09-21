@@ -18,10 +18,10 @@ tmux_set_vers_vars() {
     #
     #  Public variables
     #   tmux_vers - currently running tmux version
-    #   tmux_i_ref - integer part, used by tmux_vers_check()
+    #   i_tmux_vers - integer part, used by tmux_vers_check()
     #
     tmux_vers="$(tmux_get_vers)"
-    tmux_i_ref=$(get_digits_from_string "$tmux_vers")
+    i_tmux_vers=$(get_digits_from_string "$tmux_vers")
 }
 
 tmux_is_option_defined() {
@@ -273,45 +273,50 @@ tmux_error_handler() { # cache references
     return 0
 }
 
+tmux_vers_check_params_to_int() {
+    i_tvc_cmp=$(get_digits_from_string "$tvc_v_cmp")
+    if [ "$tvc_v_ref" = "$tmux_vers" ]; then
+        i_tvc_ref="$i_tmux_vers"
+    else
+        i_tvc_ref=$(get_digits_from_string "$tvc_v_ref")
+    fi
+}
+
 tmux_vers_check() { # cache references
     #
-    #  This returns true if v_comp <= v_ref
+    #  This returns true if tvc_v_cmp <= tvc_v_ref
     #  If only one param is given it is compared vs version of running tmux
     #
-
     [ -z "$2" ] && [ -z "$tmux_vers" ] && {
         tvc_msg="tmux_vers_check() called with neither \$2 or \$tmux_vers set"
         error_msg "$tvc_msg"
     }
-    v_comp="$1"
-    v_ref="${2:-$tmux_vers}"
+    tvc_v_cmp="$1"
+    i_tvc_cmp=0 # indicating unset
+    tvc_v_ref="${2:-$tmux_vers}"
+    i_tvc_ref=0 # indicating unset
 
-    i_comp=$(get_digits_from_string "$v_comp")
+    # log_it "><> tmux_vers_check($tvc_v_cmp, $tvc_v_ref)"
 
     if $cfg_use_cache; then
-        if [ "$v_ref" = "$tmux_vers" ]; then
+        if [ "$tvc_v_ref" = "$tmux_vers" ]; then
             #
             # two  methods to check for good/bad tmux vers, need
             #  to figure out which is better in this case
             #
-            if false; then
-                if echo "$cache_ok_tmux_versions" | grep -q "\b$v_comp\b"; then
-                    return 0
-                elif echo "$cache_bad_tmux_versions" | grep -q "\b$v_comp\b"; then
-                    return 1
-                fi
-            else
-                case " $cache_ok_tmux_versions $tmux_vers" in
-                *" $v_comp "*) return 0 ;;
-                *) ;;
-                esac
-                case " $cache_bad_tmux_versions " in
-                *" $v_comp "*) return 1 ;;
-                *) ;;
-                esac
-            fi
+            case " $cache_ok_tmux_versions $tmux_vers" in
+            *" $tvc_v_cmp "*) return 0 ;;
+            *) ;;
+            esac
+            case " $cache_bad_tmux_versions " in
+            *" $tvc_v_cmp "*) return 1 ;;
+            *) ;;
+            esac
 
-            i_ref="$tmux_i_ref"
+            # vers not in cache, will be added to good or bad
+
+            i_tvc_cmp=$(get_digits_from_string "$tvc_v_cmp")
+            i_tvc_ref="$i_tmux_vers"
 
             # shellcheck disable=SC2154
             [ -f "$f_cache_tmux_known_vers" ] && {
@@ -320,12 +325,12 @@ tmux_vers_check() { # cache references
                 #  during initial startup, before the initial file has been
                 #  created, such changes would be overwritten anyhow
                 #
-                if [ "$i_comp" -le "$i_ref" ]; then
-                    cache_ok_tmux_versions="$cache_ok_tmux_versions $v_comp"
-                    log_it "Added ok tmux vers: $v_comp"
+                if [ "$i_tvc_cmp" -le "$i_tvc_ref" ]; then
+                    cache_ok_tmux_versions="$cache_ok_tmux_versions $tvc_v_cmp"
+                    log_it "Added ok tmux vers: $tvc_v_cmp"
                 else
-                    cache_bad_tmux_versions="$v_comp $cache_bad_tmux_versions"
-                    log_it "Added bad tmux vers: $v_comp"
+                    cache_bad_tmux_versions="$tvc_v_cmp $cache_bad_tmux_versions"
+                    log_it "Added bad tmux vers: $tvc_v_cmp"
                 fi
                 #
                 # For performance reasons, dont save changes right away,
@@ -335,16 +340,12 @@ tmux_vers_check() { # cache references
                 # shellcheck disable=SC2034
                 b_cache_delayed_param_write=true
             }
-        else
-            i_ref=$(get_digits_from_string "$v_ref")
         fi
-    else
-        # not using cache
-        i_ref=$(get_digits_from_string "$v_ref")
     fi
 
-    unset v_comp v_ref
-    [ "$i_comp" -le "$i_ref" ]
+    [ "$i_tvc_cmp" -eq 0 ] && i_tvc_cmp=$(get_digits_from_string "$tvc_v_cmp")
+    [ "$i_tvc_ref" -eq 0 ] && i_tvc_ref=$(get_digits_from_string "$tvc_v_ref")
+    [ "$i_tvc_cmp" -le "$i_tvc_ref" ]
 }
 
 tmux_get_plugin_options() { # cache references

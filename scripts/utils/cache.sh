@@ -25,7 +25,6 @@ cache_clear() { # only cache
     log_it "cache_clear($1)"
 
     rm -rf "$d_cache"
-    rm -f "$f_cache_tmux_known_vers"
     b_cache_clear_has_been_called=true
 }
 
@@ -33,7 +32,7 @@ cache_define_ok_bad_tmux_vers() { # tmux stuff
     #
     #  public variables
     #   tmux_vers - tmux version for this tmux server
-    #   tmux_i_ref - int part of tmux_vers, for tmux_vers_check
+    #   i_tmux_vers - int part of tmux_vers, for tmux_vers_check
     #   cache_ok_tmux_versions - known versions tmux_vers_check accepts
     #   cache_bad_tmux_versions - known versions tmux_vers_check rejects
     #
@@ -113,7 +112,7 @@ cfg_log_file="$cfg_log_file"
 cfg_use_notes="$cfg_use_notes"
 
 tmux_vers="$tmux_vers"
-tmux_i_ref="$tmux_i_ref"
+i_tmux_vers="$i_tmux_vers"
 cache_ok_tmux_versions="$cache_ok_tmux_versions"
 cache_bad_tmux_versions="$cache_bad_tmux_versions"
 EOF
@@ -148,7 +147,7 @@ cache_validation() { # tmux stuff
     # log_it "cache_validation()"
     if [ -s "$f_cache_params" ]; then
         vers_actual="$(tmux_get_vers)"
-        vers_cached="$(grep tmux_vers= "$f_cache_params" |
+        vers_cached="$(grep ^tmux_vers= "$f_cache_params" |
             sed 's/"//g' | cut -d'=' -f2)"
 
         #  compare actual vs cached
@@ -251,8 +250,6 @@ cache_save_known_tmux_vers() { # tmux stuff
             3.2
             3.2a
             3.3
-            3.3
-            3.3
             3.3a
             3.4
             "
@@ -286,21 +283,9 @@ EOF
 #===============================================================
 
 d_cache="$D_TM_BASE_PATH"/cache
-
-# cache plugin params
 f_cache_params="$d_cache"/plugin_params
 f_using_whiptail="$d_cache"/using-whiptail
-
-#
-#  this is created with a list of all known versions of tmux, if an
-#  unknown version is encountered, it is added to this file, and will
-#  thus be cached for all future runs of any menu
-#  It is saved outside the cache dir, in order not to disapear if
-#  cache is purged by running a different version of tmux
-#  it is in .gitignore, so shouldnt create git pull issues
-#
-f_cache_tmux_known_vers="$d_scripts"/tmux_vers_list.sh
-
+f_cache_tmux_known_vers="$d_cache"/tmux_known_vers_list.sh
 b_cache_has_been_validated=false
 b_cache_clear_has_been_called=false
 
