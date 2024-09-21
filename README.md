@@ -27,9 +27,9 @@ makes sense from a tmux-menus perspective.
 <summary>Purpose</summary>
 <br>
 
-Tmux provides a few basic popup menus by default, but they're quite limited and 
+Tmux provides a few basic popup menus by default, but they're quite limited and
 difficult to extend due to their complex, mouse-based one-liner implementations.
-A more integrated, user-friendly approach with better navigation and flexibility 
+A more integrated, user-friendly approach with better navigation and flexibility
 seemed like the right solution.
 
 Not solely meant for beginners, I use it myself all the time:
