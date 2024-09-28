@@ -2,6 +2,9 @@
 *~
 \#*
 
+# obsolete file, now renamed and located in cache
+scripts/tmux_vers_list.sh
+
 # olint linter cache
 .cache.olint
 
