@@ -1,5 +1,7 @@
 # Tmux-Menus
 
+![main](https://github.com/user-attachments/assets/a9cd1d01-ede5-414c-a8cf-0c04f857f648)
+
 Popup menus to help with managing your environment.
 
 For tmux < 3.0 whiptail will be used, since the tmux feature
