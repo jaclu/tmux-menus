@@ -40,10 +40,9 @@ D_TM_BASE_PATH="$(realpath "$(dirname -- "$0")")"
 log_it
 log_it "$(date)"
 
-$b_cache_has_been_validated || cache_validation
-$b_cache_clear_has_been_called || cache_update_params
-
 [ -f "$f_cache_tmux_known_vers" ] && { # implied check if caching is used
+    cache_update_params                # always update params at startup
+    $b_cache_has_been_validated || cache_validation
     #
     #  Add running vers to known versions if not recognized
     #
