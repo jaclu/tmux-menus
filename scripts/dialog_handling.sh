@@ -12,17 +12,6 @@
 #  D_TM_BASE_PATH - base location for tmux-menus plugin
 #
 
-error_missing_param() {
-    #
-    #  Shortcut for repeatedly used error message type
-    #
-    param_name="$1"
-    if [ -z "$param_name" ]; then
-        error_msg "dialog_handling.sh:error_missing_param() called without parameter"
-    fi
-    error_msg "dialog_handling.sh: $param_name must be defined!"
-}
-
 get_mtime() {
     _fname="$1"
     if [ "$(uname)" = "Darwin" ]; then
@@ -283,7 +272,7 @@ menu_parse() {
     #
 
     [ "$menu_idx" -eq 1 ] && {
-        [ -z "$menu_name" ] && error_missing_param "menu_name"
+        [ -z "$menu_name" ] && error_msg "menu_parse() - menu_name not defined"
         # set prefix for item 1
         if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
             alt_dialog_prefix
@@ -654,19 +643,13 @@ handle_menu() {
 #===============================================================
 
 if [ -z "$D_TM_BASE_PATH" ]; then
-    # helpers not yet sourced, so error_missing_param() not yet available
-    msg="dialog_handling.sh - D_TM_BASE_PATH must be set!"
-    error_msg "$msg" || {
-        #
-        #  error_msg is unlikely to work in this condition, but at least
-        #  make an attempt to do a tmux notification, use this as fall back
-        #
-        (
-            echo
-            echo "ERROR: $msg"
-            echo
-        ) >/dev/stderr
-    }
+    # helpers not yet sourced, so error_msg() not yet available
+    msg="ERROR: dialog_handling.sh - D_TM_BASE_PATH must be set!"
+    (
+	echo
+	echo "$msg"
+	echo
+    )
     exit 1
 fi
 

@@ -104,9 +104,10 @@ if $undefined_item; then
 fi
 echo
 
+#  Busybox ps has no -x and will throw error, so send to /dev/null
 #  pgrep does not provide the command line, so ignore SC2009
 #  shellcheck disable=SC2009,SC2154
-if ps -x "$PPID" | grep -q tmux-menus &&
+if ps -x "$PPID" 2>/dev/null | grep -q tmux-menus &&
     [[ "$FORCE_WHIPTAIL_MENUS" = 1 ]]; then
 
     #  called using whiptail menus

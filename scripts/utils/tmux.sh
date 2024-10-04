@@ -428,4 +428,9 @@ tmux_get_plugin_options() { # cache references
 #
 [ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
 
-tmux_pid="$(echo "$TMUX" | cut -d',' -f2)"
+if [ -n "$TMUX" ]; then
+    tmux_pid="$(echo "$TMUX" | cut -d',' -f2)"
+else
+    # was run outside tmux
+    tmux_pid="-1"
+fi

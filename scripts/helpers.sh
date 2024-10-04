@@ -228,6 +228,7 @@ safe_now() {
         fi
     else
         #  On Linux the native date suports sub second precission
+        #  unless its the busybox date - only gives seconds...
         date +%s.%N
     fi
 }
