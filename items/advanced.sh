@@ -25,9 +25,9 @@ dynamic_content() {
     fi
 
     set -- \
-        2.1 C m "Toggle mouse to: $new_mouse_status" "set-option -g mouse \
+        2.1 C M "Toggle mouse to: $new_mouse_status" "set-option -g mouse \
         $new_mouse_status $menu_reload" \
-        2.4 C p "Change prefix - current: C-$current_prefix" "command-prompt -1 -p \
+        2.4 C p "Change prefix (C-$current_prefix)" "command-prompt -1 -p \
             'prefix (will take effect imeditally)' \
             'run-shell \"$d_scripts/change_prefix.sh %1 $reload_in_runshell\"'"
 
@@ -41,6 +41,7 @@ static_content() {
         0.0 M Left "Back to Main menu <--" main.sh \
         0.0 S
 
+    # shellcheck disable=SC2154
     if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
         #
         #  The tmux output down to Customize options will be displayed
@@ -57,11 +58,12 @@ static_content() {
     fi
 
     set -- "$@" \
-        3.1 C n "List key bindings with notes" "list-keys -N" \
-        0.0 C l "List all key bindings" "list-keys" \
+        3.1 C n "Key bindings with notes" "list-keys -N" \
+        0.0 C a "All key bindings" "list-keys" \
         3.1 C k "Describe (prefix) key" "command-prompt -k \
-            -p key 'list-keys -N \"%%%\"'" \
-        0.0 C d "Display tmux messages" show-messages \
+            -p key 'list-keys -N \"%1\" ; list-keys -T prefix \"%1\"'" \
+        0.0 C m "Tmux messages" 'show-messages' \
+        0.0 C t "Tmux terminal bindings" 'show-messages -T' \
         0.0 C : "Enter a tmux command" command-prompt \
         0.0 S \
         0.0 C s "Toggle status line" "set status $menu_reload"
