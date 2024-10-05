@@ -20,5 +20,3 @@ if tmux_error_handler source-file "$1"; then
 else
     tmux_error_handler display 'File could not be sourced - not found?'
 fi
-
-# log_it "><> $current_script done!"

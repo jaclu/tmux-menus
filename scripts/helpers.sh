@@ -252,30 +252,22 @@ wait_to_close_display() {
 
 relative_path() {
     # remove D_TM_BASE_PATH prefix
-
-    # log_it "relative_path($1)"
     echo "$1" | sed "s|^$D_TM_BASE_PATH/||"
 }
 
 get_config() { # tmux stuff
     #
     #  The plugin init .tmux script should NOT depend on this!
-    #
-    #  It should instead direcly call cache_validation to ensure
-    #  the cached configs match current tmux configuration
-    #
     #  This is used by everything else sourcing helpers.sh, then trusting
     #  that the param cache is valid if found
     #
 
-    # log_it "get_config()"
-
+    log_it "get_config()"
     if [ -f "$f_cache_not_used_hint" ]; then
-        tmux_set_vers_vars
+        tmux_define_vers_vars
         tmux_get_plugin_options
     else
         cache_validation
-
         # shellcheck source=cache/plugin_params disable=SC1091
         [ -f "$f_cache_not_used_hint" ] || . "$f_cache_params"
     fi
@@ -291,9 +283,12 @@ plugin_name="tmux-menus"
 
 #
 #  Setting a cfg_log_file here overrides @menus_log_file, should only
-#  be used for debugging
+#  be used for debugging early stages of plugin startup. The relevant
+# log_it entries are prefixed with [dbg]. Normally they will not print
+# anything, since when they are run, no log file has been aquired from
+# the tmux env.
 #
-# cfg_log_file="$HOME/tmp/${plugin_name}.log"
+cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
 
 #
 #  Even if this one is used, a cfg_log_file must still be defined
@@ -330,17 +325,23 @@ current_script="$(basename "$0")" # name without path
 d_current_script="$(realpath "$(dirname -- "$0")")"
 f_current_script="$d_current_script/$current_script"
 
-#
-#  If a menu doesnt fit the screen, this us used to display what menu
-#  failed to display
-#
-f_last_menu_displayed="${d_tmp}/last_menu_displayed-${tmux_pid}"
-
-#
-#  at this point plugin_params is trusted if found, menus.tmux will
-#  allways always replace it with current tmux conf during plugin init
-#
-get_config
+# shellcheck disable=SC2154
+if [ "$initialize_plugin" = "1" ]; then
+    log_it "[dbg] doing plugin initialization"
+    cache_validation
+    cache_update_params
+    #
+    #  at this point plugin_params are trusted if found, menus.tmux will
+    #  allways always replace it with current tmux conf during plugin init
+    #
+    #
+    #  By printing a NL and date, its easier to keep separate runs apart
+    #
+    log_it
+    log_it "$(date)"
+else
+    get_config
+fi
 
 if ! tmux_vers_check 3.0; then
     min_tmux_vers="1.7"

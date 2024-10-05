@@ -8,13 +8,66 @@
 #
 #  Handling tmux env
 #
-# shellcheck disable=SC2034
+# shellcheck disable=SC2034,SC2154
 
-tmux_get_vers() {
-    $TMUX_BIN -V | cut -d ' ' -f 2
+tmux_vers_check() { # cache references
+    #
+    #  This returns true if tvc_v_cmp <= tvc_v_ref
+    #  If only one param is given it is compared vs version of running tmux
+    #
+    [ -z "$2" ] && [ -z "$tmux_vers" ] && {
+        tvc_msg="tmux_vers_check() called with neither par2 or tmux_vers set"
+        error_msg "$tvc_msg"
+    }
+
+    [ -f "$f_cache_known_tmux_vers" ] && [ -z "$cache_ok_tmux_versions" ] && {
+        #
+        # get known good/bad versions
+        #
+        # shellcheck source=/dev/null
+        . "$f_cache_known_tmux_vers"
+    }
+
+    tvc_v_cmp="$1"
+    i_tvc_cmp=0 # indicating unset
+    tvc_v_ref="${2:-$tmux_vers}"
+    i_tvc_ref=0 # indicating unset
+
+    # log_it "tmux_vers_check($tvc_v_cmp, $tvc_v_ref)"
+
+    $cfg_use_cache && {
+        case "$cache_ok_tmux_versions $tvc_v_ref " in
+        *"$tvc_v_cmp "*) return 0 ;;
+        *) ;;
+        esac
+        case "$cache_bad_tmux_versions" in
+        *"$tvc_v_cmp "*) return 1 ;;
+        *) ;;
+        esac
+
+        i_tvc_cmp=$(get_digits_from_string "$tvc_v_cmp")
+        i_tvc_ref=$(get_digits_from_string "$tvc_v_ref")
+
+        if [ "$i_tvc_cmp" -le "$i_tvc_ref" ]; then
+            [ "$tvc_v_ref" = "$tmux_vers" ] && cache_add_ok_vers "$tvc_v_cmp"
+            return 0
+        else
+            [ "$tvc_v_ref" = "$tmux_vers" ] && cache_add_bad_vers "$tvc_v_cmp"
+            return 1
+        fi
+    }
+
+    [ "$i_tvc_cmp" -eq 0 ] && i_tvc_cmp=$(get_digits_from_string "$tvc_v_cmp")
+    [ "$i_tvc_ref" -eq 0 ] && i_tvc_ref=$(get_digits_from_string "$tvc_v_ref")
+    [ "$i_tvc_cmp" -le "$i_tvc_ref" ]
 }
 
-tmux_set_vers_vars() {
+tmux_get_vers() {
+    # skip release candidate suffix and similar
+    $TMUX_BIN -V | cut -d ' ' -f 2 | cut -d- -f1
+}
+
+tmux_define_vers_vars() {
     #
     #  Public variables
     #   tmux_vers - currently running tmux version
@@ -24,8 +77,38 @@ tmux_set_vers_vars() {
     i_tmux_vers=$(get_digits_from_string "$tmux_vers")
 }
 
-tmux_is_option_defined() {
-    tmux_error_handler show-options -g | grep -q "^$1"
+tmux_get_defaults() {
+    #
+    #  Defaults for plugin params
+    #
+    #  Public variables
+    #   default_  defaults for tmux config options
+    #
+
+    # log_it "tmux_get_defaults()"
+
+    default_trigger_key=\\
+    default_no_prefix=No
+
+    if tmux_vers_check 3.2; then
+        default_location_x=C
+        default_location_y=C
+    else
+        default_location_x=P
+        default_location_y=P
+    fi
+
+    default_use_cache=Yes
+
+    if [ -n "$TMUX_CONF" ]; then
+        default_tmux_conf="$TMUX_CONF"
+    elif [ -n "$XDG_CONFIG_HOME" ]; then
+        default_tmux_conf="$XDG_CONFIG_HOME/tmux/tmux.conf"
+    else
+        default_tmux_conf="$HOME/.tmux.conf"
+    fi
+
+    default_log_file=""
 }
 
 tmux_get_option() {
@@ -36,7 +119,6 @@ tmux_get_option() {
 
     [ -z "$tgo_option" ] && error_msg "tmux_get_option() param 1 empty!"
 
-    # shellcheck disable=SC2154
     [ "$TMUX" = "" ] && {
         # this is run standalone, just report the defaults
         echo "$tgo_default"
@@ -74,6 +156,73 @@ tmux_get_option() {
     unset tgo_option
     unset tgo_default
     unset tgo_value
+}
+
+tmux_get_plugin_options() { # cache references
+    #
+    #  Public variables
+    #   cfg_  config variables, either read from tmux or the default
+    #
+
+    # log_it "tmux_get_plugin_options()"
+    tmux_define_vers_vars
+    tmux_get_defaults
+
+    cfg_trigger_key=$(tmux_get_option "@menus_trigger" \
+        "$default_trigger_key")
+    normalize_bool_param "@menus_without_prefix" "$default_no_prefix" &&
+        cfg_no_prefix=true || cfg_no_prefix=false
+    normalize_bool_param "@menus_use_cache" "$default_use_cache" &&
+        cfg_use_cache=true || cfg_use_cache=false
+
+    #
+    #  Setup env depending on if cache is used or not
+    #
+    if $cfg_use_cache; then
+        mkdir -p "$d_cache"
+        [ "$FORCE_WHIPTAIL_MENUS" = 1 ] && touch "$f_using_whiptail"
+        rm -f "$f_cache_not_used_hint"
+    else
+        # indicate that cache should not be used
+        touch "$f_cache_not_used_hint"
+    fi
+
+    cfg_mnu_loc_x="$(tmux_get_option "@menus_location_x" \
+        "$default_location_x")"
+    cfg_mnu_loc_y="$(tmux_get_option "@menus_location_y" \
+        "$default_location_y")"
+    cfg_tmux_conf="$(tmux_get_option "@menus_config_file" \
+        "$default_tmux_conf")"
+    _f="$(tmux_get_option "@menus_log_file" "$default_log_file")"
+    log_it "[dbg] dbg_log:[$cfg_log_file] default:[$default_log_file] read:[$_f]"
+    [ -n "$_f" ] && {
+        #
+        #  If a debug logfile was set early in helpers.sh, and no log_file
+        #  is defined in settings, the debug log file will continue to
+        #  be used, otherwise, from here on the log file defined in tmux conf
+        #  will be used from this point.
+        #
+        cfg_log_file="$_f"
+    }
+
+    #
+    #  Generic plugin setting I use to add Notes to keys that are bound
+    #  This makes this key binding show up when doing <prefix> ?
+    #  If not set to "Yes", no attempt at adding notes will happen
+    #  bind-key Notes were added in tmux 3.1, so should not be used on
+    #  older versions!
+    #
+    if tmux_vers_check 3.1 &&
+        normalize_bool_param "@use_bind_key_notes_in_plugins" No; then
+
+        cfg_use_notes=true
+    else
+        cfg_use_notes=false
+    fi
+}
+
+tmux_is_option_defined() {
+    tmux_error_handler show-options -g | grep -q "^$1"
 }
 
 normalize_bool_param() {
@@ -178,40 +327,6 @@ tmux_escape_special_chars() {
     unset tesc_str tesc_idx tesc_esc_str
 }
 
-tmux_get_defaults() {
-    #
-    #  Defaults for plugin params
-    #
-    #  Public variables
-    #   default_  defaults for tmux config options
-    #
-
-    # log_it "tmux_get_defaults()"
-
-    default_trigger_key=\\
-    default_no_prefix=No
-
-    if tmux_vers_check 3.2; then
-        default_location_x=C
-        default_location_y=C
-    else
-        default_location_x=P
-        default_location_y=P
-    fi
-
-    default_use_cache=Yes
-
-    if [ -n "$TMUX_CONF" ]; then
-        default_tmux_conf="$TMUX_CONF"
-    elif [ -n "$XDG_CONFIG_HOME" ]; then
-        default_tmux_conf="$XDG_CONFIG_HOME/tmux/tmux.conf"
-    else
-        default_tmux_conf="$HOME/.tmux.conf"
-    fi
-
-    default_log_file=""
-}
-
 tmux_error_handler() { # cache references
     #
     #  Detects any errors reported by tmux commands and gives notification
@@ -220,7 +335,6 @@ tmux_error_handler() { # cache references
 
     # log_it "tmux_error_handler($the_cmd)"
 
-    # shellcheck disable=SC2154
     if $cfg_use_cache; then
         d_errors="$d_cache"
     else
@@ -230,7 +344,6 @@ tmux_error_handler() { # cache references
 
     $TMUX_BIN "$@" 2>"$f_tmux_err" && rm -f "$f_tmux_err"
 
-    # shellcheck disable=SC2154
     [ -s "$f_tmux_err" ] && {
         #
         #  First save the error to a named file
@@ -271,145 +384,6 @@ tmux_error_handler() { # cache references
     }
     unset the_cmd
     return 0
-}
-
-tmux_vers_check_params_to_int() {
-    i_tvc_cmp=$(get_digits_from_string "$tvc_v_cmp")
-    if [ "$tvc_v_ref" = "$tmux_vers" ]; then
-        i_tvc_ref="$i_tmux_vers"
-    else
-        i_tvc_ref=$(get_digits_from_string "$tvc_v_ref")
-    fi
-}
-
-tmux_vers_check() { # cache references
-    #
-    #  This returns true if tvc_v_cmp <= tvc_v_ref
-    #  If only one param is given it is compared vs version of running tmux
-    #
-    [ -z "$2" ] && [ -z "$tmux_vers" ] && {
-        tvc_msg="tmux_vers_check() called with neither \$2 or \$tmux_vers set"
-        error_msg "$tvc_msg"
-    }
-    tvc_v_cmp="$1"
-    i_tvc_cmp=0 # indicating unset
-    tvc_v_ref="${2:-$tmux_vers}"
-    i_tvc_ref=0 # indicating unset
-
-    # log_it "><> tmux_vers_check($tvc_v_cmp, $tvc_v_ref)"
-
-    if $cfg_use_cache; then
-        if [ "$tvc_v_ref" = "$tmux_vers" ]; then
-            #
-            # two  methods to check for good/bad tmux vers, need
-            #  to figure out which is better in this case
-            #
-            case " $cache_ok_tmux_versions $tmux_vers" in
-            *" $tvc_v_cmp "*) return 0 ;;
-            *) ;;
-            esac
-            case " $cache_bad_tmux_versions " in
-            *" $tvc_v_cmp "*) return 1 ;;
-            *) ;;
-            esac
-
-            # vers not in cache, will be added to good or bad
-
-            i_tvc_cmp=$(get_digits_from_string "$tvc_v_cmp")
-            i_tvc_ref="$i_tmux_vers"
-
-            # shellcheck disable=SC2154
-            [ -f "$f_cache_tmux_known_vers" ] && {
-                #
-                #  Dont try to save unknown versions
-                #  during initial startup, before the initial file has been
-                #  created, such changes would be overwritten anyhow
-                #
-                if [ "$i_tvc_cmp" -le "$i_tvc_ref" ]; then
-                    cache_ok_tmux_versions="$cache_ok_tmux_versions $tvc_v_cmp"
-                    log_it "Added ok tmux vers: $tvc_v_cmp"
-                else
-                    cache_bad_tmux_versions="$tvc_v_cmp $cache_bad_tmux_versions"
-                    log_it "Added bad tmux vers: $tvc_v_cmp"
-                fi
-                #
-                # For performance reasons, dont save changes right away,
-                # leave that for dialog_handling:handle_menu()
-                # to do once all checks for the menu has completed
-                #
-                # shellcheck disable=SC2034
-                b_cache_delayed_param_write=true
-            }
-        fi
-    fi
-
-    [ "$i_tvc_cmp" -eq 0 ] && i_tvc_cmp=$(get_digits_from_string "$tvc_v_cmp")
-    [ "$i_tvc_ref" -eq 0 ] && i_tvc_ref=$(get_digits_from_string "$tvc_v_ref")
-    [ "$i_tvc_cmp" -le "$i_tvc_ref" ]
-}
-
-tmux_get_plugin_options() { # cache references
-    #
-    #  Public variables
-    #   cfg_  config variables, either read from tmux or the default
-    #
-
-    # log_it "tmux_get_plugin_options()"
-    tmux_set_vers_vars
-    tmux_get_defaults
-
-    cfg_trigger_key=$(tmux_get_option "@menus_trigger" \
-        "$default_trigger_key")
-    normalize_bool_param "@menus_without_prefix" "$default_no_prefix" &&
-        cfg_no_prefix=true || cfg_no_prefix=false
-    normalize_bool_param "@menus_use_cache" "$default_use_cache" &&
-        cfg_use_cache=true || cfg_use_cache=false
-
-    #
-    #  Setup env depending on if cache is used or not
-    #
-    if $cfg_use_cache; then
-        mkdir -p "$d_cache"
-        # shellcheck disable=SC2154
-        [ "$FORCE_WHIPTAIL_MENUS" = 1 ] && touch "$f_using_whiptail"
-        # shellcheck disable=SC2154
-        rm -f "$f_cache_not_used_hint"
-    else
-        # indicate that cache should not be used
-        # shellcheck disable=SC2154
-        [ -f "$f_cache_not_used_hint" ] || touch "$f_cache_not_used_hint"
-    fi
-
-    cfg_mnu_loc_x="$(tmux_get_option "@menus_location_x" \
-        "$default_location_x")"
-    cfg_mnu_loc_y="$(tmux_get_option "@menus_location_y" \
-        "$default_location_y")"
-    cfg_tmux_conf="$(tmux_get_option "@menus_config_file" \
-        "$default_tmux_conf")"
-
-    if [ -z "$cfg_log_file" ]; then
-        #
-        #  would only be set in debug mode, in that case ignore
-        #  tmux setting and defuault
-        #
-        cfg_log_file="$(tmux_get_option "@menus_log_file" \
-            "$default_log_file")"
-    fi
-
-    #
-    #  Generic plugin setting I use to add Notes to keys that are bound
-    #  This makes this key binding show up when doing <prefix> ?
-    #  If not set to "Yes", no attempt at adding notes will happen
-    #  bind-key Notes were added in tmux 3.1, so should not be used on
-    #  older versions!
-    #
-    if tmux_vers_check 3.1 &&
-        normalize_bool_param "@use_bind_key_notes_in_plugins" No; then
-
-        cfg_use_notes=true
-    else
-        cfg_use_notes=false
-    fi
 }
 
 #===============================================================

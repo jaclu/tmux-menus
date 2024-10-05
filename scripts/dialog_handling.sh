@@ -57,8 +57,7 @@ ensure_menu_fits_on_screen() {
     log_it "Menu $current_script_no_ext - Display time:  $disp_time"
 
     if [ "$(echo "$disp_time < 0.5" | bc)" -eq 1 ]; then
-        _s="$(relative_path "$(cat "$f_last_menu_displayed")")"
-        error_msg "$_s Screen might be too small"
+        error_msg "$(relative_path "$f_current_script") Screen might be too small"
     fi
     unset disp_time
 }
@@ -586,9 +585,6 @@ handle_wt_selecion() {
 }
 
 display_menu() {
-    #  this is used to label menu if the might be too small is displayed
-    echo "$f_current_script" >"$f_last_menu_displayed"
-
     if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
         # display whiptail menu
         menu_selection=$(eval "$menu_items" 3>&2 2>&1 1>&3)
@@ -625,10 +621,6 @@ handle_menu() {
     # 2 - Handle dynamic parts (if any)
     handle_dynamic
 
-    $b_cache_delayed_param_write && {
-        cache_param_write "y"
-    }
-
     # 3 - Gather each item in correct order
     sort_menu_items
 
@@ -646,9 +638,9 @@ if [ -z "$D_TM_BASE_PATH" ]; then
     # helpers not yet sourced, so error_msg() not yet available
     msg="ERROR: dialog_handling.sh - D_TM_BASE_PATH must be set!"
     (
-	echo
-	echo "$msg"
-	echo
+        echo
+        echo "$msg"
+        echo
     )
     exit 1
 fi

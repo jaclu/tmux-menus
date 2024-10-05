@@ -15,14 +15,13 @@ experienced users, then add more for newbies.
 <summary>Recent Changes</summary>
 <br>
 
+- Rewrote cache handling for better optimization
 - Moved Toggle status line -> Advanced in order to shrink main menu
 - Removed pointers to default key-bindings, instead using shortcuts that
 makes sense from a tmux-menus perspective.
 - Replaced Paste Buffers menu, to list all features and default bindings.
 - If whiptail is needed, but not installed, hitting the trigger key will display:
 `DEPENDENCY: tmux-menus needs whiptail`
-- New menu: Navigate & Search
-- Separate Currencies menu under Missing Keys
 
 </details>
 <details>
