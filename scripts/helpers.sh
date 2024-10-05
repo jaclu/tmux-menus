@@ -288,7 +288,7 @@ plugin_name="tmux-menus"
 # anything, since when they are run, no log file has been aquired from
 # the tmux env.
 #
-cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
+# cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
 
 #
 #  Even if this one is used, a cfg_log_file must still be defined
