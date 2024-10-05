@@ -34,7 +34,7 @@ cache_add_ok_vers() {
     *"$1"*) ;;
     *)
         cache_ok_tmux_versions="${cache_ok_tmux_versions}$1 "
-        log_it "Added ok tmux vers: $1"
+        # log_it "Added ok tmux vers: $1"
         cache_save_known_tmux_versions
         ;;
     esac
