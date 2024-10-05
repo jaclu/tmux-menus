@@ -194,7 +194,6 @@ tmux_get_plugin_options() { # cache references
     cfg_tmux_conf="$(tmux_get_option "@menus_config_file" \
         "$default_tmux_conf")"
     _f="$(tmux_get_option "@menus_log_file" "$default_log_file")"
-    log_it "[dbg] dbg_log:[$cfg_log_file] default:[$default_log_file] read:[$_f]"
     [ -n "$_f" ] && {
         #
         #  If a debug logfile was set early in helpers.sh, and no log_file

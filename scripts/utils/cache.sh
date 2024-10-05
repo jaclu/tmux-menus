@@ -109,7 +109,7 @@ cache_update_params() {
     #
     #  Reads plugin options from tmux and save the param cache
     #
-    log_it "[dbg] cache_update_params()"
+    # log_it "[dbg] cache_update_params()"
     tmux_get_plugin_options
     $cfg_use_cache && cache_param_write
 }
