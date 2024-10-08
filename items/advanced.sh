@@ -63,7 +63,7 @@ static_content() {
         3.1 C k "Describe (prefix) key" "command-prompt -k \
             -p key 'list-keys -N \"%1\" ; list-keys -T prefix \"%1\"'" \
         0.0 C m "Tmux messages" 'show-messages' \
-        0.0 C t "Tmux terminal bindings" 'show-messages -T' \
+        1.9 C t "Tmux terminal bindings" 'show-messages -T' \
         0.0 C : "Enter a tmux command" command-prompt \
         0.0 S \
         0.0 C s "Toggle status line" "set status $menu_reload"
