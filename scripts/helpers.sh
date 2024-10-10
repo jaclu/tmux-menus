@@ -280,6 +280,7 @@ get_config() { # tmux stuff
 #===============================================================
 
 plugin_name="tmux-menus"
+t_dbg="$(safe_now)"
 
 #
 #  Setting a cfg_log_file here overrides @menus_log_file, should only
@@ -289,6 +290,7 @@ plugin_name="tmux-menus"
 # the tmux env.
 #
 # cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
+cfg_log_file="$HOME/tmp/${plugin_name}.log"
 
 #
 #  Even if this one is used, a cfg_log_file must still be defined
@@ -313,8 +315,14 @@ d_tmp="${TMPDIR:-/tmp}"
 # shellcheck source=scripts/utils/tmux.sh
 . "$d_scripts"/utils/tmux.sh
 
+_t="$(echo "$(safe_now) - $t_dbg" | bc)"
+log_it "><> helpers.sh - sourced tmux.sh: $_t"
+
 # shellcheck source=scripts/utils/cache.sh
 . "$d_scripts"/utils/cache.sh
+
+_t="$(echo "$(safe_now) - $t_dbg" | bc)"
+log_it "><> helpers.sh - done sourcing: $_t"
 
 #
 #  Convert script name to full actual path notation the path is used
@@ -342,6 +350,9 @@ if [ "$initialize_plugin" = "1" ]; then
 else
     get_config
 fi
+
+_t="$(echo "$(safe_now) - $t_dbg" | bc)"
+log_it "><> helpers.sh - plugin init done: $_t"
 
 if ! tmux_vers_check 3.0; then
     min_tmux_vers="1.7"

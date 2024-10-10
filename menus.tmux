@@ -35,6 +35,8 @@ initialize_plugin=1 # tell helpes.sh to replace (potentially) cached params
 # shellcheck source=scripts/helpers.sh
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
+log_it "><> sourced helpers.sh - processing time:  $(echo "$(safe_now) - $t_dbg" | bc)"
+
 # implied check if caching is used
 [ -d "$d_cache" ] && cache_add_ok_vers "$tmux_vers"
 

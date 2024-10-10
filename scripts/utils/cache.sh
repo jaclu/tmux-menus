@@ -176,5 +176,14 @@ b_cache_clear_has_been_called=false
 #  To indicate that cache should not be used, without writing anything
 #  inside the plugin folder, a file in $TMPDIR or /tmp is used
 #
+_t="$(echo "$(safe_now) - $t_dbg" | bc)"
+log_it "><> cache.sh - before socket extract : $_t"
+
+_t="$(safe_now)"
+_s="$(basename "$0")" # extract the socket name
+_t="$(echo "$(safe_now) - $_t" | bc)"
+log_it "><> cache.sh - after socket extract : $_t"
+
 _s="$(basename "$(echo "$TMUX" | cut -d, -f 1)")" # extract the socket name
+
 f_cache_not_used_hint="$d_tmp/${plugin_name}-no_cache_hint-$(id -u)-$_s"
