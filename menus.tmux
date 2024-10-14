@@ -53,7 +53,7 @@ fi
 # have to use "set --"" in order to send the selected params to tmux
 set --
 $cfg_use_notes && {
-    set -- "$@" -N "plugin:$plugin_name trigger"
+    set -- "$@" -N "plugin: $plugin_name trigger"
 }
 
 if $cfg_no_prefix; then
