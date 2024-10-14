@@ -92,6 +92,7 @@ static_content() {
         0.0 E t " Send ~ (tilde)" "$f_current_script  0x7e" \
         0.0 E a " Send @ (at)" "$f_current_script @" \
         0.0 E p " Send § (paragraph)" "$f_current_script §" \
+        0.0 E h " Send # (hash)" "$f_current_script 0x23" \
         0.0 S \
         0.0 M H "Help -->" "$d_items/help_missing_keys.sh $f_current_script"
 
