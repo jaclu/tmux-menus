@@ -2,7 +2,7 @@
 
 New featue in the works - Styling of menus - Se the [branch: layout](https://github.com/jaclu/tmux-menus/blob/layout/Styling.md)
 
-![main](https://github.com/user-attachments/assets/2eede00c-ffee-4f86-9ebf-a07eaf34460c)
+![main](https://github.com/user-attachments/assets/44e653ba-71f6-4c70-8c76-474151c53cb4)
 
 Popup menus to help with managing your environment.
 
