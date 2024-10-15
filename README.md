@@ -1,6 +1,9 @@
 # Tmux-Menus
 
-![main](https://github.com/user-attachments/assets/a9cd1d01-ede5-414c-a8cf-0c04f857f648)
+New featue in the works - Styling of menus - Se the [branch: layout](https://github.com/jaclu/tmux-menus/tree/layout)
+
+![main](https://github.com/user-attachments/assets/2eede00c-ffee-4f86-9ebf-a07eaf34460c)
+
 
 Popup menus to help with managing your environment.
 
