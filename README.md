@@ -1,6 +1,6 @@
 # Tmux-Menus
 
-New featue in the works - Styling of menus - Se the [branch: layout](https://github.com/jaclu/tmux-menus/tree/layout)
+New featue in the works - Styling of menus - Se the [branch: layout](https://github.com/jaclu/tmux-menus/blob/layout/Styling.md)
 
 ![main](https://github.com/user-attachments/assets/2eede00c-ffee-4f86-9ebf-a07eaf34460c)
 
