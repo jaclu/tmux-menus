@@ -1,7 +1,9 @@
 # Tmux-Menus
 
-<img width="250" alt="main" src="https://github.com/user-attachments/assets/3756e857-36c8-4c92-a974-076a5f103570" />
-<img width="250" alt="main-styled" src="https://github.com/user-attachments/assets/81c1e276-3c33-4d84-aefe-d31a8c003735" />
+<img width="250" alt="main"
+src="https://github.com/user-attachments/assets/3756e857-36c8-4c92-a974-076a5f103570" />
+<img width="250" alt="main-styled"
+src="https://github.com/user-attachments/assets/81c1e276-3c33-4d84-aefe-d31a8c003735" />
 
 ## Summary
 
@@ -165,7 +167,7 @@ The plugin should now be activated.
 For tmux < 3.0 Whiptail will be used to generate menus, since the tmux feature
 `display-menu` is not available.
 
-When Whiptail is used, the current (if any) task is suspended, 
+When Whiptail is used, the current (if any) task is suspended,
 dialogs are run, and when done the suspended task is reactivated.
 
 The downside of this is that if no current tasks were running in

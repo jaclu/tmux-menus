@@ -6,4 +6,4 @@ MD013:
 
 MD033:
   # Allowed elements
-  allowed_elements: [details, summary, br]
+  allowed_elements: [img, details, summary, br]
