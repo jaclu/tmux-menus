@@ -1,0 +1,6 @@
+[tool.pymarkdown]
+plugins.md013.enabled = false
+# can't exclude tables from line_length check yet
+# plugins.md013.line_length = 92
+
+plugins.md033.allowed_elements = "details,summary,br"
