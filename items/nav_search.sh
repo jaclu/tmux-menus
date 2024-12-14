@@ -56,8 +56,3 @@ menu_name="Navigate & Search"
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
-
-e="$?"
-if [ "$e" -ne 0 ]; then
-    log_it "$current_script exiting [$e]"
-fi

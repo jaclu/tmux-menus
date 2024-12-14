@@ -133,8 +133,3 @@ fi
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$d_scripts"/dialog_handling.sh
-
-e="$?"
-if [ "$e" -ne 0 ]; then
-    log_it "$current_script exiting [$e]"
-fi
