@@ -89,9 +89,9 @@ error_msg() {
 error_msg_formated() {
     #
     #  Display an error in its own frame, supporting longer messages
-    #  and also those formated with LFs
+    #  and also those formatted with LFs
     #
-    #  Cant use tmux_error_handler() or error_msg() here - it could lead to
+    #  Can't use tmux_error_handler() or error_msg() here - it could lead to
     #  recursion
     #
     emf_err="$1"

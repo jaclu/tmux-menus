@@ -64,7 +64,7 @@ tmux_vers_check() { # cache references
 
 tmux_get_vers() {
     # skip release candidate suffix and similar
-    $TMUX_BIN -V | cut -d ' ' -f 2 | cut -d- -f1
+    tmux_error_handler -V | cut -d ' ' -f 2 | cut -d- -f1
 }
 
 tmux_define_vers_vars() {
@@ -335,7 +335,7 @@ tmux_error_handler() { # cache references
     #
     the_cmd="$*"
 
-    # log_it "tmux_error_handler($the_cmd)"
+    # log_it "tmux_error_handler($1 $2 $3)"
 
     if $cfg_use_cache; then
         d_errors="$d_cache"

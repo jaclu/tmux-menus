@@ -127,7 +127,7 @@ else
         #  without a param this buffer is reset
         #
         log_it "clearing pending paste buffer indicator"
-        $TMUX_BIN set-option -gqu "$wt_pasting"
+        tmux_error_handler set-option -gqu "$wt_pasting"
     }
 fi
 

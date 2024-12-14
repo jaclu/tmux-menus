@@ -79,8 +79,14 @@ starting_with_dash() {
 #
 #  tmux 3.0+ built in menu handling using display-menu
 #
+
 tmux_dialog_prefix() {
-    menu_items="tmux_error_handler display-menu -T \"#[align=centre] $menu_name \" \
+    _n="$(echo "$cfg_format_title" | sed "s/#{@menu_name}/$menu_name/g")"
+    menu_items="tmux_error_handler display-menu  \
+        -H $cfg_simple_style_selected \
+        -s $cfg_simple_style \
+        -S $cfg_simple_style_border \
+        -T $_n \
         -x '$cfg_mnu_loc_x' -y '$cfg_mnu_loc_y'"
 }
 
