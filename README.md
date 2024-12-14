@@ -257,7 +257,7 @@ that cache item is regenerated.
 
 ### Using Styling for menus
 
-See [Styling](Styling.md)
+See [Styling.md](Styling.md)
 
 ### Pointer to the config file
 
