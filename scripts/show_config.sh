@@ -37,7 +37,7 @@ D_TM_BASE_PATH=$(dirname "$(dirname -- "$(realpath "$0")")")
 
 tmux_get_defaults
 
-echo "config vairable        default  value"
+echo "config variable        default  value"
 echo "---------------------- -------  -----"
 show_item @menus_trigger "$cfg_trigger_key" "$default_trigger_key"
 show_item @menus_without_prefix "$cfg_no_prefix" "$default_no_prefix"

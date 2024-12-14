@@ -11,8 +11,8 @@
 static_content() {
 
     set -- \
-        0.0 M Home "Back to Main menu     <==" main.sh \
-        0.0 M Left "Back to Handling Pane <--" panes.sh \
+        0.0 M Home "Back to Main menu     $nav_home" main.sh \
+        0.0 M Left "Back to Handling Pane $nav_prev" panes.sh \
         0.0 S \
         1.7 C s "Specify width & height" "command-prompt -p \
             'Pane width,Pane height' 'resize-pane -x %1 -y %2'" \
@@ -27,7 +27,7 @@ static_content() {
         1.7 C L "left" "resize-pane -L 5 $menu_reload" \
         1.7 C R "right" "resize-pane -R 5 $menu_reload" \
         0.0 S \
-        0.0 M H "Help -->" "$d_items/help.sh $f_current_script"
+        0.0 M H "Help $nav_next" "$d_items/help.sh $f_current_script"
 
     menu_generate_part 1 "$@"
 }

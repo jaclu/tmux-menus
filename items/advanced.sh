@@ -36,23 +36,23 @@ dynamic_content() {
 }
 
 static_content() {
-    # 2.7 M M "Manage clients    -->" advanced_manage_clients.sh \
+    # 2.7 M M "Manage clients    $nav_next" advanced_manage_clients.sh \
     set -- \
-        0.0 M Left "Back to Main menu <--" main.sh \
+        0.0 M Left "Back to Main menu $nav_home" main.sh \
         0.0 S
 
     # shellcheck disable=SC2154
     if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
         #
         #  The tmux output down to Customize options will be displayed
-        #  then disapear instantly since whiptail restarts the foreground
+        #  then disappear instantly since whiptail restarts the foreground
         #  app. Avoid this by not switching away to the fg app
         #
         set -- "$@" \
-            0.0 T "Most outputs for this dialog will disapear if this is run" \
+            0.0 T "Most outputs for this dialog will disappear if this is run" \
             0.0 T "with another app put into the background, since it will" \
             0.0 T "reapear as soon as this menu is closed." \
-            0.0 T "Recomended workarround is to run this from a pane" \
+            0.0 T "Recommended workaround is to run this from a pane" \
             0.0 T "with a prompt." \
             0.0 S
     fi
@@ -79,13 +79,13 @@ static_content() {
         1.8 C x "Kill server" "confirm-before -p \
             'kill tmux server defined in($TMUX_SOURCE) ? (y/n)' kill-server" \
         0.0 S \
-        0.0 M H "Help -->" "$d_items/help.sh $f_current_script"
+        0.0 M H "Help $nav_next" "$d_items/help.sh $f_current_script"
 
     menu_generate_part 3 "$@"
     #
     #  Disabled until I have time to investigate
     #
-    # plugin_conf_prompt="#{?@menus_config_overrides,Plugin configuration  -->,-Configuration disabled}"
+    # plugin_conf_prompt="#{?@menus_config_overrides,Plugin configuration  $nav_next,-Configuration disabled}"
     # 0.0 M P "$plugin_conf_prompt" config.sh \
 }
 

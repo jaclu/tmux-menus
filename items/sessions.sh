@@ -18,7 +18,7 @@ static_content() {
     cli_dtch_mode="set -s detach-on-destroy $_s"
 
     set -- \
-        0.0 M Left "Back to Main menu <--" main.sh \
+        0.0 M Left "Back to Main menu $nav_home" main.sh \
         0.0 S \
         0.0 C r "Rename this session" "command-prompt -I '#S' \
             'rename-session -- \"%%\"'" \
@@ -38,7 +38,7 @@ static_content() {
         'Are you sure you want to kill all other sessions? (y/n)' \
         'kill-session -a'" \
         0.0 S \
-        0.0 M H "Help -->" "$d_items/help.sh $f_current_script"
+        0.0 M H "Help $nav_next" "$d_items/help.sh $f_current_script"
 
     menu_generate_part 1 "$@"
 }

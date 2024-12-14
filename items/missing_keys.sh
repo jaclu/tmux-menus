@@ -64,8 +64,8 @@ handle_char() {
         else
             #
             #  On Linux, it seems checking str length the normal way
-            #  doesnt work for some chars, like §
-            #  This seems more resiliant
+            #  doesn't work for some chars, like §
+            #  This seems more resilient
             #
             # shellcheck disable=SC2308
             _check="$(expr length "$s_in")"
@@ -80,12 +80,12 @@ handle_char() {
 
 static_content() {
     #
-    #  It doesnt seem possible to reliably display an actual backtick in menus...
+    #  It doesn't seem possible to reliably display an actual backtick in menus...
     #  on some platforms it works, on others it breaks this menu
     #
     set -- \
-        0.0 M Left "Back to Main menu <--" main.sh \
-        0.0 M C    "Currencies" currencies.sh \
+        0.0 M Left "Back to Main menu $nav_home" main.sh \
+        0.0 M C "Currencies" currencies.sh \
         0.0 S \
         0.0 E e " Send ESC" "$f_current_script  0x1b" \
         0.0 E b " Send   (back-tick)" "$f_current_script  0x60" \
@@ -94,7 +94,7 @@ static_content() {
         0.0 E p " Send § (paragraph)" "$f_current_script §" \
         0.0 E h " Send # (hash)" "$f_current_script 0x23" \
         0.0 S \
-        0.0 M H "Help -->" "$d_items/help_missing_keys.sh $f_current_script"
+        0.0 M H "Help $nav_next" "$d_items/help_missing_keys.sh $f_current_script"
 
     menu_generate_part 1 "$@"
 

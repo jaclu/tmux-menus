@@ -58,8 +58,8 @@ handle_char() {
         else
             #
             #  On Linux, it seems checking str length the normal way
-            #  doesnt work for some chars, like §
-            #  This seems more resiliant
+            #  doesn't work for some chars, like §
+            #  This seems more resilient
             #
             # shellcheck disable=SC2308
             _check="$(expr length "$s_in")"
@@ -70,15 +70,15 @@ handle_char() {
 }
 
 show_label() {
-    # Some Currency symbols cant be printed in whiptail
+    # Some Currency symbols can't be printed in whiptail
     if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
         case "$1" in
-            ₺ | ₴ | ₽ | ₹ )
-                echo "Send   ($2) - not printable in whiptail"
-                ;;
-            *)
-                echo "Send $1 ($2)"
-                ;;
+        ₺ | ₴ | ₽ | ₹)
+            echo "Send   ($2) - not printable in whiptail"
+            ;;
+        *)
+            echo "Send $1 ($2)"
+            ;;
         esac
     else
         echo "Send $1 ($2)"
@@ -90,8 +90,8 @@ static_content() {
     tmux_vers_check 2.0 || error_msg "needs tmux 2.0"
 
     set -- \
-        0.0 M Home "Back to Main menu     <==" main.sh \
-        0.0 M Left "Back to Missing Keys  <--" missing_keys.sh \
+        0.0 M Home "Back to Main menu     $nav_home" main.sh \
+        0.0 M Left "Back to Missing Keys  $nav_prev" missing_keys.sh \
         0.0 S
 
     # how to print?
@@ -108,16 +108,15 @@ static_content() {
         0.0 E r "$(show_label ₽ rubel)" "$f_current_script ₽" \
         0.0 E R "$(show_label ₹ rupee)" "$f_current_script ₹" \
         0.0 E s "$(show_label ₪ shekel)" "$f_current_script ₪" \
-        0.0 E w "$(show_label ₩ won)"  "$f_current_script ₩" \
+        0.0 E w "$(show_label ₩ won)" "$f_current_script ₩" \
         0.0 E y "$(show_label ¥ yen/yuan)" "$f_current_script ¥" \
         0.0 E z "$(show_label zł zloty)" "$f_current_script zł" \
         0.0 S \
-        0.0 M H "Help -->" "$d_items/help_currencies.sh $f_current_script"
+        0.0 M H "Help $nav_next" "$d_items/help_currencies.sh $f_current_script"
 
     menu_generate_part 1 "$@"
 
 }
-    
 
 #===============================================================
 #
@@ -147,7 +146,7 @@ else
         #  without a param this buffer is reset
         #
         log_it "clearing pending paste buffer indicator"
-        $TMUX_BIN set-option -gqu "$wt_pasting"
+        tmux_error_handler set-option -gqu "$wt_pasting"
     }
 fi
 

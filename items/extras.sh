@@ -23,14 +23,14 @@ static_content() {
     d_extras="$d_items"/extras
 
     set -- \
-        0.0 M Left "Back to Main menu  <--" main.sh \
+        0.0 M Left "Back to Main menu  $nav_prev" main.sh \
         0.0 S \
         0.0 E i "public IP" public_ip.sh \
-        0.0 M D "$(is_avalable dropbox)Dropbox      -->" "$d_extras"/dropbox.sh \
-        0.0 M S "$(is_avalable spotify)Spotify      -->" "$d_extras"/spotify.sh \
-        0.0 M M "$(is_avalable mullvad)Mullvad VPN  -->" "$d_extras"/mullvad.sh \
+        0.0 M D "$(is_avalable dropbox)Dropbox      $nav_next" "$d_extras"/dropbox.sh \
+        0.0 M S "$(is_avalable spotify)Spotify      $nav_next" "$d_extras"/spotify.sh \
+        0.0 M M "$(is_avalable mullvad)Mullvad VPN  $nav_next" "$d_extras"/mullvad.sh \
         0.0 S \
-        0.0 M H 'Help -->' "$d_items/help_extras.sh $f_current_script"
+        0.0 M H "Help $nav_next" "$d_items/help_extras.sh $f_current_script"
 
     menu_generate_part 1 "$@"
 }

@@ -27,8 +27,8 @@ static_content() {
     select_location="choose-tree -Gw 'run-shell \"$d_scripts/relocate_window.sh"
 
     set -- \
-        0.0 M Home "Back to Main menu       <==" main.sh \
-        0.0 M Left "Back to Handling Window <--" windows.sh \
+        0.0 M Home "Back to Main menu       $nav_home" main.sh \
+        0.0 M Left "Back to Handling Window $nav_prev" windows.sh \
         0.0 S
 
     menu_generate_part 1 "$@"
@@ -41,7 +41,7 @@ static_content() {
         2.0 C l "Link window to other session" "$select_location W L %%\"'" \
         0.0 C u "Unlink window from this session" "unlink-window" \
         0.0 S \
-        0.0 M H "Help, explaining move & link -->" "$d_items/help_window_move.sh $f_current_script"
+        0.0 M H "Help, explaining move & link $nav_next" "$d_items/help_window_move.sh $f_current_script"
 
     menu_generate_part 3 "$@"
 }

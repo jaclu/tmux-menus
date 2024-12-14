@@ -10,7 +10,7 @@
 
 nav_add() {
     [ -z "$nav" ] && nav="\"\""
-    nav="$nav \"$1  -->\" '$2' \"$open_menu/extras/mullvad_country.sh $3\""
+    nav="$nav \"$1  $nav_next\" '$2' \"$open_menu/extras/mullvad_country.sh $3\""
 }
 
 #===============================================================
@@ -59,7 +59,7 @@ if grep -V | grep -q BSD; then
 else
     grep_gnu="-P"
 fi
-countries="$(mullvad relay list | grep -v $grep_gnu '^\t' |
+countries="$(mullvad relay list | grep -v "$grep_gnu" '^\t' |
     grep -v '^$' | awk '{printf "%s|",$0}')"
 
 s="1234567890abcdefghijklmnopqrstuvwxyz"
@@ -77,7 +77,7 @@ while true; do
     #  Limit list size if screen is to small to handle entire list
     #
     if [ "$idx" -ge "$max_item" ]; then
-        log_it "cant display all"
+        log_it "can't display all"
         nav_add "Forward" F "$idx"
         break
     fi
@@ -114,8 +114,8 @@ done
 
 menu_items="$menu_items $nav"
 
-echo $menu_items | xargs tmux_error_handler display-menu \
+echo "$menu_items" | xargs tmux_error_handler display-menu \
     -T "#[align=centre] $menu_name " \
-    -x $cfg_mnu_loc_x -y $cfg_mnu_loc_y
+    -x "$cfg_mnu_loc_x" -y "$cfg_mnu_loc_y"
 
 ensure_menu_fits_on_screen

@@ -15,22 +15,22 @@ static_content() {
     # 12.0 M S
     #  Menu items definition
     set -- \
-        1.8 M N "Navigate & Search -->" nav_search.sh \
-        0.0 M P "Handling Pane     -->" panes.sh \
-        0.0 M W "Handling Window   -->" windows.sh \
-        0.0 M S "Handling Sessions -->" sessions.sh \
-        1.8 M B "Paste buffers     -->" paste_buffers.sh \
-        0.0 M L "Layouts           -->" layouts.sh \
-        0.0 M V "Split view        -->" split_view.sh \
-        2.0 M M "Missing Keys      -->" missing_keys.sh \
-        0.0 M A "Advanced Options  -->" advanced.sh \
-        0.0 M E "Extras            -->" extras.sh \
+        1.8 M N "Navigate & Search $nav_next" nav_search.sh \
+        0.0 M P "Handling Pane     $nav_next" panes.sh \
+        0.0 M W "Handling Window   $nav_next" windows.sh \
+        0.0 M S "Handling Sessions $nav_next" sessions.sh \
+        1.8 M B "Paste buffers     $nav_next" paste_buffers.sh \
+        0.0 M L "Layouts           $nav_next" layouts.sh \
+        0.0 M V "Split view        $nav_next" split_view.sh \
+        2.0 M M "Missing Keys      $nav_next" missing_keys.sh \
+        0.0 M A "Advanced Options  $nav_next" advanced.sh \
+        0.0 M E "Extras            $nav_next" extras.sh \
         0.0 S \
-        1.8 E p "Plugins inventory" "$d_scripts/plugins.sh" \
+        1.8 E p "Plugins inventory" "plugins.sh" \
         0.0 C r "Reload configuration file" "$rld_cmd" \
         0.0 C d 'Detach from tmux' detach-client \
         0.0 S \
-        0.0 M H 'Help -->' "$d_items/help.sh $f_current_script"
+        0.0 M H "Help $nav_next" "$d_items/help.sh $f_current_script"
 
     menu_generate_part 1 "$@"
 }

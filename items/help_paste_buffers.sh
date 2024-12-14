@@ -16,7 +16,8 @@ dynamic_content() {
     fi
 
     set -- \
-        0.0 M Left "Back to Previous menu <--" "$prev_menu"
+        0.0 M Home "Back to Main menu     $nav_home" main.sh \
+        0.0 M Left "Back to Previous menu $nav_prev" "$prev_menu"
 
     menu_generate_part 1 "$@"
 }
@@ -30,7 +31,7 @@ static_content() {
         0.0 T " " \
         0.0 T "-#[nodim]To integrate this clipboard with that" \
         0.0 T "-#[nodim]of the OS, this might need configuration" \
-        0.0 T "-#[nodim]in your tmux conf depending on what OS" \
+        0.0 T "-#[nodim]in of tmux conf depending on what OS" \
         0.0 T "-#[nodim]and terminal is being used."
     menu_generate_part 2 "$@"
 }

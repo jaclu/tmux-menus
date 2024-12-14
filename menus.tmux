@@ -13,7 +13,7 @@
 #  be trusted by the menu items to contain current tmux env variables.
 #
 #  One thing to be aware of - If multiple tmux instances of the same version
-#  use the same folder for this plugin, this cache aproach might not work
+#  use the same folder for this plugin, this cache approach might not work
 #  as intended, since the tmux env is just read once then this cache is used.
 #
 #  If those tmux instances do not have identical tmux-menus configuration,
@@ -31,7 +31,7 @@
 
 D_TM_BASE_PATH="$(realpath "$(dirname -- "$0")")"
 
-initialize_plugin=1 # tell helpes.sh to replace (potentially) cached params
+initialize_plugin=1 # tell helpers.sh to replace (potentially) cached params
 # shellcheck source=scripts/helpers.sh
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 

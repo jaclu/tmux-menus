@@ -33,14 +33,14 @@ error_msg() {
     #  unless do_display_message is false
     #
     #  Using do_display_message is only practical for short one liners,
-    #  for longer error msgs, needing formating, use error_msg_formated()
+    #  for longer error msgs, needing formatting, use error_msg_formated()
     #  instead.
     #
     #  exit_code defaults to 0, which might seem odd for an error exit,
     #  but in combination with display-message it makes sense.
     #  If the script exits with something else than 0, the current pane
     #  will be temporary replaced by an error message mentioning the exit
-    #  code. Wich is both redundant and much less informative than the
+    #  code. Which is both redundant and much less informative than the
     #  display-message that is also printed.
     #  If display-message is not desired it would make sense to use a more
     #  normal positive exit_code to indicate error, making the 2 & 3
@@ -122,7 +122,7 @@ error_msg_formated() {
         echo "Scroll-mode: <prefix> ["
         echo "Press Ctrl-C to close this temporary window"
     )"
-    # posix way to wait forever - MacOS doesnt have: sleep infinity
+    # posix way to wait forever - MacOS doesn't have: sleep infinity
     $TMUX_BIN new-window -n "tmux-error" \
         "echo '$emf_msg' ; tail -f /dev/null "
     # fi
@@ -218,7 +218,7 @@ has_lf_not_at_end() {
 safe_now() {
     #
     #  MacOS date only display whole seconds, if gdate (GNU-date) is
-    #  installed, it can  display times with more precission
+    #  installed, it can  display times with more precision
     #
     if [ "$(uname)" = "Darwin" ]; then
         if [ -n "$(command -v gdate)" ]; then
@@ -227,7 +227,7 @@ safe_now() {
             date +%s
         fi
     else
-        #  On Linux the native date suports sub second precission
+        #  On Linux the native date supports sub second precision
         #  unless its the busybox date - only gives seconds...
         date +%s.%N
     fi
@@ -237,7 +237,7 @@ wait_to_close_display() {
     #
     #  When a menu item writes to stdout, unfortunately how to close
     #  the output window differs depending on dialog method used...
-    #  call this to display an apropriate suggestion, and in the
+    #  call this to display an appropriate suggestion, and in the
     #  whiptail case wait for that key
     #
     echo
@@ -282,11 +282,9 @@ get_config() { # tmux stuff
 plugin_name="tmux-menus"
 
 #
-#  Setting a cfg_log_file here overrides @menus_log_file, should only
-#  be used for debugging early stages of plugin startup. The relevant
-# log_it entries are prefixed with [dbg]. Normally they will not print
-# anything, since when they are run, no log file has been aquired from
-# the tmux env.
+#  Setting a cfg_log_file here will ignore the tmux setting @menus_log_file
+#  This is mostly for debugging early stuff before the settings have
+#  been processed. Should normally be commented out!
 #
 # cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
 
@@ -302,7 +300,7 @@ log_interactive_to_stderr=false
 cfg_use_cache=false
 
 #
-#  Convencience shortcuts
+#  Convenience shortcuts
 #
 d_items="$D_TM_BASE_PATH"/items
 d_scripts="$D_TM_BASE_PATH"/scripts
@@ -327,12 +325,12 @@ f_current_script="$d_current_script/$current_script"
 
 # shellcheck disable=SC2154
 if [ "$initialize_plugin" = "1" ]; then
-    log_it "[dbg] doing plugin initialization"
+    log_it "Doing plugin initialization"
     cache_validation
     cache_update_params
     #
     #  at this point plugin_params are trusted if found, menus.tmux will
-    #  allways always replace it with current tmux conf during plugin init
+    #  always always replace it with current tmux conf during plugin init
     #
     #
     #  By printing a NL and date, its easier to keep separate runs apart
@@ -344,8 +342,9 @@ else
 fi
 
 if ! tmux_vers_check 3.0; then
-    min_tmux_vers="1.7"
+    min_tmux_vers="1.8"
     if ! tmux_vers_check "$min_tmux_vers"; then
+        # @variables are not usable prior to 1.8
         error_msg "need at least tmux $min_tmux_vers to work!"
     fi
     FORCE_WHIPTAIL_MENUS=1
@@ -354,7 +353,7 @@ fi
 if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
     menu_reload="; $f_current_script"
     #
-    #  I havent been able do to menu reload with whiptail yet,
+    #  I haven't been able do to menu reload with whiptail yet,
     #  so disabled for now
     #
     # f_wt_reload_script="$d_tmp/${plugin_name}-reload-${tmux_pid}"

@@ -6,7 +6,7 @@
 #  Part of https://github.com/jaclu/tmux-menus
 #
 #  Running whiptail from a tmux shortcut requires a rather different
-#  aproach. First of all whiptail cant be run via run-shell, since that
+#  approach. First of all whiptail can't be run via run-shell, since that
 #  is a non-interactive environment. One trick that works is to use
 #  send-keys, and that way trigger the dialog in the currently active
 #  pane. To prevent this from messing with running apps in the pane,
@@ -19,7 +19,7 @@
 #
 #  I have experimented both with "pstree -p $$" and "jobs", but have not
 #  been able to come up with a way to render the required sequence with
-#  send-keys, without making a mess of things, jobs cant be run from a
+#  send-keys, without making a mess of things, jobs can't be run from a
 #  script, it needs to be run as a command line sequence but getting
 #  send-keys to generate the intended sequence seems to be beyond me
 #

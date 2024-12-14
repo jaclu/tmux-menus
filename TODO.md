@@ -10,3 +10,11 @@ Add items, enable/disable show pane titles
 ## Window - Move - link/unlink
 
 seems buggy, need to investigate
+
+## Devel or rc-candidate tmux
+
+`scripts/utils/tmux.sh:tmux_get_vers()`
+Should filter out any `devel-` prefixes and `-rcX` suffixes
+
+Until then hardcode it using something like: `echo "3.4"`
+if the installed version of tmux is devel-3.4

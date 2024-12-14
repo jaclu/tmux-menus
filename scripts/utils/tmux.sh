@@ -90,6 +90,15 @@ tmux_get_defaults() {
     default_trigger_key=\\
     default_no_prefix=No
 
+    default_simple_style_selected=default
+    default_simple_style=default
+    default_simple_style_border=default
+    default_format_title="'#[align=centre]  #{@menu_name} '"
+
+    default_nav_next="-->"
+    default_nav_prev="<--"
+    default_nav_home="<=="
+
     if tmux_vers_check 3.2; then
         default_location_x=C
         default_location_y=C
@@ -125,9 +134,10 @@ tmux_get_option() {
         return
     }
 
+    # dont use tmux_error_handler here
     if tgo_value="$($TMUX_BIN show-options -gv "$tgo_option" 2>/dev/null)"; then
         #
-        #  I havent figured out if it is my asdf builds that have issues
+        #  I haven't figured out if it is my asdf builds that have issues
         #  or something else, since I never heard of this issue before.
         #  On the other side, I dont think I have ever tried to assign ""
         #  to a user-option that has a non-empty default, so it might be
@@ -137,11 +147,11 @@ tmux_get_option() {
         #  report an error if show-options -gv is used on an undefined
         #  option starting with the char "@" as you should with
         #  user-options. For options starting with other chars,
-        #  the normal error is displayed also with theese versions.
+        #  the normal error is displayed also with these versions.
         #
         [ -z "$tgo_value" ] && ! tmux_is_option_defined "$tgo_option" && {
             #
-            #  This is a workarround, checking if the variable is defined
+            #  This is a workaround, checking if the variable is defined
             #  before assigning the default, preserving intentional
             #  "" assignments
             #
@@ -187,6 +197,22 @@ tmux_get_plugin_options() { # cache references
         touch "$f_cache_not_used_hint"
     fi
 
+    cfg_simple_style_selected="$(tmux_get_option "@menus_simple_style_selected" \
+        "$default_simple_style_selected")"
+    cfg_simple_style="$(tmux_get_option "@menus_simple_style" \
+        "$default_simple_style")"
+    cfg_simple_style_border="$(tmux_get_option "@menus_simple_style_border" \
+        "$default_simple_style_border")"
+    cfg_format_title="$(tmux_get_option "@menus_format_title" \
+        "$default_format_title")"
+
+    cfg_nav_next="$(tmux_get_option "@menus_nav_next" \
+        "$default_nav_next")"
+    cfg_nav_prev="$(tmux_get_option "@menus_nav_prev" \
+        "$default_nav_prev")"
+    cfg_nav_home="$(tmux_get_option "@menus_nav_home" \
+        "$default_nav_home")"
+
     cfg_mnu_loc_x="$(tmux_get_option "@menus_location_x" \
         "$default_location_x")"
     cfg_mnu_loc_y="$(tmux_get_option "@menus_location_y" \
@@ -194,16 +220,10 @@ tmux_get_plugin_options() { # cache references
     cfg_tmux_conf="$(tmux_get_option "@menus_config_file" \
         "$default_tmux_conf")"
     _f="$(tmux_get_option "@menus_log_file" "$default_log_file")"
-    [ -n "$_f" ] && {
-        #
-        #  If a debug logfile was set early in helpers.sh, and no log_file
-        #  is defined in settings, the debug log file will continue to
-        #  be used, otherwise, from here on the log file defined in tmux conf
-        #  will be used from this point.
-        #
+    [ -z "$cfg_log_file" ] && [ -n "$_f" ] && {
+        #  If a debug logfile has been set, the tmux setting will be ignored.
         cfg_log_file="$_f"
     }
-
     #
     #  Generic plugin setting I use to add Notes to keys that are bound
     #  This makes this key binding show up when doing <prefix> ?
@@ -213,7 +233,6 @@ tmux_get_plugin_options() { # cache references
     #
     if tmux_vers_check 3.1 &&
         normalize_bool_param "@use_bind_key_notes_in_plugins" No; then
-
         cfg_use_notes=true
     else
         cfg_use_notes=false

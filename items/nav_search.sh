@@ -29,17 +29,16 @@ static_content() {
     fi
     fw_cmd="command-prompt -p 'Search for:' 'find-window $fw_flags %%'"
 
-
     # static - 1
     set -- \
-        0.0 M Left "Back to Main menu <--" main.sh \
+        0.0 M Left "Back to Main menu $nav_home" main.sh \
         0.0 S \
         1.8 C n "Navigate & select ses/win/pane" "$choose_tree_cmd" \
-	0.0 S \
+        0.0 S \
         1.8 T "-#[nodim]Search in all $fw_span" \
         1.8 C s "$fw_lbl_line2" "$fw_cmd" \
         0.0 S \
-        0.0 M H 'Help -->' "$d_items/help.sh $f_current_script"
+        0.0 M H "Help $nav_next" "$d_items/help.sh $f_current_script"
 
     menu_generate_part 1 "$@"
 }

@@ -13,7 +13,7 @@ static_content() {
     setw_cmd="setw -g"
 
     set -- \
-        0.0 M Left "Back to Main menu <--" main.sh \
+        0.0 M Left "Back to Main menu $nav_home" main.sh \
         0.0 S \
         0.0 C 1 "Even horizontal" "select-layout even-horizontal $menu_reload" \
         0.0 C 2 "Even vertical" "select-layout even-vertical   $menu_reload" \
@@ -29,7 +29,7 @@ static_content() {
         3.2 C "S" "simple" "$setw_cmd pane-border-lines  simple  $menu_reload" \
         3.2 C "n" "number" "$setw_cmd pane-border-lines  number  $menu_reload" \
         0.0 S \
-        0.0 M H "Help -->" "$d_items/help.sh $f_current_script"
+        0.0 M H "Help $nav_next" "$d_items/help.sh $f_current_script"
 
     menu_generate_part 1 "$@"
 }

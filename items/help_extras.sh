@@ -16,7 +16,8 @@ dynamic_content() {
     fi
 
     set -- \
-        0.0 M Left "Back to Previous menu <--" "$prev_menu"
+        0.0 M Home "Back to Main menu     $nav_home" main.sh \
+        0.0 M Left "Back to Previous menu $nav_prev" "$prev_menu"
 
     menu_generate_part 1 "$@"
 }

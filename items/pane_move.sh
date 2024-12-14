@@ -22,8 +22,8 @@ dynamic_content() {
 
 static_content() {
     set -- \
-        0.0 M Home "Back to Main menu     <==" main.sh \
-        0.0 M Left "Back to Handling Pane <--" panes.sh \
+        0.0 M Home "Back to Main menu     $nav_home" main.sh \
+        0.0 M Left "Back to Handling Pane $nav_prev" panes.sh \
         0.0 S \
         2.7 C o "Move to other win/ses        " "choose-tree -Gw \
             \"run-shell '$d_scripts/relocate_pane.sh P M %%'\""
@@ -36,7 +36,7 @@ static_content() {
         0.0 S \
         2.4 E w "Break pane to a new window" "$d_scripts/break_pane.sh" \
         0.0 S \
-        0.0 M H "Help -->" "$d_items/help.sh $f_current_script"
+        0.0 M H "Help $nav_next" "$d_items/help.sh $f_current_script"
 
     menu_generate_part 3 "$@"
 }

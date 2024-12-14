@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#  Can be used independant of tmux-menus
+#  Can be used independent of tmux-menus
 #
 
 gather_plugins() {
@@ -13,13 +13,13 @@ gather_plugins() {
     #  List of plugins defined in config file
     #
     if [[ -z "$(command -v mapfile)" ]] || [[ -d /proc/ish ]]; then
-        # iSH has very limited /dev impl, doesnt support mapfile
+        # iSH has very limited /dev impl, doesn't support mapfile
         #  shellcheck disable=SC2207
         defined_plugins=($(grep "set -g @plugin" "$TMUX_CONF" |
-                               awk '{ print $4 }' | sed 's/"//g'))
+                                awk '{ print $4 }' | sed 's/"//g'))
     else
         mapfile -t defined_plugins < <(grep "set -g @plugin" "$TMUX_CONF" |
-                                           awk '{ print $4 }' | sed 's/"//g')
+                                        awk '{ print $4 }' | sed 's/"//g')
     fi
 }
 

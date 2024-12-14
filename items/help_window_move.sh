@@ -16,7 +16,8 @@ dynamic_content() {
     fi
 
     set -- \
-        0.0 M Left "Back to Previous menu <--" "$prev_menu"
+        0.0 M Home "Back to Main menu     $nav_home" main.sh \
+        0.0 M Left "Back to Previous menu $nav_prev" "$prev_menu"
 
     menu_generate_part 1 "$@"
 }
@@ -33,7 +34,7 @@ static_content() {
         0.0 T "-#[nodim] Current window will be inserted" \
         0.0 T "-#[nodim] on that location, pushing other" \
         0.0 T "-#[nodim] windows one step to the right." \
-        0.0 T "-#[nodim]3 - If you choose a pane," \
+        0.0 T "-#[nodim]3 - If a pane is selected," \
         0.0 T "-#[nodim] the pane part of the selection" \
         0.0 T "-#[nodim] is ignored."
 
@@ -47,6 +48,7 @@ static_content() {
 #===============================================================
 
 prev_menu="$1"
+menu_name="Help, Move/Link Window"
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(realpath "$(dirname -- "$(dirname -- "$0")")")"

@@ -16,7 +16,8 @@ dynamic_content() {
     fi
 
     set -- \
-        0.0 M Left "Back to Previous menu <--" "$prev_menu"
+        0.0 M Home "Back to Main menu     $nav_home" main.sh \
+        0.0 M Left "Back to Previous menu $nav_prev" "$prev_menu"
 
     menu_generate_part 1 "$@"
 }
@@ -24,8 +25,9 @@ dynamic_content() {
 static_content() {
     set -- \
         0.0 S \
-        0.0 T "-#[nodim]'-->'  Indicates this will open a" \
-        0.0 T "-#[nodim]'<--'  new menu." \
+        0.0 T "-#[nodim]$nav_next#[default]  #[nodim]Open a new menu." \
+        0.0 T "-#[nodim]$nav_prev#[default]  #[nodim]Back to previous menu." \
+        0.0 T "-#[nodim]$nav_home#[default]  #[nodim]Back to start menu." \
         0.0 S \
         0.0 T "-#[nodim]Shortcut keys are usually upper case" \
         0.0 T "-#[nodim]for menus, and lower case for actions."
