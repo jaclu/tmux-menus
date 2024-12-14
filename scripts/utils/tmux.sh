@@ -307,6 +307,9 @@ tmux_escape_special_chars() {
         \\)
             tesc_esc_str="${tesc_esc_str}\\\\"
             ;;
+        \`)
+            tesc_esc_str="${tesc_esc_str}\\\`"
+            ;;
         \")
             tesc_esc_str="${tesc_esc_str}\\\""
             ;;
