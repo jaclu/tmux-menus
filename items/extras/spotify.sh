@@ -21,7 +21,6 @@ dynamic_content() {
 }
 
 static_content() {
-    menu_name="Spotify"
 
     reload_no_output=" > /dev/null ; $f_current_script"
 
@@ -56,6 +55,8 @@ static_content() {
 #   Main
 #
 #===============================================================
+
+menu_name="Spotify"
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(realpath "$(dirname -- "$(dirname -- "$(dirname -- "$0")")")")"

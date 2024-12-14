@@ -125,13 +125,13 @@ static_content() {
 #
 #===============================================================
 
+menu_name="Currency symbols"
+
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(realpath "$(dirname -- "$(dirname -- "$0")")")"
 
 # shellcheck source=scripts/helpers.sh
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
-
-menu_name="Currency symbols"
 
 tmux_vers_check 2.0 || error_msg "$(relative_path "$f_current_script") needs tmux 2.0"
 

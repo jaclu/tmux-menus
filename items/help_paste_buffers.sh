@@ -41,8 +41,8 @@ static_content() {
 #
 #===============================================================
 
-menu_name="Help Panes"
 prev_menu="$1"
+menu_name="Help Panes"
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(realpath "$(dirname -- "$(dirname -- "$0")")")"

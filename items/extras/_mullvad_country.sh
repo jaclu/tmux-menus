@@ -19,6 +19,8 @@ nav_add() {
 #
 #===============================================================
 
+menu_name="Mullvad Select Country"
+
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(realpath "$(dirname -- "$(dirname -- "$(dirname -- "$0")")")")"
 
@@ -26,8 +28,6 @@ D_TM_BASE_PATH="$(realpath "$(dirname -- "$(dirname -- "$(dirname -- "$0")")")")
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 
 error_msg "THIS IS NOT USED ATM!"
-
-menu_name="Mullvad Select Country"
 
 offset="${1:-0}" #  optional param indicating first item to display
 

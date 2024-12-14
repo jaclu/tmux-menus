@@ -9,7 +9,6 @@
 #
 
 static_content() {
-    menu_name="Resize Pane"
 
     set -- \
         0.0 M Home "Back to Main menu     <==" main.sh \
@@ -38,6 +37,8 @@ static_content() {
 #   Main
 #
 #===============================================================
+
+menu_name="Resize Pane"
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(realpath "$(dirname -- "$(dirname -- "$0")")")"

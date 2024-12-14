@@ -25,7 +25,6 @@ dynamic_content() {
 }
 
 static_content() {
-    menu_name="Dropbox"
 
     [ -z "$(command -v dropbox)" ] && error_msg "dropbox bin not found!"
 
@@ -49,6 +48,8 @@ static_content() {
 #   Main
 #
 #===============================================================
+
+menu_name="Dropbox"
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(realpath "$(dirname -- "$(dirname -- "$(dirname -- "$0")")")")"

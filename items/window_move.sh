@@ -23,7 +23,6 @@ dynamic_content() {
 }
 
 static_content() {
-    menu_name="Move Window"
 
     select_location="choose-tree -Gw 'run-shell \"$d_scripts/relocate_window.sh"
 
@@ -52,6 +51,8 @@ static_content() {
 #   Main
 #
 #===============================================================
+
+menu_name="Move Window"
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(realpath "$(dirname -- "$(dirname -- "$0")")")"

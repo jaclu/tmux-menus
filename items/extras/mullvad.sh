@@ -32,7 +32,6 @@ dynamic_content() {
 }
 
 static_content() {
-    menu_name="Mullvad VPN"
 
     # suffix=" > /dev/null' ; run-shell '$f_current_script'"
 
@@ -60,6 +59,8 @@ static_content() {
 #   Main
 #
 #===============================================================
+
+menu_name="Mullvad VPN"
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(realpath "$(dirname -- "$(dirname -- "$(dirname -- "$0")")")")"

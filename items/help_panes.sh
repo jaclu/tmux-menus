@@ -11,8 +11,6 @@
 dynamic_content() {
     # Things that change dependent on various states
 
-    menu_name="Help Panes"
-
     if [ -z "$prev_menu" ]; then
         error_msg "help_panes.sh was called without notice of what called it"
     fi
@@ -44,6 +42,7 @@ static_content() {
 #===============================================================
 
 prev_menu="$1"
+menu_name="Help Panes"
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(realpath "$(dirname -- "$(dirname -- "$0")")")"

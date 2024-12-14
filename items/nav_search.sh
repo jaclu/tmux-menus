@@ -50,9 +50,10 @@ static_content() {
 #
 #===============================================================
 
+menu_name="Navigate & Search"
+
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(realpath "$(dirname -- "$(dirname -- "$0")")")"
-menu_name="Navigate & Search"
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh

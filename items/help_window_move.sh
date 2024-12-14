@@ -11,8 +11,6 @@
 dynamic_content() {
     # Things that change dependent on various states
 
-    menu_name="Help, Move/Link Window"
-
     if [ -z "$prev_menu" ]; then
         error_msg "help_split.sh was called without notice of what called it"
     fi

@@ -18,8 +18,6 @@ static_content() {
 
     error_msg "THIS IS NOT USED ATM!"
 
-    menu_name="Configure Menu Location"
-
     change_location="run-shell '$d_scripts/move_menu.sh"
 
     #
@@ -56,6 +54,8 @@ static_content() {
 #   Main
 #
 #===============================================================
+
+menu_name="Configure Menu Location"
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(realpath "$(dirname -- "$(dirname -- "$0")")")"

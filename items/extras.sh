@@ -20,8 +20,6 @@ is_avalable() {
 }
 
 static_content() {
-    menu_name="Extras"
-
     d_extras="$d_items"/extras
 
     set -- \
@@ -42,6 +40,8 @@ static_content() {
 #   Main
 #
 #===============================================================
+
+menu_name="Extras"
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(realpath "$(dirname -- "$(dirname -- "$0")")")"

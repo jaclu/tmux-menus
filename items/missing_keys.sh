@@ -106,6 +106,8 @@ static_content() {
 #
 #===============================================================
 
+menu_name="Missing Keys"
+
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(realpath "$(dirname -- "$(dirname -- "$0")")")"
 
@@ -114,7 +116,6 @@ D_TM_BASE_PATH="$(realpath "$(dirname -- "$(dirname -- "$0")")")"
 
 tmux_vers_check 2.0 || error_msg "$(relative_path "$f_current_script") needs tmux 2.0"
 
-menu_name="Missing Keys"
 wt_pasting="@menus_wt_paste_in_progress"
 
 if [ -n "$1" ]; then
