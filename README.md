@@ -7,7 +7,8 @@ src="https://github.com/user-attachments/assets/81c1e276-3c33-4d84-aefe-d31a8c00
 
 ## Summary
 
-Popup menus to help with managing the tmux environment. If so desired, [styling](Styling.md) can be used.
+Popup menus to help with managing the tmux environment. If so desired,
+[styling](Styling.md) can be used.
 
 Not too hard to adapt to fit your needs. Items that some
 might find slightly redundant are included, easier to remove excess for more
