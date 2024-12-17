@@ -206,12 +206,21 @@ tmux_get_plugin_options() { # cache references
     cfg_format_title="$(tmux_get_option "@menus_format_title" \
         "$default_format_title")"
 
-    cfg_nav_next="$(tmux_get_option "@menus_nav_next" \
-        "$default_nav_next")"
-    cfg_nav_prev="$(tmux_get_option "@menus_nav_prev" \
-        "$default_nav_prev")"
-    cfg_nav_home="$(tmux_get_option "@menus_nav_home" \
-        "$default_nav_home")"
+    if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+        log_it "><> whiptail forcing default navs"
+        # Whiptail skips any styling
+        cfg_nav_next="$default_nav_next"
+        cfg_nav_prev="$default_nav_prev"
+        cfg_nav_home="$default_nav_home"
+    else
+        log_it "><> using custom navs"
+        cfg_nav_next="$(tmux_get_option "@menus_nav_next" \
+            "$default_nav_next")"
+        cfg_nav_prev="$(tmux_get_option "@menus_nav_prev" \
+            "$default_nav_prev")"
+        cfg_nav_home="$(tmux_get_option "@menus_nav_home" \
+            "$default_nav_home")"
+    fi
 
     cfg_mnu_loc_x="$(tmux_get_option "@menus_location_x" \
         "$default_location_x")"

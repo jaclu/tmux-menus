@@ -107,11 +107,15 @@ starting_with_dash() {
 tmux_dialog_prefix() {
     _n="$(echo "$cfg_format_title" | sed "s/#{@menu_name}/$menu_name/g")"
     menu_items="tmux_error_handler display-menu  \
-        -H $cfg_simple_style_selected \
-        -s $cfg_simple_style \
-        -S $cfg_simple_style_border \
         -T $_n \
         -x '$cfg_mnu_loc_x' -y '$cfg_mnu_loc_y'"
+    if tmux_vers_check 3.4; then
+        # Styling is supported
+        menu_items="$menu_items \
+            -H \"$cfg_simple_style_selected\" \
+            -s \"$cfg_simple_style\" \
+            -S \"$cfg_simple_style_border\" "
+    fi
 }
 
 tmux_open_menu() {
@@ -690,7 +694,6 @@ fi
 [ -z "$TMUX" ] && error_msg "$plugin_name can only be used inside tmux!"
 [ -z "$menu_name" ] && error_msg "menu_parse() - menu_name not defined"
 
-! tmux_vers_check 3.0 && FORCE_WHIPTAIL_MENUS=1
 
 # not working right now, so disabling
 # [ "$FORCE_WHIPTAIL_MENUS" = 1 ] && {
