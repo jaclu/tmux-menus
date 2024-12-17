@@ -260,8 +260,8 @@ get_config() { # tmux stuff
     #  This is used by everything else sourcing helpers.sh, then trusting
     #  that the param cache is valid if found
     #
+    # log_it "get_config()"
 
-    log_it "get_config()"
     if [ -f "$f_cache_not_used_hint" ]; then
         # not using cache, read all cfg variables
         tmux_get_plugin_options

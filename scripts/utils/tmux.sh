@@ -174,8 +174,8 @@ tmux_get_plugin_options() { # cache references
     #  Public variables
     #   cfg_  config variables, either read from tmux or the default
     #
-
     # log_it "tmux_get_plugin_options()"
+
     tmux_get_defaults
     cfg_trigger_key=$(tmux_get_option "@menus_trigger" \
         "$default_trigger_key")
@@ -327,6 +327,8 @@ tmux_escape_special_chars() {
     #  Will iterate over each character, and populate tesc_esc_str
     #  with either the escaped version or the original char
     #
+    # log_it "tmux_escape_special_chars()"
+
     tesc_str="$1"
     tesc_idx=0
     while true; do
