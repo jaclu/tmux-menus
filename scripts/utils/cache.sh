@@ -137,6 +137,11 @@ cfg_use_notes="$cfg_use_notes"
 
 tmux_vers="$tmux_vers"
 i_tmux_vers="$i_tmux_vers"
+
+# get a version hint, this also ensures cache is cleared anytime
+# repo was updated
+repo_last_changed="$(git log -1 --format="%ad" --date=iso 2>/dev/null)"
+
 EOF
     #endregion
 
