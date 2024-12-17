@@ -234,7 +234,7 @@ alt_dialog_text_line() {
     #  labels starting with - indicates disabled feature,
     #  whiptail can not handle labels starting with -, so remove it
     #
-    txt="$(echo "$1" | sed 's/#{[^}]*}//g' | sed 's/#\[[^}]*\]//g' | sed 's/^[-]//')"
+    txt="$(echo "$1" | sed 's/^[-]//' | sed 's/#\[[^]]*\]//g')"
 
     if [ "$(printf '%s' "$txt" | cut -c1)" = "-" ]; then
         txt=" ${txt#?}"
