@@ -11,15 +11,14 @@
 static_content() {
     set -- \
         0.0 M Home "Back to Main menu  $nav_home" main.sh \
-        3.2 M L "Border Lines" layout_border_lines.sh \
-        3.3 M I "Border Indicators" layout_border_indicators.sh \
-        0.0 S \
-        0.0 C 1 "Even horizontal" "select-layout even-horizontal $menu_reload" \
-        0.0 C 2 "Even vertical" "select-layout even-vertical   $menu_reload" \
-        0.0 C 3 "Main horizontal" "select-layout main-horizontal $menu_reload" \
-        0.0 C 4 "Main vertical" "select-layout main-vertical   $menu_reload" \
-        0.0 C 5 "Tiled" "select-layout tiled           $menu_reload" \
-        0.0 C e "Spread evenly" "select-layout -E  $menu_reload" \
+        0.0 M Left "Back to Layouts    $nav_prev" layouts.sh \
+        3.2 S \
+        3.2 T "-#[align=centre,nodim]Border lines" \
+        3.2 C "s" "single" "set -g pane-border-lines  single  $menu_reload" \
+        3.2 C "d" "double" "set -g pane-border-lines  double  $menu_reload" \
+        3.2 C "h" "heavy" "set -g pane-border-lines  heavy   $menu_reload" \
+        3.2 C "S" "simple" "set -g pane-border-lines  simple  $menu_reload" \
+        3.2 C "n" "number" "set -g pane-border-lines  number  $menu_reload" \
         0.0 S \
         0.0 M H "Help $nav_next" "$d_items/help.sh $f_current_script"
 
@@ -32,7 +31,7 @@ static_content() {
 #
 #===============================================================
 
-menu_name="Layouts"
+menu_name="Layouts - Border Lines"
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(realpath "$(dirname -- "$(dirname -- "$0")")")"

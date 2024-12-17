@@ -11,15 +11,13 @@
 static_content() {
     set -- \
         0.0 M Home "Back to Main menu  $nav_home" main.sh \
-        3.2 M L "Border Lines" layout_border_lines.sh \
-        3.3 M I "Border Indicators" layout_border_indicators.sh \
-        0.0 S \
-        0.0 C 1 "Even horizontal" "select-layout even-horizontal $menu_reload" \
-        0.0 C 2 "Even vertical" "select-layout even-vertical   $menu_reload" \
-        0.0 C 3 "Main horizontal" "select-layout main-horizontal $menu_reload" \
-        0.0 C 4 "Main vertical" "select-layout main-vertical   $menu_reload" \
-        0.0 C 5 "Tiled" "select-layout tiled           $menu_reload" \
-        0.0 C e "Spread evenly" "select-layout -E  $menu_reload" \
+        0.0 M Left "Back to Layouts    $nav_prev" layouts.sh \
+        3.3 S \
+        3.3 T "-#[align=centre,nodim]Border indicators" \
+        3.3 C "o" "off" "set -g pane-border-indicators off    $menu_reload" \
+        3.3 C "c" "colour" "set -g pane-border-indicators colour $menu_reload" \
+        3.3 C "a" "arrows" "set -g pane-border-indicators arrows $menu_reload" \
+        3.3 C "b" "both" "set -g pane-border-indicators both   $menu_reload" \
         0.0 S \
         0.0 M H "Help $nav_next" "$d_items/help.sh $f_current_script"
 
@@ -32,7 +30,7 @@ static_content() {
 #
 #===============================================================
 
-menu_name="Layouts"
+menu_name="Layouts - Border Indicators"
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(realpath "$(dirname -- "$(dirname -- "$0")")")"
