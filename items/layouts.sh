@@ -10,7 +10,7 @@
 
 static_content() {
     set -- \
-        0.0 M Home "Back to Main menu  $nav_home" main.sh \
+        0.0 M Left "Back to Main menu    $nav_home" main.sh \
         3.2 M L "Border Lines" layout_border_lines.sh \
         3.3 M I "Border Indicators" layout_border_indicators.sh \
         0.0 S \
