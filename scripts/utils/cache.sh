@@ -29,6 +29,11 @@ cache_clear() { # only cache
     fi
 
     rm -rf "$d_cache"
+
+    # Invalidate what might have already been sourced
+    cached_ok_tmux_versions=""
+    cached_bad_tmux_versions=""
+
     mkdir -p "$d_cache"
     b_cache_clear_has_been_called=true
 }
