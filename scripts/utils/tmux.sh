@@ -429,3 +429,23 @@ else
     # was run outside tmux
     tmux_pid="-1"
 fi
+
+#
+#  Define env needed for this
+#
+tmux_set_running_vers
+i_tmux_vers=$(get_digits_from_string "$tmux_vers")
+
+#
+# If an older version is used, or FORCE_WHIPTAIL_MENUS is 1
+# set cfg_use_whiptail true
+#
+if ! tmux_vers_check 3.0; then
+    cfg_use_whiptail=true
+    log_it "tmux below 3.0, whiptail is forced"
+elif [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+    cfg_use_whiptail=true
+    log_it "whiptail is selected due to FORCE_WHIPTAIL_MENUS=1"
+else
+    cfg_use_whiptail=false
+fi

@@ -303,7 +303,7 @@ menu_parse() {
 
     [ "$menu_idx" -eq 1 ] && {
         # set prefix for item 1
-        if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+        if $cfg_use_whiptail; then
             alt_dialog_prefix
         else
             tmux_dialog_prefix
@@ -341,7 +341,7 @@ menu_parse() {
 
             [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] menu[$menu]"
 
-            if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+            if $cfg_use_whiptail; then
                 alt_dialog_open_menu "$label" "$key" "$menu"
             else
                 tmux_open_menu "$label" "$key" "$menu"
@@ -368,9 +368,8 @@ menu_parse() {
 
             [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
 
-            if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+            if $cfg_use_whiptail; then
                 alt_dialog_command "$label" "$key" "$cmd" "$keep_cmd"
-
             else
                 tmux_command "$label" "$key" "$cmd" "$keep_cmd"
             fi
@@ -409,7 +408,7 @@ menu_parse() {
 
             [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
 
-            if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+            if $cfg_use_whiptail; then
                 alt_dialog_external_cmd "$label" "$key" "$cmd"
             else
                 tmux_external_cmd "$label" "$key" "$cmd"
@@ -424,7 +423,7 @@ menu_parse() {
             ! tmux_vers_check "$min_vers" && continue
 
             [ -n "$menu_debug" ] && debug_print "text line [$txt]"
-            if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+            if $cfg_use_whiptail; then
                 alt_dialog_text_line "$txt"
             else
                 tmux_text_line "$txt"
@@ -439,7 +438,7 @@ menu_parse() {
             [ -n "$menu_debug" ] && debug_print "Spacer line"
 
             # Whiptail/dialog does not have a concept of spacer lines
-            if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+            if $cfg_use_whiptail; then
                 alt_dialog_spacer
             else
                 tmux_spacer
@@ -497,7 +496,7 @@ menu_generate_part() {
     # log_it "><> menu_generate_part($menu_idx) using cache: $f_cache_file"
     menu_parse "$@"
 
-    [ "$FORCE_WHIPTAIL_MENUS" = 1 ] && update_wt_actions
+    $cfg_use_whiptail && update_wt_actions
 }
 
 generate_menu_items_in_sorted_order() {
@@ -537,7 +536,7 @@ handle_static_cached() {
     current_script_no_ext="$(echo "$current_script" | sed 's/\.[^.]*$//')"
     d_cache_file="$d_cache/${rel_path}_$current_script_no_ext"
 
-    [ "$FORCE_WHIPTAIL_MENUS" = 1 ] && d_wt_actions="$d_cache_file/wt_actions"
+    $cfg_use_whiptail && d_wt_actions="$d_cache_file/wt_actions"
 
     if [ ! -d "$d_cache_file" ] || [ "$(get_mtime "$0")" -gt "$(get_mtime "$d_cache_file")" ]; then
         # Ensure d_cache_file seems to be valid before doing erase
@@ -621,7 +620,7 @@ handle_wt_selecion() {
 }
 
 display_menu() {
-    if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+    if $cfg_use_whiptail; then
         # display whiptail menu
         menu_selection=$(eval "$menu_items" 3>&2 2>&1 1>&3)
         [ -n "$menu_selection" ] && handle_wt_selecion
@@ -690,10 +689,8 @@ fi
 [ -z "$TMUX" ] && error_msg "$plugin_name can only be used inside tmux!"
 [ -z "$menu_name" ] && error_msg "menu_parse() - menu_name not defined"
 
-! tmux_vers_check 3.0 && FORCE_WHIPTAIL_MENUS=1
-
 # not working right now, so disabling
-# [ "$FORCE_WHIPTAIL_MENUS" = 1 ] && {
+# $cfg_use_whiptail && {
 #     if [ -f "$f_wt_reload_script" ]; then
 #         #
 #         #  Delete old reload scripts, they will be created during execution
@@ -737,7 +734,7 @@ handle_menu
 # fi
 
 # not working right now, so disabling
-# [ "$FORCE_WHIPTAIL_MENUS" = 1 ] && {
+# $cfg_use_whiptail && {
 #     if [ -f "$f_wt_reload_script" ]; then
 #         #
 #         #  in whiptail run-shell can't chain to another menu, so instead

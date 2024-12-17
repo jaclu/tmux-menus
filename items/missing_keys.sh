@@ -25,9 +25,7 @@ display_char() {
     #
     c="$1"
     [ -z "$c" ] && error_msg "display_char() - no param"
-    if [ "$FORCE_WHIPTAIL_MENUS" != 1 ]; then
-        tmux_error_handler send-keys "$c"
-    else
+    if $cfg_use_whiptail; then
         normalize_bool_param "$wt_pasting" false &&
             pending_paste=true || pending_paste=false
 
@@ -40,6 +38,8 @@ display_char() {
 
         log_it "setting buffer to '$c'"
         tmux_error_handler set-buffer "$c"
+    else
+        tmux_error_handler send-keys "$c"
     fi
 }
 
@@ -120,16 +120,14 @@ wt_pasting="@menus_wt_paste_in_progress"
 
 if [ -n "$1" ]; then
     handle_char "$1"
-else
-    [ "$FORCE_WHIPTAIL_MENUS" = 1 ] && {
-        #
-        #  As long as this menu is restarted with a char param
-        #  it is added  to the paste buffer, as soon as it is called
-        #  without a param this buffer is reset
-        #
-        log_it "clearing pending paste buffer indicator"
-        tmux_error_handler set-option -gqu "$wt_pasting"
-    }
+elif $cfg_use_whiptail; then
+    #
+    #  As long as this menu is restarted with a char param
+    #  it is added  to the paste buffer, as soon as it is called
+    #  without a param this buffer is reset
+    #
+    log_it "clearing pending paste buffer indicator"
+    tmux_error_handler set-option -gqu "$wt_pasting"
 fi
 
 # shellcheck source=scripts/dialog_handling.sh

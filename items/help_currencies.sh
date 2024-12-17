@@ -20,7 +20,7 @@ static_content() {
         0.0 T "-#[nodim]the symbol isn't visible, this should" \
         0.0 T "-#[nodim]still be able to paste it in."
 
-    if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+    if $cfg_use_whiptail; then
         set -- "$@" \
             0.0 T " " \
             0.0 T "When using whiptail it is not possible" \

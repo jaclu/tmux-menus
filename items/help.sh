@@ -25,14 +25,14 @@ dynamic_content() {
 static_content() {
     set -- \
         0.0 S \
-        0.0 T "-#[nodim]$nav_next#[default]  #[nodim]Open a new menu." \
-        0.0 T "-#[nodim]$nav_prev#[default]  #[nodim]Back to previous menu." \
-        0.0 T "-#[nodim]$nav_home#[default]  #[nodim]Back to start menu." \
+        0.0 T "-#[nodim] $nav_next#[default]  #[nodim]Open a new menu." \
+        0.0 T "-#[nodim] $nav_prev#[default]  #[nodim]Back to previous menu." \
+        0.0 T "-#[nodim] $nav_home#[default]  #[nodim]Back to start menu." \
         0.0 S \
         0.0 T "-#[nodim]Shortcut keys are usually upper case" \
         0.0 T "-#[nodim]for menus, and lower case for actions."
 
-    [ "$FORCE_WHIPTAIL_MENUS" != 1 ] && {
+    ! $cfg_use_whiptail && {
         set -- "$@" \
             0.0 T "-#[nodim]Exit menus with ESC or Ctrl-C"
     }

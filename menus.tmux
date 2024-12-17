@@ -31,16 +31,20 @@
 
 D_TM_BASE_PATH="$(realpath "$(dirname -- "$0")")"
 
-initialize_plugin=1 # tell helpers.sh to replace (potentially) cached params
+#
+# tell helpers.sh to replace (potentially) cached params
+# if tmux version and env variables have not been changed,
+# cached menus are not purged.
+#
+initialize_plugin=1
+
 # shellcheck source=scripts/helpers.sh
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 # implied check if caching is used
 [ -d "$d_cache" ] && cache_add_ok_vers "$tmux_vers"
 
-if tmux_vers_check 3.0 && [ "$FORCE_WHIPTAIL_MENUS" != "1" ]; then
-    cmd="$d_items/main.sh"
-else
+if $cfg_use_whiptail; then
     [ -z "$(command -v whiptail)" ] && {
         tmux_error_handler bind-key "$@" "$cfg_trigger_key" \
             display-message "DEPENDENCY: $plugin_name needs whiptail"
@@ -48,6 +52,8 @@ else
     }
     cmd="$d_scripts/do_whiptail.sh"
     log_it "whiptail will be used"
+else
+    cmd="$d_items/main.sh"
 fi
 
 # have to use "set --"" in order to send the selected params to tmux

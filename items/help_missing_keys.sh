@@ -18,7 +18,7 @@ static_content() {
         0.0 T "-#[nodim]not be available with the current" \
         0.0 T "-#[nodim]keyboard settings."
 
-    if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+    if $cfg_use_whiptail; then
         set -- "$@" \
             0.0 T " " \
             0.0 T "When using whiptail it is not possible" \
