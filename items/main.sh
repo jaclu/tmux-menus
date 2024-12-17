@@ -43,6 +43,8 @@ static_content() {
 
 menu_name="Main menu"
 
+# override_selected="fg=#414559,bg=#e5c890"
+
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(realpath "$(dirname -- "$(dirname -- "$0")")")"
 

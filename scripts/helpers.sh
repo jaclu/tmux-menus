@@ -63,22 +63,28 @@ error_msg() {
                 echo
             ) >/dev/stderr
         }
-        echo "ERROR: $em_msg" >/dev/stderr
+        echo "[$$] [$exit_code] ERROR: $em_msg" >/dev/stderr
     else
         log_it
-        log_it "ERROR: $em_msg"
+        log_it "[$$] [$exit_code] ERROR: $em_msg"
         log_it
 
+        # if [ -n "$tmux_vers" ]; then
         $do_display_message && {
             if [ "${#em_msg}" -gt 50 ] || has_lf_not_at_end "$em_msg"; then
                 error_msg_formated "$em_msg"
             else
                 display_message_hold "$plugin_name ERR: $em_msg"
             fi
+            log_it "><> do_display_message [$em_msg] processed"
         }
+        # else
+        #     log_it "Call to error_msg() before call to  tmux_define_vers_env() !!"
+        # fi
     fi
 
     [ "$exit_code" -gt -1 ] && exit "$exit_code"
+    log_it "><> non exit error_msg()"
 
     unset em_msg
     unset exit_code
@@ -264,12 +270,11 @@ get_config() { # tmux stuff
 
     log_it "get_config()"
     if [ -f "$f_cache_not_used_hint" ]; then
-        tmux_define_vers_vars
         tmux_get_plugin_options
     else
         cache_validation
         # shellcheck source=cache/plugin_params disable=SC1091
-        [ -f "$f_cache_not_used_hint" ] || . "$f_cache_params"
+        . "$f_cache_params"
     fi
 }
 
@@ -287,6 +292,7 @@ plugin_name="tmux-menus"
 #  been processed. Should normally be commented out!
 #
 # cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
+cfg_log_file="$HOME/tmp/tmux-menus-t2.log"
 
 #
 #  Even if this one is used, a cfg_log_file must still be defined
@@ -341,13 +347,10 @@ else
     get_config
 fi
 
-if ! tmux_vers_check 3.0; then
-    min_tmux_vers="1.8"
-    if ! tmux_vers_check "$min_tmux_vers"; then
-        # @variables are not usable prior to 1.8
-        error_msg "need at least tmux $min_tmux_vers to work!"
-    fi
-    FORCE_WHIPTAIL_MENUS=1
+min_tmux_vers="1.8"
+if ! tmux_vers_check "$min_tmux_vers"; then
+    # @variables are not usable prior to 1.8
+    error_msg "need at least tmux $min_tmux_vers to work!"
 fi
 
 if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
@@ -364,4 +367,4 @@ else
     reload_in_runshell=" ; $f_current_script"
 fi
 
-# log_it "-----   end of helpers.sh"
+log_it "-----   end of helpers.sh FORCE_WHIPTAIL_MENUS[$FORCE_WHIPTAIL_MENUS]"

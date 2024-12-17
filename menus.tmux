@@ -31,7 +31,13 @@
 
 D_TM_BASE_PATH="$(realpath "$(dirname -- "$0")")"
 
-initialize_plugin=1 # tell helpers.sh to replace (potentially) cached params
+#
+# tell helpers.sh to replace (potentially) cached params
+# if tmux version and env variables have not been changed,
+# cached menus are not purged.
+#
+initialize_plugin=1
+
 # shellcheck source=scripts/helpers.sh
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 

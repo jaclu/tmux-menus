@@ -62,19 +62,20 @@ tmux_vers_check() { # cache references
     [ "$i_tvc_cmp" -le "$i_tvc_ref" ]
 }
 
-tmux_get_vers() {
-    # skip release candidate suffix and similar
-    tmux_error_handler -V | cut -d ' ' -f 2 | cut -d- -f1
-}
-
-tmux_define_vers_vars() {
-    #
-    #  Public variables
-    #   tmux_vers - currently running tmux version
-    #   i_tmux_vers - integer part, used by tmux_vers_check()
-    #
-    tmux_vers="$(tmux_get_vers)"
-    i_tmux_vers=$(get_digits_from_string "$tmux_vers")
+tmux_set_running_vers() {
+    # Filter out devel prefix and release candidate suffix
+    tmux_vers="$(tmux_error_handler -V | cut -d ' ' -f 2)"
+    case "$_v" in
+    next-*)
+        # Remove "next-" prefix
+        tmux_vers="${tmux_vers#next-}"
+        ;;
+    *-rc*)
+        # Remove "-rcX" suffix
+        tmux_vers="${tmux_vers%-rc*}"
+        ;;
+    *) ;;
+    esac
 }
 
 tmux_get_defaults() {
@@ -174,10 +175,8 @@ tmux_get_plugin_options() { # cache references
     #   cfg_  config variables, either read from tmux or the default
     #
 
-    # log_it "tmux_get_plugin_options()"
-    tmux_define_vers_vars
+    log_it "tmux_get_plugin_options()"
     tmux_get_defaults
-
     cfg_trigger_key=$(tmux_get_option "@menus_trigger" \
         "$default_trigger_key")
     normalize_bool_param "@menus_without_prefix" "$default_no_prefix" &&
@@ -246,6 +245,7 @@ tmux_get_plugin_options() { # cache references
     else
         cfg_use_notes=false
     fi
+    log_it "  tmux_get_plugin_options() - done"
 }
 
 tmux_is_option_defined() {
@@ -430,6 +430,7 @@ tmux_error_handler() { # cache references
 #  impact. In all calls to tmux I use TMUX_BIN instead in the rest of this
 #  plugin.
 #
+
 [ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
 
 if [ -n "$TMUX" ]; then
@@ -437,4 +438,20 @@ if [ -n "$TMUX" ]; then
 else
     # was run outside tmux
     tmux_pid="-1"
+fi
+
+#
+#  Define env needed for this
+#
+tmux_set_running_vers
+i_tmux_vers=$(get_digits_from_string "$tmux_vers")
+
+#
+# If an older version is used, set whiptail mode right away
+# this will not unset whiptail, in case FORCE_WHIPTAIL_MENUS has been
+# manually selected
+#
+if ! tmux_vers_check 3.0; then
+    FORCE_WHIPTAIL_MENUS=1
+    log_it "tmux bellow 3.0, whiptail is forced"
 fi
