@@ -1,0 +1,49 @@
+
+tmux_vers_check()
+    Compare param1 with running version
+
+tmux_get_defaults()
+    Assigns default values for all env variables
+
+tmux_get_option()
+    Get a single option from tmux env
+
+tmux_is_option_defined()
+    Checks if option has been set in tmux env
+
+tmux_get_plugin_options()
+    Get all options for tmux_get_plugin_options, and set to user pref or default
+
+normalize_bool_param()
+    parse a tmux env variable as a boolean
+
+========
+
+cache_clear()
+    empty cache (if present)
+    create empty cache
+
+cache_validation()
+    If cache was not created with current tmux vers
+    request it to be replaced
+    otherwise call cache_update_param_cache()
+
+cache_update_param_cache()
+    tmux_get_plugin_options() - retrieve current config
+    cache_param_write() - save cache if used
+
+cache_add_ok_vers()
+    Add $1 to list that is <=current tmux
+
+cache_add_bad_vers()
+    Add $1 to list that is >current tmux
+
+cache_save_known_tmux_versions()
+    Save lists of good/bad versions to cache
+
+cache_param_write()
+    write all defined env variables to cache//plugin_params
+
+
+main nocache
+    .091942394

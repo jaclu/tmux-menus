@@ -20,9 +20,9 @@ tmux_vers_check() { # cache references
         error_msg "$tvc_msg"
     }
 
-    [ -f "$f_cache_known_tmux_vers" ] && [ -z "$cache_ok_tmux_versions" ] && {
+    [ -z "$cached_ok_tmux_versions" ] && [ -f "$f_cache_known_tmux_vers" ] && {
         #
-        # get known good/bad versions
+        # get known good/bad versions if this hasn't been sourced yet
         #
         # shellcheck source=/dev/null
         . "$f_cache_known_tmux_vers"
@@ -36,11 +36,11 @@ tmux_vers_check() { # cache references
     # log_it "tmux_vers_check($tvc_v_cmp, $tvc_v_ref)"
 
     $cfg_use_cache && {
-        case "$cache_ok_tmux_versions $tvc_v_ref " in
+        case "$cached_ok_tmux_versions $tvc_v_ref " in
         *"$tvc_v_cmp "*) return 0 ;;
         *) ;;
         esac
-        case "$cache_bad_tmux_versions" in
+        case "$cached_bad_tmux_versions" in
         *"$tvc_v_cmp "*) return 1 ;;
         *) ;;
         esac
@@ -62,19 +62,20 @@ tmux_vers_check() { # cache references
     [ "$i_tvc_cmp" -le "$i_tvc_ref" ]
 }
 
-tmux_get_vers() {
-    # skip release candidate suffix and similar
-    tmux_error_handler -V | cut -d ' ' -f 2 | cut -d- -f1
-}
-
-tmux_define_vers_vars() {
-    #
-    #  Public variables
-    #   tmux_vers - currently running tmux version
-    #   i_tmux_vers - integer part, used by tmux_vers_check()
-    #
-    tmux_vers="$(tmux_get_vers)"
-    i_tmux_vers=$(get_digits_from_string "$tmux_vers")
+tmux_set_running_vers() {
+    # Filter out devel prefix and release candidate suffix
+    tmux_vers="$(tmux_error_handler -V | cut -d ' ' -f 2)"
+    case "$tmux_vers" in
+    next-*)
+        # Remove "next-" prefix
+        tmux_vers="${tmux_vers#next-}"
+        ;;
+    *-rc*)
+        # Remove "-rcX" suffix
+        tmux_vers="${tmux_vers%-rc*}"
+        ;;
+    *) ;;
+    esac
 }
 
 tmux_get_defaults() {
@@ -175,9 +176,7 @@ tmux_get_plugin_options() { # cache references
     #
 
     # log_it "tmux_get_plugin_options()"
-    tmux_define_vers_vars
     tmux_get_defaults
-
     cfg_trigger_key=$(tmux_get_option "@menus_trigger" \
         "$default_trigger_key")
     normalize_bool_param "@menus_without_prefix" "$default_no_prefix" &&
@@ -189,34 +188,50 @@ tmux_get_plugin_options() { # cache references
     #  Setup env depending on if cache is used or not
     #
     if $cfg_use_cache; then
-        mkdir -p "$d_cache"
-        [ "$FORCE_WHIPTAIL_MENUS" = 1 ] && touch "$f_using_whiptail"
         rm -f "$f_cache_not_used_hint"
     else
         # indicate that cache should not be used
+        log_it "touching: $f_cache_not_used_hint"
         touch "$f_cache_not_used_hint"
     fi
 
-    cfg_simple_style_selected="$(tmux_get_option "@menus_simple_style_selected" \
-        "$default_simple_style_selected")"
-    cfg_simple_style="$(tmux_get_option "@menus_simple_style" \
-        "$default_simple_style")"
-    cfg_simple_style_border="$(tmux_get_option "@menus_simple_style_border" \
-        "$default_simple_style_border")"
-    cfg_format_title="$(tmux_get_option "@menus_format_title" \
-        "$default_format_title")"
+    if $cfg_use_whiptail; then
+        _whiptail_ignore_msg="not used with whiptail"
 
-    cfg_nav_next="$(tmux_get_option "@menus_nav_next" \
-        "$default_nav_next")"
-    cfg_nav_prev="$(tmux_get_option "@menus_nav_prev" \
-        "$default_nav_prev")"
-    cfg_nav_home="$(tmux_get_option "@menus_nav_home" \
-        "$default_nav_home")"
+        cfg_simple_style_selected="$_whiptail_ignore_msg"
+        cfg_simple_style="$_whiptail_ignore_msg"
+        cfg_simple_style_border="$_whiptail_ignore_msg"
+        cfg_format_title="$_whiptail_ignore_msg"
+        cfg_mnu_loc_x="$_whiptail_ignore_msg"
+        cfg_mnu_loc_y="$_whiptail_ignore_msg"
+        unset _whiptail_ignore_msg
 
-    cfg_mnu_loc_x="$(tmux_get_option "@menus_location_x" \
-        "$default_location_x")"
-    cfg_mnu_loc_y="$(tmux_get_option "@menus_location_y" \
-        "$default_location_y")"
+        # Whiptail skips any styling
+        cfg_nav_next="$default_nav_next"
+        cfg_nav_prev="$default_nav_prev"
+        cfg_nav_home="$default_nav_home"
+    else
+        cfg_simple_style_selected="$(tmux_get_option "@menus_simple_style_selected" \
+            "$default_simple_style_selected")"
+        cfg_simple_style="$(tmux_get_option "@menus_simple_style" \
+            "$default_simple_style")"
+        cfg_simple_style_border="$(tmux_get_option "@menus_simple_style_border" \
+            "$default_simple_style_border")"
+        cfg_format_title="$(tmux_get_option "@menus_format_title" \
+            "$default_format_title")"
+
+        cfg_nav_next="$(tmux_get_option "@menus_nav_next" \
+            "$default_nav_next")"
+        cfg_nav_prev="$(tmux_get_option "@menus_nav_prev" \
+            "$default_nav_prev")"
+        cfg_nav_home="$(tmux_get_option "@menus_nav_home" \
+            "$default_nav_home")"
+        cfg_mnu_loc_x="$(tmux_get_option "@menus_location_x" \
+            "$default_location_x")"
+        cfg_mnu_loc_y="$(tmux_get_option "@menus_location_y" \
+            "$default_location_y")"
+    fi
+
     cfg_tmux_conf="$(tmux_get_option "@menus_config_file" \
         "$default_tmux_conf")"
     _f="$(tmux_get_option "@menus_log_file" "$default_log_file")"
@@ -237,6 +252,7 @@ tmux_get_plugin_options() { # cache references
     else
         cfg_use_notes=false
     fi
+    # log_it "  tmux_get_plugin_options() - done"
 }
 
 tmux_is_option_defined() {
@@ -361,6 +377,8 @@ tmux_error_handler() { # cache references
     else
         d_errors="$d_tmp"
     fi
+    # ensure it exists
+    [ ! -d "$d_errors" ] && mkdir -p "$d_errors"
     f_tmux_err="$d_errors"/tmux-err
 
     $TMUX_BIN "$@" 2>"$f_tmux_err" && rm -f "$f_tmux_err"
@@ -421,6 +439,7 @@ tmux_error_handler() { # cache references
 #  impact. In all calls to tmux I use TMUX_BIN instead in the rest of this
 #  plugin.
 #
+
 [ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
 
 if [ -n "$TMUX" ]; then

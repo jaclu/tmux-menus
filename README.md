@@ -20,11 +20,11 @@ experienced users, then add more for newbies.
 
 ## Recent Changes
 
+- Split Layouts menu into 3 sub menus
+- moved "public IP" back to main
+- Simplified code handling whiptail and caching conditions
+- Prevent styling from being used when tmux < 3.4
 - Menus can be styled see [Styling.md](Styling.md) for details
-- Rewrote cache handling for better optimization
-- Moved Toggle status line -> Advanced in order to shrink main menu
-- Removed pointers to default key-bindings, instead using shortcuts that
-  makes sense from a tmux-menus perspective.
 
 </details>
 <details>
