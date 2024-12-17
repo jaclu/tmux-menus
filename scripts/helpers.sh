@@ -269,11 +269,12 @@ get_config() { # tmux stuff
 
     log_it "get_config()"
     if [ -f "$f_cache_not_used_hint" ]; then
+        # not using cache, read all cfg variables
         tmux_get_plugin_options
-    else
-        cache_validation
-        # shellcheck source=cache/plugin_params disable=SC1091
-        . "$f_cache_params"
+    elif ! cache_get_params; then
+        # Re-generate cache params
+        cache_update_param_cache
+        log_it "><> get_config() - cfg_nav_next: [$cfg_nav_next]"
     fi
 }
 
@@ -331,12 +332,10 @@ f_current_script="$d_current_script/$current_script"
 # shellcheck disable=SC2154
 if [ "$initialize_plugin" = "1" ]; then
     log_it "Doing plugin initialization"
-    cache_validation
-    cache_update_params
+    cache_update_param_cache
     #
     #  at this point plugin_params are trusted if found, menus.tmux will
     #  always always replace it with current tmux conf during plugin init
-    #
     #
     #  By printing a NL and date, its easier to keep separate runs apart
     #

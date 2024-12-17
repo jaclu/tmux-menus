@@ -24,11 +24,11 @@ cache_clear()
     create empty cache
 
 cache_validation()
-    If cache was not created with current tmux vers and FORCE_WHIPTAIL_MENUS
+    If cache was not created with current tmux vers
     request it to be replaced
-    otherwise call cache_update_params()
+    otherwise call cache_update_param_cache()
 
-cache_update_params()
+cache_update_param_cache()
     tmux_get_plugin_options() - retrieve current config
     cache_param_write() - save cache if used
 

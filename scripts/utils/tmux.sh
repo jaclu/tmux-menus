@@ -188,8 +188,6 @@ tmux_get_plugin_options() { # cache references
     #  Setup env depending on if cache is used or not
     #
     if $cfg_use_cache; then
-        mkdir -p "$d_cache"
-        [ "$FORCE_WHIPTAIL_MENUS" = 1 ] && touch "$f_using_whiptail"
         rm -f "$f_cache_not_used_hint"
     else
         # indicate that cache should not be used
@@ -370,6 +368,8 @@ tmux_error_handler() { # cache references
     else
         d_errors="$d_tmp"
     fi
+    # ensure it exists
+    [ ! -d "$d_errors" ] && mkdir -p "$d_errors"
     f_tmux_err="$d_errors"/tmux-err
 
     $TMUX_BIN "$@" 2>"$f_tmux_err" && rm -f "$f_tmux_err"

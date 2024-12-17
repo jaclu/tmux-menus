@@ -36,7 +36,7 @@ cache_clear() { # only cache
 cache_add_ok_vers() {
     #
     #  Add param to list of good versions (<=running tmux vers),
-    #  if it wasnt cached already
+    #  if it wasn't cached already
     #
     log_it "cache_add_ok_vers($1)"
     case "$cache_ok_tmux_versions" in
@@ -52,7 +52,7 @@ cache_add_ok_vers() {
 cache_add_bad_vers() {
     #
     #  Add param to list of bad versions (>running tmux vers),
-    #  if it wasnt cached already
+    #  if it wasn't cached already
     #
     log_it "cache_add_bad_vers($1)"
     case "$cache_bad_tmux_versions" in
@@ -67,7 +67,7 @@ cache_add_bad_vers() {
 
 cache_save_known_tmux_versions() { # tmux stuff
     #
-    #  The order the versions are saved doesnt matter,
+    #  The order the versions are saved doesn't matter,
     #  since they are checked with a case to speed things up
     #
     if [ -f "$f_cache_not_used_hint" ] || ! $cfg_use_cache; then
@@ -91,10 +91,15 @@ EOF
 }
 
 cache_param_write() { # tmux stuff
+    #
+    #  Writes all config params to file
+    #  if it differed with previous params, clear cache
+    #
     log_it "cache_param_write()"
     if [ -f "$f_cache_not_used_hint" ] || ! $cfg_use_cache; then
         error_msg "cache_param_write() - called when not using cache"
     fi
+    mkdir -p "$d_cache"
 
     f_params_tmp=$(mktemp) || error_msg "Failed to create config file"
 
@@ -136,13 +141,14 @@ EOF
     #endregion
 
     if [ ! -f "$f_cache_params" ]; then
-        log_it "Creating param cache"
+        log_it "  cache_param_write() - Creating param cache"
         mv "$f_params_tmp" "$f_cache_params"
     elif ! diff -q "$f_params_tmp" "$f_cache_params" >/dev/null 2>&1; then
         # diff reports success if files dont fiffer, hence the !
         # If any params have changed, invalidate cache
-        log_it "Config changed - clearing cache"
-        cache_clear
+        log_it "  cache_param_write() - Config changed"
+        cache_clear "Environment changed"
+        log_it "  cache_param_write() - Saving new param cache"
         mv "$f_params_tmp" "$f_cache_params"
     else
         rm -f "$f_params_tmp" # no changes
@@ -150,20 +156,22 @@ EOF
     return 0
 }
 
-cache_update_params() {
+cache_update_param_cache() {
     #
     #  Reads plugin options from tmux and save the param cache
     #
-    log_it "cache_update_params()"
+    log_it "cache_update_param_cache()"
     tmux_get_plugin_options # ensure env is retrieved
     cache_param_write
 }
 
 cache_get_params() {
     #
-    #  Retrieves cached env params, returns true on suceess, otherwise false
+    #  Retrieves cached env params, returns true on success, otherwise false
     #
-    if [ -f "$f_cache_not_used_hint" ] || ! $cfg_use_cache; then
+    log_it "cache_get_params()"
+
+    if [ -f "$f_cache_not_used_hint" ]; then
         error_msg "cache_get_params() - called when not using cache"
     fi
     if [ -f "$f_cache_params" ]; then
@@ -172,58 +180,6 @@ cache_get_params() {
         return 0
     fi
     return 1
-}
-
-chksum_cache_params() {
-    log_it "chksum_cache_params()"
-    [ ! -f "$f_cache_params" ] && return 1
-
-    if [ -n "$(command -v md5sum)" ]; then
-        md5sum "$f_cache_params"
-    elif [ -n "$(command -v md5)" ]; then
-        # MacOS and some others use this name for the command
-        md5 "$f_cache_params"
-    fi
-}
-
-cache_validation() { # tmux stuff
-    #
-    #  Clear cache if it was not created with current
-    #  tmux version and WHIPTAIL settings
-    #
-
-    #  FORCE_WHIPTAIL_MENUS must have been set to current preference before
-    #  calling this
-    #
-    #  Public variables that might be altered
-    #   b_cache_clear_has_been_called
-    #   b_cache_has_been_validated
-    #
-
-    log_it "cache_validation()"
-    if [ -f "$f_cache_not_used_hint" ]; then
-        log_it "><> cache_validation() aborted - cache not used"
-        return 1
-    fi
-
-    if [ -s "$f_cache_params" ]; then
-        chksum_orig="$(chksum_cache_params)"
-        cache_update_params
-        chksum_new="$(chksum_cache_params)"
-        [ "$chksum_orig" != "$chksum_new" ] && cache_clear "Environment changed"
-    else
-        cache_clear "cache invalid no: $f_cache_params"
-    fi
-
-    #  Ensure param cache is current
-    if $b_cache_clear_has_been_called || [ ! -f "$f_cache_params" ]; then
-        cache_update_params
-    fi
-
-    # hint for menus.tmux that it does not need to repeat the action
-    b_cache_has_been_validated=true
-
-    unset vers_cached was_whiptail
 }
 
 #===============================================================
@@ -248,6 +204,4 @@ f_cache_not_used_hint="$d_tmp/${plugin_name}-no_cache_hint-$(id -u)-$_s"
 
 if [ -f "$f_cache_not_used_hint" ]; then
     log_it "cache disabled hint found: $f_cache_not_used_hint"
-else
-    log_it "cache disabled hint absent: $f_cache_not_used_hint"
 fi

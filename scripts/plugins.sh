@@ -16,10 +16,10 @@ gather_plugins() {
         # iSH has very limited /dev impl, doesn't support mapfile
         #  shellcheck disable=SC2207
         defined_plugins=($(grep "set -g @plugin" "$TMUX_CONF" |
-                                awk '{ print $4 }' | sed 's/"//g'))
+            awk '{ print $4 }' | sed 's/"//g'))
     else
         mapfile -t defined_plugins < <(grep "set -g @plugin" "$TMUX_CONF" |
-                                        awk '{ print $4 }' | sed 's/"//g')
+            awk '{ print $4 }' | sed 's/"//g')
     fi
 }
 

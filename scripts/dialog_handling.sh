@@ -476,11 +476,11 @@ menu_parse() {
 
 update_wt_actions() {
     if $cfg_use_cache; then
-        # clear actions
         [ "$menu_idx" -eq 1 ] && {
+            # clear menu actions
             rm -rf "$d_wt_actions"
-            mkdir -p "$d_wt_actions"
         }
+        mkdir -p "$d_wt_actions"
         if $is_dynamic_content; then
             echo "$wt_actions" >"$d_wt_actions/dynamic-$menu_idx"
         else
