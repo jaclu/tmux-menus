@@ -247,8 +247,7 @@ wait_to_close_display() {
     #  whiptail case wait for that key
     #
     echo
-    # shellcheck disable=SC2154
-    if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+    if $cfg_use_whiptail; then
         echo "Press <Enter> to clear this output"
         read -r foo
     else
@@ -353,7 +352,7 @@ if ! tmux_vers_check "$min_tmux_vers"; then
     error_msg "need at least tmux $min_tmux_vers to work!"
 fi
 
-if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+if $cfg_use_whiptail; then
     menu_reload="; $f_current_script"
     #
     #  I haven't been able do to menu reload with whiptail yet,
@@ -367,4 +366,4 @@ else
     reload_in_runshell=" ; $f_current_script"
 fi
 
-log_it "-----   end of helpers.sh FORCE_WHIPTAIL_MENUS[$FORCE_WHIPTAIL_MENUS]"
+# log_it "-----   end of helpers.sh"

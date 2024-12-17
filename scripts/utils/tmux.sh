@@ -205,7 +205,7 @@ tmux_get_plugin_options() { # cache references
     cfg_format_title="$(tmux_get_option "@menus_format_title" \
         "$default_format_title")"
 
-    if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+    if $cfg_use_whiptail; then
         log_it "><> whiptail forcing default navs"
         # Whiptail skips any styling
         cfg_nav_next="$default_nav_next"
@@ -447,11 +447,15 @@ tmux_set_running_vers
 i_tmux_vers=$(get_digits_from_string "$tmux_vers")
 
 #
-# If an older version is used, set whiptail mode right away
-# this will not unset whiptail, in case FORCE_WHIPTAIL_MENUS has been
-# manually selected
+# If an older version is used, or FORCE_WHIPTAIL_MENUS is 1
+# set cfg_use_whiptail true
 #
 if ! tmux_vers_check 3.0; then
-    FORCE_WHIPTAIL_MENUS=1
-    log_it "tmux bellow 3.0, whiptail is forced"
+    cfg_use_whiptail=true
+    log_it "tmux below 3.0, whiptail is forced"
+elif [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+    cfg_use_whiptail=true
+    log_it "whiptail is selected due to FORCE_WHIPTAIL_MENUS=1"
+else
+    cfg_use_whiptail=false
 fi

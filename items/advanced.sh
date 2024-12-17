@@ -41,8 +41,7 @@ static_content() {
         0.0 M Left "Back to Main menu $nav_home" main.sh \
         0.0 S
 
-    # shellcheck disable=SC2154
-    if [ "$FORCE_WHIPTAIL_MENUS" = 1 ]; then
+    if $cfg_use_whiptail; then
         #
         #  The tmux output down to Customize options will be displayed
         #  then disappear instantly since whiptail restarts the foreground

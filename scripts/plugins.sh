@@ -129,10 +129,8 @@ check_unknown_items
 
 #  Busybox ps has no -x and will throw error, so send to /dev/null
 #  pgrep does not provide the command line, so ignore SC2009
-#  shellcheck disable=SC2009,SC2154 
-if ps -x "$PPID" 2>/dev/null | grep -q tmux-menus &&
-    [[ "$FORCE_WHIPTAIL_MENUS" = 1 ]]; then
-
+#  shellcheck disable=SC2009,SC2154
+if ps -x "$PPID" 2>/dev/null | grep -q tmux-menus && $cfg_use_whiptail; then
     #  called using whiptail menus
     echo "Press <Enter> to clear this output"
     read -r _

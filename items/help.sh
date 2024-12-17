@@ -32,7 +32,7 @@ static_content() {
         0.0 T "-#[nodim]Shortcut keys are usually upper case" \
         0.0 T "-#[nodim]for menus, and lower case for actions."
 
-    [ "$FORCE_WHIPTAIL_MENUS" != 1 ] && {
+    ! $cfg_use_whiptail && {
         set -- "$@" \
             0.0 T "-#[nodim]Exit menus with ESC or Ctrl-C"
     }
