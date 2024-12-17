@@ -20,9 +20,9 @@ tmux_vers_check() { # cache references
         error_msg "$tvc_msg"
     }
 
-    [ -f "$f_cache_known_tmux_vers" ] && [ -z "$cache_ok_tmux_versions" ] && {
+    [ -z "$cached_ok_tmux_versions" ] && [ -f "$f_cache_known_tmux_vers" ] && {
         #
-        # get known good/bad versions
+        # get known good/bad versions if this hasn't been sourced yet
         #
         # shellcheck source=/dev/null
         . "$f_cache_known_tmux_vers"
@@ -36,11 +36,11 @@ tmux_vers_check() { # cache references
     # log_it "tmux_vers_check($tvc_v_cmp, $tvc_v_ref)"
 
     $cfg_use_cache && {
-        case "$cache_ok_tmux_versions $tvc_v_ref " in
+        case "$cached_ok_tmux_versions $tvc_v_ref " in
         *"$tvc_v_cmp "*) return 0 ;;
         *) ;;
         esac
-        case "$cache_bad_tmux_versions" in
+        case "$cached_bad_tmux_versions" in
         *"$tvc_v_cmp "*) return 1 ;;
         *) ;;
         esac

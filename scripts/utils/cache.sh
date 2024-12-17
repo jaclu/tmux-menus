@@ -39,10 +39,10 @@ cache_add_ok_vers() {
     #  if it wasn't cached already
     #
     log_it "cache_add_ok_vers($1)"
-    case "$cache_ok_tmux_versions" in
+    case "$cached_ok_tmux_versions" in
     *"$1"*) ;;
     *)
-        cache_ok_tmux_versions="${cache_ok_tmux_versions}$1 "
+        cached_ok_tmux_versions="${cached_ok_tmux_versions}$1 "
         # log_it "Added ok tmux vers: $1"
         cache_save_known_tmux_versions
         ;;
@@ -55,10 +55,10 @@ cache_add_bad_vers() {
     #  if it wasn't cached already
     #
     log_it "cache_add_bad_vers($1)"
-    case "$cache_bad_tmux_versions" in
+    case "$cached_bad_tmux_versions" in
     *"$1"*) ;;
     *)
-        cache_bad_tmux_versions="${cache_bad_tmux_versions}$1 "
+        cached_bad_tmux_versions="${cached_bad_tmux_versions}$1 "
         # log_it "Added bad tmux vers: $1"
         cache_save_known_tmux_versions
         ;;
@@ -84,8 +84,8 @@ cache_save_known_tmux_versions() { # tmux stuff
 #
 #  This is a list of known good/bad tmux versions, to speed up version checks
 #
-cache_ok_tmux_versions="$cache_ok_tmux_versions"
-cache_bad_tmux_versions="$cache_bad_tmux_versions"
+cached_ok_tmux_versions="$cached_ok_tmux_versions"
+cached_bad_tmux_versions="$cached_bad_tmux_versions"
 EOF
     #endregion
 }
@@ -190,7 +190,6 @@ cache_get_params() {
 
 d_cache="$D_TM_BASE_PATH"/cache
 f_cache_params="$d_cache"/plugin_params
-f_using_whiptail="$d_cache"/using-whiptail
 f_cache_known_tmux_vers="$d_cache"/known_tmux_versions
 b_cache_has_been_validated=false
 b_cache_clear_has_been_called=false
