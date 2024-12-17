@@ -65,7 +65,7 @@ tmux_vers_check() { # cache references
 tmux_set_running_vers() {
     # Filter out devel prefix and release candidate suffix
     tmux_vers="$(tmux_error_handler -V | cut -d ' ' -f 2)"
-    case "$_v" in
+    case "$tmux_vers" in
     next-*)
         # Remove "next-" prefix
         tmux_vers="${tmux_vers#next-}"
