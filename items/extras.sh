@@ -25,7 +25,6 @@ static_content() {
     set -- \
         0.0 M Left "Back to Main menu  $nav_prev" main.sh \
         0.0 S \
-        0.0 E i "public IP" public_ip.sh \
         0.0 M D "$(is_avalable dropbox)Dropbox      $nav_next" "$d_extras"/dropbox.sh \
         0.0 M S "$(is_avalable spotify)Spotify      $nav_next" "$d_extras"/spotify.sh \
         0.0 M M "$(is_avalable mullvad)Mullvad VPN  $nav_next" "$d_extras"/mullvad.sh \

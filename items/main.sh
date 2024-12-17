@@ -28,6 +28,7 @@ static_content() {
         0.0 S \
         1.8 E p "Plugins inventory" "plugins.sh" \
         0.0 C r "Reload configuration file" "$rld_cmd" \
+        0.0 E i "public IP" public_ip.sh \
         0.0 C d 'Detach from tmux' detach-client \
         0.0 S \
         0.0 M H "Help $nav_next" "$d_items/help.sh $f_current_script"
