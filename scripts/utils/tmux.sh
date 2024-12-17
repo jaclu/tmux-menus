@@ -194,35 +194,43 @@ tmux_get_plugin_options() { # cache references
         touch "$f_cache_not_used_hint"
     fi
 
-    cfg_simple_style_selected="$(tmux_get_option "@menus_simple_style_selected" \
-        "$default_simple_style_selected")"
-    cfg_simple_style="$(tmux_get_option "@menus_simple_style" \
-        "$default_simple_style")"
-    cfg_simple_style_border="$(tmux_get_option "@menus_simple_style_border" \
-        "$default_simple_style_border")"
-    cfg_format_title="$(tmux_get_option "@menus_format_title" \
-        "$default_format_title")"
-
     if $cfg_use_whiptail; then
-        log_it "><> whiptail forcing default navs"
+        _whiptail_ignore_msg="not used with whiptail"
+
+        cfg_simple_style_selected="$_whiptail_ignore_msg"
+        cfg_simple_style="$_whiptail_ignore_msg"
+        cfg_simple_style_border="$_whiptail_ignore_msg"
+        cfg_format_title="$_whiptail_ignore_msg"
+        cfg_mnu_loc_x="$_whiptail_ignore_msg"
+        cfg_mnu_loc_y="$_whiptail_ignore_msg"
+        unset _whiptail_ignore_msg
+
         # Whiptail skips any styling
         cfg_nav_next="$default_nav_next"
         cfg_nav_prev="$default_nav_prev"
         cfg_nav_home="$default_nav_home"
     else
-        log_it "><> using custom navs"
+        cfg_simple_style_selected="$(tmux_get_option "@menus_simple_style_selected" \
+            "$default_simple_style_selected")"
+        cfg_simple_style="$(tmux_get_option "@menus_simple_style" \
+            "$default_simple_style")"
+        cfg_simple_style_border="$(tmux_get_option "@menus_simple_style_border" \
+            "$default_simple_style_border")"
+        cfg_format_title="$(tmux_get_option "@menus_format_title" \
+            "$default_format_title")"
+
         cfg_nav_next="$(tmux_get_option "@menus_nav_next" \
             "$default_nav_next")"
         cfg_nav_prev="$(tmux_get_option "@menus_nav_prev" \
             "$default_nav_prev")"
         cfg_nav_home="$(tmux_get_option "@menus_nav_home" \
             "$default_nav_home")"
+        cfg_mnu_loc_x="$(tmux_get_option "@menus_location_x" \
+            "$default_location_x")"
+        cfg_mnu_loc_y="$(tmux_get_option "@menus_location_y" \
+            "$default_location_y")"
     fi
 
-    cfg_mnu_loc_x="$(tmux_get_option "@menus_location_x" \
-        "$default_location_x")"
-    cfg_mnu_loc_y="$(tmux_get_option "@menus_location_y" \
-        "$default_location_y")"
     cfg_tmux_conf="$(tmux_get_option "@menus_config_file" \
         "$default_tmux_conf")"
     _f="$(tmux_get_option "@menus_log_file" "$default_log_file")"

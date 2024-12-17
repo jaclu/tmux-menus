@@ -114,8 +114,8 @@ cache_param_write() { # tmux stuff
 
 cfg_trigger_key="$(tmux_escape_special_chars "$cfg_trigger_key")"
 cfg_no_prefix="$cfg_no_prefix"
-cfg_use_cache="$cfg_use_cache"
 
+cfg_use_cache="$cfg_use_cache"
 cfg_use_whiptail="$cfg_use_whiptail"
 
 cfg_nav_next="$cfg_nav_next"
@@ -123,16 +123,16 @@ cfg_nav_prev="$cfg_nav_prev"
 cfg_nav_home="$cfg_nav_home"
 
 cfg_format_title="$cfg_format_title"
-# The rest of the styles are ignored if tmux < 3.4
-cfg_simple_style_selected="$cfg_simple_style_selected"
 cfg_simple_style="$cfg_simple_style"
 cfg_simple_style_border="$cfg_simple_style_border"
+cfg_simple_style_selected="$cfg_simple_style_selected"
 
 cfg_mnu_loc_x="$cfg_mnu_loc_x"
 cfg_mnu_loc_y="$cfg_mnu_loc_y"
-cfg_tmux_conf="$cfg_tmux_conf"
 
+cfg_tmux_conf="$cfg_tmux_conf"
 cfg_log_file="$cfg_log_file"
+
 cfg_use_notes="$cfg_use_notes"
 
 tmux_vers="$tmux_vers"
