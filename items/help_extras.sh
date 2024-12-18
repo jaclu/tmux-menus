@@ -39,7 +39,7 @@ static_content() {
 #
 #===============================================================
 
-prev_menu="$1"
+prev_menu="$(realpath -- "$1")"
 menu_name="Help Extras"
 
 #  Full path to tmux-menux plugin

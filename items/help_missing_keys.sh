@@ -43,7 +43,7 @@ static_content() {
 #
 #===============================================================
 
-prev_menu="$1"
+prev_menu="$(realpath -- "$1")"
 menu_name="Help Missing Keys"
 
 if [ -z "$prev_menu" ]; then
