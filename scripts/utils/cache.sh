@@ -29,6 +29,7 @@ cache_clear() { # only cache
     fi
 
     rm -rf "$d_cache"
+    cache_prepare
 
     # Invalidate what might have already been sourced
     cached_ok_tmux_versions=""
@@ -122,12 +123,24 @@ cache_param_write() { # tmux stuff
         error_msg "cache_param_write() - called when not using cache"
     fi
 
-    cd "$D_TM_BASE_PATH" || error_msg "Failed to cd into $D_TM_BASE_PATH"
-    repo_last_changed="$(git log -1 --format="%ad" --date=iso 2>/dev/null)"
-    [ -z "$repo_last_changed" ] && log_it "repo_last_changed - empty!"
-    f_params_tmp=$(mktemp) || error_msg "Failed to create tmp config file"
-
     cache_prepare
+
+    # need to be in repo base dir for the git chcecks below
+    cd "$D_TM_BASE_PATH" || error_msg "Failed to cd into $D_TM_BASE_PATH"
+
+    # Timestamp for latest change of repo that hs been pulled
+    repo_last_changed="$(git log -1 --format="%ad" --date=iso 2>/dev/null)"
+
+    # Timestamp and file name for latest locally changed file
+    if [ "$(uname -s)" = "Darwin" ]; then
+        last_local_edit="$(git ls-files -m 2>/dev/null |
+            xargs -r stat -f '%m %N' | sort -nr | head -1)"
+    else
+        last_local_edit="$(git ls-files -m 2>/dev/null |
+            xargs -r stat -c '%Y %n' | sort -nr | head -1)"
+    fi
+
+    f_params_tmp=$(mktemp) || error_msg "Failed to create tmp config file"
     #region param cache file
     cat <<EOF >"$f_params_tmp"
 #!/bin/sh
@@ -163,13 +176,17 @@ cfg_use_notes="$cfg_use_notes"
 tmux_vers="$tmux_vers"
 i_tmux_vers="$i_tmux_vers"
 
-# get a version hint, this also ensures cache is cleared anytime
-# repo was updated
+#
+# Get version hints for repo and local changes,
+# This ensures cache is cleared next time tmux is started or conf is sourced
+# anytime repo was updated, or any file was changed locally.
+#
 repo_last_changed="$repo_last_changed"
+last_local_edit="$last_local_edit"
 
 EOF
     #endregion
-    unset repo_last_changed
+    unset repo_last_changed last_local_edit
 
     if [ ! -f "$f_cache_params" ]; then
         log_it "  cache_param_write() - Creating param cache"
