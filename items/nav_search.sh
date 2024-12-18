@@ -50,6 +50,7 @@ static_content() {
 #===============================================================
 
 menu_name="Navigate & Search"
+menu_min_vers=1.8
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath -- "$0")")")"
