@@ -107,16 +107,14 @@ static_content() {
 #===============================================================
 
 menu_name="Missing Keys"
+menu_min_vers=2.0
+wt_pasting="@menus_wt_paste_in_progress" # only used by whiptail
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath -- "$0")")")"
 
 # shellcheck source=scripts/helpers.sh
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
-
-tmux_vers_check 2.0 || error_msg "$(relative_path "$f_current_script") needs tmux 2.0"
-
-wt_pasting="@menus_wt_paste_in_progress"
 
 if [ -n "$1" ]; then
     handle_char "$1"
@@ -127,7 +125,7 @@ elif $cfg_use_whiptail; then
     #  without a param this buffer is reset
     #
     log_it "clearing pending paste buffer indicator"
-    tmux_error_handler set-option -gqu "$wt_pasting"
+    $TMUX_BIN set-option -gqu "$wt_pasting" 2>/dev/null # ignore error if not set
 fi
 
 # shellcheck source=scripts/dialog_handling.sh

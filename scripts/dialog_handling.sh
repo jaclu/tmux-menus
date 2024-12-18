@@ -9,7 +9,12 @@
 #  Parses params and generates tmux or whiptail menus
 #  One variable is expected to have been set by the caller
 #
-#  D_TM_BASE_PATH - base location for tmux-menus plugin
+#  Menus are expected to define the foolowing:
+#   D_TM_BASE_PATH  - base location for tmux-menus plugin
+#   menu_name       - Name of menu
+#   menu_min_vers   - If set, min version of tmux menu supports
+#   static_content()    - all static menu fragments, that can be cached
+#   dynamic_content()   - all dynamic fragments, will be regenerated each time
 #
 
 get_mtime() {
@@ -690,24 +695,15 @@ fi
 # shellcheck source=scripts/helpers.sh
 [ -z "$tmux_vers" ] && . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
+# Some sanity checks
 [ -z "$TMUX" ] && error_msg "$plugin_name can only be used inside tmux!"
-[ -z "$menu_name" ] && error_msg "menu_parse() - menu_name not defined"
-
-# not working right now, so disabling
-# $cfg_use_whiptail && {
-#     if [ -f "$f_wt_reload_script" ]; then
-#         #
-#         #  Delete old reload scripts, they will be created during execution
-#         #  of a menu, and then if found executed at end of this one.
-#         #  This is most likely a leftover due to some bug.
-#         #
-
-#         log_it "[$$]-----   Found reload script - deleting it"
-#         rm -f "$f_wt_reload_script"
-#     else
-#         log_it "><>[$$]-----   no wt_reload_script found at start for dialog_handling"
-#     fi
-# }
+[ -z "$menu_name" ] && error_msg "menu_name not defined"
+[ -n "$menu_min_vers" ] && {
+    # Abort with error if tmux version is insufficient
+    tmux_vers_check "$menu_min_vers" || {
+        error_msg "$(relative_path "$f_current_script") needs tmux: $menu_min_vers"
+    }
+}
 
 #
 #  What alternate dialog app to use, if tmux built in dialogs will not
@@ -731,30 +727,3 @@ uncached_item_splitter="||||"
 menu_debug="" # Set to 1 to use echo 2 to use log_it
 
 handle_menu
-
-# e="$?"
-# if [ "$e" -ne 0 ]; then
-#     log_it "><> $current_script - dialog_handling - before wt_reload [$e]"
-# fi
-
-# not working right now, so disabling
-# $cfg_use_whiptail && {
-#     if [ -f "$f_wt_reload_script" ]; then
-#         #
-#         #  in whiptail run-shell can't chain to another menu, so instead
-#         #  reload script is written to a tmp file, and if it is found
-#         #  it will be exeuted
-#         #
-#         log_it "[$$]+++++   Will run f_wt_reload_script[$f_wt_reload_script]"
-#         /bin/sh "$f_wt_reload_script"
-#     else
-#         log_it "><>[$$]+++++   no wt_reload_script found at end of dialog handling"
-#     fi
-# }
-
-# e="$?"
-# if [ "$e" -ne 0 ]; then
-#     log_it "><> $current_script - dialog_handling - exiting [$e]"
-# fi
-
-# log_it "[$(safe_now)] exiting dialog_handling.sh"

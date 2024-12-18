@@ -125,6 +125,8 @@ static_content() {
 #===============================================================
 
 menu_name="Currency symbols"
+menu_min_vers=2.0
+wt_pasting="@menus_wt_paste_in_progress" # only used by whiptail
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath -- "$0")")")"
@@ -132,22 +134,16 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath -- "$0")")")"
 # shellcheck source=scripts/helpers.sh
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
-tmux_vers_check 2.0 || error_msg "$(relative_path "$f_current_script") needs tmux 2.0"
-
-wt_pasting="@menus_wt_paste_in_progress"
-
 if [ -n "$1" ]; then
     handle_char "$1"
-else
-    $cfg_use_whiptail && {
-        #
-        #  As long as this menu is restarted with a char param
-        #  it is added  to the paste buffer, as soon as it is called
-        #  without a param this buffer is reset
-        #
-        log_it "clearing pending paste buffer indicator"
-        tmux_error_handler set-option -gqu "$wt_pasting"
-    }
+elif $cfg_use_whiptail; then
+    #
+    #  As long as this menu is restarted with a char param
+    #  it is added  to the paste buffer, as soon as it is called
+    #  without a param this buffer is reset
+    #
+    log_it "clearing pending paste buffer indicator"
+    $TMUX_BIN set-option -gqu "$wt_pasting" 2>/dev/null # ignore error if not set
 fi
 
 # shellcheck source=scripts/dialog_handling.sh
