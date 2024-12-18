@@ -50,7 +50,7 @@ prev_menu="$1"
 menu_name="Help, Split view"
 
 #  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(realpath "$(dirname -- "$(dirname -- "$0")")")"
+D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath -- "$0")")")"
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh

@@ -318,7 +318,7 @@ d_tmp="${TMPDIR:-/tmp}"
 #
 current_script="$(basename "$0")" # name without path
 # ensure f_current_script is a full path
-d_current_script="$(realpath "$(dirname -- "$0")")"
+d_current_script="$(dirname -- "$(realpath -- "$0")")"
 f_current_script="$d_current_script/$current_script"
 
 # shellcheck disable=SC2154
