@@ -31,7 +31,7 @@ static_content() {
         0.0 T " " \
         0.0 T "-#[nodim]To integrate this clipboard with that" \
         0.0 T "-#[nodim]of the OS, this might need configuration" \
-        0.0 T "-#[nodim]in of tmux conf depending on what OS" \
+        0.0 T "-#[nodim]in tmux.conf depending on what OS" \
         0.0 T "-#[nodim]and terminal is being used."
     menu_generate_part 2 "$@"
 }

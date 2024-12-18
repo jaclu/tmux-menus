@@ -30,7 +30,7 @@ static_content() {
         0.0 S \
         1.7 C x "Kill current window" "confirm-before -p \
             'kill-window #W? (y/n)' kill-window" \
-        1.7 C o " Kill all other windows" "confirm-before -p \
+        1.7 C o "Kill all other windows" "confirm-before -p \
             'Are you sure you want to kill all other windows? (y/n)' \
             'run-shell \"${d_scripts}/kill_other_windows.sh\"'" \
         0.0 S \
