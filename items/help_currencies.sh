@@ -8,14 +8,24 @@
 #   General Help
 #
 
+dynamic_content() {
+    # Things that change dependent on various states
+
+    if [ -z "$prev_menu" ]; then
+        error_msg "$current_script was called without notice of what called it"
+    fi
+
+    set -- \
+        0.0 M Left "Back to Previous menu $nav_prev" "$prev_menu" \
+        0.0 M Home "Back to Main menu     $nav_home" main.sh
+
+    menu_generate_part 1 "$@"
+}
+
 static_content() {
 
     set -- \
-        0.0 M Home "Back to Main menu     $nav_home" main.sh \
-        0.0 M Left "Back to Previous menu $nav_prev" "$prev_menu" \
         0.0 S
-
-    set -- "$@" \
         0.0 T "-#[nodim]Even if due to font or screen settings," \
         0.0 T "-#[nodim]the symbol isn't visible, this should" \
         0.0 T "-#[nodim]still be able to paste it in."
@@ -36,7 +46,7 @@ static_content() {
             0.0 T "use <prefix> ] to paste the key(-s)."
     fi
 
-    menu_generate_part 1 "$@"
+    menu_generate_part 2 "$@"
 }
 
 #===============================================================
