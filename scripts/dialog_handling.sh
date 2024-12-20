@@ -629,16 +629,15 @@ handle_wt_selecion() {
 }
 
 display_menu() {
+    # Display time to generate menu
+    _t="$(echo "$(safe_now) - $dh_t_mnu_processing_start" | bc)"
+    log_it "Menu $current_script_no_ext - processing time:  $_t"
     if $cfg_use_whiptail; then
         # display whiptail menu
         menu_selection=$(eval "$menu_items" 3>&2 2>&1 1>&3)
         [ -n "$menu_selection" ] && handle_wt_selecion
         true #  hides none true exit if whiptail menu was cancelled
     else
-        # Display time to generate menu
-        disp_time="$(echo "$(safe_now) - $dh_t_mnu_processing_start" | bc)"
-        log_it "Menu $current_script_no_ext - processing time:  $disp_time"
-
         dh_t_start="$(safe_now)"
         eval "$menu_items"
 

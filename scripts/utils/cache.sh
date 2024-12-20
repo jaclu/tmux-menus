@@ -50,7 +50,7 @@ cache_prepare() {
     fi
 
     mkdir -p "$d_cache"
-    log_it "cache_prepare() - created: $d_cache"
+    # log_it "cache_prepare() - created: $d_cache"
     return 0
 }
 
@@ -118,7 +118,7 @@ cache_param_write() { # tmux stuff
     #  Writes all config params to file
     #  if it differed with previous params, clear cache
     #
-    log_it "cache_param_write()"
+    # log_it "cache_param_write()"
     if [ -f "$f_cache_not_used_hint" ] || ! $cfg_use_cache; then
         error_msg "cache_param_write() - called when not using cache"
     fi
@@ -190,14 +190,12 @@ EOF
     unset repo_last_changed last_local_edit
 
     if [ ! -f "$f_cache_params" ]; then
-        log_it "  cache_param_write() - Creating param cache"
         mv "$f_params_tmp" "$f_cache_params"
     elif ! diff -q "$f_params_tmp" "$f_cache_params" >/dev/null 2>&1; then
         # diff reports success if files dont fiffer, hence the !
         # If any params have changed, invalidate cache
         # log_it "  cache_param_write() - Config changed - clear cache"
         cache_clear "Environment changed"
-        log_it "  cache_param_write() - Saving new param cache"
         mv "$f_params_tmp" "$f_cache_params"
     else
         rm -f "$f_params_tmp" # no changes
