@@ -11,8 +11,8 @@
 static_content() {
 
     set -- \
-        0.0 M Home "Back to Main menu     $nav_home" main.sh \
         0.0 M Left "Back to Handling Pane $nav_prev" panes.sh \
+        0.0 M Home "Back to Main menu     $nav_home" main.sh \
         0.0 S \
         1.7 C s "Specify width & height" "command-prompt -p \
             'Pane width,Pane height' 'resize-pane -x %1 -y %2'" \

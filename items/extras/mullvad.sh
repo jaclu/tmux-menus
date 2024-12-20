@@ -38,8 +38,8 @@ static_content() {
     [ -z "$(command -v mullvad)" ] && error_msg "mullvad bin not found!"
 
     set -- \
-        0.0 M Home "'Back to Main menu  $nav_home'" main.sh \
         0.0 M Left "Back to Extras     $nav_prev" extras.sh \
+        0.0 M Home "'Back to Main menu  $nav_home'" main.sh \
         0.0 S \
         0.0 C s Status "display '$(mullvad status)' $menu_reload"
 

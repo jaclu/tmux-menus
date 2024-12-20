@@ -22,8 +22,8 @@ dynamic_content() {
 
 static_content() {
     set -- \
-        0.0 M Home "Back to Main menu     $nav_home" main.sh \
         0.0 M Left "Back to Handling Pane $nav_prev" panes.sh \
+        0.0 M Home "Back to Main menu     $nav_home" main.sh \
         0.0 S \
         2.7 C o "Move to other win/ses        " "choose-tree -Gw \
             \"run-shell '$d_scripts/relocate_pane.sh P M %%'\""

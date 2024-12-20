@@ -27,8 +27,8 @@ static_content() {
     select_location="choose-tree -Gw 'run-shell \"$d_scripts/relocate_window.sh"
 
     set -- \
-        0.0 M Home "Back to Main menu       $nav_home" main.sh \
         0.0 M Left "Back to Handling Window $nav_prev" windows.sh \
+        0.0 M Home "Back to Main menu       $nav_home" main.sh \
         0.0 S
 
     menu_generate_part 1 "$@"

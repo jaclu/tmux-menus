@@ -10,8 +10,8 @@
 
 static_content() {
     set -- \
-        0.0 M Home "Back to Main menu  $nav_home" main.sh \
         0.0 M Left "Back to Layouts    $nav_prev" layouts.sh \
+        0.0 M Home "Back to Main menu  $nav_home" main.sh \
         3.3 S \
         3.3 T "-#[align=centre,nodim]pane-border-indicators" \
         3.3 C "o" "off" "set -g pane-border-indicators off    $menu_reload" \

@@ -90,8 +90,8 @@ static_content() {
     tmux_vers_check 2.0 || error_msg "needs tmux 2.0"
 
     set -- \
-        0.0 M Home "Back to Main menu     $nav_home" main.sh \
         0.0 M Left "Back to Missing Keys  $nav_prev" missing_keys.sh \
+        0.0 M Home "Back to Main menu     $nav_home" main.sh \
         0.0 S
 
     # how to print?

@@ -10,8 +10,8 @@
 
 static_content() {
     set -- \
-        0.0 M Home "Back to Main menu  $nav_home" main.sh \
         0.0 M Left "Back to Layouts    $nav_prev" layouts.sh \
+        0.0 M Home "Back to Main menu  $nav_home" main.sh \
         3.2 S \
         3.2 T "-#[align=centre,nodim]pane-border-lines" \
         3.2 C "s" "single" "set -g pane-border-lines  single  $menu_reload" \
