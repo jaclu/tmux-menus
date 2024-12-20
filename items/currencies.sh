@@ -129,7 +129,7 @@ menu_min_vers=2.0
 wt_pasting="@menus_wt_paste_in_progress" # only used by whiptail
 
 #  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath -- "$0")")")"
+D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 
 # shellcheck source=scripts/helpers.sh
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
