@@ -10,8 +10,8 @@
 
 static_content() {
     set -- \
-        0.0 M M "Move window       $nav_next" window_move.sh \
         0.0 M Left "Back to Main menu $nav_home" main.sh \
+        0.0 M M "Move window       $nav_next" window_move.sh \
         0.0 S \
         1.7 C r "Rename window" "command-prompt -I '#W'  \
             -p 'New window name: ' 'rename-window %%'" \
