@@ -45,13 +45,8 @@ initialize_plugin=1
 [ -d "$d_cache" ] && cache_add_ok_vers "$tmux_vers"
 
 if $cfg_use_whiptail; then
-    [ -z "$(command -v whiptail)" ] && {
-        tmux_error_handler bind-key "$@" "$cfg_trigger_key" \
-            display-message "DEPENDENCY: $plugin_name needs whiptail"
-        error_msg "whiptail is not installed!"
-    }
-    cmd="$d_scripts/do_whiptail.sh"
-    log_it "whiptail will be used"
+    cmd="$d_scripts/external_dialog_trigger.sh"
+    log_it "alternate menu handler: $cfg_alt_menu_handler"
 else
     cmd="$d_items/main.sh"
 fi
@@ -69,6 +64,5 @@ else
     trigger_sequence="Menus bound to: <prefix> $cfg_trigger_key"
 fi
 
-log_it "trigger:[$cfg_trigger_key]"
 tmux_error_handler bind-key "$@" "$cfg_trigger_key" run-shell "$cmd"
 log_it "$trigger_sequence"
