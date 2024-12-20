@@ -155,6 +155,7 @@ cfg_no_prefix="$cfg_no_prefix"
 
 cfg_use_cache="$cfg_use_cache"
 cfg_use_whiptail="$cfg_use_whiptail"
+cfg_alt_menu_handler="$cfg_alt_menu_handler"
 
 cfg_nav_next="$cfg_nav_next"
 cfg_nav_prev="$cfg_nav_prev"

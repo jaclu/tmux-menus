@@ -167,7 +167,7 @@ tmux_spacer() {
 }
 
 alt_dialog_prefix() {
-    menu_items="$dialog_app --menu \"$menu_name\" 0 0 0 "
+    menu_items="$cfg_alt_menu_handler --menu \"$menu_name\" 0 0 0 "
 }
 
 alt_dialog_open_menu() {
@@ -704,12 +704,6 @@ fi
         error_msg "$(relative_path "$f_current_script") needs tmux: $menu_min_vers"
     }
 }
-
-#
-#  What alternate dialog app to use, if tmux built in dialogs will not
-#  be used, options: whiptail dialog
-#
-dialog_app="whiptail"
 
 alt_dialog_action_separator=":/:/:/:"
 
