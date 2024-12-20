@@ -199,6 +199,69 @@ get_digits_from_string() {
     unset s i
 }
 
+normalize_bool_param() {
+    #
+    #  Take a boolean style text param and convert it into an actual boolean
+    #  that can be used in your code. Example of usage:
+    #
+    #  normalize_bool_param "@menus_without_prefix" "$default_no_prefix" &&
+    #      cfg_no_prefix=true || cfg_no_prefix=false
+    #
+    #  $cfg_no_prefix && echo "Dont use prefix"
+    #
+    nbp_param="$1"
+    nbp_default="$2" # only used for tmux options
+    nbp_variable_name=""
+
+    # log_it "normalize_bool_param($nbp_param, $nbp_default)"
+    [ "${nbp_param%"${nbp_param#?}"}" = "@" ] && {
+        #
+        #  If it starts with "@", assume it is a tmux option, thus
+        #  read its value from the tmux environment.
+        #  In this case $2 must be given as the default value!
+        #
+        [ -z "$nbp_default" ] && {
+            error_msg "normalize_bool_param($nbp_param) - no default"
+        }
+        nbp_variable_name="$nbp_param"
+        nbp_param="$(tmux_get_option "$nbp_param" "$nbp_default")"
+    }
+
+    nbp_param="$(lowercase_it "$nbp_param")"
+
+    case "$nbp_param" in
+    #
+    #  Handle the unfortunate tradition in the tmux community to use
+    #  1 to indicate selected / active.
+    #  This means 1 is 0 and 0 is 1, how Orwellian...
+    #
+    1 | yes | true)
+        #  Be a nice guy and accept some common positive notations
+        unset nbp_param nbp_default nbp_variable_name
+        return 0
+        ;;
+
+    0 | no | false)
+        #  Be a nice guy and accept some common false notations
+        unset nbp_param nbp_default nbp_variable_name
+        return 1
+        ;;
+
+    *)
+        if [ -n "$nbp_variable_name" ]; then
+            prefix="$nbp_variable_name=$nbp_param"
+        else
+            prefix="$nbp_param"
+        fi
+        error_msg "$prefix - should be yes/true or no/false"
+        ;;
+
+    esac
+
+    # Should never get here...
+    error_msg "normalize_bool_param() - failed to evaluate $nbp_param"
+}
+
 has_lf_not_at_end() {
     #
     #  POSIX hack I came up with to check if a string contains LF
