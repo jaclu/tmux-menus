@@ -20,11 +20,11 @@ experienced users, then add more for newbies.
 
 ## Recent Changes
 
+- Split handling of external dialogs into two scripts, to improve job control
 - Added support for dialog as external menu handler
 - Split Layouts menu into 3 sub menus
 - moved "public IP" back to main
 - Prevent styling from being used when tmux < 3.4
-- Menus can be styled see [Styling.md](Styling.md) for details
 
 </details>
 <details>
@@ -189,7 +189,7 @@ set -g @menus_trigger F12
 ```
 
 Please note that non-standard keys, like the default backslash need to
-be prefixed with a `\` in order not to confuse tmux.
+be prefixed with a `\` like `\\` in order not to confuse tmux.
 
 ### Display without using prefix
 
@@ -203,7 +203,7 @@ This param can be either Yes/true or No/false (the default)
 
 ### Menu location
 
-The default locations are: `C` for tmux >= 3.2 `P` otherwise. If whiptail is used,
+The default locations are: `C` for tmux >= 3.2 `P` otherwise. If whiptail/dialog is used,
 menu location is ignored
 
 ```tmux
@@ -234,9 +234,8 @@ set -g @menus_use_cache No
 To be more precise, items listed inside `static_content()` are cached.
 Some items need to be freshly generated each time a menu is displayed,
 those items are defines in `dynamic_content()` see
-[scripts/panes.sh](items/panes.sh) for an example of this. In that case,
-the label changes between Zoom and Un-Zoom for the zooming action and
-mark/unmark for current pane.
+[scripts/pane_move.sh](items/pane_move.sh) for an example of this. In that case,
+"Swap current pane with marked" is only displayed if there is a marked pane.
 
 The plugin remembers what tmux version was used last time.
 If another version is detected as the plugin is initialized, the entire
@@ -282,12 +281,15 @@ set -g @menus_log_file '~/tmp/tmux-menus.log'
 
 ## Screen might be too small
 
-tmux does not give any error if a menu doesn't fit the available screen.
+tmux does not give any error if a menu doesn't fit the available screen, 
+it just does not display the menu.
+
 The only hint is that the menu is terminated instantaneously.
+
 Since this test is far from perfect, and some computers are really slow,
-the current assumption is that if it was displayed < 0.5 seconds
-(on most modern computers it will be below 0.03), it was likely due
-to screen size. And this error will be displayed on the status-bar:
+the current assumption is that if it was displayed < 0.5 seconds, 
+it was likely due to screen size. 
+In that case this error will be displayed on the status-bar:
 
 ```tmux
 tmux-menus ERROR: Screen might be too small
