@@ -70,7 +70,9 @@ error_msg() {
         log_it
 
         $do_display_message && {
-            if [ "${#em_msg}" -gt 50 ] || has_lf_not_at_end "$em_msg"; then
+            if $env_initialized && (
+                [ "${#em_msg}" -gt 50 ] || has_lf_not_at_end "$em_msg"
+            ); then
                 error_msg_formated "$em_msg"
             else
                 display_message_hold "$plugin_name ERR: $em_msg"
@@ -104,18 +106,6 @@ error_msg_formated() {
         echo "$emf_err"
     )"
 
-    # emf_msg="$(
-    #     echo "$emf_msg"
-    #     echo
-    #     echo "Press ESC to close this display"
-    # )"
-    # if tmux_vers_check 3.3; then # using full pane display view
-    #     # subpar cuts of long lines
-    #     $TMUX_BIN run-shell "echo '$emf_msg'"
-    # elif tmux_vers_check 3.2; then # using display-popup
-    #     # subpar prevents checking other panes or windows
-    #     $TMUX_BIN display-popup -h 90% -w 95% "echo '$emf_msg'"
-    # else # display in a tmp window
     emf_msg="$(
         echo "$emf_msg"
         echo
@@ -123,9 +113,7 @@ error_msg_formated() {
         echo "Press Ctrl-C to close this temporary window"
     )"
     # posix way to wait forever - MacOS doesn't have: sleep infinity
-    $TMUX_BIN new-window -n "tmux-error" \
-        "echo '$emf_msg' ; tail -f /dev/null "
-    # fi
+    $TMUX_BIN new-window -n "tmux-error" "echo '$emf_msg' ; tail -f /dev/null "
 
     # pointless since this is exiting, but that might change some day
     unset emf_err emf_msg
@@ -159,7 +147,7 @@ display_message_hold() {
 
 #---------------------------------------------------------------
 #
-#   Handling of specific data types
+#   Handling of data types
 #
 #---------------------------------------------------------------
 
@@ -363,10 +351,12 @@ cfg_use_cache=false
 #
 #  Convenience shortcuts
 #
+d_tmp="${TMPDIR:-/tmp}"
 d_items="$D_TM_BASE_PATH"/items
 d_scripts="$D_TM_BASE_PATH"/scripts
 
-d_tmp="${TMPDIR:-/tmp}"
+# will be set to true at end of this, this indicates everything is prepared
+env_initialized=false
 
 # defines tmux_pid used in init of cache.sh, so must be defined before
 # shellcheck source=scripts/utils/tmux.sh
@@ -410,15 +400,13 @@ fi
 if $cfg_use_whiptail; then
     menu_reload="; $f_current_script"
     #
-    #  I haven't been able do to menu reload with whiptail yet,
+    #  I haven't been able do to menu reload with whiptail/dialog yet,
     #  so disabled for now
     #
-    # f_wt_reload_script="$d_tmp/${plugin_name}-reload-${tmux_pid}"
-    # reload_in_runshell="echo $f_current_script > $f_wt_reload_script ;"
-    reload_in_runshell="" # TODO: try to fix this...
+    reload_in_runshell=""
 else
     menu_reload="; run-shell \"$f_current_script\""
     reload_in_runshell=" ; $f_current_script"
 fi
 
-# log_it "-----   end of helpers.sh"
+env_initialized=true # indicates that env is fully configured
