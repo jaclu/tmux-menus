@@ -172,7 +172,7 @@ it using the package manager.
 One gotcha is that in the Red Hat universe the package is not called whiptail,
 the package containing whiptail is called `newt`.
 
-MacOS does not come with whiptail, but it is available in Homebrew, and most other package managers.
+MacOS does not come with whiptail, but it is available in the Homebrew package `newt`.
 
 </details>
 <details>
