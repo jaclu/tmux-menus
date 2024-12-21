@@ -53,6 +53,7 @@ error_msg() {
     do_display_message=${3:-true}
 
     # with no tmux env, dumping it to stderr is the only option
+    # shellcheck disable=SC2154
     [ -z "$TMUX" ] && log_interactive_to_stderr=true
 
     if $log_interactive_to_stderr && [ -t 0 ]; then
@@ -302,6 +303,7 @@ wait_to_close_display() {
 
 relative_path() {
     # remove D_TM_BASE_PATH prefix
+    # shellcheck disable=SC2154
     echo "$1" | sed "s|^$D_TM_BASE_PATH/||"
 }
 

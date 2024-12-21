@@ -97,6 +97,7 @@ _this="plugins.sh" # error prone if script name is changed :(
 defined_plugins=() #  plugins mentioned in config file
 valid_items=(tpm)  # additional folders expected to be in plugins folders
 
+# shellcheck disable=SC2154
 [[ -n "$TMUX" ]] || {
     echo "ERROR: This expects to run inside a tmux session!"
     exit 1
@@ -107,6 +108,7 @@ valid_items=(tpm)  # additional folders expected to be in plugins folders
     error_msg "$_this should NOT be sourced"
 }
 
+# shellcheck disable=SC2154
 if [[ -n "$TMUX_CONF" ]]; then
     d_conf="$(dirname "$TMUX_CONF")"
     if [[ "$d_conf" = "$HOME" ]]; then
