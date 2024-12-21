@@ -135,12 +135,12 @@ tmux_get_option() {
         return
     }
 
-    # dont use tmux_error_handler here
+    # don't use tmux_error_handler here
     if tgo_value="$($TMUX_BIN show-options -gv "$tgo_option" 2>/dev/null)"; then
         #
         #  I haven't figured out if it is my asdf builds that have issues
         #  or something else, since I never heard of this issue before.
-        #  On the other side, I dont think I have ever tried to assign ""
+        #  On the other side, I don't think I have ever tried to assign ""
         #  to a user-option that has a non-empty default, so it might be
         #  an actual bug in tmux 3.0 - 3.2a
         #

@@ -1,5 +1,6 @@
 #!/bin/sh
 # This is sourced. Fake bang-path to help editors and linters
+# shellcheck disable=SC2154
 #
 #   Copyright (c) 2023-2024: Jacob.Lundqvist@gmail.com
 #   License: MIT

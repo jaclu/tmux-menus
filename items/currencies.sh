@@ -61,7 +61,7 @@ handle_char() {
             #  doesn't work for some chars, like §
             #  This seems more resilient
             #
-            # shellcheck disable=SC2308
+            # shellcheck disable=SC2003,SC2034,SC2308
             _check="$(expr length "$s_in")"
         fi
         ;;

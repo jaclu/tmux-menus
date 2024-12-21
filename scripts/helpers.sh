@@ -195,7 +195,7 @@ normalize_bool_param() {
     #  normalize_bool_param "@menus_without_prefix" "$default_no_prefix" &&
     #      cfg_no_prefix=true || cfg_no_prefix=false
     #
-    #  $cfg_no_prefix && echo "Dont use prefix"
+    #  $cfg_no_prefix && echo "Don't use prefix"
     #
     nbp_param="$1"
     nbp_default="$2" # only used for tmux options

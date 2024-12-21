@@ -192,7 +192,7 @@ EOF
     if [ ! -f "$f_cache_params" ]; then
         mv "$f_params_tmp" "$f_cache_params"
     elif ! diff -q "$f_params_tmp" "$f_cache_params" >/dev/null 2>&1; then
-        # diff reports success if files dont fiffer, hence the !
+        # diff reports success if files don't fiffer, hence the !
         # If any params have changed, invalidate cache
         # log_it "  cache_param_write() - Config changed - clear cache"
         cache_clear "Environment changed"
