@@ -129,11 +129,15 @@ tmux_get_option() {
 
     [ -z "$tgo_option" ] && error_msg "tmux_get_option() param 1 empty!"
 
-    [ "$TMUX" = "" ] && {
+    if [ "$TMUX" = "" ]; then
         # this is run standalone, just report the defaults
         echo "$tgo_default"
         return
-    }
+    elif ! tmux_vers_check 1.8; then
+        # before 1.8 no support for user params
+        echo "$tgo_default"
+        return
+    fi
 
     # don't use tmux_error_handler here
     if tgo_value="$($TMUX_BIN show-options -gv "$tgo_option" 2>/dev/null)"; then
@@ -256,7 +260,7 @@ tmux_get_plugin_options() { # cache references
 }
 
 tmux_is_option_defined() {
-    tmux_error_handler show-options -g | grep -q "^$1"
+    tmux_vers_check 1.8 && tmux_error_handler show-options -g | grep -q "^$1"
 }
 
 tmux_escape_special_chars() {
