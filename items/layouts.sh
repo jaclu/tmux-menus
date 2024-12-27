@@ -14,12 +14,12 @@ static_content() {
         3.2 M L "Border Lines" layouts_lines.sh \
         3.3 M I "Border Indicators" layouts_indicators.sh \
         0.0 S \
-        0.0 C 1 "Even horizontal" "select-layout even-horizontal $menu_reload" \
-        0.0 C 2 "Even vertical" "select-layout even-vertical   $menu_reload" \
-        0.0 C 3 "Main horizontal" "select-layout main-horizontal $menu_reload" \
-        0.0 C 4 "Main vertical" "select-layout main-vertical   $menu_reload" \
-        0.0 C 5 "Tiled" "select-layout tiled           $menu_reload" \
-        0.0 C e "Spread evenly" "select-layout -E  $menu_reload" \
+        1.0 C 1 "Even horizontal" "select-layout even-horizontal $menu_reload" \
+        1.0 C 2 "Even vertical" "select-layout even-vertical   $menu_reload" \
+        1.0 C 3 "Main horizontal" "select-layout main-horizontal $menu_reload" \
+        1.0 C 4 "Main vertical" "select-layout main-vertical   $menu_reload" \
+        1.4 C 5 "Tiled" "select-layout tiled           $menu_reload" \
+        2.7 C e "Spread evenly" "select-layout -E  $menu_reload" \
         0.0 S \
         0.0 M H "Help $nav_next" "$d_items/help.sh $f_current_script"
 
