@@ -14,10 +14,10 @@ static_content() {
         0.0 S \
         0.0 C c "Enter copy mode" "copy-mode" \
         0.0 C v "Paste the most recent paste buffer" "paste-buffer -p" \
-        1.8 C s "Select a paste buffer from a list" ">choose-buffer -Z" \
+        1.8 C s "Select a paste buffer from a list" "choose-buffer -Z" \
         0.0 C l "List all paste buffers" "list-buffers" \
         0.0 C d "Delete the most recent paste buffer" "delete-buffer" \
-	0.0 S \
+        0.0 S \
         0.0 M H "Help $nav_next" "$d_items/help_paste_buffers.sh $f_current_script"
 
     menu_generate_part 1 "$@"
