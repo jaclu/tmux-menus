@@ -27,25 +27,25 @@ static_content() {
     set -- \
         0.0 S \
         0.0 T "-#[align=centre,nodim]----  Commands for buffer list  ----" \
-        0.0 T "-Enter  Paste selected buffer" \
-        0.0 T "-Up     Select previous buffer" \
-        0.0 T "-Down   Select next buffer" \
-        2.6 T "-C-s    Search by name or content" \
-        2.6 T "-n      Repeat last search forwards" \
-        3.5 T "-N      Repeat last search backwards" \
-        2.6 T "-t      Toggle if buffer is tagged" \
-        2.6 T "-T      Tag no buffers" \
-        2.6 T "-C-t    Tag all buffers" \
-        2.7 T "-p      Paste selected buffer" \
-        2.7 T "-P      Paste tagged buffers" \
-        2.6 T "-d      Delete selected buffer" \
-        2.6 T "-D      Delete tagged buffers" \
-        3.2 T "-e      Open the buffer in an editor" \
-        2.6 T "-f      Enter a format to filter items" \
-        2.6 T "-O      Change sort field" \
-        3.1 T "-r      Reverse sort order" \
-        2.6 T "-v      Toggle preview" \
-        0.0 T "-q      Exit mode"
+        0.0 T "-#[nodim]Enter  Paste selected buffer" \
+        0.0 T "-#[nodim]Up     Select previous buffer" \
+        0.0 T "-#[nodim]Down   Select next buffer" \
+        2.6 T "-#[nodim]C-s    Search by name or content" \
+        2.6 T "-#[nodim]n      Repeat last search forwards" \
+        3.5 T "-#[nodim]N      Repeat last search backwards" \
+        2.6 T "-#[nodim]t      Toggle if buffer is tagged" \
+        2.6 T "-#[nodim]T      Tag no buffers" \
+        2.6 T "-#[nodim]C-t    Tag all buffers" \
+        2.7 T "-#[nodim]p      Paste selected buffer" \
+        2.7 T "-#[nodim]P      Paste tagged buffers" \
+        2.6 T "-#[nodim]d      Delete selected buffer" \
+        2.6 T "-#[nodim]D      Delete tagged buffers" \
+        3.2 T "-#[nodim]e      Open the buffer in an editor" \
+        2.6 T "-#[nodim]f      Enter a format to filter items" \
+        2.6 T "-#[nodim]O      Change sort field" \
+        3.1 T "-#[nodim]r      Reverse sort order" \
+        2.6 T "-#[nodim]v      Toggle preview" \
+        0.0 T "-#[nodim]q      Exit mode"
 
     menu_generate_part 2 "$@"
 }

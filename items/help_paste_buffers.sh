@@ -28,7 +28,7 @@ static_content() {
         0.0 S \
         0.0 T "-#[nodim]Tmux has its own clipboard system," \
         0.0 T "-#[nodim]shared between all sessions/windows/panes." \
-        0.0 T " " \
+        0.0 T "- " \
         0.0 T "-#[nodim]To integrate this clipboard with that" \
         0.0 T "-#[nodim]of the OS, this might need configuration" \
         0.0 T "-#[nodim]in tmux.conf depending on what OS" \
