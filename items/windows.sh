@@ -32,9 +32,7 @@ static_content() {
             'kill-window #W? (y/n)' kill-window" \
         1.7 C o "Kill all other windows" "confirm-before -p \
             'Are you sure you want to kill all other windows? (y/n)' \
-            'run-shell \"${d_scripts}/kill_other_windows.sh\"'" \
-        0.0 S \
-        0.0 M H "Help $nav_next" "$d_items/help.sh $f_current_script"
+            'run-shell \"${d_scripts}/kill_other_windows.sh\"'"
 
     menu_generate_part 1 "$@"
 }

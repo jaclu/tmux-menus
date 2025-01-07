@@ -58,10 +58,6 @@ static_content() {
 prev_menu="$(realpath "$1")"
 menu_name="Help Currency symbols"
 
-if [ -z "$prev_menu" ]; then
-    error_msg "help_split.sh was called without notice of what called it"
-fi
-
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 

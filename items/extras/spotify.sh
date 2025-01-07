@@ -43,9 +43,7 @@ static_content() {
         0.0 E s "Shuffle - toggle" "spotify toggle shuffle $reload_no_output" \
         0.0 E R "Repeat  - toggle" "spotify toggle repeat  $reload_no_output" \
         0.0 E u "vol Up" "spotify           vol up         $reload_no_output" \
-        0.0 E d "vol Down" "spotify         vol down       $reload_no_output" \
-        0.0 S \
-        0.0 M H "Help       $nav_next" "$d_items/help.sh $f_current_script"
+        0.0 E d "vol Down" "spotify         vol down       $reload_no_output"
 
     menu_generate_part 3 "$@"
 }

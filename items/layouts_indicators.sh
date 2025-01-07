@@ -17,9 +17,7 @@ static_content() {
         3.3 C "o" "off" "set -g pane-border-indicators off    $menu_reload" \
         3.3 C "c" "colour" "set -g pane-border-indicators colour $menu_reload" \
         3.3 C "a" "arrows" "set -g pane-border-indicators arrows $menu_reload" \
-        3.3 C "b" "both" "set -g pane-border-indicators both   $menu_reload" \
-        0.0 S \
-        0.0 M H "Help $nav_next" "$d_items/help.sh $f_current_script"
+        3.3 C "b" "both" "set -g pane-border-indicators both   $menu_reload"
 
     menu_generate_part 1 "$@"
 }

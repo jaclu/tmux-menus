@@ -36,9 +36,7 @@ static_content() {
         1.8 C n "Navigate & select ses/win/pane" "$choose_tree_cmd" \
         0.0 S \
         1.8 T "-#[nodim]Search in all $fw_span" \
-        1.8 C s "$fw_lbl_line2" "$fw_cmd" \
-        0.0 S \
-        0.0 M H "Help $nav_next" "$d_items/help.sh $f_current_script"
+        1.8 C s "-#[nodim]$fw_lbl_line2" "$fw_cmd"
 
     menu_generate_part 1 "$@"
 }

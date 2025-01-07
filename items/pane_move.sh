@@ -34,9 +34,7 @@ static_content() {
         1.7 C p "Swap pane with prev" "swap-pane -U $menu_reload" \
         1.7 C n "Swap pane with next" "swap-pane -D $menu_reload" \
         0.0 S \
-        2.4 E w "Break pane to a new window" "$d_scripts/break_pane.sh" \
-        0.0 S \
-        0.0 M H "Help $nav_next" "$d_items/help.sh $f_current_script"
+        2.4 E w "Break pane to a new window" "$d_scripts/break_pane.sh"
 
     menu_generate_part 3 "$@"
 }

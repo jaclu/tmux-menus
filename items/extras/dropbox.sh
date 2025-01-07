@@ -35,12 +35,6 @@ static_content() {
         0.0 C s "Status" "display \"$(dropbox status)\" $menu_reload"
 
     menu_generate_part 1 "$@"
-
-    set -- \
-        0.0 S \
-        0.0 M H "Help  $nav_next" "$d_items/help.sh $f_current_script'"
-
-    menu_generate_part 3 "$@"
 }
 
 #===============================================================

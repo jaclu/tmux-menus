@@ -36,9 +36,7 @@ static_content() {
         '$cli_dtch_mode ; kill-session'" \
         1.8 C o "Kill all other sessions" "confirm-before -p \
         'Are you sure you want to kill all other sessions? (y/n)' \
-        'kill-session -a'" \
-        0.0 S \
-        0.0 M H "Help $nav_next" "$d_items/help.sh $f_current_script"
+        'kill-session -a'"
 
     menu_generate_part 1 "$@"
 }

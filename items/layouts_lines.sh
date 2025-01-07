@@ -18,9 +18,7 @@ static_content() {
         3.2 C "d" "double" "set -g pane-border-lines  double  $menu_reload" \
         3.2 C "h" "heavy" "set -g pane-border-lines  heavy   $menu_reload" \
         3.2 C "S" "simple" "set -g pane-border-lines  simple  $menu_reload" \
-        3.2 C "n" "number" "set -g pane-border-lines  number  $menu_reload" \
-        0.0 S \
-        0.0 M H "Help $nav_next" "$d_items/help.sh $f_current_script"
+        3.2 C "n" "number" "set -g pane-border-lines  number  $menu_reload"
 
     menu_generate_part 1 "$@"
 }

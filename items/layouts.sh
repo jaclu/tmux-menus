@@ -19,9 +19,7 @@ static_content() {
         1.0 C 3 "Main horizontal" "select-layout main-horizontal $menu_reload" \
         1.0 C 4 "Main vertical" "select-layout main-vertical   $menu_reload" \
         1.4 C 5 "Tiled" "select-layout tiled           $menu_reload" \
-        2.7 C e "Spread evenly" "select-layout -E  $menu_reload" \
-        0.0 S \
-        0.0 M H "Help $nav_next" "$d_items/help.sh $f_current_script"
+        2.7 C e "Spread evenly" "select-layout -E  $menu_reload"
 
     menu_generate_part 1 "$@"
 }

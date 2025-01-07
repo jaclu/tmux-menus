@@ -25,8 +25,7 @@ dynamic_content() {
 
 static_content() {
     set -- \
-        0.0 S \
-        0.0 T "-#[align=centre,nodim]----  Commands for buffer list  ----" \
+	0.0 S \
         0.0 T "-#[nodim]Enter  Paste selected buffer" \
         0.0 T "-#[nodim]Up     Select previous buffer" \
         0.0 T "-#[nodim]Down   Select next buffer" \
@@ -57,7 +56,7 @@ static_content() {
 #===============================================================
 
 prev_menu="$(realpath "$1")"
-menu_name="Help Paste buffers - Select"
+menu_name="Help Select paste buffer"
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"

@@ -76,9 +76,7 @@ static_content() {
         1.8 S \
         2.7 C c "Manage connected clients" "choose-client -Z" \
         1.8 C x "Kill server" "confirm-before -p \
-            'kill tmux server defined in($TMUX_SOURCE) ? (y/n)' kill-server" \
-        0.0 S \
-        0.0 M H "Help $nav_next" "$d_items/help.sh $f_current_script"
+            'kill tmux server defined in($TMUX_SOURCE) ? (y/n)' kill-server"
 
     menu_generate_part 3 "$@"
     #
