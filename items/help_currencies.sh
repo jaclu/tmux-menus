@@ -25,7 +25,7 @@ dynamic_content() {
 static_content() {
 
     set -- \
-        0.0 S
+        0.0 S \
         0.0 T "-#[nodim]Even if due to font or screen settings," \
         0.0 T "-#[nodim]the symbol isn't visible, this should" \
         0.0 T "-#[nodim]still be able to paste it in."
