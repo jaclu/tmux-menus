@@ -30,8 +30,8 @@ static_content() {
         0.0 T "-#[nodim]less will not be able to display" \
         0.0 T "-#[nodim]the content." \
         0.0 S \
-        0.0 T "-#[nodim]Use tools like cat/bat" \
-        0.0 T "in order to see the colors"
+        0.0 T "-#[nodim]Use tools like bat/most/cat" \
+        0.0 T "-#[nodim]in order to see the colors"
 
     menu_generate_part 2 "$@"
 }
