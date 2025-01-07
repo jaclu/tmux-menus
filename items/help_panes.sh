@@ -27,8 +27,8 @@ static_content() {
     set -- \
         0.0 S \
         0.0 T "-#[nodim]When saving history with escapes" \
-        0.0 T "-#[nodim]less/most will not be able" \
-        0.0 T "-#[nodim]to display the content." \
+        0.0 T "-#[nodim]less will not be able to display" \
+        0.0 T "-#[nodim]the content." \
         0.0 S \
         0.0 T "-#[nodim]Use tools like cat/bat" \
         0.0 T "in order to see the colors"
