@@ -268,9 +268,9 @@ tmux_escape_special_chars() {
     #  Will iterate over each character, and populate tesc_esc_str
     #  with either the escaped version or the original char
     #
-    # log_it "tmux_escape_special_chars()"
-
     tesc_str="$1"
+    # log_it "tmux_escape_special_chars($tesc_str)"
+
     tesc_idx=0
     while true; do
         tesc_idx=$((tesc_idx + 1))
@@ -293,9 +293,6 @@ tmux_escape_special_chars() {
             ;;
         \$)
             tesc_esc_str="${tesc_esc_str}\\$"
-            ;;
-        \#)
-            tesc_esc_str="${tesc_esc_str}\\#"
             ;;
         *)
             tesc_esc_str="${tesc_esc_str}${char}"
