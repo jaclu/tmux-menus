@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-#   Copyright (c) 2024: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2024,2025: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
@@ -12,12 +12,19 @@ static_content() {
     list_buffer_cmd="choose-buffer"
     tmux_vers_check 2.6 && list_buffer_cmd="$list_buffer_cmd -Z"
 
+    if $cfg_use_whiptail; then
+	# The help overlay can't be displayed using whiptail
+	select_cmd="$TMUX_BIN $list_buffer_cmd"
+    else
+	select_cmd="$TMUX_BIN $list_buffer_cmd & $d_items/help_paste_buffers_select.sh"
+    fi
+
     set -- \
         0.0 M Left "Back to Main menu     $nav_home" main.sh \
         0.0 S \
         0.0 C c "Enter copy mode" "copy-mode" \
         0.0 C v "Paste the most recent paste buffer" "paste-buffer -p" \
-        1.8 C s "Select a paste buffer from a list" "$list_buffer_cmd" \
+        1.8 E s "Select a paste buffer from a list" "$select_cmd" \
         0.0 C l "List all paste buffers" "list-buffers" \
         0.0 C d "Delete the most recent paste buffer" "delete-buffer" \
         0.0 S \

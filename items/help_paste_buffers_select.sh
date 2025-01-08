@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-#   Copyright (c) 2022-2024: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2022-2025: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
@@ -11,14 +11,14 @@
 dynamic_content() {
     # Things that change dependent on various states
 
-    if [ -z "$prev_menu" ]; then
-        error_msg "$current_script was called without notice of what called it"
+    if [ -n "$prev_menu" ]; then
+	set -- \
+            0.0 M Left "Back to Previous menu $nav_prev" "$prev_menu" \
+            0.0 M Home "Back to Main menu     $nav_home" main.sh
+    else
+	set -- \
+	    0.0 T "Press Esc or q to close this help overlay"
     fi
-
-    set -- \
-        0.0 M Left "Back to Previous menu $nav_prev" "$prev_menu" \
-        0.0 M Home "Back to Main menu     $nav_home" main.sh
-
     menu_generate_part 1 "$@"
 }
 
@@ -44,7 +44,7 @@ static_content() {
         2.6 T "-#[nodim]O      Change sort field" \
         3.1 T "-#[nodim]r      Reverse sort order" \
         2.6 T "-#[nodim]v      Toggle preview" \
-        0.0 T "-#[nodim]q      Exit mode"
+        0.0 T "-#[nodim]Esc/q  Exit mode"
 
     menu_generate_part 2 "$@"
 }
