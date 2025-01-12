@@ -3,6 +3,10 @@
 See if instead of just displaying defaults as (x) , displaying current
 binding as [x] is possible
 
+## no hints
+
+Add option to not show hints when displaying tmux dialogs
+
 ## Pane titles
 
 Add items, enable/disable show pane titles
