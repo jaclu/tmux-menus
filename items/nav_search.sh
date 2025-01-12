@@ -15,10 +15,10 @@ static_content() {
         choose_tree="$choose_tree -Z"
     fi
     if $cfg_use_whiptail; then
-	# The help overlay can't be displayed using whiptail
-	navigate_cmd="$TMUX_BIN $choose_tree"
+        # The help overlay can't be displayed using whiptail
+        navigate_cmd="$TMUX_BIN $choose_tree"
     else
-	navigate_cmd="$TMUX_BIN $choose_tree & $d_items/hints/hints_nav_select.sh"
+        navigate_cmd="$TMUX_BIN $choose_tree & $d_items/hints/choose-tree.sh"
     fi
 
     fw_span="Windows"
@@ -41,12 +41,12 @@ static_content() {
     set -- \
         0.0 M Left "Back to Main menu $nav_home" main.sh \
         0.0 S \
-        2.6 E n "Navigate & select ses/win/pane" "$navigate_cmd" \
-        2.6 S \
+        1.7 E n "Navigate & select ses/win/pane" "$navigate_cmd" \
+        1.7 S \
         1.8 T "-#[nodim]Search in all $fw_span" \
         1.8 C s "$fw_lbl_line2" "$fw_cmd" \
-        0.0 S \
-	0.0 M N "Key hints - Navigate & select  $nav_next" "$d_items/hints/hints_nav_select.sh $f_current_script"
+        1.7 S \
+        1.7 M N "Key hints - Navigate & select  $nav_next" "$d_items/hints/choose-tree.sh $f_current_script"
 
     menu_generate_part 1 "$@"
 }
@@ -57,7 +57,7 @@ static_content() {
 #
 #===============================================================
 
-menu_name="Navigate & Search"
+menu_name="Navigate - Search"
 menu_min_vers=1.8
 
 #  Full path to tmux-menux plugin

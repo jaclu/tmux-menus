@@ -12,19 +12,27 @@ dynamic_content() {
     # Things that change dependent on various states
 
     if [ -n "$prev_menu" ]; then
-	set -- \
+        set -- \
             0.0 M Left "Back to Previous menu $nav_prev" "$prev_menu" \
             0.0 M Home "Back to Main menu     $nav_home" main.sh
     else
-	set -- \
-	    0.0 T "Press Esc or q to close this help overlay"
+        set -- \
+            0.0 T "Press Esc or q to close this keyboard hint overlay"
     fi
     menu_generate_part 1 "$@"
 }
 
 static_content() {
+    if tmux_vers_check "3.1"; then
+        # Description was changed
+        o_lbl="Change sort field"
+    else
+        o_lbl="Change sort order"
+    fi
+    log_it "><> o_lbl: $o_lbl"
+
     set -- \
-	0.0 S \
+        0.0 S \
         0.0 T "-#[nodim]Enter  Choose selected item" \
         0.0 T "-#[nodim]Up     Select previous item" \
         0.0 T "-#[nodim]Down   Select next item" \
@@ -47,12 +55,12 @@ static_content() {
         2.6 T "-#[nodim]:      Run a command for each tagged item" \
         2.6 T "-#[nodim]f      Enter a format to filter items" \
         3.2 T "-#[nodim]H      Jump to the starting pane" \
-        2.6 T "-#[nodim]O      Change sort field" \
-        2.8 T "-#[nodim]r      Reverse sort order" \
+        2.6 T "-#[nodim]O      $o_lbl" \
+        3.1 T "-#[nodim]r      Reverse sort order" \
         2.6 T "-#[nodim]v      Toggle preview" \
         0.0 T "-#[nodim]Esc/q  Exit mode"
 
-    # 3.0  O      Change sort order
+    # 3.0  O
     menu_generate_part 2 "$@"
 }
 
@@ -63,7 +71,7 @@ static_content() {
 #===============================================================
 
 prev_menu="$(realpath "$1")"
-menu_name="Keys for Navigate \& Select"
+menu_name="Keys for choose-tree"
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"

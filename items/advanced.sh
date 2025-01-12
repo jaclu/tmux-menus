@@ -74,7 +74,7 @@ static_content() {
     # shellcheck disable=SC2154
     set -- \
         1.8 S \
-        2.7 C c "Manage connected clients" "choose-client -Z" \
+        2.7 C c "Disconnect clients" "choose-client -Z" \
         1.8 C x "Kill server" "confirm-before -p \
             'kill tmux server defined in($TMUX_SOURCE) ? (y/n)' kill-server"
 
