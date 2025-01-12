@@ -32,7 +32,7 @@ static_content() {
         0.0 M Left "Back to Handling Pane $nav_prev" panes.sh \
         0.0 M Home "Back to Main menu     $nav_home" main.sh \
         0.0 S \
-        2.7 C o "Move to other win/ses" "$select_location"
+        1.7 C o "Move to other win/ses" "$select_location"
 
     menu_generate_part 1 "$@"
 
@@ -44,7 +44,7 @@ static_content() {
         1.7 S \
         1.7 M O "Key hints - Move to other $nav_next" \
         "$d_hints/choose-tree.sh $f_current_script" \
-        0.0 M H "Help, explaining move     $nav_next" \
+        1.7 M H "Help, explaining move     $nav_next" \
         "$d_help/help_pane_move.sh $f_current_script"
 
     menu_generate_part 3 "$@"
