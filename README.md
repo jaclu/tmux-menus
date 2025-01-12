@@ -20,7 +20,8 @@ experienced users, then add more for newbies.
 
 ## Recent Changes
 
-- Display available keys in an overlay when selecting a tmux choose dialog in `Navigate & Search` and `Paste buffers`
+- Display available keys in an overlay when selecting a tmux choose dialog in
+  `Navigate & Search` and `Paste buffers`
 - All menus using a tmux choose dialog have an extra help item listing available keys
 - Added help for selection of paste buffers
 - Split handling of external dialogs into two scripts, to improve job control
