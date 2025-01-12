@@ -94,7 +94,7 @@ static_content() {
         0.0 E p " Send § (paragraph)" "$f_current_script §" \
         0.0 E h " Send # (hash)" "$f_current_script 0x23" \
         0.0 S \
-        0.0 M H "Help $nav_next" "$d_items/help_missing_keys.sh $f_current_script"
+        0.0 M H "Help $nav_next" "$d_help/help_missing_keys.sh $f_current_script"
 
     menu_generate_part 1 "$@"
 

@@ -23,7 +23,7 @@ static_content() {
         2.4 C A "Above" "split-window -fvb -c '#{pane_current_path}' $menu_reload" \
         2.4 C B "Below" "split-window -fv  -c '#{pane_current_path}' $menu_reload" \
         0.0 S \
-        0.0 M H "Help $nav_next" "$d_items/help_split.sh $f_current_script"
+        0.0 M H "Help $nav_next" "$d_help/help_split.sh $f_current_script"
 
     menu_generate_part 1 "$@"
 }

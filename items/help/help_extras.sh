@@ -1,11 +1,11 @@
 #!/bin/sh
 #
-#   Copyright (c) 2022-2024: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2022-2025: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Help regarding panes menu
+#   General Help
 #
 
 dynamic_content() {
@@ -23,16 +23,13 @@ dynamic_content() {
 }
 
 static_content() {
-
     set -- \
         0.0 S \
-        0.0 T "-#[nodim]Tmux has its own clipboard system," \
-        0.0 T "-#[nodim]shared between all sessions/windows/panes." \
-        0.0 T "- " \
-        0.0 T "-#[nodim]To integrate this clipboard with that" \
-        0.0 T "-#[nodim]of the OS, this might need configuration" \
-        0.0 T "-#[nodim]in tmux.conf depending on what OS" \
-        0.0 T "-#[nodim]and terminal is being used."
+        0.0 T "-#[nodim]Extras are menus manipulating" \
+        0.0 T "-#[nodim]other software." \
+        0.0 T "-#[nodim]If a specific app is not found," \
+        0.0 T "-#[nodim]that entry is grayed out."
+
     menu_generate_part 2 "$@"
 }
 
@@ -42,11 +39,11 @@ static_content() {
 #
 #===============================================================
 
-prev_menu="$(realpath "$1")"
-menu_name="Help Paste buffers"
+[ -n "$1" ] && prev_menu="$(realpath "$1")"
+menu_name="Help Extras"
 
 #  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
+D_TM_BASE_PATH="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh

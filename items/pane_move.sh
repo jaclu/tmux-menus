@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-#   Copyright (c) 2022-2024: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2022-2025: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
@@ -21,12 +21,18 @@ dynamic_content() {
 }
 
 static_content() {
+    choose_tree="choose-tree"
+    if tmux_vers_check 2.7; then
+        choose_tree="$choose_tree -GwZ"
+    fi
+
+    select_location="$choose_tree 'run-shell \"$d_scripts/relocate_pane.sh P M %%\"'"
+
     set -- \
         0.0 M Left "Back to Handling Pane $nav_prev" panes.sh \
         0.0 M Home "Back to Main menu     $nav_home" main.sh \
         0.0 S \
-        2.7 C o "Move to other win/ses        " "choose-tree -Gw \
-            \"run-shell '$d_scripts/relocate_pane.sh P M %%'\""
+        2.7 C o "Move to other win/ses" "$select_location"
 
     menu_generate_part 1 "$@"
 
@@ -34,7 +40,12 @@ static_content() {
         1.7 C p "Swap pane with prev" "swap-pane -U $menu_reload" \
         1.7 C n "Swap pane with next" "swap-pane -D $menu_reload" \
         0.0 S \
-        2.4 E w "Break pane to a new window" "$d_scripts/break_pane.sh"
+        2.4 E w "Break pane to a new window" "$d_scripts/break_pane.sh" \
+        1.7 S \
+        1.7 M O "Key hints - Move to other $nav_next" \
+        "$d_hints/choose-tree.sh $f_current_script" \
+        0.0 M H "Help, explaining move     $nav_next" \
+        "$d_help/help_pane_move.sh $f_current_script"
 
     menu_generate_part 3 "$@"
 }

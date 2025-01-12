@@ -1,7 +1,7 @@
 #!/bin/sh
 # Always sourced file - Fake bang path to help editors
 #
-#   Copyright (c) 2022-2023: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2022-2025: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
@@ -355,6 +355,8 @@ cfg_use_cache=false
 #
 d_tmp="${TMPDIR:-/tmp}"
 d_items="$D_TM_BASE_PATH"/items
+d_help="$d_items"/help
+d_hints="$d_items"/hints
 d_scripts="$D_TM_BASE_PATH"/scripts
 
 # will be set to true at end of this, this indicates everything is prepared

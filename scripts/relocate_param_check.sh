@@ -21,70 +21,62 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 _this="relocate_param_check.sh" # error prone if script name is changed :(
 [ "$current_script" = "$_this" ] && error_msg "$_this SHOULD be sourced"
 
-param_check() {
-    item_type="$1"
 
-    case "$item_type" in
+item_type="$1"
 
-    "W" | "P") : ;; # Valid parameters
+case "$item_type" in
+"W" | "P") : ;; # Valid parameters
+*)
+    # NEEDS TESTING
+    error_msg "param_check($1) First param must be W or P!"
+    ;;
+esac
 
-    *)
+action="$2"
+
+case "$action" in
+"M") : ;; # Valid parameters
+"L")
+    if [ "$item_type" = "P" ]; then
         # NEEDS TESTING
-        error_msg "param_check($1) First param must be W or P!"
-        ;;
-
-    esac
-
-    action="$2"
-
-    case "$action" in
-
-    "M") : ;; # Valid parameters
-
-    "L")
-        if [ "$item_type" = "P" ]; then
-            # NEEDS TESTING
-            error_msg "param_check() Panes can not be linked!"
-        fi
-        ;;
-
-    *)
-        # NEEDS TESTING
-        set -- "param_check($1,$2) 2nd param must be L or M" \
-            "Indicating move or link action"
-        error_msg "$*"
-        ;;
-
-    esac
-
-    #
-    #  inputs:
-    #    with pane idx:      =main:1.%13
-    #    with window idx:    =main:3.
-    #    without window idx: =main:
-    #
-    raw_dest="$3"
-
-    if [ -z "$raw_dest" ]; then
-        # NEEDS TESTING
-        error_msg "param_check() - no destination param (\$3) given!"
+        error_msg "param_check() Panes can not be linked!"
     fi
+    ;;
+*)
+    # NEEDS TESTING
+    set -- "param_check($1,$2) 2nd param must be L or M" \
+        "Indicating move or link action"
+    error_msg "$*"
+    ;;
+esac
 
-    cur_ses="$(tmux_error_handler display-message -p '#S')"
-    dest="${raw_dest#*=}"  # skipping initial =
-    dest_ses="${dest%%:*}" # up to first colon excluding it
+#
+#  inputs:
+#    with pane idx:      =main:1.%13
+#    with window idx:    =main:3.
+#    without window idx: =main:
+#
+raw_dest="$3"
 
-    win_pane="${dest#*:}"          # after first colon
-    dest_win_idx="${win_pane%%.*}" # up to first dot excluding it
-    dest_pane_idx="${win_pane#*.}"
+if [ -z "$raw_dest" ]; then
+    # NEEDS TESTING
+    error_msg "param_check() - no destination param (\$3) given!"
+fi
 
-    #  Used by
-    #    relocate_window.sh  $dest_ses $dest_win_idx
-    #    relocate_pane.sh   $dest_ses $dest_win_idx.${dest_pane_idx}"
+cur_ses="$(tmux_error_handler display-message -p '#S')"
+dest="${raw_dest#*=}"  # skipping initial =
+dest_ses="${dest%%:*}" # up to first colon excluding it
 
-    set -- "param_check($*) - item_type [$item_type] action [$action]" \
-        "cur_ses [$cur_ses] dest [$dest] win_pane [$win_pane]" \
-        "dest_ses [$dest_ses] dest_win_idx [$dest_win_idx]" \
-        "dest_pane_idx [$dest_pane_idx]"
-    log_it "$*"
-}
+win_pane="${dest#*:}"          # after first colon
+dest_win_idx="${win_pane%%.*}" # up to first dot excluding it
+dest_pane_idx="${win_pane#*.}"
+
+#  Used by
+#    relocate_window.sh  $dest_ses $dest_win_idx
+#    relocate_pane.sh   $dest_ses $dest_win_idx.${dest_pane_idx}"
+
+set -- "param_check($*) - item_type [$item_type] action [$action]" \
+    "cur_ses [$cur_ses] dest [$dest] win_pane [$win_pane]" \
+    "dest_ses [$dest_ses] dest_win_idx [$dest_win_idx]" \
+    "dest_pane_idx [$dest_pane_idx]"
+log_it "$*"

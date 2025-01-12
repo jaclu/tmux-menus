@@ -21,7 +21,7 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 _this="relocate_pane.sh" # error prone if script name is changed :(
 [ "$current_script" != "$_this" ] && error_msg "$_this should NOT be sourced"
 
-param_check "$@"
+# param_check "$@"
 
 tmux_error_handler move-pane -t "${dest_ses}:${dest_win_idx}.${dest_pane_idx}"
 

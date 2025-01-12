@@ -31,7 +31,7 @@ static_content() {
         0.0 E i "public IP" public_ip.sh \
         0.0 C d 'Detach from tmux' detach-client \
         0.0 S \
-        0.0 M H "Help $nav_next" "$d_items/help.sh $f_current_script"
+        0.0 M H "Help $nav_next" "$d_help/help_summary.sh $f_current_script"
 
     menu_generate_part 1 "$@"
 }

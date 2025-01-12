@@ -21,7 +21,7 @@ is_avalable() {
 }
 
 static_content() {
-    d_extras="$d_items"/extras
+    d_extras="$d_items"/external_tools
 
     set -- \
         0.0 M Left "Back to Main menu  $nav_prev" main.sh \
@@ -30,7 +30,7 @@ static_content() {
         0.0 M S "$(is_avalable spotify)Spotify      $nav_next" "$d_extras"/spotify.sh \
         0.0 M M "$(is_avalable mullvad)Mullvad VPN  $nav_next" "$d_extras"/mullvad.sh \
         0.0 S \
-        0.0 M H "Help $nav_next" "$d_items/help_extras.sh $f_current_script"
+        0.0 M H "Help $nav_next" "$d_help/help_extras.sh $f_current_script"
 
     menu_generate_part 1 "$@"
 }

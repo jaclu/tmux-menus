@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-#   Copyright (c) 2022-2024: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2022-2025: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
@@ -27,16 +27,19 @@ static_content() {
     set -- \
         0.0 S \
         0.0 T "-#[nodim]Displays a navigation tree" \
-        0.0 T "-#[nodim]1 - Chose a session." \
+        0.0 T "-#[nodim]Escape/q aborts" \
+        0.0 T " " \
+        0.0 T "-#[nodim]1 - If a session is selected" \
         0.0 T "-#[nodim] Current window will be put as" \
-        0.0 T "-#[nodim] the last window in that session." \
-        0.0 T "-#[nodim]2 - Choose a window in a session." \
+        0.0 T "-#[nodim] the last window in that session" \
+        0.0 T "-#[nodim]2 - If a window is selected" \
         0.0 T "-#[nodim] Current window will be inserted" \
         0.0 T "-#[nodim] on that location, pushing other" \
-        0.0 T "-#[nodim] windows one step to the right." \
+        0.0 T "-#[nodim] windows one step to the right" \
         0.0 T "-#[nodim]3 - If a pane is selected," \
         0.0 T "-#[nodim] the pane part of the selection" \
-        0.0 T "-#[nodim] is ignored."
+        0.0 T "-#[nodim] is ignored, the action will be" \
+        0.0 T "-#[nodim] based on the containing window"
 
     menu_generate_part 2 "$@"
 }
@@ -47,11 +50,11 @@ static_content() {
 #
 #===============================================================
 
-prev_menu="$(realpath "$1")"
-menu_name="Help, Move\/Link Window"
+[ -n "$1" ] && prev_menu="$(realpath "$1")"
+menu_name="Help, Move or Link Window"
 
 #  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
+D_TM_BASE_PATH="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
