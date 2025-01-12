@@ -60,7 +60,7 @@ static_content() {
 #
 #===============================================================
 
-prev_menu="$(realpath "$1")"
+[ -n "$1" ] && prev_menu="$(realpath "$1")"
 menu_name="Keys for choose-buffer"
 
 #  Full path to tmux-menux plugin

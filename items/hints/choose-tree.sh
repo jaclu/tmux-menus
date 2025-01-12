@@ -29,7 +29,6 @@ static_content() {
     else
         o_lbl="Change sort order"
     fi
-    log_it "><> o_lbl: $o_lbl"
 
     set -- \
         0.0 S \
@@ -70,7 +69,7 @@ static_content() {
 #
 #===============================================================
 
-prev_menu="$(realpath "$1")"
+[ -n "$1" ] && prev_menu="$(realpath "$1")"
 menu_name="Keys for choose-tree"
 
 #  Full path to tmux-menux plugin

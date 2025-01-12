@@ -48,7 +48,7 @@ static_content() {
 #
 #===============================================================
 
-prev_menu="$(realpath "$1")"
+[ -n "$1" ] && prev_menu="$(realpath "$1")"
 menu_name="Help, Move or Link Window"
 
 #  Full path to tmux-menux plugin
