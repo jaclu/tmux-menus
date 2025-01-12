@@ -46,7 +46,7 @@ static_content() {
             'Are you sure you want to kill all other panes? (y/n)' \
             'kill-pane -a'" \
         0.0 S \
-        0.0 M H "Help $nav_next" "$d_items/help_panes.sh $f_current_script"
+        0.0 M H "Help $nav_next" "$d_help/help_panes.sh $f_current_script"
 
     menu_generate_part 1 "$@"
     unset d_history

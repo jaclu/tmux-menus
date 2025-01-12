@@ -47,8 +47,8 @@ static_content() {
         1.7 C l "Link window to other session" "$select_location W L %%\"'" \
         0.0 C u "Unlink window from this session" "unlink-window" \
         1.7 S \
-        1.7 M K "Key hints - move/link      $nav_next" "$d_items/hints/choose-tree.sh $f_current_script" \
-        1.7 M H "Help, explaining move/link $nav_next" "$d_items/help_window_move.sh $f_current_script"
+        1.7 M K "Key hints - move/link      $nav_next" "$d_hints/choose-tree.sh $f_current_script" \
+        1.7 M H "Help, explaining move/link $nav_next" "$d_help/help_window_move.sh $f_current_script"
 
     menu_generate_part 3 "$@"
 }

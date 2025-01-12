@@ -45,9 +45,9 @@ static_content() {
         2.4 E w "Break pane to a new window" "$d_scripts/break_pane.sh" \
         1.7 S \
         1.7 M O "Key hints - Move to other $nav_next" \
-        "$d_items/hints/choose-tree.sh $f_current_script" \
+        "$d_hints/choose-tree.sh $f_current_script" \
         0.0 M H "Help, explaining move     $nav_next" \
-        "$d_items/help_pane_move.sh $f_current_script"
+        "$d_help/help_pane_move.sh $f_current_script"
 
     menu_generate_part 3 "$@"
 }

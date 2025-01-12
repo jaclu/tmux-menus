@@ -23,19 +23,28 @@ dynamic_content() {
 }
 
 static_content() {
+
     set -- \
         0.0 S \
-        0.0 T "-#[nodim] $nav_next#[default]  #[nodim]Open a new menu." \
-        0.0 T "-#[nodim] $nav_prev#[default]  #[nodim]Back to previous menu." \
-        0.0 T "-#[nodim] $nav_home#[default]  #[nodim]Back to start menu." \
-        0.0 S \
-        0.0 T "-#[nodim]Shortcut keys are usually upper case" \
-        0.0 T "-#[nodim]for menus, and lower case for actions."
+        0.0 T "-#[nodim]Even if due to font or screen settings," \
+        0.0 T "-#[nodim]the symbol isn't visible, this should" \
+        0.0 T "-#[nodim]still be able to paste it in."
 
-    ! $cfg_use_whiptail && {
+    if $cfg_use_whiptail; then
         set -- "$@" \
-            0.0 T "-#[nodim]Exit menus with ESC or Ctrl-C"
-    }
+            0.0 T " " \
+            0.0 T "When using whiptail it is not possible" \
+            0.0 T "to paste directly into the pane." \
+            0.0 T "Instead a tmux buffer is used." \
+            0.0 T " " \
+            0.0 T "Please note that this buffer might become" \
+            0.0 T "invalid if another menu is selected" \
+            0.0 T "before pasting!" \
+            0.0 T " " \
+            0.0 T "Once one or more currencies have been selected," \
+            0.0 T "cancel this menu. Then, when back in the pane," \
+            0.0 T "use <prefix> ] to paste the key(-s)."
+    fi
 
     menu_generate_part 2 "$@"
 }
@@ -47,10 +56,10 @@ static_content() {
 #===============================================================
 
 prev_menu="$(realpath "$1")"
-menu_name="Help summary"
+menu_name="Help Currency symbols"
 
 #  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
+D_TM_BASE_PATH="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh

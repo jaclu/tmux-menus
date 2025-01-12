@@ -26,9 +26,9 @@ static_content() {
 
     set -- \
         0.0 S \
-        0.0 T "-#[nodim]Even if due to font or screen settings," \
-        0.0 T "-#[nodim]the symbol isn't visible, this should" \
-        0.0 T "-#[nodim]still be able to paste it in."
+        0.0 T "-#[nodim]Use this to send keys that might" \
+        0.0 T "-#[nodim]not be available with the current" \
+        0.0 T "-#[nodim]keyboard settings."
 
     if $cfg_use_whiptail; then
         set -- "$@" \
@@ -41,7 +41,7 @@ static_content() {
             0.0 T "invalid if another menu is selected" \
             0.0 T "before pasting!" \
             0.0 T " " \
-            0.0 T "Once one or more currencies have been selected," \
+            0.0 T "Once one or more characters have been selected," \
             0.0 T "cancel this menu. Then, when back in the pane," \
             0.0 T "use <prefix> ] to paste the key(-s)."
     fi
@@ -56,10 +56,10 @@ static_content() {
 #===============================================================
 
 prev_menu="$(realpath "$1")"
-menu_name="Help Currency symbols"
+menu_name="Help Missing Keys"
 
 #  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
+D_TM_BASE_PATH="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh

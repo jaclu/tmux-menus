@@ -26,13 +26,13 @@ static_content() {
 
     set -- \
         0.0 S \
-        0.0 T "-#[nodim]Tmux has its own clipboard system," \
-        0.0 T "-#[nodim]shared between all sessions/windows/panes." \
-        0.0 T "- " \
-        0.0 T "-#[nodim]To integrate this clipboard with that" \
-        0.0 T "-#[nodim]of the OS, this might need configuration" \
-        0.0 T "-#[nodim]in tmux.conf depending on what OS" \
-        0.0 T "-#[nodim]and terminal is being used."
+        0.0 T "-#[nodim]When saving history with escapes" \
+        0.0 T "-#[nodim]less will not be able to display" \
+        0.0 T "-#[nodim]the content." \
+        0.0 S \
+        0.0 T "-#[nodim]Use tools like bat/most/cat" \
+        0.0 T "-#[nodim]in order to see the colors"
+
     menu_generate_part 2 "$@"
 }
 
@@ -43,10 +43,10 @@ static_content() {
 #===============================================================
 
 prev_menu="$(realpath "$1")"
-menu_name="Help Paste buffers"
+menu_name="Help Panes"
 
 #  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
+D_TM_BASE_PATH="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh

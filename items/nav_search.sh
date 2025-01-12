@@ -18,7 +18,7 @@ static_content() {
         # The help overlay can't be displayed using whiptail
         navigate_cmd="$TMUX_BIN $choose_tree"
     else
-        navigate_cmd="$TMUX_BIN $choose_tree & $d_items/hints/choose-tree.sh"
+        navigate_cmd="$TMUX_BIN $choose_tree & $d_hints/choose-tree.sh"
     fi
 
     fw_span="Windows"
@@ -46,7 +46,7 @@ static_content() {
         1.8 T "-#[nodim]Search in all $fw_span" \
         1.8 C s "$fw_lbl_line2" "$fw_cmd" \
         1.7 S \
-        1.7 M N "Key hints - Navigate & select  $nav_next" "$d_items/hints/choose-tree.sh $f_current_script"
+        1.7 M N "Key hints - Navigate & select  $nav_next" "$d_hints/choose-tree.sh $f_current_script"
 
     menu_generate_part 1 "$@"
 }

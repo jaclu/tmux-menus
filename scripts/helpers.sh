@@ -356,6 +356,8 @@ cfg_use_cache=false
 #
 d_tmp="${TMPDIR:-/tmp}"
 d_items="$D_TM_BASE_PATH"/items
+d_help="$d_items"/help
+d_hints="$d_items"/hints
 d_scripts="$D_TM_BASE_PATH"/scripts
 
 # will be set to true at end of this, this indicates everything is prepared

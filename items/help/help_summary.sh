@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Help about move and link window
+#   General Help
 #
 
 dynamic_content() {
@@ -23,21 +23,19 @@ dynamic_content() {
 }
 
 static_content() {
-
     set -- \
         0.0 S \
-        0.0 T "-#[nodim]Displays a navigation tree" \
-        0.0 T "-#[nodim]Escape/q aborts" \
-        0.0 T " " \
-        0.0 T "-#[nodim]1 - If a session is selected" \
-        0.0 T "-#[nodim] Current pane will be put in" \
-        0.0 T "-#[nodim] the last window in that session" \
-        0.0 T "-#[nodim]2 - If a window is selected" \
-        0.0 T "-#[nodim] Current pane will be added" \
-        0.0 T "-#[nodim] as the last pane in that window" \
-        0.0 T "-#[nodim]3 - If a pane is selected," \
-        0.0 T "-#[nodim] current pane will be inserted" \
-        0.0 T "-#[nodim] after selected pane"
+        0.0 T "-#[nodim] $nav_next#[default]  #[nodim]Open a new menu." \
+        0.0 T "-#[nodim] $nav_prev#[default]  #[nodim]Back to previous menu." \
+        0.0 T "-#[nodim] $nav_home#[default]  #[nodim]Back to start menu." \
+        0.0 S \
+        0.0 T "-#[nodim]Shortcut keys are usually upper case" \
+        0.0 T "-#[nodim]for menus, and lower case for actions."
+
+    ! $cfg_use_whiptail && {
+        set -- "$@" \
+            0.0 T "-#[nodim]Exit menus with ESC or Ctrl-C"
+    }
 
     menu_generate_part 2 "$@"
 }
@@ -49,10 +47,10 @@ static_content() {
 #===============================================================
 
 prev_menu="$(realpath "$1")"
-menu_name="Help, Move or Link Window"
+menu_name="Help summary"
 
 #  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
+D_TM_BASE_PATH="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh

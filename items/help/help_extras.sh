@@ -43,7 +43,7 @@ prev_menu="$(realpath "$1")"
 menu_name="Help Extras"
 
 #  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
+D_TM_BASE_PATH="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh

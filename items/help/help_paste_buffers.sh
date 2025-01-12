@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Help about move and link window
+#   Help regarding panes menu
 #
 
 dynamic_content() {
@@ -26,21 +26,13 @@ static_content() {
 
     set -- \
         0.0 S \
-        0.0 T "-#[nodim]Displays a navigation tree" \
-        0.0 T "-#[nodim]Escape/q aborts" \
-        0.0 T " " \
-        0.0 T "-#[nodim]1 - If a session is selected" \
-        0.0 T "-#[nodim] Current window will be put as" \
-        0.0 T "-#[nodim] the last window in that session" \
-        0.0 T "-#[nodim]2 - If a window is selected" \
-        0.0 T "-#[nodim] Current window will be inserted" \
-        0.0 T "-#[nodim] on that location, pushing other" \
-        0.0 T "-#[nodim] windows one step to the right" \
-        0.0 T "-#[nodim]3 - If a pane is selected," \
-        0.0 T "-#[nodim] the pane part of the selection" \
-        0.0 T "-#[nodim] is ignored, the action will be" \
-        0.0 T "-#[nodim] based on the containing window"
-
+        0.0 T "-#[nodim]Tmux has its own clipboard system," \
+        0.0 T "-#[nodim]shared between all sessions/windows/panes." \
+        0.0 T "- " \
+        0.0 T "-#[nodim]To integrate this clipboard with that" \
+        0.0 T "-#[nodim]of the OS, this might need configuration" \
+        0.0 T "-#[nodim]in tmux.conf depending on what OS" \
+        0.0 T "-#[nodim]and terminal is being used."
     menu_generate_part 2 "$@"
 }
 
@@ -51,10 +43,10 @@ static_content() {
 #===============================================================
 
 prev_menu="$(realpath "$1")"
-menu_name="Help, Move or Link Window"
+menu_name="Help Paste buffers"
 
 #  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
+D_TM_BASE_PATH="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
