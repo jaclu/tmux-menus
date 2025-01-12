@@ -23,11 +23,9 @@ dynamic_content() {
 static_content() {
     choose_tree="choose-tree"
     if tmux_vers_check 2.7; then
-        #  zooms the pane
-        choose_tree="$choose_tree -Gw"
-        # -G includes all sessions in any session groups
-        # -w with windows collapsed
+        choose_tree="$choose_tree -GwZ"
     fi
+
     select_location="$choose_tree 'run-shell \"$d_scripts/relocate_pane.sh P M %%\"'"
 
     set -- \

@@ -25,12 +25,9 @@ dynamic_content() {
 static_content() {
     choose_tree="choose-tree"
     if tmux_vers_check 2.7; then
-        #  zooms the pane
-        choose_tree="$choose_tree -Gw"
-        # -G includes all sessions in any session groups
-        # -w with windows collapsed
+        choose_tree="$choose_tree -GwZ"
     fi
-    select_location="$choose_tree 'run-shell \"$d_scripts/relocate_pane.sh WL %%\"'"
+    select_location="$choose_tree 'run-shell \"$d_scripts/relocate_window.sh"
 
     set -- \
         0.0 M Left "Back to Handling Window $nav_prev" windows.sh \
@@ -40,7 +37,7 @@ static_content() {
     menu_generate_part 1 "$@"
 
     set -- \
-        1.7 C m "Move window to other location" "$select_location" \
+        1.7 C m "Move window to other location" "$select_location W M %%\"'" \
         0.0 C "\<" "Swap window Left" "swap-window -dt:-1 $menu_reload" \
         0.0 C "\>" "Swap window Right" "swap-window -dt:+1 $menu_reload" \
         0.0 S \
