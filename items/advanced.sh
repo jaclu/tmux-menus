@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-#   Copyright (c) 2022-2024: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2022-2025: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
@@ -76,7 +76,9 @@ static_content() {
         1.8 S \
         2.7 C c "Disconnect clients" "choose-client -Z" \
         1.8 C x "Kill server" "confirm-before -p \
-            'kill tmux server defined in($TMUX_SOURCE) ? (y/n)' kill-server"
+            'kill tmux server defined in($TMUX_SOURCE) ? (y/n)' kill-server" \
+        2.7 S \
+        2.7 M C "Key hints - Disconnect clients $nav_next" "$d_hints/choose-client.sh $f_current_script"
 
     menu_generate_part 3 "$@"
     #
