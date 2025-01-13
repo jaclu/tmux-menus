@@ -28,7 +28,7 @@ static_content() {
         0.0 S \
         0.0 T "-#[nodim]Displays a navigation tree" \
         0.0 T "-#[nodim]Escape/q aborts" \
-        0.0 T " " \
+        0.0 T "-#[nodim]" \
         0.0 T "-#[nodim]1 - If a session is selected" \
         0.0 T "-#[nodim] Current pane will be put in" \
         0.0 T "-#[nodim] the last window in that session" \
