@@ -49,7 +49,7 @@ static_content() {
 #===============================================================
 
 [ -n "$1" ] && prev_menu="$(realpath "$1")"
-menu_name="Help, Move or Link Window"
+menu_name="Help, Move Pane"
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"
