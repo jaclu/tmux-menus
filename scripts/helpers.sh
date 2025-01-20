@@ -71,12 +71,14 @@ error_msg() {
         log_it
 
         $do_display_message && {
+            msg_hold="$plugin_name ERR: $em_msg"
+            actual_win_width="$($TMUX_BIN display-message -p "#{window_width}")"
             if $env_initialized && (
-                [ "${#em_msg}" -gt 50 ] || has_lf_not_at_end "$em_msg"
+                [ "${#msg_hold}" -gt "$actual_win_width" ] || has_lf_not_at_end "$em_msg"
             ); then
                 error_msg_formated "$em_msg"
             else
-                display_message_hold "$plugin_name ERR: $em_msg"
+                display_message_hold "$msg_hold"
             fi
         }
     fi
@@ -99,10 +101,10 @@ error_msg_formated() {
     #
     emf_err="$1"
 
-    # log_it "error_msg_formated($emf_err)"
+    log_it "error_msg_formated($emf_err)"
 
     emf_msg="$(
-        echo "ERROR in plugin: $plugin_name:$current_script [$$]"
+        echo "ERROR in plugin $plugin_name: $(relative_path "$f_current_script") [$$]"
         echo
         echo "$emf_err"
     )"
@@ -110,8 +112,10 @@ error_msg_formated() {
     emf_msg="$(
         echo "$emf_msg"
         echo
-        echo "Scroll-mode: <prefix> ["
-        echo "Press Ctrl-C to close this temporary window"
+        echo "To scroll back in this error message:"
+        echo " <prefix>-[ then up/down arrows"
+        echo
+        echo "Press Ctrl-C to close this message"
     )"
     # posix way to wait forever - MacOS doesn't have: sleep infinity
     $TMUX_BIN new-window -n "tmux-error" "echo '$emf_msg' ; tail -f /dev/null "
@@ -126,8 +130,8 @@ display_message_hold() {
     #  Can't use tmux_error_handler in this func, since that could
     #  trigger recursion
     #
-    # log_it "display_message_hold()"
     dmh_msg="$1"
+    log_it "display_message_hold($dmh_msg)"
 
     if tmux_vers_check 3.2; then
         # message will remain until key-press

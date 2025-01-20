@@ -23,12 +23,6 @@ dynamic_content() {
 }
 
 static_content() {
-    choose_tree="choose-tree"
-    if tmux_vers_check 2.7; then
-        choose_tree="$choose_tree -GwZ"
-    fi
-    select_location="$choose_tree 'run-shell \"$d_scripts/relocate_window.sh"
-
     set -- \
         0.0 M Left "Back to Handling Window $nav_prev" windows.sh \
         0.0 M Home "Back to Main menu       $nav_home" main.sh \
@@ -37,15 +31,15 @@ static_content() {
     menu_generate_part 1 "$@"
 
     set -- \
-        1.7 C m "Move window to other location" "$select_location W M %%\"'" \
+        1.7 E m "Move window to other location" "$d_scripts/act_choose_tree.sh W M" \
         0.0 C "\<" "Swap window Left" "swap-window -dt:-1 $menu_reload" \
         0.0 C "\>" "Swap window Right" "swap-window -dt:+1 $menu_reload" \
         0.0 S \
-        1.7 C l "Link window to other session" "$select_location W L %%\"'" \
+        1.7 E l "Link window to other session" "$d_scripts/act_choose_tree.sh W L" \
         0.0 C u "Unlink window from this session" "unlink-window" \
         1.7 S \
-        1.7 M K "Key hints - move/link      $nav_next" "$d_hints/choose-tree.sh $f_current_script" \
-        1.7 M H "Help, explaining move/link $nav_next" "$d_help/help_window_move.sh $f_current_script"
+        1.7 M K "Key hints - Move/Link      $nav_next" "$d_hints/choose-tree.sh $f_current_script" \
+        1.7 M H "Help, explaining Move/Link $nav_next" "$d_help/help_window_move.sh $f_current_script"
 
     menu_generate_part 3 "$@"
 }

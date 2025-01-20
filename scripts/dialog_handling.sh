@@ -2,7 +2,7 @@
 # This is sourced. Fake bang-path to help editors and linters
 # shellcheck disable=SC2154
 #
-#   Copyright (c) 2023-2024: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2023-2025: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
@@ -10,6 +10,11 @@
 #  Parses params and generates tmux or whiptail menus
 #  One variable is expected to have been set by the caller
 #
+#  Optional params:
+#    1 min screen width required for menu
+#    2 min screen height required for menu
+#  If provided, screen size is chcecked and
+
 #  Menus are expected to define the foolowing:
 #   D_TM_BASE_PATH  - base location for tmux-menus plugin
 #   menu_name       - Name of menu
@@ -81,13 +86,18 @@ ensure_menu_fits_on_screen() {
     #  shortened that they are off little help explaining what the option
     #  would do.
     #
-
     # Display time menu was shown
     disp_time="$(echo "$(safe_now) - $dh_t_start" | bc)"
     # log_it "Menu $current_script_no_ext - Display time:  $disp_time"
 
     if [ "$(echo "$disp_time < 0.5" | bc)" -eq 1 ]; then
-        error_msg "$(relative_path "$f_current_script") Screen might be too small"
+
+        _s="$current_script: Screen might be too small"
+        if [ -n "$window_width" ] && [ -n "$window_height" ]; then
+            log_it "w: [$window_width] h: [$window_height]"
+            _s="$_s (${window_width}x$window_height)"
+        fi
+        error_msg "$_s"
     fi
     unset disp_time
 }
@@ -674,6 +684,53 @@ handle_menu() {
     display_menu
 }
 
+check_screen_size() {
+    #
+    #  Only consider checking win size if not whiptail/dialog, since they
+    #  can scroll menus that dont fit the screen
+    #
+    #  Only checks if window_width and or window_height has been set
+    #
+    #  Examining client_height instead of window_height, includes the entire terminal
+    #  including lines covered by a status bar. Since Menus can cover the status bar
+    #  This gives the actual screen limits for menus
+    #
+    $cfg_use_whiptail && return 0
+
+    [ -n "$window_height" ] && {
+        actual_height="$($TMUX_BIN display-message -p "#{client_height}")"
+        [ "$window_height" -gt "$actual_height" ] && {
+            msg="menu display aborted, win height > actual: "
+            msg="$msg $window_height > $actual_height"
+            log_it "$msg"
+            return 1
+        }
+    }
+    [ -n "$window_width" ] && {
+        actual_width="$($TMUX_BIN display-message -p "#{client_width}")"
+        [ "$window_width" -gt "$actual_width" ] && {
+            msg="menu display aborted, win width > actual: "
+            msg="$msg $window_width > $actual_width"
+            log_it "$msg"
+            return 1
+        }
+    }
+    return 0
+}
+
+exit_if_dialog_doesnt_fit_screen() {
+    check_screen_size && return
+    log_it "$size_issue"
+    exit
+}
+warn_if_dialog_doesnt_fit_screen() {
+    check_screen_size && return
+    # fake a instantly closed menu to get the size error displayed
+    log_it "Simulate a display fail"
+    dh_t_start="$(safe_now)"
+    display_menu
+}
+
 #===============================================================
 #
 #   Main
@@ -704,6 +761,13 @@ fi
         error_msg "$(relative_path "$f_current_script") needs tmux: $menu_min_vers"
     }
 }
+
+log_it "><> dialog_handling:skip_oversized [$skip_oversized]"
+if [ "$skip_oversized" = "1" ]; then
+    exit_if_dialog_doesnt_fit_screen
+else
+    warn_if_dialog_doesnt_fit_screen
+fi
 
 alt_dialog_action_separator=":/:/:/:"
 

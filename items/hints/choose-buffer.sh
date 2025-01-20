@@ -60,11 +60,20 @@ static_content() {
 #
 #===============================================================
 
-[ -n "$1" ] && prev_menu="$(realpath "$1")"
+if [ "$1" = "skip-oversized" ]; then
+    # shellcheck disable=SC2034
+    skip_oversized=1
+elif [ -n "$1" ]; then
+    prev_menu="$(realpath "$1")"
+fi
 menu_name="Keys for choose-buffer"
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"
+
+window_width=50
+window_height=23
+[ -n "$prev_menu" ] && window_height=$((window_height + 1))
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh

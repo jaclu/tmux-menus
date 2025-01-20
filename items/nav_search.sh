@@ -18,7 +18,7 @@ static_content() {
         # The help overlay can't be displayed using whiptail
         navigate_cmd="$TMUX_BIN $choose_tree"
     else
-        navigate_cmd="$TMUX_BIN $choose_tree & $d_hints/choose-tree.sh"
+        navigate_cmd="$TMUX_BIN $choose_tree & $d_hints/choose-tree.sh skip-oversized"
     fi
 
     fw_span="Windows"

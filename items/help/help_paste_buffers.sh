@@ -32,7 +32,11 @@ static_content() {
         0.0 T "-#[nodim]To integrate this clipboard with that" \
         0.0 T "-#[nodim]of the OS, this might need configuration" \
         0.0 T "-#[nodim]in tmux.conf depending on what OS" \
-        0.0 T "-#[nodim]and terminal is being used."
+        0.0 T "-#[nodim]and terminal is being used." \
+        0.0 S \
+        0.0 T "-#[nodim]If nothing has been copied to a tmux buffer" \
+        0.0 T "-#[nodim]actions will return immeditally!"
+
     menu_generate_part 2 "$@"
 }
 

@@ -25,11 +25,11 @@ dynamic_content() {
 static_content() {
     if tmux_vers_check "3.5"; then
         # Description was changed
-	forwards_hint="forwards"
+        forwards_hint="forwards"
     fi
     set -- \
         3.2 S \
-        3.2 T "-#[nodim]Enter  Set pane, window, session or global option value" \
+        3.2 T "-#[nodim]Enter  Set option value" \
         3.2 T "-#[nodim]Up     Select previous item" \
         3.2 T "-#[nodim]Down   Select next item" \
         3.2 T "-#[nodim]+      Expand selected item" \
@@ -38,14 +38,14 @@ static_content() {
         3.2 T "-#[nodim]M--    Collapse all items" \
         3.2 T "-#[nodim]s      Set option value or key attribute" \
         3.2 T "-#[nodim]S      Set global option value" \
-        3.2 T "-#[nodim]w      Set window option value, if option is for pane and window" \
+        3.2 T "-#[nodim]w      Set window option value, for pane/window option" \
         3.2 T "-#[nodim]d      Set an option or key to the default" \
-        3.2 T "-#[nodim]D      Set tagged options and tagged keys to the default" \
-        3.2 T "-#[nodim]u      Unset an option (set to default value if global) or unbind a key" \
+        3.2 T "-#[nodim]D      Set tagged options/keys to default" \
+        3.2 T "-#[nodim]u      Unset an option or unbind a key" \
         3.2 T "-#[nodim]U      Unset tagged options and unbind tagged keys" \
         3.2 T "-#[nodim]C-s    Search by name" \
         3.2 T "-#[nodim]n      Repeat last search $forwards_hint" \
-	3.5 T "-#[nodim]N      Repeat last search backwards" \
+        3.5 T "-#[nodim]N      Repeat last search backwards" \
         3.2 T "-#[nodim]t      Toggle if item is tagged" \
         3.2 T "-#[nodim]T      Tag no items" \
         3.2 T "-#[nodim]C-t    Tag all items" \
@@ -62,11 +62,20 @@ static_content() {
 #
 #===============================================================
 
-[ -n "$1" ] && prev_menu="$(realpath "$1")"
+if [ "$1" = "skip-oversized" ]; then
+    # shellcheck disable=SC2034
+    skip_oversized=1
+elif [ -n "$1" ]; then
+    prev_menu="$(realpath "$1")"
+fi
 menu_name="Keys for customize-mode"
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"
+
+window_width=50
+window_height=27
+[ -n "$prev_menu" ] && window_height=$((window_height + 1))
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh

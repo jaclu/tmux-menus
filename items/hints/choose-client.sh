@@ -37,7 +37,7 @@ static_content() {
         0.0 T "-#[nodim]Down   Select next client" \
         0.0 T "-#[nodim]C-s    Search by name" \
         0.0 T "-#[nodim]n      Repeat last search forwards" \
-         3,5 T "-#[nodim]N      Repeat last search backwards" \
+        3.5 T "-#[nodim]N      Repeat last search backwards" \
         0.0 T "-#[nodim]t      Toggle if client is tagged" \
         0.0 T "-#[nodim]T      Tag no clients" \
         0.0 T "-#[nodim]C-t    Tag all clients" \
@@ -49,7 +49,7 @@ static_content() {
         0.0 T "-#[nodim]Z      Suspend tagged clients" \
         0.0 T "-#[nodim]f      Enter a format to filter items" \
         0.0 T "-#[nodim]O      $o_lbl" \
-         3.1 T "-#[nodim]r      Reverse sort order" \
+        3.1 T "-#[nodim]r      Reverse sort order" \
         0.0 T "-#[nodim]v      Toggle preview" \
         0.0 T "-#[nodim]Esc/q  Exit mode"
 
@@ -62,11 +62,23 @@ static_content() {
 #
 #===============================================================
 
-[ -n "$1" ] && prev_menu="$(realpath "$1")"
+if [ "$1" = "skip-oversized" ]; then
+    # shellcheck disable=SC2034
+    skip_oversized=1
+elif [ -n "$1" ]; then
+    prev_menu="$(realpath "$1")"
+fi
 menu_name="Keys for choose-client"
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"
+
+window_width=50
+window_height=22
+. "$D_TM_BASE_PATH"/scripts/helpers.sh
+tmux_vers_check "3.5" && window_height=$((window_height + 1))
+tmux_vers_check "3.1" && window_height=$((window_height + 1))
+[ -n "$prev_menu" ] && window_height=$((window_height + 1))
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh

@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-#  Copyright (c) 2022-2024: Jacob.Lundqvist@gmail.com
+#  Copyright (c) 2022-2025: Jacob.Lundqvist@gmail.com
 #  License: MIT
 #
 #  Part of https://github.com/jaclu/tmux-menus
@@ -9,10 +9,10 @@
 #
 
 static_content() {
-    # $TMUX_BIN display-message -p "#{window_width}x#{window_height}"
-    # only display overlay if it fits the screen
-    customize_mode_cmd="$TMUX_BIN customize-mode -Z"  # & $d_hints/customize-mode.sh"
-
+    customize_mode_cmd="$TMUX_BIN customize-mode -Z "
+    if ! $cfg_use_whiptail; then
+        customize_mode_cmd="$customize_mode_cmd & $d_hints/customize-mode.sh  skip-oversized"
+    fi
     rld_cmd="command-prompt -I '$cfg_tmux_conf' -p 'Source file:' \
         'run-shell \"$d_scripts/reload_conf.sh %% $reload_in_runshell\"'"
 
@@ -30,15 +30,17 @@ static_content() {
         0.0 M A "Advanced Options  $nav_next" advanced.sh \
         0.0 M E "Extras            $nav_next" extras.sh \
         0.0 S \
-	3.2 T   "-#[nodim]On-the-Fly Config" \
-	3.2 E c "  (customize-mode)" "$customize_mode_cmd" \
+        3.2 T "-#[nodim]On-the-Fly Config" \
+        3.2 E c "  (customize-mode)" "$customize_mode_cmd" \
         1.8 E p "Plugins inventory" "plugins.sh" \
         0.0 C r "Reload tmux conf" "$rld_cmd" \
         0.0 C d 'Detach from tmux' detach-client \
         0.0 S \
-	3.2 M C "Key hints - cst-md $nav_next" "$d_hints/customize-mode.sh $f_current_script" \
-        0.0 M H "Help               $nav_next" "$d_help/help_summary.sh $f_current_script"
-
+        3.2 T "-#[nodim]Key hints - " \
+        3.2 M C "  customize-mode $nav_next" \
+        "$d_hints/customize-mode.sh $f_current_script" \
+        0.0 M H "Help             $nav_next" \
+        "$d_help/help_summary.sh $f_current_script"
     menu_generate_part 1 "$@"
 }
 

@@ -9,28 +9,29 @@
 #
 
 static_content() {
-    choose_buffer="choose-buffer"
-    tmux_vers_check 2.6 && choose_buffer="$choose_buffer -Z"
+    select_cmd="$TMUX_BIN choose-buffer"
+    tmux_vers_check 2.6 && select_cmd="$select_cmd -Z"
 
-    if $cfg_use_whiptail; then
-        # The help overlay can't be displayed using whiptail
-        select_cmd="$TMUX_BIN $choose_buffer"
-    else
-        select_cmd="$TMUX_BIN $choose_buffer & $d_hints/choose-buffer.sh"
+    if ! $cfg_use_whiptail; then
+        select_cmd="$select_cmd \& $d_hints/choose-buffer.sh skip-oversized"
     fi
 
     set -- \
-        0.0 M Left "Back to Main menu     $nav_home" main.sh \
-        0.0 S \
-        0.0 C c "Enter copy mode" "copy-mode" \
-        0.0 C v "Paste the most recent paste buffer" "paste-buffer -p" \
+        0.0 M Left "Back to Main menu  $nav_home" main.sh \
+        0.0 S
+
+    if ! $cfg_use_whiptail; then
+        set -- "$@" \
+            0.0 C v "Paste the most recent paste buffer" "paste-buffer -p  $menu_reload"
+    fi
+    set -- "$@" \
         1.8 E s "Select a paste buffer from a list" "$select_cmd" \
         0.0 C l "List all paste buffers" "list-buffers" \
-        0.0 C d "Delete the most recent paste buffer" "delete-buffer" \
+        0.0 C d "Delete the most recent paste buffer" "delete-buffer  $menu_reload" \
         0.0 S \
-        0.0 M S "Key hints - Select paste buffer  $nav_next" \
+        0.0 M S "Key hints - Select paste buffer $nav_next" \
         "$d_hints/choose-buffer.sh $f_current_script" \
-        0.0 M H "Help                             $nav_next" \
+        0.0 M H "Help                            $nav_next" \
         "$d_help/help_paste_buffers.sh $f_current_script"
 
     menu_generate_part 1 "$@"
