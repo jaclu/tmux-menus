@@ -23,11 +23,9 @@ dynamic_content() {
 }
 
 static_content() {
-    if tmux_vers_check "3.1"; then
+    if tmux_vers_check "3.5"; then
         # Description was changed
-        o_lbl="Change sort field"
-    else
-        o_lbl="Change sort order"
+	forwards_hint="forwards"
     fi
     set -- \
         3.2 S \
@@ -46,7 +44,7 @@ static_content() {
         3.2 T "-#[nodim]u      Unset an option (set to default value if global) or unbind a key" \
         3.2 T "-#[nodim]U      Unset tagged options and unbind tagged keys" \
         3.2 T "-#[nodim]C-s    Search by name" \
-        3.2 T "-#[nodim]n      Repeat last search forwards" \
+        3.2 T "-#[nodim]n      Repeat last search $forwards_hint" \
 	3.5 T "-#[nodim]N      Repeat last search backwards" \
         3.2 T "-#[nodim]t      Toggle if item is tagged" \
         3.2 T "-#[nodim]T      Tag no items" \
