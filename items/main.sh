@@ -9,6 +9,8 @@
 #
 
 static_content() {
+    customize_mode_cmd="$TMUX_BIN customize-mode -Z & $d_hints/customize-mode.sh"
+
     rld_cmd="command-prompt -I '$cfg_tmux_conf' -p 'Source file:' \
         'run-shell \"$d_scripts/reload_conf.sh %% $reload_in_runshell\"'"
 
@@ -26,9 +28,9 @@ static_content() {
         0.0 M A "Advanced Options  $nav_next" advanced.sh \
         0.0 M E "Extras            $nav_next" extras.sh \
         0.0 S \
+	3.2 E c "Customize mode" "$customize_mode_cmd" \
         1.8 E p "Plugins inventory" "plugins.sh" \
         0.0 C r "Reload configuration file" "$rld_cmd" \
-        0.0 E i "public IP" public_ip.sh \
         0.0 C d 'Detach from tmux' detach-client \
         0.0 S \
         0.0 M H "Help $nav_next" "$d_help/help_summary.sh $f_current_script"

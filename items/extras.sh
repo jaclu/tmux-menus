@@ -30,6 +30,7 @@ static_content() {
         0.0 M S "$(is_avalable spotify)Spotify      $nav_next" "$d_extras"/spotify.sh \
         0.0 M M "$(is_avalable mullvad)Mullvad VPN  $nav_next" "$d_extras"/mullvad.sh \
         0.0 S \
+        0.0 E i "public IP" public_ip.sh \
         0.0 M H "Help $nav_next" "$d_help/help_extras.sh $f_current_script"
 
     menu_generate_part 1 "$@"
