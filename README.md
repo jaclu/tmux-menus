@@ -20,9 +20,12 @@ experienced users, then add more for newbies.
 
 ## Recent Changes
 
-- Display available keys in an overlay when selecting a tmux choose dialog in
-  `Navigate & Search` and `Paste buffers`
-- All menus using a tmux choose dialog have an extra help item listing available keys
+- Display available keys in an key-hints overlay when selecting a an action displaying
+  a tmux choose dialog.<br>
+  This overlay will only be displayed if it fits on screen.
+  To make it easier to check if the overlay was skipped due to screen size, each menu
+  featuring this also have a `Key hints - ...` item. When this is opened a warning will
+  be displayed if it doesn't fit on the current screen.
 - Added help for selection of paste buffers
 - Split handling of external dialogs into two scripts, to improve job control
 - Added support for dialog as external menu handler

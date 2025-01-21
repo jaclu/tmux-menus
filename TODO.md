@@ -11,10 +11,6 @@ Add option to not show hints when displaying tmux dialogs
 
 Add items, enable/disable show pane titles
 
-## Window - Move - link/unlink
-
-seems buggy, need to investigate
-
 ## Devel or rc-candidate tmux
 
 `scripts/utils/tmux.sh:tmux_get_vers()`
