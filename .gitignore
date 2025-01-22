@@ -2,12 +2,14 @@
 *~
 \#*
 
+.DS_Store
+__pycache__
+
 # olint linter cache
 .cache.olint
 
 # tmux-menus cache
 cache/
 
-tests/
-.DS_Store
-__pycache__
+# Additional loocal menus not managed by git
+items/additional/
