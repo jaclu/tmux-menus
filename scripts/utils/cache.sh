@@ -16,6 +16,16 @@
 #
 #---------------------------------------------------------------
 
+crate_cache_folder() {
+    [ -z "$d_cache" ] && {
+        error_msg "variable d_cache undefined"
+    }
+    mkdir -p "$d_cache" || {
+        error_msg "Failed to create cache folder: $d_cache"
+    }
+}
+
+
 cache_clear() { # only cache
     #
     #  Clear cache related files, since this only removes files if found
@@ -49,7 +59,7 @@ cache_prepare() {
         return 1
     fi
 
-    mkdir -p "$d_cache"
+    crate_cache_folder
     # log_it "cache_prepare() - created: $d_cache"
     return 0
 }
