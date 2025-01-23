@@ -112,6 +112,7 @@ create_additional_index() {
         printf '        %s \\\n        %s' \
             "0.0 M \"$n_menu_key\" \"$n_menu_item   $cfg_nav_next\"" \
             "$additional_menu" >>"$f_additional_items_content"
+        log_it "Will use: $additional_menu"
     done
     [ ! -f "$f_additional_items_content" ] && {
         # all supposedly valid additional items failed to be processed, clear
@@ -161,6 +162,7 @@ content_has_changed() {
         n_menu_key="$_variable_content"
 
         valid_menus="$valid_menus $additional_menu"
+        log_it "Validated src: $additional_menu"
     done
     [ -z "$valid_menus" ] && {
         # none of the additional items are valid abort generation
