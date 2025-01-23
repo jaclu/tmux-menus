@@ -313,6 +313,12 @@ add_uncached_item() {
     unset _new_item
 }
 
+verify_menu_key() {
+    _key="$1"
+    _item="$2"
+    [ -z "$_key" ] && error_msg "Key was empty for: $_item in: $0"
+}
+
 menu_parse() {
     #
     #  Since the various menu entries have different numbers of params
@@ -340,34 +346,6 @@ menu_parse() {
         [ -n "$menu_debug" ] && debug_print "-- parsing an item [$min_vers] [$action]"
         case "$action" in
 
-        "M")
-            #  Open another menu
-            key="$1"
-            shift
-            label="$1"
-            shift
-            menu="$1"
-            shift
-
-            ! tmux_vers_check "$min_vers" && continue
-
-            #
-            #  If menu is not full PATH, assume it to be a tmux-menus
-            #  item
-            #
-            if echo "$menu" | grep -vq /; then
-                menu="$d_items/$menu"
-            fi
-
-            [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] menu[$menu]"
-
-            if $cfg_use_whiptail; then
-                alt_dialog_open_menu "$label" "$key" "$menu"
-            else
-                tmux_open_menu "$label" "$key" "$menu"
-            fi
-            ;;
-
         "C")
             #  direct tmux command - params: key label task [keep] [reload]
             key="$1"
@@ -384,6 +362,9 @@ menu_parse() {
                 keep_cmd=false
             fi
 
+            verify_menu_key "$key" "tmux command: $cmd"
+
+            # first extract the variables, then  if it shouldn't be used move on
             ! tmux_vers_check "$min_vers" && continue
 
             [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
@@ -416,6 +397,9 @@ menu_parse() {
             cmd="$1"
             shift
 
+            verify_menu_key "$key" "external command: $cmd"
+
+            # first extract the variables, then  if it shouldn't be used move on
             ! tmux_vers_check "$min_vers" && continue
 
             #
@@ -435,11 +419,43 @@ menu_parse() {
             fi
             ;;
 
+        "M")
+            #  Open another menu
+            key="$1"
+            shift
+            label="$1"
+            shift
+            menu="$1"
+            shift
+
+            verify_menu_key "$key" "$menu"
+
+            # first extract the variables, then  if it shouldn't be used move on
+            ! tmux_vers_check "$min_vers" && continue
+
+            #
+            #  If menu is not full PATH, assume it to be a tmux-menus
+            #  item
+            #
+            if echo "$menu" | grep -vq /; then
+                menu="$d_items/$menu"
+            fi
+
+            [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] menu[$menu]"
+
+            if $cfg_use_whiptail; then
+                alt_dialog_open_menu "$label" "$key" "$menu"
+            else
+                tmux_open_menu "$label" "$key" "$menu"
+            fi
+            ;;
+
         "T")
             #  text line - params: txt
             txt="$1"
             shift
 
+            # first extract the variables, then  if it shouldn't be used move on
             ! tmux_vers_check "$min_vers" && continue
 
             [ -n "$menu_debug" ] && debug_print "text line [$txt]"
@@ -453,6 +469,7 @@ menu_parse() {
         "S")
             #  Spacer line - params: none
 
+            # first extract the variables, then  if it shouldn't be used move on
             ! tmux_vers_check "$min_vers" && continue
 
             [ -n "$menu_debug" ] && debug_print "Spacer line"
@@ -657,7 +674,7 @@ display_menu() {
     fi
 }
 
-handle_menu() {
+prepare_menu() {
     #
     #  If a menu needs to handle a param, save it before sourcing this using:
     #  menu_param="$1"
@@ -679,9 +696,6 @@ handle_menu() {
 
     # 3 - Gather each item in correct order
     sort_menu_items
-
-    # 4 Display menu
-    display_menu
 }
 
 check_screen_size() {
@@ -737,6 +751,17 @@ warn_if_dialog_doesnt_fit_screen() {
 #
 #===============================================================
 
+# only used when caching is disabled - @menus_use_cache is false
+uncached_menu=""
+uncached_wt_actions=""
+uncached_item_splitter="||||"
+
+# Just a dummy statement, so that the shellcheck disable doesn't need to be done in
+# every additional_item
+_="$menu_key $menu_label"
+
+alt_dialog_action_separator=":/:/:/:"
+
 if [ -z "$D_TM_BASE_PATH" ]; then
     # helpers not yet sourced, so error_msg() not yet available
     msg="ERROR: dialog_handling.sh - D_TM_BASE_PATH must be set!"
@@ -769,13 +794,6 @@ else
     warn_if_dialog_doesnt_fit_screen
 fi
 
-alt_dialog_action_separator=":/:/:/:"
-
-# only used when caching is disabled - @menus_use_cache is false
-uncached_menu=""
-uncached_wt_actions=""
-uncached_item_splitter="||||"
-
 #
 #  If @menus_use_cache is not disabled, any cached items will not be
 #  fully processed, so either disable caching, or clear the cache for
@@ -784,4 +802,5 @@ uncached_item_splitter="||||"
 #
 menu_debug="" # Set to 1 to use echo 2 to use log_it
 
-handle_menu
+prepare_menu
+[ "$TMUX_MENUS_NO_DISPLAY" != "1" ] && display_menu
