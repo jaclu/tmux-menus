@@ -5,12 +5,15 @@
 #
 #  Part of https://github.com/jaclu/tmux-menus
 #
-#  Template used fo additional_items/index.sh
+#  Template used for additional_items/_index.sh
 #
 
 static_content() {
     set -- \
-        ADDITIONAL_ITEMS_PLACEHOLDER
+        0.0 M Left "Back to Main menu    $nav_home" main.sh \
+        0.0 S \
+        "ADDITIONAL_ITEMS_SPLITTER" # the list of additional items will be inserted here
+
     menu_generate_part 1 "$@"
 }
 
