@@ -26,12 +26,12 @@ static_content() {
 
     set -- \
         0.0 S \
-        0.0 T "-#[nodim]When saving history with escapes" \
-        0.0 T "-#[nodim]less will not be able to display" \
-        0.0 T "-#[nodim]the content." \
-        0.0 S \
-        0.0 T "-#[nodim]Use tools like bat/most/cat" \
-        0.0 T "-#[nodim]in order to see the colors"
+        0.0 T "-#[nodim]When viewing history with escapes," \
+        0.0 T "-#[nodim]use: less -R" \
+        0.0 T "-#[nodim] " \
+        0.0 T "-#[nodim]Or a color handling pager, like:" \
+        0.0 T "-#[nodim] w3m/bat/most" \
+        0.0 T "-#[nodim]In order to not get garbled output"
 
     menu_generate_part 2 "$@"
 }
