@@ -9,12 +9,15 @@
 #
 
 dynamic_content() {
-    if tmux_error_handler display-message -p '#{pane_marked_set}' | grep -q '1'; then
-        set -- \
-            2.1 C m "Swap current pane with marked" "swap-pane $menu_reload" \
-            else
-        set --
-    fi
+    # clear params content
+    set --
+    tmux_vers_check 3.0 && {
+        # marking a pane is an ancient feature, but pane_marked came at 3.0
+        $TMUX_BIN display-message -p '#{&&:#{pane_marked_set},#{!=:#{pane_marked},1}}' | grep -q 1 && {
+            set -- \
+                3.0 C m "Swap current pane with marked" "swap-pane $menu_reload"
+        }
+    }
     menu_generate_part 2 "$@"
 }
 
