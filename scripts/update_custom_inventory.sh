@@ -36,6 +36,8 @@ clear_custom_items_cache() {
     rm -rf "$d_cache"/items_main
     # remove all cached custom items
     rm -rf "$d_cache"/custom_items_*/
+    # remove temp file - items being added to custom menu
+    rm -f "$f_custom_items_content"
 }
 
 remove_custom_index() {
@@ -130,7 +132,7 @@ create_custom_index() {
             # add items continuation to previous item
             printf ' \\\n' >>"$f_custom_items_content"
         }
-
+	# this generates an item that will be added to custom items index
         printf '        %s \\\n        %s' \
             "0.0 M \"$n_menu_key\" \"$n_menu_item   $cfg_nav_next\"" \
             "$custom_menu" >>"$f_custom_items_content"
