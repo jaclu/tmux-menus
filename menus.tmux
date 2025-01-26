@@ -44,10 +44,10 @@ initialize_plugin=1
 # implied check if caching is used
 [ -d "$d_cache" ] && cache_add_ok_vers "$tmux_vers"
 
-if [ -f "$f_update_additional_inventory" ]; then
-    $f_update_additional_inventory
+if [ -f "$f_update_custom_inventory" ]; then
+    $f_update_custom_inventory
 else
-    log_it "config file missing: $f_update_additional_inventory"
+    log_it "config file missing: $f_update_custom_inventory"
 fi
 
 if $cfg_use_whiptail; then

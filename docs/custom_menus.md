@@ -1,18 +1,18 @@
 # Custom menus
 
-This plugin automatically handles custom menus placed in the `additional_items/`
+This plugin automatically handles custom menus placed in the `custom_items/`
 directory.
 
 ## How It Works
 
 regenerate
 the index listing all custom menus.
-`additional_items/_index.sh` (listing all custom menus, from now on referred
+`custom_items/_index.sh` (listing all custom menus, from now on referred
 to just by `_index.sh`).
 
 ### **Monitoring Changes**
 
-When files in `additional_items/` change, on next startup the plugin will
+When files in `custom_items/` change, on next startup the plugin will
 process all files found.
 
 - It creates or updates an inex listing all valid custom menus.
@@ -40,12 +40,12 @@ If these hints are missing or invalid, a notification will be displayed next tim
 `_index.sh` is generated, and that custom menu will be ignored until it is fixed.
 
 There is a template that can be used when creating custom menus.
-copy `content/additional_item_template.sh` into `additional_items/` with a
+copy `content/custom_item_template.sh` into `custom_items/` with a
 suitable name
 
 ## Summary
 
-This approach ensures your custom menus are always recognized and properly linked to the
-Main Menu, keeping everything neat and user-friendly.
+This approach ensures your custom menus are always recognized and properly linked to
+the Main Menu, keeping everything neat and user-friendly.
 
 Just make sure your custom menu include valid labels and shortcuts!

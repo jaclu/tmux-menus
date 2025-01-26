@@ -757,7 +757,7 @@ uncached_wt_actions=""
 uncached_item_splitter="||||"
 
 # Just a dummy statement, so that the shellcheck disable doesn't need to be done in
-# every additional_item
+# every custom_item
 _="$menu_key $menu_label"
 
 alt_dialog_action_separator=":/:/:/:"

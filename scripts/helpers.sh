@@ -362,9 +362,9 @@ d_items="$D_TM_BASE_PATH"/items
 d_help="$d_items"/help
 d_hints="$d_items"/hints
 d_scripts="$D_TM_BASE_PATH"/scripts
-d_additional_items="$D_TM_BASE_PATH"/additional_items
-f_additional_items_index="$d_additional_items"/_index.sh
-f_update_additional_inventory="$d_scripts"/update_additional_inventory.sh
+d_custom_items="$D_TM_BASE_PATH"/custom_items
+f_custom_items_index="$d_custom_items"/_index.sh
+f_update_custom_inventory="$d_scripts"/update_custom_inventory.sh
 
 # will be set to true at end of this, this indicates everything is prepared
 env_initialized=false

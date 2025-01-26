@@ -16,7 +16,13 @@ static_content() {
     rld_cmd="command-prompt -I '$cfg_tmux_conf' -p 'Source file:' \
         'run-shell \"$d_scripts/reload_conf.sh %% $reload_in_runshell\"'"
 
-    # 12.0 M S
+    [ -f "$f_custom_items_index" ] && {
+        set -- \
+            0.0 M \+ "Custom items $nav_next" "$f_custom_items_index"
+
+        menu_generate_part 1 "$@"
+    }
+
     #  Menu items definition
     set -- \
         1.8 M N "Navigate & Search $nav_next" nav_search.sh \
@@ -26,18 +32,8 @@ static_content() {
         1.8 M B "Paste buffers     $nav_next" paste_buffers.sh \
         0.0 M L "Layouts           $nav_next" layouts.sh \
         0.0 M V "Split view        $nav_next" split_view.sh \
-        2.0 M M "Missing Keys      $nav_next" missing_keys.sh
-
-    menu_generate_part 1 "$@"
-
-    [ -f "$f_additional_items_index" ] && {
-        set -- \
-            0.0 M A "Additinoal items $nav_next" "$f_additional_items_index"
-
-        menu_generate_part 2 "$@"
-    }
-    set -- \
-        0.0 M O "Advanced Options  $nav_next" advanced.sh \
+        2.0 M M "Missing Keys      $nav_next" missing_keys.sh \
+        0.0 M A "Advanced Options  $nav_next" advanced.sh \
         0.0 M E "Extras            $nav_next" extras.sh \
         0.0 S \
         3.2 T "-#[nodim]On-the-Fly Config" \
@@ -51,7 +47,8 @@ static_content() {
         "$d_hints/customize-mode.sh $f_current_script" \
         0.0 M H "Help             $nav_next" \
         "$d_help/help_summary.sh $f_current_script"
-    menu_generate_part 3 "$@"
+
+    menu_generate_part 2 "$@"
 }
 
 #===============================================================
