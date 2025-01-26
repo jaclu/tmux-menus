@@ -16,15 +16,16 @@ static_content() {
     rld_cmd="command-prompt -I '$cfg_tmux_conf' -p 'Source file:' \
         'run-shell \"$d_scripts/reload_conf.sh %% $reload_in_runshell\"'"
 
-    [ -f "$f_custom_items_index" ] && {
+    if [ -f "$f_custom_items_index" ]; then
         set -- \
             0.0 M \+ "Custom items $nav_next" "$f_custom_items_index"
-
-        menu_generate_part 1 "$@"
-    }
+    else
+	# clear params
+	set --
+    fi
 
     #  Menu items definition
-    set -- \
+    set -- "$@" \
         1.8 M N "Navigate & Search $nav_next" nav_search.sh \
         0.0 M P "Handling Pane     $nav_next" panes.sh \
         0.0 M W "Handling Window   $nav_next" windows.sh \
@@ -48,7 +49,7 @@ static_content() {
         0.0 M H "Help             $nav_next" \
         "$d_help/help_summary.sh $f_current_script"
 
-    menu_generate_part 2 "$@"
+    menu_generate_part 1 "$@"
 }
 
 #===============================================================
