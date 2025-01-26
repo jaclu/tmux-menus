@@ -45,11 +45,11 @@ remove_custom_index() {
 }
 
 
-read_content_checksum() {
+checksum_content_read() {
     [ -f "$f_chksum_custom" ] && cat "$f_chksum_custom"
 }
 
-store_content_checksum() {
+checksum_content_write() {
     find "$d_custom_items" -type f -exec sha256sum {} + | sort | \
 	sha256sum > "$f_chksum_custom" || {
 
@@ -60,11 +60,11 @@ store_content_checksum() {
 content_changed_check() {
     log_it "content_changed_check()"
 
-    previous_content_chksum="$(read_content_checksum)"
+    previous_content_chksum="$(checksum_content_read)"
     log_it " previous: $previous_content_chksum"
 
-    store_content_checksum
-    current_content_chksum="$(read_content_checksum)"
+    checksum_content_write
+    current_content_chksum="$(checksum_content_read)"
     [ -z "$current_content_chksum" ] && {
 	error_msg "Failed to scan content in: $d_custom_items"
     }
@@ -155,7 +155,7 @@ create_custom_index() {
     sed -n "/$template_splitter/"',$p' "$f_custom_items_template" | sed '1d' \
         >>"$f_custom_items_index"
     chmod 0755 "$f_custom_items_index"
-    store_content_checksum
+    checksum_content_write # custom index change
 
     # Verify that custom_items/_index.sh was correctly generated
     run_in_sub_shell="$(printf 'export TMUX_MENUS_NO_DISPLAY=1\n%s\n' "$f_custom_items_index")"
