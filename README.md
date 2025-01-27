@@ -8,7 +8,7 @@ src="https://github.com/user-attachments/assets/7e89b9fc-e862-4d81-b393-bb31f010
 ## Summary
 
 Popup menus to help with managing the tmux environment. If so desired,
-[styling](Styling.md) can be used.
+[styling](docs/Styling.md) can be used.
 
 Not too hard to adapt to fit your needs. Items that some
 might find slightly redundant are included, easier to remove excess for more
@@ -145,6 +145,29 @@ Manager](https://github.com/tmux-plugins/tpm).
    ```
 
 The plugin should now be activated.
+
+</details>
+<details>
+<summary>Using Styling for menus</summary>
+<br>
+
+### Using Styling for menus
+
+See [docs/Styling.md](docs/Styling.md)
+
+</details>
+<details>
+<summary>Custom menus</summary>
+<br>
+
+## Custom Menus
+
+While the initial assumption was that users wanting to modify the menus would fork
+the repository and make changes directly, a feature was added to allow menus to
+be added dynamically based on user requests.
+
+For details on how to use this feature, see the documentation:
+[docs/CustomMenus.md](docs/CustomMenus.md)
 
 </details>
 <details>
@@ -288,10 +311,6 @@ set -g @menus_show_key_hints Yes
 ```
 
 This param can be either Yes/true or No/false (the default)
-
-### Using Styling for menus
-
-See [Styling.md](Styling.md)
 
 ### Pointer to the config file
 
