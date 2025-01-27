@@ -78,7 +78,7 @@ static_content() {
             'kill tmux server defined in($TMUX_SOURCE) ? (y/n)' kill-server" \
             0.0 S \
         0.0 M C "Key hints - Disconnect $nav_next" \
-        "$d_hints/choose-client.sh $f_current_script" \
+        "$d_hints/choose-client.sh $f_current_script"
 
     menu_generate_part 3 "$@"
     #
