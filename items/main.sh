@@ -9,6 +9,7 @@
 #
 
 static_content() {
+    menu_segment=1
     customize_mode_cmd="$TMUX_BIN customize-mode -Z "
     if ! $cfg_use_whiptail; then
         customize_mode_cmd="$customize_mode_cmd & $d_hints/customize-mode.sh  skip-oversized"
@@ -19,13 +20,13 @@ static_content() {
     if [ -f "$f_custom_items_index" ]; then
         set -- \
             0.0 M \+ "Custom items $nav_next" "$f_custom_items_index"
-    else
-	# clear params
-	set --
+
+        menu_generate_part "$menu_segment" "$@"
+        menu_segment=$((menu_segment + 1))
     fi
 
     #  Menu items definition
-    set -- "$@" \
+    set -- \
         1.8 M N "Navigate & Search $nav_next" nav_search.sh \
         0.0 M P "Handling Pane     $nav_next" panes.sh \
         0.0 M W "Handling Window   $nav_next" windows.sh \
@@ -42,14 +43,28 @@ static_content() {
         1.8 E p "Plugins inventory" "plugins.sh" \
         0.0 C p "Reload tmux conf" "$rld_cmd" \
         0.0 C d 'Detach from tmux' detach-client \
-        0.0 S \
-        3.2 T "-#[nodim]Key hints - " \
-        3.2 M C "  customize-mode $nav_next" \
-        "$d_hints/customize-mode.sh $f_current_script" \
+        0.0 S
+
+    menu_generate_part "$menu_segment" "$@"
+    menu_segment=$((menu_segment + 1))
+
+    $cfg_show_key_hints && {
+        log_it "========= cfg_show_key_hints: [$cfg_show_key_hints]"
+
+        set -- \
+            3.2 T "-#[nodim]Key hints - " \
+            3.2 M C "  customize-mode $nav_next" \
+            "$d_hints/customize-mode.sh $f_current_script"
+
+        menu_generate_part "$menu_segment" "$@"
+        menu_segment=$((menu_segment + 1))
+    }
+
+    set -- \
         0.0 M H "Help             $nav_next" \
         "$d_help/help_summary.sh $f_current_script"
 
-    menu_generate_part 1 "$@"
+    menu_generate_part "$menu_segment" "$@"
 }
 
 #===============================================================

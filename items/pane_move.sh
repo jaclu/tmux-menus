@@ -22,12 +22,15 @@ dynamic_content() {
 }
 
 static_content() {
+    menu_segment=1
+
     set -- \
         0.0 M Left "Back to Handling Pane $nav_prev" panes.sh \
         0.0 M Home "Back to Main menu     $nav_home" main.sh \
         1.7 S
 
-    menu_generate_part 1 "$@"
+    menu_generate_part "$menu_segment" "$@"
+    menu_segment=$((menu_segment + 2)) # increment past dynamic segment
 
     set -- \
         1.7 C p "Swap pane with prev" "swap-pane -U $menu_reload" \
@@ -35,13 +38,25 @@ static_content() {
         1.7 E o "Move to other win/ses" "$d_scripts/act_choose_tree.sh P M" \
         0.0 S \
         2.4 E w "Break pane to a new window" "$d_scripts/break_pane.sh" \
-        1.7 S \
-        1.7 M O "Key hints - Move to other $nav_next" \
-        "$d_hints/choose-tree.sh $f_current_script" \
+        1.7 S
+
+    menu_generate_part "$menu_segment" "$@"
+    menu_segment=$((menu_segment + 1))
+
+    $cfg_show_key_hints && {
+        set -- \
+            1.7 M O "Key hints - Move to other $nav_next" \
+            "$d_hints/choose-tree.sh $f_current_script"
+
+        menu_generate_part "$menu_segment" "$@"
+        menu_segment=$((menu_segment + 1))
+    }
+
+    set -- \
         1.7 M H "Help, explaining move     $nav_next" \
         "$d_help/help_pane_move.sh $f_current_script"
 
-    menu_generate_part 3 "$@"
+    menu_generate_part "$menu_segment" "$@"
 }
 
 #===============================================================

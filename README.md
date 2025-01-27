@@ -253,6 +253,18 @@ selected as the cache is re-populated.
 Same if a menu script is changed, if the script is newer than the cache,
 that cache item is regenerated.
 
+### Show Key Hints
+
+Decides if menus using Key Hints as overlays should also show the key hint as a menu
+entry. Since overlays will be silently skipped if the screen is to small, using
+the Key Hint in the menu will give a warning if the screen is to small for it to fit.
+
+```tmux
+set -g @menus_show_key_hints No
+```
+
+This param can be either Yes/true (the default) or No/false
+
 ### Using Styling for menus
 
 See [Styling.md](Styling.md)

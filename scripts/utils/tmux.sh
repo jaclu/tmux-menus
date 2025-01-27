@@ -110,6 +110,8 @@ tmux_get_defaults() {
 
     default_use_cache=Yes
 
+    default_show_key_hints=Yes
+
     if [ -n "$TMUX_CONF" ]; then
         default_tmux_conf="$TMUX_CONF"
     elif [ -n "$XDG_CONFIG_HOME" ]; then
@@ -183,10 +185,22 @@ tmux_get_plugin_options() { # cache references
     tmux_get_defaults
     cfg_trigger_key="$(tmux_escape_special_chars "$(tmux_get_option "@menus_trigger" \
         "$default_trigger_key")")"
-    normalize_bool_param "@menus_without_prefix" "$default_no_prefix" &&
-        cfg_no_prefix=true || cfg_no_prefix=false
-    normalize_bool_param "@menus_use_cache" "$default_use_cache" &&
-        cfg_use_cache=true || cfg_use_cache=false
+
+    if normalize_bool_param "@menus_without_prefix" "$default_no_prefix"; then
+        cfg_no_prefix=true
+    else
+        cfg_no_prefix=false
+    fi
+    if normalize_bool_param "@menus_use_cache" "$default_use_cache"; then
+        cfg_use_cache=true
+    else
+        cfg_use_cache=false
+    fi
+    if normalize_bool_param "@menus_show_key_hints" "$default_show_key_hints"; then
+        cfg_show_key_hints=true
+    else
+        cfg_show_key_hints=false
+    fi
 
     #
     #  Setup env depending on if cache is used or not

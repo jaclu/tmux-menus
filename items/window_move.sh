@@ -23,12 +23,15 @@ dynamic_content() {
 }
 
 static_content() {
+    menu_segment=1
+
     set -- \
         0.0 M Left "Back to Handling Window $nav_prev" windows.sh \
         0.0 M Home "Back to Main menu       $nav_home" main.sh \
         0.0 S
 
-    menu_generate_part 1 "$@"
+    menu_generate_part "$menu_segment" "$@"
+    menu_segment=$((menu_segment + 2)) # increment past dynamic segment
 
     set -- \
         1.7 E m "Move window to other location" "$d_scripts/act_choose_tree.sh W M" \
@@ -37,11 +40,22 @@ static_content() {
         0.0 S \
         1.7 E l "Link window to other session" "$d_scripts/act_choose_tree.sh W L" \
         0.0 C u "Unlink window from this session" "unlink-window" \
-        1.7 S \
-        1.7 M K "Key hints - Move/Link      $nav_next" "$d_hints/choose-tree.sh $f_current_script" \
+        1.7 S
+
+    menu_generate_part "$menu_segment" "$@"
+    menu_segment=$((menu_segment + 1))
+
+    $cfg_show_key_hints && {
+        set -- \
+            1.7 M K "Key hints - Move/Link      $nav_next" "$d_hints/choose-tree.sh $f_current_script"
+
+        menu_generate_part "$menu_segment" "$@"
+        menu_segment=$((menu_segment + 1))
+    }
+    set -- \
         1.7 M H "Help, explaining Move/Link $nav_next" "$d_help/help_window_move.sh $f_current_script"
 
-    menu_generate_part 3 "$@"
+    menu_generate_part "$menu_segment" "$@"
 }
 
 #===============================================================
