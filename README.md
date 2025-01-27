@@ -20,6 +20,7 @@ experienced users, then add more for newbies.
 
 ## Recent Changes
 
+- New feature [Custom menus](docs/CustomMenus.md)
 - Display available keys in an key-hints overlay when selecting an action displaying
   a tmux choose dialog.<br>
   Can be disabled with `set -g @menus_use_hint_overlays No`
