@@ -1,58 +1,81 @@
-# Custom menus
+# Custom Menus
+
+## Overview
+
+This addition streamlines the integration of custom menus into the tmux-menu hierarchy.
+Simply place your custom menu scripts in the `custom_items/` directory (it needs
+to be created in the plugin top folder), and they
+will be automatically linked to the Main menu.
+
+If custom menus are detected, the plugin generates an index of these menus and adds
+a "Custom items" entry at the top of the Main menu.
+
+---
 
 ## How It Works
 
-This plugin automatically handles custom menus placed in the `custom_items/`
-directory, and links to them from the Main menu.
+### **Detecting Changes**
 
-If custom menus are found, an index listing them will be created, and an extra
-item will be added at the top of the Main menu
+The plugin monitors the `custom_items/` directory. When files in this directory
+are added or updated, the following actions occur the next time tmux starts:
 
-### **Monitoring Changes**
+1. **Item Creation or Update**: An index is created or updated to list all valid
+   custom menus.
+2. **Item Removal**: The removed Custom item will no longer be listed.
+   If no valid custom menus are found, the index is removed,
+   and the "Custom items" link in the Main menu disappears.
+3. **Menu Labels**: Each custom menu is listed in the index using:
+   - **menu_name**: The menu's display name.
+   - **menu_key**: The shortcut key for quick access.
 
-When files in `custom_items/` change, on next tmux startup the plugin will
-process all files found.
+To manually reprocess the `custom_items/` directory, run the plugin initialization
+script: `menus.tmux`
 
-- It creates or updates an index, listing all valid custom menus.
-- If no valid items are found, this index is removed, and the link to Custom items
-  in the Main menu is removed.
-- Each Custom menu will be labeled with its menu name and have the shortcut defined
-  in `menu_key`
-
-To manually trigger a reprocessing of the custom menus, run the plugin init script
-`menus.tmux`
+---
 
 ### **Main Menu Integration**
 
-If `_index.sh` exists, it’s automatically linked in the Main Menu as
-"Custom items"
+If a Custom menus index file is generated, the "Custom items" entry will
+appear automatically in the Main menu, linking to your custom menus.
 
 ![Image](https://github.com/user-attachments/assets/7a7b272f-b05e-421b-8447-89fa00c9d2c0)
 
-### **Custom Menu Requirements**
+If nolonger any Custom menus are present, this top item will be removed from the
+Main menu
 
-Custom menu scripts must indicate what shortcut should be used to access this menu
-from the Custom items index.
+---
 
-- **menu_key**: A shortcut for quick access to the menu.<br>
+## Requirements for Custom Menus
+
+Each custom menu script must define the following variables:
+
+- **menu_key**: A unique shortcut key for quick access.<br>
   Example: `menu_key="C"`
 
-- **menu_name**: The label for this menu in the index.<br>
-  Example: `menu_name="A very special menu"`
+- **menu_name**: A user-friendly label displayed in the Custom items index.<br>
+  Example: `menu_name="My Special Menu"`. This will also be used as the label for
+  the menu when displayed.
 
-If either is missing or invalid, a notification will be displayed next time
-the Custom pages are processed, and that custom menu will be ignored until it is fixed.
+If either variable is missing or invalid, the menu will be ignored during the
+indexing process. A notification will appear the next time menus are processed,
+prompting you to fix the script.
 
-There is a template that can be used when creating custom menus.
-copy `templates/custom_item_template.sh` into `custom_items/` with a
-suitable name
+To get started, copy the provided template from `templates/custom_item_template.sh`
+into `custom_items/` and rename it appropriately.
+
+---
+
+## Customization Tips
+
+- **Submenus**: To exclude certain scripts (e.g., submenu scripts) from being listed
+  in the index, place them in a subdirectory of `custom_items/`. Changes to these
+  scripts will still trigger re-indexing but won't appear in the main Custom items
+  index.
+
+---
 
 ## Summary
 
-This approach ensures your custom menus are always recognized and properly linked to
-the Main Menu, keeping everything neat and user-friendly.
-
-In case some Custom menus should not be listed in the Custom menu index, such as
-listing sub-options for one of the main Custom menus, put them
-in a subfolder off `custom_items/`. This way any changes in them will trigger a
-re-indexing of the Custom menus index.
+This plugin ensures your custom menus are recognized, properly linked, and easy
+to access via the Main menu. By following the simple guidelines for menu scripts,
+you can create a clean, organized tmux experience tailored to your needs.
