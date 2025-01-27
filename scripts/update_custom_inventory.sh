@@ -157,7 +157,7 @@ create_custom_index() {
         }
         # this generates an item that will be added to custom items index
         printf '        %s \\\n        %s' \
-            "0.0 M \"$_menu_key\" \"$_menu_name   $cfg_nav_next\"" \
+            "0.0 M \"$_menu_key\" \"$_menu_name  $cfg_nav_next\"" \
             "$custom_menu" >>"$f_custom_items_content"
         log_it "Will use: $custom_menu"
     done

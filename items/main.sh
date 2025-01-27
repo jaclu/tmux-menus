@@ -21,7 +21,7 @@ static_content() {
 
     if [ -f "$f_custom_items_index" ]; then
         set -- \
-            0.0 M \+ "Custom items $nav_next" "$f_custom_items_index"
+            0.0 M \+ "Custom items      $nav_next" "$f_custom_items_index"
 
         menu_generate_part "$menu_segment" "$@"
         menu_segment=$((menu_segment + 1))

@@ -5,14 +5,14 @@
 #
 #  Part of https://github.com/jaclu/tmux-menus
 #
-#  Template custom item, copy this into custom_items and modify!
+#  Template for Custom item, copy this into custom_items and modify it!
 #
 
 static_content() {
 
     set -- \
-        0.0 M Left "Back to Custom items $nav_prev" "$f_custom_items_index" \
-        0.0 M Left "Back to Main menu   $nav_home" main.sh \
+        0.0 M Left "Back to Custom items  $nav_prev" "$f_custom_items_index" \
+        0.0 M Left "Back to Main menu     $nav_home" main.sh \
         0.0 S \
         0.0 T "*** Replace this line with one or more lines of custom contnent! ***"
 
@@ -25,7 +25,7 @@ static_content() {
 #
 #===============================================================
 
-menu_name="My Adidtional Menu"
+menu_name="My Custom Menu"
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
@@ -34,7 +34,7 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 
 # A custom items menu must define a menu_key, that will be its shortcut in the
-# index listing custom items
+# index listing custom items.
 
 # Since this will be used to point to this menu from the index,
 # it is recommended to use uppercase in order to follow the conventions
