@@ -15,19 +15,19 @@ static_content() {
         #  zooms the pane
         choose_tree="$choose_tree -Z"
     fi
-    if $cfg_use_whiptail; then
+
+    navigate_cmd="$TMUX_BIN $choose_tree"
+    if $cfg_use_hint_overlays && ! $cfg_use_whiptail; then
         # The help overlay can't be displayed using whiptail
-        navigate_cmd="$TMUX_BIN $choose_tree"
-    else
-        navigate_cmd="$TMUX_BIN $choose_tree & $d_hints/choose-tree.sh skip-oversized"
+        navigate_cmd="$navigate_cmd & $d_hints/choose-tree.sh skip-oversized"
     fi
 
     fw_span="Windows"
     tmux_vers_check 2.6 && fw_span="Sessions & $fw_span"
-    fw_lbl_line2="Only visible part"
+    fw_lbl_line2="Ignores history"
     if tmux_vers_check 3.2; then
         #  adds ignore case, and zooms the pane
-        fw_lbl_line2="$fw_lbl_line2, ignores case"
+        fw_lbl_line2="$fw_lbl_line2, case insensitive"
         fw_flags="-Zi"
     elif tmux_vers_check 2.9; then
         #  zooms the pane
@@ -40,20 +40,25 @@ static_content() {
     set -- \
         0.0 M Left "Back to Main menu $nav_home" main.sh \
         0.0 S \
-        1.7 E n "Navigate & select ses/win/pane" "$navigate_cmd" \
-        1.7 S \
+        1.7 E n "Navigate & select ses/win/pane" "$navigate_cmd"
+
+    $cfg_use_hint_overlays && $cfg_show_key_hints && {
+        set -- "$@" \
+            1.7 M K "Key hints - Navigate & select  $nav_next" \
+            "$d_hints/choose-tree.sh $f_current_script"
+    }
+
+    menu_generate_part "$menu_segment" "$@"
+    menu_segment=$((menu_segment + 1))
+
+    set -- \
+        1.8 S \
         1.8 T "-#[nodim]Search in all $fw_span" \
         1.8 C s "$fw_lbl_line2" "$fw_cmd"
 
     menu_generate_part "$menu_segment" "$@"
     menu_segment=$((menu_segment + 1))
 
-    $cfg_show_key_hints && {
-        set -- \
-            1.7 S \
-            1.7 M N "Key hints - Navigate & select  $nav_next" "$d_hints/choose-tree.sh $f_current_script"
-        menu_generate_part "$menu_segment" "$@"
-    }
 }
 
 #===============================================================

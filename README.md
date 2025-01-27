@@ -20,12 +20,9 @@ experienced users, then add more for newbies.
 
 ## Recent Changes
 
-- Display available keys in an key-hints overlay when selecting a an action displaying
+- Display available keys in an key-hints overlay when selecting an action displaying
   a tmux choose dialog.<br>
-  This overlay will only be displayed if it fits on screen.
-  To make it easier to check if the overlay was skipped due to screen size, each menu
-  featuring this also have a `Key hints - ...` item. When this is opened a warning will
-  be displayed if it doesn't fit on the current screen.
+  Can be disabled with `set -g @menus_use_hint_overlays No`
 - Added help for selection of paste buffers
 - Split handling of external dialogs into two scripts, to improve job control
 - Added support for dialog as external menu handler
@@ -253,17 +250,44 @@ selected as the cache is re-populated.
 Same if a menu script is changed, if the script is newer than the cache,
 that cache item is regenerated.
 
-### Show Key Hints
+### Use Hint Overlays
 
-Decides if menus using Key Hints as overlays should also show the key hint as a menu
-entry. Since overlays will be silently skipped if the screen is to small, using
-the Key Hint in the menu will give a warning if the screen is to small for it to fit.
+Some menu items will display tmux dialogs, where each have their own rather complex
+set of special key bindings - choose-buffer, choose-client, choose-tree and customize-mode
+
+When entering such a dialog, per default an overlay will first be presented lisitng
+the keys available for that dialog, if it fits on screen.
+
+Use this setting to disable the overlay feature.
 
 ```tmux
-set -g @menus_show_key_hints No
+set -g @menus_use_hint_overlays No
 ```
 
 This param can be either Yes/true (the default) or No/false
+
+If `@menus_use_hint_overlays` is enabled, there is a support option
+`@menus_show_key_hints` that also can be toggled. If `@menus_use_hint_overlays`
+is disabled, `@menus_show_key_hints` is ignored.
+
+#### Show Key Hints
+
+Related to `@menus_use_hint_overlays` Since those key-listings tend to be rather long
+they might not fit on screen, and thus be silently skipped.
+Enabling this will offer an extra option `Key Hints` on each menu featuring an
+alternative that will display such a dialog, and mentioning which item on that
+menu it is related to.
+
+This Key Hint will display the dialog the normal way, giving a warning if the
+screen is to small, mentioning required screen size.
+
+It will also serve as a hint as to what menu entries are expected to display an overlay.
+
+```tmux
+set -g @menus_show_key_hints Yes
+```
+
+This param can be either Yes/true or No/false (the default)
 
 ### Using Styling for menus
 

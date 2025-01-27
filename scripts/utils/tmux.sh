@@ -110,7 +110,8 @@ tmux_get_defaults() {
 
     default_use_cache=Yes
 
-    default_show_key_hints=Yes
+    default_use_hint_overlays=Yes
+    default_show_key_hints=No
 
     if [ -n "$TMUX_CONF" ]; then
         default_tmux_conf="$TMUX_CONF"
@@ -195,6 +196,11 @@ tmux_get_plugin_options() { # cache references
         cfg_use_cache=true
     else
         cfg_use_cache=false
+    fi
+    if normalize_bool_param "@menus_use_hint_overlays" "$default_use_hint_overlays"; then
+        cfg_use_hint_overlays=true
+    else
+        cfg_use_hint_overlays=false
     fi
     if normalize_bool_param "@menus_show_key_hints" "$default_show_key_hints"; then
         cfg_show_key_hints=true

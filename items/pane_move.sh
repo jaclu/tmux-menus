@@ -13,12 +13,13 @@ dynamic_content() {
     set --
     tmux_vers_check 3.0 && {
         # marking a pane is an ancient feature, but pane_marked came at 3.0
-        $TMUX_BIN display-message -p '#{&&:#{pane_marked_set},#{!=:#{pane_marked},1}}' | grep -q 1 && {
+        $TMUX_BIN display-message -p \
+            '#{&&:#{pane_marked_set},#{!=:#{pane_marked},1}}' | grep -q 1 && {
             set -- \
                 3.0 C m "Swap current pane with marked" "swap-pane $menu_reload"
         }
     }
-    menu_generate_part 2 "$@"
+    menu_generate_part 2 "$@" # needs to be generated even if empty, to keep an item 2
 }
 
 static_content() {
@@ -35,24 +36,24 @@ static_content() {
     set -- \
         1.7 C p "Swap pane with prev" "swap-pane -U $menu_reload" \
         1.7 C n "Swap pane with next" "swap-pane -D $menu_reload" \
-        1.7 E o "Move to other win/ses" "$d_scripts/act_choose_tree.sh P M" \
-        0.0 S \
-        2.4 E w "Break pane to a new window" "$d_scripts/break_pane.sh" \
-        1.7 S
+        1.7 S \
+        2.4 E w "Break pane off to a new window" "$d_scripts/break_pane.sh" \
+        1.7 E o "Move to other win/ses" "$d_scripts/act_choose_tree.sh P M"
 
     menu_generate_part "$menu_segment" "$@"
     menu_segment=$((menu_segment + 1))
 
-    $cfg_show_key_hints && {
+    $cfg_use_hint_overlays && $cfg_show_key_hints && {
         set -- \
-            1.7 M O "Key hints - Move to other $nav_next" \
+            1.7 M K "Key hints - Move to other $nav_next" \
             "$d_hints/choose-tree.sh $f_current_script"
-
         menu_generate_part "$menu_segment" "$@"
         menu_segment=$((menu_segment + 1))
+
     }
 
     set -- \
+        0.0 S \
         1.7 M H "Help, explaining move     $nav_next" \
         "$d_help/help_pane_move.sh $f_current_script"
 

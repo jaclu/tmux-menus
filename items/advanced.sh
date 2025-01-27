@@ -29,18 +29,27 @@ dynamic_content() {
         $new_mouse_status $menu_reload" \
         2.4 C p "Change prefix (C-$current_prefix)" "command-prompt -1 -p \
             'prefix (will take effect imeditally)' \
-            'run-shell \"$d_scripts/change_prefix.sh %1 $reload_in_runshell\"'"
+            'run-shell \"$d_scripts/change_prefix.sh %1 $reload_in_runshell\"'" \
+        0.0 S
 
     menu_generate_part 2 "$@"
 }
 
 static_content() {
     menu_segment=1
+    $cfg_use_hint_overlays && ! $cfg_use_whiptail && {
+        hint="\& $d_hints/choose-client.sh skip-oversized"
+    }
 
     # 2.7 M M "Manage clients    $nav_next" advanced_manage_clients.sh \
     set -- \
         0.0 M Left "Back to Main menu $nav_home" main.sh \
         0.0 S
+
+    menu_generate_part "$menu_segment" "$@"
+    menu_segment=$((menu_segment + 2)) # increment past dynamic segment
+
+    set --
 
     if $cfg_use_whiptail; then
         #
@@ -65,31 +74,34 @@ static_content() {
         0.0 C m "Tmux messages" 'show-messages' \
         1.9 C t "Tmux terminal bindings" 'show-messages -T' \
         0.0 C : "Enter a tmux command" command-prompt \
-        0.0 S \
         0.0 C s "Toggle status line" "set status $menu_reload"
 
     menu_generate_part "$menu_segment" "$@"
-    menu_segment=$((menu_segment + 2)) # increment past dynamic segment
+    menu_segment=$((menu_segment + 1))
 
     # shellcheck disable=SC2154
     set -- \
         1.8 S \
         2.7 E c "Disconnect clients" \
-        "$TMUX_BIN choose-client -Z & $d_hints/choose-client.sh skip-oversized" \
-        1.8 C x "Kill server" "confirm-before -p \
-            'kill tmux server defined in($TMUX_SOURCE) ? (y/n)' kill-server"
+        "$TMUX_BIN choose-client -Z $hint"
 
     menu_generate_part "$menu_segment" "$@"
     menu_segment=$((menu_segment + 1))
 
-    $cfg_show_key_hints && {
+    $cfg_use_hint_overlays && $cfg_show_key_hints && {
         set -- \
-            0.0 S \
-            0.0 M C "Key hints - Disconnect $nav_next" \
+            0.0 M K "Key hints - Disconnect $nav_next" \
             "$d_hints/choose-client.sh $f_current_script"
 
         menu_generate_part "$menu_segment" "$@"
+        menu_segment=$((menu_segment + 1))
     }
+    # shellcheck disable=SC2154
+    set -- \
+        1.8 C x "Kill server" "confirm-before -p \
+            'kill tmux server defined in($TMUX_SOURCE) ? (y/n)' kill-server"
+
+    menu_generate_part "$menu_segment" "$@"
 }
 
 #===============================================================

@@ -163,6 +163,7 @@ cfg_trigger_key="$cfg_trigger_key"
 cfg_no_prefix="$cfg_no_prefix"
 
 cfg_use_cache="$cfg_use_cache"
+cfg_use_hint_overlays="$cfg_use_hint_overlays"
 cfg_show_key_hints="$cfg_show_key_hints"
 
 cfg_use_whiptail="$cfg_use_whiptail"

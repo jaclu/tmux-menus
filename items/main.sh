@@ -10,9 +10,11 @@
 
 static_content() {
     menu_segment=1
+
     customize_mode_cmd="$TMUX_BIN customize-mode -Z "
-    if ! $cfg_use_whiptail; then
-        customize_mode_cmd="$customize_mode_cmd & $d_hints/customize-mode.sh  skip-oversized"
+    if $cfg_use_hint_overlays && ! $cfg_use_whiptail; then
+        hint="\& $d_hints/customize-mode.sh skip-oversized"
+        customize_mode_cmd="$customize_mode_cmd $hint"
     fi
     rld_cmd="command-prompt -I '$cfg_tmux_conf' -p 'Source file:' \
         'run-shell \"$d_scripts/reload_conf.sh %% $reload_in_runshell\"'"
@@ -39,21 +41,15 @@ static_content() {
         0.0 M E "Extras            $nav_next" extras.sh \
         0.0 S \
         3.2 T "-#[nodim]On-the-Fly Config" \
-        3.2 E c "  (customize-mode)" "$customize_mode_cmd" \
-        1.8 E p "Plugins inventory" "plugins.sh" \
-        0.0 C p "Reload tmux conf" "$rld_cmd" \
-        0.0 C d 'Detach from tmux' detach-client \
-        0.0 S
+        3.2 E c "  (customize-mode)" "$customize_mode_cmd"
 
     menu_generate_part "$menu_segment" "$@"
     menu_segment=$((menu_segment + 1))
 
-    $cfg_show_key_hints && {
-        log_it "========= cfg_show_key_hints: [$cfg_show_key_hints]"
-
+    $cfg_use_hint_overlays && $cfg_show_key_hints && {
         set -- \
             3.2 T "-#[nodim]Key hints - " \
-            3.2 M C "  customize-mode $nav_next" \
+            3.2 M K "  customize-mode  $nav_next" \
             "$d_hints/customize-mode.sh $f_current_script"
 
         menu_generate_part "$menu_segment" "$@"
@@ -61,7 +57,11 @@ static_content() {
     }
 
     set -- \
-        0.0 M H "Help             $nav_next" \
+        1.8 E p "Plugins inventory" "plugins.sh" \
+        0.0 C p "Reload tmux conf" "$rld_cmd" \
+        0.0 C d 'Detach from tmux' detach-client \
+        0.0 S \
+        0.0 M H "Help              $nav_next" \
         "$d_help/help_summary.sh $f_current_script"
 
     menu_generate_part "$menu_segment" "$@"

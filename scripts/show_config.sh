@@ -43,6 +43,8 @@ show_item @menus_trigger "$cfg_trigger_key" "$default_trigger_key"
 show_item @menus_without_prefix "$cfg_no_prefix" "$default_no_prefix"
 show_item @menus_use_cache "$cfg_use_cache" "$default_use_cache"
 show_item @menus_show_key_hints "$cfg_show_key_hints" "$default_show_key_hints"
+show_item @menus_use_hint_overlays "$cfg_use_hint_overlays" "$default_use_hint_overlays"
+
 # show_item cfg_log_file "$cfg_log_file" "$default_log_file"
 show_item @menus_config_file "$cfg_tmux_conf" "$default_tmux_conf"
 show_item @menus_location_x "$cfg_mnu_loc_x" "$default_location_x"
