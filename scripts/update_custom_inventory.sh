@@ -247,7 +247,7 @@ f_custom_items_template="$D_TM_BASE_PATH"/items/custom_index_template.sh
 f_custom_items_content="$d_cache"/custom_items_content
 
 # debug helper
-[ "$DBG_TO_STDERR" = "1" ] && log_interactive_to_stderr=true
+# [ "$LOG_TO_STDERR" = "1" ] && log_interactive_to_stderr=true
 
 if [ ! -d "$d_custom_items" ]; then
     # Folder missing, clear custom items cache and exit
