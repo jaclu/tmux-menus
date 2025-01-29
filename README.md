@@ -371,32 +371,33 @@ If it doesn't happen the next time the menu is attempted, it can be ignored.
 
 ## Modifications
 
-Each menu is a script, so can eaily be editrf it and once saved,
-the new content is displayed the next time that menu is triggered.
+Each menu is a standalone script, making it easy to edit. Once saved,
+the updated content will be displayed the next time the menu is triggered.  
 
-Rapid development with minimal fuzz!
+**Fast development with minimal hassle!**  
 
-If an edited menu fails to be displayed, run that menu from the command line,
-something like:
+If an edited menu fails to load, you can run it directly from the command
+line to check for syntax errors:  
 
 ```bash
 ./items/sessions.sh
 ```
 
-This directly triggers that menu and displays any syntax errors on the
-command line.
+This will immediately execute the menu and display any errors in the terminal.
 
-If `@menus_log_file` is defined, either in the tmux conf, or hardcoded
-in `scripts/helpers.sh` around line 289. Logging can be used in menus:
+If `@menus_log_file` is set—either in the tmux configuration or hardcoded in
+`scripts/helpers.sh` (around line 344, look for assignment of cfg_log_file)
+logging can be used within menus:  
 
 ```bash
 log_it "foo is now [$foo]"
 ```
 
-If having two terminals with one tailing a log file is unpractical,
-setting the log file to `/dev/stderr` would essentially make it into `echo`.
-Choosing `/dev/stderr` instead of `/dev/stdout` avoids triggering errors if
-the `log_it` is called during string assignment.
+If monitoring a log file in a separate terminal is impractical,
+you can set the log file to `/dev/stderr` to make `log_it` behave like `echo`.
+
+Using `/dev/stderr` instead of `/dev/stdout` prevents unintended errors if
+`log_it` is called during string assignments.  
 
 </details>
 <details>
