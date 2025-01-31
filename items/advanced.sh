@@ -88,9 +88,11 @@ static_content() {
     menu_generate_part "$menu_segment" "$@"
     menu_segment=$((menu_segment + 1))
 
-    $cfg_use_hint_overlays && $cfg_show_key_hints && {
+    $cfg_use_hint_overlays && $cfg_show_key_hints && tmux_vers_check 2.7 && {
+	    # Only generate this segment if any content will be displayed
+	    # i.e. tmux >= 2.7
         set -- \
-            0.0 M K "Key hints - Disconnect $nav_next" \
+            2.7 M K "Key hints - Disconnect $nav_next" \
             "$d_hints/choose-client.sh $f_current_script"
 
         menu_generate_part "$menu_segment" "$@"
