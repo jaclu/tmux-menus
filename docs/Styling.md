@@ -48,11 +48,11 @@ set -g @menus_format_title "'#[align=centre] #[fg=colour34]#{@menu_name} '"
 
 ## Menu navigaion hints
 
-| action    | default | variable        | default | Sample config        |
-| --------- | ------- | --------------- | ------- | -------------------- |
-| next menu | -->     | @menus_nav_next | -->     | "#[fg=colour220]-->" |
-| prev menu | <--     | @menus_nav_prev | <--     | "#[fg=colour71]<--"  |
-| home      | <==     | @menus_nav_home | <==     | "#[fg=colour84]<=="  |
+| action    | variable        | default | Sample config        |
+| --------- | --------------- | ------- | -------------------- |
+| next menu | @menus_nav_next | -->     | "#[fg=colour220]-->" |
+| prev menu | @menus_nav_prev | <--     | "#[fg=colour71]<--"  |
+| home      | @menus_nav_home | <==     | "#[fg=colour84]<=="  |
 
 The navigation variables support full normal styling
 
