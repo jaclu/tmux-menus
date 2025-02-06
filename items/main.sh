@@ -58,7 +58,7 @@ static_content() {
 
     set -- \
         1.8 E p "Plugins inventory" "plugins.sh" \
-        0.0 C p "Reload tmux conf" "$rld_cmd" \
+        0.0 C r "Reload tmux conf" "$rld_cmd" \
         0.0 C d 'Detach from tmux' detach-client \
         0.0 S \
         0.0 M H "Help              $nav_next" \
