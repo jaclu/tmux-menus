@@ -507,6 +507,7 @@ The best way to send feedback is to file an
 
 ## Thanks to
 
+- [Tony Soloveyv](https://github.com/tony-sol) for spotting an unintentional shortcut change in the main menu
 - [JuanGarcia345](https://github.com/JuanGarcia345) for suggesting to make
   menu-cache optional.
 - [phdoerfler](https://github.com/phdoerfler) for noticing TMUX_BIN was often not set,
