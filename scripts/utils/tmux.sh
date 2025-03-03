@@ -282,6 +282,9 @@ tmux_escape_special_chars() {
             char="$char$(extract_char "$tesc_str" "$tesc_idx")"
         }
         case "$char" in
+        \\)
+            tesc_esc_str="${tesc_esc_str}\\\\"
+            ;;
         \`)
             tesc_esc_str="${tesc_esc_str}\\\`"
             ;;
