@@ -1,9 +1,9 @@
 # Tmux-Menus
 
 <img width="250" alt="main"
-src="https://github.com/user-attachments/assets/30d0f813-525c-46be-9a29-5f86be816553" />
+src="https://github.com/user-attachments/assets/410e3b46-bf7e-47fe-8ba7-dbc6822ae0d5" />
 <img width="250" alt="main-styled"
-src="https://github.com/user-attachments/assets/7e89b9fc-e862-4d81-b393-bb31f0102559" />
+src="https://github.com/user-attachments/assets/e00caffb-630d-4717-9f12-e4be22a29fd5" />
 
 ## Summary
 
@@ -20,13 +20,14 @@ experienced users, then add more for newbies.
 
 ## Recent Changes
 
+- Fixed bug when disabling caching, due to a Custom Menus check that should not be
+  done when caching is disabled, causing the plugin to crash.
+- Explained boolean parameters
+- Ensured all usage of boolean parameters in this README is consistent.
 - New feature [Custom menus](docs/CustomMenus.md)
 - Display available keys in an key-hints overlay when selecting an action displaying
   a tmux choose dialog.<br>
-  Can be disabled with `set -g @menus_use_hint_overlays No`
-- Added help for selection of paste buffers
-- Split handling of external dialogs into two scripts, to improve job control
-- Added support for dialog as external menu handler
+  Can be disabled with `set -g @menus_use_hint_overlays 'No'`
 
 </details>
 <details>
@@ -210,26 +211,45 @@ MacOS does not come with whiptail, but it is available in the Homebrew package `
 
 ## Configuration
 
+### Boolean parameters
+
+All boolean parameters accept the following values:
+
+- `Yes` `True` `1`
+- `No` `False` `0`
+
+This check is case-insensitive, meaning any combination of uppercase and lowercase
+letters is accepted.
+
 ### Display menus
 
 The default trigger is `<prefix> \` The trigger is configured like this:
 
 ```tmux
-set -g @menus_trigger F12
+set -g @menus_trigger 'F12'
 ```
 
-Please note that non-standard keys, like the default backslash need to
-be prefixed with a `\` like `\\` in order not to confuse tmux.
+Note: Non-standard keys, such as the default backslash (`\`), must be prefixed with `\`
+(e.g., `\\`) to prevent confusion in tmux.
+
+Handling special keys becomes more complex when using quotes:
+
+- Inside single quotes, both `'\'` and `'\\'` work.
+- Inside double quotes, only `"\\"` is valid.
+
+To avoid unexpected errors when switching between quoting styles, it's recommended
+to always prefix special keys with `\` inside both single and double quotes,
+as well as when not using quotes.
 
 ### Display without using prefix
 
 In order to trigger menus without first hitting `<prefix>`
 
 ```tmux
-set -g @menus_without_prefix Yes
+set -g @menus_without_prefix 'Yes'
 ```
 
-This param can be either Yes/true or No/false (the default)
+This boolean parameter can be either `Yes` or `No` (the default)
 
 ### Menu location
 
@@ -237,8 +257,8 @@ The default locations are: `C` for tmux >= 3.2 `P` otherwise. If whiptail/dialog
 menu location is ignored
 
 ```tmux
-set -g @menus_location_x W
-set -g @menus_location_y S
+set -g @menus_location_x 'W'
+set -g @menus_location_y 'S'
 ```
 
 For all location options see the tmux man page, search for `display-menu`.
@@ -258,8 +278,12 @@ The basic options are:
 By default menu items are cached, set this to `No` to disable all caching.
 
 ```tmux
-set -g @menus_use_cache No
+set -g @menus_use_cache 'No'
 ```
+
+This boolean parameter can be either `Yes` (the default) or `No`
+
+Disabling caching also disables the Custom Menus feature.
 
 To be more precise, items listed inside `static_content()` are cached.
 Some items need to be freshly generated each time a menu is displayed,
@@ -285,13 +309,13 @@ the keys available for that dialog, if it fits on screen.
 Use this setting to disable the overlay feature.
 
 ```tmux
-set -g @menus_use_hint_overlays No
+set -g @menus_use_hint_overlays 'No'
 ```
 
-This param can be either Yes/true (the default) or No/false
+This boolean parameter can be either `Yes` (the default) or `No`
 
 If `@menus_use_hint_overlays` is enabled, there is a support option
-`@menus_show_key_hints` that also can be toggled. If `@menus_use_hint_overlays`
+`@menus_show_key_hints` (defaults to 'No') that also can be toggled. If `@menus_use_hint_overlays`
 is disabled, `@menus_show_key_hints` is ignored.
 
 #### Show Key Hints
@@ -308,10 +332,10 @@ screen is to small, mentioning required screen size.
 It will also serve as a hint as to what menu entries are expected to display an overlay.
 
 ```tmux
-set -g @menus_show_key_hints Yes
+set -g @menus_show_key_hints 'Yes'
 ```
 
-This param can be either Yes/true or No/false (the default)
+This boolean parameter can be either `Yes` or `No` (the default)
 
 ### Pointer to the config file
 
@@ -322,10 +346,10 @@ set -g @menus_config_file '~/.configs/tmux.conf'
 In the main menu, the tmux config file to be reloaded.
 The default location for this is:
 
-1. @menus_config_file - if this is defined in the tmux config file, it will be used.
-2. $TMUX_CONF - if this is present in the environment, it will be used.
-3. $XDG_CONFIG_HOME/tmux/tmux.conf - if $XDG_CONFIG_HOME is defined.
-4. ~/.tmux.conf - Default if none of the above are set.
+1. `@menus_config_file` - if this is defined in the tmux config file, it will be used.
+2. `$TMUX_CONF` - if this is present in the environment, it will be used.
+3. `$XDG_CONFIG_HOME/tmux/tmux.conf` - if `$XDG_CONFIG_HOME` is defined.
+4. `~/.tmux.conf` - Default if none of the above are set.
 
 When a reload is requested, the conf file will be prompted for, defaulting
 to the first match above. It can be manually changed.
@@ -372,12 +396,12 @@ If it doesn't happen the next time the menu is attempted, it can be ignored.
 ## Modifications
 
 Each menu is a standalone script, making it easy to edit. Once saved,
-the updated content will be displayed the next time the menu is triggered.  
+the updated content will be displayed the next time the menu is triggered.
 
-**Fast development with minimal hassle!**  
+**Fast development with minimal hassle!**
 
 If an edited menu fails to load, you can run it directly from the command
-line to check for syntax errors:  
+line to check for syntax errors:
 
 ```bash
 ./items/sessions.sh
@@ -387,7 +411,7 @@ This will immediately execute the menu and display any errors in the terminal.
 
 If `@menus_log_file` is set—either in the tmux configuration or hardcoded in
 `scripts/helpers.sh` (around line 344, look for assignment of cfg_log_file)
-logging can be used within menus:  
+logging can be used within menus:
 
 ```bash
 log_it "foo is now [$foo]"
@@ -397,7 +421,7 @@ If monitoring a log file in a separate terminal is impractical,
 you can set the log file to `/dev/stderr` to make `log_it` behave like `echo`.
 
 Using `/dev/stderr` instead of `/dev/stdout` prevents unintended errors if
-`log_it` is called during string assignments.  
+`log_it` is called during string assignments.
 
 </details>
 <details>
@@ -406,11 +430,11 @@ Using `/dev/stderr` instead of `/dev/stdout` prevents unintended errors if
 
 ## Menu building
 
-Each item consists of at least two params
+Each item consists of at least two parameters
 
 - min tmux version for this item, set to 0.0 if assumed to always work
 - Type of menu item, see below
-- Additional params depending on the item type
+- Additional parameters depending on the item type
 
 Item types and their parameters
 
@@ -430,7 +454,7 @@ Item types and their parameters
   - text to display. Any initial "-" (making it unselectable in tmux menus)
     will be skipped if whiptail is used, since a leading "-" would cause it to crash.
 - S - Separator/Spacer line line
-  - no params
+  - no parameters
 
 ### Sample script
 
@@ -508,7 +532,7 @@ The best way to send feedback is to file an
 ## Thanks to
 
 - [Tony Soloveyv](https://github.com/tony-sol) for spotting an unintentional
-shortcut change in the main menu
+  shortcut change in the main menu
 - [JuanGarcia345](https://github.com/JuanGarcia345) for suggesting to make
   menu-cache optional.
 - [phdoerfler](https://github.com/phdoerfler) for noticing TMUX_BIN was often not set,
