@@ -20,10 +20,10 @@ experienced users, then add more for newbies.
 
 ## Recent Changes
 
-- Fixed bug when disabling caching, due to a Custom Menus check that should not be
-  done when caching is disabled, causing the plugin to crash.
-- Explained boolean parameters
-- Ensured all usage of boolean parameters in this README is consistent.
+- Fixed a bug where disabling caching caused the plugin to crash due to an
+  unnecessary Custom Menus check.
+- Explained boolean parameters and ensured all parameter samples in
+  this README is consistent when it comes to quoting.
 - New feature [Custom menus](docs/CustomMenus.md)
 - Display available keys in an key-hints overlay when selecting an action displaying
   a tmux choose dialog.<br>
@@ -218,7 +218,7 @@ All boolean parameters accept the following values:
 - `Yes` `True` `1`
 - `No` `False` `0`
 
-This check is case-insensitive, meaning any combination of uppercase and lowercase
+This is case-insensitive, meaning any combination of uppercase and lowercase
 letters is accepted.
 
 ### Display menus

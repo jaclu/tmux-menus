@@ -50,9 +50,9 @@ set -g @menus_format_title "'#[align=centre] #[fg=colour34]#{@menu_name} '"
 
 | action    | variable        | default | Sample config        |
 | --------- | --------------- | ------- | -------------------- |
-| next menu | @menus_nav_next | -->     | "#[fg=colour220]-->" |
-| prev menu | @menus_nav_prev | <--     | "#[fg=colour71]<--"  |
-| home      | @menus_nav_home | <==     | "#[fg=colour84]<=="  |
+| next menu | @menus_nav_next | '-->'   | '#[fg=colour220]-->' |
+| prev menu | @menus_nav_prev | '<--'   | '#[fg=colour71]<--'  |
+| home      | @menus_nav_home | '<=='   | '#[fg=colour84]<=='  |
 
 The navigation variables support full normal styling
 
@@ -85,10 +85,10 @@ and the menu will be regenerated with the new style the next time it’s display
 
 ```tmux
 # fg @thm_surface_0 bg @thm_yellow
-set -g @menus_simple_style_selected "fg=#414559,bg=#e5c890"
-set -g @menus_simple_style "bg=#414559"        # @thm_surface_0
-set -g @menus_simple_style_border "bg=#414559" # @thm_surface_0
-set -g @menus_nav_next "#[fg=colour220]-->"
-set -g @menus_nav_prev "#[fg=colour71]<--"
-set -g @menus_nav_home "#[fg=colour84]<=="
+set -g @menus_simple_style_selected 'fg=#414559,bg=#e5c890'
+set -g @menus_simple_style 'bg=#414559'        # @thm_surface_0
+set -g @menus_simple_style_border 'bg=#414559' # @thm_surface_0
+set -g @menus_nav_next '#[fg=colour220]-->'
+set -g @menus_nav_prev '#[fg=colour71]<--'
+set -g @menus_nav_home '#[fg=colour84]<=='
 ```
