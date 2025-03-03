@@ -124,11 +124,15 @@ tmux_get_defaults() {
     default_log_file=""
 }
 
+tmux_is_option_defined() {
+    tmux_vers_check 1.8 && tmux_error_handler show-options -gq | grep -q "^$1"
+}
+
 tmux_get_option() {
     tgo_option="$1"
     tgo_default="$2"
 
-    # log_it "tmux_get_option($tgo_option, $tgo_default)"
+    # log_it "tmux_get_option([$tgo_option], $tgo_default)"
 
     [ -z "$tgo_option" ] && error_msg "tmux_get_option() param 1 empty!"
 
@@ -142,26 +146,12 @@ tmux_get_option() {
         return
     fi
 
-    # don't use tmux_error_handler here
-    if tgo_value="$($TMUX_BIN show-options -gv "$tgo_option" 2>/dev/null)"; then
-        #
-        #  I haven't figured out if it is my asdf builds that have issues
-        #  or something else, since I never heard of this issue before.
-        #  On the other side, I don't think I have ever tried to assign ""
-        #  to a user-option that has a non-empty default, so it might be
-        #  an actual bug in tmux 3.0 - 3.2a
-        #
-        #  The problem is that with these versions tmux will will not
-        #  report an error if show-options -gv is used on an undefined
-        #  option starting with the char "@" as you should with
-        #  user-options. For options starting with other chars,
-        #  the normal error is displayed also with these versions.
-        #
+    if tgo_value="$(tmux_error_handler show-options -gvq "$tgo_option" 2>/dev/null)"; then
         [ -z "$tgo_value" ] && ! tmux_is_option_defined "$tgo_option" && {
             #
-            #  This is a workaround, checking if the variable is defined
-            #  before assigning the default, preserving intentional
-            #  "" assignments
+            #  Since tmux doesn't differentiate between the variable being absent
+            #  and being assigned to "", an extra check is done to see if it is
+            #  present, if not the default will be used
             #
             tgo_value="$tgo_default"
         }
@@ -277,10 +267,6 @@ tmux_get_plugin_options() { # cache references
         cfg_use_notes=false
     fi
     # log_it "  tmux_get_plugin_options() - done"
-}
-
-tmux_is_option_defined() {
-    tmux_vers_check 1.8 && tmux_error_handler show-options -g | grep -q "^$1"
 }
 
 tmux_escape_special_chars() {
