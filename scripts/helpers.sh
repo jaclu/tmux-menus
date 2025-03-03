@@ -358,6 +358,7 @@ cfg_use_cache=false
 #  Convenience shortcuts
 #
 d_tmp="${TMPDIR:-/tmp}"
+d_tmp="${d_tmp%/}" # Removes a trailing slash if present - sometimes set in TMPDIR...
 d_items="$D_TM_BASE_PATH"/items
 d_help="$d_items"/help
 d_hints="$d_items"/hints
