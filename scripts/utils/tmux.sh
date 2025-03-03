@@ -204,8 +204,8 @@ tmux_get_plugin_options() { # cache references
     if $cfg_use_cache; then
         rm -f "$f_cache_not_used_hint"
     else
-        # indicate that cache should not be used
-        log_it "touching: $f_cache_not_used_hint"
+        # indicate that cache should not be used, using the assumption that
+        # $TMPDIR is still writeable
         touch "$f_cache_not_used_hint"
     fi
 
@@ -234,20 +234,14 @@ tmux_get_plugin_options() { # cache references
         cfg_format_title="$(tmux_get_option "@menus_format_title" \
             "$default_format_title")"
 
-        cfg_nav_next="$(tmux_get_option "@menus_nav_next" \
-            "$default_nav_next")"
-        cfg_nav_prev="$(tmux_get_option "@menus_nav_prev" \
-            "$default_nav_prev")"
-        cfg_nav_home="$(tmux_get_option "@menus_nav_home" \
-            "$default_nav_home")"
-        cfg_mnu_loc_x="$(tmux_get_option "@menus_location_x" \
-            "$default_location_x")"
-        cfg_mnu_loc_y="$(tmux_get_option "@menus_location_y" \
-            "$default_location_y")"
+        cfg_nav_next="$(tmux_get_option "@menus_nav_next" "$default_nav_next")"
+        cfg_nav_prev="$(tmux_get_option "@menus_nav_prev" "$default_nav_prev")"
+        cfg_nav_home="$(tmux_get_option "@menus_nav_home" "$default_nav_home")"
+        cfg_mnu_loc_x="$(tmux_get_option "@menus_location_x" "$default_location_x")"
+        cfg_mnu_loc_y="$(tmux_get_option "@menus_location_y" "$default_location_y")"
     fi
 
-    cfg_tmux_conf="$(tmux_get_option "@menus_config_file" \
-        "$default_tmux_conf")"
+    cfg_tmux_conf="$(tmux_get_option "@menus_config_file" "$default_tmux_conf")"
     _f="$(tmux_get_option "@menus_log_file" "$default_log_file")"
     [ -z "$cfg_log_file" ] && [ -n "$_f" ] && {
         #  If a debug logfile has been set, the tmux setting will be ignored.
