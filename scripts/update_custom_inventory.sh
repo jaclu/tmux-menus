@@ -126,7 +126,7 @@ failed_to_extract_variable() {
 
 create_custom_index() {
     # log_it "create_custom_index()"
-    crate_cache_folder # make sure it exists
+    cache_create_folder # make sure it exists
     [ -z "$f_custom_items_content" ] && {
         error_msg "variable f_custom_items_content undefined"
     }

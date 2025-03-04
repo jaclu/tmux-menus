@@ -20,7 +20,7 @@ tmux_get_defaults() {
 
     # log_it "tmux_get_defaults()"
 
-    default_trigger_key=\\
+    default_trigger_key="\\"
     default_no_prefix=No
 
     default_simple_style_selected=default
@@ -106,11 +106,8 @@ tmux_get_plugin_options() { # cache references
     # log_it "tmux_get_plugin_options()"
 
     tmux_get_defaults
-    a="$(tmux_get_option "@menus_trigger" "$default_trigger_key")"
-    log_it "><> raw @menus_trigger [$a] default [$default_trigger_key]"
-    cfg_trigger_key="$(tmux_escape_special_chars "$a" )"
-    log_it "><> escaped trigger [$cfg_trigger_key]"
 
+    cfg_trigger_key="$(tmux_get_option "@menus_trigger" "$default_trigger_key")"
     if normalize_bool_param "@menus_without_prefix" "$default_no_prefix"; then
         cfg_no_prefix=true
     else
@@ -195,52 +192,6 @@ tmux_get_plugin_options() { # cache references
         cfg_use_notes=false
     fi
     # log_it "  tmux_get_plugin_options() - done"
-}
-
-tmux_escape_special_chars() {
-    #
-    #  Will iterate over each character, and populate tesc_esc_str
-    #  with either the escaped version or the original char
-    #
-    tesc_str="$1"
-    log_it "tmux_escape_special_chars($tesc_str)"
-
-    tesc_idx=0
-    while true; do
-        tesc_idx=$((tesc_idx + 1))
-        char="$(extract_char "$tesc_str" "$tesc_idx")"
-        log_it "><>tesc   pos [$tesc_idx] char [$char]"
-        [ -n "$char" ] || break
-        [ "$char" = \\ ] && {
-            # maintain \ prefixes
-            tesc_idx=$((tesc_idx + 1))
-            char="$char$(extract_char "$tesc_str" "$tesc_idx")"
-            log_it "><>tesc    detected double \  -  pos [$tesc_idx] char [$char]"
-        }
-        case "$char" in
-        \\)
-            tesc_esc_str="${tesc_esc_str}\\\\"
-            ;;
-        \`)
-            tesc_esc_str="${tesc_esc_str}\\\`"
-            ;;
-        \")
-            tesc_esc_str="${tesc_esc_str}\\\""
-            ;;
-        \$)
-            tesc_esc_str="${tesc_esc_str}\\$"
-            ;;
-        *)
-            tesc_esc_str="${tesc_esc_str}${char}"
-            ;;
-        esac
-
-    done
-    log_it "><>tesc returning [$tesc_esc_str]"
-    log_it "><>tesc"
-
-    printf '%s\n' "$tesc_esc_str"
-    unset tesc_str tesc_idx tesc_esc_str
 }
 
 tmux_error_handler() { # cache references

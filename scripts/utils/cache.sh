@@ -16,10 +16,13 @@
 #
 #---------------------------------------------------------------
 
-crate_cache_folder() {
+cache_create_folder() {
+    $cfg_use_cache || error_msg "cache_create_folder() - called when cache is disabled"
     [ -z "$d_cache" ] && {
         error_msg "variable d_cache undefined"
     }
+
+    # log_it "cache_create_folder() - $d_cache"
     mkdir -p "$d_cache" || {
         error_msg "Failed to create cache folder: $d_cache"
     }
@@ -58,7 +61,7 @@ cache_prepare() {
         return 1
     fi
 
-    crate_cache_folder
+    cache_create_folder
     # log_it "cache_prepare() - created: $d_cache"
     return 0
 }
@@ -69,6 +72,9 @@ cache_add_ok_vers() {
     #  if it wasn't cached already
     #
     # log_it "cache_add_ok_vers($1)"
+    $cfg_use_cache || return 0
+    [ -z "$1" ] && error_msg "cache_add_ok_vers() - no param"
+
     case "$cached_ok_tmux_versions" in
     *"$1"*) ;;
     *)
@@ -77,6 +83,7 @@ cache_add_ok_vers() {
         cache_save_known_tmux_versions
         ;;
     esac
+    return 0
 }
 
 cache_add_bad_vers() {
@@ -85,6 +92,9 @@ cache_add_bad_vers() {
     #  if it wasn't cached already
     #
     # log_it "cache_add_bad_vers($1)"
+    $cfg_use_cache || return 1
+    [ -z "$1" ] && error_msg "cache_add_bad_vers() - no param"
+
     case "$cached_bad_tmux_versions" in
     *"$1"*) ;;
     *)
@@ -93,6 +103,7 @@ cache_add_bad_vers() {
         cache_save_known_tmux_versions
         ;;
     esac
+    return 1
 }
 
 cache_save_known_tmux_versions() { # tmux stuff
@@ -104,7 +115,7 @@ cache_save_known_tmux_versions() { # tmux stuff
         log_it "cache_save_known_tmux_versions() - called when not using cache"
         return 1
     fi
-    # log_it "cache_save_known_tmux_versions()"
+    # log_it "cache_save_known_tmux_versions() - $0"
 
     cache_prepare
 
@@ -120,6 +131,39 @@ cached_ok_tmux_versions="$cached_ok_tmux_versions"
 cached_bad_tmux_versions="$cached_bad_tmux_versions"
 EOF
     #endregion
+}
+
+cache_escape_special_chars() {
+    #
+    #  Will iterate over each character, and populate tesc_esc_str
+    #  with either the escaped version or the original char
+    #
+    tesc_str="$1"
+    # log_it "cache_escape_special_chars($tesc_str)"
+
+    _s="$tesc_str"
+    tesc_idx=0
+    while true; do
+        tesc_idx=$((tesc_idx + 1))
+        char="$(extract_char "$tesc_str" "$tesc_idx")"
+        # log_it "><>tesc   pos [$tesc_idx] char [$char]"
+        [ -n "$char" ] || break
+        [ "$char" = \\ ] && {
+            # maintain \ prefixes
+            tesc_idx=$((tesc_idx + 1))
+            char="$char$(extract_char "$tesc_str" "$tesc_idx")"
+        }
+        case "$char" in
+        \\) tesc_esc_str="${tesc_esc_str}\\\\" ;;
+        \`) tesc_esc_str="${tesc_esc_str}\\\`" ;;
+        \") tesc_esc_str="${tesc_esc_str}\\\"" ;;
+        \$) tesc_esc_str="${tesc_esc_str}\\$" ;;
+        *) tesc_esc_str="${tesc_esc_str}${char}" ;;
+        esac
+
+    done
+    printf '%s\n' "$tesc_esc_str"
+    unset tesc_str tesc_idx tesc_esc_str
 }
 
 cache_param_write() { # tmux stuff
@@ -159,7 +203,7 @@ cache_param_write() { # tmux stuff
 #  By sourcing this instead of gathering it each time, tons of time
 #  is saved
 
-cfg_trigger_key="$cfg_trigger_key"
+cfg_trigger_key="$(cache_escape_special_chars "$cfg_trigger_key")"
 cfg_no_prefix="$cfg_no_prefix"
 
 cfg_use_cache="$cfg_use_cache"
@@ -169,14 +213,14 @@ cfg_show_key_hints="$cfg_show_key_hints"
 cfg_use_whiptail="$cfg_use_whiptail"
 cfg_alt_menu_handler="$cfg_alt_menu_handler"
 
-cfg_nav_next="$cfg_nav_next"
-cfg_nav_prev="$cfg_nav_prev"
-cfg_nav_home="$cfg_nav_home"
+cfg_nav_next="$(cache_escape_special_chars "$cfg_nav_next")"
+cfg_nav_prev="$(cache_escape_special_chars "$cfg_nav_prev")"
+cfg_nav_home="$(cache_escape_special_chars "$cfg_nav_home")"
 
-cfg_format_title="$cfg_format_title"
-cfg_simple_style="$cfg_simple_style"
-cfg_simple_style_border="$cfg_simple_style_border"
-cfg_simple_style_selected="$cfg_simple_style_selected"
+cfg_format_title="$(cache_escape_special_chars "$cfg_format_title")"
+cfg_simple_style="$(cache_escape_special_chars "$cfg_simple_style")"
+cfg_simple_style_border="$(cache_escape_special_chars "$cfg_simple_style_border")"
+cfg_simple_style_selected="$(cache_escape_special_chars "$cfg_simple_style_selected")"
 
 cfg_mnu_loc_x="$cfg_mnu_loc_x"
 cfg_mnu_loc_y="$cfg_mnu_loc_y"
@@ -244,6 +288,7 @@ cache_get_params() {
             log_it "$cfg_tmux_conf has been updated, parse again for current settings"
             cache_update_param_cache
         fi
+        cache_params_retrieved=1
         return 0
     fi
     return 1
@@ -258,7 +303,7 @@ cache_get_params() {
 d_cache="$D_TM_BASE_PATH"/cache
 f_cache_params="$d_cache"/plugin_params
 f_cache_known_tmux_vers="$d_cache"/known_tmux_versions
-
+cache_params_retrieved=0
 #
 #  To indicate that cache should not be used, without writing anything
 #  inside the plugin folder, a file in $TMPDIR or /tmp is used
@@ -266,3 +311,5 @@ f_cache_known_tmux_vers="$d_cache"/known_tmux_versions
 _s="$(basename "$(echo "$TMUX" | cut -d, -f 1)")" # extract the socket name
 f_cache_not_used_hint="$d_tmp/${plugin_name}-no_cache_hint-$(id -u)-$_s"
 # tmux_get_plugin_options()  will log if f_cache_not_used_hint is used/not
+
+# plugin initializationlog_it "scripts/utils/cache.sh - completed"

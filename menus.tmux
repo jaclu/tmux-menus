@@ -41,15 +41,17 @@ initialize_plugin=1
 # shellcheck source=scripts/helpers.sh
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
-$cfg_use_cache && {
-    cache_add_ok_vers "$tmux_vers"
+if $cfg_use_cache; then
+    cache_add_ok_vers "$tpt_current_vers"
 
-    if [ -f "$f_update_custom_inventory" ]; then
+    if [[ -f "$f_update_custom_inventory" ]]; then
         $f_update_custom_inventory
     else
         log_it "config file missing: $f_update_custom_inventory"
     fi
-}
+else
+    log_it "-->  cache is disabled!  <--"
+fi
 
 if $cfg_use_whiptail; then
     cmd="$d_scripts/external_dialog_trigger.sh"
