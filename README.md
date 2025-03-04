@@ -8,8 +8,11 @@ src="https://github.com/user-attachments/assets/e00caffb-630d-4717-9f12-e4be22a2
 ## Big oops
 
 I did the latest changes on a Mac, and I too late discovered it didn't work
-as intended on Linux. Short term @menus_use_cache is disabled, otherwise it should
-work fine on Linux. Will have it fixed in a day or two, sorry bout that...
+as intended on Linux. Short term @menus_use_cache is permanently enabled, a feature likely few
+would want't to disable, unless running on rather non-standard setups.
+
+With this it should work fine on Linux.
+Will have it fixed in a day or two, sorry bout that...
 
 ## Summary
 
@@ -539,7 +542,8 @@ The best way to send feedback is to file an
 
 ## Thanks to
 
-- [GaikwadPratik](https://github.com/GaikwadPratik) for notifying me that the Disable caching feature was broken
+- [GaikwadPratik](https://github.com/GaikwadPratik) for notifying me that the
+  Disable caching feature was broken
 - [Tony Soloveyv](https://github.com/tony-sol) for spotting an unintentional
   shortcut change in the main menu
 - [JuanGarcia345](https://github.com/JuanGarcia345) for suggesting to make

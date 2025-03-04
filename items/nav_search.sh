@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-#   Copyright (c) 2024-2025: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2025-2025: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
