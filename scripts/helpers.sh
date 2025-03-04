@@ -370,12 +370,10 @@ f_update_custom_inventory="$d_scripts"/update_custom_inventory.sh
 # will be set to true at end of this, this indicates everything is prepared
 env_initialized=false
 
-# defines tmux_pid used in init of cache.sh, so must be defined before
-# shellcheck source=scripts/utils/tmux.sh
-. "$d_scripts"/utils/tmux.sh
-
 # shellcheck source=scripts/utils/cache.sh
 . "$d_scripts"/utils/cache.sh
+# shellcheck source=scripts/utils/tmux.sh
+. "$d_scripts"/utils/tmux.sh
 
 #
 #  Convert script name to full actual path notation the path is used
