@@ -539,6 +539,7 @@ The best way to send feedback is to file an
 
 ## Thanks to
 
+- [GaikwadPratik](https://github.com/GaikwadPratik) for notifying me that the Disable caching feature was broken
 - [Tony Soloveyv](https://github.com/tony-sol) for spotting an unintentional
   shortcut change in the main menu
 - [JuanGarcia345](https://github.com/JuanGarcia345) for suggesting to make
