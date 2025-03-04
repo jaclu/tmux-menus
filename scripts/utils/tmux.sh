@@ -132,7 +132,7 @@ tmux_get_option() {
     tgo_option="$1"
     tgo_default="$2"
 
-    # log_it "tmux_get_option([$tgo_option], $tgo_default)"
+    # log_it "tmux_get_option($tgo_option, $tgo_default)"
 
     [ -z "$tgo_option" ] && error_msg "tmux_get_option() param 1 empty!"
 
@@ -174,19 +174,25 @@ tmux_get_plugin_options() { # cache references
     # log_it "tmux_get_plugin_options()"
 
     tmux_get_defaults
+
+    # a="$(tmux_get_option "@menus_trigger" "$default_trigger_key")"
+    # # log_it "><> raw @menus_trigger [$a] default [$default_trigger_key]"
+    # cfg_trigger_key="$(tmux_escape_special_chars "$a")"
+    # # log_it "><> escaped trigger [$cfg_trigger_key]"
     cfg_trigger_key="$(tmux_escape_special_chars "$(tmux_get_option "@menus_trigger" \
         "$default_trigger_key")")"
+
 
     if normalize_bool_param "@menus_without_prefix" "$default_no_prefix"; then
         cfg_no_prefix=true
     else
         cfg_no_prefix=false
     fi
-    if normalize_bool_param "@menus_use_cache" "$default_use_cache"; then
-        cfg_use_cache=true
-    else
-        cfg_use_cache=false
-    fi
+    # if normalize_bool_param "@menus_use_cache" "$default_use_cache"; then
+    cfg_use_cache=true
+    # else
+    #     cfg_use_cache=false
+    # fi
     if normalize_bool_param "@menus_use_hint_overlays" "$default_use_hint_overlays"; then
         cfg_use_hint_overlays=true
     else
@@ -275,11 +281,13 @@ tmux_escape_special_chars() {
     while true; do
         tesc_idx=$((tesc_idx + 1))
         char="$(extract_char "$tesc_str" "$tesc_idx")"
+        # log_it "><>tesc   pos [$tesc_idx] char [$char]"
         [ -n "$char" ] || break
         [ "$char" = \\ ] && {
             # maintain \ prefixes
             tesc_idx=$((tesc_idx + 1))
             char="$char$(extract_char "$tesc_str" "$tesc_idx")"
+            # log_it "><>tesc    detected double \  -  pos [$tesc_idx] char [$char]"
         }
         case "$char" in
         \\)
@@ -300,6 +308,9 @@ tmux_escape_special_chars() {
         esac
 
     done
+    # log_it "><>tesc returning [$tesc_esc_str]"
+    # log_it "><>tesc"
+
     printf '%s\n' "$tesc_esc_str"
     unset tesc_str tesc_idx tesc_esc_str
 }
@@ -310,7 +321,7 @@ tmux_error_handler() { # cache references
     #
     the_cmd="$*"
 
-    # log_it "tmux_error_handler($1 $2 $3)"
+    # log_it "><> tmux_error_handler($the_cmd)"
 
     if $cfg_use_cache; then
         d_errors="$d_cache"
@@ -320,9 +331,9 @@ tmux_error_handler() { # cache references
     # ensure it exists
     [ ! -d "$d_errors" ] && mkdir -p "$d_errors"
     f_tmux_err="$d_errors"/tmux-err
-
+    # log_it "><>teh $TMUX_BIN $*"
     $TMUX_BIN "$@" 2>"$f_tmux_err" && rm -f "$f_tmux_err"
-
+    # log_it "><>teh cmd done [$?]"
     [ -s "$f_tmux_err" ] && {
         #
         #  First save the error to a named file
