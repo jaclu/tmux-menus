@@ -20,8 +20,10 @@ experienced users, then add more for newbies.
 
 ## Recent Changes
 
-- Fixed a bug where disabling caching caused the plugin to crash due to an
-  unnecessary Custom Menus check.
+- Fixed a bug where disabling caching caused the plugin to crash due to incorrect
+  escaping of special char - was done at read, not at save to cache, made uncached
+  trigger key unusable, also incorrectly caching Custom Menus even if caching is
+  disabled.
 - Explained boolean parameters and ensured all parameter samples in
   this README is consistent when it comes to quoting.
 - New feature [Custom menus](docs/CustomMenus.md)
@@ -531,6 +533,8 @@ The best way to send feedback is to file an
 
 ## Thanks to
 
+- [GaikwadPratik](https://github.com/GaikwadPratik) for notifying me that the
+  Disable caching feature was broken
 - [Tony Soloveyv](https://github.com/tony-sol) for spotting an unintentional
   shortcut change in the main menu
 - [JuanGarcia345](https://github.com/JuanGarcia345) for suggesting to make
