@@ -1,6 +1,7 @@
-#!/bin/sh
+#!/usr/bin/env bash
+# shellcheck disable=SC2034,SC2154
 #
-#   Copyright (c) 2022-2024: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2022-2025: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
@@ -38,7 +39,7 @@ D_TM_BASE_PATH="$(dirname -- "$(realpath "$0")")"
 #
 initialize_plugin=1
 
-# shellcheck source=scripts/helpers.sh
+# shellcheck source=/dev/null  # can't read source when mixing bah & posix
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 if $cfg_use_cache; then
@@ -54,24 +55,28 @@ else
 fi
 
 if $cfg_use_whiptail; then
-    cmd="$d_scripts/external_dialog_trigger.sh"
+    bind_cmd="$d_scripts/external_dialog_trigger.sh"
     log_it "alternate menu handler: $cfg_alt_menu_handler"
 else
-    cmd="$d_items/main.sh"
+    bind_cmd="$d_items/main.sh"
 fi
-
-# have to use "set --"" in order to send the selected params to tmux
-set --
+cmd="bind-key"
 $cfg_use_notes && {
-    set -- "$@" -N "plugin: $plugin_name trigger"
+    # And why can't space be used in this note?
+    cmd+=" -N plugin_${plugin_name}_trigger"
 }
-
 if $cfg_no_prefix; then
-    set -- "$@" -n
+    cmd+=" -n"
     trigger_sequence="Menus bound to: $cfg_trigger_key"
 else
     trigger_sequence="Menus bound to: <prefix> $cfg_trigger_key"
 fi
+cmd+=" $cfg_trigger_key  run-shell $bind_cmd"
 
-tmux_error_handler bind-key "$@" "$cfg_trigger_key" run-shell "$cmd"
+# teh_debug=true
+# shellcheck disable=SC2086
+$TMUX_BIN $cmd || {
+    error_msg "Failed to bind trigger"
+}
+
 log_it "$trigger_sequence"
