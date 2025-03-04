@@ -186,8 +186,9 @@ cfg_log_file="$cfg_log_file"
 
 cfg_use_notes="$cfg_use_notes"
 
-tmux_vers="$tmux_vers"
-i_tmux_vers="$i_tmux_vers"
+tpt_current_vers="$tpt_current_vers"
+tpt_current_vers_i="$tpt_current_vers_i"
+tpt_current_vers_suffix="$tpt_current_vers_suffix"
 
 #
 # Get version hints for repo and local changes,

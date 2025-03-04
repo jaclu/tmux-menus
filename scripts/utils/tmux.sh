@@ -10,74 +10,6 @@
 #
 # shellcheck disable=SC2034,SC2154
 
-tmux_vers_check() { # cache references
-    #
-    #  This returns true if tvc_v_cmp <= tvc_v_ref
-    #  If only one param is given it is compared vs version of running tmux
-    #
-    [ -z "$2" ] && [ -z "$tmux_vers" ] && {
-        tvc_msg="tmux_vers_check() called with neither par2 or tmux_vers set"
-        error_msg "$tvc_msg"
-    }
-
-    [ -z "$cached_ok_tmux_versions" ] && [ -f "$f_cache_known_tmux_vers" ] && {
-        #
-        # get known good/bad versions if this hasn't been sourced yet
-        #
-        # shellcheck source=/dev/null
-        . "$f_cache_known_tmux_vers"
-    }
-
-    tvc_v_cmp="$1"
-    i_tvc_cmp=0 # indicating unset
-    tvc_v_ref="${2:-$tmux_vers}"
-    i_tvc_ref=0 # indicating unset
-
-    # log_it "tmux_vers_check($tvc_v_cmp, $tvc_v_ref)"
-
-    $cfg_use_cache && {
-        case "$cached_ok_tmux_versions $tvc_v_ref " in
-        *"$tvc_v_cmp "*) return 0 ;;
-        *) ;;
-        esac
-        case "$cached_bad_tmux_versions" in
-        *"$tvc_v_cmp "*) return 1 ;;
-        *) ;;
-        esac
-
-        i_tvc_cmp=$(get_digits_from_string "$tvc_v_cmp")
-        i_tvc_ref=$(get_digits_from_string "$tvc_v_ref")
-
-        if [ "$i_tvc_cmp" -le "$i_tvc_ref" ]; then
-            [ "$tvc_v_ref" = "$tmux_vers" ] && cache_add_ok_vers "$tvc_v_cmp"
-            return 0
-        else
-            [ "$tvc_v_ref" = "$tmux_vers" ] && cache_add_bad_vers "$tvc_v_cmp"
-            return 1
-        fi
-    }
-
-    [ "$i_tvc_cmp" -eq 0 ] && i_tvc_cmp=$(get_digits_from_string "$tvc_v_cmp")
-    [ "$i_tvc_ref" -eq 0 ] && i_tvc_ref=$(get_digits_from_string "$tvc_v_ref")
-    [ "$i_tvc_cmp" -le "$i_tvc_ref" ]
-}
-
-tmux_set_running_vers() {
-    # Filter out devel prefix and release candidate suffix
-    tmux_vers="$(tmux_error_handler -V | cut -d ' ' -f 2)"
-    case "$tmux_vers" in
-    next-*)
-        # Remove "next-" prefix
-        tmux_vers="${tmux_vers#next-}"
-        ;;
-    *-rc*)
-        # Remove "-rcX" suffix
-        tmux_vers="${tmux_vers%-rc*}"
-        ;;
-    *) ;;
-    esac
-}
-
 tmux_get_defaults() {
     #
     #  Defaults for plugin params
@@ -416,6 +348,104 @@ tmux_select_menu_handler() {
     fi
 }
 
+#---------------------------------------------------------------
+#
+#   tmux version related support functions
+#
+#---------------------------------------------------------------
+
+tmux_vers_check() {
+    _v_comp="$1" # Desired minimum version to check against
+    # log_it "><> tmux_vers_ok($_v_comp) $0"
+
+    # Retrieve and cache the current tmux version on the first call
+    if [ -z "$tpt_current_vers" ] || [ -z "$tpt_current_vers_i" ]; then
+        tpt_retrieve_running_tmux_vers
+    fi
+
+    $cfg_use_cache && {
+        [ -z "$cached_ok_tmux_versions" ] && [ -f "$f_cache_known_tmux_vers" ] && {
+            #
+            # get known good/bad versions if this hasn't been sourced yet
+            #
+            # shellcheck source=/dev/null
+            . "$f_cache_known_tmux_vers"
+        }
+        case "$cached_ok_tmux_versions $tvc_v_ref " in
+        *"$_v_comp "*) return 0 ;;
+        *) ;;
+        esac
+        case "$cached_bad_tmux_versions" in
+        *"$_v_comp "*) return 1 ;;
+        *) ;;
+        esac
+    }
+
+    # Compare numeric parts first for quick decisions.
+    _i_comp="$(tpt_digits_from_string "$_v_comp")"
+    [ "$_i_comp" -lt "$tpt_current_vers_i" ] && {
+        cache_add_ok_vers "$_v_comp"
+        return 0
+    }
+    [ "$_i_comp" -gt "$tpt_current_vers_i" ] && {
+        cache_add_bad_vers "$_v_comp"
+        return 1
+    }
+
+    # Compare suffixes only if numeric parts are equal.
+    _suf="$(tpt_tmux_vers_suffix "$_v_comp")"
+    # - If no suffix is required or suffix matches, return success
+    [ -z "$_suf" ] || [ "$_suf" = "$tpt_current_vers_suffix" ] && {
+        cache_add_ok_vers "$_v_comp"
+        return 0
+    }
+    # If the desired version has a suffix but the running version doesn't, fail
+    [ -n "$_suf" ] && [ -z "$tpt_current_vers_suffix" ] && {
+        cache_add_bad_vers "$_v_comp"
+        return 1
+    }
+    # Perform lexicographical comparison of suffixes only if necessary
+    [ "$(printf '%s\n%s\n' "$_suf" "$tpt_current_vers_suffix" |
+        LC_COLLATE=C sort | head -n 1)" = "$_suf" ] && {
+        cache_add_ok_vers "$_v_comp"
+        return 0
+    }
+    # If none of the above conditions are met, the version is insufficient
+    cache_add_bad_vers "$_v_comp"
+    return 1
+}
+
+tpt_retrieve_running_tmux_vers() {
+    #
+    # If the variables defining the currently used tmux version needs to
+    # be accessed before the first call to tmux_vers_ok this can be called.
+    #
+    # log_it "tpt_retrieve_running_tmux_vers()"
+    tpt_current_vers="$($TMUX_BIN -V | cut -d' ' -f2)"
+    tpt_current_vers_i="$(tpt_digits_from_string "$tpt_current_vers")"
+    tpt_current_vers_suffix="$(tpt_tmux_vers_suffix "$tpt_current_vers")"
+}
+
+# Extracts all numeric digits from a string, ignoring other characters.
+# Example inputs and outputs:
+#   "tmux 1.9" => "19"
+#   "1.9a"     => "19"
+tpt_digits_from_string() {
+    # the first sed removes -rc suffixes, to avoid anny numerical rc like -rc1 from
+    # being included in the int extraction
+    _i="$(echo "$1" | sed 's/-rc[0-9]*//' | tr -cd '0-9')" # Use 'tr' to keep only digits
+    echo "$_i"
+}
+
+# Extracts any alphabetic suffix from the end of a version string.
+# If no suffix exists, returns an empty string.
+# Example inputs and outputs:
+#   "3.2"  => ""
+#   "3.2a" => "a"
+tpt_tmux_vers_suffix() {
+    echo "$1" | sed 's/.*[0-9]\([a-zA-Z]*\)$/\1/'
+}
+
 #===============================================================
 #
 #   Main
@@ -441,11 +471,5 @@ else
 fi
 
 cfg_alt_menu_handler=""
-
-#
-#  Define env needed for this
-#
-tmux_set_running_vers
-i_tmux_vers=$(get_digits_from_string "$tmux_vers")
 
 tmux_select_menu_handler
