@@ -775,7 +775,7 @@ fi
 
 # Only import if needed, checking a random variable
 # shellcheck source=scripts/helpers.sh
-[ -z "$tmux_vers" ] && . "$D_TM_BASE_PATH"/scripts/helpers.sh
+[ -z "$current_script" ] && . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 # Some sanity checks
 [ -z "$TMUX" ] && error_msg "$plugin_name can only be used inside tmux!"
