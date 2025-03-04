@@ -54,17 +54,19 @@ tmux_get_defaults() {
     fi
 
     default_log_file=""
+    # log_it "><>   tmux_get_defaults() - done"
 }
 
 tmux_is_option_defined() {
-    tmux_vers_check 1.8 && tmux_error_handler show-options -gq | grep -q "^$1"
+    # log_it "><> tmux_is_option_defined($1)"
+    tmux_error_handler show-options -gq | grep -q "^$1"
 }
 
 tmux_get_option() {
     tgo_option="$1"
     tgo_default="$2"
 
-    log_it "tmux_get_option($tgo_option, $tgo_default)"
+    # log_it "tmux_get_option($tgo_option, $tgo_default)"
 
     [ -z "$tgo_option" ] && error_msg "tmux_get_option() param 1 empty!"
 
@@ -187,8 +189,10 @@ tmux_get_plugin_options() { # cache references
     #
     if tmux_vers_check 3.1 &&
         normalize_bool_param "@use_bind_key_notes_in_plugins" No; then
+        # log_it "><> using notes"
         cfg_use_notes=true
     else
+        # log_it "><> ignoring notes"
         cfg_use_notes=false
     fi
     # log_it "  tmux_get_plugin_options() - done"
@@ -200,7 +204,7 @@ tmux_error_handler() { # cache references
     #
     the_cmd="$*"
 
-    log_it "><> tmux_error_handler($the_cmd)"
+    $teh_debug && log_it "><> tmux_error_handler($the_cmd)"
 
     if $cfg_use_cache; then
         d_errors="$d_cache"
@@ -210,9 +214,9 @@ tmux_error_handler() { # cache references
     # ensure it exists
     [ ! -d "$d_errors" ] && mkdir -p "$d_errors"
     f_tmux_err="$d_errors"/tmux-err
-    log_it "><>teh $TMUX_BIN $*"
+    $teh_debug && log_it "><>teh $TMUX_BIN $*"
     $TMUX_BIN "$@" 2>"$f_tmux_err" && rm -f "$f_tmux_err"
-    log_it "><>teh cmd done [$?]"
+    $teh_debug && log_it "><>teh cmd done [$?]"
     [ -s "$f_tmux_err" ] && {
         #
         #  First save the error to a named file
@@ -234,24 +238,32 @@ tmux_error_handler() { # cache references
             done
             unset _i
         }
-        log_it "saved error to: $f_error_log"
         (
             echo "\$TMUX_BIN $the_cmd"
             echo
             cat "$f_tmux_err"
         ) >"$f_error_log"
 
-        error_msg "$(
-            printf "tmux cmd failed:\n\n%s\n
-            \nThe full error message has been saved in:\n%s
-            \nFull path:\n%s\n" \
-                "$(cat "$f_error_log")" \
-                "$(relative_path "$f_error_log")" \
-                "$f_error_log"
-        )"
+        if $teh_debug; then
+            log_it "$(
+                printf "tmux cmd failed:\n\n%s\n" "$(cat "$f_error_log")"
+            )"
+        else
+            log_it "saved error to: $f_error_log"
+            error_msg "$(
+                printf "tmux cmd failed:\n\n%s\n
+                \nThe full error message has been saved in:\n%s
+                \nFull path:\n%s\n" \
+                    "$(cat "$f_error_log")" \
+                    "$(relative_path "$f_error_log")" \
+                    "$f_error_log"
+            )"
+        fi
         unset f_error_log
+        return 1
     }
     unset the_cmd
+    teh_debug=false
     return 0
 }
 
@@ -421,6 +433,9 @@ else
     tmux_pid="-1"
 fi
 
+teh_debug=false
 cfg_alt_menu_handler=""
 
 tmux_select_menu_handler
+
+# log_it "scripts/utils/tmux.sh - completed"

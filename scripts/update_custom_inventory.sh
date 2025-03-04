@@ -249,7 +249,7 @@ f_custom_items_content="$d_cache"/custom_items_content
 $cfg_use_cache || return 0 # if caching is disabled custom_items can't be processed
 
 # debug helper
-# [ "$LOG_TO_STDERR" = "1" ] && log_interactive_to_stderr=true
+# [ "$LOG_TO_STDERR" = "1" ] && log_interactive_to_stderr=1
 
 if [ ! -d "$d_custom_items" ]; then
     # Folder missing, clear custom items cache and exit

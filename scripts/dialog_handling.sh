@@ -787,7 +787,6 @@ fi
     }
 }
 
-log_it "><> dialog_handling:skip_oversized [$skip_oversized]"
 if [ "$skip_oversized" = "1" ]; then
     exit_if_dialog_doesnt_fit_screen
 else

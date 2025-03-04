@@ -19,7 +19,7 @@
 log_it() {
     [ -z "$cfg_log_file" ] && return #  early abort if no logging
 
-    $log_interactive_to_stderr && [ -t 0 ] && {
+    [ "$log_interactive_to_stderr" = 1 ] && [ -t 0 ] && {
         printf "log: %s\n" "$@" >/dev/stderr
         return
     }
@@ -54,9 +54,9 @@ error_msg() {
 
     # with no tmux env, dumping it to stderr is the only option
     # shellcheck disable=SC2154
-    [ -z "$TMUX" ] && log_interactive_to_stderr=true
+    [ -z "$TMUX" ] && log_interactive_to_stderr=1
 
-    if $log_interactive_to_stderr && [ -t 0 ]; then
+    if [ "$log_interactive_to_stderr" = 1 ] && [ -t 0 ]; then
         [ -z "$TMUX" ] && {
             (
                 echo
@@ -206,7 +206,7 @@ normalize_bool_param() {
     nbp_default="$2" # only used for tmux options
     nbp_variable_name=""
 
-    # log_it "normalize_bool_param($nbp_param, $nbp_default)"
+    # log_it "normalize_bool_param($nbp_param, $nbp_default) [$nbp_variable_name]"
     [ "${nbp_param%"${nbp_param#?}"}" = "@" ] && {
         #
         #  If it starts with "@", assume it is a tmux option, thus
@@ -341,13 +341,13 @@ plugin_name="tmux-menus"
 #  This is mostly for debugging early stuff before the settings have
 #  been processed. Should normally be commented out!
 #
-cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
+# cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
 
 #
 #  Even if this one is used, a cfg_log_file must still be defined
 #  since log_it quick aborts if that is undefined
 #
-log_interactive_to_stderr=true
+# log_interactive_to_stderr=1
 
 [ -z "$D_TM_BASE_PATH" ] && error_msg "D_TM_BASE_PATH undefined"
 
@@ -386,9 +386,11 @@ current_script="$(basename "$0")" # name without path
 d_current_script="$(dirname -- "$(realpath "$0")")"
 f_current_script="$d_current_script/$current_script"
 
+# log_it "><>===================================================== $0"
+
 # shellcheck disable=SC2154
 if [ "$initialize_plugin" = "1" ]; then
-    log_it "Doing plugin initialization"
+    # log_it "Doing plugin initialization"
     cache_update_param_cache #
     #
     #  at this point plugin_params are trusted if found, menus.tmux will
@@ -422,3 +424,4 @@ else
 fi
 
 env_initialized=true # indicates that env is fully configured
+# log_it "><> scripts/helpers.sh - completed"
