@@ -138,7 +138,7 @@ display_message_hold() {
         $TMUX_BIN display-message -d 0 "$dmh_msg"
     else
         # Manually make the error msg stay on screen a long time
-        org_display_time="$($TMUX_BIN show-option -gv display-time)"
+        org_display_time="$($TMUX_BIN show-options -gv display-time)"
         $TMUX_BIN set -g display-time 120000 >/dev/null
         $TMUX_BIN display-message "$dmh_msg"
 

@@ -43,7 +43,7 @@ fi
 #  Temp set a very high disp time, org value
 #  will be restored when script is done
 #
-org_disp_time="$(tmux_error_handler show -g display-time | cut -d' ' -f 2)"
+org_disp_time="$(tmux_error_handler show-options -gv display-time)"
 tmux_error_handler set-option -g display-time 30000
 
 tmux_error_handler display "Doing dropbox $action ..."
