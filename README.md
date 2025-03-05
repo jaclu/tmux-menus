@@ -20,9 +20,10 @@ experienced users, then add more for newbies.
 
 ## Recent Changes
 
+- Further optimized menu generation.
 - Fixed a bug where disabling caching caused the plugin to crash due to incorrect
-  escaping of special char - was done at read, not at save to cache, made uncached
-  trigger key unusable, also incorrectly caching Custom Menus even if caching is
+  escaping of special chars - was done at read, not at save to cache, made uncached
+  trigger key unusable, also incorrectly using Custom Menus even if caching is
   disabled.
 - Explained boolean parameters and ensured all parameter samples in
   this README is consistent when it comes to quoting.
