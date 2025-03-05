@@ -20,7 +20,7 @@ tmux_get_defaults() {
 
     # log_it "tmux_get_defaults()"
 
-    default_trigger_key="\\"
+    default_trigger_key=\\
     default_no_prefix=No
 
     default_simple_style_selected=default
