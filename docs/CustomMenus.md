@@ -71,8 +71,7 @@ into `custom_items/` and rename it appropriately.
 
 - **Submenus**: If you want to exclude certain scripts (e.g., submenus) from being
   listed in the index, place them in a subdirectory under `custom_items/`.
-  These scripts will still trigger re-indexing but will not appear in the main
-  Custom items index.
+  These scripts will still be cached.
 
 ---
 
