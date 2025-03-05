@@ -107,6 +107,7 @@ update_wt_actions() {
 #---------------------------------------------------------------
 
 menu_generate_part() {
+    # log_it "menu_generate_part()"
     # Generate one menu segment
     # log_it "menu_generate_part($1)"
     menu_idx="$1"
@@ -269,6 +270,7 @@ alt_spacer() {
 }
 
 add_uncached_item() {
+    # log_it "add_uncached_item()"
     #  Add one item to $uncached_menu
     _new_item="$menu_idx $menu_items"
     if [ -n "$uncached_menu" ]; then
@@ -499,6 +501,7 @@ set_menu_env_variables() {
     # shellcheck disable=SC2034
     nav_home="$cfg_nav_home"
 
+    external_action_separator=":/:/:/:"
     if $cfg_use_cache; then
         # log_it "><> defining cache related dialog variables"
         #  items/main.sh -> items_main
@@ -511,7 +514,6 @@ set_menu_env_variables() {
         uncached_menu=""
         uncached_wt_actions=""
         uncached_item_splitter="||||"
-        external_action_separator=":/:/:/:"
     fi
 }
 
@@ -526,7 +528,7 @@ handle_static_cached() {
         # Ensure d_menu_cache seems to be valid before doing erase
         case "$d_menu_cache" in
         *"$plugin_name"*) ;;
-        *) error_msg "d_menu_cache seems wrong [$d_menu_cache]" ;;
+        *) error_msg "d_menu_cache seems wrong [$d_menu_cache] plugin-name not in that path [$plugin_name]" ;;
         esac
 
         rm -rf "$d_menu_cache" || error_msg "Failed to remove: $d_menu_cache"
@@ -538,6 +540,7 @@ handle_static_cached() {
 }
 
 handle_dynamic() {
+    # log_it "handle_dynamic()"
     if is_function_defined "dynamic_content"; then
         wt_actions_static="$wt_actions"
         wt_actions=""
@@ -577,6 +580,7 @@ generate_menu_items_in_sorted_order() {
 }
 
 sort_menu_items() {
+    # log_it "sort_menu_items()"
     if $cfg_use_cache; then
         for file in "$d_menu_cache"/*; do
             # skip special files
@@ -706,6 +710,7 @@ wt_cached_selection() {
     #  Public variables
     #   all_wt_actions - lists all actions
     #
+    # log_it "wt_cached_selection()"
     # gathering action files from cache
     all_wt_actions=""
     for file in "$d_wt_actions"/*; do
@@ -733,6 +738,7 @@ alt_parse_selection() {
     #  action, and then perform it
     #
     wt_actions="$1"
+    # log_it "alt_parse_selection($wt_action)"
     [ -z "$wt_actions" ] && {
         error_msg "alt_parse_selection() - called without param"
     }
@@ -760,7 +766,7 @@ alt_parse_selection() {
 }
 
 handle_wt_selecion() {
-    log_it "handle_wt_selecion($menu_selection)"
+    # log_it "handle_wt_selecion($menu_selection)"
     if $cfg_use_cache; then
         wt_cached_selection
     else
