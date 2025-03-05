@@ -10,6 +10,9 @@ Main menu.
 When custom menus are detected, the plugin generates an index of these menus and
 adds a "Custom items" entry at the top of the Main menu.
 
+If caching is disabled, custom menus are not supported, since using them would
+require updating their index.
+
 ---
 
 ## How It Works
@@ -28,9 +31,8 @@ updated, or removed, the following actions occur during the next tmux startup:
    - **menu_name**: The display name of the menu.
    - **menu_key**: The shortcut key for quick access.
 
-To manually trigger reprocessing of the `custom_items/` directory, run the plugin
-initialization script:
-`menus.tmux`
+To manually trigger reprocessing of the `custom_items/` directory, without having
+to restart tmux, run the plugin initialization script: `menus.tmux`
 
 ---
 
