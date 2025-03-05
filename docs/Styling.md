@@ -18,7 +18,7 @@ In the table below, Param refers to display-menu parameters (see the tmux man pa
 
 | Param | variable                     | Default                            | Sample config     |
 | ----- | ---------------------------- | ---------------------------------- | ----------------- |
-| -T    | @menus_format_title          | "'#[align=centre] #{@menu_name} '" | "'#{@menu_name}'" |
+| -T    | @menus_format_title          | `"'#[align=centre] #{@menu_name} '"` | `"#{@menu_name}"` |
 | -H    | @menus_simple_style_selected | default                            | fg=blue,bg=yellow |
 | -s    | @menus_simple_style          | default                            | bg=red            |
 | -S    | @menus_simple_style_border   | default                            | fg=green          |
