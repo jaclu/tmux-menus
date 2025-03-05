@@ -460,7 +460,7 @@ menu_parse() {
 
     # log_it "><> will perhaps write"
     if $cfg_use_cache; then
-        # log_it "Saving: $(relative_path "$f_cache_file")"
+        log_it "Caching: $(relative_path "$f_cache_file")"
         echo "$menu_items" >"$f_cache_file" || {
             error_msg "Failed to write to: $f_cache_file"
         }
@@ -771,7 +771,7 @@ handle_wt_selecion() {
 }
 
 display_menu() {
-    log_it "display_menu()"
+    # log_it "display_menu()"
     # Display time to generate menu
     _t="$(echo "$(safe_now) - $dh_t_mnu_processing_start" | bc)"
 
