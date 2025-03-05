@@ -131,17 +131,6 @@ tmux_get_plugin_options() { # cache references
         cfg_show_key_hints=false
     fi
 
-    #
-    #  Setup env depending on if cache is used or not
-    #
-    if $cfg_use_cache; then
-        rm -f "$f_cache_not_used_hint"
-    else
-        # indicate that cache should not be used, using the assumption that
-        # $TMPDIR is still writeable
-        touch "$f_cache_not_used_hint"
-    fi
-
     if $cfg_use_whiptail; then
         _whiptail_ignore_msg="not used with whiptail"
 

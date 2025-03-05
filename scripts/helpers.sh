@@ -319,7 +319,7 @@ get_config() { # tmux stuff
     #
     # log_it "get_config()"
 
-    if [ -f "$f_cache_not_used_hint" ]; then
+    if ! $cfg_use_cache; then
         # not using cache, read all cfg variables
         tmux_get_plugin_options
     elif ! cache_get_params; then

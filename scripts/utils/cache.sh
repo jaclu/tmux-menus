@@ -35,10 +35,7 @@ cache_clear() { # only cache
     #
 
     log_it "cache_clear() $1"
-    if [ -f "$f_cache_not_used_hint" ]; then
-        error_msg "cache_clear() - called when not using cache"
-        log_it "><> returned from cache_clear() error"
-    fi
+    $cfg_use_cache || error_msg "cache_clear() - called when not using cache"
 
     rm -rf "$d_cache"
     cache_prepare
@@ -54,12 +51,9 @@ cache_prepare() {
     #
     #  returns 0 if cache folder exists / was created
     #
-    [ -d "$d_cache" ] && return 0
+    $cfg_use_cache || error_msg "cache_prepare() - called when not using cache" 1
 
-    if [ -f "$f_cache_not_used_hint" ]; then
-        error_msg "cache_prepare() - called when not using cache" 1
-        return 1
-    fi
+    [ -d "$d_cache" ] && return 0 # already created
 
     cache_create_folder
     # log_it "cache_prepare() - created: $d_cache"
@@ -111,10 +105,10 @@ cache_save_known_tmux_versions() { # tmux stuff
     #  The order the versions are saved doesn't matter,
     #  since they are checked with a case to speed things up
     #
-    if [ -f "$f_cache_not_used_hint" ] || ! $cfg_use_cache; then
+    $cfg_use_cache || {
         log_it "cache_save_known_tmux_versions() - called when not using cache"
         return 1
-    fi
+    }
     # log_it "cache_save_known_tmux_versions() - $0"
 
     cache_prepare
@@ -172,9 +166,8 @@ cache_param_write() { # tmux stuff
     #  if it differed with previous params, clear cache
     #
     # log_it "cache_param_write()"
-    if [ -f "$f_cache_not_used_hint" ] || ! $cfg_use_cache; then
-        error_msg "cache_param_write() - called when not using cache"
-    fi
+
+    $cfg_use_cache || error_msg "cache_param_write() - called when not using cache"
 
     cache_prepare
 
@@ -276,10 +269,7 @@ cache_get_params() {
     #  Retrieves cached env params, returns true on success, otherwise false
     #
     # log_it "cache_get_params()"
-
-    if [ -f "$f_cache_not_used_hint" ]; then
-        error_msg "cache_get_params() - called when not using cache"
-    fi
+    $cfg_use_cache || error_msg "cache_get_params() - called when not using cache"
     if [ -f "$f_cache_params" ]; then
         # shellcheck disable=SC1090
         . "$f_cache_params" || return 1
@@ -304,12 +294,5 @@ d_cache="$D_TM_BASE_PATH"/cache
 f_cache_params="$d_cache"/plugin_params
 f_cache_known_tmux_vers="$d_cache"/known_tmux_versions
 cache_params_retrieved=0
-#
-#  To indicate that cache should not be used, without writing anything
-#  inside the plugin folder, a file in $TMPDIR or /tmp is used
-#
-_s="$(basename "$(echo "$TMUX" | cut -d, -f 1)")" # extract the socket name
-f_cache_not_used_hint="$d_tmp/${plugin_name}-no_cache_hint-$(id -u)-$_s"
-# tmux_get_plugin_options()  will log if f_cache_not_used_hint is used/not
 
-# plugin initializationlog_it "scripts/utils/cache.sh - completed"
+# log_it "Completed: scripts/utils/cache.sh"
