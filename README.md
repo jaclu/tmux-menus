@@ -5,15 +5,6 @@ src="https://github.com/user-attachments/assets/410e3b46-bf7e-47fe-8ba7-dbc6822a
 <img width="250" alt="main-styled"
 src="https://github.com/user-attachments/assets/e00caffb-630d-4717-9f12-e4be22a29fd5" />
 
-## Big oops
-
-I did the latest changes on a Mac, and I too late discovered it didn't work
-as intended on Linux. Short term @menus_use_cache is permanently enabled, a feature likely few
-would want't to disable, unless running on rather non-standard setups.
-
-With this it should work fine on Linux.
-Will have it fixed in a day or two, sorry bout that...
-
 ## Summary
 
 Popup menus to help with managing the tmux environment. If so desired,
@@ -29,10 +20,11 @@ experienced users, then add more for newbies.
 
 ## Recent Changes
 
-- Big oops, I did the latest changes on a Mac, and I too late discovered it didn't work
-  as intended on Linux, short term @menus_use_cache is disabled
-- FAILED: Fixed a bug where disabling caching caused the plugin to crash due to an
-  unnecessary Custom Menus check.
+- Further optimized menu generation.
+- Fixed a bug where disabling caching caused the plugin to crash due to incorrect
+  escaping of special chars - was done at read, not at save to cache, made uncached
+  trigger key unusable, also incorrectly using Custom Menus even if caching is
+  disabled.
 - Explained boolean parameters and ensured all parameter samples in
   this README is consistent when it comes to quoting.
 - New feature [Custom menus](docs/CustomMenus.md)
