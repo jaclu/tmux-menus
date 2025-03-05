@@ -12,7 +12,7 @@ static_content() {
 
     set -- \
         0.0 M Left "Back to Custom items  $nav_prev" "$f_custom_items_index" \
-        0.0 M Left "Back to Main menu     $nav_home" main.sh \
+        0.0 M Home "Back to Main menu     $nav_home" main.sh \
         0.0 S \
         0.0 T "*** Replace this line with one or more lines of custom contnent! ***"
 
@@ -40,4 +40,5 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 # it is recommended to use uppercase in order to follow the conventions
 # in this plugin, but anything goes!
 # If a "special" char is used it might need to be prefixed with \
+# shellcheck disable=SC2034
 menu_key="?"
