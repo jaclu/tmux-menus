@@ -598,6 +598,42 @@ sort_menu_items() {
     fi
 }
 
+verify_menu_runable() {
+    # Check that menu starts with a menu handling cmd, if not most likely due to
+    # menu idx 1 not generated, but could be other causes. eithe way this menu
+    # will be displayable...
+
+    # Remove leading spaces
+    while [ "${menu_items# }" != "$menu_items" ]; do
+        menu_items=${menu_items# }
+    done
+
+    # extract first word
+    _actual_first="${menu_items%% *}"
+
+    if [ -n "$cfg_alt_menu_handler" ]; then
+        _mnu_first="$cfg_alt_menu_handler"
+    else
+        _mnu_first="tmux_error_handler"
+    fi
+    [ "$_actual_first" = "$_mnu_first" ] || {
+        msg="The processed menu should start with a menu handler."
+        msg="$msg\nIn the current environment this was expected:"
+        msg="$msg\n\n  $_mnu_first"
+        msg="$msg\n\nWas no part 1 created?\n"
+        msg="$msg\nThe menu handler and other menu definitions like title"
+        msg="$msg and styling\nare prepended to the part defined by:"
+        msg="$msg\n\n  menu_generate_part 1 \""'$@'"\"\n"
+        msg="$msg\nGenerated menu:\n"
+        #  | sed 's/"//g' | sed "s/'//g" | sed 's/%//g' | sed "s/\$(/(/g" | sed 's/\&//g'
+
+        # filter ; ini order not to execute when displaying the error msg
+        escaped="$(printf '%s' "$menu_items" | sed 's/;//g')"
+        error_msg "$msg\n$escaped"
+    }
+    unset _actual_first _mnu_first
+}
+
 prepare_menu() {
     #
     #  If a menu needs to handle a param, save it before sourcing this using:
@@ -621,6 +657,7 @@ prepare_menu() {
 
     # 3 - Gather each item in correct order
     sort_menu_items
+    verify_menu_runable
 }
 
 #---------------------------------------------------------------
