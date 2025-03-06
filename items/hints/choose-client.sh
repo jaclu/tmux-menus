@@ -62,22 +62,25 @@ static_content() {
 #
 #===============================================================
 
+menu_name="Keys for choose-client"
+
 if [ "$1" = "skip-oversized" ]; then
     # shellcheck disable=SC2034
     skip_oversized=1
 elif [ -n "$1" ]; then
     prev_menu="$(realpath "$1")"
 fi
-menu_name="Keys for choose-client"
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"
 
+# shellcheck source=scripts/helpers.sh
+. "$D_TM_BASE_PATH"/scripts/helpers.sh
+
 window_width=50
 window_height=22
-. "$D_TM_BASE_PATH"/scripts/helpers.sh
-tmux_vers_check "3.5" && window_height=$((window_height + 1))
 tmux_vers_check "3.1" && window_height=$((window_height + 1))
+tmux_vers_check "3.5" && window_height=$((window_height + 1))
 [ -n "$prev_menu" ] && window_height=$((window_height + 1))
 
 # shellcheck source=scripts/dialog_handling.sh
