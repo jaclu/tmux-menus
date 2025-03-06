@@ -707,7 +707,7 @@ ensure_menu_fits_on_screen() {
 check_screen_size() {
     #
     #  Only consider checking win size if not whiptail/dialog, since they
-    #  can scroll menus that dont fit the screen
+    #  can scroll menus that don't fit the screen
     #
     #  Only checks if window_width and or window_height has been set
     #
