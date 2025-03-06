@@ -9,6 +9,7 @@
 #
 
 display_currently_playing_track() {
+    # shellcheck source=scripts/helpers.sh
     . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
     track="$(spotify status track)"
