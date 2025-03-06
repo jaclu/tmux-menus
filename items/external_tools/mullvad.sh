@@ -37,11 +37,15 @@ static_content() {
 
     [ -z "$(command -v mullvad)" ] && error_msg "mullvad bin not found!"
 
+    # By using '' this will not be processed as the string is defined.
+    # it will be  executed when it is displayed.
+    # shellcheck disable=SC2016
+    mulv_status_chk='Mullvad status: $(mullvad status | head -n 1)'
     set -- \
         0.0 M Left "Back to Extras     $nav_prev" extras.sh \
         0.0 M Home "'Back to Main menu  $nav_home'" main.sh \
         0.0 S \
-        0.0 C s Status "display '$(mullvad status)' $menu_reload"
+        0.0 C s Status "display '$mulv_status_chk' $menu_reload"
 
     menu_generate_part 1 "$@"
 }
@@ -53,6 +57,7 @@ static_content() {
 #===============================================================
 
 menu_name="Mullvad VPN"
+
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(dirname -- "$(realpath "$0")")")")"
