@@ -11,11 +11,15 @@
 static_content() {
     menu_segment=1
 
-    customize_mode_cmd="$TMUX_BIN customize-mode -Z "
-    if $cfg_use_hint_overlays && ! $cfg_use_whiptail; then
-        hint="\& $d_hints/customize-mode.sh skip-oversized"
-        customize_mode_cmd="$customize_mode_cmd $hint"
-    fi
+
+    tmux_vers_check 3.2 && {
+        customize_mode_cmd="$TMUX_BIN customize-mode -Z "
+        if $cfg_use_hint_overlays && ! $cfg_use_whiptail; then
+            hint="\& $d_hints/customize-mode.sh skip-oversized"
+            customize_mode_cmd="$customize_mode_cmd $hint"
+        fi
+    }
+
     rld_cmd="command-prompt -I '$cfg_tmux_conf' -p 'Source file:' \
         'run-shell \"$d_scripts/reload_conf.sh %% $reload_in_runshell\"'"
 
