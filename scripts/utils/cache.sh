@@ -178,12 +178,13 @@ cache_param_write() { # tmux stuff
     repo_last_changed="$(git log -1 --format="%ad" --date=iso 2>/dev/null)"
 
     # Timestamp and file name for latest locally changed file
+    # the xargs stderr redirect is to avoid errors about removed files
     if [ "$(uname -s)" = "Darwin" ]; then
         last_local_edit="$(git ls-files -m 2>/dev/null |
-            xargs -r stat -f '%m %N' | sort -nr | head -1)"
+            xargs -r stat -f '%m %N' 2>/dev/null | sort -nr | head -1)"
     else
         last_local_edit="$(git ls-files -m 2>/dev/null |
-            xargs -r stat -c '%Y %n' | sort -nr | head -1)"
+            xargs -r stat -c '%Y %n' 2>/dev/null | sort -nr | head -1)"
     fi
 
     f_params_tmp=$(mktemp) || error_msg "Failed to create tmp config file"
