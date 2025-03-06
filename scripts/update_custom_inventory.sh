@@ -28,7 +28,7 @@ clear_cache_main() {
     # clear cache for main menu, so that next time its run it will not include
     # the alternate items index
 
-    rm -rf "$d_cache"/items_main
+    rm -rf "$d_cache"/items/main
 }
 
 clear_custom_content_template() {
