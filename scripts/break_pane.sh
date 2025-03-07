@@ -16,7 +16,7 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 _this="break_pane.sh" # error prone if script name is changed :(
-[ "$current_script" != "$_this" ] && error_msg "$_this should NOT be sourced"
+[ "$current_script" != "$_this" ] && error_msg_safe "$_this should NOT be sourced"
 
 if [ "$(tmux_error_handler list-panes | wc -l)" -lt 2 ]; then
     tmux_error_handler display-message "Only one pane!"

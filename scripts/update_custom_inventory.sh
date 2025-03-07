@@ -39,7 +39,7 @@ clear_custom_content_template() {
 
 clear_cache_custom_items() {
     # log_it "clear_cache_custom_items()"
-    [ -z "$d_cache" ] && error_msg "variable d_cache was unexpectedly undefined!"
+    [ -z "$d_cache" ] && error_msg_safe "variable d_cache was unexpectedly undefined!"
 
     # remove all cached custom items
     rm -rf "$d_cache"/custom_items_*/
@@ -68,7 +68,7 @@ checksum_content_write() {
     find "$d_custom_items/" -type f -exec sha256sum {} + | sort |
         sha256sum >"$f_chksum_custom" || {
 
-        error_msg "Failed to write checksum into: $f_chksum_custom"
+        error_msg_safe "Failed to write checksum into: $f_chksum_custom"
     }
 }
 
@@ -81,7 +81,7 @@ custom_items_changed_check() {
     checksum_content_write
     current_content_chksum="$(checksum_content_read)"
     [ -z "$current_content_chksum" ] && {
-        error_msg "Failed to scan content in: $d_custom_items"
+        error_msg_safe "Failed to scan content in: $d_custom_items"
     }
     # log_it " current:  $current_content_chksum"
 
@@ -99,21 +99,21 @@ get_variable_from_script() {
     # log_it "get_variable_from_script($_file, $_variable_to_verify, $_show_error)"
     _code_snippet="$(grep ^"${_variable_to_verify}"= "$_file")"
     [ -z "$_code_snippet" ] && {
-        error_msg "$_file does not define $_variable_to_verify" -1
+        error_msg_safe "$_file does not define $_variable_to_verify" -1
         return 1
     }
     _count="$(echo "$_code_snippet" | wc -l | sed 's/^ *//')"
     [ "$_count" != "1" ] && {
         _msg="There should be exactly one assignment of: $_variable_to_verify in"
         _msg="$_msg $_file - found: $_count"
-        error_msg "$_msg" -1
+        error_msg_safe "$_msg" -1
         return 1
     }
     run_in_sub_shell="$(printf '%s\n%s' "$_code_snippet" "echo \$$_variable_to_verify")"
     variable_content=$(sh -c "$run_in_sub_shell")
 
     [ "$_show_error" = "show_error" ] && [ -z "$variable_content" ] && {
-        error_msg "$custom_menu: $_variable_to_verify was empty"
+        error_msg_safe "$custom_menu: $_variable_to_verify was empty"
     }
     return 0
 }
@@ -121,14 +121,14 @@ get_variable_from_script() {
 failed_to_extract_variable() {
     msg="Odd error, this should not happen...\nFailed to extract \"$2\" from\n"
     msg="$msg $1\nDuring create_index\nthis custom item will be skipped for now"
-    error_msg "$msg" -1
+    error_msg_safe "$msg" -1
 }
 
 create_custom_index() {
     # log_it "create_custom_index()"
     cache_create_folder # make sure it exists
     [ -z "$f_custom_items_content" ] && {
-        error_msg "variable f_custom_items_content undefined"
+        error_msg_safe "variable f_custom_items_content undefined"
     }
     rm -f "$f_custom_items_content" # make sure its nothing there
     clear_cache_main

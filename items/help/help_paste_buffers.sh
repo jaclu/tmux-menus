@@ -12,7 +12,7 @@ dynamic_content() {
     # Things that change dependent on various states
 
     if [ -z "$prev_menu" ]; then
-        error_msg "$current_script was called without notice of what called it"
+        error_msg_safe "$current_script was called without notice of what called it"
     fi
 
     set -- \

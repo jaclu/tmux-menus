@@ -11,7 +11,7 @@
 is_avalable() {
     cmd="$1"
     if [ -z "$cmd" ]; then
-        error_msg "extras.is_available - no param!"
+        error_msg_safe "extras.is_available - no param!"
     fi
     if [ -z "$(command -v "$cmd")" ]; then
 	# shellcheck disable=SC2039

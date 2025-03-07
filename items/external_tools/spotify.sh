@@ -23,7 +23,7 @@ static_content() {
 
     reload_no_output=" > /dev/null ; $f_current_script"
 
-    [ -z "$(command -v spotify)" ] && error_msg "spotify bin not found!"
+    [ -z "$(command -v spotify)" ] && error_msg_safe "spotify bin not found!"
 
     set -- \
         0.0 M Left "Back to Extras     $nav_prev" extras.sh \

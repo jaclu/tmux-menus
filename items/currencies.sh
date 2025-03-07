@@ -18,7 +18,7 @@ display_char() {
     #  buffer, that can later be pasted.
     #
     c="$1"
-    [ -z "$c" ] && error_msg "display_char() - no param"
+    [ -z "$c" ] && error_msg_safe "display_char() - no param"
     if $cfg_use_whiptail; then
         normalize_bool_param "$wt_pasting" false &&
             pending_paste=true || pending_paste=false
@@ -43,7 +43,7 @@ display_char() {
 #
 handle_char() {
     s_in="$1"
-    [ -z "$s_in" ] && error_msg "handle_char() - no param"
+    [ -z "$s_in" ] && error_msg_safe "handle_char() - no param"
 
     case "$s_in" in
     0x*)
@@ -87,7 +87,7 @@ show_label() {
 
 static_content() {
 
-    tmux_vers_check 2.0 || error_msg "needs tmux 2.0"
+    tmux_vers_check 2.0 || error_msg_safe "needs tmux 2.0"
 
     set -- \
         0.0 M Left "Back to Missing Keys  $nav_prev" missing_keys.sh \

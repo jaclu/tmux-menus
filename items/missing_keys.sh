@@ -24,7 +24,7 @@ display_char() {
     #  buffer, that can later be pasted.
     #
     c="$1"
-    [ -z "$c" ] && error_msg "display_char() - no param"
+    [ -z "$c" ] && error_msg_safe "display_char() - no param"
     if $cfg_use_whiptail; then
         normalize_bool_param "$wt_pasting" false &&
             pending_paste=true || pending_paste=false
@@ -49,7 +49,7 @@ display_char() {
 #
 handle_char() {
     s_in="$1"
-    [ -z "$s_in" ] && error_msg "handle_char() - no param"
+    [ -z "$s_in" ] && error_msg_safe "handle_char() - no param"
 
     case "$s_in" in
     0x*)
@@ -71,7 +71,7 @@ handle_char() {
             _check="$(expr length "$s_in")"
         fi
         if [ "$_check" -gt 1 ]; then
-            error_msg "param can only be single char! [$s]"
+            error_msg_safe "param can only be single char! [$s]"
         fi
         ;;
     esac

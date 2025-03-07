@@ -83,7 +83,7 @@ cmd+=" $cfg_trigger_key  run-shell $bind_cmd"
 # teh_debug=true
 # shellcheck disable=SC2086
 $TMUX_BIN $cmd || {
-    error_msg "Failed to bind trigger"
+    error_msg_safe "Failed to bind trigger"
 }
 
 log_it "$trigger_sequence"

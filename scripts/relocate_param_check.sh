@@ -19,7 +19,7 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 
 # Should be sourced
 _this="relocate_param_check.sh" # error prone if script name is changed :(
-[ "$current_script" = "$_this" ] && error_msg "$_this SHOULD be sourced"
+[ "$current_script" = "$_this" ] && error_msg_safe "$_this SHOULD be sourced"
 
 
 item_type="$1"
@@ -28,7 +28,7 @@ case "$item_type" in
 "W" | "P") : ;; # Valid parameters
 *)
     # NEEDS TESTING
-    error_msg "param_check($1) First param must be W or P!"
+    error_msg_safe "param_check($1) First param must be W or P!"
     ;;
 esac
 
@@ -39,14 +39,14 @@ case "$action" in
 "L")
     if [ "$item_type" = "P" ]; then
         # NEEDS TESTING
-        error_msg "param_check() Panes can not be linked!"
+        error_msg_safe "param_check() Panes can not be linked!"
     fi
     ;;
 *)
     # NEEDS TESTING
     set -- "param_check($1,$2) 2nd param must be L or M" \
         "Indicating move or link action"
-    error_msg "$*"
+    error_msg_safe "$*"
     ;;
 esac
 
@@ -60,7 +60,7 @@ raw_dest="$3"
 
 if [ -z "$raw_dest" ]; then
     # NEEDS TESTING
-    error_msg "param_check() - no destination param (\$3) given!"
+    error_msg_safe "param_check() - no destination param (\$3) given!"
 fi
 
 cur_ses="$(tmux_error_handler display-message -p '#S')"

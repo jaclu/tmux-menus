@@ -33,10 +33,10 @@ log_it() {
     }
 }
 
-safe_error_msg() {
-    log_it "safe_error_msg()"
-    $all_helpers_sourced || source_all_helpers "safe_error_msg()"
-    error_msg "$@"
+error_msg_safe() {
+    #  Used when potentially called without having sourced everything
+    $all_helpers_sourced || source_all_helpers "error_msg_safe($@)"
+    error_msg_safe "$@"
 }
 
 set_dbg_t_now() {
@@ -67,7 +67,7 @@ source_all_helpers() {
     log_it "  caller: $1"
     $all_helpers_sourced && {
         # safe to call since all helpers have been sourced
-        error_msg "source_all_helpers() called when it was already done"
+        error_msg_safe "source_all_helpers() called when it was already done"
     }
     # exit 1
 
@@ -152,7 +152,7 @@ tmux_select_menu_handler() {
             cfg_alt_menu_handler=dialog
             log_it "tmux below 3.0 - using: dialog"
         else
-            safe_error_msg "Neither whiptail or dialog found, plugin aborted"
+            error_msg_safe "Neither whiptail or dialog found, plugin aborted"
         fi
         cfg_use_whiptail=true
     elif [ "$TMUX_MENU_HANDLER" = 1 ]; then
@@ -160,7 +160,7 @@ tmux_select_menu_handler() {
         if command -v "$_cmd" >/dev/null; then
             cfg_alt_menu_handler="$_cmd"
         else
-            safe_error_msg "$_cmd not available, plugin aborted"
+            error_msg_safe "$_cmd not available, plugin aborted"
         fi
         cfg_use_whiptail=true
         log_it "$_cmd is selected due to TMUX_MENU_HANDLER=1"
@@ -170,7 +170,7 @@ tmux_select_menu_handler() {
         if command -v "$_cmd" >/dev/null; then
             cfg_alt_menu_handler="$_cmd"
         else
-            safe_error_msg "$_cmd not available, plugin aborted"
+            error_msg_safe "$_cmd not available, plugin aborted"
         fi
         cfg_use_whiptail=true
         log_it "$_cmd is selected due to TMUX_MENU_HANDLER=2"
@@ -198,7 +198,7 @@ cache_get_params() {
     #  Retrieves cached env params, returns true on success, otherwise false
     #
     log_it "cache_get_params()"
-    $cfg_use_cache || safe_error_msg "cache_get_params() - called when not using cache"
+    $cfg_use_cache || error_msg_safe "cache_get_params() - called when not using cache"
     if [ -f "$f_cache_params" ]; then
         # shellcheck disable=SC1090
         . "$f_cache_params" || return 1
@@ -348,7 +348,7 @@ log_interactive_to_stderr="1"
 [ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
 
 if [ -z "$D_TM_BASE_PATH" ]; then
-    # helpers not yet sourced, so error_msg() not yet available
+    # helpers not yet sourced, so error_msg_safe() not yet available
     msg="$plugin_name ERROR: $0 - D_TM_BASE_PATH must be set!"
     (
         echo

@@ -48,7 +48,7 @@ debug_print() {
     1) echo "$1" ;;
     2) log_it "$1" ;;
     *)
-        error_msg "$menu_debug state invalid [$menu_debug] should be 1 or 2! p1[$1]"
+        error_msg_safe "$menu_debug state invalid [$menu_debug] should be 1 or 2! p1[$1]"
         ;;
     esac
 }
@@ -281,7 +281,7 @@ add_uncached_item() {
 verify_menu_key() {
     _key="$1"
     _item="$2"
-    [ -z "$_key" ] && error_msg "Key was empty for: $_item in: $0"
+    [ -z "$_key" ] && error_msg_safe "Key was empty for: $_item in: $0"
 }
 
 menu_parse() {
@@ -451,7 +451,7 @@ menu_parse() {
             # Error
             log_it "--- Menu created so far ---"
             log_it "$menu_items"
-            error_msg "ERROR: [$1]"
+            error_msg_safe "ERROR: [$1]"
             ;;
 
         esac
@@ -461,7 +461,7 @@ menu_parse() {
     if $cfg_use_cache; then
         log_it "Caching: $(relative_path "$f_cache_file")"
         echo "$menu_items" >"$f_cache_file" || {
-            error_msg "Failed to write to: $f_cache_file"
+            error_msg_safe "Failed to write to: $f_cache_file"
         }
     else
         add_uncached_item
@@ -529,12 +529,12 @@ handle_static_cached() {
             }
             _s="d_menu_cache seems wrong [$d_menu_cache] plugin-name not in that"
             _s="$_m path [$plugin_name]"
-            error_msg "$_s"
+            error_msg_safe "$_s"
             ;;
         esac
 
-        rm -rf "$d_menu_cache" || error_msg "Failed to remove: $d_menu_cache"
-        mkdir -p "$d_menu_cache" || error_msg "Failed to create: $d_menu_cache"
+        rm -rf "$d_menu_cache" || error_msg_safe "Failed to remove: $d_menu_cache"
+        mkdir -p "$d_menu_cache" || error_msg_safe "Failed to create: $d_menu_cache"
         # now static content can be cached
         static_content
     fi
@@ -708,6 +708,9 @@ ensure_menu_fits_on_screen() {
     log_it "ensure_menu_fits_on_screen() Menu $current_script - Display time:  $disp_time"
 
     if [ "$(echo "$disp_time < 0.5" | bc)" -eq 1 ]; then
+        $all_helpers_sourced || {
+            source_all_helpers "ensure_menu_fits_on_screen()  short display, give warning"
+        }
         define_f_menu_rel
         if [ -n "$window_width" ] && [ -n "$window_height" ]; then
             _s="$f_menu_rel: screen mins: ${window_width}x$window_height"
@@ -719,7 +722,7 @@ ensure_menu_fits_on_screen() {
             _s="$f_menu_rel: Screen might be too small"
         fi
         # log_it "$_s"
-        error_msg "$_s"
+        error_msg_safe "$_s"
     fi
     unset disp_time
 }
@@ -797,7 +800,7 @@ alt_parse_selection() {
     wt_actions="$1"
     log_it "alt_parse_selection($wt_action)"
     [ -z "$wt_actions" ] && {
-        error_msg "alt_parse_selection() - called without param"
+        error_msg_safe "alt_parse_selection() - called without param"
     }
 
     lst=$wt_actions
@@ -867,7 +870,7 @@ exit_if_dialog_doesnt_fit_screen() {
 #===============================================================
 
 if [ -z "$D_TM_BASE_PATH" ]; then
-    # helpers not yet sourced, so error_msg() not yet available
+    # helpers not yet sourced, so error_msg_safe() not yet available
     msg="ERROR: dialog_handling.sh - D_TM_BASE_PATH must be set!"
     (
         echo
@@ -887,14 +890,14 @@ dbg_t_update "[dialog_handling] sourced helpers"
 
 # Some sanity checks
 [ "$MENUS_PROFILING" != "1" ] && {
-    [ -z "$TMUX" ] && error_msg "$plugin_name can only be used inside tmux!"
+    [ -z "$TMUX" ] && error_msg_safe "$plugin_name can only be used inside tmux!"
 }
-[ -z "$menu_name" ] && error_msg "menu_name not defined"
+[ -z "$menu_name" ] && error_msg_safe "menu_name not defined"
 [ -n "$menu_min_vers" ] && {
     # Abort with error if tmux version is insufficient
     tmux_vers_check "$menu_min_vers" || {
         define_f_menu_rel
-        error_msg "$(relative_path "$f_menu_rel") needs tmux: $menu_min_vers"
+        error_msg_safe "$(relative_path "$f_menu_rel") needs tmux: $menu_min_vers"
     }
 }
 

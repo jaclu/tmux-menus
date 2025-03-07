@@ -68,7 +68,7 @@ tmux_get_option() {
 
     log_it "tmux_get_option($tgo_option, $tgo_default)"
 
-    [ -z "$tgo_option" ] && error_msg "tmux_get_option() param 1 empty!"
+    [ -z "$tgo_option" ] && error_msg_safe "tmux_get_option() param 1 empty!"
 
     if [ "$TMUX" = "" ]; then
         # this is run standalone, just report the defaults
@@ -226,7 +226,7 @@ tmux_error_handler() { # cache references
                 _i=$((_i + 1))
                 f_error_log="${f_tmux_err}-$_i"
                 [ "$_i" -gt 1000 ] && {
-                    error_msg "Aborting runaway loop - _i=$_i"
+                    error_msg_safe "Aborting runaway loop - _i=$_i"
                 }
             done
             unset _i
@@ -243,7 +243,7 @@ tmux_error_handler() { # cache references
             )"
         else
             log_it "saved error to: $f_error_log"
-            error_msg "$(
+            error_msg_safe "$(
                 printf "tmux cmd failed:\n\n%s\n
                 \nThe full error message has been saved in:\n%s
                 \nFull path:\n%s\n" \
@@ -277,7 +277,7 @@ tmux_error_handler() { # cache references
 #             cfg_alt_menu_handler=dialog
 #             log_it "tmux below 3.0 - using: dialog"
 #         else
-#             error_msg "Neither whiptail or dialog found, plugin aborted"
+#             error_msg_safe "Neither whiptail or dialog found, plugin aborted"
 #         fi
 #         cfg_use_whiptail=true
 #     elif [ "$TMUX_MENU_HANDLER" = 1 ]; then
@@ -285,7 +285,7 @@ tmux_error_handler() { # cache references
 #         if command -v "$_cmd" >/dev/null; then
 #             cfg_alt_menu_handler="$_cmd"
 #         else
-#             error_msg "$_cmd not available, plugin aborted"
+#             error_msg_safe "$_cmd not available, plugin aborted"
 #         fi
 #         cfg_use_whiptail=true
 #         log_it "$_cmd is selected due to TMUX_MENU_HANDLER=1"
@@ -295,7 +295,7 @@ tmux_error_handler() { # cache references
 #         if command -v "$_cmd" >/dev/null; then
 #             cfg_alt_menu_handler="$_cmd"
 #         else
-#             error_msg "$_cmd not available, plugin aborted"
+#             error_msg_safe "$_cmd not available, plugin aborted"
 #         fi
 #         cfg_use_whiptail=true
 #         log_it "$_cmd is selected due to TMUX_MENU_HANDLER=2"

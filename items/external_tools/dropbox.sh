@@ -26,7 +26,7 @@ dynamic_content() {
 
 static_content() {
 
-    [ -z "$(command -v dropbox)" ] && error_msg "dropbox bin not found!"
+    [ -z "$(command -v dropbox)" ] && error_msg_safe "dropbox bin not found!"
 
     set -- \
         0.0 M Left "Back to Extras     $nav_prev" extras.sh \

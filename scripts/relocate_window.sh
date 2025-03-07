@@ -24,7 +24,7 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 _this="relocate_window.sh" # error prone if script name is changed :(
-[ "$current_script" != "$_this" ] && error_msg "$_this should NOT be sourced"
+[ "$current_script" != "$_this" ] && error_msg_safe "$_this should NOT be sourced"
 
 # shellcheck source=scripts/relocate_param_check.sh
 . "$d_scripts"/relocate_param_check.sh
@@ -36,7 +36,7 @@ if [ "$cur_ses" = "$dest_ses" ]; then
     #  to same session
     #
     # NEEDS TESTING
-    [ "$action" = "L" ] && error_msg "Linking to same session is pointless!"
+    [ "$action" = "L" ] && error_msg_safe "Linking to same session is pointless!"
 
     #
     #  Move within the current session

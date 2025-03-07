@@ -105,7 +105,7 @@ valid_items=(tpm)  # additional folders expected to be in plugins folders
 
 [[ "$(basename "$0")" != "$_this" ]] && {
     # mostly to ensure this file isn't accidentally sourced from a menu
-    error_msg "$_this should NOT be sourced"
+    error_msg_safe "$_this should NOT be sourced"
 }
 
 # shellcheck disable=SC2154

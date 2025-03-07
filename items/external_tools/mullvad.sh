@@ -35,7 +35,7 @@ static_content() {
 
     # suffix=" > /dev/null' ; run-shell '$f_current_script'"
 
-    [ -z "$(command -v mullvad)" ] && error_msg "mullvad bin not found!"
+    [ -z "$(command -v mullvad)" ] && error_msg_safe "mullvad bin not found!"
 
     # By using '' this will not be processed as the string is defined.
     # it will be  executed when it is displayed.
