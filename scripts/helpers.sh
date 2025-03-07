@@ -37,6 +37,27 @@ safe_error_msg() {
     error_msg "$@"
 }
 
+set_dbg_t_now() {
+    #
+    #  Sets dbg_t_now to current epoch
+    #
+    dbg_ts="$(date +%s%N)"
+    dbg_t_now="${dbg_ts%??????}" # Strip last 6 digits → milliseconds
+    [ -z "$dbg_t_start" ] && {
+        dbg_t_start="$dbg_t_now"
+        dbg_t_last_update="$dbg_t_now"
+    }
+}
+
+dbg_t_update() {
+    [ "$TMUX_MENU_FORCE_SILENT" = "1" ] && return
+    set_dbg_t_now
+    dbg_t_since_start=$((dbg_t_now - dbg_t_start))
+    dbg_t_sine_update=$((dbg_t_now - dbg_t_last_update))
+    dbg_t_last_update="$dbg_t_now"
+    echo "$1 - total: $dbg_t_since_start   since last: $dbg_t_sine_update" >/dev/stderr
+}
+
 source_all_helpers() {
     log_it
     log_it "--------------->  source_all_helpers($0)  <---------------"
