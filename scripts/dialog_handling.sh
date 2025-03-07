@@ -645,7 +645,6 @@ prepare_menu() {
 
     set_menu_env_variables
     dbg_t_update "[dialog_handling] set_menu_env_variables() done"
-    log_it
 
     # 1 - Handle static parts, use cache if enabled and available
     if $cfg_use_cache; then
