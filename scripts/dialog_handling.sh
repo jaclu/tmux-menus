@@ -627,7 +627,7 @@ verify_menu_runable() {
     if [ -n "$cfg_alt_menu_handler" ]; then
         _mnu_first="$cfg_alt_menu_handler"
     else
-        _mnu_first="tmux_error_handler"
+        _mnu_first="$TMUX_BIN"
     fi
     [ "$_actual_first" = "$_mnu_first" ] || {
         msg="The processed menu should start with a menu handler."
