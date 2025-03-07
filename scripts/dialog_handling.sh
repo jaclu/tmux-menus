@@ -113,6 +113,7 @@ menu_generate_part() {
     # log_it "menu_generate_part()"
     # Generate one menu segment
     # log_it "menu_generate_part($1)"
+    $all_helpers_sourced || source_all_helpers
     menu_idx="$1"
     shift # get rid of the idx
 
@@ -610,6 +611,7 @@ verify_menu_runable() {
 
     # extract first word
     _actual_first="${menu_items%% *}"
+    log_it "><> _actual_first: [$_actual_first]"
 
     if [ -n "$cfg_alt_menu_handler" ]; then
         _mnu_first="$cfg_alt_menu_handler"
