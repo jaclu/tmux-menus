@@ -356,6 +356,7 @@ plugin_name="tmux-menus"
 #  since log_it quick aborts if that is undefined
 #
 log_interactive_to_stderr=1
+log_it "logging to stderr"
 
 [ -z "$D_TM_BASE_PATH" ] && error_msg "D_TM_BASE_PATH undefined"
 
@@ -417,7 +418,6 @@ else
     get_config
     dbg_t_update "[helpers] - get_config done"
 fi
-
 
 min_tmux_vers="1.8"
 if ! tmux_vers_check "$min_tmux_vers"; then
