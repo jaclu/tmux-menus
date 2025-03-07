@@ -399,8 +399,8 @@ dbg_t_update "[helpers] - before defining current_script"
 
 current_script=${0##*/}
 # d_current_script="$(cd "$(dirname "$0")" && pwd)"
-# d_current_script="$(cd "$(dirname "$0")" ; pwd)"
-d_current_script="$(dirname "$(readlink -f "$0")")"
+d_current_script="$(cd "$(dirname "$0")" ; pwd)"
+# d_current_script="$(dirname "$(readlink -f "$0")")" # 73
 
 dbg_t_update "[helpers] - after defining current_script"
 log_it "d_current_script [$d_current_script] - current_script [$current_script]"
