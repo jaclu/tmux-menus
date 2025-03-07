@@ -125,7 +125,7 @@ menu_generate_part() {
 
 mnu_prefix() {
     _n="$(echo "$cfg_format_title" | sed "s/#{@menu_name}/$menu_name/g")"
-    menu_items="tmux_error_handler display-menu  \
+    menu_items="$TMUX_BIN display-menu  \
         -T $_n \
         -x '$cfg_mnu_loc_x' -y '$cfg_mnu_loc_y'"
     if tmux_vers_check 3.4; then
