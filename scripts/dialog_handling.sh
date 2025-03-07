@@ -23,8 +23,7 @@
 #   dynamic_content()   - all dynamic fragments, will be regenerated each time
 #
 
-dbg_t_update "[dialog_handling] - start"
-# exit 1
+# dbg_t_update "[dialog_handling] - start"
 
 #---------------------------------------------------------------
 #
