@@ -517,7 +517,7 @@ handle_static_cached() {
     # Ensure the cache folder is present, and newer than the menu file, making sure
     # obsolete cache is dropped.
     #
-    log_it "handle_static_cached() - [$0] d_menu_cache [$d_menu_cache]"
+    # log_it "handle_static_cached() - [$0] d_menu_cache [$d_menu_cache]"
     if [ ! -d "$d_menu_cache" ] || [ "$(get_mtime "$0")" -gt "$(get_mtime "$d_menu_cache")" ]; then
         # log_it "  regenerate cache for: $d_menu_cache"
         # Ensure d_menu_cache seems to be valid before doing erase
@@ -542,7 +542,7 @@ handle_static_cached() {
 }
 
 handle_dynamic() {
-    log_it "handle_dynamic()"
+    # log_it "handle_dynamic()"
     if is_function_defined "dynamic_content"; then
         wt_actions_static="$wt_actions"
         wt_actions=""
@@ -582,7 +582,7 @@ generate_menu_items_in_sorted_order() {
 }
 
 sort_menu_items() {
-    log_it "sort_menu_items()"
+    # log_it "sort_menu_items()"
     if $cfg_use_cache; then
         for file in "$d_menu_cache"/*; do
             # skip special files
@@ -609,7 +609,7 @@ verify_menu_runable() {
     # Check that menu starts with a menu handling cmd, if not most likely due to
     # menu idx 1 not generated, but could be other causes. eithe way this menu
     # will be displayable...
-    log_it "verify_menu_runable()"
+    # log_it "verify_menu_runable()"
 
     # Remove leading spaces
     while [ "${menu_items# }" != "$menu_items" ]; do
@@ -650,7 +650,7 @@ prepare_menu() {
     #  menu_param="$1"
     #  then process it in dynamic_content()
     #
-    log_it "prepare_menu()"
+    # log_it "prepare_menu()"
     dh_t_mnu_processing_start="$(safe_now)"
 
     set_menu_env_variables
@@ -833,7 +833,7 @@ handle_wt_selecion() {
 }
 
 display_menu() {
-    log_it "display_menu()"
+    # log_it "display_menu()"
     # Display time to generate menu
     _t="$(echo "$(safe_now) - $dh_t_mnu_processing_start" | bc)"
 

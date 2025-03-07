@@ -137,7 +137,7 @@ get_config() { # tmux stuff
     #  This is used by everything else sourcing helpers.sh, then trusting
     #  that the param cache is valid if found
     #
-    log_it "get_config()" # with cache: termux, ipad
+    # log_it "get_config()" # with cache: termux, ipad
 
     if [ -f "$f_no_cache_hint" ]; then
         # probably not needed at this point, further optimization needed...
@@ -220,7 +220,7 @@ cache_get_params() {
     #
     #  Retrieves cached env params, returns true on success, otherwise false
     #
-    log_it "cache_get_params()"
+    # log_it "cache_get_params()"
     $cfg_use_cache || error_msg_safe "cache_get_params() - called when not using cache"
     if [ -f "$f_cache_params" ]; then
         # shellcheck disable=SC1090
@@ -318,7 +318,7 @@ tpt_retrieve_running_tmux_vers() {
     # If the variables defining the currently used tmux version needs to
     # be accessed before the first call to tmux_vers_ok this can be called.
     #
-    log_it "tpt_retrieve_running_tmux_vers()"
+    # log_it "tpt_retrieve_running_tmux_vers()"
     tpt_current_vers="$($TMUX_BIN -V | cut -d' ' -f2)"
     log_it "  tpt_current_vers [$tpt_current_vers]"
     tpt_current_vers_i="$(tpt_digits_from_string "$tpt_current_vers")"
