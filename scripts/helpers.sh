@@ -31,13 +31,14 @@ log_it() {
 
 safe_error_msg() {
     log_it "safe_error_msg()"
-    $all_helpers_sourced || source_all_helpers
+    $all_helpers_sourced || source_all_helpers "safe_error_msg()"
     error_msg "$@"
 }
 
 source_all_helpers() {
     log_it
     log_it "--------------->  source_all_helpers($0)  <---------------"
+    log_it "  caller: $1"
     $all_helpers_sourced && {
         # safe to call since all helpers have been sourced
         error_msg "source_all_helpers() called when it was already done"
@@ -94,14 +95,16 @@ get_config() { # tmux stuff
 
     if [ -f "$f_no_cache_hint" ]; then
         # probably not needed at this point, further optimization needed...
-        $all_helpers_sourced || source_all_helpers
+        $all_helpers_sourced || source_all_helpers "get_config() found: $f_no_cache_hint"
 
         # not using cache, read all cfg variables
         tmux_get_plugin_options
         dbg_t_update "[helpers] - tmux_get_plugin_options() done"
 
     elif ! cache_get_params; then
-        $all_helpers_sourced || source_all_helpers
+        $all_helpers_sourced || {
+            source_all_helpers "get_config() cache_get_params returned false"
+        }
 
         # Re-generate cache params
         cache_update_param_cache
@@ -176,7 +179,7 @@ cache_get_params() {
             #
             [ -n "$(find "$cfg_tmux_conf" -newer "$f_cache_params" 2>/dev/null)" ]; then
             log_it "$cfg_tmux_conf has been updated, parse again for current settings"
-            $all_helpers_sourced || source_all_helpers
+            $all_helpers_sourced || source_all_helpers "cache_get_params()"
             cache_update_param_cache
         fi
         cache_params_retrieved=1
@@ -219,7 +222,9 @@ tmux_vers_check() {
         esac
     }
 
-    $all_helpers_sourced || source_all_helpers
+    $all_helpers_sourced || {
+        source_all_helpers "tmux_vers_check() - non-cached version"
+    }
 
     # Compare numeric parts first for quick decisions.
     _i_comp="$(tpt_digits_from_string "$_v_comp")"

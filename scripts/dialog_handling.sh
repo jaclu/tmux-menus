@@ -106,7 +106,7 @@ update_wt_actions() {
 menu_generate_part() {
     # Generate one menu segment
     log_it "menu_generate_part($1)"
-    $all_helpers_sourced || source_all_helpers
+    $all_helpers_sourced || source_all_helpers "menu_generate_part()"
 
     menu_idx="$1"
     shift # get rid of the idx
@@ -895,7 +895,7 @@ dbg_t_update "[dialog_handling] sourced helpers"
 #
 menu_debug="" # Set to 1 to use echo 2 to use log_it
 
-$all_helpers_sourced || source_all_helpers
+# $all_helpers_sourced || source_all_helpers "end of dialog_handling"
 
 dbg_t_update "[dialog_handling] before prepare_menu()"
 prepare_menu
