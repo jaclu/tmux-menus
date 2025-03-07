@@ -863,8 +863,6 @@ if [ -z "$D_TM_BASE_PATH" ]; then
     exit 1
 fi
 
-dbg_t_update "[dialog_handling] about to source helper"
-
 # Only import if needed, checking a random variable
 [ -z "$current_script" ] && {
     # shellcheck source=scripts/helpers.sh
