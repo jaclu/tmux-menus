@@ -16,6 +16,8 @@
 #
 #---------------------------------------------------------------
 
+dbg_t_update "[helpers] - start"
+
 log_it() {
     [ -z "$cfg_log_file" ] && return #  early abort if no logging
 
@@ -276,16 +278,21 @@ safe_now() {
     #  MacOS date only display whole seconds, if gdate (GNU-date) is
     #  installed, it can  display times with more precision
     #
-    if [ "$(uname)" = "Darwin" ]; then
+    if [ "${OSTYPE#linux}" != "$OSTYPE" ]; then
+        #  On Linux the native date supports sub second precision
+        #  unless its the busybox date - only gives seconds...
+        date +%s.%N
+    elif [ -d /proc -a -f /proc/version ]; then
+        #  On Linux the native date supports sub second precision
+        #  unless its the busybox date - only gives seconds...
+        date +%s.%N
+    else
+        # Running on macOS
         if [ -n "$(command -v gdate)" ]; then
             gdate +%s.%N
         else
             date +%s
         fi
-    else
-        #  On Linux the native date supports sub second precision
-        #  unless its the busybox date - only gives seconds...
-        date +%s.%N
     fi
 }
 
@@ -322,9 +329,12 @@ get_config() { # tmux stuff
     if ! $cfg_use_cache; then
         # not using cache, read all cfg variables
         tmux_get_plugin_options
+        dbg_t_update "[helpers] - tmux_get_plugin_options done"
+
     elif ! cache_get_params; then
         # Re-generate cache params
         cache_update_param_cache
+        dbg_t_update "[helpers] - cache_update_param_cache done"
     fi
 }
 
@@ -333,6 +343,8 @@ get_config() { # tmux stuff
 #   Main
 #
 #===============================================================
+
+dbg_t_update "[helpers] - main"
 
 plugin_name="tmux-menus"
 
@@ -370,11 +382,6 @@ f_update_custom_inventory="$d_scripts"/update_custom_inventory.sh
 # will be set to true at end of this, this indicates everything is prepared
 env_initialized=false
 
-# shellcheck source=scripts/utils/cache.sh
-. "$d_scripts"/utils/cache.sh
-# shellcheck source=scripts/utils/tmux.sh
-. "$d_scripts"/utils/tmux.sh
-
 #
 #  Convert script name to full actual path notation the path is used
 #  for caching, so save it to a variable as well
@@ -383,6 +390,16 @@ current_script="$(basename "$0")" # name without path
 # ensure f_current_script is a full path
 d_current_script="$(dirname -- "$(realpath "$0")")"
 f_current_script="$d_current_script/$current_script"
+
+dbg_t_update "[helpers] - core variables defined"
+
+# shellcheck source=scripts/utils/cache.sh
+. "$d_scripts"/utils/cache.sh
+dbg_t_update "[helpers] - sourced cache"
+
+# shellcheck source=scripts/utils/tmux.sh
+. "$d_scripts"/utils/tmux.sh
+dbg_t_update "[helpers] - sourced tmux"
 
 # log_it "><>===================================================== $0"
 
@@ -401,13 +418,17 @@ if [ "$initialize_plugin" = "1" ]; then
     $cfg_use_cache && cache_get_params # clears cache if tmux.conf has been changed
 else
     get_config
+    dbg_t_update "[helpers] - get_config done"
 fi
+
 
 min_tmux_vers="1.8"
 if ! tmux_vers_check "$min_tmux_vers"; then
     # @variables are not usable prior to 1.8
     error_msg "need at least tmux $min_tmux_vers to work!"
 fi
+
+dbg_t_update "[helpers] - min vers check done"
 
 if $cfg_use_whiptail; then
     menu_reload="; $f_current_script"
@@ -420,6 +441,7 @@ else
     menu_reload="; run-shell \"$f_current_script\""
     reload_in_runshell=" ; $f_current_script"
 fi
+dbg_t_update "[helpers] - whiptail setup done"
 
 env_initialized=true # indicates that env is fully configured
 # log_it "><> scripts/helpers.sh - completed"

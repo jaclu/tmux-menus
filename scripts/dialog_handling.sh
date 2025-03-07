@@ -23,6 +23,9 @@
 #   dynamic_content()   - all dynamic fragments, will be regenerated each time
 #
 
+dbg_t_update "[td-dialog_handling] - start"
+# exit 1
+
 #---------------------------------------------------------------
 #
 #   Common
@@ -846,10 +849,6 @@ exit_if_dialog_doesnt_fit_screen() {
 #
 #===============================================================
 
-# Just a dummy statement, so that the shellcheck disable doesn't need to be done in
-# every custom_item
-# _="$menu_key $menu_label"
-
 if [ -z "$D_TM_BASE_PATH" ]; then
     # helpers not yet sourced, so error_msg() not yet available
     msg="ERROR: dialog_handling.sh - D_TM_BASE_PATH must be set!"
@@ -861,9 +860,14 @@ if [ -z "$D_TM_BASE_PATH" ]; then
     exit 1
 fi
 
+dbg_t_update "[td-dialog_handling] about to source helper"
+
 # Only import if needed, checking a random variable
 # shellcheck source=scripts/helpers.sh
 [ -z "$current_script" ] && . "$D_TM_BASE_PATH"/scripts/helpers.sh
+
+dbg_t_update "[td-dialog_handling] sourced helpers"
+exit 1
 
 # Some sanity checks
 [ -z "$TMUX" ] && error_msg "$plugin_name can only be used inside tmux!"

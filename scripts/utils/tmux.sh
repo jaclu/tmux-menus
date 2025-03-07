@@ -108,6 +108,7 @@ tmux_get_plugin_options() { # cache references
     # log_it "tmux_get_plugin_options()"
 
     tmux_get_defaults
+    dbg_t_update "[tmux] - tmux_get_defaults done"
 
     cfg_trigger_key="$(tmux_get_option "@menus_trigger" "$default_trigger_key")"
     if normalize_bool_param "@menus_without_prefix" "$default_no_prefix"; then
@@ -162,6 +163,7 @@ tmux_get_plugin_options() { # cache references
         cfg_mnu_loc_x="$(tmux_get_option "@menus_location_x" "$default_location_x")"
         cfg_mnu_loc_y="$(tmux_get_option "@menus_location_y" "$default_location_y")"
     fi
+    dbg_t_update "[tmux] - whiptail considerations done"
 
     cfg_tmux_conf="$(tmux_get_option "@menus_config_file" "$default_tmux_conf")"
     _f="$(tmux_get_option "@menus_log_file" "$default_log_file")"

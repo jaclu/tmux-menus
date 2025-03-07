@@ -11,7 +11,6 @@
 static_content() {
     menu_segment=1
 
-
     tmux_vers_check 3.2 && {
         customize_mode_cmd="$TMUX_BIN customize-mode -Z "
         if $cfg_use_hint_overlays && ! $cfg_use_whiptail; then
@@ -81,6 +80,22 @@ menu_name="Main menu"
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
+
+dbg_safe_now() {
+    dbg_ts="$(date +%s%N)"
+    dbg_ts_ms="${dbg_ts%??????}"  # Strip last 6 digits → milliseconds
+    echo "$dbg_ts_ms"
+}
+dbg_t_update() {
+    dbg_t_now="$(dbg_safe_now)"
+    dbg_t_since_start=$((dbg_t_now - dbg_t_start))
+    dbg_t_sine_update=$((dbg_t_now - dbg_t_last_update))
+    dbg_t_last_update="$dbg_t_now"
+    echo "$1 - since last: $dbg_t_sine_update  total: $dbg_t_since_start"
+
+}
+dbg_t_start="$(dbg_safe_now)"
+dbg_t_last_update="$dbg_t_start"
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
