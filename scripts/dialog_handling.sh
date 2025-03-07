@@ -23,7 +23,7 @@
 #   dynamic_content()   - all dynamic fragments, will be regenerated each time
 #
 
-dbg_t_update "[td-dialog_handling] - start"
+dbg_t_update "[dialog_handling] - start"
 # exit 1
 
 #---------------------------------------------------------------
@@ -860,13 +860,13 @@ if [ -z "$D_TM_BASE_PATH" ]; then
     exit 1
 fi
 
-dbg_t_update "[td-dialog_handling] about to source helper"
+dbg_t_update "[dialog_handling] about to source helper"
 
 # Only import if needed, checking a random variable
 # shellcheck source=scripts/helpers.sh
 [ -z "$current_script" ] && . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
-dbg_t_update "[td-dialog_handling] sourced helpers"
+dbg_t_update "[dialog_handling] sourced helpers"
 
 # Some sanity checks
 [ -z "$TMUX" ] && error_msg "$plugin_name can only be used inside tmux!"
@@ -890,4 +890,6 @@ dbg_t_update "[td-dialog_handling] sourced helpers"
 menu_debug="" # Set to 1 to use echo 2 to use log_it
 
 prepare_menu
+dbg_t_update "[dialog_handling] prepare_menu() done"
+
 [ "$TMUX_MENUS_NO_DISPLAY" != "1" ] && display_menu
