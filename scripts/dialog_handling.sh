@@ -508,8 +508,10 @@ set_menu_env_variables() {
     if $cfg_use_cache; then
         # Include relative script path in cache folder name to avoid name collisions
         #  items/main.sh -> cache/items/main.sh/
+        dbg_t_update "[dialog_handling] will generate d_menu_cache"
         d_menu_cache="$d_cache/$(relative_path "$d_current_script")/$current_script"
         $cfg_use_whiptail && d_wt_actions="$d_menu_cache/wt_actions"
+        dbg_t_update "[dialog_handling] d_menu_cache done"
     else
         uncached_menu=""
         uncached_wt_actions=""
