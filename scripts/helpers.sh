@@ -87,16 +87,35 @@ source_all_helpers() {
 }
 
 safe_now() {
+    # log_it "safe_now()"
+    if [ "$(uname)" = "Darwin" ]; then
+        #
+        #  MacOS date only display whole seconds, if gdate (GNU-date) is
+        #  installed, it can  display times with more precision
+        #
+        if [ -n "$(command -v gdate)" ]; then
+            gdate +%s.%N
+        else
+            date +%s
+        fi
+    else
+        #  On Linux the native date supports sub second precision
+        #  unless its the busybox date - only gives seconds...
+        date +%s.%N
+    fi
+}
+
+safe_now_alt() {
     # log_it "safe_now()" # with cache:
-    #
-    #  MacOS date only display whole seconds, if gdate (GNU-date) is
-    #  installed, it can  display times with more precision
-    #
     if [ -d /proc ] && [ -f /proc/version ]; then
         #  On Linux the native date supports sub second precision
         #  unless its the busybox date - only gives seconds...
         date +%s.%N
     else
+        #
+        #  MacOS date only display whole seconds, if gdate (GNU-date) is
+        #  installed, it can  display times with more precision
+        #
         # Running on macOS
         if [ -n "$(command -v gdate)" ]; then
             gdate +%s.%N
