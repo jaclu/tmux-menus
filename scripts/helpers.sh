@@ -37,7 +37,7 @@ safe_error_msg() {
 
 source_all_helpers() {
     log_it
-    log_it "--------------->  source_all_helpers()  <---------------"
+    log_it "--------------->  source_all_helpers($0)  <---------------"
     $all_helpers_sourced && {
         # safe to call since all helpers have been sourced
         error_msg "source_all_helpers() called when it was already done"
