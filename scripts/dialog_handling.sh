@@ -597,7 +597,7 @@ sort_menu_items() {
         done
     else
         _s="[dialog_handling] sort_menu_items()"
-        _s="$_s - callling: generate_menu_items_in_sorted_order"
+        _s="$_s - calling: generate_menu_items_in_sorted_order"
         dbg_t_update "$_s"
 
         generate_menu_items_in_sorted_order

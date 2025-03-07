@@ -17,9 +17,9 @@ log_it() {
     #  performance?
     # [ "$log_interactive_to_stderr" != "1" ] && [ -z "$cfg_log_file" ] && return
 
-    [ "$TMUX_MENU_FORCE_SILENT" = "1" ] && return
-
     [ "$log_interactive_to_stderr" = "1" ] && [ -t 0 ] && {
+        # shellcheck disable=SC2154
+        [ "$TMUX_MENU_FORCE_SILENT" = "1" ] && return
         # log to stderr if in interactive mode
         printf "[%s] log: %s\n" "$(date '+%H:%M:%S')" "$@" >/dev/stderr
         return
@@ -50,6 +50,7 @@ set_dbg_t_now() {
 }
 
 dbg_t_update() {
+    # shellcheck disable=SC2154
     [ "$TMUX_MENU_FORCE_SILENT" = "1" ] && return
     set_dbg_t_now
     dbg_t_since_start=$((dbg_t_now - dbg_t_start))
@@ -334,7 +335,7 @@ plugin_name="tmux-menus"
 #  This is mostly for debugging early stuff before the settings have
 #  been processed. Should normally be commented out!
 #
-# cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
+cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
 
 #
 #  If set to "1" log will happen to stderr if script is run in an interactive
@@ -373,17 +374,13 @@ f_no_cache_hint="$d_tmp"/no-cache-hint
 #  for caching, so save it to a variable as well
 #
 
-# current_script="$(basename "$0")" # name without path
-# d_current_script="$(dirname -- "$(realpath "$0")")"  # 90
-current_script=${0##*/}
-
 # shellcheck disable=SC2164
 d_current_script="$(
     cd "$(dirname "$0")"
     pwd
-)" # 52-56
-# dbg_t_update "[helpers-full] - after defining current_script"
-# log_it "d_current_script [$d_current_script] - current_script [$current_script]"
+)"
+current_script=${0##*/}
+f_current_script="$d_current_script/$current_script"
 
 # shellcheck disable=SC2154
 if [ -f "$f_no_cache_hint" ]; then

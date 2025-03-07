@@ -64,6 +64,7 @@ error_msg() {
         $do_display_message && {
             # shellcheck disable=SC2154
             msg_hold="$plugin_name ERR: $em_msg"
+            # shellcheck disable=SC2154
             actual_win_width="$($TMUX_BIN display-message -p "#{window_width}")"
             if $env_initialized && (
                 [ "${#msg_hold}" -gt "$actual_win_width" ] || has_lf_not_at_end "$em_msg"
@@ -95,6 +96,7 @@ error_msg_formated() {
     log_it "error_msg_formated($emf_err)"
 
     emf_msg="$(
+        # shellcheck disable=SC2154
         echo "ERROR in plugin $plugin_name: $(relative_path "$f_current_script") [$$]"
         echo
         echo "$emf_err"
@@ -359,7 +361,6 @@ f_update_custom_inventory="$d_scripts"/update_custom_inventory.sh
 # will be set to true at end of this, this indicates everything is prepared
 env_initialized=false
 
-f_current_script="$d_current_script/$current_script"
 dbg_t_update "[helpers-full] - core variables defined"
 
 # shellcheck source=scripts/utils/cache.sh
