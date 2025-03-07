@@ -100,8 +100,7 @@ dbg_t_update() {
     dbg_t_since_start=$((dbg_t_now - dbg_t_start))
     dbg_t_sine_update=$((dbg_t_now - dbg_t_last_update))
     dbg_t_last_update="$dbg_t_now"
-    echo "$1 - total: $dbg_t_since_start   since last: $dbg_t_sine_update"
-
+    echo "$1 - total: $dbg_t_since_start   since last: $dbg_t_sine_update" >/dev/stderr
 }
 
 set_dbg_t_now
