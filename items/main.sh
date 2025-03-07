@@ -111,7 +111,7 @@ dbg_t_update() {
     echo "$1 - total: $dbg_t_since_start   since last: $dbg_t_sine_update" >/dev/stderr
 }
 
-set_dbg_t_now
+dbg_t_update "Starting items/main.sh"
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
