@@ -647,20 +647,26 @@ prepare_menu() {
     dh_t_mnu_processing_start="$(safe_now)"
 
     set_menu_env_variables
+    dbg_t_update "[dialog_handling] set_menu_env_variables() done"
 
     # 1 - Handle static parts, use cache if enabled and available
     if $cfg_use_cache; then
         handle_static_cached
+        dbg_t_update "[dialog_handling] handle_static_cached() done"
     else
         static_content
+        dbg_t_update "[dialog_handling] static_content() done"
     fi
 
     # 2 - Handle dynamic parts (if any)
     handle_dynamic
+    dbg_t_update "[dialog_handling] handle_dynamic() done"
 
     # 3 - Gather each item in correct order
     sort_menu_items
+    dbg_t_update "[dialog_handling] sort_menu_items() done"
     verify_menu_runable
+    dbg_t_update "[dialog_handling] verify_menu_runable() done"
 }
 
 #---------------------------------------------------------------
