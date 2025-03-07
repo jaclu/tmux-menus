@@ -51,6 +51,7 @@ cache_prepare() {
     #
     #  returns 0 if cache folder exists / was created
     #
+    log_it "cache_prepare()"
     $cfg_use_cache || error_msg "cache_prepare() - called when not using cache" 1
 
     [ -d "$d_cache" ] && return 0 # already created
@@ -65,7 +66,7 @@ cache_add_ok_vers() {
     #  Add param to list of good versions (<=running tmux vers),
     #  if it wasn't cached already
     #
-    # log_it "cache_add_ok_vers($1)"
+    log_it "cache_add_ok_vers($1)"
     $cfg_use_cache || return 0
     [ -z "$1" ] && error_msg "cache_add_ok_vers() - no param"
 
@@ -85,7 +86,7 @@ cache_add_bad_vers() {
     #  Add param to list of bad versions (>running tmux vers),
     #  if it wasn't cached already
     #
-    # log_it "cache_add_bad_vers($1)"
+    log_it "cache_add_bad_vers($1)"
     $cfg_use_cache || return 1
     [ -z "$1" ] && error_msg "cache_add_bad_vers() - no param"
 
@@ -109,7 +110,7 @@ cache_save_known_tmux_versions() { # tmux stuff
         log_it "cache_save_known_tmux_versions() - called when not using cache"
         return 1
     }
-    # log_it "cache_save_known_tmux_versions() - $0"
+    log_it "cache_save_known_tmux_versions() - $0"
 
     cache_prepare
 
@@ -133,7 +134,7 @@ cache_escape_special_chars() {
     #  with either the escaped version or the original char
     #
     tesc_str="$1"
-    # log_it "cache_escape_special_chars($tesc_str)"
+    log_it "cache_escape_special_chars($tesc_str)"
 
     _s="$tesc_str"
     tesc_idx=0
@@ -165,7 +166,7 @@ cache_param_write() { # tmux stuff
     #  Writes all config params to file
     #  if it differed with previous params, clear cache
     #
-    # log_it "cache_param_write()"
+    log_it "cache_param_write()"
 
     $cfg_use_cache || error_msg "cache_param_write() - called when not using cache"
 
@@ -269,7 +270,7 @@ cache_get_params() {
     #
     #  Retrieves cached env params, returns true on success, otherwise false
     #
-    # log_it "cache_get_params()"
+    log_it "cache_get_params()"
     $cfg_use_cache || error_msg "cache_get_params() - called when not using cache"
     if [ -f "$f_cache_params" ]; then
         # shellcheck disable=SC1090
