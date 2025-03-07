@@ -339,6 +339,23 @@ d_tmp="${TMPDIR:-/tmp}"
 d_tmp="${d_tmp%/}" # Removes a trailing slash if present - sometimes set in TMPDIR...
 f_no_cache_hint="$d_tmp"/no-cache-hint
 
+#
+#  Convert script name to full actual path notation the path is used
+#  for caching, so save it to a variable as well
+#
+
+# current_script="$(basename "$0")" # name without path
+# d_current_script="$(dirname -- "$(realpath "$0")")"  # 90
+current_script=${0##*/}
+
+# shellcheck disable=SC2164
+d_current_script="$(
+    cd "$(dirname "$0")"
+    pwd
+)" # 52-56
+# dbg_t_update "[helpers-full] - after defining current_script"
+# log_it "d_current_script [$d_current_script] - current_script [$current_script]"
+
 # shellcheck disable=SC2154
 if [ -f "$f_no_cache_hint" ]; then
     # ensure no caching until the settings has been read
