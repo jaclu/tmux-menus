@@ -649,6 +649,7 @@ prepare_menu() {
 
     set_menu_env_variables
     dbg_t_update "[dialog_handling] set_menu_env_variables() done"
+    [ "$MENUS_PROFILING" ="1 "] && exit 0
 
     # 1 - Handle static parts, use cache if enabled and available
     if $cfg_use_cache; then
