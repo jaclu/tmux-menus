@@ -492,6 +492,8 @@ set_menu_env_variables() {
     [ -n "$override_prev" ] && cfg_nav_prev="$override_prev"
     [ -n "$override_home" ] && cfg_nav_home="$override_home"
 
+    log_it "set_menu_env_variables() - 10"
+
     # allow for having shorter variable names in menus
     # shellcheck disable=SC2034
     nav_next="$cfg_nav_next"
@@ -499,6 +501,8 @@ set_menu_env_variables() {
     nav_prev="$cfg_nav_prev"
     # shellcheck disable=SC2034
     nav_home="$cfg_nav_home"
+
+    log_it "set_menu_env_variables() - 20"
 
     external_action_separator=":/:/:/:"
     if $cfg_use_cache; then
@@ -511,6 +515,7 @@ set_menu_env_variables() {
         uncached_wt_actions=""
         uncached_item_splitter="||||"
     fi
+    log_it "set_menu_env_variables() - done"
 }
 
 handle_static_cached() {
