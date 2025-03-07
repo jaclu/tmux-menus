@@ -581,6 +581,7 @@ sort_menu_items() {
         for file in "$d_menu_cache"/*; do
             # skip special files
             fn="$(basename "$file")"
+            log_it "iterating on file[$file] fn [$fn] ? [${#fn}]"
             [ "${#fn}" -gt "2" ] && continue
 
             # Check if the file is a regular file
