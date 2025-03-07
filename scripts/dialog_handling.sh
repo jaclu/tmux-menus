@@ -518,13 +518,20 @@ handle_static_cached() {
     # Ensure the cache folder is present, and newer than the menu file, making sure
     # obsolete cache is dropped.
     #
-    log_it "handle_static_cached()"
+    log_it "handle_static_cached() - [$0] d_menu_cache [$d_menu_cache]"
     if [ ! -d "$d_menu_cache" ] || [ "$(get_mtime "$0")" -gt "$(get_mtime "$d_menu_cache")" ]; then
         # log_it "  regenerate cache for: $d_menu_cache"
         # Ensure d_menu_cache seems to be valid before doing erase
         case "$d_menu_cache" in
         *"$plugin_name"*) ;;
-        *) error_msg "d_menu_cache seems wrong [$d_menu_cache] plugin-name not in that path [$plugin_name]" ;;
+        *)
+            $all_helpers_sourced || {
+                source_all_helpers "handle_static_cached() - case error"
+            }
+            _s="d_menu_cache seems wrong [$d_menu_cache] plugin-name not in that"
+            _s="$_m path [$plugin_name]"
+            error_msg "$_s"
+            ;;
         esac
 
         rm -rf "$d_menu_cache" || error_msg "Failed to remove: $d_menu_cache"
