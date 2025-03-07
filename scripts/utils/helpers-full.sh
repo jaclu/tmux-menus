@@ -430,4 +430,4 @@ fi
 dbg_t_update "[helpers-full] - whiptail setup done"
 
 env_initialized=true # indicates that env is fully configured
-log_it "><> scripts/helpers-full.sh - completed"
+log_it "><> scripts/utils/helpers-full.sh - completed"

@@ -30,6 +30,7 @@ log_it() {
 }
 
 safe_error_msg() {
+    log_it "safe_error_msg()"
     $all_helpers_sourced || source_all_helpers
     error_msg "$@"
 }
@@ -344,3 +345,4 @@ else
     # for using cache will be detected
     cfg_use_cache=true
 fi
+log_it "><> scripts/helpers.sh - completed"
