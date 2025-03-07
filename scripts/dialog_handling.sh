@@ -72,12 +72,6 @@ is_function_defined() {
     [ "$(command -v "$1")" = "$1" ]
 }
 
-relative_path() {
-    # remove D_TM_BASE_PATH prefix
-    # shellcheck disable=SC2154
-    echo "$1" | sed "s|^$D_TM_BASE_PATH/||"
-}
-
 define_f_menu_rel() {
     # to optimize and skip the external process used by relative_path() only
     # define this when needed
@@ -110,10 +104,10 @@ update_wt_actions() {
 #---------------------------------------------------------------
 
 menu_generate_part() {
-    # log_it "menu_generate_part()"
     # Generate one menu segment
-    # log_it "menu_generate_part($1)"
+    log_it "menu_generate_part($1)"
     $all_helpers_sourced || source_all_helpers
+
     menu_idx="$1"
     shift # get rid of the idx
 
@@ -483,6 +477,7 @@ menu_parse() {
 #---------------------------------------------------------------
 
 set_menu_env_variables() {
+    log_it "set_menu_env_variables()"
     #
     #  Needs to be done for every menu even if caching is done,
     #  since the cache might refer to tmux variables like menu_name
@@ -523,7 +518,7 @@ handle_static_cached() {
     # Ensure the cache folder is present, and newer than the menu file, making sure
     # obsolete cache is dropped.
     #
-    # log_it "handle_static_cached()"
+    log_it "handle_static_cached()"
     if [ ! -d "$d_menu_cache" ] || [ "$(get_mtime "$0")" -gt "$(get_mtime "$d_menu_cache")" ]; then
         # log_it "  regenerate cache for: $d_menu_cache"
         # Ensure d_menu_cache seems to be valid before doing erase
@@ -541,7 +536,7 @@ handle_static_cached() {
 }
 
 handle_dynamic() {
-    # log_it "handle_dynamic()"
+    log_it "handle_dynamic()"
     if is_function_defined "dynamic_content"; then
         wt_actions_static="$wt_actions"
         wt_actions=""
@@ -559,7 +554,7 @@ generate_menu_items_in_sorted_order() {
     #  $uncached_menu might be out of order, this extracts each item
     #  incrementally, in order to display the menu as intended
     #
-    # log_it "generate_menu_items_in_sorted_order()"
+    log_it "generate_menu_items_in_sorted_order()"
     menu_items=""
     idx=1
     while true; do
@@ -581,7 +576,7 @@ generate_menu_items_in_sorted_order() {
 }
 
 sort_menu_items() {
-    # log_it "sort_menu_items()"
+    log_it "sort_menu_items()"
     if $cfg_use_cache; then
         for file in "$d_menu_cache"/*; do
             # skip special files
@@ -603,6 +598,7 @@ verify_menu_runable() {
     # Check that menu starts with a menu handling cmd, if not most likely due to
     # menu idx 1 not generated, but could be other causes. eithe way this menu
     # will be displayable...
+    log_it "verify_menu_runable()"
 
     # Remove leading spaces
     while [ "${menu_items# }" != "$menu_items" ]; do
@@ -643,7 +639,7 @@ prepare_menu() {
     #  menu_param="$1"
     #  then process it in dynamic_content()
     #
-    # log_it "prepare_menu()"
+    log_it "prepare_menu()"
     dh_t_mnu_processing_start="$(safe_now)"
 
     set_menu_env_variables
@@ -694,7 +690,7 @@ ensure_menu_fits_on_screen() {
     #
     # Display time menu was shown
     disp_time="$(echo "$(safe_now) - $dh_t_start" | bc)"
-    # log_it "Menu $current_script - Display time:  $disp_time"
+    log_it "ensure_menu_fits_on_screen() Menu $current_script - Display time:  $disp_time"
 
     if [ "$(echo "$disp_time < 0.5" | bc)" -eq 1 ]; then
         define_f_menu_rel
@@ -756,7 +752,7 @@ wt_cached_selection() {
     #  Public variables
     #   all_wt_actions - lists all actions
     #
-    # log_it "wt_cached_selection()"
+    log_it "wt_cached_selection()"
     # gathering action files from cache
     all_wt_actions=""
     for file in "$d_wt_actions"/*; do
@@ -784,7 +780,7 @@ alt_parse_selection() {
     #  action, and then perform it
     #
     wt_actions="$1"
-    # log_it "alt_parse_selection($wt_action)"
+    log_it "alt_parse_selection($wt_action)"
     [ -z "$wt_actions" ] && {
         error_msg "alt_parse_selection() - called without param"
     }
@@ -812,7 +808,7 @@ alt_parse_selection() {
 }
 
 handle_wt_selecion() {
-    # log_it "handle_wt_selecion($menu_selection)"
+    log_it "handle_wt_selecion($menu_selection)"
     if $cfg_use_cache; then
         wt_cached_selection
     else
@@ -823,7 +819,7 @@ handle_wt_selecion() {
 }
 
 display_menu() {
-    # log_it "display_menu()"
+    log_it "display_menu()"
     # Display time to generate menu
     _t="$(echo "$(safe_now) - $dh_t_mnu_processing_start" | bc)"
 

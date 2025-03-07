@@ -42,7 +42,7 @@ source_all_helpers() {
         # safe to call since all helpers have been sourced
         error_msg "source_all_helpers() called when it was already done"
     }
-    exit 1
+    # exit 1
 
     dbg_t_update "[helpers] sourcing helpers"
     #_d="${D_TM_BASE_PATH:-/tmp}"
@@ -74,8 +74,9 @@ safe_now() {
     fi
 }
 
+
 relative_path() {
-    log_it "relative_path($1)" # with cache:
+    log_it "helpers:relative_path($1)" # with cache:
 
     # remove D_TM_BASE_PATH prefix
     # shellcheck disable=SC2154
