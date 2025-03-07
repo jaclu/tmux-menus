@@ -889,6 +889,7 @@ dbg_t_update "[dialog_handling] sourced helpers"
 #
 menu_debug="" # Set to 1 to use echo 2 to use log_it
 
+dbg_t_update "[dialog_handling] before prepare_menu()"
 prepare_menu
 dbg_t_update "[dialog_handling] prepare_menu() done"
 
