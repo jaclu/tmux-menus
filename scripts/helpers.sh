@@ -78,9 +78,7 @@ safe_now() {
 
 relative_path() {
     # remove D_TM_BASE_PATH prefix
-    # log_it "helpers:relative_path($1)" # with cache:
-
-    # echo "$1" | sed "s|^$D_TM_BASE_PATH/||"
+    # log_it "helpers:relative_path($1)"
     printf '%s\n' "${1#"$D_TM_BASE_PATH"/}"
 }
 
