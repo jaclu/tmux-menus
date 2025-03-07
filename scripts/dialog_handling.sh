@@ -629,7 +629,8 @@ verify_menu_runable() {
 
         # filter ; ini order not to execute when displaying the error msg
         escaped="$(printf '%s' "$menu_items" | sed 's/;//g')"
-        error_msg "$msg\n$escaped"
+        log_it "$msg\n$escaped"
+        exit 1
     }
     unset _actual_first _mnu_first
 }
