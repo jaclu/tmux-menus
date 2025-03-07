@@ -41,6 +41,7 @@ source_all_helpers() {
         # safe to call since all helpers have been sourced
         error_msg "source_all_helpers() called when it was already done"
     }
+    exit 1
 
     dbg_t_update "[helpers] sourcing helpers"
     #_d="${D_TM_BASE_PATH:-/tmp}"
@@ -323,6 +324,8 @@ fi
 # this to true, to indicate everything is available
 all_helpers_sourced=false
 
+cfg_alt_menu_handler=""
+
 # minimal support variables
 d_cache="$D_TM_BASE_PATH"/cache
 f_cache_params="$d_cache"/plugin_params
@@ -331,4 +334,13 @@ d_tmp="${TMPDIR:-/tmp}"
 d_tmp="${d_tmp%/}" # Removes a trailing slash if present - sometimes set in TMPDIR...
 f_no_cache_hint="$d_tmp"/no-cache-hint
 
-cfg_alt_menu_handler=""
+# shellcheck disable=SC2154
+if [ -f "$f_no_cache_hint" ]; then
+    # ensure no caching until the settings has been read
+    cfg_use_cache=false
+else
+    # Assume cache can be used, if this is not the case, this should be harmless
+    # since when no cache is detected tmux options will be read and true state
+    # for using cache will be detected
+    cfg_use_cache=true
+fi
