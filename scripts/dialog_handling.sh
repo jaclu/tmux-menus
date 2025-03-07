@@ -642,16 +642,15 @@ prepare_menu() {
     log_it "prepare_menu()"
     dh_t_mnu_processing_start="$(safe_now)"
 
-    dbg_t_update "[dialog_handling] will call set_menu_env_variables()"
     set_menu_env_variables
-    dbg_t_update "[dialog_handling] set_menu_env_variables() done"
-    [ "$MENUS_PROFILING" = "1" ] && exit 0
 
     # 1 - Handle static parts, use cache if enabled and available
     if $cfg_use_cache; then
+        dbg_t_update "[dialog_handling] will call handle_static_cached()"
         handle_static_cached
         dbg_t_update "[dialog_handling] handle_static_cached() done"
     else
+        dbg_t_update "[dialog_handling] will call static_content()"
         static_content
         dbg_t_update "[dialog_handling] static_content() done"
     fi
