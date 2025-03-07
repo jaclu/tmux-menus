@@ -349,7 +349,7 @@ plugin_name="tmux-menus"
 #  This is mostly for debugging early stuff before the settings have
 #  been processed. Should normally be commented out!
 #
-# cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
+cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
 
 #
 #  Even if this one is used, a cfg_log_file must still be defined
