@@ -267,27 +267,6 @@ cache_update_param_cache() {
     $cfg_use_cache && cache_param_write
 }
 
-cache_get_params() {
-    #
-    #  Retrieves cached env params, returns true on success, otherwise false
-    #
-    log_it "cache_get_params()"
-    $cfg_use_cache || error_msg "cache_get_params() - called when not using cache"
-    if [ -f "$f_cache_params" ]; then
-        # shellcheck disable=SC1090
-        . "$f_cache_params" || return 1
-        if [ -f "$cfg_tmux_conf" ] &&
-            [ -n "$(find "$cfg_tmux_conf" -newer "$f_cache_params" 2>/dev/null)" ]; then
-            log_it "$cfg_tmux_conf has been updated, parse again for current settings"
-            cache_update_param_cache
-        fi
-        cache_params_retrieved=1
-        log_it "><> cache_params_retrieved"
-        return 0
-    fi
-    return 1
-}
-
 #===============================================================
 #
 #   Main
@@ -296,8 +275,6 @@ cache_get_params() {
 
 dbg_t_update "[cache] main"
 
-d_cache="$D_TM_BASE_PATH"/cache
-f_cache_params="$d_cache"/plugin_params
 f_cache_known_tmux_vers="$d_cache"/known_tmux_versions
 cache_params_retrieved=0
 

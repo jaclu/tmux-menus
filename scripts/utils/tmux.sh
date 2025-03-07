@@ -434,7 +434,6 @@ else
 fi
 
 teh_debug=false
-cfg_alt_menu_handler=""
 
 tmux_select_menu_handler
 

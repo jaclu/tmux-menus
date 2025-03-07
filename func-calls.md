@@ -12,6 +12,12 @@
 - helpers: safe_now
 - helpers: relative_path
 
+### displaying menu
+
+- safe_now
+- tmux_error_handler
+- safe_now
+
 ## with cache enabled if item was missing
 
 these extra support items were called
