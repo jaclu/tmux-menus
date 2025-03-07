@@ -49,6 +49,7 @@ source_all_helpers() {
     dbg_t_update "[helpers] sourcing helpers - done"
 
     all_helpers_sourced=true
+    dbg_t_update "[helpers] source_all_helpers() - done"
 }
 
 safe_now() {
