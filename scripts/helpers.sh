@@ -220,7 +220,7 @@ tmux_vers_check() {
     }
 
     $all_helpers_sourced || {
-        source_all_helpers "tmux_vers_check() - non-cached version"
+        source_all_helpers "tmux_vers_check($_v_comp) - non-cached version"
     }
 
     # Compare numeric parts first for quick decisions.
