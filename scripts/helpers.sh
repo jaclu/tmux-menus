@@ -375,7 +375,6 @@ d_custom_items="$D_TM_BASE_PATH"/custom_items
 f_custom_items_index="$d_custom_items"/_index.sh
 f_update_custom_inventory="$d_scripts"/update_custom_inventory.sh
 
-dbg_t_update "[helpers] - before checking if f_no_cache_hint exists"
 if [ -f "$f_no_cache_hint" ]; then
     # ensure no caching until the settings has been read
     cfg_use_cache=false
@@ -385,7 +384,6 @@ else
     # for using cache will be detected
     cfg_use_cache=true
 fi
-dbg_t_update "[helpers] - after checking if f_no_cache_hint exists"
 
 # will be set to true at end of this, this indicates everything is prepared
 env_initialized=false
@@ -394,9 +392,12 @@ env_initialized=false
 #  Convert script name to full actual path notation the path is used
 #  for caching, so save it to a variable as well
 #
+dbg_t_update "[helpers] - before defining current_script"
 current_script="$(basename "$0")" # name without path
+dbg_t_update "[helpers] - after defining current_script"
 # ensure f_current_script is a full path
 d_current_script="$(dirname -- "$(realpath "$0")")"
+dbg_t_update "[helpers] - after defining d_current_script"
 f_current_script="$d_current_script/$current_script"
 
 dbg_t_update "[helpers] - core variables defined"
