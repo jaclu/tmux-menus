@@ -581,7 +581,6 @@ sort_menu_items() {
         for file in "$d_menu_cache"/*; do
             # skip special files
             fn="$(basename "$file")"
-            log_it "iterating on file[$file] fn [$fn] ? [${#fn}]"
             [ "${#fn}" -gt "2" ] && continue
 
             # Check if the file is a regular file
@@ -591,7 +590,16 @@ sort_menu_items() {
             fi
         done
     else
+        _s="[dialog_handling] sort_menu_items()"
+        _s="$_s - callling: generate_menu_items_in_sorted_order"
+        dbg_t_update "$_s"
+
         generate_menu_items_in_sorted_order
+        dbg_t_update "[dialog_handling] returned from generate_menu_items_in_sorted_order"
+        [ "$MENUS_PROFILING" = "1" ] && {
+            log_it "terminating dbg_timings branch due to MENUS_PROFILING=1"
+            exit 0
+        }
     fi
 }
 
