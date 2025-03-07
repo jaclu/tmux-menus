@@ -510,10 +510,11 @@ set_menu_env_variables() {
         #  items/main.sh -> items_main
 
         # Include relative script path in cache folder name to avoid name collisions
-        # current_script_no_ext="$(echo "$current_script" | sed 's/\.[^.]*$//')"
-        # # if same menu name menu is present in multiple folders
-        # d_menu_cache="$d_cache/$(relative_path "$d_current_script")/$current_script_no_ext"
-        d_menu_cache="$d_cache/$(relative_path "$d_current_script")/$current_script"
+        current_script_no_ext="$(echo "$current_script" | sed 's/\.[^.]*$//')"
+        # if same menu name menu is present in multiple folders
+        d_menu_cache="$d_cache/$(relative_path "$d_current_script")/$current_script_no_ext"
+        # current_script_no_ext - android
+        # d_menu_cache="$d_cache/$(relative_path "$d_current_script")/$current_script"
 
         $cfg_use_whiptail && d_wt_actions="$d_menu_cache/wt_actions"
     else
@@ -651,6 +652,7 @@ prepare_menu() {
 
     set_menu_env_variables
     dbg_t_update "[dialog_handling] set_menu_env_variables() done"
+    exit 1
 
     # 1 - Handle static parts, use cache if enabled and available
     if $cfg_use_cache; then
