@@ -62,7 +62,6 @@ safe_now() {
     #  MacOS date only display whole seconds, if gdate (GNU-date) is
     #  installed, it can  display times with more precision
     #
-    dbg_t_update "[helpers] safe_now()"
     if [ -d /proc ] && [ -f /proc/version ]; then
         #  On Linux the native date supports sub second precision
         #  unless its the busybox date - only gives seconds...
@@ -75,7 +74,6 @@ safe_now() {
             date +%s
         fi
     fi
-    dbg_t_update "[helpers] safe_now() - done"
 }
 
 relative_path() {
