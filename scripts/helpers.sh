@@ -325,12 +325,12 @@ get_config() { # tmux stuff
     if ! $cfg_use_cache; then
         # not using cache, read all cfg variables
         tmux_get_plugin_options
-        dbg_t_update "[helpers] - tmux_get_plugin_options done"
+        dbg_t_update "[helpers] - tmux_get_plugin_options() done"
 
     elif ! cache_get_params; then
         # Re-generate cache params
         cache_update_param_cache
-        dbg_t_update "[helpers] - cache_update_param_cache done"
+        dbg_t_update "[helpers] - cache_update_param_cache() done"
     fi
 }
 
