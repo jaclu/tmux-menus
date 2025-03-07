@@ -278,11 +278,7 @@ safe_now() {
     #  MacOS date only display whole seconds, if gdate (GNU-date) is
     #  installed, it can  display times with more precision
     #
-    if [ "${OSTYPE#linux}" != "$OSTYPE" ]; then
-        #  On Linux the native date supports sub second precision
-        #  unless its the busybox date - only gives seconds...
-        date +%s.%N
-    elif [ -d /proc -a -f /proc/version ]; then
+    if [ -d /proc ] && [ -f /proc/version ]; then
         #  On Linux the native date supports sub second precision
         #  unless its the busybox date - only gives seconds...
         date +%s.%N
@@ -324,7 +320,7 @@ get_config() { # tmux stuff
     #  This is used by everything else sourcing helpers.sh, then trusting
     #  that the param cache is valid if found
     #
-    # log_it "get_config()"
+    log_it "get_config()"
 
     if ! $cfg_use_cache; then
         # not using cache, read all cfg variables
@@ -359,7 +355,7 @@ plugin_name="tmux-menus"
 #  Even if this one is used, a cfg_log_file must still be defined
 #  since log_it quick aborts if that is undefined
 #
-# log_interactive_to_stderr=1
+log_interactive_to_stderr=1
 
 [ -z "$D_TM_BASE_PATH" ] && error_msg "D_TM_BASE_PATH undefined"
 
@@ -416,6 +412,7 @@ if [ "$initialize_plugin" = "1" ]; then
     log_it
     log_it "$(date)"
     $cfg_use_cache && cache_get_params # clears cache if tmux.conf has been changed
+    dbg_t_update "[helpers] - initialize_plugin done"
 else
     get_config
     dbg_t_update "[helpers] - get_config done"
