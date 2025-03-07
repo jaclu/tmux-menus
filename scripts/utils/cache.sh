@@ -278,4 +278,4 @@ dbg_t_update "[cache] main"
 f_cache_known_tmux_vers="$d_cache"/known_tmux_versions
 cache_params_retrieved=0
 
-# log_it "Completed: scripts/utils/cache.sh"
+log_it "Completed: scripts/utils/cache.sh"
