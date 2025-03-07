@@ -56,31 +56,33 @@ else
     log_it "-->  cache is disabled!  <--"
 fi
 
-log_it "terminating dbg_timings branch before binding trigger key"
+[ "$MENUS_PROFILING" = "1" ] && {
+    log_it "terminating dbg_timings branch before binding trigger key"
+}
 
-# if $cfg_use_whiptail; then
-#     bind_cmd="$d_scripts/external_dialog_trigger.sh"
-#     log_it "alternate menu handler: $cfg_alt_menu_handler"
-# else
-#     bind_cmd="$d_items/main.sh"
-# fi
-# cmd="bind-key"
-# $cfg_use_notes && {
-#     # And why can't space be used in this note?
-#     cmd+=" -N plugin_${plugin_name}_trigger"
-# }
-# if $cfg_no_prefix; then
-#     cmd+=" -n"
-#     trigger_sequence="Menus bound to: $cfg_trigger_key"
-# else
-#     trigger_sequence="Menus bound to: <prefix> $cfg_trigger_key"
-# fi
-# cmd+=" $cfg_trigger_key  run-shell $bind_cmd"
+if $cfg_use_whiptail; then
+    bind_cmd="$d_scripts/external_dialog_trigger.sh"
+    log_it "alternate menu handler: $cfg_alt_menu_handler"
+else
+    bind_cmd="$d_items/main.sh"
+fi
+cmd="bind-key"
+$cfg_use_notes && {
+    # And why can't space be used in this note?
+    cmd+=" -N plugin_${plugin_name}_trigger"
+}
+if $cfg_no_prefix; then
+    cmd+=" -n"
+    trigger_sequence="Menus bound to: $cfg_trigger_key"
+else
+    trigger_sequence="Menus bound to: <prefix> $cfg_trigger_key"
+fi
+cmd+=" $cfg_trigger_key  run-shell $bind_cmd"
 
-# # teh_debug=true
-# # shellcheck disable=SC2086
-# $TMUX_BIN $cmd || {
-#     error_msg "Failed to bind trigger"
-# }
+# teh_debug=true
+# shellcheck disable=SC2086
+$TMUX_BIN $cmd || {
+    error_msg "Failed to bind trigger"
+}
 
-# log_it "$trigger_sequence"
+log_it "$trigger_sequence"

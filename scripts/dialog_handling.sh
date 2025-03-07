@@ -873,7 +873,9 @@ dbg_t_update "[dialog_handling] about to source helper"
 dbg_t_update "[dialog_handling] sourced helpers"
 
 # Some sanity checks
-[ -z "$TMUX" ] && error_msg "$plugin_name can only be used inside tmux!"
+[ "$MENUS_PROFILING" != "1" ] && {
+    [ -z "$TMUX" ] && error_msg "$plugin_name can only be used inside tmux!"
+}
 [ -z "$menu_name" ] && error_msg "menu_name not defined"
 [ -n "$menu_min_vers" ] && {
     # Abort with error if tmux version is insufficient
