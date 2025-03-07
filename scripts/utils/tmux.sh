@@ -322,8 +322,6 @@ dbg_t_update "[tmux] main"
 #  plugin.
 #
 
-[ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
-
 if [ -n "$TMUX" ]; then
     dbg_t_update "[tmux] will set tmux_pid"
     tmux_pid="$(echo "$TMUX" | cut -d',' -f2)"

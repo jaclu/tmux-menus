@@ -312,6 +312,9 @@ cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
 #
 log_interactive_to_stderr="1"
 
+[ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
+
+
 if [ -z "$D_TM_BASE_PATH" ]; then
     # helpers not yet sourced, so error_msg() not yet available
     msg="$plugin_name ERROR: $0 - D_TM_BASE_PATH must be set!"
