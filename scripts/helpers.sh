@@ -394,13 +394,13 @@ env_initialized=false
 #
 dbg_t_update "[helpers] - before defining current_script"
 
-# current_script="$(basename "$0")" # name without path
-# d_current_script="$(dirname -- "$(realpath "$0")")"
+current_script="$(basename "$0")" # name without path
+d_current_script="$(dirname -- "$(realpath "$0")")"
 
-current_script=${0##*/}
+# current_script=${0##*/}
 # d_current_script="$(cd "$(dirname "$0")" && pwd)"
 # d_current_script="$(cd "$(dirname "$0")" ; pwd)"
-d_current_script="$(dirname "$(readlink -f "$0")")"
+# d_current_script="$(dirname "$(readlink -f "$0")")"
 
 dbg_t_update "[helpers] - after defining current_script: $current_script"
 log_it "d_current_script [$d_current_script] - current_script [$current_script]"
