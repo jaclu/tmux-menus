@@ -22,7 +22,7 @@ log_it() {
     [ -z "$cfg_log_file" ] && return #  early abort if no logging
 
     [ "$log_interactive_to_stderr" = 1 ] && [ -t 0 ] && {
-        printf "log: %s\n" "$@" >/dev/stderr
+        printf "[%s] log: %s\n" "$(date '+%H:%M:%S')" "$@" >/dev/stderr
         return
     }
 
