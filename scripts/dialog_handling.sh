@@ -144,7 +144,7 @@ mnu_open_menu() {
 
     # [ -n "$menu_debug" ] && debug_print "mnu_open_menu($label,$key,$menu)"
 
-    menu_items="$menu_items \"$label\" $key \"run-shell '$menu'\""
+    menu_items="$menu_items \"$label\" $key \"run-shell $menu\""
 }
 
 mnu_external_cmd() {
