@@ -17,6 +17,8 @@ log_it() {
     #  performance?
     # [ "$log_interactive_to_stderr" != "1" ] && [ -z "$cfg_log_file" ] && return
 
+    [ "$TMUX_MENU_FORCE_SILENT" = "1" ] && return
+
     [ "$log_interactive_to_stderr" = "1" ] && [ -t 0 ] && {
         # log to stderr if in interactive mode
         printf "[%s] log: %s\n" "$(date '+%H:%M:%S')" "$@" >/dev/stderr
