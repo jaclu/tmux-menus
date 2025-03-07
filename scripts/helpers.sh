@@ -160,7 +160,7 @@ get_config() { # tmux stuff
 
 tmux_select_menu_handler() {
     # support old env variable, cam be deleted eventually 241220
-    log_it "><> tmux_select_menu_handler()"
+    # log_it "><> tmux_select_menu_handler()"
     # [ -n "$FORCE_WHIPTAIL_MENUS" ] && TMUX_MENU_HANDLER="$FORCE_WHIPTAIL_MENUS"
 
     #
@@ -205,8 +205,8 @@ tmux_select_menu_handler() {
 
     if $cfg_use_whiptail; then
         log_it "==> [helpers] Using Alternate dialog handler: $cfg_alt_menu_handler"
-    else
-        log_it "==> [helpers] Using tmux menu handler"
+    # else
+        # log_it "==> [helpers] Using tmux menu handler"
     fi
 }
 
@@ -236,7 +236,7 @@ cache_get_params() {
             cache_update_param_cache
         fi
         cache_params_retrieved=1
-        log_it "><> cache_params_retrieved"
+        # log_it "><> cache_params_retrieved"
         return 0
     fi
     return 1
@@ -320,7 +320,7 @@ tpt_retrieve_running_tmux_vers() {
     #
     # log_it "tpt_retrieve_running_tmux_vers()"
     tpt_current_vers="$($TMUX_BIN -V | cut -d' ' -f2)"
-    log_it "  tpt_current_vers [$tpt_current_vers]"
+    # log_it "  tpt_current_vers [$tpt_current_vers]"
     tpt_current_vers_i="$(tpt_digits_from_string "$tpt_current_vers")"
     tpt_current_vers_suffix="$(tpt_tmux_vers_suffix "$tpt_current_vers")"
 }
