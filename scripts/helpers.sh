@@ -153,6 +153,7 @@ tmux_select_menu_handler() {
         unset _cmd
     else
         cfg_use_whiptail=false
+        cfg_alt_menu_handler=""
     fi
 
     if $cfg_use_whiptail; then
@@ -338,8 +339,6 @@ fi
 # this to true, to indicate everything is available
 all_helpers_sourced=false
 
-cfg_alt_menu_handler=""
-
 # minimal support variables
 d_cache="$D_TM_BASE_PATH"/cache
 f_cache_params="$d_cache"/plugin_params
@@ -375,4 +374,7 @@ else
     # for using cache will be detected
     cfg_use_cache=true
 fi
+
+tmux_select_menu_handler
+
 # log_it "><> scripts/helpers.sh - completed"

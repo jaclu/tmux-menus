@@ -333,6 +333,4 @@ fi
 
 teh_debug=false
 
-tmux_select_menu_handler
-
 log_it "scripts/utils/tmux.sh - completed"
