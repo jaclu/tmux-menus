@@ -404,7 +404,7 @@ d_current_script="$(cd "$(dirname "$0")" ; pwd)"
 
 dbg_t_update "[helpers] - after defining current_script"
 log_it "d_current_script [$d_current_script] - current_script [$current_script]"
-
+exit 1
 f_current_script="$d_current_script/$current_script"
 dbg_t_update "[helpers] - core variables defined"
 
