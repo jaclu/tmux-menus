@@ -508,10 +508,13 @@ set_menu_env_variables() {
     if $cfg_use_cache; then
         # log_it "><> defining cache related dialog variables"
         #  items/main.sh -> items_main
-        current_script_no_ext="$(echo "$current_script" | sed 's/\.[^.]*$//')"
+
         # Include relative script path in cache folder name to avoid name collisions
-        # if same menu name menu is present in multiple folders
-        d_menu_cache="$d_cache/$(relative_path "$d_current_script")/$current_script_no_ext"
+        # current_script_no_ext="$(echo "$current_script" | sed 's/\.[^.]*$//')"
+        # # if same menu name menu is present in multiple folders
+        # d_menu_cache="$d_cache/$(relative_path "$d_current_script")/$current_script_no_ext"
+        d_menu_cache="$d_cache/$(relative_path "$d_current_script")/$current_script"
+
         $cfg_use_whiptail && d_wt_actions="$d_menu_cache/wt_actions"
     else
         uncached_menu=""
