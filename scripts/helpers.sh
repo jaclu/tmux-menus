@@ -398,3 +398,6 @@ fi
 tmux_select_menu_handler
 
 # log_it "><> scripts/helpers.sh - completed"
+
+log_it "log file: [$cfg_log_file]"
+exit 1
