@@ -867,7 +867,6 @@ dbg_t_update "[td-dialog_handling] about to source helper"
 [ -z "$current_script" ] && . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 dbg_t_update "[td-dialog_handling] sourced helpers"
-exit 1
 
 # Some sanity checks
 [ -z "$TMUX" ] && error_msg "$plugin_name can only be used inside tmux!"
