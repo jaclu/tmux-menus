@@ -506,7 +506,6 @@ set_menu_env_variables() {
         #  items/main.sh -> cache/items/main.sh/
         d_menu_cache="$d_cache/$(relative_path "$d_current_script")/$current_script"
         log_it "><> d_current_script [$d_current_script] d_menu_cache [$d_menu_cache]"
-        [ "$MENUS_PROFILING" = "1" ] && exit 0
         $cfg_use_whiptail && d_wt_actions="$d_menu_cache/wt_actions"
     else
         uncached_menu=""
