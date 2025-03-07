@@ -56,7 +56,7 @@ else
     log_it "-->  cache is disabled!  <--"
 fi
 
-[[ "$MENUS_PROFILING" = "1" ]] && {
+[[ "$TMUX_MENUS_NO_DISPLAY" = "1" ]] && {
     log_it "terminating dbg_timings branch before binding trigger key"
     exit 0
 }
