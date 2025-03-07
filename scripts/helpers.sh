@@ -52,7 +52,7 @@ source_all_helpers() {
     . "$D_TM_BASE_PATH"/scripts/utils/helpers-full.sh
     dbg_t_update "[helpers] sourcing helpers - done"
 
-    dbg_t_update "[helpers] source_all_helpers() - done"
+    dbg_t_update "[helpers] ----->  source_all_helpers() - done  <-----"
 }
 
 safe_now() {
