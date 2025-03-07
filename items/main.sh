@@ -19,6 +19,7 @@ static_content() {
             customize_mode_cmd="$customize_mode_cmd $hint"
         fi
     }
+    dbg_t_update "[items/main] v3.2 customize_mode_cmd prepared"
 
     rld_cmd="command-prompt -I '$cfg_tmux_conf' -p 'Source file:' \
         'run-shell \"$d_scripts/reload_conf.sh %% $reload_in_runshell\"'"
@@ -30,6 +31,7 @@ static_content() {
         menu_generate_part "$menu_segment" "$@"
         menu_segment=$((menu_segment + 1))
     fi
+    dbg_t_update "[items/main] custom items processed"
 
     #  Menu items definition
     set -- \
@@ -49,6 +51,7 @@ static_content() {
 
     menu_generate_part "$menu_segment" "$@"
     menu_segment=$((menu_segment + 1))
+    dbg_t_update "[items/main] part nav&search - customize mode done"
 
     $cfg_use_hint_overlays && $cfg_show_key_hints && {
         set -- \
@@ -59,6 +62,7 @@ static_content() {
         menu_generate_part "$menu_segment" "$@"
         menu_segment=$((menu_segment + 1))
     }
+    dbg_t_update "[items/main] Key hints done"
 
     set -- \
         1.8 E p "Plugins inventory" "plugins.sh" \
