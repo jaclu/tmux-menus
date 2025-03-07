@@ -194,7 +194,7 @@ cache_get_params() {
 
 tmux_vers_check() {
     _v_comp="$1" # Desired minimum version to check against
-    log_it "><> tmux_vers_check($_v_comp) $0"
+    # log_it "><> tmux_vers_check($_v_comp) $0"
 
     # Retrieve and cache the current tmux version on the first call
     if [ -z "$tpt_current_vers" ] || [ -z "$tpt_current_vers_i" ]; then
@@ -262,7 +262,7 @@ tpt_retrieve_running_tmux_vers() {
     # If the variables defining the currently used tmux version needs to
     # be accessed before the first call to tmux_vers_ok this can be called.
     #
-    log_it "tpt_retrieve_running_tmux_vers()"
+    # log_it "tpt_retrieve_running_tmux_vers()"
     tpt_current_vers="$($TMUX_BIN -V | cut -d' ' -f2)"
     tpt_current_vers_i="$(tpt_digits_from_string "$tpt_current_vers")"
     tpt_current_vers_suffix="$(tpt_tmux_vers_suffix "$tpt_current_vers")"
@@ -273,7 +273,7 @@ tpt_digits_from_string() {
     # Example inputs and outputs:
     #   "tmux 1.9" => "19"
     #   "1.9a"     => "19"
-    log_it "><> tpt_digits_from_string($1)"
+    # log_it "><> tpt_digits_from_string($1)"
     # the first sed removes -rc suffixes, to avoid anny numerical rc like -rc1 from
     # being included in the int extraction
     _i="$(echo "$1" | sed 's/-rc[0-9]*//' | tr -cd '0-9')" # Use 'tr' to keep only digits
@@ -286,7 +286,7 @@ tpt_tmux_vers_suffix() {
     # Example inputs and outputs:
     #   "3.2"  => ""
     #   "3.2a" => "a"
-    log_it "><> tpt_tmux_vers_suffix($1)"
+    # log_it "><> tpt_tmux_vers_suffix($1)"
     echo "$1" | sed 's/.*[0-9]\([a-zA-Z]*\)$/\1/'
 }
 
