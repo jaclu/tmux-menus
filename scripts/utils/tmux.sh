@@ -260,50 +260,50 @@ tmux_error_handler() { # cache references
     return 0
 }
 
-tmux_select_menu_handler() {
-    # support old env variable, cam be deleted eventually 241220
-    log_it "><> tmux_select_menu_handler()"
-    [ -n "$FORCE_WHIPTAIL_MENUS" ] && TMUX_MENU_HANDLER="$FORCE_WHIPTAIL_MENUS"
+# tmux_select_menu_handler() {
+#     # support old env variable, cam be deleted eventually 241220
+#     log_it "><> tmux_select_menu_handler()"
+#     [ -n "$FORCE_WHIPTAIL_MENUS" ] && TMUX_MENU_HANDLER="$FORCE_WHIPTAIL_MENUS"
 
-    #
-    # If an older version is used, or TMUX_MENU_HANDLER is 1/2
-    # set cfg_use_whiptail true
-    #
-    if ! tmux_vers_check 3.0; then
-        if command -v whiptail >/dev/null; then
-            cfg_alt_menu_handler=whiptail
-            log_it "tmux below 3.0 - using: whiptail"
-        elif command -v dialog >/dev/null; then
-            cfg_alt_menu_handler=dialog
-            log_it "tmux below 3.0 - using: dialog"
-        else
-            error_msg "Neither whiptail or dialog found, plugin aborted"
-        fi
-        cfg_use_whiptail=true
-    elif [ "$TMUX_MENU_HANDLER" = 1 ]; then
-        _cmd=whiptail
-        if command -v "$_cmd" >/dev/null; then
-            cfg_alt_menu_handler="$_cmd"
-        else
-            error_msg "$_cmd not available, plugin aborted"
-        fi
-        cfg_use_whiptail=true
-        log_it "$_cmd is selected due to TMUX_MENU_HANDLER=1"
-        unset _cmd
-    elif [ "$TMUX_MENU_HANDLER" = 2 ]; then
-        _cmd=dialog
-        if command -v "$_cmd" >/dev/null; then
-            cfg_alt_menu_handler="$_cmd"
-        else
-            error_msg "$_cmd not available, plugin aborted"
-        fi
-        cfg_use_whiptail=true
-        log_it "$_cmd is selected due to TMUX_MENU_HANDLER=2"
-        unset _cmd
-    else
-        cfg_use_whiptail=false
-    fi
-}
+#     #
+#     # If an older version is used, or TMUX_MENU_HANDLER is 1/2
+#     # set cfg_use_whiptail true
+#     #
+#     if ! tmux_vers_check 3.0; then
+#         if command -v whiptail >/dev/null; then
+#             cfg_alt_menu_handler=whiptail
+#             log_it "tmux below 3.0 - using: whiptail"
+#         elif command -v dialog >/dev/null; then
+#             cfg_alt_menu_handler=dialog
+#             log_it "tmux below 3.0 - using: dialog"
+#         else
+#             error_msg "Neither whiptail or dialog found, plugin aborted"
+#         fi
+#         cfg_use_whiptail=true
+#     elif [ "$TMUX_MENU_HANDLER" = 1 ]; then
+#         _cmd=whiptail
+#         if command -v "$_cmd" >/dev/null; then
+#             cfg_alt_menu_handler="$_cmd"
+#         else
+#             error_msg "$_cmd not available, plugin aborted"
+#         fi
+#         cfg_use_whiptail=true
+#         log_it "$_cmd is selected due to TMUX_MENU_HANDLER=1"
+#         unset _cmd
+#     elif [ "$TMUX_MENU_HANDLER" = 2 ]; then
+#         _cmd=dialog
+#         if command -v "$_cmd" >/dev/null; then
+#             cfg_alt_menu_handler="$_cmd"
+#         else
+#             error_msg "$_cmd not available, plugin aborted"
+#         fi
+#         cfg_use_whiptail=true
+#         log_it "$_cmd is selected due to TMUX_MENU_HANDLER=2"
+#         unset _cmd
+#     else
+#         cfg_use_whiptail=false
+#     fi
+# }
 
 #---------------------------------------------------------------
 #

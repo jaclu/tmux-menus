@@ -866,8 +866,10 @@ fi
 dbg_t_update "[dialog_handling] about to source helper"
 
 # Only import if needed, checking a random variable
-# shellcheck source=scripts/helpers.sh
-[ -z "$current_script" ] && . "$D_TM_BASE_PATH"/scripts/helpers.sh
+[ -z "$current_script" ] && {
+    # shellcheck source=scripts/helpers.sh
+    . "$D_TM_BASE_PATH"/scripts/helpers.sh
+}
 
 dbg_t_update "[dialog_handling] sourced helpers"
 

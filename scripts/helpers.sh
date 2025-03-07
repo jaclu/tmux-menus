@@ -282,25 +282,25 @@ has_lf_not_at_end() {
 #
 #---------------------------------------------------------------
 
-safe_now() {
-    log_it "safe_now()" # with cache:
-    #
-    #  MacOS date only display whole seconds, if gdate (GNU-date) is
-    #  installed, it can  display times with more precision
-    #
-    if [ -d /proc ] && [ -f /proc/version ]; then
-        #  On Linux the native date supports sub second precision
-        #  unless its the busybox date - only gives seconds...
-        date +%s.%N
-    else
-        # Running on macOS
-        if [ -n "$(command -v gdate)" ]; then
-            gdate +%s.%N
-        else
-            date +%s
-        fi
-    fi
-}
+# safe_now() {
+#     log_it "safe_now()" # with cache:
+#     #
+#     #  MacOS date only display whole seconds, if gdate (GNU-date) is
+#     #  installed, it can  display times with more precision
+#     #
+#     if [ -d /proc ] && [ -f /proc/version ]; then
+#         #  On Linux the native date supports sub second precision
+#         #  unless its the busybox date - only gives seconds...
+#         date +%s.%N
+#     else
+#         # Running on macOS
+#         if [ -n "$(command -v gdate)" ]; then
+#             gdate +%s.%N
+#         else
+#             date +%s
+#         fi
+#     fi
+# }
 
 wait_to_close_display() {
     #
@@ -319,33 +319,33 @@ wait_to_close_display() {
     fi
 }
 
-relative_path() {
-    log_it "relative_path($1)" # with cache:
+# relative_path() {
+#     log_it "relative_path($1)" # with cache:
 
-    # remove D_TM_BASE_PATH prefix
-    # shellcheck disable=SC2154
-    echo "$1" | sed "s|^$D_TM_BASE_PATH/||"
-}
+#     # remove D_TM_BASE_PATH prefix
+#     # shellcheck disable=SC2154
+#     echo "$1" | sed "s|^$D_TM_BASE_PATH/||"
+# }
 
-get_config() { # tmux stuff
-    #
-    #  The plugin init .tmux script should NOT depend on this!
-    #  This is used by everything else sourcing helpers.sh, then trusting
-    #  that the param cache is valid if found
-    #
-    log_it "get_config()" # with cache: termux, ipad
+# get_config() { # tmux stuff
+#     #
+#     #  The plugin init .tmux script should NOT depend on this!
+#     #  This is used by everything else sourcing helpers.sh, then trusting
+#     #  that the param cache is valid if found
+#     #
+#     log_it "get_config()" # with cache: termux, ipad
 
-    if [ -f "$f_no_cache_hint" ]; then
-        # not using cache, read all cfg variables
-        tmux_get_plugin_options
-        dbg_t_update "[helpers] - tmux_get_plugin_options() done"
+#     if [ -f "$f_no_cache_hint" ]; then
+#         # not using cache, read all cfg variables
+#         tmux_get_plugin_options
+#         dbg_t_update "[helpers] - tmux_get_plugin_options() done"
 
-    elif ! cache_get_params; then
-        # Re-generate cache params
-        cache_update_param_cache
-        dbg_t_update "[helpers] - cache_update_param_cache() done"
-    fi
-}
+#     elif ! cache_get_params; then
+#         # Re-generate cache params
+#         cache_update_param_cache
+#         dbg_t_update "[helpers] - cache_update_param_cache() done"
+#     fi
+# }
 
 #===============================================================
 #
@@ -421,6 +421,10 @@ d_current_script="$(
 
 f_current_script="$d_current_script/$current_script"
 dbg_t_update "[helpers] - core variables defined"
+
+# shellcheck source=scripts/helpers-minimal.sh
+. "$D_TM_BASE_PATH"/scripts/helpers-minimal.sh
+dbg_t_update "[helpers] - sourced helpers-minimal"
 
 # shellcheck source=scripts/utils/cache.sh
 . "$d_scripts"/utils/cache.sh
