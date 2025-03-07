@@ -10,6 +10,7 @@
 
 static_content() {
     menu_segment=1
+    dbg_t_update "[items/main] static_content() - starting  <======"
 
     tmux_vers_check 3.2 && {
         customize_mode_cmd="$TMUX_BIN customize-mode -Z "
@@ -68,6 +69,7 @@ static_content() {
         "$d_help/help_summary.sh $f_current_script"
 
     menu_generate_part "$menu_segment" "$@"
+    dbg_t_update "[items/main] static_content() - done  <======"
 }
 
 #===============================================================
