@@ -118,8 +118,10 @@ tmux_get_plugin_options() { # cache references
     fi
     if normalize_bool_param "@menus_use_cache" "$default_use_cache"; then
         cfg_use_cache=true
+        rm -f "$f_no_cache_hint"
     else
         cfg_use_cache=false
+        touch "$f_no_cache_hint"
     fi
     if normalize_bool_param "@menus_use_hint_overlays" "$default_use_hint_overlays"; then
         cfg_use_hint_overlays=true

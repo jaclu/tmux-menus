@@ -322,7 +322,7 @@ get_config() { # tmux stuff
     #
     log_it "get_config()"
 
-    if ! $cfg_use_cache; then
+    if [ -f "$f_no_cache_hint" ]; then
         # not using cache, read all cfg variables
         tmux_get_plugin_options
         dbg_t_update "[helpers] - tmux_get_plugin_options() done"
@@ -360,14 +360,13 @@ log_it "logging to stderr"
 
 [ -z "$D_TM_BASE_PATH" ] && error_msg "D_TM_BASE_PATH undefined"
 
-# ensure no caching until the setting has been read
-cfg_use_cache=false
-
 #
 #  Convenience shortcuts
 #
 d_tmp="${TMPDIR:-/tmp}"
 d_tmp="${d_tmp%/}" # Removes a trailing slash if present - sometimes set in TMPDIR...
+f_no_cache_hint="$d_tmp"/no-cache-hint
+
 d_items="$D_TM_BASE_PATH"/items
 d_help="$d_items"/help
 d_hints="$d_items"/hints
@@ -375,6 +374,16 @@ d_scripts="$D_TM_BASE_PATH"/scripts
 d_custom_items="$D_TM_BASE_PATH"/custom_items
 f_custom_items_index="$d_custom_items"/_index.sh
 f_update_custom_inventory="$d_scripts"/update_custom_inventory.sh
+
+if [ -f "$f_no_cache_hint" ]
+    # ensure no caching until the settings has been read
+    cfg_use_cache=false
+else
+    # Assume cache can be used, if this is not the case, this should be harmless
+    # since when no cache is detected tmux options will be read and true state
+    # for using cache will be detected
+    cfg_use_cache=true
+fi
 
 # will be set to true at end of this, this indicates everything is prepared
 env_initialized=false
