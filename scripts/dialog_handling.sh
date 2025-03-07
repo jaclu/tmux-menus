@@ -602,10 +602,6 @@ sort_menu_items() {
 
         generate_menu_items_in_sorted_order
         dbg_t_update "[dialog_handling] returned from generate_menu_items_in_sorted_order"
-        [ "$MENUS_PROFILING" = "1" ] && {
-            log_it "terminating dbg_timings branch due to MENUS_PROFILING=1"
-            exit 0
-        }
     fi
 }
 

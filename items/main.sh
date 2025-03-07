@@ -117,10 +117,8 @@ dbg_t_update() {
     fi
 }
 
-# shellcheck source=scripts/helpers.sh
-. "$D_TM_BASE_PATH"/scripts/helpers.sh
-
-dbg_t_update "Starting items/main.sh"
+set_dbg_t_now
+# dbg_t_update "Starting items/main.sh"
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
