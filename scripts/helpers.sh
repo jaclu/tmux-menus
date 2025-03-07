@@ -375,6 +375,7 @@ d_custom_items="$D_TM_BASE_PATH"/custom_items
 f_custom_items_index="$d_custom_items"/_index.sh
 f_update_custom_inventory="$d_scripts"/update_custom_inventory.sh
 
+dbg_t_update "[helpers] - before checking if f_no_cache_hint exists"
 if [ -f "$f_no_cache_hint" ]; then
     # ensure no caching until the settings has been read
     cfg_use_cache=false
@@ -384,6 +385,7 @@ else
     # for using cache will be detected
     cfg_use_cache=true
 fi
+dbg_t_update "[helpers] - after checking if f_no_cache_hint exists"
 
 # will be set to true at end of this, this indicates everything is prepared
 env_initialized=false
