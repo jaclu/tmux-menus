@@ -292,6 +292,8 @@ cache_get_params() {
 #
 #===============================================================
 
+dbg_t_update "[cache] main"
+
 d_cache="$D_TM_BASE_PATH"/cache
 f_cache_params="$d_cache"/plugin_params
 f_cache_known_tmux_vers="$d_cache"/known_tmux_versions

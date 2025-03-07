@@ -408,6 +408,8 @@ tpt_tmux_vers_suffix() {
 #
 #===============================================================
 
+dbg_t_update "[tmux] main"
+
 #
 #  I use an env var TMUX_BIN to point at the current tmux, defined in my
 #  tmux.conf, to pick the version matching the server running.
@@ -420,7 +422,9 @@ tpt_tmux_vers_suffix() {
 [ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
 
 if [ -n "$TMUX" ]; then
+    dbg_t_update "[tmux] will set tmux_pid"
     tmux_pid="$(echo "$TMUX" | cut -d',' -f2)"
+    dbg_t_update "[tmux] set tmux_pid"
 else
     # was run outside tmux
     tmux_pid="-1"
