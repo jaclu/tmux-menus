@@ -42,6 +42,8 @@ initialize_plugin=1
 # shellcheck source=/dev/null  # can't read source when mixing bah & posix
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
+$all_helpers_sourced || source_all_helpers
+
 if $cfg_use_cache; then
     cache_add_ok_vers "$tpt_current_vers"
 
