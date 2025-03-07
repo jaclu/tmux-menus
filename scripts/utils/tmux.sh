@@ -18,7 +18,7 @@ tmux_get_defaults() {
     #   default_  defaults for tmux config options
     #
 
-    # log_it "tmux_get_defaults()"
+    log_it "tmux_get_defaults()"
 
     default_trigger_key=\\
     default_no_prefix=No
@@ -58,7 +58,7 @@ tmux_get_defaults() {
 }
 
 tmux_is_option_defined() {
-    # log_it "><> tmux_is_option_defined($1)"
+    log_it "><> tmux_is_option_defined($1)"
     tmux_error_handler show-options -gq | grep -q "^$1"
 }
 
@@ -66,7 +66,7 @@ tmux_get_option() {
     tgo_option="$1"
     tgo_default="$2"
 
-    # log_it "tmux_get_option($tgo_option, $tgo_default)"
+    log_it "tmux_get_option($tgo_option, $tgo_default)"
 
     [ -z "$tgo_option" ] && error_msg "tmux_get_option() param 1 empty!"
 
@@ -105,7 +105,7 @@ tmux_get_plugin_options() { # cache references
     #  Public variables
     #   cfg_  config variables, either read from tmux or the default
     #
-    # log_it "tmux_get_plugin_options()"
+    log_it "tmux_get_plugin_options()"
 
     tmux_get_defaults
     dbg_t_update "[tmux] - tmux_get_defaults done"
@@ -196,8 +196,8 @@ tmux_error_handler() { # cache references
     #  Detects any errors reported by tmux commands and gives notification
     #
     the_cmd="$*"
-
-    $teh_debug && log_it "><> tmux_error_handler($the_cmd)"
+    # $teh_debug && log_it "><> tmux_error_handler($the_cmd)"
+    log_it "><> tmux_error_handler($the_cmd)"
 
     if $cfg_use_cache; then
         d_errors="$d_cache"
@@ -262,6 +262,7 @@ tmux_error_handler() { # cache references
 
 tmux_select_menu_handler() {
     # support old env variable, cam be deleted eventually 241220
+    log_it "><> tmux_select_menu_handler()"
     [ -n "$FORCE_WHIPTAIL_MENUS" ] && TMUX_MENU_HANDLER="$FORCE_WHIPTAIL_MENUS"
 
     #
@@ -312,7 +313,7 @@ tmux_select_menu_handler() {
 
 tmux_vers_check() {
     _v_comp="$1" # Desired minimum version to check against
-    # log_it "><> tmux_vers_ok($_v_comp) $0"
+    log_it "><> tmux_vers_check($_v_comp) $0"
 
     # Retrieve and cache the current tmux version on the first call
     if [ -z "$tpt_current_vers" ] || [ -z "$tpt_current_vers_i" ]; then
@@ -376,29 +377,31 @@ tpt_retrieve_running_tmux_vers() {
     # If the variables defining the currently used tmux version needs to
     # be accessed before the first call to tmux_vers_ok this can be called.
     #
-    # log_it "tpt_retrieve_running_tmux_vers()"
+    log_it "tpt_retrieve_running_tmux_vers()"
     tpt_current_vers="$($TMUX_BIN -V | cut -d' ' -f2)"
     tpt_current_vers_i="$(tpt_digits_from_string "$tpt_current_vers")"
     tpt_current_vers_suffix="$(tpt_tmux_vers_suffix "$tpt_current_vers")"
 }
 
-# Extracts all numeric digits from a string, ignoring other characters.
-# Example inputs and outputs:
-#   "tmux 1.9" => "19"
-#   "1.9a"     => "19"
 tpt_digits_from_string() {
+    # Extracts all numeric digits from a string, ignoring other characters.
+    # Example inputs and outputs:
+    #   "tmux 1.9" => "19"
+    #   "1.9a"     => "19"
+    log_it "><> tpt_digits_from_string($1)"
     # the first sed removes -rc suffixes, to avoid anny numerical rc like -rc1 from
     # being included in the int extraction
     _i="$(echo "$1" | sed 's/-rc[0-9]*//' | tr -cd '0-9')" # Use 'tr' to keep only digits
     echo "$_i"
 }
 
-# Extracts any alphabetic suffix from the end of a version string.
-# If no suffix exists, returns an empty string.
-# Example inputs and outputs:
-#   "3.2"  => ""
-#   "3.2a" => "a"
 tpt_tmux_vers_suffix() {
+    # Extracts any alphabetic suffix from the end of a version string.
+    # If no suffix exists, returns an empty string.
+    # Example inputs and outputs:
+    #   "3.2"  => ""
+    #   "3.2a" => "a"
+    log_it "><> tpt_tmux_vers_suffix($1)"
     echo "$1" | sed 's/.*[0-9]\([a-zA-Z]*\)$/\1/'
 }
 

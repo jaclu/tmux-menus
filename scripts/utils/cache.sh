@@ -106,8 +106,9 @@ cache_save_known_tmux_versions() { # tmux stuff
     #  The order the versions are saved doesn't matter,
     #  since they are checked with a case to speed things up
     #
+    log_it "cache_save_known_tmux_versions() - called when not using cache"
     $cfg_use_cache || {
-        log_it "cache_save_known_tmux_versions() - called when not using cache"
+        # log_it "cache_save_known_tmux_versions() - called when not using cache"
         return 1
     }
     log_it "cache_save_known_tmux_versions() - $0"

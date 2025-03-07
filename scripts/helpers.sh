@@ -53,6 +53,8 @@ error_msg() {
     em_msg="$1"
     exit_code="${2:-0}"
     do_display_message=${3:-true}
+    log_it "error_msg($em_msg)"
+
 
     # with no tmux env, dumping it to stderr is the only option
     # shellcheck disable=SC2154
@@ -163,6 +165,8 @@ posix_get_char() {
     #  Configure terminal to read a single character without echoing,
     #  restoring the terminal and returning the char
     #
+    log_it "posix_get_char()"
+
     old_stty_cfg=$(stty -g)
     stty raw -echo
     dd bs=1 count=1 2>/dev/null
@@ -172,6 +176,7 @@ posix_get_char() {
 }
 
 extract_char() {
+    log_it "extract_char($1,$2)"
     str="$1"
     pos="$2"
     printf '%s\n' "$str" | cut -c "$pos"
@@ -179,6 +184,7 @@ extract_char() {
 }
 
 lowercase_it() {
+    log_it "lowercase_it($1)"
     echo "$1" | tr '[:upper:]' '[:lower:]'
 }
 
@@ -187,6 +193,7 @@ get_digits_from_string() {
     # `tmux 1.9` => `19`
     # `1.9a`     => `19`
 
+    log_it "get_digits_from_string($1)"
     s="$1"
     i="$(echo "$s" | tr -dC '[:digit:]')"
     # log_it "get_digits_from_string($s) -> [$i]"
@@ -208,7 +215,7 @@ normalize_bool_param() {
     nbp_default="$2" # only used for tmux options
     nbp_variable_name=""
 
-    # log_it "normalize_bool_param($nbp_param, $nbp_default) [$nbp_variable_name]"
+    log_it "normalize_bool_param($nbp_param, $nbp_default) [$nbp_variable_name]"
     [ "${nbp_param%"${nbp_param#?}"}" = "@" ] && {
         #
         #  If it starts with "@", assume it is a tmux option, thus
@@ -258,6 +265,8 @@ normalize_bool_param() {
 }
 
 has_lf_not_at_end() {
+    log_it "has_lf_not_at_end()" # with cache:
+
     #
     #  POSIX hack I came up with to check if a string contains LF
     #  somewhere within, since I could not figure out how to to substring
@@ -274,6 +283,7 @@ has_lf_not_at_end() {
 #---------------------------------------------------------------
 
 safe_now() {
+    log_it "safe_now()" # with cache:
     #
     #  MacOS date only display whole seconds, if gdate (GNU-date) is
     #  installed, it can  display times with more precision
@@ -299,6 +309,7 @@ wait_to_close_display() {
     #  call this to display an appropriate suggestion, and in the
     #  whiptail case wait for that key
     #
+    log_it "wait_to_close_display()" # with cache:
     echo
     if $cfg_use_whiptail; then
         echo "Press <Enter> to clear this output"
@@ -309,6 +320,8 @@ wait_to_close_display() {
 }
 
 relative_path() {
+    log_it "relative_path($1)" # with cache:
+
     # remove D_TM_BASE_PATH prefix
     # shellcheck disable=SC2154
     echo "$1" | sed "s|^$D_TM_BASE_PATH/||"
@@ -320,7 +333,7 @@ get_config() { # tmux stuff
     #  This is used by everything else sourcing helpers.sh, then trusting
     #  that the param cache is valid if found
     #
-    log_it "get_config()"
+    log_it "get_config()" # with cache: termux, ipad
 
     if [ -f "$f_no_cache_hint" ]; then
         # not using cache, read all cfg variables
@@ -397,7 +410,12 @@ env_initialized=false
 # current_script="$(basename "$0")" # name without path
 # d_current_script="$(dirname -- "$(realpath "$0")")"  # 90
 current_script=${0##*/}
-d_current_script="$(cd "$(dirname "$0")" ; pwd)" # 52-56
+
+# shellcheck disable=SC2164
+d_current_script="$(
+    cd "$(dirname "$0")"
+    pwd
+)" # 52-56
 # dbg_t_update "[helpers] - after defining current_script"
 # log_it "d_current_script [$d_current_script] - current_script [$current_script]"
 
