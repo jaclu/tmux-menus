@@ -622,7 +622,6 @@ verify_menu_runable() {
 
     # extract first word
     _actual_first="${menu_items%% *}"
-    log_it "><> _actual_first: [$_actual_first]"
 
     if [ -n "$cfg_alt_menu_handler" ]; then
         _mnu_first="$cfg_alt_menu_handler"
@@ -642,8 +641,9 @@ verify_menu_runable() {
 
         # filter ; ini order not to execute when displaying the error msg
         escaped="$(printf '%s' "$menu_items" | sed 's/;//g')"
-        log_it "$msg\n$escaped"
-        exit 1
+        error_msg_safe "$msg\n$escaped"
+        # log_it "$msg\n$escaped"
+        # exit 1
     }
     unset _actual_first _mnu_first
 }
