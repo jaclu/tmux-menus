@@ -58,6 +58,7 @@ fi
 
 [ "$MENUS_PROFILING" = "1" ] && {
     log_it "terminating dbg_timings branch before binding trigger key"
+    exit 0
 }
 
 if $cfg_use_whiptail; then
