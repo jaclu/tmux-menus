@@ -394,10 +394,10 @@ env_initialized=false
 #
 dbg_t_update "[helpers] - before defining current_script"
 current_script="$(basename "$0")" # name without path
-dbg_t_update "[helpers] - after defining current_script"
+dbg_t_update "[helpers] - after defining current_script: $current_script"
 # ensure f_current_script is a full path
 d_current_script="$(dirname -- "$(realpath "$0")")"
-dbg_t_update "[helpers] - after defining d_current_script"
+dbg_t_update "[helpers] - after defining d_current_script: $d_current_script"
 f_current_script="$d_current_script/$current_script"
 
 dbg_t_update "[helpers] - core variables defined"
