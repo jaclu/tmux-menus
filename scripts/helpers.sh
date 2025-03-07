@@ -262,8 +262,9 @@ tpt_retrieve_running_tmux_vers() {
     # If the variables defining the currently used tmux version needs to
     # be accessed before the first call to tmux_vers_ok this can be called.
     #
-    # log_it "tpt_retrieve_running_tmux_vers()"
+    log_it "tpt_retrieve_running_tmux_vers()"
     tpt_current_vers="$($TMUX_BIN -V | cut -d' ' -f2)"
+    log_it "  tpt_current_vers [$tpt_current_vers]"
     tpt_current_vers_i="$(tpt_digits_from_string "$tpt_current_vers")"
     tpt_current_vers_suffix="$(tpt_tmux_vers_suffix "$tpt_current_vers")"
 }
