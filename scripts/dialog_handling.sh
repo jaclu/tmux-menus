@@ -897,7 +897,7 @@ menu_debug="" # Set to 1 to use echo 2 to use log_it
 
 # $all_helpers_sourced || source_all_helpers "end of dialog_handling"
 
-dbg_t_update "[dialog_handling] before prepare_menu()"
+dbg_t_update "[dialog_handling] ----->  before prepare_menu()  <-----"
 prepare_menu
 dbg_t_update "[dialog_handling] prepare_menu() done"
 
