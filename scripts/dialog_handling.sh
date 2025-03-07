@@ -661,7 +661,7 @@ prepare_menu() {
     set_menu_env_variables
 
     # 1 - Handle static parts, use cache if enabled and available
-    dbg_t_update "[dialog_handling] hendling static content"
+    dbg_t_update "[dialog_handling] handling static content"
     if $cfg_use_cache; then
         handle_static_cached
         dbg_t_update "[dialog_handling] handle_static_cached() done"
