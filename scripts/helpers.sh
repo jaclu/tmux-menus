@@ -154,6 +154,12 @@ tmux_select_menu_handler() {
     else
         cfg_use_whiptail=false
     fi
+
+    if $cfg_use_whiptail; then
+        log_it "==> [helpers] Using Alternate dialog handler: $cfg_alt_menu_handler"
+    else
+        log_it "==> [helpers] Using tmux menu handler"
+    fi
 }
 
 #---------------------------------------------------------------
@@ -306,7 +312,7 @@ plugin_name="tmux-menus"
 #  This is mostly for debugging early stuff before the settings have
 #  been processed. Should normally be commented out!
 #
-cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
+# cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
 
 #
 #  If set to "1" log will happen to stderr if script is run in an interactive
@@ -315,7 +321,6 @@ cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
 log_interactive_to_stderr="1"
 
 [ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
-
 
 if [ -z "$D_TM_BASE_PATH" ]; then
     # helpers not yet sourced, so error_msg() not yet available
