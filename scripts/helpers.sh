@@ -44,13 +44,14 @@ source_all_helpers() {
     }
     # exit 1
 
+    all_helpers_sourced=true # set it early to avoid recursion
+
     dbg_t_update "[helpers] sourcing helpers"
     #_d="${D_TM_BASE_PATH:-/tmp}"
     # shellcheck source=scripts/utils/helpers-full.sh
     . "$D_TM_BASE_PATH"/scripts/utils/helpers-full.sh
     dbg_t_update "[helpers] sourcing helpers - done"
 
-    all_helpers_sourced=true
     dbg_t_update "[helpers] source_all_helpers() - done"
 }
 
