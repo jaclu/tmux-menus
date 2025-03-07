@@ -76,13 +76,12 @@ safe_now() {
     fi
 }
 
-
 relative_path() {
+    # remove D_TM_BASE_PATH prefix
     # log_it "helpers:relative_path($1)" # with cache:
 
-    # remove D_TM_BASE_PATH prefix
-    # shellcheck disable=SC2154
-    echo "$1" | sed "s|^$D_TM_BASE_PATH/||"
+    # echo "$1" | sed "s|^$D_TM_BASE_PATH/||"
+    printf '%s\n' "${1#"$D_TM_BASE_PATH"/}"
 }
 
 get_config() { # tmux stuff
