@@ -17,11 +17,12 @@ log_it() {
     #  performance?
     # [ "$log_interactive_to_stderr" != "1" ] && [ -z "$cfg_log_file" ] && return
 
+    # shellcheck disable=SC2154
+    [ "$TMUX_MENU_FORCE_SILENT" = "1" ] && return
+
     [ "$TMUX_MENU_FORCE_SILENT" != "1" ] && [ "$log_interactive_to_stderr" = "1" ] &&
         [ -t 0 ] && {
 
-        # shellcheck disable=SC2154
-        [ "$TMUX_MENU_FORCE_SILENT" = "1" ] && return
         # log to stderr if in interactive mode
         printf "[%s] log: %s\n" "$(date '+%H:%M:%S')" "$@" >/dev/stderr
         return
