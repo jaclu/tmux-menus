@@ -83,7 +83,7 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 
 dbg_safe_now() {
     dbg_ts="$(date +%s%N)"
-    dbg_ts_ms="${dbg_ts%??????}"  # Strip last 6 digits → milliseconds
+    dbg_ts_ms="${dbg_ts%??????}" # Strip last 6 digits → milliseconds
     echo "$dbg_ts_ms"
 }
 dbg_t_update() {
@@ -91,7 +91,7 @@ dbg_t_update() {
     dbg_t_since_start=$((dbg_t_now - dbg_t_start))
     dbg_t_sine_update=$((dbg_t_now - dbg_t_last_update))
     dbg_t_last_update="$dbg_t_now"
-    echo "$1 - since last: $dbg_t_sine_update  total: $dbg_t_since_start"
+    echo "$1 - total: $dbg_t_since_start   since last: $dbg_t_sine_update"
 
 }
 dbg_t_start="$(dbg_safe_now)"
