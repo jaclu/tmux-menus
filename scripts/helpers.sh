@@ -63,7 +63,7 @@ dbg_t_update() {
     if [ -t 0 ]; then
         echo "$_s" >/dev/stderr
     elif [ -n "$cfg_log_file" ]; then
-        log_it "$_s"
+        echo "$_s" >>"$cfg_log_file"
     fi
 }
 
