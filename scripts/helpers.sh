@@ -78,7 +78,7 @@ safe_now() {
 
 
 relative_path() {
-    log_it "helpers:relative_path($1)" # with cache:
+    # log_it "helpers:relative_path($1)" # with cache:
 
     # remove D_TM_BASE_PATH prefix
     # shellcheck disable=SC2154
