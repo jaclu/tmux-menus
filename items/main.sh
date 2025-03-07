@@ -108,8 +108,17 @@ dbg_t_update() {
     dbg_t_since_start=$((dbg_t_now - dbg_t_start))
     dbg_t_sine_update=$((dbg_t_now - dbg_t_last_update))
     dbg_t_last_update="$dbg_t_now"
-    echo "$1 - total: $dbg_t_since_start   since last: $dbg_t_sine_update" >/dev/stderr
+
+    _s="$1 - total: $dbg_t_since_start   since last: $dbg_t_sine_update"
+    if [ -t 0 ]; then
+        echo "$_s" >/dev/stderr
+    elif [ -n "$cfg_log_file" ]; then
+        log_it "$_s"
+    fi
 }
+
+# shellcheck source=scripts/helpers.sh
+. "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 dbg_t_update "Starting items/main.sh"
 
