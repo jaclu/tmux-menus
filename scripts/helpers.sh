@@ -392,18 +392,15 @@ env_initialized=false
 #  Convert script name to full actual path notation the path is used
 #  for caching, so save it to a variable as well
 #
-dbg_t_update "[helpers] - before defining current_script"
+# dbg_t_update "[helpers] - before defining current_script"
 
 # current_script="$(basename "$0")" # name without path
 # d_current_script="$(dirname -- "$(realpath "$0")")"  # 90
-
 current_script=${0##*/}
-# d_current_script="$(cd "$(dirname "$0")" ; pwd)" # 52-56
-d_current_script="$(dirname "$(readlink -f "$0")")" # 73
+d_current_script="$(cd "$(dirname "$0")" ; pwd)" # 52-56
+# dbg_t_update "[helpers] - after defining current_script"
+# log_it "d_current_script [$d_current_script] - current_script [$current_script]"
 
-dbg_t_update "[helpers] - after defining current_script"
-log_it "d_current_script [$d_current_script] - current_script [$current_script]"
-exit 1
 f_current_script="$d_current_script/$current_script"
 dbg_t_update "[helpers] - core variables defined"
 
