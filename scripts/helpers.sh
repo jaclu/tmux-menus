@@ -395,6 +395,8 @@ else
     cfg_use_cache=true
 fi
 
+cfg_use_whiptail=false
+
 tmux_select_menu_handler
 
 # log_it "><> scripts/helpers.sh - completed"
