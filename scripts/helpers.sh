@@ -355,10 +355,12 @@ if [ -z "$D_TM_BASE_PATH" ]; then
     exit 1
 fi
 
-if [ "$MENUS_PROFILING" = "!1" ]; then
+if [ "$MENUS_PROFILING" != "1" ]; then
     # profiling calls shoult not be left in the code base long term, this
     # is primarily intended to capture them when profiling is temporarily disabled
+
     profiling_t_update() {
+        true
     }
 else
     [ "$dbg_profiling_sourced" != "1" ] && {
