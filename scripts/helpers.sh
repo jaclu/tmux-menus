@@ -56,48 +56,6 @@ source_all_helpers() {
     profiling_log "[helpers] ----->  source_all_helpers() - done  <-----"
 }
 
-safe_now() {
-    # log_it "safe_now()"
-    if [ -d /proc ] && [ -f /proc/version ]; then
-        #  On Linux the native date supports sub second precision
-        #  unless its the busybox date - only gives seconds...
-        date +%s.%N
-    elif [ "$(uname)" = "Linux" ]; then
-        # Non-standard devices still being Linux, such as termux
-        date +%s.%N
-    else
-        #
-        #  MacOS date only display whole seconds, if gdate (GNU-date) is
-        #  installed, it can  display times with more precision
-        #
-        if [ -n "$(command -v gdate)" ]; then
-            gdate +%s.%N
-        else
-            date +%s
-        fi
-    fi
-}
-
-safe_now_alt() {
-    # log_it "safe_now()" # with cache:
-    if [ -d /proc ] && [ -f /proc/version ]; then
-        #  On Linux the native date supports sub second precision
-        #  unless its the busybox date - only gives seconds...
-        date +%s.%N
-    else
-        #
-        #  MacOS date only display whole seconds, if gdate (GNU-date) is
-        #  installed, it can  display times with more precision
-        #
-        # Running on macOS
-        if [ -n "$(command -v gdate)" ]; then
-            gdate +%s.%N
-        else
-            date +%s
-        fi
-    fi
-}
-
 relative_path() {
     # remove D_TM_BASE_PATH prefix
     # log_it "helpers:relative_path($1)"
@@ -180,6 +138,91 @@ tmux_select_menu_handler() {
         log_it "==> [helpers] Using Alternate dialog handler: $cfg_alt_menu_handler"
         # else
         # log_it "==> [helpers] Using tmux menu handler"
+    fi
+}
+
+#---------------------------------------------------------------
+#
+#   get a time stamp
+#
+#---------------------------------------------------------------
+
+select_safe_now_method() {
+    # figure out what method to use and save the selection for future usage
+    [ -n "$selected_get_time_mthd" ] && {
+        # if this is called when the method was selected something is wrong...
+        error_msg_safe "recursive call to: select_safe_now_method()"
+    }
+
+    if [ -d /proc ] && [ -f /proc/version ]; then
+        #  On Linux the native date supports sub second precision
+        #  unless its the busybox date - only gives seconds...
+        selected_get_time_mthd="date"
+    elif [ "$(uname)" = "Linux" ]; then
+        # Non-standard devices still being Linux, such as termux
+        selected_get_time_mthd="date"
+    elif [ -n "$(command -v gdate)" ]; then
+        selected_get_time_mthd="gdate"
+    elif [ -n "$(command -v perl)" ]; then
+        selected_get_time_mthd="perl"
+    else
+        selected_get_time_mthd="date"
+    fi
+    log_it "Using  safe_now() timing method: $selected_get_time_mthd"
+    safe_now
+}
+
+safe_now() {
+    #
+    #  Sets profiling_t_now to current epoch
+    #
+    case "$selected_get_time_mthd" in
+    date) date +%s.%N ;;
+    gdate) gdate +%s.%N ;;
+    perl) perl -MTime::HiRes=time -E '$t = time; printf "%.9f\n", $t' ;;
+    *) select_safe_now_method ;;
+    esac
+}
+
+old_safe_now() {
+    # log_it "safe_now()"
+    if [ -d /proc ] && [ -f /proc/version ]; then
+        #  On Linux the native date supports sub second precision
+        #  unless its the busybox date - only gives seconds...
+        date +%s.%N
+    elif [ "$(uname)" = "Linux" ]; then
+        # Non-standard devices still being Linux, such as termux
+        date +%s.%N
+    else
+        #
+        #  MacOS date only display whole seconds, if gdate (GNU-date) is
+        #  installed, it can  display times with more precision
+        #
+        if [ -n "$(command -v gdate)" ]; then
+            gdate +%s.%N
+        else
+            date +%s
+        fi
+    fi
+}
+
+safe_now_alt() {
+    # log_it "safe_now()" # with cache:
+    if [ -d /proc ] && [ -f /proc/version ]; then
+        #  On Linux the native date supports sub second precision
+        #  unless its the busybox date - only gives seconds...
+        date +%s.%N
+    else
+        #
+        #  MacOS date only display whole seconds, if gdate (GNU-date) is
+        #  installed, it can  display times with more precision
+        #
+        # Running on macOS
+        if [ -n "$(command -v gdate)" ]; then
+            gdate +%s.%N
+        else
+            date +%s
+        fi
     fi
 }
 
