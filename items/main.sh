@@ -10,7 +10,7 @@
 
 static_content() {
     menu_segment=1
-    dbg_t_update "[items/main] static_content() - starting  <======"
+    profiling_t_update "[items/main] static_content() - starting  <======"
 
     tmux_vers_check 3.2 && {
         log_it "tmux >= 3.2"
@@ -21,7 +21,7 @@ static_content() {
             customize_mode_cmd="$customize_mode_cmd $hint"
         fi
     }
-    dbg_t_update "[items/main] v3.2 customize_mode_cmd prepared"
+    profiling_t_update "[items/main] v3.2 customize_mode_cmd prepared"
 
     rld_cmd="command-prompt -I '$cfg_tmux_conf' -p 'Source file:' \
         'run-shell \"$d_scripts/reload_conf.sh %% $reload_in_runshell\"'"
@@ -33,7 +33,7 @@ static_content() {
         menu_generate_part "$menu_segment" "$@"
         menu_segment=$((menu_segment + 1))
     fi
-    dbg_t_update "[items/main] custom items processed"
+    profiling_t_update "[items/main] custom items processed"
 
     #  Menu items definition
     set -- \
@@ -53,7 +53,7 @@ static_content() {
 
     menu_generate_part "$menu_segment" "$@"
     menu_segment=$((menu_segment + 1))
-    dbg_t_update "[items/main] part nav&search - customize mode done"
+    profiling_t_update "[items/main] part nav&search - customize mode done"
 
     $cfg_use_hint_overlays && $cfg_show_key_hints && {
         set -- \
@@ -64,7 +64,7 @@ static_content() {
         menu_generate_part "$menu_segment" "$@"
         menu_segment=$((menu_segment + 1))
     }
-    dbg_t_update "[items/main] Key hints done"
+    profiling_t_update "[items/main] Key hints done"
 
     set -- \
         1.8 E p "Plugins inventory" "plugins.sh" \
@@ -75,7 +75,7 @@ static_content() {
         "$d_help/help_summary.sh $f_current_script"
 
     menu_generate_part "$menu_segment" "$@"
-    dbg_t_update "[items/main] static_content() - done  <======"
+    profiling_t_update "[items/main] static_content() - done  <======"
 }
 
 #===============================================================
@@ -89,20 +89,10 @@ menu_name="Main menu"
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 
-set_dbg_t_now() {
-    #
-    #  Sets dbg_t_now to current epoch
-    #
-    dbg_ts="$(date +%s%N)"
-    dbg_t_now="${dbg_ts%??????}" # Strip last 6 digits → milliseconds
-    [ -z "$dbg_t_start" ] && {
-        dbg_t_start="$dbg_t_now"
-        dbg_t_last_update="$dbg_t_now"
-    }
-}
+# shellcheck source=scripts/utils/dbg_profiling.sh
+. "$D_TM_BASE_PATH"/scripts/utils/dbg_profiling.sh
 
-set_dbg_t_now
-# dbg_t_update "Starting items/main.sh"
+profiling_t_update "Starting items/main.sh"
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh

@@ -38,34 +38,6 @@ error_msg_safe() {
     error_msg "$@"
 }
 
-set_dbg_t_now() {
-    #
-    #  Sets dbg_t_now to current epoch
-    #
-    dbg_ts="$(date +%s%N)"
-    dbg_t_now="${dbg_ts%??????}" # Strip last 6 digits → milliseconds
-    [ -z "$dbg_t_start" ] && {
-        dbg_t_start="$dbg_t_now"
-        dbg_t_last_update="$dbg_t_now"
-    }
-}
-
-dbg_t_update() {
-    # shellcheck disable=SC2154
-    [ "$TMUX_MENU_FORCE_SILENT" = "1" ] && return
-    set_dbg_t_now
-    dbg_t_since_start=$((dbg_t_now - dbg_t_start))
-    dbg_t_sine_update=$((dbg_t_now - dbg_t_last_update))
-    dbg_t_last_update="$dbg_t_now"
-
-    _s="$1 - total: $dbg_t_since_start   since last: $dbg_t_sine_update"
-    if [ -t 0 ]; then
-        echo "$_s" >/dev/stderr
-    elif [ -n "$cfg_log_file" ]; then
-        log_it "$_s"
-    fi
-}
-
 source_all_helpers() {
     log_it
     log_it "--------------->  source_all_helpers($0)  <---------------"
@@ -78,13 +50,13 @@ source_all_helpers() {
 
     all_helpers_sourced=true # set it early to avoid recursion
 
-    dbg_t_update "[helpers] sourcing helpers"
+    profiling_t_update "[helpers] sourcing helpers"
     #_d="${D_TM_BASE_PATH:-/tmp}"
     # shellcheck source=scripts/utils/helpers-full.sh
     . "$D_TM_BASE_PATH"/scripts/utils/helpers-full.sh
-    dbg_t_update "[helpers] sourcing helpers - done"
+    profiling_t_update "[helpers] sourcing helpers - done"
 
-    dbg_t_update "[helpers] ----->  source_all_helpers() - done  <-----"
+    profiling_t_update "[helpers] ----->  source_all_helpers() - done  <-----"
 }
 
 safe_now() {
@@ -146,7 +118,7 @@ get_config() { # tmux stuff
 
         # not using cache, read all cfg variables
         tmux_get_plugin_options
-        dbg_t_update "[helpers] - tmux_get_plugin_options() done"
+        profiling_t_update "[helpers] - tmux_get_plugin_options() done"
 
     elif ! cache_get_params; then
         $all_helpers_sourced || {
@@ -155,7 +127,7 @@ get_config() { # tmux stuff
 
         # Re-generate cache params
         cache_update_param_cache
-        dbg_t_update "[helpers] - cache_update_param_cache() done"
+        profiling_t_update "[helpers] - cache_update_param_cache() done"
     fi
 }
 
@@ -381,6 +353,22 @@ if [ -z "$D_TM_BASE_PATH" ]; then
     )
     $TMUX_BIN display-message "$msg"
     exit 1
+fi
+
+if [ "$MENUS_PROFILING" = "!1" ]; then
+    # profiling calls shoult not be left in the code base long term, this
+    # is primarily intended to capture them when profiling is temporarily disabled
+    profiling_t_update() {
+    }
+else
+    [ "$dbg_profiling_sourced" != "1" ] && {
+        # Here it is sourced  after D_TM_BASE_PATH is verified
+        # if the intent is to start timing the earliest stages of other scripts
+        # copy the below code using absolute paths
+
+        # shellcheck source=scripts/utils/dbg_profiling.sh
+        . "$D_TM_BASE_PATH"/scripts/utils/dbg_profiling.sh
+    }
 fi
 
 # if any condition requiring the full kit happens, do the sourcing and set

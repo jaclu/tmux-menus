@@ -16,7 +16,7 @@
 #
 #---------------------------------------------------------------
 
-dbg_t_update "[helpers-full] - start"
+profiling_t_update "[helpers-full] - start"
 
 error_msg() {
     #
@@ -327,12 +327,12 @@ wait_to_close_display() {
 #     if [ -f "$f_no_cache_hint" ]; then
 #         # not using cache, read all cfg variables
 #         tmux_get_plugin_options
-#         dbg_t_update "[helpers-full] - tmux_get_plugin_options() done"
+#         profiling_t_update "[helpers-full] - tmux_get_plugin_options() done"
 
 #     elif ! cache_get_params; then
 #         # Re-generate cache params
 #         cache_update_param_cache
-#         dbg_t_update "[helpers-full] - cache_update_param_cache() done"
+#         profiling_t_update "[helpers-full] - cache_update_param_cache() done"
 #     fi
 # }
 
@@ -342,7 +342,7 @@ wait_to_close_display() {
 #
 #===============================================================
 
-dbg_t_update "[helpers-full] - main"
+profiling_t_update "[helpers-full] - main"
 
 [ -z "$D_TM_BASE_PATH" ] && error_msg "D_TM_BASE_PATH undefined"
 
@@ -361,14 +361,14 @@ f_update_custom_inventory="$d_scripts"/update_custom_inventory.sh
 # will be set to true at end of this, this indicates everything is prepared
 env_initialized=false
 
-dbg_t_update "[helpers-full] - core variables defined"
+profiling_t_update "[helpers-full] - core variables defined"
 
 # shellcheck source=scripts/utils/cache.sh
 . "$d_scripts"/utils/cache.sh
 
 # shellcheck source=scripts/utils/tmux.sh
 . "$d_scripts"/utils/tmux.sh
-dbg_t_update "[helpers-full] - sourced tmux"
+profiling_t_update "[helpers-full] - sourced tmux"
 
 # log_it "><>===================================================== $0"
 
@@ -385,10 +385,10 @@ if [ "$initialize_plugin" = "1" ]; then
     log_it
     log_it "$(date)"
     $cfg_use_cache && cache_get_params # clears cache if tmux.conf has been changed
-    dbg_t_update "[helpers-full] - initialize_plugin done"
+    profiling_t_update "[helpers-full] - initialize_plugin done"
 else
     get_config
-    dbg_t_update "[helpers-full] - get_config done"
+    profiling_t_update "[helpers-full] - get_config done"
 fi
 
 min_tmux_vers="1.8"
@@ -397,7 +397,7 @@ if ! tmux_vers_check "$min_tmux_vers"; then
     error_msg "need at least tmux $min_tmux_vers to work!"
 fi
 
-dbg_t_update "[helpers-full] - min vers check done"
+profiling_t_update "[helpers-full] - min vers check done"
 
 if $cfg_use_whiptail; then
     menu_reload="; $f_current_script"
@@ -410,7 +410,7 @@ else
     menu_reload="; run-shell \"$f_current_script\""
     reload_in_runshell=" ; $f_current_script"
 fi
-dbg_t_update "[helpers-full] - whiptail setup done"
+profiling_t_update "[helpers-full] - whiptail setup done"
 
 env_initialized=true # indicates that env is fully configured
 log_it "><> scripts/utils/helpers-full.sh - completed"

@@ -108,7 +108,7 @@ tmux_get_plugin_options() { # cache references
     log_it "tmux_get_plugin_options()"
 
     tmux_get_defaults
-    dbg_t_update "[tmux] - tmux_get_defaults done"
+    profiling_t_update "[tmux] - tmux_get_defaults done"
 
     cfg_trigger_key="$(tmux_get_option "@menus_trigger" "$default_trigger_key")"
     if normalize_bool_param "@menus_without_prefix" "$default_no_prefix"; then
@@ -165,7 +165,7 @@ tmux_get_plugin_options() { # cache references
         cfg_mnu_loc_x="$(tmux_get_option "@menus_location_x" "$default_location_x")"
         cfg_mnu_loc_y="$(tmux_get_option "@menus_location_y" "$default_location_y")"
     fi
-    dbg_t_update "[tmux] - whiptail considerations done"
+    profiling_t_update "[tmux] - whiptail considerations done"
 
     cfg_tmux_conf="$(tmux_get_option "@menus_config_file" "$default_tmux_conf")"
     _f="$(tmux_get_option "@menus_log_file" "$default_log_file")"
@@ -311,7 +311,7 @@ tmux_error_handler() { # cache references
 #
 #===============================================================
 
-dbg_t_update "[tmux] main"
+profiling_t_update "[tmux] main"
 
 #
 #  I use an env var TMUX_BIN to point at the current tmux, defined in my
@@ -323,9 +323,9 @@ dbg_t_update "[tmux] main"
 #
 
 if [ -n "$TMUX" ]; then
-    dbg_t_update "[tmux] will set tmux_pid"
+    profiling_t_update "[tmux] will set tmux_pid"
     tmux_pid="$(echo "$TMUX" | cut -d',' -f2)"
-    dbg_t_update "[tmux] set tmux_pid"
+    profiling_t_update "[tmux] set tmux_pid"
 else
     # was run outside tmux
     tmux_pid="-1"

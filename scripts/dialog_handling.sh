@@ -23,7 +23,7 @@
 #   dynamic_content()   - all dynamic fragments, will be regenerated each time
 #
 
-# dbg_t_update "[dialog_handling] - start"
+# profiling_t_update "[dialog_handling] - start"
 
 #---------------------------------------------------------------
 #
@@ -598,10 +598,10 @@ sort_menu_items() {
     else
         _s="[dialog_handling] sort_menu_items()"
         _s="$_s - calling: generate_menu_items_in_sorted_order"
-        dbg_t_update "$_s"
+        profiling_t_update "$_s"
 
         generate_menu_items_in_sorted_order
-        dbg_t_update "[dialog_handling] returned from generate_menu_items_in_sorted_order"
+        profiling_t_update "[dialog_handling] returned from generate_menu_items_in_sorted_order"
     fi
 }
 
@@ -656,24 +656,24 @@ prepare_menu() {
     set_menu_env_variables
 
     # 1 - Handle static parts, use cache if enabled and available
-    dbg_t_update "[dialog_handling] handling static content"
+    profiling_t_update "[dialog_handling] handling static content"
     if $cfg_use_cache; then
         handle_static_cached
-        dbg_t_update "[dialog_handling] handle_static_cached() done"
+        profiling_t_update "[dialog_handling] handle_static_cached() done"
     else
         static_content
-        dbg_t_update "[dialog_handling] static_content() done"
+        profiling_t_update "[dialog_handling] static_content() done"
     fi
 
     # 2 - Handle dynamic parts (if any)
     handle_dynamic
-    dbg_t_update "[dialog_handling] handle_dynamic() done"
+    profiling_t_update "[dialog_handling] handle_dynamic() done"
 
     # 3 - Gather each item in correct order
     sort_menu_items
-    dbg_t_update "[dialog_handling] sort_menu_items() done"
+    profiling_t_update "[dialog_handling] sort_menu_items() done"
     verify_menu_runable
-    dbg_t_update "[dialog_handling] verify_menu_runable() done"
+    profiling_t_update "[dialog_handling] verify_menu_runable() done"
 }
 
 #---------------------------------------------------------------
@@ -882,7 +882,7 @@ fi
     . "$D_TM_BASE_PATH"/scripts/helpers.sh
 }
 
-dbg_t_update "[dialog_handling] sourced helpers"
+profiling_t_update "[dialog_handling] sourced helpers"
 
 # Some sanity checks
 [ "$MENUS_PROFILING" != "1" ] && {
@@ -909,8 +909,8 @@ menu_debug="" # Set to 1 to use echo 2 to use log_it
 
 # $all_helpers_sourced || source_all_helpers "end of dialog_handling"
 
-dbg_t_update "[dialog_handling] ----->  before prepare_menu()  <-----"
+profiling_t_update "[dialog_handling] ----->  before prepare_menu()  <-----"
 prepare_menu
-dbg_t_update "[dialog_handling] prepare_menu() done"
+profiling_t_update "[dialog_handling] prepare_menu() done"
 
 [ "$TMUX_MENUS_NO_DISPLAY" != "1" ] && display_menu

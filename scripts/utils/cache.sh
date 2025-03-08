@@ -270,7 +270,7 @@ cache_update_param_cache() {
 #
 #===============================================================
 
-dbg_t_update "[cache] main"
+profiling_t_update "[cache] main"
 
 cache_params_retrieved=0
 
