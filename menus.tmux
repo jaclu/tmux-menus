@@ -47,10 +47,8 @@ $all_helpers_sourced || source_all_helpers "always done by menus.tmux"
 if $cfg_use_cache; then
     cache_add_ok_vers "$tpt_current_vers"
 
-    if [[ -f "$f_update_custom_inventory" ]]; then
+    if [[ -d "$d_custom_items" ]]; then
         $f_update_custom_inventory
-    else
-        log_it "config file missing: $f_update_custom_inventory"
     fi
 else
     log_it "-->  cache is disabled!  <--"
