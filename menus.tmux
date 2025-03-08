@@ -44,6 +44,7 @@ initialize_plugin=1
 
 $all_helpers_sourced || source_all_helpers "always done by menus.tmux"
 
+log_it "aborting menus.tmux after sourcing all"
 exit 1
 
 if $cfg_use_cache; then
