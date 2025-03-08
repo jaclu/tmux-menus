@@ -398,13 +398,16 @@ fi
 all_helpers_sourced=false
 
 # minimal support variables
-d_cache="$D_TM_BASE_PATH"/cache
-f_cache_known_tmux_vers="$d_cache"/known_tmux_versions
-f_cache_params="$d_cache"/plugin_params
 
 d_tmp="${TMPDIR:-/tmp}"
 d_tmp="${d_tmp%/}" # Removes a trailing slash if present - sometimes set in TMPDIR...
 f_no_cache_hint="$d_tmp"/no-cache-hint
+
+d_scripts="$D_TM_BASE_PATH"/scripts
+d_items="$D_TM_BASE_PATH"/items
+d_cache="$D_TM_BASE_PATH"/cache
+f_cache_known_tmux_vers="$d_cache"/known_tmux_versions
+f_cache_params="$d_cache"/plugin_params
 
 #
 #  Convert script name to full actual path notation the path is used

@@ -248,6 +248,8 @@ f_custom_items_content="$d_cache"/custom_items_content
 
 $cfg_use_cache || return 0 # if caching is disabled custom_items can't be processed
 
+$all_helpers_sourced || source_all_helpers "always done by update_custom_inventory.sh"
+
 # debug helper
 # [ "$LOG_TO_STDERR" = "1" ] && log_interactive_to_stderr=1
 
