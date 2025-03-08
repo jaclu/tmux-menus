@@ -88,9 +88,9 @@ menu_name="Main menu"
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 
-# # shellcheck source=scripts/utils/dbg_profiling.sh
-# . "$D_TM_BASE_PATH"/scripts/utils/dbg_profiling.sh
-# profiling_display "Starting items/main.sh"
+# shellcheck source=scripts/utils/dbg_profiling.sh
+. "$D_TM_BASE_PATH"/scripts/utils/dbg_profiling.sh
+profiling_display "Starting items/main.sh"
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
