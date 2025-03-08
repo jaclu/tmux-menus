@@ -18,7 +18,7 @@
 
 dbg_t_update "[helpers-full] - start"
 
-error_msg_safe() {
+error_msg() {
     #
     #  Display $1 as an error message in log and as a tmux display-message
     #  unless do_display_message is false
@@ -42,7 +42,7 @@ error_msg_safe() {
     em_msg="$1"
     exit_code="${2:-0}"
     do_display_message=${3:-true}
-    log_it "error_msg_safe($em_msg)"
+    log_it "error_msg($em_msg)"
 
     # with no tmux env, dumping it to stderr is the only option
     [ -z "$TMUX" ] && log_interactive_to_stderr=1
@@ -88,7 +88,7 @@ error_msg_formated() {
     #  Display an error in its own frame, supporting longer messages
     #  and also those formatted with LFs
     #
-    #  Can't use tmux_error_handler() or error_msg_safe() here - it could lead to
+    #  Can't use tmux_error_handler() or error_msg() here - it could lead to
     #  recursion
     #
     emf_err="$1"
@@ -212,7 +212,7 @@ normalize_bool_param() {
         #  In this case $2 must be given as the default value!
         #
         [ -z "$nbp_default" ] && {
-            error_msg_safe "normalize_bool_param($nbp_param) - no default"
+            error_msg "normalize_bool_param($nbp_param) - no default"
         }
         nbp_variable_name="$nbp_param"
         nbp_param="$(tmux_get_option "$nbp_param" "$nbp_default")"
@@ -244,13 +244,13 @@ normalize_bool_param() {
         else
             prefix="$nbp_param"
         fi
-        error_msg_safe "$prefix - should be yes/true or no/false"
+        error_msg "$prefix - should be yes/true or no/false"
         ;;
 
     esac
 
     # Should never get here...
-    error_msg_safe "normalize_bool_param() - failed to evaluate $nbp_param"
+    error_msg "normalize_bool_param() - failed to evaluate $nbp_param"
 }
 
 has_lf_not_at_end() {
@@ -344,7 +344,7 @@ wait_to_close_display() {
 
 dbg_t_update "[helpers-full] - main"
 
-[ -z "$D_TM_BASE_PATH" ] && error_msg_safe "D_TM_BASE_PATH undefined"
+[ -z "$D_TM_BASE_PATH" ] && error_msg "D_TM_BASE_PATH undefined"
 
 #
 #  Convenience shortcuts
@@ -394,7 +394,7 @@ fi
 min_tmux_vers="1.8"
 if ! tmux_vers_check "$min_tmux_vers"; then
     # @variables are not usable prior to 1.8
-    error_msg_safe "need at least tmux $min_tmux_vers to work!"
+    error_msg "need at least tmux $min_tmux_vers to work!"
 fi
 
 dbg_t_update "[helpers-full] - min vers check done"
