@@ -585,15 +585,15 @@ sort_menu_items() {
     # log_it "sort_menu_items()"
     if $cfg_use_cache; then
         for file in "$d_menu_cache"/*; do
-            # skip special files
-            fn="$(basename "$file")"
-            [ "${#fn}" -gt "2" ] && continue
+            # # skip special files
+            # fn="$(basename "$file")"
+            # [ "${#fn}" -gt "2" ] && continue
 
-            # Check if the file is a regular file
-            if [ -f "$file" ]; then
-                # Read the content of the file and append it to the dialog variable
-                menu_items="$menu_items $(cat "$file")"
-            fi
+            # # Check if the file is a regular file
+            # if [ -f "$file" ]; then
+            # Read the content of the file and append it to the dialog variable
+            menu_items="$menu_items $(cat "$file")"
+            # fi
         done
     else
         _s="[dialog_handling] sort_menu_items()"
