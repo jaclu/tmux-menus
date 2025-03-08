@@ -385,6 +385,11 @@ cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
 #
 # log_interactive_to_stderr=1
 
+cfg_use_whiptail=false
+plugin_options_have_been_read=false # only need to read param once
+# for performance only a minimum of support features are in this file
+# as long as cache is used, it is sufficient, if extra features are needed
+# a call to source_all_helpers will be done, this ensures it only happens once
 all_helpers_sourced=false
 
 [ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
@@ -419,17 +424,6 @@ else
     }
 fi
 
-# shellcheck disable=SC2154
-if [ -f "$f_no_cache_hint" ]; then
-    # ensure no caching until the settings has been read
-    cfg_use_cache=false
-else
-    # Assume cache can be used, if this is not the case, this should be harmless
-    # since when no cache is detected tmux options will be read and true state
-    # for using cache will be detected
-    cfg_use_cache=true
-fi
-
 # minimal support variables
 
 d_tmp="${TMPDIR:-/tmp}"
@@ -455,10 +449,15 @@ d_current_script="$(
 current_script=${0##*/}
 f_current_script="$d_current_script/$current_script"
 
-# ensure no caching until the settings has been read
-cfg_use_cache=false
-
-cfg_use_whiptail=false
+if [ -f "$f_no_cache_hint" ]; then
+    # ensure no caching until the settings has been read
+    cfg_use_cache=false
+else
+    # Assume cache can be used, if this is not the case, this should be harmless
+    # since when no cache is detected tmux options will be read and true state
+    # for using cache will be detected
+    cfg_use_cache=true
+fi
 
 # shellcheck disable=SC2154
 if [ "$initialize_plugin" = "1" ]; then

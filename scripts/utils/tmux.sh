@@ -106,6 +106,11 @@ tmux_get_plugin_options() { # cache references
     #   cfg_  config variables, either read from tmux or the default
     #
     # log_it "tmux_get_plugin_options()"
+    $plugin_options_have_been_read && {
+        error_msg "tmux_get_plugin_options() has already been called"
+    }
+
+    profiling_log "[tmux] - tmux_get_plugin_options()"
 
     tmux_get_defaults
     profiling_log "[tmux] - tmux_get_defaults done"
@@ -153,7 +158,6 @@ tmux_get_plugin_options() { # cache references
         cfg_nav_prev="$default_nav_prev"
         cfg_nav_home="$default_nav_home"
     else
-        profiling_log "[tmux] - whiptail considerations"
         cfg_simple_style_selected="$(tmux_get_option "@menus_simple_style_selected" \
             "$default_simple_style_selected")"
         cfg_simple_style="$(tmux_get_option "@menus_simple_style" \
@@ -169,7 +173,6 @@ tmux_get_plugin_options() { # cache references
         cfg_mnu_loc_x="$(tmux_get_option "@menus_location_x" "$default_location_x")"
         cfg_mnu_loc_y="$(tmux_get_option "@menus_location_y" "$default_location_y")"
     fi
-    profiling_log "[tmux] - whiptail considerations done"
 
     cfg_tmux_conf="$(tmux_get_option "@menus_config_file" "$default_tmux_conf")"
     _f="$(tmux_get_option "@menus_log_file" "$default_log_file")"
@@ -192,6 +195,8 @@ tmux_get_plugin_options() { # cache references
         # log_it "><> ignoring notes"
         cfg_use_notes=false
     fi
+    plugin_options_have_been_read=true
+    profiling_log "[tmux] - tmux_get_plugin_options() - done"
     # log_it "  tmux_get_plugin_options() - done"
 }
 
