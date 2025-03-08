@@ -104,7 +104,7 @@ update_wt_actions() {
 
 menu_generate_part() {
     # Generate one menu segment
-    log_it "menu_generate_part($1)"
+    # log_it "menu_generate_part($1)"
     $all_helpers_sourced || source_all_helpers "menu_generate_part()"
 
     menu_idx="$1"

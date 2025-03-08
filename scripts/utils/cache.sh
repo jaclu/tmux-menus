@@ -51,7 +51,7 @@ cache_prepare() {
     #
     #  returns 0 if cache folder exists / was created
     #
-    log_it "cache_prepare()"
+    # log_it "cache_prepare()"
     $cfg_use_cache || error_msg "cache_prepare() - called when not using cache" 1
 
     [ -d "$d_cache" ] && return 0 # already created
@@ -66,7 +66,7 @@ cache_add_ok_vers() {
     #  Add param to list of good versions (<=running tmux vers),
     #  if it wasn't cached already
     #
-    log_it "cache_add_ok_vers($1)"
+    # log_it "cache_add_ok_vers($1)"
     $cfg_use_cache || return 0
     [ -z "$1" ] && error_msg "cache_add_ok_vers() - no param"
 
@@ -106,7 +106,7 @@ cache_save_known_tmux_versions() { # tmux stuff
     #  The order the versions are saved doesn't matter,
     #  since they are checked with a case to speed things up
     #
-    log_it "cache_save_known_tmux_versions() - $0"
+    # log_it "cache_save_known_tmux_versions() - $0"
     $cfg_use_cache || {
         error_msg "cache_save_known_tmux_versions() - called when not using cache"
     }
