@@ -106,10 +106,10 @@ cache_save_known_tmux_versions() { # tmux stuff
     #  The order the versions are saved doesn't matter,
     #  since they are checked with a case to speed things up
     #
-    # log_it "cache_save_known_tmux_versions() - $0"
     $cfg_use_cache || {
         error_msg "cache_save_known_tmux_versions() - called when not using cache"
     }
+    log_it "cache_save_known_tmux_versions() - $0"
     cache_prepare
 
     #region known tmux versions
@@ -124,6 +124,7 @@ cached_ok_tmux_versions="$cached_ok_tmux_versions"
 cached_bad_tmux_versions="$cached_bad_tmux_versions"
 EOF
     #endregion
+    log_it "Saved known tmux versions"
 }
 
 cache_escape_special_chars() {
