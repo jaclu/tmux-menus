@@ -15,6 +15,8 @@
 log_it() {
     #  early abort if no logging, should not be needed, but might improve
     #  performance?
+    [ "$TMUX_MENU_FORCE_SILENT" = "1" ] && return
+
     # [ "$log_interactive_to_stderr" != "1" ] && [ -z "$cfg_log_file" ] && return
 
     [ "$TMUX_MENU_FORCE_SILENT" != "1" ] && [ "$log_interactive_to_stderr" = "1" ] &&
