@@ -49,16 +49,23 @@ source_all_helpers() {
 
     all_helpers_sourced=true # set it early to avoid recursion
 
-    profiling_t_update "[helpers] sourcing helpers"
+    profiling_log "[helpers] sourcing helpers"
     #_d="${D_TM_BASE_PATH:-/tmp}"
     # shellcheck source=scripts/utils/helpers-full.sh
     . "$D_TM_BASE_PATH"/scripts/utils/helpers-full.sh
-    profiling_t_update "[helpers] ----->  source_all_helpers() - done  <-----"
+    profiling_log "[helpers] ----->  source_all_helpers() - done  <-----"
 }
 
 safe_now() {
     # log_it "safe_now()"
-    if [ "$(uname)" = "Darwin" ]; then
+    if [ -d /proc ] && [ -f /proc/version ]; then
+        #  On Linux the native date supports sub second precision
+        #  unless its the busybox date - only gives seconds...
+        date +%s.%N
+    elif [ "$(uname)" = "Linux" ]; then
+        # Non-standard devices still being Linux, such as termux
+        date +%s.%N
+    else
         #
         #  MacOS date only display whole seconds, if gdate (GNU-date) is
         #  installed, it can  display times with more precision
@@ -68,10 +75,6 @@ safe_now() {
         else
             date +%s
         fi
-    else
-        #  On Linux the native date supports sub second precision
-        #  unless its the busybox date - only gives seconds...
-        date +%s.%N
     fi
 }
 
@@ -115,7 +118,7 @@ get_config() { # tmux stuff
 
         # not using cache, read all cfg variables
         tmux_get_plugin_options
-        profiling_t_update "[helpers] - tmux_get_plugin_options() done"
+        profiling_log "[helpers] - tmux_get_plugin_options() done"
 
     elif ! cache_get_params; then
         $all_helpers_sourced || {
@@ -124,7 +127,7 @@ get_config() { # tmux stuff
 
         # Re-generate cache params
         cache_update_param_cache
-        profiling_t_update "[helpers] - cache_update_param_cache() done"
+        profiling_log "[helpers] - cache_update_param_cache() done"
     fi
 }
 
@@ -356,7 +359,7 @@ if [ "$MENUS_PROFILING" != "1" ]; then
     # profiling calls shoult not be left in the code base long term, this
     # is primarily intended to capture them when profiling is temporarily disabled
 
-    profiling_t_update() {
+    profiling_log() {
         true
     }
 else

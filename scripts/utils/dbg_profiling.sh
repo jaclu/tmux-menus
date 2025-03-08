@@ -10,6 +10,7 @@
 #
 #  Some timing functions I use when I need to optimize performance
 #  Each printout displays both total run time and time since last update
+#  Unit is milliseconds
 #
 #  Typical usage:
 #  In the script I want to optimize paste the code below, time starts when
@@ -18,13 +19,13 @@
 #
 #  at any point you want to see timings before/after, do this:
 #
-#    profiling_t_update "will source cache"
+#    profiling_log "will source cache"
 #    . "$d_scripts"/utils/cache.sh
-#    profiling_t_update "source cache - done!"
+#    profiling_log "source cache - done!"
 #
 #   If you just want to see how much time have been spent at a certain point,
 #   including time since last time update, use it like:
-#       profiling_t_update "get_config done"
+#       profiling_log "get_config done"
 #
 
 [ "$MENUS_PROFILING" != "1" ] && {
@@ -33,24 +34,93 @@
     exit 1
 }
 
-set_profiling_t_now() {
+profiling_is_function_defined() {
+    [ "$(command -v "$1")" = "$1" ]
+}
+
+profiling_log_it() {
+    # Only call log_it if it has been defined
+    # During normal sourcing of this it has been, but if this is early sourced
+    # in some other script, this is not available
+    if profiling_is_function_defined "log_it"; then
+        log_it "$@"
+    elif [ -z "$TMUX_MENU_FORCE_SILENT" ] ||
+        [ "$TMUX_MENU_FORCE_SILENT" = "0" ]; then
+
+        echo "log: $@"
+    fi
+}
+
+profiling_set_t_date() {
+    _t="$(date +%s%N)"
+    profiling_t_now="${_t%??????}" # Strip last 6 digits → milliseconds
+}
+
+profiling_set_t_gdate() {
+    _t="$(gdate +%s%N)"
+    profiling_t_now="${_t%??????}" # Strip last 6 digits → milliseconds
+}
+
+profiling_set_t_perl() { # represented as milliseconds
+    profiling_t_now="$(perl -MTime::HiRes=time -E 'say int(time * 1e3)')"
+}
+
+profiling_select_timing_method() {
+    # figure out what method to use and save the selection for future usage
+    [ -n "$profiling_selected_get_time" ] && {
+        # if this is called when the method was selected something is wrong...
+        _m="recursive call to: profiling_select_timing_method()"
+        if profiling_is_function_defined "error_msg_safe"; then
+            error_msg_safe "$_m"
+        else
+            echo
+            echo "ERROR: $_m"
+            echo
+            exit 1
+        fi
+    }
+
+    if [ -d /proc ] && [ -f /proc/version ]; then
+        #  On Linux the native date supports sub second precision
+        #  unless its the busybox date - only gives seconds...
+        profiling_selected_get_time="date"
+    elif [ "$(uname)" = "Linux" ]; then
+        # Non-standard devices still being Linux, such as termux
+        profiling_selected_get_time="date"
+    elif [ -n "$(command -v gdate)" ]; then
+        profiling_selected_get_time="gdate"
+    elif [ -n "$(command -v perl)" ]; then
+        profiling_selected_get_time="perl"
+    else
+        profiling_selected_get_time="date"
+    fi
+    profiling_log_it "Using timing method: $profiling_selected_get_time"
+    profiling_get_time
+}
+
+profiling_get_time() {
     #
     #  Sets profiling_t_now to current epoch
     #
-    _t="$(date +%s%N)"
-    profiling_t_now="${_t%??????}" # Strip last 6 digits → milliseconds
+    case "$profiling_selected_get_time" in
+    date) profiling_set_t_date ;;
+    gdate) profiling_set_t_gdate ;;
+    perl) profiling_set_t_perl ;;
+    *) profiling_select_timing_method ;;
+    esac
+
     [ -z "$profiling_t_start" ] && {
         profiling_t_start="$profiling_t_now"
         profiling_t_last_update="$profiling_t_start"
     }
 }
 
-set_profiling_t_now # start timer as early as possible
+profiling_get_time # start timer as early as possible
 
-profiling_t_update() {
+profiling_log() {
     [ "$TMUX_MENU_FORCE_SILENT" = "2" ] && return
 
-    set_profiling_t_now
+    profiling_get_time
     _since_start=$((profiling_t_now - profiling_t_start))
     _sine_update=$((profiling_t_now - profiling_t_last_update))
     profiling_t_last_update="$profiling_t_now"
@@ -69,4 +139,4 @@ profiling_t_update() {
     echo
 }
 
-dbg_profiling_sourced=1
+profiling_sourced=1
