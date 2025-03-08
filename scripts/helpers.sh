@@ -414,8 +414,7 @@ if [ "$MENUS_PROFILING" != "1" ]; then
     profiling_display() {
         true
     }
-else
-    [ "$dbg_profiling_sourced" != "1" ] && {
+elif [ "$MENUS_PROFILING" = "1" ] && [ "$profiling_sourced" != "1" ] && {
         # Here it is sourced  after D_TM_BASE_PATH is verified
         # if the intent is to start timing the earliest stages of other scripts
         # copy the below code using absolute paths

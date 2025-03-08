@@ -114,7 +114,10 @@ profiling_get_time() {
     }
 }
 
-profiling_get_time # start timer as early as possible
+[ "$profiling_sourced" != "1" ] && {
+    # Only start timer first time this is sourced
+    profiling_get_time # start timer as early as possible
+}
 
 profiling_update_time_stamps() {
     profiling_get_time
