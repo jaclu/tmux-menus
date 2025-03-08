@@ -42,9 +42,6 @@ initialize_plugin=1
 # shellcheck source=/dev/null  # can't read source when mixing bah & posix
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
-log_it "aborting after sourcing helpers"
-exit 1
-
 $all_helpers_sourced || source_all_helpers "always done by menus.tmux"
 
 if $cfg_use_cache; then

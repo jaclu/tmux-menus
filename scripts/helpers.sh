@@ -175,7 +175,7 @@ get_config_refresh() {
     [ -f "$f_cache_params" ] && {
         # Only really need cfg_tmux_conf at this point
         . "$f_cache_params" || {
-            log_it "Failed to source: $f_cache_params, removing it"
+            log_it "WARNING: Failed to source: $f_cache_params, removing it"
             rm -f "$f_cache_params"
             update_config
             return
