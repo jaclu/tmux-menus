@@ -877,7 +877,7 @@ if [ -z "$D_TM_BASE_PATH" ]; then
 fi
 
 # Only import if needed, checking a random variable
-[ -z "$current_script" ] && {
+[ -z "$f_no_cache_hint" ] && {
     # shellcheck source=scripts/helpers.sh
     . "$D_TM_BASE_PATH"/scripts/helpers.sh
 }

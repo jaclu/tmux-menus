@@ -43,10 +43,9 @@ source_all_helpers() {
     log_it "--------------->  source_all_helpers($0)  <---------------"
     log_it "  caller: $1"
     $all_helpers_sourced && {
-        # safe to call since all helpers have been sourced
         error_msg_safe "source_all_helpers() called when it was already done"
+        exit 1
     }
-    # exit 1
 
     all_helpers_sourced=true # set it early to avoid recursion
 
@@ -54,8 +53,6 @@ source_all_helpers() {
     #_d="${D_TM_BASE_PATH:-/tmp}"
     # shellcheck source=scripts/utils/helpers-full.sh
     . "$D_TM_BASE_PATH"/scripts/utils/helpers-full.sh
-    profiling_t_update "[helpers] sourcing helpers - done"
-
     profiling_t_update "[helpers] ----->  source_all_helpers() - done  <-----"
 }
 
