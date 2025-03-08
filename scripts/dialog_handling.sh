@@ -582,7 +582,7 @@ generate_menu_items_in_sorted_order() {
 }
 
 sort_menu_items() {
-    # log_it "sort_menu_items()"
+    log_it "sort_menu_items()"
     if $cfg_use_cache; then
         for file in "$d_menu_cache"/*; do
             # # skip special files
