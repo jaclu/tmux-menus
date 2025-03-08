@@ -701,7 +701,7 @@ ensure_menu_fits_on_screen() {
     #
     # Display time menu was shown
     disp_time="$(echo "$(safe_now) - $dh_t_start" | bc)"
-    log_it "ensure_menu_fits_on_screen() Menu $current_script - Display time:  $disp_time"
+    # log_it "ensure_menu_fits_on_screen() Menu $current_script - Display time:  $disp_time"
 
     if [ "$(echo "$disp_time < 0.5" | bc)" -eq 1 ]; then
         $all_helpers_sourced || {
