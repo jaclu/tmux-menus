@@ -249,8 +249,24 @@ tmux_vers_check() {
     }
 
     $all_helpers_sourced || {
+        # During sourcing, other version checks might be done, thus
+        # preserve the current version being inspected
+        _preserve_check_version="$_v_comp"
+
         source_all_helpers "tmux_vers_check($_v_comp) - non-cached version"
+        _v_comp="$_preserve_check_version"
     }
+
+    if tmux_vers_check_in_depth; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+tmux_vers_check_in_depth() {
+    # Called fomh helpers.sh:tmux_vers_check if checked version was not cached
+    log_it "tmux_vers_check_in_depth($_v_comp)"
 
     # Compare numeric parts first for quick decisions.
     _i_comp="$(tpt_digits_from_string "$_v_comp")"

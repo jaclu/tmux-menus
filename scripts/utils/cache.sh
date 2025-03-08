@@ -66,7 +66,7 @@ cache_add_ok_vers() {
     #  Add param to list of good versions (<=running tmux vers),
     #  if it wasn't cached already
     #
-    # log_it "cache_add_ok_vers($1)"
+    log_it "cache_add_ok_vers($1)"
     $cfg_use_cache || return 0
     [ -z "$1" ] && error_msg "cache_add_ok_vers() - no param"
 
