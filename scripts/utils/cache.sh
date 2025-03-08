@@ -111,6 +111,7 @@ cache_save_known_tmux_versions() { # tmux stuff
     }
     log_it "cache_save_known_tmux_versions() - $0"
     cache_prepare
+    log_it "cache_save_known_tmux_versions() - returned from prepare"
 
     #region known tmux versions
     cat <<EOF >"$f_cache_known_tmux_vers" || error_msg "Failed to save known versions" 1
