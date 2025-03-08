@@ -168,7 +168,7 @@ select_safe_now_method() {
     else
         selected_get_time_mthd="date"
     fi
-    log_it "[$0] Using  safe_now() timing method: $selected_get_time_mthd"
+    # log_it "[$0] Using  safe_now() timing method: $selected_get_time_mthd"
     safe_now
 }
 
@@ -176,7 +176,7 @@ safe_now() {
     #
     #  Sets t_now
     #
-    log_it "safe_now() mthd: [$selected_get_time_mthd]"
+    # log_it "safe_now() mthd: [$selected_get_time_mthd]"
     case "$selected_get_time_mthd" in
     date) t_now="$(date +%s.%N)" ;;
     gdate) t_now="$(gdate +%s.%N)" ;;
