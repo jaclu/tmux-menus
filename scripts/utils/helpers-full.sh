@@ -309,33 +309,6 @@ wait_to_close_display() {
     fi
 }
 
-# relative_path() {
-#     log_it "relative_path($1)" # with cache:
-
-#     # remove D_TM_BASE_PATH prefix
-#     echo "$1" | sed "s|^$D_TM_BASE_PATH/||"
-# }
-
-# get_config() { # tmux stuff
-#     #
-#     #  The plugin init .tmux script should NOT depend on this!
-#     #  This is used by everything else sourcing helpers.sh, then trusting
-#     #  that the param cache is valid if found
-#     #
-#     log_it "get_config()" # with cache: termux, ipad
-
-#     if [ -f "$f_no_cache_hint" ]; then
-#         # not using cache, read all cfg variables
-#         tmux_get_plugin_options
-#         profiling_t_update "[helpers-full] - tmux_get_plugin_options() done"
-
-#     elif ! cache_get_params; then
-#         # Re-generate cache params
-#         cache_update_param_cache
-#         profiling_t_update "[helpers-full] - cache_update_param_cache() done"
-#     fi
-# }
-
 #===============================================================
 #
 #   Main
@@ -375,7 +348,7 @@ profiling_t_update "[helpers-full] - sourced tmux"
 # shellcheck disable=SC2154
 if [ "$initialize_plugin" = "1" ]; then
     # log_it "Doing plugin initialization"
-    cache_update_param_cache #
+    # cache_update_param_cache #
     #
     #  at this point plugin_params are trusted if found, menus.tmux will
     #  always always replace it with current tmux conf during plugin init
