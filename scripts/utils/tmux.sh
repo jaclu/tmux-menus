@@ -334,4 +334,4 @@ fi
 
 teh_debug=false
 
-log_it "scripts/utils/tmux.sh - completed"
+# log_it "scripts/utils/tmux.sh - completed"

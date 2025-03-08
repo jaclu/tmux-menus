@@ -274,4 +274,4 @@ profiling_log "[cache] main"
 
 cache_params_retrieved=0
 
-log_it "Completed: scripts/utils/cache.sh"
+# log_it "Completed: scripts/utils/cache.sh"
