@@ -134,7 +134,6 @@ tmux_get_plugin_options() { # cache references
         cfg_show_key_hints=false
     fi
 
-    profiling_t_update "[tmux] - whiptail considerations"
     if $cfg_use_whiptail; then
         _whiptail_ignore_msg="not used with whiptail"
 
@@ -151,6 +150,7 @@ tmux_get_plugin_options() { # cache references
         cfg_nav_prev="$default_nav_prev"
         cfg_nav_home="$default_nav_home"
     else
+        profiling_t_update "[tmux] - whiptail considerations"
         cfg_simple_style_selected="$(tmux_get_option "@menus_simple_style_selected" \
             "$default_simple_style_selected")"
         cfg_simple_style="$(tmux_get_option "@menus_simple_style" \
