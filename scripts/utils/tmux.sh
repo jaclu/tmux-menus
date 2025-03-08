@@ -58,7 +58,7 @@ tmux_get_defaults() {
 }
 
 tmux_is_option_defined() {
-    log_it "><> tmux_is_option_defined($1)"
+    # log_it "><> tmux_is_option_defined($1)"
     tmux_error_handler show-options -gq | grep -q "^$1"
 }
 
@@ -66,7 +66,7 @@ tmux_get_option() {
     tgo_option="$1"
     tgo_default="$2"
 
-    log_it "tmux_get_option($tgo_option, $tgo_default)"
+    # log_it "tmux_get_option($tgo_option, $tgo_default)"
 
     [ -z "$tgo_option" ] && error_msg "tmux_get_option() param 1 empty!"
 
@@ -105,23 +105,26 @@ tmux_get_plugin_options() { # cache references
     #  Public variables
     #   cfg_  config variables, either read from tmux or the default
     #
-    log_it "tmux_get_plugin_options()"
+    # log_it "tmux_get_plugin_options()"
 
     tmux_get_defaults
     profiling_log "[tmux] - tmux_get_defaults done"
+
+    if normalize_bool_param "@menus_use_cache" "$default_use_cache"; then
+        cfg_use_cache=true
+        log_it "><> removing: $f_no_cache_hint"
+        rm -f "$f_no_cache_hint"
+    else
+        cfg_use_cache=false
+        log_it "><> touching: $f_no_cache_hint"
+        touch "$f_no_cache_hint"
+    fi
 
     cfg_trigger_key="$(tmux_get_option "@menus_trigger" "$default_trigger_key")"
     if normalize_bool_param "@menus_without_prefix" "$default_no_prefix"; then
         cfg_no_prefix=true
     else
         cfg_no_prefix=false
-    fi
-    if normalize_bool_param "@menus_use_cache" "$default_use_cache"; then
-        cfg_use_cache=true
-        rm -f "$f_no_cache_hint"
-    else
-        cfg_use_cache=false
-        touch "$f_no_cache_hint"
     fi
     if normalize_bool_param "@menus_use_hint_overlays" "$default_use_hint_overlays"; then
         cfg_use_hint_overlays=true
@@ -198,7 +201,7 @@ tmux_error_handler() { # cache references
     #
     the_cmd="$*"
     # $teh_debug && log_it "><> tmux_error_handler($the_cmd)"
-    log_it "><> tmux_error_handler($the_cmd)"
+    # log_it "><> tmux_error_handler($the_cmd)"
 
     if $cfg_use_cache; then
         d_errors="$d_cache"
@@ -260,51 +263,6 @@ tmux_error_handler() { # cache references
     teh_debug=false
     return 0
 }
-
-# tmux_select_menu_handler() {
-#     # support old env variable, cam be deleted eventually 241220
-#     log_it "><> tmux_select_menu_handler()"
-#     [ -n "$FORCE_WHIPTAIL_MENUS" ] && TMUX_MENU_HANDLER="$FORCE_WHIPTAIL_MENUS"
-
-#     #
-#     # If an older version is used, or TMUX_MENU_HANDLER is 1/2
-#     # set cfg_use_whiptail true
-#     #
-#     if ! tmux_vers_check 3.0; then
-#         if command -v whiptail >/dev/null; then
-#             cfg_alt_menu_handler=whiptail
-#             log_it "tmux below 3.0 - using: whiptail"
-#         elif command -v dialog >/dev/null; then
-#             cfg_alt_menu_handler=dialog
-#             log_it "tmux below 3.0 - using: dialog"
-#         else
-#             error_msg "Neither whiptail or dialog found, plugin aborted"
-#         fi
-#         cfg_use_whiptail=true
-#     elif [ "$TMUX_MENU_HANDLER" = 1 ]; then
-#         _cmd=whiptail
-#         if command -v "$_cmd" >/dev/null; then
-#             cfg_alt_menu_handler="$_cmd"
-#         else
-#             error_msg "$_cmd not available, plugin aborted"
-#         fi
-#         cfg_use_whiptail=true
-#         log_it "$_cmd is selected due to TMUX_MENU_HANDLER=1"
-#         unset _cmd
-#     elif [ "$TMUX_MENU_HANDLER" = 2 ]; then
-#         _cmd=dialog
-#         if command -v "$_cmd" >/dev/null; then
-#             cfg_alt_menu_handler="$_cmd"
-#         else
-#             error_msg "$_cmd not available, plugin aborted"
-#         fi
-#         cfg_use_whiptail=true
-#         log_it "$_cmd is selected due to TMUX_MENU_HANDLER=2"
-#         unset _cmd
-#     else
-#         cfg_use_whiptail=false
-#     fi
-# }
 
 #===============================================================
 #

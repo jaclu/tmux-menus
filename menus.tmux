@@ -42,6 +42,9 @@ initialize_plugin=1
 # shellcheck source=/dev/null  # can't read source when mixing bah & posix
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
+log_it "aborting after sourcing helpers"
+exit 1
+
 $all_helpers_sourced || source_all_helpers "always done by menus.tmux"
 
 if $cfg_use_cache; then
@@ -81,8 +84,9 @@ cmd+=" $cfg_trigger_key  run-shell $bind_cmd"
 
 # teh_debug=true
 # shellcheck disable=SC2086
+log_it "Will use cmd [$cmd] trigger_key [$cfg_trigger_key]"
 $TMUX_BIN $cmd || {
-    error_msg_safe "Failed to bind trigger"
+    error_msg_safe "Failed to bind trigger: $trigger_sequence"
 }
 
 log_it "$trigger_sequence"

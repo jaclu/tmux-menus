@@ -165,7 +165,7 @@ posix_get_char() {
 }
 
 extract_char() {
-    log_it "extract_char($1,$2)"
+    # log_it "extract_char($1,$2)"
     str="$1"
     pos="$2"
     printf '%s\n' "$str" | cut -c "$pos"
@@ -173,7 +173,7 @@ extract_char() {
 }
 
 lowercase_it() {
-    log_it "lowercase_it($1)"
+    # log_it "lowercase_it($1)"
     echo "$1" | tr '[:upper:]' '[:lower:]'
 }
 
@@ -204,7 +204,7 @@ normalize_bool_param() {
     nbp_default="$2" # only used for tmux options
     nbp_variable_name=""
 
-    log_it "normalize_bool_param($nbp_param, $nbp_default) [$nbp_variable_name]"
+    # log_it "normalize_bool_param($nbp_param, $nbp_default) [$nbp_variable_name]"
     [ "${nbp_param%"${nbp_param#?}"}" = "@" ] && {
         #
         #  If it starts with "@", assume it is a tmux option, thus

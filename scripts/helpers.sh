@@ -62,35 +62,6 @@ relative_path() {
     printf '%s\n' "${1#"$D_TM_BASE_PATH"/}"
 }
 
-get_config() { # tmux stuff
-    #
-    #  The plugin init .tmux script should NOT depend on this!
-    #  This is used by everything else sourcing helpers.sh, then trusting
-    #  that the param cache is valid if found
-    #
-    # log_it "get_config()" # with cache: termux, ipad
-
-    if [ -f "$f_no_cache_hint" ]; then
-        log_it "f_no_cache_hint [$f_no_cache_hint] detected - aborting"
-        exit 1
-        # probably not needed at this point, further optimization needed...
-        $all_helpers_sourced || source_all_helpers "get_config() found: $f_no_cache_hint"
-
-        # not using cache, read all cfg variables
-        tmux_get_plugin_options
-        profiling_log "[helpers] - tmux_get_plugin_options() done"
-
-    elif ! cache_get_params; then
-        $all_helpers_sourced || {
-            source_all_helpers "get_config() cache_get_params returned false"
-        }
-
-        # Re-generate cache params
-        cache_update_param_cache
-        profiling_log "[helpers] - cache_update_param_cache() done"
-    fi
-}
-
 tmux_select_menu_handler() {
     # support old env variable, cam be deleted eventually 241220
     # log_it "><> tmux_select_menu_handler()"
@@ -145,6 +116,91 @@ tmux_select_menu_handler() {
 
 #---------------------------------------------------------------
 #
+#   get configuration
+#
+#---------------------------------------------------------------
+
+update_config() {
+    log_it "update_config() [$all_helpers_sourced]"
+    $all_helpers_sourced || source_all_helpers "update_config()"
+    cache_update_param_cache
+}
+
+get_config_uncached() {
+    log_it "get_config_uncached()"
+    # probably not needed at this point, further optimization needed...
+    $all_helpers_sourced || source_all_helpers "get_config_uncached()"
+
+    # not using cache, read all cfg variables
+    tmux_get_plugin_options
+}
+
+get_config() { # tmux stuff
+    #
+    #  The plugin init .tmux script should NOT depend on this!
+    #  This is used by everything else sourcing helpers.sh, then trusting
+    #  that the param cache is valid if found
+    #
+    log_it "get_config()"
+
+    if [ -f "$f_no_cache_hint" ]; then
+        get_config_uncached
+    elif [ -f "$f_cache_params" ]; then
+        # shellcheck disable=SC1090
+        if . "$f_cache_params"; then
+            cache_params_retrieved=1
+            log_it "><> cache_params_retrieved"
+        else
+            log_it "WARNING: failed to source: $f_cache_params, doing manual param read"
+            get_config_uncached
+        fi
+        return 0
+    else
+        log_it "WARNING: no f_no_cache_hint and no f_cache_params!"
+        if $cfg_use_cache; then
+            update_config
+        else
+            get_config_uncached
+        fi
+    fi
+}
+
+get_config_refresh() {
+    #
+    #  Retrieves cached env params, rebuilding the cache if tmux conf was
+    #  more recent, or not found
+    #
+    log_it "get_config_refresh()"
+
+    [ -f "$f_cache_params" ] && {
+        # Only really need cfg_tmux_conf at this point
+        . "$f_cache_params" || {
+            log_it "Failed to source: $f_cache_params, removing it"
+            rm -f "$f_cache_params"
+            update_config
+            return
+        }
+    }
+
+    if [ -f "$cfg_tmux_conf" ] && [ -f "$f_cache_params" ]; then
+        #
+        # if the wrong tmux conf was provided, don't see it as an error, just
+        # skip checking age of config file vs cache
+        #
+        [ -n "$(find "$cfg_tmux_conf" -newer "$f_cache_params" 2>/dev/null)" ] && {
+            log_it "$cfg_tmux_conf has been updated, parse again for current settings"
+            update_config
+        }
+    else
+        # Failed to find tmux conf, but since this is plugin init, play it safe
+        # and recreate param cache
+        log_it "cfg_tmux_conf not found, manually updating cache"
+        update_config
+    fi
+}
+
+#---------------------------------------------------------------
+#
 #   get a time stamp
 #
 #---------------------------------------------------------------
@@ -185,38 +241,6 @@ safe_now() {
     perl) t_now="$(perl -MTime::HiRes=time -E '$t = time; printf "%.9f\n", $t')" ;;
     *) select_safe_now_method ;;
     esac
-}
-
-#---------------------------------------------------------------
-#
-#   tmux version related support functions
-#
-#---------------------------------------------------------------
-
-cache_get_params() {
-    #
-    #  Retrieves cached env params, returns true on success, otherwise false
-    #
-    # log_it "cache_get_params()"
-    $cfg_use_cache || error_msg_safe "cache_get_params() - called when not using cache"
-    if [ -f "$f_cache_params" ]; then
-        # shellcheck disable=SC1090
-        . "$f_cache_params" || return 1
-        if [ -f "$cfg_tmux_conf" ] &&
-            #
-            # if the wrong tmux conf was provided, don't see it as an error, just
-            # skip checking age of config file vs cache
-            #
-            [ -n "$(find "$cfg_tmux_conf" -newer "$f_cache_params" 2>/dev/null)" ]; then
-            log_it "$cfg_tmux_conf has been updated, parse again for current settings"
-            $all_helpers_sourced || source_all_helpers "cache_get_params()"
-            cache_update_param_cache
-        fi
-        cache_params_retrieved=1
-        # log_it "><> cache_params_retrieved"
-        return 0
-    fi
-    return 1
 }
 
 #---------------------------------------------------------------
@@ -270,7 +294,7 @@ tmux_vers_check() {
 
 tmux_vers_check_in_depth() {
     # Called fomh helpers.sh:tmux_vers_check if checked version was not cached
-    log_it "tmux_vers_check_in_depth($_v_comp)"
+    # log_it "tmux_vers_check_in_depth($_v_comp)"
 
     # Compare numeric parts first for quick decisions.
     _i_comp="$(tpt_digits_from_string "$_v_comp")"
@@ -361,6 +385,8 @@ cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
 #
 # log_interactive_to_stderr=1
 
+all_helpers_sourced=false
+
 [ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
 
 if [ -z "$D_TM_BASE_PATH" ]; then
@@ -393,9 +419,16 @@ else
     }
 fi
 
-# if any condition requiring the full kit happens, do the sourcing and set
-# this to true, to indicate everything is available
-all_helpers_sourced=false
+# shellcheck disable=SC2154
+if [ -f "$f_no_cache_hint" ]; then
+    # ensure no caching until the settings has been read
+    cfg_use_cache=false
+else
+    # Assume cache can be used, if this is not the case, this should be harmless
+    # since when no cache is detected tmux options will be read and true state
+    # for using cache will be detected
+    cfg_use_cache=true
+fi
 
 # minimal support variables
 
@@ -422,36 +455,18 @@ d_current_script="$(
 current_script=${0##*/}
 f_current_script="$d_current_script/$current_script"
 
-# shellcheck disable=SC2154
-if [ -f "$f_no_cache_hint" ]; then
-    # ensure no caching until the settings has been read
-    cfg_use_cache=false
-else
-    # Assume cache can be used, if this is not the case, this should be harmless
-    # since when no cache is detected tmux options will be read and true state
-    # for using cache will be detected
-    cfg_use_cache=true
-fi
+# ensure no caching until the settings has been read
+cfg_use_cache=false
 
 cfg_use_whiptail=false
 
 # shellcheck disable=SC2154
 if [ "$initialize_plugin" = "1" ]; then
-    # log_it "Doing plugin initialization"
-    # cache_update_param_cache #
-    #
-    #  at this point plugin_params are trusted if found, menus.tmux will
-    #  always always replace it with current tmux conf during plugin init
-    #
-    #  By printing a NL and date, its easier to keep separate runs apart
-    #
     log_it
-    log_it "$(date)"
-    $cfg_use_cache && cache_get_params # clears cache if tmux.conf has been changed
-    profiling_log "[helpers-full] - initialize_plugin done"
+    log_it "$(date) - use_cache [$cfg_use_cache]"
+    get_config_refresh
 else
     get_config
-    profiling_log "[helpers-full] - get_config done"
 fi
 
 min_tmux_vers="1.8"

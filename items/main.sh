@@ -13,7 +13,6 @@ static_content() {
     profiling_log "[items/main] static_content() - starting  <======"
 
     tmux_vers_check 3.2 && {
-        log_it "tmux >= 3.2"
         customize_mode_cmd="$TMUX_BIN customize-mode -Z "
         if $cfg_use_hint_overlays && ! $cfg_use_whiptail; then
             log_it "hint overlays and not whiptail"

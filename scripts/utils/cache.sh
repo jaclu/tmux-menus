@@ -66,7 +66,7 @@ cache_add_ok_vers() {
     #  Add param to list of good versions (<=running tmux vers),
     #  if it wasn't cached already
     #
-    log_it "cache_add_ok_vers($1)"
+    # log_it "cache_add_ok_vers($1)"
     $cfg_use_cache || return 0
     [ -z "$1" ] && error_msg "cache_add_ok_vers() - no param"
 
@@ -86,7 +86,7 @@ cache_add_bad_vers() {
     #  Add param to list of bad versions (>running tmux vers),
     #  if it wasn't cached already
     #
-    log_it "cache_add_bad_vers($1)"
+    # log_it "cache_add_bad_vers($1)"
     $cfg_use_cache || return 1
     [ -z "$1" ] && error_msg "cache_add_bad_vers() - no param"
 
@@ -109,9 +109,14 @@ cache_save_known_tmux_versions() { # tmux stuff
     $cfg_use_cache || {
         error_msg "cache_save_known_tmux_versions() - called when not using cache"
     }
-    log_it "cache_save_known_tmux_versions() - $0"
+    [ -d "$d_cache" ] || {
+        log_it "$d_cache not pressent, aborting"
+        return
+    }
+
+    # log_it "cache_save_kn own_tmux_versions() - $0"
     cache_prepare
-    log_it "cache_save_known_tmux_versions() - returned from prepare"
+    # log_it "cache_save_known_tmux_versions() - returned from prepare"
 
     #region known tmux versions
     cat <<EOF >"$f_cache_known_tmux_vers" || error_msg "Failed to save known versions" 1
@@ -134,7 +139,7 @@ cache_escape_special_chars() {
     #  with either the escaped version or the original char
     #
     tesc_str="$1"
-    log_it "cache_escape_special_chars($tesc_str)"
+    # log_it "cache_escape_special_chars($tesc_str)"
 
     _s="$tesc_str"
     tesc_idx=0
@@ -259,10 +264,12 @@ EOF
 
 cache_update_param_cache() {
     #
-    #  Reads plugin options from tmux and save the param cache
+    # Reads plugin options from tmux and save the param cache, unless
+    # cfg_use_cache is false
     #
     log_it "cache_update_param_cache()"
     tmux_get_plugin_options # ensure env is retrieved
+    log_it "-----> after reading options cfg_use_cache is [$cfg_use_cache]"
     $cfg_use_cache && cache_param_write
 }
 
@@ -274,6 +281,4 @@ cache_update_param_cache() {
 
 profiling_log "[cache] main"
 
-cache_params_retrieved=0
-
-# log_it "Completed: scripts/utils/cache.sh"
+log_it "Completed: scripts/utils/cache.sh"
