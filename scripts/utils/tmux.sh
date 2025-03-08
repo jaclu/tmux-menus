@@ -134,6 +134,7 @@ tmux_get_plugin_options() { # cache references
         cfg_show_key_hints=false
     fi
 
+    profiling_t_update "[tmux] - whiptail considerations"
     if $cfg_use_whiptail; then
         _whiptail_ignore_msg="not used with whiptail"
 
