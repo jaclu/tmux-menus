@@ -43,11 +43,7 @@ profiling_log_it() {
     # During normal sourcing of this it has been, but if this is early sourced
     # in some other script, this is not available
     if profiling_is_function_defined "log_it"; then
-        log_it "$@"
-    elif [ -z "$TMUX_MENU_FORCE_SILENT" ] ||
-        [ "$TMUX_MENU_FORCE_SILENT" = "0" ]; then
-
-        echo "log: $@"
+        log_it "$@" || exit 2
     fi
 }
 
@@ -72,11 +68,14 @@ profiling_select_timing_method() {
         _m="recursive call to: profiling_select_timing_method()"
         if profiling_is_function_defined "error_msg_safe"; then
             error_msg_safe "$_m"
+            # exit should have already happened, but since this is a recursion error
+            # play it safe and ensure exit happens...
+            exit 2
         else
             echo
             echo "ERROR: $_m"
             echo
-            exit 1
+            exit 2
         fi
     }
 
@@ -129,7 +128,7 @@ profiling_log() {
     if [ -t 0 ] && [ "$TMUX_MENU_FORCE_SILENT" != "1" ]; then
         echo "$_s" >/dev/stderr
     elif [ -n "$cfg_log_file" ]; then
-        log_it "$_s"
+        profiling_log_it "$_s"
     fi
 }
 
