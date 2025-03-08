@@ -129,4 +129,4 @@ elif $cfg_use_whiptail; then
 fi
 
 # shellcheck source=scripts/dialog_handling.sh
-. "$d_scripts"/dialog_handling.sh
+. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
