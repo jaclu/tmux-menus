@@ -176,6 +176,7 @@ safe_now() {
     #
     #  Sets profiling_t_now to current epoch
     #
+    log_it "safe_now() mthd: [$selected_get_time_mthd]"
     case "$selected_get_time_mthd" in
     date) date +%s.%N ;;
     gdate) gdate +%s.%N ;;
