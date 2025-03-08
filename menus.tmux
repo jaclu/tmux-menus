@@ -56,12 +56,6 @@ else
     log_it "-->  cache is disabled!  <--"
 fi
 
-[[ "$TMUX_MENUS_NO_DISPLAY" = "1" ]] && {
-    # used for debugging menu builds
-    log_it "terminating dbg_timings branch before binding trigger key"
-    exit 0
-}
-
 if $cfg_use_whiptail; then
     bind_cmd="$d_scripts/external_dialog_trigger.sh"
     log_it "alternate menu handler: $cfg_alt_menu_handler"
@@ -84,6 +78,13 @@ cmd+=" $cfg_trigger_key  run-shell $bind_cmd"
 # teh_debug=true
 # shellcheck disable=SC2086
 log_it "Will use cmd [$cmd] trigger_key [$cfg_trigger_key]"
+
+[[ "$TMUX_MENUS_NO_DISPLAY" = "1" ]] && {
+    # used for debugging menu builds
+    log_it "Due to TMUX_MENUS_NO_DISPLAY terminating before binding trigger key"
+    exit 0
+}
+
 $TMUX_BIN $cmd || {
     error_msg_safe "Failed to bind trigger: $trigger_sequence"
 }
