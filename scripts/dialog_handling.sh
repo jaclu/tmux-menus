@@ -582,7 +582,7 @@ generate_menu_items_in_sorted_order() {
 }
 
 sort_menu_items() {
-    log_it "sort_menu_items()"
+    # log_it "sort_menu_items()"
     if $cfg_use_cache; then
         for file in "$d_menu_cache"/*; do
             # # skip special files
@@ -836,7 +836,7 @@ handle_wt_selecion() {
 }
 
 display_menu() {
-    log_it "display_menu()"
+    # log_it "display_menu()"
     # Display time to generate menu
     safe_now
     _t="$(echo "$t_now - $dh_t_mnu_processing_start" | bc)"

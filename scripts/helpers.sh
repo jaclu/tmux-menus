@@ -197,7 +197,7 @@ cache_get_params() {
     #
     #  Retrieves cached env params, returns true on success, otherwise false
     #
-    log_it "cache_get_params()"
+    # log_it "cache_get_params()"
     $cfg_use_cache || error_msg_safe "cache_get_params() - called when not using cache"
     if [ -f "$f_cache_params" ]; then
         # shellcheck disable=SC1090
