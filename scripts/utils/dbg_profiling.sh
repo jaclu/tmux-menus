@@ -19,13 +19,13 @@
 #
 #  at any point you want to see timings before/after, do this:
 #
-#    profiling_log "will source cache"
+#    profiling_display "will source cache"
 #    . "$d_scripts"/utils/cache.sh
-#    profiling_log "source cache - done!"
+#    profiling_display "source cache - done!"
 #
 #   If you just want to see how much time have been spent at a certain point,
 #   including time since last time update, use it like:
-#       profiling_log "get_config done"
+#       profiling_display "get_config done"
 #
 
 [ "$MENUS_PROFILING" != "1" ] && {
@@ -116,7 +116,7 @@ profiling_get_time() {
 
 profiling_get_time # start timer as early as possible
 
-profiling_log() {
+profiling_display() {
     [ "$TMUX_MENU_FORCE_SILENT" = "2" ] && return
 
     profiling_get_time
@@ -130,6 +130,10 @@ profiling_log() {
     elif [ -n "$cfg_log_file" ]; then
         profiling_log_it "$_s"
     fi
+    # profiling_get_time # do it again to not count this update in processing time
+    # _since_start=$((profiling_t_now - profiling_t_start))
+    # _sine_update=$((profiling_t_now - profiling_t_last_update))
+    # profiling_t_last_update="$profiling_t_now"
 }
 
 [ -t 0 ] && {

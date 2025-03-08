@@ -49,11 +49,11 @@ source_all_helpers() {
 
     all_helpers_sourced=true # set it early to avoid recursion
 
-    profiling_log "[helpers] sourcing helpers"
+    profiling_display "[helpers] sourcing helpers"
     #_d="${D_TM_BASE_PATH:-/tmp}"
     # shellcheck source=scripts/utils/helpers-full.sh
     . "$D_TM_BASE_PATH"/scripts/utils/helpers-full.sh
-    profiling_log "[helpers] ----->  source_all_helpers() - done  <-----"
+    profiling_display "[helpers] ----->  source_all_helpers() - done  <-----"
 }
 
 relative_path() {
@@ -410,7 +410,7 @@ if [ "$MENUS_PROFILING" != "1" ]; then
     # profiling calls shoult not be left in the code base long term, this
     # is primarily intended to capture them when profiling is temporarily disabled
 
-    profiling_log() {
+    profiling_display() {
         true
     }
 else
@@ -474,7 +474,7 @@ if ! tmux_vers_check "$min_tmux_vers"; then
     error_msg "need at least tmux $min_tmux_vers to work!"
 fi
 
-profiling_log "[helpers-full] - min vers check done"
+profiling_display "[helpers-full] - min vers check done"
 
 tmux_select_menu_handler
 

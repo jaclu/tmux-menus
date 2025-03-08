@@ -279,6 +279,6 @@ cache_update_param_cache() {
 #
 #===============================================================
 
-profiling_log "[cache] main"
+profiling_display "[cache] main"
 
 log_it "Completed: scripts/utils/cache.sh"

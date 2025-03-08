@@ -110,10 +110,10 @@ tmux_get_plugin_options() { # cache references
         error_msg "tmux_get_plugin_options() has already been called"
     }
 
-    profiling_log "[tmux] - tmux_get_plugin_options()"
+    profiling_display "[tmux] - tmux_get_plugin_options()"
 
     tmux_get_defaults
-    profiling_log "[tmux] - tmux_get_defaults done"
+    profiling_display "[tmux] - tmux_get_defaults done"
 
     if normalize_bool_param "@menus_use_cache" "$default_use_cache"; then
         cfg_use_cache=true
@@ -196,7 +196,7 @@ tmux_get_plugin_options() { # cache references
         cfg_use_notes=false
     fi
     plugin_options_have_been_read=true
-    profiling_log "[tmux] - tmux_get_plugin_options() - done"
+    profiling_display "[tmux] - tmux_get_plugin_options() - done"
     # log_it "  tmux_get_plugin_options() - done"
 }
 
@@ -275,7 +275,7 @@ tmux_error_handler() { # cache references
 #
 #===============================================================
 
-profiling_log "[tmux] main"
+profiling_display "[tmux] main"
 
 #
 #  I use an env var TMUX_BIN to point at the current tmux, defined in my
@@ -287,9 +287,9 @@ profiling_log "[tmux] main"
 #
 
 if [ -n "$TMUX" ]; then
-    profiling_log "[tmux] will set tmux_pid"
+    profiling_display "[tmux] will set tmux_pid"
     tmux_pid="$(echo "$TMUX" | cut -d',' -f2)"
-    profiling_log "[tmux] set tmux_pid"
+    profiling_display "[tmux] set tmux_pid"
 else
     # was run outside tmux
     tmux_pid="-1"
