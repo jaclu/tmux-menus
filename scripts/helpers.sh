@@ -19,7 +19,6 @@ log_it() {
 
     [ "$TMUX_MENU_FORCE_SILENT" != "1" ] && [ "$log_interactive_to_stderr" = "1" ] &&
         [ -t 0 ] && {
-
         # log to stderr if in interactive mode
         printf "[%s] log: %s\n" "$(date '+%H:%M:%S')" "$@" >/dev/stderr
         return
@@ -61,7 +60,7 @@ dbg_t_update() {
     if [ -t 0 ]; then
         echo "$_s" >/dev/stderr
     elif [ -n "$cfg_log_file" ]; then
-        echo "$_s" >>"$cfg_log_file"
+        log_it "$_s"
     fi
 }
 
@@ -205,7 +204,7 @@ tmux_select_menu_handler() {
 
     if $cfg_use_whiptail; then
         log_it "==> [helpers] Using Alternate dialog handler: $cfg_alt_menu_handler"
-    # else
+        # else
         # log_it "==> [helpers] Using tmux menu handler"
     fi
 }

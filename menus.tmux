@@ -57,6 +57,7 @@ else
 fi
 
 [[ "$TMUX_MENUS_NO_DISPLAY" = "1" ]] && {
+    # used for debugging menu builds
     log_it "terminating dbg_timings branch before binding trigger key"
     exit 0
 }

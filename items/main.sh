@@ -101,22 +101,6 @@ set_dbg_t_now() {
     }
 }
 
-dbg_t_update() {
-    # shellcheck disable=SC2154
-    [ "$TMUX_MENU_FORCE_SILENT" = "1" ] && return
-    set_dbg_t_now
-    dbg_t_since_start=$((dbg_t_now - dbg_t_start))
-    dbg_t_sine_update=$((dbg_t_now - dbg_t_last_update))
-    dbg_t_last_update="$dbg_t_now"
-
-    _s="$1 - total: $dbg_t_since_start   since last: $dbg_t_sine_update"
-    if [ -t 0 ]; then
-        echo "$_s" >/dev/stderr
-    elif [ -n "$cfg_log_file" ]; then
-        log_it "$_s"
-    fi
-}
-
 set_dbg_t_now
 # dbg_t_update "Starting items/main.sh"
 
