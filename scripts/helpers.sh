@@ -333,7 +333,7 @@ plugin_name="tmux-menus"
 #  This is mostly for debugging early stuff before the settings have
 #  been processed. Should normally be commented out!
 #
-cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
+# cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
 
 #
 #  If set to "1" log will happen to stderr if script is run in an interactive

@@ -151,8 +151,6 @@ tmux_get_plugin_options() { # cache references
         cfg_nav_home="$default_nav_home"
     else
         profiling_log "[tmux] - whiptail considerations"
-        cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
-
         cfg_simple_style_selected="$(tmux_get_option "@menus_simple_style_selected" \
             "$default_simple_style_selected")"
         cfg_simple_style="$(tmux_get_option "@menus_simple_style" \
