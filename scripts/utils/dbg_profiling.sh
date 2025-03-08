@@ -116,24 +116,27 @@ profiling_get_time() {
 
 profiling_get_time # start timer as early as possible
 
-profiling_display() {
-    [ "$TMUX_MENU_FORCE_SILENT" = "2" ] && return
-
+profiling_update_time_stamps() {
     profiling_get_time
     _since_start=$((profiling_t_now - profiling_t_start))
     _sine_update=$((profiling_t_now - profiling_t_last_update))
     profiling_t_last_update="$profiling_t_now"
+}
+
+profiling_display() {
+    [ "$TMUX_MENUS_FORCE_SILENT" = "2" ] && return
+    profiling_update_time_stamps
 
     _s="$1 - total: $_since_start   since last: $_sine_update"
-    if [ -t 0 ] && [ "$TMUX_MENU_FORCE_SILENT" != "1" ]; then
+    if [ -t 0 ] && [ "$TMUX_MENUS_FORCE_SILENT" != "1" ]; then
         echo "$_s" >/dev/stderr
-    elif [ -n "$cfg_log_file" ]; then
+    elif [ -n "$cfg_log_file" ] && [ "$TMUX_MENUS_FORCE_SILENT" != "2" ]; then
         profiling_log_it "$_s"
     fi
-    # profiling_get_time # do it again to not count this update in processing time
-    # _since_start=$((profiling_t_now - profiling_t_start))
-    # _sine_update=$((profiling_t_now - profiling_t_last_update))
-    # profiling_t_last_update="$profiling_t_now"
+
+    # do it again to not count this update in processing time
+    # only makes sense on slowish systems
+    profiling_update_time_stamps
 }
 
 [ -t 0 ] && {
