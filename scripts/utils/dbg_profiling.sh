@@ -63,4 +63,10 @@ profiling_t_update() {
     fi
 }
 
+[ -t 0 ] && {
+    echo
+    echo "Starting profiling for: $0"
+    echo
+}
+
 dbg_profiling_sourced=1
