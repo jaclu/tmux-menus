@@ -44,6 +44,8 @@ initialize_plugin=1
 
 $all_helpers_sourced || source_all_helpers "always done by menus.tmux"
 
+exit 1
+
 if $cfg_use_cache; then
     cache_add_ok_vers "$tpt_current_vers"
 
