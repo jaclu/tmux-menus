@@ -168,7 +168,7 @@ select_safe_now_method() {
     else
         selected_get_time_mthd="date"
     fi
-    log_it "Using  safe_now() timing method: $selected_get_time_mthd"
+    log_it "[$0] Using  safe_now() timing method: $selected_get_time_mthd"
     safe_now
 }
 
