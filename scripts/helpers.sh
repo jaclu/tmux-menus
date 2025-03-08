@@ -174,57 +174,15 @@ select_safe_now_method() {
 
 safe_now() {
     #
-    #  Sets profiling_t_now to current epoch
+    #  Sets t_now
     #
     log_it "safe_now() mthd: [$selected_get_time_mthd]"
     case "$selected_get_time_mthd" in
-    date) date +%s.%N ;;
-    gdate) gdate +%s.%N ;;
-    perl) perl -MTime::HiRes=time -E '$t = time; printf "%.9f\n", $t' ;;
+    date) t_now="$(date +%s.%N)" ;;
+    gdate) t_now="$(gdate +%s.%N)" ;;
+    perl) t_now="$(perl -MTime::HiRes=time -E '$t = time; printf "%.9f\n", $t')" ;;
     *) select_safe_now_method ;;
     esac
-}
-
-old_safe_now() {
-    # log_it "safe_now()"
-    if [ -d /proc ] && [ -f /proc/version ]; then
-        #  On Linux the native date supports sub second precision
-        #  unless its the busybox date - only gives seconds...
-        date +%s.%N
-    elif [ "$(uname)" = "Linux" ]; then
-        # Non-standard devices still being Linux, such as termux
-        date +%s.%N
-    else
-        #
-        #  MacOS date only display whole seconds, if gdate (GNU-date) is
-        #  installed, it can  display times with more precision
-        #
-        if [ -n "$(command -v gdate)" ]; then
-            gdate +%s.%N
-        else
-            date +%s
-        fi
-    fi
-}
-
-safe_now_alt() {
-    # log_it "safe_now()" # with cache:
-    if [ -d /proc ] && [ -f /proc/version ]; then
-        #  On Linux the native date supports sub second precision
-        #  unless its the busybox date - only gives seconds...
-        date +%s.%N
-    else
-        #
-        #  MacOS date only display whole seconds, if gdate (GNU-date) is
-        #  installed, it can  display times with more precision
-        #
-        # Running on macOS
-        if [ -n "$(command -v gdate)" ]; then
-            gdate +%s.%N
-        else
-            date +%s
-        fi
-    fi
 }
 
 #---------------------------------------------------------------

@@ -651,7 +651,8 @@ prepare_menu() {
     #  then process it in dynamic_content()
     #
     # log_it "prepare_menu()"
-    dh_t_mnu_processing_start="$(safe_now)"
+    safe_now
+    dh_t_mnu_processing_start="$t_now"
 
     set_menu_env_variables
 
@@ -700,10 +701,12 @@ ensure_menu_fits_on_screen() {
     #  would do.
     #
     # Display time menu was shown
-    disp_time="$(echo "$(safe_now) - $dh_t_start" | bc)"
+    safe_now
+    disp_time="$(echo "$t_now - $dh_t_start" | bc)"
     # log_it "ensure_menu_fits_on_screen() Menu $current_script - Display time:  $disp_time"
 
     if [ "$(echo "$disp_time < 0.5" | bc)" -eq 1 ]; then
+        log_it
         $all_helpers_sourced || {
             source_all_helpers "ensure_menu_fits_on_screen()  short display, give warning"
         }
@@ -835,7 +838,8 @@ handle_wt_selecion() {
 display_menu() {
     # log_it "display_menu()"
     # Display time to generate menu
-    _t="$(echo "$(safe_now) - $dh_t_mnu_processing_start" | bc)"
+    safe_now
+    _t="$(echo "$t_now - $dh_t_mnu_processing_start" | bc)"
 
     log_it "Menu $(relative_path "$d_current_script")/$current_script - processing time:  $_t"
     if $cfg_use_whiptail; then
@@ -844,7 +848,8 @@ display_menu() {
         [ -n "$menu_selection" ] && handle_wt_selecion
         true #  hides none true exit if whiptail menu was cancelled
     else
-        dh_t_start="$(safe_now)"
+        safe_now
+        dh_t_start="$t_now"
         eval "$menu_items"
 
         ensure_menu_fits_on_screen
