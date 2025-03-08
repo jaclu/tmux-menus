@@ -414,14 +414,13 @@ if [ "$MENUS_PROFILING" != "1" ]; then
     profiling_display() {
         true
     }
-elif [ "$MENUS_PROFILING" = "1" ] && [ "$profiling_sourced" != "1" ] && {
-        # Here it is sourced  after D_TM_BASE_PATH is verified
-        # if the intent is to start timing the earliest stages of other scripts
-        # copy the below code using absolute paths
+elif [ "$MENUS_PROFILING" = "1" ] && [ "$profiling_sourced" != "1" ]; then
+    # Here it is sourced  after D_TM_BASE_PATH is verified
+    # if the intent is to start timing the earliest stages of other scripts
+    # copy the below code using absolute paths
 
-        # shellcheck source=scripts/utils/dbg_profiling.sh
-        . "$D_TM_BASE_PATH"/scripts/utils/dbg_profiling.sh
-    }
+    # shellcheck source=scripts/utils/dbg_profiling.sh
+    . "$D_TM_BASE_PATH"/scripts/utils/dbg_profiling.sh
 fi
 
 # minimal support variables
