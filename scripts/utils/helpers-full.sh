@@ -345,33 +345,6 @@ profiling_log "[helpers-full] - sourced tmux"
 
 # log_it "><>===================================================== $0"
 
-# shellcheck disable=SC2154
-if [ "$initialize_plugin" = "1" ]; then
-    # log_it "Doing plugin initialization"
-    # cache_update_param_cache #
-    #
-    #  at this point plugin_params are trusted if found, menus.tmux will
-    #  always always replace it with current tmux conf during plugin init
-    #
-    #  By printing a NL and date, its easier to keep separate runs apart
-    #
-    log_it
-    log_it "$(date)"
-    $cfg_use_cache && cache_get_params # clears cache if tmux.conf has been changed
-    profiling_log "[helpers-full] - initialize_plugin done"
-else
-    get_config
-    profiling_log "[helpers-full] - get_config done"
-fi
-
-min_tmux_vers="1.8"
-if ! tmux_vers_check "$min_tmux_vers"; then
-    # @variables are not usable prior to 1.8
-    error_msg "need at least tmux $min_tmux_vers to work!"
-fi
-
-profiling_log "[helpers-full] - min vers check done"
-
 if $cfg_use_whiptail; then
     menu_reload="; $f_current_script"
     #

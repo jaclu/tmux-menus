@@ -836,7 +836,7 @@ handle_wt_selecion() {
 }
 
 display_menu() {
-    # log_it "display_menu()"
+    log_it "display_menu()"
     # Display time to generate menu
     safe_now
     _t="$(echo "$t_now - $dh_t_mnu_processing_start" | bc)"

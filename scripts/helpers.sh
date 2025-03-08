@@ -71,6 +71,8 @@ get_config() { # tmux stuff
     # log_it "get_config()" # with cache: termux, ipad
 
     if [ -f "$f_no_cache_hint" ]; then
+        log_it "f_no_cache_hint [$f_no_cache_hint] detected - aborting"
+        exit 1
         # probably not needed at this point, further optimization needed...
         $all_helpers_sourced || source_all_helpers "get_config() found: $f_no_cache_hint"
 
@@ -195,7 +197,7 @@ cache_get_params() {
     #
     #  Retrieves cached env params, returns true on success, otherwise false
     #
-    # log_it "cache_get_params()"
+    log_it "cache_get_params()"
     $cfg_use_cache || error_msg_safe "cache_get_params() - called when not using cache"
     if [ -f "$f_cache_params" ]; then
         # shellcheck disable=SC1090
@@ -429,6 +431,33 @@ else
 fi
 
 cfg_use_whiptail=false
+
+# shellcheck disable=SC2154
+if [ "$initialize_plugin" = "1" ]; then
+    # log_it "Doing plugin initialization"
+    # cache_update_param_cache #
+    #
+    #  at this point plugin_params are trusted if found, menus.tmux will
+    #  always always replace it with current tmux conf during plugin init
+    #
+    #  By printing a NL and date, its easier to keep separate runs apart
+    #
+    log_it
+    log_it "$(date)"
+    $cfg_use_cache && cache_get_params # clears cache if tmux.conf has been changed
+    profiling_log "[helpers-full] - initialize_plugin done"
+else
+    get_config
+    profiling_log "[helpers-full] - get_config done"
+fi
+
+min_tmux_vers="1.8"
+if ! tmux_vers_check "$min_tmux_vers"; then
+    # @variables are not usable prior to 1.8
+    error_msg "need at least tmux $min_tmux_vers to work!"
+fi
+
+profiling_log "[helpers-full] - min vers check done"
 
 tmux_select_menu_handler
 
