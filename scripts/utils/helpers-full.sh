@@ -212,6 +212,7 @@ normalize_bool_param() {
     nbp_param="$1"
     nbp_default="$2" # only used for tmux options
     nbp_variable_name=""
+    profiling_display "[helpers-full] normalize_bool_param() starts"
 
     # log_it "normalize_bool_param($nbp_param, $nbp_default) [$nbp_variable_name]"
     [ "${nbp_param%"${nbp_param#?}"}" = "@" ] && {
@@ -227,6 +228,7 @@ normalize_bool_param() {
     }
 
     nbp_value_lc="$(lowercase_it "$nbp_param")"
+    profiling_display "[helpers-full] normalize_bool_param() done"
 
     case "$nbp_value_lc" in
     #
