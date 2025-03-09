@@ -872,6 +872,8 @@ fi
     . "$D_TM_BASE_PATH"/scripts/helpers.sh
 }
 
+is_dynamic_content=false
+
 # Some sanity checks
 [ "$TMUX_MENUS_NO_DISPLAY" != "1" ] && {
     [ -z "$TMUX" ] && error_msg_safe "$plugin_name can only be used inside tmux!"
