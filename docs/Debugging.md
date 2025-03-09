@@ -22,7 +22,7 @@ profiled outside tmux
 - `1` - logging does not display to /dev/stderr, even if log_interactive_to_stderr is 1
   profiling can print to stderr
 - `2` - profiling is redirected to log file
-- `3` - no output at all, neiter to /dev/stderr nor log file profiling will also
+- `3` - no output at all, neither to /dev/stderr nor log file profiling will also
   be silenced. error_msg will override this and be displayed.
 
 tmux_get_plugin_options

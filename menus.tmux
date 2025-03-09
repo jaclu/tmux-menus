@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2034,SC2154
+# shellcheck disable=SC2154
 #
 #   Copyright (c) 2022-2025: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -37,6 +37,7 @@ D_TM_BASE_PATH="$(dirname -- "$(realpath "$0")")"
 # if tmux version and env variables have not been changed,
 # cached menus are not purged.
 #
+# shellcheck disable=SC2034
 initialize_plugin=1
 
 # shellcheck source=/dev/null  # can't read source when mixing bah & posix
@@ -79,6 +80,7 @@ cmd+=" $cfg_trigger_key  run-shell $bind_cmd"
     exit 0
 }
 
+# shellcheck disable=SC2086 # in this case we want the variable to unpack
 $TMUX_BIN $cmd || {
     error_msg_safe "Failed to bind trigger: $trigger_sequence"
 }

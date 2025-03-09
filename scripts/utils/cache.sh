@@ -23,7 +23,7 @@ cache_create_folder() {
         error_msg "variable d_cache undefined"
     }
 
-    mkdir -p "$d_cache" || error_msg "Failed to create cache folder: $d_cache" }
+    mkdir -p "$d_cache" || error_msg "Failed to create cache folder: $d_cache"
 }
 
 cache_clear() { # only cache
@@ -108,7 +108,7 @@ cache_save_known_tmux_versions() { # tmux stuff
         error_msg "cache_save_known_tmux_versions() - called when not using cache"
     }
     [ -d "$d_cache" ] || {
-        log_it "$d_cache not pressent, aborting"
+        log_it "$d_cache not present, aborting"
         return
     }
 
@@ -129,39 +129,6 @@ cached_bad_tmux_versions="$cached_bad_tmux_versions"
 EOF
     #endregion
     # log_it "Saved known tmux versions"
-}
-
-old_cache_escape_special_chars() {
-    #
-    #  Will iterate over each character, and populate tesc_esc_str
-    #  with either the escaped version or the original char
-    #
-    tesc_str="$1"
-    # log_it "cache_escape_special_chars($tesc_str)"
-
-    _s="$tesc_str"
-    tesc_idx=0
-    while true; do
-        tesc_idx=$((tesc_idx + 1))
-        char="$(extract_char "$tesc_str" "$tesc_idx")"
-        # log_it "><>tesc   pos [$tesc_idx] char [$char]"
-        [ -n "$char" ] || break
-        [ "$char" = \\ ] && {
-            # maintain \ prefixes
-            tesc_idx=$((tesc_idx + 1))
-            char="$char$(extract_char "$tesc_str" "$tesc_idx")"
-        }
-        case "$char" in
-        \\) tesc_esc_str="${tesc_esc_str}\\\\" ;;
-        \`) tesc_esc_str="${tesc_esc_str}\\\`" ;;
-        \") tesc_esc_str="${tesc_esc_str}\\\"" ;;
-        \$) tesc_esc_str="${tesc_esc_str}\\$" ;;
-        *) tesc_esc_str="${tesc_esc_str}${char}" ;;
-        esac
-
-    done
-    printf '%s\n' "$tesc_esc_str"
-    unset tesc_str tesc_idx tesc_esc_str
 }
 
 cache_escape_special_chars() {
@@ -197,6 +164,7 @@ cache_param_write() {
 
     f_params_tmp=$(mktemp) || error_msg "Failed to create tmp config file"
 
+    log_it "><> === Uses cfg_use_whiptail & cfg_alt_menu_handler"
     #region param cache file
     printf '%s\n' "\
 #!/bin/sh

@@ -12,7 +12,7 @@
 #  Each printout displays both total run time and time since last update
 #  Unit is milliseconds, in order to make the timing calculations quicker by
 #  using integers.
-#  Diffs smaller than miliseconds doesn't really matter in profiling anyhow...
+#  Diffs smaller than milliseconds doesn't really matter in profiling anyhow...
 #
 #  Typical usage:
 #  In the script I want to optimize paste the code below, time starts when
@@ -32,7 +32,7 @@
 
 [ "$MENUS_PROFILING" != "1" ] && {
     echo
-    echo "ERRORR: sourcing dbg_pofiling.sh without MENUS_PROFILING being 1 [$0]"
+    echo "ERROR: sourcing dbg_pofiling.sh without MENUS_PROFILING being 1 [$0]"
     exit 1
 }
 
@@ -53,7 +53,7 @@ profiling_log_it() {
     elif profiling_is_function_defined "log_it"; then
         log_it profiling "$@" || exit 2
     elif [ -n "$cfg_log_file" ]; then
-        printf '%s\n' "[P-no log_it] $@" >>"$cfg_log_file"
+        printf '%s\n' "[P] [no log_it] $*" >>"$cfg_log_file"
     fi
 }
 
@@ -100,7 +100,7 @@ profiling_select_timing_method() {
         # The MacOS date doesn't support sub seconds, if gdate is available use it.
         profiling_selected_get_time="gdate"
     elif [ -n "$(command -v perl)" ]; then
-        # Slower than gdate but still useable, built-in on MacOS
+        # Slower than gdate but still usable, built-in on MacOS
         profiling_selected_get_time="perl"
     else
         # Fallback

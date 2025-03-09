@@ -293,10 +293,12 @@ wait_to_close_display() {
 #  Convenience shortcuts
 #
 
+# shellcheck disable=SC2154
 d_help="$d_items"/help
 d_hints="$d_items"/hints
 d_custom_items="$D_TM_BASE_PATH"/custom_items
 f_custom_items_index="$d_custom_items"/_index.sh
+# shellcheck disable=SC2154
 f_update_custom_inventory="$d_scripts"/update_custom_inventory.sh
 f_cached_tmux_options="$d_cache"/tmux_options
 
