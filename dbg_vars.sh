@@ -3,7 +3,7 @@
 [ "$1" = "set" ] && {
     export MENUS_PROFILING=0
     export TMUX_MENUS_NO_DISPLAY=0
-    export TMUX_MENUS_FORCE_SILENT=3
+    export TMUX_MENUS_FORCE_SILENT=1
 }
 
 echo "MENUS_PROFILING: $MENUS_PROFILING"
