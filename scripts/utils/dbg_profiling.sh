@@ -42,10 +42,10 @@ profiling_log_it() {
     # Only call log_it if it has been defined
     # During normal sourcing of this it has been, but if this is early sourced
     # in some other script, this is not initially available
-    if profiling_is_function_defined "log_it"; then
-        log_it "$@" || exit 2
-    elif [ -t 0 ] && [ "$TMUX_MENUS_FORCE_SILENT" != "2" ]; then
+    if [ -t 0 ] && [ "$TMUX_MENUS_FORCE_SILENT" != "3" ]; then
         echo "$@" >/dev/stderr
+    elif profiling_is_function_defined "log_it"; then
+        log_it "$@" || exit 2
     fi
 }
 
