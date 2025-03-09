@@ -17,19 +17,21 @@ log_it() {
     #  performance?
     [ "$TMUX_MENUS_FORCE_SILENT" = "3" ] && return
 
-    # [ "$log_interactive_to_stderr" != "1" ] && [ -z "$cfg_log_file" ] && return
-
-    [ "$TMUX_MENUS_FORCE_SILENT" != "1" ] &&
-        [ "$log_interactive_to_stderr" = "1" ] && [ -t 0 ] && {
+    [ "$log_interactive_to_stderr" = "1" ] && [ -t 0 ] && {
 
         # log to stderr if in interactive mode
         printf "[%s] log: %s\n" "$(date '+%H:%M:%S')" "$@" >/dev/stderr
         return
     }
 
-    [ -n "$cfg_log_file" ] && [ "$TMUX_MENUS_FORCE_SILENT" != "2" ] && {
+    [ -n "$cfg_log_file" ] && {
         # log to file
-        printf "[%s] %s\n" "$(date '+%H:%M:%S')" "$@" >>"$cfg_log_file"
+        if [ "$1" = "profiling" ]; then
+            shift
+            printf "[p] %s\n" "$@" >>"$cfg_log_file"
+        else
+            printf "[%s] %s\n" "$(date '+%H:%M:%S')" "$@" >>"$cfg_log_file"
+        fi
     }
 }
 
@@ -335,6 +337,11 @@ cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
 #
 log_interactive_to_stderr=1
 
+if [ "$log_interactive_to_stderr" = "1" ] && [ "$TMUX_MENUS_FORCE_SILENT" = "1" ]; then
+    # TMUX_MENUS_FORCE_SILENT overrides and disables log_interactive_to_stderr
+    log_interactive_to_stderr=0
+fi
+
 cfg_use_whiptail=false
 plugin_options_have_been_read=false # only need to read param once
 # for performance only a minimum of support features are in this file
@@ -367,9 +374,9 @@ elif [ "$MENUS_PROFILING" = "1" ] && [ "$profiling_sourced" != "1" ]; then
     # Here it is sourced  after D_TM_BASE_PATH is verified
     # if the intent is to start timing the earliest stages of other scripts
     # copy the below code using absolute paths
-
     # shellcheck source=scripts/utils/dbg_profiling.sh
     . "$D_TM_BASE_PATH"/scripts/utils/dbg_profiling.sh
+    log_it "sourcing dbg_profiling.sh"
 fi
 
 # minimal support variables

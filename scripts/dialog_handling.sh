@@ -843,6 +843,8 @@ display_menu() {
     [ "$TMUX_MENUS_FORCE_SILENT" = "3" ] && TMUX_MENUS_FORCE_SILENT=1
     log_it "Menu $(relative_path "$d_current_script")/$current_script - processing time:  $_t"
 
+    profiling_display "[dialog_handling] displaying menu"
+
     if $cfg_use_whiptail; then
         # display whiptail menu
         menu_selection=$(eval "$menu_items" 3>&2 2>&1 1>&3)

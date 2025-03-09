@@ -291,6 +291,6 @@ cache_config_get_save() {
 #
 #===============================================================
 
-# profiling_display "[cache] main"
+profiling_display "[cache] main"
 
 # log_it "Completed: scripts/utils/cache.sh"

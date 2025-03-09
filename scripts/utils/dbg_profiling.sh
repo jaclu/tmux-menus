@@ -42,10 +42,10 @@ profiling_log_it() {
     # Only call log_it if it has been defined
     # During normal sourcing of this it has been, but if this is early sourced
     # in some other script, this is not initially available
-    if [ -t 0 ] && [ "$TMUX_MENUS_FORCE_SILENT" != "3" ]; then
+    if [ -t 0 ] && [ "$TMUX_MENUS_FORCE_SILENT" != "2" ]; then
         echo "$@" >/dev/stderr
     elif profiling_is_function_defined "log_it"; then
-        log_it "$@" || exit 2
+        log_it profiling "$@" || exit 2
     fi
 }
 
@@ -88,15 +88,15 @@ profiling_select_timing_method() {
     elif [ "$(uname)" = "Linux" ]; then
         # Non-standard devices still being Linux, such as termux
         profiling_selected_get_time="date"
-    elif [ -n "$(command -v gdate)" ]; then
+    elif [ -n "$(command -v gdate2)" ]; then
         profiling_selected_get_time="gdate"
     elif [ -n "$(command -v perl)" ]; then
         profiling_selected_get_time="perl"
     else
         profiling_selected_get_time="date"
     fi
-    profiling_log_it "Using timing method: $profiling_selected_get_time"
-    profiling_get_time
+    _m="profiling is using timing method: $profiling_selected_get_time"
+    profiling_log_it "$_m"
 }
 
 profiling_get_time() {
@@ -118,6 +118,10 @@ profiling_get_time() {
 
 [ "$profiling_sourced" != "1" ] && {
     # Only start timer first time this is sourced
+
+    # if profiling should go to log file, disable this
+    [ "$TMUX_MENUS_FORCE_SILENT" = "2" ] && log_interactive_to_stderr="0"
+
     profiling_get_time # start timer as early as possible
 }
 
@@ -148,8 +152,8 @@ profiling_sourced=1
 
 [ -t 0 ] && {
     case "$TMUX_MENUS_FORCE_SILENT" in
-	2 | 3) return ;;
-	*) ;;
+    2 | 3) return ;;
+    *) ;;
     esac
 
     echo
