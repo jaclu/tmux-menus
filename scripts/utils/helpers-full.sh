@@ -16,7 +16,7 @@
 #
 #---------------------------------------------------------------
 
-profiling_display "[helpers-full] - start"
+# profiling_display "[helpers-full] - start"
 
 error_msg() {
     #
@@ -316,7 +316,7 @@ wait_to_close_display() {
 #
 #===============================================================
 
-profiling_display "[helpers-full] - main"
+# profiling_display "[helpers-full] - main"
 
 [ -z "$D_TM_BASE_PATH" ] && error_msg "D_TM_BASE_PATH undefined"
 
@@ -334,14 +334,14 @@ f_cached_tmux_options="$d_cache"/tmux_options
 # will be set to true at end of this, this indicates everything is prepared
 env_initialized=false
 
-profiling_display "[helpers-full] - core variables defined"
+# profiling_display "[helpers-full] - core variables defined"
 
 # shellcheck source=scripts/utils/cache.sh
 . "$d_scripts"/utils/cache.sh
 
 # shellcheck source=scripts/utils/tmux.sh
 . "$d_scripts"/utils/tmux.sh
-profiling_display "[helpers-full] - sourced tmux"
+# profiling_display "[helpers-full] - sourced tmux"
 
 # log_it "><>===================================================== $0"
 
@@ -356,7 +356,7 @@ else
     menu_reload="; run-shell \"$f_current_script\""
     reload_in_runshell=" ; $f_current_script"
 fi
-profiling_display "[helpers-full] - whiptail setup done"
+# profiling_display "[helpers-full] - whiptail setup done"
 
 env_initialized=true # indicates that env is fully configured
 #clog_it "><> scripts/utils/helpers-full.sh - completed"

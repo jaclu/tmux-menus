@@ -170,6 +170,7 @@ cache_param_write() { # tmux stuff
     #  if it differed with previous params, clear cache
     #
     log_it "cache_param_write()"
+    profiling_display "[cache] cache_param_write()"
 
     $cfg_use_cache || error_msg "cache_param_write() - called when not using cache"
 
@@ -267,6 +268,8 @@ cache_config_get_save() {
     # cfg_use_cache is false
     #
     log_it "cache_config_get_save()"
+    profiling_display "[cache] cache_config_get_save()"
+
     tmux_get_plugin_options # ensure env is retrieved
     [ ! -f "$f_no_cache_hint" ] && $cfg_use_cache && cache_param_write
 }
@@ -277,6 +280,6 @@ cache_config_get_save() {
 #
 #===============================================================
 
-profiling_display "[cache] main"
+# profiling_display "[cache] main"
 
 # log_it "Completed: scripts/utils/cache.sh"
