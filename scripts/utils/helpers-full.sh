@@ -193,9 +193,17 @@ get_digits_from_string() {
 
 normalize_bool_param() {
     #
-    #  Take a boolean style text param and convert it into an actual boolean
-    #  that can be used in your code. Example of usage:
+    # Take a boolean style text param and convert it into an actual boolean
+    # that can be used in your code. If the param starts with @ it is first read
+    # from tmux
+    #    Example of usage:
     #
+    # if normalize_bool_param "@menus_without_prefix" "$default_no_prefix"; then
+    #     cfg_no_prefix=true
+    # else
+    #     cfg_no_prefix=false
+    # fi
+
     #  normalize_bool_param "@menus_without_prefix" "$default_no_prefix" &&
     #      cfg_no_prefix=true || cfg_no_prefix=false
     #
