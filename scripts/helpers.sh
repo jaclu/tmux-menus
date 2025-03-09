@@ -15,7 +15,7 @@
 log_it() {
     #  early abort if no logging, should not be needed, but might improve
     #  performance?
-    [ "$TMUX_MENUS_FORCE_SILENT" = "2" ] && return
+    [ "$TMUX_MENUS_FORCE_SILENT" = "3" ] && return
 
     # [ "$log_interactive_to_stderr" != "1" ] && [ -z "$cfg_log_file" ] && return
 
@@ -27,7 +27,7 @@ log_it() {
         return
     }
 
-    [ -n "$cfg_log_file" ] && {
+    [ -n "$cfg_log_file" ] && [ "$TMUX_MENUS_FORCE_SILENT" != "2" ] && {
         # log to file
         printf "[%s] %s\n" "$(date '+%H:%M:%S')" "$@" >>"$cfg_log_file"
     }
@@ -40,21 +40,16 @@ error_msg_safe() {
 }
 
 source_all_helpers() {
-    log_it
-    log_it "--------------->  source_all_helpers($0)  <---------------"
-    log_it "  caller: $1"
+    profiling_display "[helpers] ----->  source_all_helpers [$0] $1"
     $all_helpers_sourced && {
         error_msg_safe "source_all_helpers() called when it was already done"
-        exit 1
     }
-
     all_helpers_sourced=true # set it early to avoid recursion
 
-    profiling_display "[helpers] sourcing helpers"
     #_d="${D_TM_BASE_PATH:-/tmp}"
     # shellcheck source=scripts/utils/helpers-full.sh
     . "$D_TM_BASE_PATH"/scripts/utils/helpers-full.sh
-    profiling_display "[helpers] ----->  source_all_helpers() - done  <-----"
+    profiling_display "[helpers] ----->  source_all_helpers() - done"
 }
 
 relative_path() {

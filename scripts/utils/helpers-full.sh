@@ -42,6 +42,7 @@ error_msg() {
     em_msg="$1"
     exit_code="${2:-0}"
     do_display_message=${3:-true}
+    TMUX_MENUS_FORCE_SILENT=0  # errors should always be displayed
     log_it "error_msg($em_msg)"
 
     # with no tmux env, dumping it to stderr is the only option

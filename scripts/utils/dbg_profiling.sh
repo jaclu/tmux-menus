@@ -41,9 +41,11 @@ profiling_is_function_defined() {
 profiling_log_it() {
     # Only call log_it if it has been defined
     # During normal sourcing of this it has been, but if this is early sourced
-    # in some other script, this is not available
+    # in some other script, this is not initially available
     if profiling_is_function_defined "log_it"; then
         log_it "$@" || exit 2
+    elif [ -t 0 ] && [ "$TMUX_MENUS_FORCE_SILENT" != "2" ]; then
+        echo "$@" >/dev/stderr
     fi
 }
 
@@ -127,25 +129,30 @@ profiling_update_time_stamps() {
 }
 
 profiling_display() {
-    [ "$TMUX_MENUS_FORCE_SILENT" = "2" ] && return
+    [ "$TMUX_MENUS_FORCE_SILENT" = "3" ] && return
     profiling_update_time_stamps
 
     _s="$1 - total: $_since_start   since last: $_sine_update"
-    if [ -t 0 ] && [ "$TMUX_MENUS_FORCE_SILENT" != "1" ]; then
+    if [ -t 0 ] && [ "$TMUX_MENUS_FORCE_SILENT" != "2" ]; then
         echo "$_s" >/dev/stderr
-    elif [ -n "$cfg_log_file" ] && [ "$TMUX_MENUS_FORCE_SILENT" != "2" ]; then
+    elif [ -n "$cfg_log_file" ]; then
         profiling_log_it "$_s"
     fi
 
     # do it again to not count this update in processing time
     # only makes sense on slowish systems
-    profiling_update_time_stamps
+    # profiling_update_time_stamps
 }
 
+profiling_sourced=1
+
 [ -t 0 ] && {
+    case "$TMUX_MENUS_FORCE_SILENT" in
+	2 | 3) return ;;
+	*) ;;
+    esac
+
     echo
     echo "Starting profiling for: $0"
     echo
 }
-
-profiling_sourced=1

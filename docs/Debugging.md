@@ -19,6 +19,7 @@ profiled outside tmux
 
 ## TMUX_MENUS_FORCE_SILENT
 
-- `1` - no display to /dev/stderr, everything is directed to the log file (if defined)
-- `2` - no output at all, neiter to /dev/stderr nor log file profiling will also
-  be silenced.
+- `1` - logging does not display to /dev/stderr, even if log_interactive_to_stderr is 1
+- `2` - profiling is redirected to log file
+- `3` - no output at all, neiter to /dev/stderr nor log file profiling will also
+  be silenced. error_msg will override this and be displayed.
