@@ -175,6 +175,7 @@ cache_param_write() { # tmux stuff
     $cfg_use_cache || error_msg "cache_param_write() - called when not using cache"
 
     cache_prepare
+    profiling_display "[cache] cache_prepare - done"
 
     # need to be in repo base dir for the git chcecks below
     cd "$D_TM_BASE_PATH" || error_msg "Failed to cd into $D_TM_BASE_PATH"
@@ -193,6 +194,8 @@ cache_param_write() { # tmux stuff
     fi
 
     f_params_tmp=$(mktemp) || error_msg "Failed to create tmp config file"
+
+    profiling_display "[cache] will write: $f_params_tmp"
     #region param cache file
     cat <<EOF >"$f_params_tmp"
 #!/bin/sh
@@ -243,6 +246,8 @@ last_local_edit="$last_local_edit"
 
 EOF
     #endregion
+    profiling_display "[cache] write $f_params_tmp - done"
+
     unset repo_last_changed last_local_edit
 
     if [ ! -f "$f_cache_params" ]; then
