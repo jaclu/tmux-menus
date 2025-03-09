@@ -106,7 +106,7 @@ tmux_get_option() {
     tgo_option="$1"
     tgo_default="$2"
 
-    # log_it "tmux_get_option($tgo_option, $tgo_default)"
+    log_it "tmux_get_option($tgo_option, $tgo_default)"
 
     [ -z "$tgo_option" ] && error_msg "tmux_get_option() param 1 empty!"
 
