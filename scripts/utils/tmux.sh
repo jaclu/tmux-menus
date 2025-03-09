@@ -123,9 +123,11 @@ tmux_get_option() {
     fi
     if $cfg_use_cache && [ -d "$d_cache" ]; then
         cache_tmux_options
+        profiling_display "[tmux] cache_tmux_options done"
 
         tgo_value="$(awk -v option="$tgo_option" \
             '$1 == option { gsub(/^"|"$/, "", $2); print $2 }' "$f_cached_tmux_options")"
+        profiling_display "[tmux] tgo_value defined"
         # tgo_value="$(grep "$tgo_option" "$f_cached_tmux_options" 2>/dev/null |
         #     cut -d' ' -f2)"
 
@@ -136,9 +138,11 @@ tmux_get_option() {
         else
             tgo_was_found=0
         fi
+        profiling_display "[tmux] missing value checked"
     else
         tgo_value="$($TMUX_BIN show-options -gv "$tgo_option" 2>/dev/null)"
         tgo_was_found="$?"
+        profiling_display "[tmux] show-options used"
     fi
     if [ "$tgo_was_found" != 0 ]; then
         #
