@@ -163,11 +163,11 @@ tmux_get_plugin_options() { # cache references
     $plugin_options_have_been_read && {
         error_msg "tmux_get_plugin_options() has already been called"
     }
-    profiling_display "[tmux] tmux_get_plugin_options()"
+    # profiling_display "[tmux] tmux_get_plugin_options()"
     tmux_get_defaults
-    profiling_display "[tmux] tmux_get_defaults done"
+    # profiling_display "[tmux] tmux_get_defaults done"
 
-    if normalize_bool_param "@menus_use_cache" "$default_use_cache"; then
+    if normalize_bool_param "@menus_use_cache" "$default_use_cache"; then  # TODO: Profile
         cfg_use_cache=true
         log_it "><> removing: $f_no_cache_hint"
         rm -f "$f_no_cache_hint"
@@ -178,7 +178,7 @@ tmux_get_plugin_options() { # cache references
         log_it "><> touching: $f_no_cache_hint"
         touch "$f_no_cache_hint"
     fi
-    profiling_display "[tmux] normalize_bool_param done"
+    # profiling_display "[tmux] normalize_bool_param done"
 
     cfg_trigger_key="$(tmux_get_option "@menus_trigger" "$default_trigger_key")"
     if normalize_bool_param "@menus_without_prefix" "$default_no_prefix"; then
