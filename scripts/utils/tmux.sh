@@ -163,9 +163,9 @@ tmux_get_plugin_options() { # cache references
     $plugin_options_have_been_read && {
         error_msg "tmux_get_plugin_options() has already been called"
     }
-    # profiling_display "[tmux] tmux_get_plugin_options()"
+    profiling_display "[tmux] tmux_get_plugin_options()"
     tmux_get_defaults
-    # profiling_display "[tmux] tmux_get_defaults done"
+    profiling_display "[tmux] tmux_get_defaults done"
 
     if normalize_bool_param "@menus_use_cache" "$default_use_cache"; then  # TODO: Profile
         cfg_use_cache=true
@@ -178,7 +178,7 @@ tmux_get_plugin_options() { # cache references
         log_it "><> touching: $f_no_cache_hint"
         touch "$f_no_cache_hint"
     fi
-    # profiling_display "[tmux] normalize_bool_param done"
+    profiling_display "[tmux] normalize_bool_param done"
 
     cfg_trigger_key="$(tmux_get_option "@menus_trigger" "$default_trigger_key")"
     if normalize_bool_param "@menus_without_prefix" "$default_no_prefix"; then
@@ -197,7 +197,7 @@ tmux_get_plugin_options() { # cache references
         cfg_show_key_hints=false
     fi
 
-    # profiling_display "[tmux] whiptail part starts"
+    profiling_display "[tmux] whiptail part starts"
 
     if $cfg_use_whiptail; then
         _whiptail_ignore_msg="not used with whiptail"
@@ -229,7 +229,7 @@ tmux_get_plugin_options() { # cache references
         cfg_nav_prev="$(tmux_get_option "@menus_nav_prev" "$default_nav_prev")"
         cfg_nav_home="$(tmux_get_option "@menus_nav_home" "$default_nav_home")"
     fi
-    # profiling_display "[tmux] whiptail part done"
+    profiling_display "[tmux] whiptail part done"
 
     cfg_tmux_conf="$(tmux_get_option "@menus_config_file" "$default_tmux_conf")"
     _f="$(tmux_get_option "@menus_log_file" "$default_log_file")"
@@ -253,7 +253,7 @@ tmux_get_plugin_options() { # cache references
         cfg_use_notes=false
     fi
     plugin_options_have_been_read=true
-    # profiling_display "[tmux] tmux_get_plugin_options() - done"
+    profiling_display "[tmux] tmux_get_plugin_options() - done"
     # log_it "  tmux_get_plugin_options() - done"
 }
 
