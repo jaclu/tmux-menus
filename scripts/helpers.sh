@@ -40,7 +40,7 @@ error_msg_safe() {
 }
 
 source_all_helpers() {
-    profiling_display "[helpers] ----->  source_all_helpers [$0] $1"
+    # profiling_display "[helpers] ----->  source_all_helpers [$0] $1"
     $all_helpers_sourced && {
         error_msg_safe "source_all_helpers() called when it was already done"
     }
@@ -49,7 +49,7 @@ source_all_helpers() {
     #_d="${D_TM_BASE_PATH:-/tmp}"
     # shellcheck source=scripts/utils/helpers-full.sh
     . "$D_TM_BASE_PATH"/scripts/utils/helpers-full.sh
-    profiling_display "[helpers] <-----  source_all_helpers() - done"
+    # profiling_display "[helpers] <-----  source_all_helpers() - done"
 }
 
 relative_path() {
@@ -118,7 +118,7 @@ tmux_select_menu_handler() {
 
 get_config_uncached() {
     # reads config, and if allowed saves it to cache
-    profiling_display "[helpers] get_config_uncached()"
+    # profiling_display "[helpers] get_config_uncached()"
 
     log_it "get_config_uncached()"
     $all_helpers_sourced || source_all_helpers "get_config_uncached()"
@@ -133,7 +133,7 @@ get_config() { # tmux stuff
     #  that the param cache is valid if found
     #
     log_it "get_config()"
-    profiling_display "[helpers] get_config()"
+    # profiling_display "[helpers] get_config()"
 
     if [ -f "$f_no_cache_hint" ]; then
         get_config_uncached
@@ -159,7 +159,7 @@ get_config_refresh() {
     #  more recent, or not found
     #
     log_it "get_config_refresh()"
-    profiling_display "[helpers] get_config_refresh()"
+    # profiling_display "[helpers] get_config_refresh()"
 
     [ -f "$f_cache_params" ] && {
         # Only really need cfg_tmux_conf at this point

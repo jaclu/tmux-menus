@@ -99,9 +99,9 @@ tmux_get_defaults() {
 cache_tmux_options() {
     [ -f "$f_cached_tmux_options" ] && return
     log_it "cache_tmux_options()  ==================="
-    profiling_display "[tmux] cache_tmux_options()"
+    # profiling_display "[tmux] cache_tmux_options()"
     tmux_error_handler show-options -g | grep ^@menus_ >"$f_cached_tmux_options"
-    profiling_display "[tmux] cache_tmux_options() - done"
+    # profiling_display "[tmux] cache_tmux_options() - done"
 }
 
 tmux_get_option() {
@@ -182,6 +182,8 @@ tmux_get_plugin_options() { # cache references
         cfg_show_key_hints=false
     fi
 
+    profiling_display "[tmux] whiptail part starts"
+
     if $cfg_use_whiptail; then
         _whiptail_ignore_msg="not used with whiptail"
 
@@ -213,6 +215,7 @@ tmux_get_plugin_options() { # cache references
         cfg_mnu_loc_x="$(tmux_get_option "@menus_location_x" "$default_location_x")"
         cfg_mnu_loc_y="$(tmux_get_option "@menus_location_y" "$default_location_y")"
     fi
+    profiling_display "[tmux] whiptail part done"
 
     cfg_tmux_conf="$(tmux_get_option "@menus_config_file" "$default_tmux_conf")"
     _f="$(tmux_get_option "@menus_log_file" "$default_log_file")"
