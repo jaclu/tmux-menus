@@ -219,12 +219,7 @@ tmux_get_plugin_options() { # cache references
         cfg_format_title="$(tmux_get_option "@menus_format_title" \
             "$default_format_title")"
 
-        profiling_display "[tmux] setting nav_next from @menus_nav_next"
         cfg_nav_next="$(tmux_get_option "@menus_nav_next" "$default_nav_next")"
-        profiling_display "[tmux] initial cfg_nav_next [$cfg_nav_next]"
-        a="$(cache_escape_special_chars "$cfg_nav_next")"
-        profiling_display "[tmux] escaped cfg_nav_next [$a]"
-
         cfg_nav_prev="$(tmux_get_option "@menus_nav_prev" "$default_nav_prev")"
         cfg_nav_home="$(tmux_get_option "@menus_nav_home" "$default_nav_home")"
         cfg_mnu_loc_x="$(tmux_get_option "@menus_location_x" "$default_location_x")"
