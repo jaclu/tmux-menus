@@ -57,7 +57,7 @@ tmux_get_defaults() {
     #   default_  defaults for tmux config options
     #
 
-    log_it "tmux_get_defaults()"
+    # log_it "tmux_get_defaults()"
 
     default_trigger_key=\\
     default_no_prefix=No
@@ -167,7 +167,7 @@ tmux_get_plugin_options() { # cache references
     tmux_get_defaults
     profiling_display "[tmux] tmux_get_defaults done"
 
-    if normalize_bool_param "@menus_use_cache" "$default_use_cache"; then  # TODO: Profile
+    if normalize_bool_param "@menus_use_cache" "$default_use_cache"; then
         cfg_use_cache=true
         log_it "><> removing: $f_no_cache_hint"
         rm -f "$f_no_cache_hint"
@@ -178,7 +178,7 @@ tmux_get_plugin_options() { # cache references
         log_it "><> touching: $f_no_cache_hint"
         touch "$f_no_cache_hint"
     fi
-    profiling_display "[tmux] normalize_bool_param done"
+    profiling_display "[tmux] normalize @menus_use_cache done"
 
     cfg_trigger_key="$(tmux_get_option "@menus_trigger" "$default_trigger_key")"
     if normalize_bool_param "@menus_without_prefix" "$default_no_prefix"; then
