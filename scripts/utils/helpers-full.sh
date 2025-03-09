@@ -16,8 +16,6 @@
 #
 #---------------------------------------------------------------
 
-# profiling_display "[helpers-full] - start"
-
 error_msg() {
     #
     #  Display $1 as an error message in log and as a tmux display-message
@@ -212,7 +210,6 @@ normalize_bool_param() {
     nbp_param="$1"
     nbp_default="$2" # only used for tmux options
     nbp_variable_name=""
-    # profiling_display "[helpers-full] normalize_bool_param() starts"
 
     # log_it "normalize_bool_param($nbp_param, $nbp_default) [$nbp_variable_name]"
     [ "${nbp_param%"${nbp_param#?}"}" = "@" ] && {
@@ -304,8 +301,6 @@ wait_to_close_display() {
 #
 #===============================================================
 
-# profiling_display "[helpers-full] - main"
-
 [ -z "$D_TM_BASE_PATH" ] && error_msg "D_TM_BASE_PATH undefined"
 
 #
@@ -322,14 +317,11 @@ f_cached_tmux_options="$d_cache"/tmux_options
 # will be set to true at end of this, this indicates everything is prepared
 env_initialized=false
 
-# profiling_display "[helpers-full] - core variables defined"
-
 # shellcheck source=scripts/utils/cache.sh
 . "$d_scripts"/utils/cache.sh
 
 # shellcheck source=scripts/utils/tmux.sh
 . "$d_scripts"/utils/tmux.sh
-# profiling_display "[helpers-full] - sourced tmux"
 
 # log_it "><>===================================================== $0"
 
@@ -344,7 +336,6 @@ else
     menu_reload="; run-shell \"$f_current_script\""
     reload_in_runshell=" ; $f_current_script"
 fi
-# profiling_display "[helpers-full] - whiptail setup done"
 
 env_initialized=true # indicates that env is fully configured
 #clog_it "><> scripts/utils/helpers-full.sh - completed"

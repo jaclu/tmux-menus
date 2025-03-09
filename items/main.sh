@@ -10,7 +10,6 @@
 
 static_content() {
     menu_segment=1
-    # profiling_display "[items/main] static_content() - starting  <======"
 
     tmux_vers_check 3.2 && {
         customize_mode_cmd="$TMUX_BIN customize-mode -Z "
@@ -20,7 +19,6 @@ static_content() {
             customize_mode_cmd="$customize_mode_cmd $hint"
         fi
     }
-    # profiling_display "[items/main] v3.2 customize_mode_cmd prepared"
 
     rld_cmd="command-prompt -I '$cfg_tmux_conf' -p 'Source file:' \
         'run-shell \"$d_scripts/reload_conf.sh %% $reload_in_runshell\"'"
@@ -32,7 +30,6 @@ static_content() {
         menu_generate_part "$menu_segment" "$@"
         menu_segment=$((menu_segment + 1))
     fi
-    # profiling_display "[items/main] custom items processed"
 
     #  Menu items definition
     set -- \
@@ -52,7 +49,6 @@ static_content() {
 
     menu_generate_part "$menu_segment" "$@"
     menu_segment=$((menu_segment + 1))
-    # profiling_display "[items/main] part nav&search - customize mode done"
 
     $cfg_use_hint_overlays && $cfg_show_key_hints && {
         set -- \
@@ -63,7 +59,6 @@ static_content() {
         menu_generate_part "$menu_segment" "$@"
         menu_segment=$((menu_segment + 1))
     }
-    # profiling_display "[items/main] Key hints done"
 
     set -- \
         1.8 E p "Plugins inventory" "plugins.sh" \
@@ -74,7 +69,6 @@ static_content() {
         "$d_help/help_summary.sh $f_current_script"
 
     menu_generate_part "$menu_segment" "$@"
-    # profiling_display "[items/main] static_content() - done  <======"
 }
 
 #===============================================================
@@ -87,12 +81,6 @@ menu_name="Main menu"
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
-
-# [ "$TMUX_MENUS_PROFILING" = "1" ] && {
-#     # shellcheck source=scripts/utils/dbg_profiling.sh
-#     . "$D_TM_BASE_PATH"/scripts/utils/dbg_profiling.sh
-#     profiling_display "[items/main] Starting"
-# }
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh

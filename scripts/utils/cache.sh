@@ -175,12 +175,9 @@ cache_param_write() {
     #  if it differed with previous params, clear cache
     #
     log_it "cache_param_write()"
-    # profiling_display "[cache] cache_param_write()"
-
     $cfg_use_cache || error_msg "cache_param_write() - called when not using cache"
 
     cache_prepare
-    # profiling_display "[cache] cache_prepare - done"
 
     # need to be in repo base dir for the git chcecks below
     cd "$D_TM_BASE_PATH" || error_msg "Failed to cd into $D_TM_BASE_PATH"
@@ -200,7 +197,6 @@ cache_param_write() {
 
     f_params_tmp=$(mktemp) || error_msg "Failed to create tmp config file"
 
-    # profiling_display "[cache] will write: $f_params_tmp"
     #region param cache file
     printf '%s\n' "\
 #!/bin/sh
@@ -249,7 +245,6 @@ tpt_current_vers_suffix=\"$tpt_current_vers_suffix\"
 repo_last_changed=\"$repo_last_changed\"
 last_local_edit=\"$last_local_edit\"" >"$f_params_tmp"
     #endregion
-    # profiling_display "[cache] write $f_params_tmp - done"
 
     unset repo_last_changed last_local_edit
 
@@ -276,13 +271,8 @@ cache_config_get_save() {
     # cfg_use_cache is false
     #
     log_it "cache_config_get_save()"
-    # profiling_display "[cache] cache_config_get_save()"
-
     tmux_get_plugin_options # ensure env is retrieved
-
-    # profiling_display "[cache] tmux_get_plugin_options - done"
     [ ! -f "$f_no_cache_hint" ] && $cfg_use_cache && cache_param_write
-    # profiling_display "[cache] cache_param_write - done"
 }
 
 #===============================================================
@@ -290,7 +280,5 @@ cache_config_get_save() {
 #   Main
 #
 #===============================================================
-
-# profiling_display "[cache] main"
 
 # log_it "Completed: scripts/utils/cache.sh"
