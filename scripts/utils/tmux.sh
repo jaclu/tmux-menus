@@ -158,13 +158,13 @@ tmux_get_plugin_options() { # cache references
 
     if normalize_bool_param "@menus_use_cache" "$default_use_cache"; then
         cfg_use_cache=true
-        log_it "><> removing: $f_no_cache_hint"
+        # log_it "><> removing: $f_no_cache_hint"
         rm -f "$f_no_cache_hint"
         # do it as early as possible, so that further tmux options are cached
         cache_create_folder
     else
         cfg_use_cache=false
-        log_it "><> touching: $f_no_cache_hint"
+        # log_it "><> touching: $f_no_cache_hint"
         touch "$f_no_cache_hint"
     fi
 
@@ -246,8 +246,7 @@ tmux_error_handler() { # cache references
     #  Detects any errors reported by tmux commands and gives notification
     #
     the_cmd="$*"
-    # $teh_debug && log_it "><> tmux_error_handler($the_cmd)"
-    # log_it "><> tmux_error_handler($the_cmd)"
+    $teh_debug && log_it "><> tmux_error_handler($the_cmd)"
 
     if $cfg_use_cache; then
         d_errors="$d_cache"

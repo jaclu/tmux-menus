@@ -558,7 +558,7 @@ generate_menu_items_in_sorted_order() {
     #  $uncached_menu might be out of order, this extracts each item
     #  incrementally, in order to display the menu as intended
     #
-    log_it "generate_menu_items_in_sorted_order()"
+    # log_it "generate_menu_items_in_sorted_order()"
     menu_items=""
     idx=1
     while true; do
@@ -725,7 +725,7 @@ check_screen_size() {
     #  This gives the actual screen limits for menus
     #
     $cfg_use_whiptail && return 0
-    log_it "check_screen_size()"
+    # log_it "check_screen_size()"
 
     [ -n "$window_height" ] && {
         actual_height="$($TMUX_BIN display-message -p "#{client_height}")"
@@ -736,7 +736,7 @@ check_screen_size() {
             log_it "$msg"
             return 1
         }
-        log_it "window_height valid"
+        # log_it "window_height valid"
     }
     [ -n "$window_width" ] && {
         actual_width="$($TMUX_BIN display-message -p "#{client_width}")"
@@ -746,7 +746,7 @@ check_screen_size() {
             log_it "$msg"
             return 1
         }
-        log_it "window_width valid"
+        # log_it "window_width valid"
     }
     return 0
 }

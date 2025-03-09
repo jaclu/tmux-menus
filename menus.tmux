@@ -73,10 +73,6 @@ else
 fi
 cmd+=" $cfg_trigger_key  run-shell $bind_cmd"
 
-# teh_debug=true
-# shellcheck disable=SC2086
-log_it "Will use cmd [$cmd] trigger_key [$cfg_trigger_key]"
-
 [[ "$TMUX_MENUS_NO_DISPLAY" = "1" ]] && {
     # used for debugging menu builds
     log_it "Due to TMUX_MENUS_NO_DISPLAY terminating before binding trigger key"

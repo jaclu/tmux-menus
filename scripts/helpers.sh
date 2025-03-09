@@ -119,9 +119,8 @@ tmux_select_menu_handler() {
 get_config_uncached() {
     # reads config, and if allowed saves it to cache
 
-    log_it "get_config_uncached()"
+    # log_it "get_config_uncached()"
     $all_helpers_sourced || source_all_helpers "get_config_uncached()"
-    log_it "==== will call cache_config_get_save"
     cache_config_get_save
 }
 
@@ -156,7 +155,7 @@ get_config_refresh() {
     #  Retrieves cached env params, rebuilding the cache if tmux conf was
     #  more recent, or not found
     #
-    log_it "get_config_refresh()"
+    # log_it "get_config_refresh()"
 
     [ -f "$f_cache_params" ] && {
         # Only really need cfg_tmux_conf at this point
@@ -181,7 +180,7 @@ get_config_refresh() {
     else
         # Failed to find tmux conf, but since this is plugin init, play it safe
         # and recreate param cache
-        log_it "cfg_tmux_conf not found, manually updating cache"
+        # log_it "tmux conf and cache could not be verified, manually updating cache"
         get_config_uncached
     fi
 }
@@ -415,8 +414,8 @@ fi
 
 # shellcheck disable=SC2154
 if [ "$initialize_plugin" = "1" ]; then
-    log_it
-    log_it "$(date) - use_cache [$cfg_use_cache]"
+    # Create a LF in log_file to easier separate runs
+    # log_it
     rm -f "$f_cached_tmux_options"
     get_config_refresh
 else

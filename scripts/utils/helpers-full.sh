@@ -153,7 +153,7 @@ posix_get_char() {
     #  Configure terminal to read a single character without echoing,
     #  restoring the terminal and returning the char
     #
-    log_it "posix_get_char()"
+    # log_it "posix_get_char()"
 
     old_stty_cfg=$(stty -g)
     stty raw -echo
