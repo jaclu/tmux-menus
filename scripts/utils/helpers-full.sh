@@ -16,6 +16,8 @@
 #
 #---------------------------------------------------------------
 
+# profiling_display "[helpers-full] - start"
+
 error_msg() {
     #
     #  Display $1 as an error message in log and as a tmux display-message
@@ -196,6 +198,7 @@ normalize_bool_param() {
     nbp_param="$1"
     nbp_default="$2" # only used for tmux options
     nbp_variable_name=""
+    # profiling_display "[helpers-full] normalize_bool_param() starts"
 
     # log_it "normalize_bool_param($nbp_param, $nbp_default) [$nbp_variable_name]"
     [ "${nbp_param%"${nbp_param#?}"}" = "@" ] && {
@@ -208,9 +211,11 @@ normalize_bool_param() {
             error_msg "normalize_bool_param($nbp_param) - no default"
         }
         nbp_param="$(tmux_get_option "$nbp_param" "$nbp_default")" # TODO: profile this
+        # profiling_display "[helpers-full] tmux_get_option() - done"
     }
 
     nbp_value_lc="$(lowercase_it "$nbp_param")"
+    # profiling_display "[helpers-full] normalize_bool_param() - done"
 
     case "$nbp_value_lc" in
     #
