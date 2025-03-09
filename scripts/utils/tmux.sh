@@ -101,6 +101,7 @@ cache_tmux_options() {
     log_it "cache_tmux_options()  ==================="
     profiling_display "[tmux] cache_tmux_options()"
     tmux_error_handler show-options -g | grep ^@menus_ >"$f_cached_tmux_options"
+    profiling_display "[tmux] cache_tmux_options() - done"
 }
 
 tmux_get_option() {
