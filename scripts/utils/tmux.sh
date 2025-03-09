@@ -148,9 +148,9 @@ tmux_get_plugin_options() { # cache references
     $plugin_options_have_been_read && {
         error_msg "tmux_get_plugin_options() has already been called"
     }
-    profiling_display "[tmux] - tmux_get_plugin_options()"
+    profiling_display "[tmux] tmux_get_plugin_options()"
     tmux_get_defaults
-    profiling_display "[tmux] - tmux_get_defaults done"
+    profiling_display "[tmux] tmux_get_defaults done"
 
     if normalize_bool_param "@menus_use_cache" "$default_use_cache"; then
         cfg_use_cache=true
@@ -235,7 +235,7 @@ tmux_get_plugin_options() { # cache references
         cfg_use_notes=false
     fi
     plugin_options_have_been_read=true
-    # profiling_display "[tmux] - tmux_get_plugin_options() - done"
+    # profiling_display "[tmux] tmux_get_plugin_options() - done"
     # log_it "  tmux_get_plugin_options() - done"
 }
 
