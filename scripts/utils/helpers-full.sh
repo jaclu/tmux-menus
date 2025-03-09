@@ -216,7 +216,7 @@ normalize_bool_param() {
             error_msg "normalize_bool_param($nbp_param) - no default"
         }
         nbp_variable_name="$nbp_param"
-        nbp_param="$(tmux_get_option "$nbp_param" "$nbp_default")"
+        nbp_param="$(tmux_get_option "$nbp_variable_name" "$nbp_default")"
     }
 
     nbp_param="$(lowercase_it "$nbp_param")"
@@ -245,7 +245,7 @@ normalize_bool_param() {
         else
             prefix="$nbp_param"
         fi
-        error_msg "$prefix - should be yes/true or no/false"
+        error_msg "[$prefix] - should be yes/true or no/false"
         ;;
 
     esac
@@ -329,6 +329,7 @@ d_hints="$d_items"/hints
 d_custom_items="$D_TM_BASE_PATH"/custom_items
 f_custom_items_index="$d_custom_items"/_index.sh
 f_update_custom_inventory="$d_scripts"/update_custom_inventory.sh
+f_cached_tmux_options="$d_cache"/tmux_options
 
 # will be set to true at end of this, this indicates everything is prepared
 env_initialized=false
@@ -358,4 +359,4 @@ fi
 profiling_display "[helpers-full] - whiptail setup done"
 
 env_initialized=true # indicates that env is fully configured
-log_it "><> scripts/utils/helpers-full.sh - completed"
+#clog_it "><> scripts/utils/helpers-full.sh - completed"

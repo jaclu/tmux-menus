@@ -130,7 +130,7 @@ cached_ok_tmux_versions="$cached_ok_tmux_versions"
 cached_bad_tmux_versions="$cached_bad_tmux_versions"
 EOF
     #endregion
-    log_it "Saved known tmux versions"
+    # log_it "Saved known tmux versions"
 }
 
 cache_escape_special_chars() {
@@ -267,7 +267,7 @@ cache_update_param_cache() {
     # Reads plugin options from tmux and save the param cache, unless
     # cfg_use_cache is false
     #
-    log_it "cache_update_param_cache()"
+    # log_it "cache_update_param_cache()"
     tmux_get_plugin_options # ensure env is retrieved
     log_it "-----> after reading options cfg_use_cache is [$cfg_use_cache]"
     $cfg_use_cache && cache_param_write
@@ -281,4 +281,4 @@ cache_update_param_cache() {
 
 profiling_display "[cache] main"
 
-log_it "Completed: scripts/utils/cache.sh"
+# log_it "Completed: scripts/utils/cache.sh"

@@ -13,7 +13,7 @@
 tmux_vers_check_do_compare() {
     # Called fomh helpers.sh:tmux_vers_check if checked version was not cached
     _v_comp="$1"
-    log_it "tmux_vers_check_do_compare($_v_comp)"
+    # log_it "tmux_vers_check_do_compare($_v_comp)"
 
     # Compare numeric parts first for quick decisions.
     _i_comp="$(tpt_digits_from_string "$_v_comp")"
@@ -96,9 +96,10 @@ tmux_get_defaults() {
     # log_it "><>   tmux_get_defaults() - done"
 }
 
-tmux_is_option_defined() {
-    # log_it "><> tmux_is_option_defined($1)"
-    tmux_error_handler show-options -gq | grep -q "^$1"
+cache_tmux_options() {
+    [ -f "$f_cached_tmux_options" ] && return
+    # log_it "cache_tmux_options()"
+    tmux_error_handler show-options -g | grep ^@menus_ >"$f_cached_tmux_options"
 }
 
 tmux_get_option() {
@@ -118,25 +119,22 @@ tmux_get_option() {
         echo "$tgo_default"
         return
     fi
-
-    if tgo_value="$(tmux_error_handler show-options -gvq "$tgo_option" 2>/dev/null)"; then
-        [ -z "$tgo_value" ] && ! tmux_is_option_defined "$tgo_option" && {
-            #
-            #  Since tmux doesn't differentiate between the variable being absent
-            #  and being assigned to "", an extra check is done to see if it is
-            #  present, if not the default will be used
-            #
-            tgo_value="$tgo_default"
-        }
+    if $cfg_use_cache; then
+	cache_tmux_options
+	tgo_value="$(grep "$tgo_option" "$f_cached_tmux_options" 2>/dev/null)"
+	tgi_was_found="$?"
     else
-        #  All other versions correctly fails on unassigned @options
+	tgo_value="$($TMUX_BIN show-options -gv "$tgo_option" 2>/dev/null)"
+	tgo_was_found="$?"
+    fi
+    if [ "$tgo_was_found" != 0 ]; then
+        #
+        #  Since tmux doesn't differentiate between the variable being absent
+        #  and being assigned to "", use not found to select the default
+        #
         tgo_value="$tgo_default"
     fi
     echo "$tgo_value"
-
-    unset tgo_option
-    unset tgo_default
-    unset tgo_value
 }
 
 tmux_get_plugin_options() { # cache references

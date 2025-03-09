@@ -403,20 +403,20 @@ d_current_script="$(
 current_script=${0##*/}
 f_current_script="$d_current_script/$current_script"
 
-if [ -f "$f_no_cache_hint" ]; then
+if [ -d "$d_cache" ]; then
     # ensure no caching until the settings has been read
-    cfg_use_cache=false
-else
-    # Assume cache can be used, if this is not the case, this should be harmless
-    # since when no cache is detected tmux options will be read and true state
-    # for using cache will be detected
     cfg_use_cache=true
+else
+    # Assume cache is disabled, if this is not the case, this should be harmless
+    # since when tmux options will be read it will be used if enabled
+    cfg_use_cache=false
 fi
 
 # shellcheck disable=SC2154
 if [ "$initialize_plugin" = "1" ]; then
     log_it
     log_it "$(date) - use_cache [$cfg_use_cache]"
+    rm -f "$f_cached_tmux_options"
     get_config_refresh
 else
     get_config
