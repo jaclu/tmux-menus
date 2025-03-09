@@ -225,10 +225,11 @@ normalize_bool_param() {
             error_msg "normalize_bool_param($nbp_param) - no default"
         }
         nbp_param="$(tmux_get_option "$nbp_param" "$nbp_default")"
+        profiling_display "[helpers-full] tmux_get_option() - done"
     }
 
     nbp_value_lc="$(lowercase_it "$nbp_param")"
-    profiling_display "[helpers-full] normalize_bool_param() done"
+    profiling_display "[helpers-full] normalize_bool_param() - done"
 
     case "$nbp_value_lc" in
     #
