@@ -105,7 +105,6 @@ tmux_select_menu_handler() {
         # else
         # log_it "==> [helpers] Using tmux menu handler"
     fi
-    log_it "><> === Defined cfg_use_whiptail [$cfg_use_whiptail] & cfg_alt_menu_handler [$cfg_alt_menu_handler]"
 }
 
 #---------------------------------------------------------------

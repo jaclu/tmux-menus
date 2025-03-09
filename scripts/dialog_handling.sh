@@ -179,6 +179,10 @@ mnu_spacer() {
 }
 
 alt_prefix() {
+    case "$cfg_alt_menu_handler" in
+    whiptail | dialog) ;;
+    *) error_msg "Un-recognized cfg_alt_menu_handler: [$cfg_alt_menu_handler]" ;;
+    esac
     menu_items="$cfg_alt_menu_handler --menu \"$menu_name\" 0 0 0 "
 }
 
