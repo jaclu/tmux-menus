@@ -120,6 +120,7 @@ get_config_uncached() {
     # reads config, and if allowed saves it to cache
     log_it "get_config_uncached()"
     $all_helpers_sourced || source_all_helpers "get_config_uncached()"
+    log_it "==== will call cache_config_get_save"
     cache_config_get_save
 }
 
