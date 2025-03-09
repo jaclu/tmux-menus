@@ -891,7 +891,7 @@ fi
 profiling_display "[dialog_handling] sourced helpers"
 
 # Some sanity checks
-[ "$MENUS_PROFILING" != "1" ] && {
+[ "$TMUX_MENUS_NO_DISPLAY" != "1" ] && {
     [ -z "$TMUX" ] && error_msg_safe "$plugin_name can only be used inside tmux!"
 }
 [ -z "$menu_name" ] && error_msg_safe "menu_name not defined"
