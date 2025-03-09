@@ -77,9 +77,6 @@ error_msg() {
 
     [ "$exit_code" -gt -1 ] && exit "$exit_code"
 
-    unset em_msg
-    unset exit_code
-    unset do_display_message
 }
 
 error_msg_formated() {
@@ -111,9 +108,6 @@ error_msg_formated() {
     )"
     # posix way to wait forever - MacOS doesn't have: sleep infinity
     $TMUX_BIN new-window -n "tmux-error" "echo '$emf_msg' ; tail -f /dev/null "
-
-    # pointless since this is exiting, but that might change some day
-    unset emf_err emf_msg
 }
 
 display_message_hold() {
@@ -136,10 +130,7 @@ display_message_hold() {
 
         posix_get_char >/dev/null # wait for keypress
         $TMUX_BIN set -g display-time "$org_display_time" >/dev/null
-
-        unset org_display_time
     fi
-    unset dmh_msg
 }
 
 #---------------------------------------------------------------
@@ -155,20 +146,17 @@ posix_get_char() {
     #
     # log_it "posix_get_char()"
 
-    old_stty_cfg=$(stty -g)
+    _org_stty=$(stty -g)
     stty raw -echo
     dd bs=1 count=1 2>/dev/null
-    stty "$old_stty_cfg"
-
-    unset old_stty_cfg
+    stty "$_org_stty"
 }
 
 extract_char() {
     # log_it "extract_char($1,$2)"
-    str="$1"
-    pos="$2"
-    printf '%s\n' "$str" | cut -c "$pos"
-    unset str pos
+    _str="$1"
+    _pos="$2"
+    printf '%s\n' "$_str" | cut -c "$_pos"
 }
 
 lowercase_it() {
@@ -182,11 +170,9 @@ get_digits_from_string() {
     # `1.9a`     => `19`
 
     log_it "get_digits_from_string($1)"
-    s="$1"
-    i="$(echo "$s" | tr -dC '[:digit:]')"
+    _i="$(echo "$1" | tr -dC '[:digit:]')"
     # log_it "get_digits_from_string($s) -> [$i]"
-    echo "$i"
-    unset s i
+    echo "$_i"
 }
 
 normalize_bool_param() {

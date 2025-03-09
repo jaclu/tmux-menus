@@ -246,8 +246,6 @@ repo_last_changed=\"$repo_last_changed\"
 last_local_edit=\"$last_local_edit\"" >"$f_params_tmp"
     #endregion
 
-    unset repo_last_changed last_local_edit
-
     if [ ! -f "$f_cache_params" ]; then
         mv "$f_params_tmp" "$f_cache_params"
     elif ! diff -q "$f_params_tmp" "$f_cache_params" >/dev/null 2>&1; then
