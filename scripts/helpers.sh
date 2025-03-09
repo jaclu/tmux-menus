@@ -134,7 +134,7 @@ get_config() { # tmux stuff
     #  This is used by everything else sourcing helpers.sh, then trusting
     #  that the param cache is valid if found
     #
-    log_it "get_config()"
+    # log_it "get_config()"
     # profiling_display "[helpers] get_config()"
 
     if [ -f "$f_no_cache_hint" ]; then
@@ -143,7 +143,7 @@ get_config() { # tmux stuff
         # shellcheck disable=SC1090
         if . "$f_cache_params"; then
             cache_params_retrieved=1
-            log_it "><> cache_params_retrieved"
+            # log_it "><> cache_params_retrieved"
         else
             log_it "WARNING: failed to source: $f_cache_params, doing manual param read"
             get_config_uncached
@@ -213,10 +213,13 @@ select_safe_now_method() {
         # Non-standard devices still being Linux, such as termux
         selected_get_time_mthd="date"
     elif [ -n "$(command -v gdate)" ]; then
+        # The MacOS date doesn't support sub seconds, if gdate is available use it.
         selected_get_time_mthd="gdate"
     elif [ -n "$(command -v perl)" ]; then
+        # Slower than gdate but still useable, built-in on MacOS
         selected_get_time_mthd="perl"
     else
+        # Fallback
         selected_get_time_mthd="date"
     fi
     # log_it "[$0] Using  safe_now() timing method: $selected_get_time_mthd"
@@ -376,7 +379,6 @@ elif [ "$MENUS_PROFILING" = "1" ] && [ "$profiling_sourced" != "1" ]; then
     # copy the below code using absolute paths
     # shellcheck source=scripts/utils/dbg_profiling.sh
     . "$D_TM_BASE_PATH"/scripts/utils/dbg_profiling.sh
-    log_it "sourcing dbg_profiling.sh"
 fi
 
 # minimal support variables

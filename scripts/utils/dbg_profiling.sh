@@ -10,7 +10,9 @@
 #
 #  Some timing functions I use when I need to optimize performance
 #  Each printout displays both total run time and time since last update
-#  Unit is milliseconds
+#  Unit is milliseconds, in order to make the timing calculations quicker by
+#  using integers.
+#  Diffs smaller than miliseconds doesn't really matter in profiling anyhow...
 #
 #  Typical usage:
 #  In the script I want to optimize paste the code below, time starts when
@@ -88,11 +90,14 @@ profiling_select_timing_method() {
     elif [ "$(uname)" = "Linux" ]; then
         # Non-standard devices still being Linux, such as termux
         profiling_selected_get_time="date"
-    elif [ -n "$(command -v gdate2)" ]; then
+    elif [ -n "$(command -v gdate)" ]; then
+        # The MacOS date doesn't support sub seconds, if gdate is available use it.
         profiling_selected_get_time="gdate"
     elif [ -n "$(command -v perl)" ]; then
+        # Slower than gdate but still useable, built-in on MacOS
         profiling_selected_get_time="perl"
     else
+        # Fallback
         profiling_selected_get_time="date"
     fi
     _m="profiling is using timing method: $profiling_selected_get_time"
@@ -109,6 +114,8 @@ profiling_get_time() {
     perl) profiling_set_t_perl ;;
     *) profiling_select_timing_method ;;
     esac
+    # safe_now
+    # profiling_t_now="$t_now"
 
     [ -z "$profiling_t_start" ] && {
         profiling_t_start="$profiling_t_now"
@@ -127,8 +134,11 @@ profiling_get_time() {
 
 profiling_update_time_stamps() {
     profiling_get_time
+    # _since_start="$(echo "$profiling_t_now - $profiling_t_start" | bc)"
+    # _sine_update="$(echo "$profiling_t_now - $profiling_t_last_update" | bc)"
     _since_start=$((profiling_t_now - profiling_t_start))
     _sine_update=$((profiling_t_now - profiling_t_last_update))
+
     profiling_t_last_update="$profiling_t_now"
 }
 
@@ -142,6 +152,8 @@ profiling_display() {
     elif [ -n "$cfg_log_file" ]; then
         profiling_log_it "$_s"
     fi
+
+    echo "profiling_t_start [$profiling_t_start] _since_start [$_since_start] profiling_t_last_update [$profiling_t_last_update] _sine_update [$_sine_update]"
 
     # do it again to not count this update in processing time
     # only makes sense on slowish systems
