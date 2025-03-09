@@ -271,7 +271,9 @@ cache_config_get_save() {
     profiling_display "[cache] cache_config_get_save()"
 
     tmux_get_plugin_options # ensure env is retrieved
+    profiling_display "[cache] tmux_get_plugin_options - done"
     [ ! -f "$f_no_cache_hint" ] && $cfg_use_cache && cache_param_write
+    profiling_display "[cache] cache_param_write - done"
 }
 
 #===============================================================
