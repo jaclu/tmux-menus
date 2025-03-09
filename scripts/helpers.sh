@@ -340,10 +340,13 @@ cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
 #
 log_interactive_to_stderr=1
 
-if [ "$log_interactive_to_stderr" = "1" ] && [ "$TMUX_MENUS_FORCE_SILENT" = "1" ]; then
+[ "$log_interactive_to_stderr" = "1" ] && {
     # TMUX_MENUS_FORCE_SILENT overrides and disables log_interactive_to_stderr
-    log_interactive_to_stderr=0
-fi
+    case "$TMUX_MENUS_FORCE_SILENT" in
+    1 | 2) log_interactive_to_stderr=0 ;;
+    *) ;;
+    esac
+}
 
 cfg_use_whiptail=false
 plugin_options_have_been_read=false # only need to read param once

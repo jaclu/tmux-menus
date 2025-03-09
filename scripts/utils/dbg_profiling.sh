@@ -40,14 +40,20 @@ profiling_is_function_defined() {
     [ "$(command -v "$1")" = "$1" ]
 }
 
+profiling_display_it() {
+    printf '%s\n' "$@" >/dev/stderr
+}
+
 profiling_log_it() {
     # Only call log_it if it has been defined
     # During normal sourcing of this it has been, but if this is early sourced
     # in some other script, this is not initially available
     if [ -t 0 ] && [ "$TMUX_MENUS_FORCE_SILENT" != "2" ]; then
-        echo "$@" >/dev/stderr
+        profiling_display_it "$@"
     elif profiling_is_function_defined "log_it"; then
         log_it profiling "$@" || exit 2
+    elif [ -n "$cfg_log_file" ]; then
+        printf '%s\n' "[P-no log_it] $@" >>"$cfg_log_file"
     fi
 }
 
@@ -76,9 +82,9 @@ profiling_select_timing_method() {
             # play it safe and ensure exit happens...
             exit 2
         else
-            echo
-            echo "ERROR: $_m"
-            echo
+            profiling_display_it
+            profiling_display_it "ERROR: $_m"
+            profiling_display_it
             exit 2
         fi
     }
@@ -100,8 +106,6 @@ profiling_select_timing_method() {
         # Fallback
         profiling_selected_get_time="date"
     fi
-    _m="profiling is using timing method: $profiling_selected_get_time"
-    profiling_log_it "$_m"
 }
 
 profiling_get_time() {
@@ -148,12 +152,10 @@ profiling_display() {
 
     _s="$1 - total: $_since_start   since last: $_sine_update"
     if [ -t 0 ] && [ "$TMUX_MENUS_FORCE_SILENT" != "2" ]; then
-        echo "$_s" >/dev/stderr
+        printf '%s\n' "$_s" >/dev/stderr
     elif [ -n "$cfg_log_file" ]; then
         profiling_log_it "$_s"
     fi
-
-    # echo "profiling_t_start [$profiling_t_start] _since_start [$_since_start] profiling_t_last_update [$profiling_t_last_update] _sine_update [$_sine_update]"
 
     # do it again to not count this update in processing time
     # only makes sense on slowish systems
@@ -163,12 +165,15 @@ profiling_display() {
 profiling_sourced=1
 
 [ -t 0 ] && {
+    _m="Starting profiling for: $0 - using time method: $profiling_selected_get_time"
     case "$TMUX_MENUS_FORCE_SILENT" in
-    2 | 3) return ;;
+    2)
+        profiling_log_it
+        profiling_log_it "$_m"
+        ;;
+    3) return ;;
     *) ;;
     esac
 
-    echo
-    echo "Starting profiling for: $0"
-    echo
+    profiling_display_it "$_m"
 }
