@@ -841,12 +841,11 @@ display_menu() {
     safe_now
     _t="$(echo "$t_now - $dh_t_mnu_processing_start" | bc)"
 
-    [ "$TMUX_MENUS_FORCE_SILENT" = "3" ] && {
-        # Try to log this one even if other logging is disabled
-        TMUX_MENUS_FORCE_SILENT=1
-        log_it "Menu $(relative_path "$d_current_script")/$current_script - processing time:  $_t"
-    }
-    log_it "TMUX_MENUS_FORCE_SILENT: $TMUX_MENUS_FORCE_SILENT"
+    # Try to log this one even if other logging is disabled
+    [ "$TMUX_MENUS_FORCE_SILENT" = "3" ] && TMUX_MENUS_FORCE_SILENT=1
+    log_it "Menu $(relative_path "$d_current_script")/$current_script - processing time:  $_t"
+
+    [ "$TMUX_MENUS_NO_DISPLAY" = "1" ] && return
 
     if $cfg_use_whiptail; then
         # display whiptail menu
@@ -924,4 +923,4 @@ menu_debug="" # Set to 1 to use echo 2 to use log_it
 prepare_menu
 # profiling_display "[dialog_handling] prepare_menu() done"
 
-[ "$TMUX_MENUS_NO_DISPLAY" != "1" ] && display_menu
+display_menu
