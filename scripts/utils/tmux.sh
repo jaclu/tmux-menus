@@ -178,6 +178,7 @@ tmux_get_plugin_options() { # cache references
         log_it "><> touching: $f_no_cache_hint"
         touch "$f_no_cache_hint"
     fi
+    profiling_display "[tmux] normalize_bool_param done"
 
     cfg_trigger_key="$(tmux_get_option "@menus_trigger" "$default_trigger_key")"
     if normalize_bool_param "@menus_without_prefix" "$default_no_prefix"; then
