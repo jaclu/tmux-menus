@@ -153,7 +153,7 @@ profiling_display() {
         profiling_log_it "$_s"
     fi
 
-    echo "profiling_t_start [$profiling_t_start] _since_start [$_since_start] profiling_t_last_update [$profiling_t_last_update] _sine_update [$_sine_update]"
+    # echo "profiling_t_start [$profiling_t_start] _since_start [$_since_start] profiling_t_last_update [$profiling_t_last_update] _sine_update [$_sine_update]"
 
     # do it again to not count this update in processing time
     # only makes sense on slowish systems
