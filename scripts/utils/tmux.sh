@@ -98,7 +98,7 @@ tmux_get_defaults() {
 
 cache_tmux_options() {
     [ -f "$f_cached_tmux_options" ] && return
-    log_it "cache_tmux_options()  ==================="
+    # log_it "cache_tmux_options()"
     profiling_display "[tmux] cache_tmux_options()"
     tmux_error_handler show-options -g | grep ^@menus_ >"$f_cached_tmux_options"
     profiling_display "[tmux] cache_tmux_options() - done"
@@ -123,11 +123,11 @@ tmux_get_option() {
     fi
     if $cfg_use_cache && [ -d "$d_cache" ]; then
         cache_tmux_options
-        profiling_display "[tmux] cache_tmux_options done"
+        # profiling_display "[tmux] cache_tmux_options done"
 
         tgo_value="$(awk -v option="$tgo_option" \
             '$1 == option { gsub(/^"|"$/, "", $2); print $2 }' "$f_cached_tmux_options")"
-        profiling_display "[tmux] tgo_value defined"
+        # profiling_display "[tmux] tgo_value defined"
         # tgo_value="$(grep "$tgo_option" "$f_cached_tmux_options" 2>/dev/null |
         #     cut -d' ' -f2)"
 
@@ -138,11 +138,11 @@ tmux_get_option() {
         else
             tgo_was_found=0
         fi
-        profiling_display "[tmux] missing value checked"
+        # profiling_display "[tmux] missing value checked"
     else
         tgo_value="$($TMUX_BIN show-options -gv "$tgo_option" 2>/dev/null)"
         tgo_was_found="$?"
-        profiling_display "[tmux] show-options used"
+        # profiling_display "[tmux] show-options used"
     fi
     if [ "$tgo_was_found" != 0 ]; then
         #
@@ -196,7 +196,7 @@ tmux_get_plugin_options() { # cache references
         cfg_show_key_hints=false
     fi
 
-    profiling_display "[tmux] whiptail part starts"
+    # profiling_display "[tmux] whiptail part starts"
 
     if $cfg_use_whiptail; then
         _whiptail_ignore_msg="not used with whiptail"
@@ -228,7 +228,7 @@ tmux_get_plugin_options() { # cache references
         cfg_nav_prev="$(tmux_get_option "@menus_nav_prev" "$default_nav_prev")"
         cfg_nav_home="$(tmux_get_option "@menus_nav_home" "$default_nav_home")"
     fi
-    profiling_display "[tmux] whiptail part done"
+    # profiling_display "[tmux] whiptail part done"
 
     cfg_tmux_conf="$(tmux_get_option "@menus_config_file" "$default_tmux_conf")"
     _f="$(tmux_get_option "@menus_log_file" "$default_log_file")"
@@ -252,7 +252,7 @@ tmux_get_plugin_options() { # cache references
         cfg_use_notes=false
     fi
     plugin_options_have_been_read=true
-    profiling_display "[tmux] tmux_get_plugin_options() - done"
+    # profiling_display "[tmux] tmux_get_plugin_options() - done"
     # log_it "  tmux_get_plugin_options() - done"
 }
 
@@ -343,9 +343,9 @@ tmux_error_handler() { # cache references
 #
 
 if [ -n "$TMUX" ]; then
-    profiling_display "[tmux] will set tmux_pid"
+    # profiling_display "[tmux] will set tmux_pid"
     tmux_pid="$(echo "$TMUX" | cut -d',' -f2)"
-    profiling_display "[tmux] set tmux_pid"
+    # profiling_display "[tmux] set tmux_pid"
 else
     # was run outside tmux
     tmux_pid="-1"
