@@ -203,6 +203,7 @@ get_config_refresh() {
 
 select_safe_now_method() {
     # figure out what method to use and save the selection for future usage
+    # log_it "select_safe_now_method()"
     [ -n "$selected_get_time_mthd" ] && {
         # if this is called when the method was selected something is wrong...
         error_msg_safe "recursive call to: select_safe_now_method()"
@@ -249,7 +250,8 @@ tmux_vers_check() {
     _v_comp="$1" # Desired minimum version to check against
     # log_it "><> tmux_vers_check($_v_comp) $0"
 
-    # Retrieve and cache the current tmux version on the first call
+    # Retrieve and cache the current tmux version on the first call,
+    # unless it has been read from the param cache
     if [ -z "$tpt_current_vers" ] || [ -z "$tpt_current_vers_i" ]; then
         tpt_retrieve_running_tmux_vers
     fi
@@ -276,54 +278,12 @@ tmux_vers_check() {
         # During sourcing, other version checks might be done, thus
         # preserve the current version being inspected
         _preserve_check_version="$_v_comp"
-
         source_all_helpers "tmux_vers_check($_v_comp) - non-cached version"
         _v_comp="$_preserve_check_version"
     }
 
-    if tmux_vers_check_in_depth; then
-        return 0
-    else
-        return 1
-    fi
-}
-
-tmux_vers_check_in_depth() {
-    # Called fomh helpers.sh:tmux_vers_check if checked version was not cached
-    # log_it "tmux_vers_check_in_depth($_v_comp)"
-
-    # Compare numeric parts first for quick decisions.
-    _i_comp="$(tpt_digits_from_string "$_v_comp")"
-    [ "$_i_comp" -lt "$tpt_current_vers_i" ] && {
-        cache_add_ok_vers "$_v_comp"
-        return 0
-    }
-    [ "$_i_comp" -gt "$tpt_current_vers_i" ] && {
-        cache_add_bad_vers "$_v_comp"
-        return 1
-    }
-
-    # Compare suffixes only if numeric parts are equal.
-    _suf="$(tpt_tmux_vers_suffix "$_v_comp")"
-    # - If no suffix is required or suffix matches, return success
-    [ -z "$_suf" ] || [ "$_suf" = "$tpt_current_vers_suffix" ] && {
-        cache_add_ok_vers "$_v_comp"
-        return 0
-    }
-    # If the desired version has a suffix but the running version doesn't, fail
-    [ -n "$_suf" ] && [ -z "$tpt_current_vers_suffix" ] && {
-        cache_add_bad_vers "$_v_comp"
-        return 1
-    }
-    # Perform lexicographical comparison of suffixes only if necessary
-    [ "$(printf '%s\n%s\n' "$_suf" "$tpt_current_vers_suffix" |
-        LC_COLLATE=C sort | head -n 1)" = "$_suf" ] && {
-        cache_add_ok_vers "$_v_comp"
-        return 0
-    }
-    # If none of the above conditions are met, the version is insufficient
-    cache_add_bad_vers "$_v_comp"
-    return 1
+    # posix inherrits return code from last cmd
+    tmux_vers_check_do_compare "$_v_comp"
 }
 
 tpt_retrieve_running_tmux_vers() {

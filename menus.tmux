@@ -32,8 +32,6 @@
 
 D_TM_BASE_PATH="$(dirname -- "$(realpath "$0")")"
 
-. "$D_TM_BASE_PATH"/scripts/utils/dbg_profiling.sh
-
 #
 # tell helpers.sh to replace (potentially) cached params
 # if tmux version and env variables have not been changed,

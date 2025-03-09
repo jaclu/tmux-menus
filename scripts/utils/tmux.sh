@@ -10,6 +10,45 @@
 #
 # shellcheck disable=SC2034,SC2154
 
+tmux_vers_check_do_compare() {
+    # Called fomh helpers.sh:tmux_vers_check if checked version was not cached
+    _v_comp="$1"
+    log_it "tmux_vers_check_do_compare($_v_comp)"
+
+    # Compare numeric parts first for quick decisions.
+    _i_comp="$(tpt_digits_from_string "$_v_comp")"
+    [ "$_i_comp" -lt "$tpt_current_vers_i" ] && {
+        cache_add_ok_vers "$_v_comp"
+        return 0
+    }
+    [ "$_i_comp" -gt "$tpt_current_vers_i" ] && {
+        cache_add_bad_vers "$_v_comp"
+        return 1
+    }
+
+    # Compare suffixes only if numeric parts are equal.
+    _suf="$(tpt_tmux_vers_suffix "$_v_comp")"
+    # - If no suffix is required or suffix matches, return success
+    [ -z "$_suf" ] || [ "$_suf" = "$tpt_current_vers_suffix" ] && {
+        cache_add_ok_vers "$_v_comp"
+        return 0
+    }
+    # If the desired version has a suffix but the running version doesn't, fail
+    [ -n "$_suf" ] && [ -z "$tpt_current_vers_suffix" ] && {
+        cache_add_bad_vers "$_v_comp"
+        return 1
+    }
+    # Perform lexicographical comparison of suffixes only if necessary
+    [ "$(printf '%s\n%s\n' "$_suf" "$tpt_current_vers_suffix" |
+        LC_COLLATE=C sort | head -n 1)" = "$_suf" ] && {
+        cache_add_ok_vers "$_v_comp"
+        return 0
+    }
+    # If none of the above conditions are met, the version is insufficient
+    cache_add_bad_vers "$_v_comp"
+    return 1
+}
+
 tmux_get_defaults() {
     #
     #  Defaults for plugin params
