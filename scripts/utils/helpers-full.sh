@@ -42,7 +42,7 @@ error_msg() {
     em_msg="$1"
     exit_code="${2:-0}"
     do_display_message=${3:-true}
-    TMUX_MENUS_FORCE_SILENT=0  # errors should always be displayed
+    TMUX_MENUS_FORCE_SILENT=0 # errors should always be displayed
     log_it "error_msg($em_msg)"
 
     # with no tmux env, dumping it to stderr is the only option
@@ -215,43 +215,22 @@ normalize_bool_param() {
         [ -z "$nbp_default" ] && {
             error_msg "normalize_bool_param($nbp_param) - no default"
         }
-        nbp_variable_name="$nbp_param"
-        nbp_param="$(tmux_get_option "$nbp_variable_name" "$nbp_default")"
+        nbp_param="$(tmux_get_option "$nbp_param" "$nbp_default")"
     }
 
-    nbp_param="$(lowercase_it "$nbp_param")"
+    nbp_value_lc="$(lowercase_it "$nbp_param")"
 
-    case "$nbp_param" in
+    case "$nbp_value_lc" in
     #
+    #  Be a nice guy and accept some common positive notations
     #  Handle the unfortunate tradition in the tmux community to use
     #  1 to indicate selected / active.
     #  This means 1 is 0 and 0 is 1, how Orwellian...
     #
-    1 | yes | true)
-        #  Be a nice guy and accept some common positive notations
-        unset nbp_param nbp_default nbp_variable_name
-        return 0
-        ;;
-
-    0 | no | false)
-        #  Be a nice guy and accept some common false notations
-        unset nbp_param nbp_default nbp_variable_name
-        return 1
-        ;;
-
-    *)
-        if [ -n "$nbp_variable_name" ]; then
-            prefix="$nbp_variable_name=$nbp_param"
-        else
-            prefix="$nbp_param"
-        fi
-        error_msg "[$prefix] - should be yes/true or no/false"
-        ;;
-
+    1 | yes | true) return 0 ;;
+    0 | no | false) return 1 ;;
+    *) error_msg "[$nbp_value_lc] - should be yes/true/1 or no/false/0" ;;
     esac
-
-    # Should never get here...
-    error_msg "normalize_bool_param() - failed to evaluate $nbp_param"
 }
 
 has_lf_not_at_end() {

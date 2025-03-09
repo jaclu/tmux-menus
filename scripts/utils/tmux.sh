@@ -123,12 +123,25 @@ tmux_get_option() {
     fi
     if $cfg_use_cache && [ -d "$d_cache" ]; then
         cache_tmux_options
-        tgo_value="$(grep "$tgo_option" "$f_cached_tmux_options" 2>/dev/null)"
-        tgi_was_found="$?"
+
+        tgo_value="$(awk -v option="$tgo_option" \
+            '$1 == option { gsub(/^"|"$/, "", $2); print $2 }' "$f_cached_tmux_options")"
+        # tgo_value="$(grep "$tgo_option" "$f_cached_tmux_options" 2>/dev/null |
+        #     cut -d' ' -f2)"
+
+        if [ -z "$tgo_value" ] &&
+            ! grep -q "$tgo_option" "$f_cached_tmux_options" 2>/dev/null; then
+
+            tgo_was_found=1 # option not found
+        else
+            tgo_was_found=0
+        fi
+        profiling_display "cache read: tgo_value [$tgo_value] tgo_was_found [$tgo_was_found]"
     else
         log_it "reading from TMUX: $tgo_option"
         tgo_value="$($TMUX_BIN show-options -gv "$tgo_option" 2>/dev/null)"
         tgo_was_found="$?"
+        profiling_display "tmux read: tgo_value [$tgo_value] tgo_was_found [$tgo_was_found]"
     fi
     if [ "$tgo_was_found" != 0 ]; then
         #
@@ -137,6 +150,7 @@ tmux_get_option() {
         #
         tgo_value="$tgo_default"
     fi
+    profiling_display "tmux_get_option($tgo_option) returns [$tgo_value]"
     echo "$tgo_value"
 }
 
@@ -209,7 +223,12 @@ tmux_get_plugin_options() { # cache references
         cfg_format_title="$(tmux_get_option "@menus_format_title" \
             "$default_format_title")"
 
+        profiling_display "[tmux] setting nav_next from @menus_nav_next"
         cfg_nav_next="$(tmux_get_option "@menus_nav_next" "$default_nav_next")"
+        profiling_display "[tmux] initial cfg_nav_next [$cfg_nav_next]"
+        a="$(cache_escape_special_chars "$cfg_nav_next")"
+        profiling_display "[tmux] escaped cfg_nav_next [$a]"
+
         cfg_nav_prev="$(tmux_get_option "@menus_nav_prev" "$default_nav_prev")"
         cfg_nav_home="$(tmux_get_option "@menus_nav_home" "$default_nav_home")"
         cfg_mnu_loc_x="$(tmux_get_option "@menus_location_x" "$default_location_x")"
