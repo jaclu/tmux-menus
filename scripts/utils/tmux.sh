@@ -98,7 +98,7 @@ tmux_get_defaults() {
 
 cache_tmux_options() {
     [ -f "$f_cached_tmux_options" ] && return
-    # log_it "cache_tmux_options()"
+    log_it "cache_tmux_options()  ==================="
     tmux_error_handler show-options -g | grep ^@menus_ >"$f_cached_tmux_options"
 }
 
@@ -119,13 +119,14 @@ tmux_get_option() {
         echo "$tgo_default"
         return
     fi
-    if $cfg_use_cache; then
-	cache_tmux_options
-	tgo_value="$(grep "$tgo_option" "$f_cached_tmux_options" 2>/dev/null)"
-	tgi_was_found="$?"
+    if $cfg_use_cache && [ -d "$d_cache" ]; then
+        cache_tmux_options
+        tgo_value="$(grep "$tgo_option" "$f_cached_tmux_options" 2>/dev/null)"
+        tgi_was_found="$?"
     else
-	tgo_value="$($TMUX_BIN show-options -gv "$tgo_option" 2>/dev/null)"
-	tgo_was_found="$?"
+        log_it "reading from TMUX: $tgo_option"
+        tgo_value="$($TMUX_BIN show-options -gv "$tgo_option" 2>/dev/null)"
+        tgo_was_found="$?"
     fi
     if [ "$tgo_was_found" != 0 ]; then
         #
@@ -156,6 +157,8 @@ tmux_get_plugin_options() { # cache references
         cfg_use_cache=true
         log_it "><> removing: $f_no_cache_hint"
         rm -f "$f_no_cache_hint"
+        # do it as early as possible, so that tmux options can be cached
+        cache_create_folder
     else
         cfg_use_cache=false
         log_it "><> touching: $f_no_cache_hint"

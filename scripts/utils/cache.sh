@@ -23,9 +23,7 @@ cache_create_folder() {
         error_msg "variable d_cache undefined"
     }
 
-    mkdir -p "$d_cache" || {
-        error_msg "Failed to create cache folder: $d_cache"
-    }
+    mkdir -p "$d_cache" || error_msg "Failed to create cache folder: $d_cache"    }
 }
 
 cache_clear() { # only cache
