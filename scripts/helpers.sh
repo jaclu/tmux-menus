@@ -47,7 +47,6 @@ source_all_helpers() {
     }
     all_helpers_sourced=true # set it early to avoid recursion
 
-    #_d="${D_TM_BASE_PATH:-/tmp}"
     # shellcheck source=scripts/utils/helpers-full.sh
     . "$D_TM_BASE_PATH"/scripts/utils/helpers-full.sh
 }
@@ -87,7 +86,6 @@ tmux_select_menu_handler() {
         fi
         cfg_use_whiptail=true
         log_it "$_cmd is selected due to TMUX_MENU_HANDLER=1"
-        unset _cmd
     elif [ "$TMUX_MENU_HANDLER" = 2 ]; then
         _cmd=dialog
         if command -v "$_cmd" >/dev/null; then
@@ -97,7 +95,6 @@ tmux_select_menu_handler() {
         fi
         cfg_use_whiptail=true
         log_it "$_cmd is selected due to TMUX_MENU_HANDLER=2"
-        unset _cmd
     else
         cfg_use_whiptail=false
         cfg_alt_menu_handler=""
@@ -108,6 +105,7 @@ tmux_select_menu_handler() {
         # else
         # log_it "==> [helpers] Using tmux menu handler"
     fi
+    log_it "><> === Defined cfg_use_whiptail [$cfg_use_whiptail] & cfg_alt_menu_handler [$cfg_alt_menu_handler]"
 }
 
 #---------------------------------------------------------------
@@ -159,6 +157,7 @@ get_config_refresh() {
 
     [ -f "$f_cache_params" ] && {
         # Only really need cfg_tmux_conf at this point
+        # shellcheck disable=SC1090
         . "$f_cache_params" || {
             log_it "WARNING: Failed to source: $f_cache_params, removing it"
             rm -f "$f_cache_params"
@@ -210,7 +209,7 @@ select_safe_now_method() {
         # The MacOS date doesn't support sub seconds, if gdate is available use it.
         selected_get_time_mthd="gdate"
     elif [ -n "$(command -v perl)" ]; then
-        # Slower than gdate but still useable, built-in on MacOS
+        # Slower than gdate but still usable, built-in on MacOS
         selected_get_time_mthd="perl"
     else
         # Fallback
@@ -275,7 +274,7 @@ tmux_vers_check() {
         _v_comp="$_preserve_check_version"
     }
 
-    # posix inherrits return code from last cmd
+    # posix inherits return code from last cmd
     tmux_vers_check_do_compare "$_v_comp"
 }
 
@@ -364,7 +363,7 @@ if [ -z "$D_TM_BASE_PATH" ]; then
 fi
 
 if [ "$MENUS_PROFILING" != "1" ]; then
-    # profiling calls shoult not be left in the code base long term, this
+    # profiling calls should not be left in the code base long term, this
     # is primarily intended to capture them when profiling is temporarily disabled
 
     profiling_display() {
@@ -412,6 +411,8 @@ else
     cfg_use_cache=false
 fi
 
+tmux_select_menu_handler
+
 # shellcheck disable=SC2154
 if [ "$initialize_plugin" = "1" ]; then
     # Create a LF in log_file to easier separate runs
@@ -427,7 +428,5 @@ if ! tmux_vers_check "$min_tmux_vers"; then
     # @variables are not usable prior to 1.8
     error_msg "need at least tmux $min_tmux_vers to work!"
 fi
-
-tmux_select_menu_handler
 
 # log_it "><> scripts/helpers.sh - completed"

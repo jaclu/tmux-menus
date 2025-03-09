@@ -263,22 +263,20 @@ tmux_error_handler() { # cache references
         #
         #  First save the error to a named file
         #
-        base_fname="$(tr -cs '[:alnum:]._' '_' <"$f_tmux_err")"
-        [ -z "$base_fname" ] && base_fname="tmux-error"
-        f_error_log="$d_errors/error-$base_fname"
-        unset base_fname
+        _f_name="$(tr -cs '[:alnum:]._' '_' <"$f_tmux_err")"
+        [ -z "$_f_name" ] && _f_name="tmux-error"
+        f_error_log="$d_errors/error-$_f_name"
 
         [ -f "$f_error_log" ] && {
-            _i=1
-            f_error_log="${f_error_log}-$_i"
+            _idx=1
+            f_error_log="${f_error_log}-$_idx"
             while [ -f "$f_error_log" ]; do
-                _i=$((_i + 1))
-                f_error_log="${f_tmux_err}-$_i"
-                [ "$_i" -gt 1000 ] && {
-                    error_msg "Aborting runaway loop - _i=$_i"
+                _idx=$((_idx + 1))
+                f_error_log="${f_tmux_err}-$_idx"
+                [ "$_idx" -gt 1000 ] && {
+                    error_msg "Aborting runaway loop - _idx=$_idx"
                 }
             done
-            unset _i
         }
         (
             echo "\$TMUX_BIN $the_cmd"
@@ -301,10 +299,8 @@ tmux_error_handler() { # cache references
                     "$f_error_log"
             )"
         fi
-        unset f_error_log
         return 1
     }
-    unset the_cmd
     teh_debug=false
     return 0
 }

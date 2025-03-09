@@ -238,11 +238,6 @@ alt_command() {
     else
         wt_actions="$wt_actions $key_action | tmux_error_handler $cmd $external_action_separator"
     fi
-    unset label
-    unset key
-    unset cmd
-    unset keep_cmd
-    unset key_action
 }
 
 alt_text_line() {
@@ -273,7 +268,6 @@ add_uncached_item() {
     else
         uncached_menu="$_new_item"
     fi
-    unset _new_item
 }
 
 verify_menu_key() {
@@ -337,7 +331,6 @@ menu_parse() {
             else
                 mnu_command "$label" "$key" "$cmd" "$keep_cmd"
             fi
-            unset keep_cmd
             ;;
 
         E)
@@ -548,7 +541,6 @@ handle_dynamic() {
         dynamic_content
         is_dynamic_content=false
         wt_actions="$wt_actions_static"
-        unset wt_actions_static
     fi
 }
 
@@ -634,7 +626,6 @@ verify_menu_runable() {
         # log_it "$msg\n$escaped"
         # exit 1
     }
-    unset _actual_first _mnu_first
 }
 
 prepare_menu() {
@@ -710,7 +701,6 @@ ensure_menu_fits_on_screen() {
         # log_it "$_s"
         error_msg_safe "$_s"
     fi
-    unset disp_time
 }
 
 check_screen_size() {
@@ -845,7 +835,6 @@ display_menu() {
         eval "$menu_items"
 
         ensure_menu_fits_on_screen
-        unset dh_t_start
     fi
 }
 
