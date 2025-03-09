@@ -23,3 +23,18 @@ profiled outside tmux
 - `2` - profiling is redirected to log file
 - `3` - no output at all, neiter to /dev/stderr nor log file profiling will also
   be silenced. error_msg will override this and be displayed.
+
+tmux_get_plugin_options
+
+- retrieves from tmux, only relying on f_cached_tmux_options
+
+get_config
+
+- returns cache directly if found
+- reads from tmux - tmux_get_plugin_options
+- save if allowed
+
+get_config_refresh
+
+- removes old param cache if need be
+- cache_config_get_save

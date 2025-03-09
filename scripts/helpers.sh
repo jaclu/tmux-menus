@@ -116,19 +116,11 @@ tmux_select_menu_handler() {
 #
 #---------------------------------------------------------------
 
-update_config() {
-    log_it "update_config() [$all_helpers_sourced]"
-    $all_helpers_sourced || source_all_helpers "update_config()"
-    cache_update_param_cache
-}
-
 get_config_uncached() {
+    # reads config, and if allowed saves it to cache
     log_it "get_config_uncached()"
-    # probably not needed at this point, further optimization needed...
     $all_helpers_sourced || source_all_helpers "get_config_uncached()"
-
-    # not using cache, read all cfg variables
-    tmux_get_plugin_options
+    cache_config_get_save
 }
 
 get_config() { # tmux stuff
@@ -153,11 +145,7 @@ get_config() { # tmux stuff
         return 0
     else
         log_it "WARNING: no f_no_cache_hint and no f_cache_params!"
-        if $cfg_use_cache; then
-            update_config
-        else
-            get_config_uncached
-        fi
+        get_config_uncached
     fi
 }
 
@@ -173,7 +161,8 @@ get_config_refresh() {
         . "$f_cache_params" || {
             log_it "WARNING: Failed to source: $f_cache_params, removing it"
             rm -f "$f_cache_params"
-            update_config
+            $all_helpers_sourced || source_all_helpers "get_config_refresh()"
+            cfg_tmux_conf="$(tmux_get_option "@menus_config_file" "$default_tmux_conf")"
             return
         }
     }
@@ -185,13 +174,13 @@ get_config_refresh() {
         #
         [ -n "$(find "$cfg_tmux_conf" -newer "$f_cache_params" 2>/dev/null)" ] && {
             log_it "$cfg_tmux_conf has been updated, parse again for current settings"
-            update_config
+            get_config_uncached
         }
     else
         # Failed to find tmux conf, but since this is plugin init, play it safe
         # and recreate param cache
         log_it "cfg_tmux_conf not found, manually updating cache"
-        update_config
+        get_config_uncached
     fi
 }
 

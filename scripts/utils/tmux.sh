@@ -157,7 +157,7 @@ tmux_get_plugin_options() { # cache references
         cfg_use_cache=true
         log_it "><> removing: $f_no_cache_hint"
         rm -f "$f_no_cache_hint"
-        # do it as early as possible, so that tmux options can be cached
+        # do it as early as possible, so that further tmux options are cached
         cache_create_folder
     else
         cfg_use_cache=false

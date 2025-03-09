@@ -23,7 +23,7 @@ cache_create_folder() {
         error_msg "variable d_cache undefined"
     }
 
-    mkdir -p "$d_cache" || error_msg "Failed to create cache folder: $d_cache"    }
+    mkdir -p "$d_cache" || error_msg "Failed to create cache folder: $d_cache" }
 }
 
 cache_clear() { # only cache
@@ -260,15 +260,15 @@ EOF
     return 0
 }
 
-cache_update_param_cache() {
+# cache_update_param_cache()
+cache_config_get_save() {
     #
     # Reads plugin options from tmux and save the param cache, unless
     # cfg_use_cache is false
     #
-    # log_it "cache_update_param_cache()"
+    log_it "cache_config_get_save()"
     tmux_get_plugin_options # ensure env is retrieved
-    log_it "-----> after reading options cfg_use_cache is [$cfg_use_cache]"
-    $cfg_use_cache && cache_param_write
+    [ ! -f "$f_no_cache_hint" ] && $cfg_use_cache && cache_param_write
 }
 
 #===============================================================
