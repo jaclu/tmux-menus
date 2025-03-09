@@ -136,12 +136,9 @@ tmux_get_option() {
         else
             tgo_was_found=0
         fi
-        profiling_display "cache read: tgo_value [$tgo_value] tgo_was_found [$tgo_was_found]"
     else
-        log_it "reading from TMUX: $tgo_option"
         tgo_value="$($TMUX_BIN show-options -gv "$tgo_option" 2>/dev/null)"
         tgo_was_found="$?"
-        profiling_display "tmux read: tgo_value [$tgo_value] tgo_was_found [$tgo_was_found]"
     fi
     if [ "$tgo_was_found" != 0 ]; then
         #
@@ -150,7 +147,6 @@ tmux_get_option() {
         #
         tgo_value="$tgo_default"
     fi
-    profiling_display "tmux_get_option($tgo_option) returns [$tgo_value]"
     echo "$tgo_value"
 }
 
