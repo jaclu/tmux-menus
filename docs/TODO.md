@@ -4,8 +4,8 @@
 
 ### iSH
 
-- param cache isnt replaced
-- clear cache/items, to ensure incorrect cache isnt used
+- param cache isn't replaced
+- clear cache/items, to ensure incorrect cache isn't used
 
 ## Pane titles
 
