@@ -5,9 +5,9 @@
 Noticed on: iSH MacOs
 
 When switching from normal menus to whiptail using `export TMUX_MENU_HANDLER=1`
-Despite menus.tmux giving thie output
+Despite menus.tmux giving this output
 
-```
+```log
 [11:29:41] whiptail is selected due to TMUX_MENU_HANDLER=1
 [11:29:41] ==> [helpers] Using Alternate dialog handler: whiptail
 ```
