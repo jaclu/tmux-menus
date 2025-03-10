@@ -17,4 +17,3 @@ See if instead of just displaying defaults as (x) , displaying current
 binding as [x] is possible
 
 Seems hard to implement, left as a long term goal
-
