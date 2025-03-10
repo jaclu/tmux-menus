@@ -60,10 +60,6 @@ relative_path() {
 }
 
 tmux_select_menu_handler() {
-    # support old env variable, cam be deleted eventually 241220
-    # log_it "><> tmux_select_menu_handler()"
-    # [ -n "$FORCE_WHIPTAIL_MENUS" ] && TMUX_MENU_HANDLER="$FORCE_WHIPTAIL_MENUS"
-
     #
     # If an older version is used, or TMUX_MENU_HANDLER is 1/2
     # set cfg_use_whiptail true
