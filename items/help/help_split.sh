@@ -23,11 +23,6 @@ dynamic_content() {
 }
 
 static_content() {
-    #
-    #  TODO: For odd reasons this title needs multiple right padding spaces,
-    #        in order to actually print one, figure out what's going on
-    #
-
     set -- \
         0.0 S \
         0.0 T "-#[nodim]Creating a new pane by" \

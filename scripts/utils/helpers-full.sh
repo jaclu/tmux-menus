@@ -210,7 +210,7 @@ normalize_bool_param() {
         [ -z "$nbp_default" ] && {
             error_msg "normalize_bool_param($nbp_param) - no default"
         }
-        nbp_param="$(tmux_get_option "$nbp_param" "$nbp_default")" # TODO: profile this
+        nbp_param="$(tmux_get_option "$nbp_param" "$nbp_default")"
         # profiling_display "[helpers-full] tmux_get_option() - done"
     }
 
