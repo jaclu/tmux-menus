@@ -410,8 +410,10 @@ else
     cfg_use_cache=false
 fi
 
-[ "$initialize_plugin" = "1" ] && return
 
+[ "$initialize_plugin" = "1" ] && {
+    return
+}
 
 get_config
 
