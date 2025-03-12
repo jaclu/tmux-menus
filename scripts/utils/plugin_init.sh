@@ -14,7 +14,7 @@
 #
 #---------------------------------------------------------------
 
-basic_log() {
+log_basic() {
     if log_file_writeable; then
         log_it "$1"
     else
@@ -26,7 +26,7 @@ basic_log() {
     fi
 }
 
-basic_err() {
+error_basic() {
     # Used before the env is setup, and normal error handling is unavailable
     err_msg="ERROR: $plugin_name - $1"
     if log_file_writeable; then
@@ -42,18 +42,6 @@ basic_err() {
 
 log_file_unset() {
     cfg_log_file=""
-}
-
-prepare_cach() {
-    if $cfg_use_cache; then
-        cache_add_ok_vers "$tpt_current_vers"
-
-        if [[ -d "$d_custom_items" ]]; then
-            $f_update_custom_inventory
-        fi
-    else
-        log_it "-->  cache is disabled!  <--"
-    fi
 }
 
 log_file_writeable() {
@@ -81,10 +69,58 @@ log_file_writeable() {
 #
 #---------------------------------------------------------------
 
+get_config_refresh() {
+    #
+    #  Retrieves cached env params, rebuilding the cache if tmux conf was
+    #  more recent, or not found
+    #
+    log_basic "get_config_refresh()"
+    # profiling_display "[helpers] get_config_refresh()"
+
+    [[ -f "$f_cache_params" ]] && {
+        # Only really need cfg_tmux_conf at this point
+        # shellcheck disable=SC1090
+        . "$f_cache_params" || {
+            log_basic "WARNING: Failed to source: $f_cache_params, removing it"
+            rm -f "$f_cache_params"
+            cfg_tmux_conf="$(tmux_get_option "@menus_config_file" "$default_tmux_conf")"
+            return
+        }
+    }
+
+    if [[ -f "$cfg_tmux_conf" ]] && [[ -f "$f_cache_params" ]]; then
+        #
+        # if the wrong tmux conf was provided, don't see it as an error, just
+        # skip checking age of config file vs cache
+        #
+        [[ -n "$(find "$cfg_tmux_conf" -newer "$f_cache_params" 2>/dev/null)" ]] && {
+            log_basic "$cfg_tmux_conf has been updated, parse again for current settings"
+            get_config_uncached
+        }
+    else
+        # Failed to find tmux conf, but since this is plugin init, play it safe
+        # and recreate param cache
+        # log_basic "tmux conf and cache could not be verified, manually updating cache"
+        get_config_uncached
+    fi
+}
+
+prepare_cach() {
+    if $cfg_use_cache; then
+        cache_add_ok_vers "$tpt_current_vers"
+
+        if [[ -d "$d_custom_items" ]]; then
+            $f_update_custom_inventory
+        fi
+    else
+        log_basic "-->  cache is disabled!  <--"
+    fi
+}
+
 bind_plugin_key() {
     if $cfg_use_whiptail; then
         bind_cmd="$d_scripts/external_dialog_trigger.sh"
-        log_it "alternate menu handler: $cfg_alt_menu_handler"
+        log_basic "alternate menu handler: $cfg_alt_menu_handler"
     else
         bind_cmd="$d_items/main.sh"
     fi
@@ -104,7 +140,7 @@ bind_plugin_key() {
     # shellcheck disable=SC2154
     [[ "$TMUX_MENUS_NO_DISPLAY" = "1" ]] && {
         # used for debugging menu builds
-        log_it "Due to TMUX_MENUS_NO_DISPLAY terminating before binding trigger key"
+        log_basic "Due to TMUX_MENUS_NO_DISPLAY terminating before binding trigger key"
         exit 0
     }
 
@@ -113,7 +149,7 @@ bind_plugin_key() {
         error_msg_safe "Failed to bind trigger: $trigger_sequence"
     }
 
-    log_it "$trigger_sequence"
+    log_basic "$trigger_sequence"
 }
 
 #===============================================================
@@ -134,21 +170,18 @@ $all_helpers_sourced || source_all_helpers "always done by menus.tmux"
 
 # log_interactive_to_stderr=0
 
+
 if [[ -d "$d_cache" ]]; then
     d_work_space="$d_cache"
     # clear out obsolete cache items
     # rm -f "$f_cached_tmux_options"
 else
     d_work_space="$(mktemp -d -t "tmux-menus-$(id -u)-$$-XXXX")"
-    [[ -z "$d_work_space" ]] && err_basic "Failed to create temp workspace"
+    [[ -z "$d_work_space" ]] && error_basic "Failed to create temp workspace"
 fi
 
-
 # Create a LF in log_file to easier separate runs
-# log_it
 log_file_writeable && log_it
-
-# exit 1
 get_config_refresh
 
 prepare_cach

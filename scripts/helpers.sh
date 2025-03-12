@@ -147,43 +147,6 @@ get_config() { # tmux stuff
     fi
 }
 
-get_config_refresh() {
-    #
-    #  Retrieves cached env params, rebuilding the cache if tmux conf was
-    #  more recent, or not found
-    #
-    # log_it "get_config_refresh()"
-    # profiling_display "[helpers] get_config_refresh()"
-
-    [ -f "$f_cache_params" ] && {
-        # Only really need cfg_tmux_conf at this point
-        # shellcheck disable=SC1090
-        . "$f_cache_params" || {
-            log_it "WARNING: Failed to source: $f_cache_params, removing it"
-            rm -f "$f_cache_params"
-            $all_helpers_sourced || source_all_helpers "get_config_refresh()"
-            cfg_tmux_conf="$(tmux_get_option "@menus_config_file" "$default_tmux_conf")"
-            return
-        }
-    }
-
-    if [ -f "$cfg_tmux_conf" ] && [ -f "$f_cache_params" ]; then
-        #
-        # if the wrong tmux conf was provided, don't see it as an error, just
-        # skip checking age of config file vs cache
-        #
-        [ -n "$(find "$cfg_tmux_conf" -newer "$f_cache_params" 2>/dev/null)" ] && {
-            log_it "$cfg_tmux_conf has been updated, parse again for current settings"
-            get_config_uncached
-        }
-    else
-        # Failed to find tmux conf, but since this is plugin init, play it safe
-        # and recreate param cache
-        # log_it "tmux conf and cache could not be verified, manually updating cache"
-        get_config_uncached
-    fi
-}
-
 #---------------------------------------------------------------
 #
 #   get a time stamp
