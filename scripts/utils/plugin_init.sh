@@ -19,10 +19,9 @@ basic_log() {
         log_it "$1"
     else
         _m="[bl] $1"
-       [[ -t 0 ]] && {
+        [[ -t 0 ]] && {
             echo "$1">/dev/stderr
         }
-        # shellcheck disable=SC2154
         $TMUX_BIN display-message "[$plugin_name]$1"
     fi
 }
@@ -33,7 +32,7 @@ basic_err() {
     if log_file_writeable; then
         log_it "$err_msg"
     else
-       [[ -t 0 ]] && {
+        [[ -t 0 ]] && {
             echo "$err_msg" >/dev/stderr
         }
     fi
@@ -46,12 +45,9 @@ log_file_unset() {
 }
 
 prepare_cach() {
-    # shellcheck disable=SC2154
     if $cfg_use_cache; then
-        # shellcheck disable=SC2154
         cache_add_ok_vers "$tpt_current_vers"
 
-        # shellcheck disable=SC2154
         if [[ -d "$d_custom_items" ]]; then
             $f_update_custom_inventory
         fi
@@ -105,6 +101,7 @@ bind_plugin_key() {
     fi
     cmd+=" $cfg_trigger_key  run-shell $bind_cmd"
 
+    # shellcheck disable=SC2154
     [[ "$TMUX_MENUS_NO_DISPLAY" = "1" ]] && {
         # used for debugging menu builds
         log_it "Due to TMUX_MENUS_NO_DISPLAY terminating before binding trigger key"
@@ -127,24 +124,21 @@ bind_plugin_key() {
 
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(dirname -- "$(realpath "$0")")")")"
 
-# shellcheck disable=SC2034
 initialize_plugin=1
 
-# shellcheck source=/dev/null  # can't read source when mixing bah & posix
+# can't read source when mixing bah & posix
+# shellcheck disable=SC2154,SC2001,SC2292 source=scripts/helpers.sh
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
-# shellcheck disable=SC2154
 $all_helpers_sourced || source_all_helpers "always done by menus.tmux"
 
 # log_interactive_to_stderr=0
 
-# shellcheck disable=SC2154
 if [[ -d "$d_cache" ]]; then
     d_work_space="$d_cache"
     # clear out obsolete cache items
     # rm -f "$f_cached_tmux_options"
 else
-    # shellcheck disable=SC2154
     d_work_space="$(mktemp -d -t "tmux-menus-$(id -u)-$$-XXXX")"
     [[ -z "$d_work_space" ]] && err_basic "Failed to create temp workspace"
 fi
