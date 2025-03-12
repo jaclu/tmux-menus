@@ -403,7 +403,6 @@ current_script=${0##*/}
 f_current_script="$d_current_script/$current_script"
 
 if [ -d "$d_cache" ]; then
-    # ensure no caching until the settings has been read
     cfg_use_cache=true
 else
     # Assume cache is disabled, if this is not the case, this should be harmless
@@ -411,17 +410,13 @@ else
     cfg_use_cache=false
 fi
 
-tmux_select_menu_handler
+[ "$initialize_plugin" = "1" ] && return
 
-# shellcheck disable=SC2154
-if [ "$initialize_plugin" = "1" ]; then
-    # Create a LF in log_file to easier separate runs
-    # log_it
-    rm -f "$f_cached_tmux_options"
-    get_config_refresh
-else
-    get_config
-fi
+
+get_config
+
+# change this to use settings
+tmux_select_menu_handler
 
 min_tmux_vers="1.8"
 if ! tmux_vers_check "$min_tmux_vers"; then

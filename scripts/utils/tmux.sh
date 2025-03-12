@@ -334,6 +334,8 @@ tmux_error_handler() { # cache references
 #  plugin.
 #
 
+[ "$initialize_plugin" = "1" ] && return
+
 if [ -n "$TMUX" ]; then
     tmux_pid="$(echo "$TMUX" | cut -d',' -f2)"
 else
