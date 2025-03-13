@@ -533,7 +533,7 @@ handle_static_cached() {
 
         [ "$menu_name" = "Main menu" ] && {
             # give branch hint on main menu
-            menu_name="$menu_name [$(cd "$D_TM_BASE_PATH" ; git branch --show-current)]"
+            menu_name="$menu_name [$(cd "$D_TM_BASE_PATH" && git branch --show-current)]"
         }
         # now static content can be cached
         static_content
