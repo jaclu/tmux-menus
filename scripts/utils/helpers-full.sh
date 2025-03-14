@@ -198,7 +198,7 @@ normalize_bool_param() {
     nbp_variable_name=""
     # profiling_display "[helpers-full] normalize_bool_param() starts"
 
-    log_it "normalize_bool_param($nbp_param, $nbp_default) [$nbp_variable_name]"
+    # log_it "normalize_bool_param($nbp_param, $nbp_default) [$nbp_variable_name]"
     [ "${nbp_param%"${nbp_param#?}"}" = "@" ] && {
         #
         #  If it starts with "@", assume it is a tmux option, thus
@@ -209,11 +209,11 @@ normalize_bool_param() {
             error_msg "normalize_bool_param($nbp_param) - no default"
         }
         tmux_get_option nbp_param "$nbp_param" "$nbp_default"
-        log_it "><> normalize_bool_param() - found: $nbp_param"
         # profiling_display "[helpers-full] tmux_get_option() - done"
     }
 
     nbp_value_lc="$(lowercase_it "$nbp_param")"
+    # log_it "><> normalize_bool_param() - found: $nbp_value_lc"
     # profiling_display "[helpers-full] normalize_bool_param() - done"
 
     case "$nbp_value_lc" in

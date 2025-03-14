@@ -43,7 +43,7 @@ get_mtime() {
 debug_print() {
     case "$menu_debug" in
     "") ;; # not active
-    1) echo "$1" ;;
+    1) print_stderr "$1" ;;
     2) log_it "$1" ;;
     *)
         error_msg_safe "$menu_debug state invalid [$menu_debug] should be 1 or 2! p1[$1]"
@@ -452,7 +452,6 @@ menu_parse() {
         esac
     done
 
-    # log_it "><> will perhaps write"
     if $cfg_use_cache; then
         log_it "Caching: $(relative_path "$f_cache_file")"
         echo "$menu_items" >"$f_cache_file" || {
@@ -704,7 +703,6 @@ ensure_menu_fits_on_screen() {
     # log_it "ensure_menu_fits_on_screen() Menu $current_script - Display time:  $disp_time"
 
     if [ "$(echo "$disp_time < 0.5" | bc)" -eq 1 ]; then
-        log_it
         $all_helpers_sourced || {
             source_all_helpers "ensure_menu_fits_on_screen()  short display, give warning"
         }

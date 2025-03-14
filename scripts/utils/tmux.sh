@@ -14,7 +14,7 @@ tmux_vers_check_do_compare() {
     # Called fomh helpers.sh:tmux_vers_check if checked version was not cached
     _v_comp="$1"
     [ -z "$_v_comp" ] && error_msg "tmux_vers_check_do_compare() - no param!"
-    log_it "tmux_vers_check_do_compare($_v_comp)"
+    # log_it "tmux_vers_check_do_compare($_v_comp)"
 
     # Compare numeric parts first for quick decisions.
     tpt_digits_from_string _i_comp "$_v_comp"
@@ -96,14 +96,15 @@ tmux_get_defaults() {
     default_log_file=""
 }
 
-cache_tmux_options() {
+cache_save_options_defined_in_tmux() {
     [ -f "$f_cached_tmux_options" ] && return
-    # log_it "cache_tmux_options()"
-    # profiling_display "[tmux] cache_tmux_options()"
+    # log_it "cache_save_options_defined_in_tmux()"
+    # profiling_display "[tmux] cache_save_options_defined_in_tmux()"
     $TMUX_BIN show-options -g | grep ^@menus_ >"$f_cached_tmux_options"
     $TMUX_BIN show-options -g | grep @use_bind_key_notes_in_plugins \
         >>"$f_cached_tmux_options"
-    # profiling_display "[tmux] cache_tmux_options() - done"
+    log_it "  <-- cache_save_options_defined_in_tmux() - wrote: $f_cached_tmux_options"
+    # profiling_display "[tmux] cache_save_options_defined_in_tmux() - done"
 }
 
 tmux_get_option() {
@@ -111,7 +112,7 @@ tmux_get_option() {
     tgo_option="$2"
     tgo_default="$3"
 
-    log_it "tmux_get_option($tgo_varname, $tgo_option, $tgo_default)"
+    # log_it "tmux_get_option($tgo_varname, $tgo_option, $tgo_default)"
 
     [ -z "$tgo_varname" ] && error_msg "tmux_get_option() param 1 empty!"
     [ -z "$tgo_option" ] && error_msg "tmux_get_option() param 2 empty!"
@@ -129,8 +130,8 @@ tmux_get_option() {
     fi
 
     if $cfg_use_cache && [ -d "$d_cache" ]; then
-        cache_tmux_options
-        # profiling_display "[tmux] cache_tmux_options done"
+        cache_save_options_defined_in_tmux
+        # profiling_display "[tmux] cache_save_options_defined_in_tmux done"
 
         tgo_value="$(awk -v option="$tgo_option" \
             '$1 == option { gsub(/^"|"$/, "", $2); print $2 }' "$f_cached_tmux_options")"
@@ -145,7 +146,7 @@ tmux_get_option() {
         fi
         # profiling_display "[tmux] missing value checked"
     else
-        log_it "><> tmux_get_option() - not using cache"
+        log_it "><> tmux_get_option($tgo_option) - not using cache"
 
         tgo_value="$($TMUX_BIN show-options -gv "$tgo_option" 2>/dev/null)"
         tgo_was_found="$?"
@@ -159,7 +160,7 @@ tmux_get_option() {
         #
         tgo_value="$tgo_default"
     fi
-    log_it "tmux_get_option() - using [$tgo_value]"
+    # log_it "tmux_get_option() - using [$tgo_value]"
     eval "$tgo_varname=\$tgo_value"
 }
 
@@ -190,8 +191,13 @@ tmux_get_plugin_options() { # cache references
     fi
     # profiling_display "[tmux] normalize_bool_param done"
 
-    #cfg_trigger_key="$(tmux_get_option_old "@menus_trigger" "$default_trigger_key")"
+    select_menu_handler
+
+    # [ "$current_script" = "plugin_init.sh" ] && {
+    #     # Since this is only needed by plugin_init.sh, save some time
+    #     # when @menus_use_cache is No and skip this one for menu items
     tmux_get_option cfg_trigger_key "@menus_trigger" "$default_trigger_key"
+    # }
 
     if normalize_bool_param "@menus_without_prefix" "$default_no_prefix"; then
         cfg_no_prefix=true
@@ -244,12 +250,11 @@ tmux_get_plugin_options() { # cache references
     fi
     # profiling_display "[tmux] whiptail part done"
 
-    tmux_get_option cfg_tmux_conf "@menus_config_file" "$default_tmux_conf"
-    tmux_get_option _f "@menus_log_file" "$default_log_file"
-    [ -z "$cfg_log_file" ] && [ -n "$_f" ] && {
+    [ -z "$cfg_log_file" ] && {
         #  If a debug logfile has been set, the tmux setting will be ignored.
-        cfg_log_file="$_f"
+        tmux_get_option cfg_log_file "@menus_log_file" "$default_log_file"
     }
+
     #
     #  Generic plugin setting I use to add Notes to keys that are bound
     #  This makes this key binding show up when doing <prefix> ?

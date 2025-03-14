@@ -17,14 +17,13 @@
 #---------------------------------------------------------------
 
 cache_create_folder() {
-    # log_it "cache_create_folder() - $d_cache"
     $cfg_use_cache || error_msg "cache_create_folder() - called when cache is disabled"
     [ -z "$d_cache" ] && {
         error_msg "variable d_cache undefined"
     }
-
     [ -d "$d_cache" ] && return 0 # already created
 
+    log_it "cache_create_folder() - $d_cache"
     mkdir -p "$d_cache" || {
         error_msg "Failed to create cache folder: $d_cache"
         # Disabling cache
@@ -45,6 +44,9 @@ cache_clear() {
 
     rm -rf "$d_cache"
     cache_prepare
+
+    # might as well do it now, to save processing time on next call
+    cache_save_options_defined_in_tmux
 
     # Invalidate what might have already been sourced
     cached_ok_tmux_versions=""
@@ -231,6 +233,8 @@ last_local_edit=\"$last_local_edit\"" >"$_f_params_tmp"
     # profiling_display "[cache] write $_f_params_tmp - done"
 
     if [ ! -f "$f_cache_params" ]; then
+        log_it "  cache_param_write() - Creating: $f_cache_params"
+        cache_clear "No $f_cache_params found"
         mv "$_f_params_tmp" "$f_cache_params"
     elif ! diff -q "$_f_params_tmp" "$f_cache_params" >/dev/null 2>&1; then
         # diff reports success if files don't fiffer, hence the !
@@ -244,7 +248,7 @@ last_local_edit=\"$last_local_edit\"" >"$_f_params_tmp"
         touch "$f_cache_params"
     fi
     unset _f_params_tmp # since its gone, ensure nothing tries to reference it
-    return 0
+    return 0            # cache was or is now valid
 }
 
 # cache_update_param_cache()
@@ -252,15 +256,24 @@ cache_config_get_save() {
     #
     # Reads plugin options from tmux and save the param cache, unless
     # cfg_use_cache is false
+    # returns true if cache was written, otherwise false
     #
-    # log_it "cache_config_get_save()"
+    log_it "cache_config_get_save()"
     # profiling_display "[cache] cache_config_get_save()"
 
     tmux_get_plugin_options # ensure env is retrieved
 
     # profiling_display "[cache] tmux_get_plugin_options - done"
-    [ ! -f "$f_no_cache_hint" ] && $cfg_use_cache && cache_param_write
-    # profiling_display "[cache] cache_param_write - done"
+    if [ ! -f "$f_no_cache_hint" ] && $cfg_use_cache; then
+        cache_param_write
+        profiling_display "[cache] cache_param_write - done"
+        return 0
+    else
+        log_it "didn't save due to:"
+        [ -f "$f_no_cache_hint" ] && log_it "  presence of f_no_cache_hint [$f_no_cache_hint]"
+        $cfg_use_cache || log_it "  cfg_use_cache: $cfg_use_cache"
+        return 1
+    fi
 }
 
 #===============================================================

@@ -12,25 +12,35 @@
 #  All support functions will be sourced if needed, all to improve performance
 #
 
+print_stderr() {
+    if [ -t 0 ]; then
+        echo "$1" >/dev/stderr
+        return 0
+    else
+        return 1
+    fi
+}
+
 log_it() {
     #  early abort if no logging, should not be needed, but might improve
     #  performance?
     [ "$TMUX_MENUS_FORCE_SILENT" = "3" ] && return
 
-    [ "$log_interactive_to_stderr" = "1" ] && [ -t 0 ] && {
-
+    _msg="$1"
+    _type="$2"
+    [ "$log_interactive_to_stderr" = "1" ] && {
         # log to stderr if in interactive mode
-        printf "[%s] log: %s\n" "$(date '+%H:%M:%S')" "$@" >/dev/stderr
-        return
+        # printf "[%s] log: %s\n" "$(date '+%H:%M:%S')" "$_msg" >/dev/stderr
+        print_stderr "[$(date '+%H:%M:%S')] log: $_msg" && return
+        # continue if not an interactive session and use logfile
     }
 
     [ -n "$cfg_log_file" ] && {
         # log to file
-        if [ "$1" = "profiling" ]; then
-            shift
-            printf "[p] %s\n" "$@" >>"$cfg_log_file"
+        if [ "$_type" = "profiling" ]; then
+            printf "[p] %s\n" "$_msg" >>"$cfg_log_file"
         else
-            printf "[%s] %s\n" "$(date '+%H:%M:%S')" "$@" >>"$cfg_log_file"
+            printf "[%s] %s\n" "$(date '+%H:%M:%S')" "$_msg" >>"$cfg_log_file"
         fi
     }
 }
@@ -42,11 +52,11 @@ error_msg_safe() {
 }
 
 source_all_helpers() {
+    log_it "source_all_helpers() - $1"
     # profiling_display "[helpers] ----->  source_all_helpers [$0] $1"
     $all_helpers_sourced && {
         error_msg_safe "source_all_helpers() called when it was already done"
     }
-    # log_it "source_all_helpers()"
     all_helpers_sourced=true # set it early to avoid recursion
 
     # shellcheck source=scripts/utils/helpers-full.sh
@@ -60,18 +70,19 @@ relative_path() {
     printf '%s\n' "${1#"$D_TM_BASE_PATH"/}"
 }
 
-tmux_select_menu_handler() {
+select_menu_handler() {
     #
     # If an older version is used, or TMUX_MENU_HANDLER is 1/2
     # set cfg_use_whiptail true
     #
+    # log_it "select_menu_handler()"
     if ! tmux_vers_check 3.0; then
         if command -v whiptail >/dev/null; then
             cfg_alt_menu_handler=whiptail
-            log_it "tmux below 3.0 - using: whiptail"
+            log_it "NOTICE: tmux below 3.0 - using: whiptail"
         elif command -v dialog >/dev/null; then
             cfg_alt_menu_handler=dialog
-            log_it "tmux below 3.0 - using: dialog"
+            log_it "NOTICE: tmux below 3.0 - using: dialog"
         else
             error_msg_safe "Neither whiptail or dialog found, plugin aborted"
         fi
@@ -84,7 +95,7 @@ tmux_select_menu_handler() {
             error_msg_safe "$_cmd not available, plugin aborted"
         fi
         cfg_use_whiptail=true
-        log_it "$_cmd is selected due to TMUX_MENU_HANDLER=1"
+        log_it "NOTICE: $_cmd is selected due to TMUX_MENU_HANDLER=1"
     elif [ "$TMUX_MENU_HANDLER" = 2 ]; then
         _cmd=dialog
         if command -v "$_cmd" >/dev/null; then
@@ -93,11 +104,12 @@ tmux_select_menu_handler() {
             error_msg_safe "$_cmd not available, plugin aborted"
         fi
         cfg_use_whiptail=true
-        log_it "$_cmd is selected due to TMUX_MENU_HANDLER=2"
+        log_it "NOTICE: $_cmd is selected due to TMUX_MENU_HANDLER=2"
     else
         cfg_use_whiptail=false
         cfg_alt_menu_handler=""
     fi
+    # log_it "  <-- select_menu_handler() - done"
 }
 
 #---------------------------------------------------------------
@@ -106,17 +118,19 @@ tmux_select_menu_handler() {
 #
 #---------------------------------------------------------------
 
-get_config_uncached() {
+get_config_read_save_if_uncached() {
     # reads config, and if allowed saves it to cache
-    # profiling_display "[helpers] get_config_uncached()"
+    # profiling_display "[helpers] get_config_read_save_if_uncached()"
 
-    # log_it "get_config_uncached()"
-    $all_helpers_sourced || source_all_helpers "get_config_uncached()"
-
-    cache_config_get_save
+    $all_helpers_sourced || source_all_helpers "get_config_read_save_if_uncached()"
+    cache_config_get_save || {
+        # cache couldn't be saved, indicate cache not available
+        log_it "  <-- get_config_read_save_if_uncached() - unable to save cache params"
+        cfg_use_cache=false
+    }
 }
 
-get_config() { # tmux stuff
+get_config() {
     #
     #  The plugin init .tmux script should NOT depend on this!
     #  This is used by everything else sourcing helpers.sh, then trusting
@@ -126,19 +140,20 @@ get_config() { # tmux stuff
     # profiling_display "[helpers] get_config()"
 
     if [ -f "$f_no_cache_hint" ]; then
-        get_config_uncached
+        log_it "Will call it due to f_no_cache_hint"
+        get_config_read_save_if_uncached
     elif [ -f "$f_cache_params" ]; then
         # shellcheck disable=SC1090
         if . "$f_cache_params"; then
             cache_params_retrieved=1
         else
             log_it "WARNING: failed to source: $f_cache_params, doing manual param read"
-            get_config_uncached
+            get_config_read_save_if_uncached
         fi
         return 0
     else
         log_it "WARNING: no f_no_cache_hint and no f_cache_params!"
-        get_config_uncached
+        get_config_read_save_if_uncached
     fi
 }
 
@@ -198,7 +213,7 @@ safe_now() {
 
 tmux_vers_check() {
     _v_comp="$1" # Desired minimum version to check against
-    log_it "tmux_vers_check($_v_comp)"
+    # log_it "tmux_vers_check($_v_comp)"
     [ -z "$_v_comp" ] && error_msg_safe "tmux_vers_check() - no param!"
 
     # Retrieve and cache the current tmux version on the first call,
@@ -261,7 +276,7 @@ tpt_digits_from_string() {
     #   "tmux 1.9" => "19"
     #   "1.9a"     => "19"
     varname="$1"
-    log_it "tpt_digits_from_string($varname,$2)"
+    # log_it "tpt_digits_from_string($varname,$2)"
 
     [ -z "$varname" ] && error_msg_safe "tpt_digits_from_string() - no variable name!"
     [ -z "$2" ] && error_msg_safe "tpt_digits_from_string() - no param!"
@@ -283,11 +298,11 @@ tpt_tmux_vers_suffix() {
     #   "3.2"  => ""
     #   "3.2a" => "a"
     varname="$1"
-    log_it "><> tpt_tmux_vers_suffix($varname, $2)"
+    # log_it "tpt_tmux_vers_suffix($varname, $2)"
     _s="$(echo "$2" | sed 's/.*[0-9]\([a-zA-Z]*\)$/\1/')" || {
         error_msg_safe "tpt_tmux_vers_suffix() - Failed to extract suffix"
     }
-    log_it " <-- tpt_tmux_vers_suffix() - result [$_s]"
+    # log_it " <-- tpt_tmux_vers_suffix() - result [$_s]"
     eval "$varname=\$_s"
 }
 
@@ -393,16 +408,13 @@ fi
     return
 }
 
-[ "$1" != "quick" ] && {
-    # for cache optimized sourcings of this set it to quick, to avoid the
-    #  entire help environment from being sourced
-    $all_helpers_sourced || source_all_helpers "get_config_uncached()"
-}
+# [ "$1" != "quick" ] && {
+#     # for cache optimized sourcings of this set it to quick, to avoid the
+#     #  entire help environment from being sourced
+#     $all_helpers_sourced || source_all_helpers "helpers - main"
+# }
 
 get_config
-
-# change this to use settings
-tmux_select_menu_handler
 
 min_tmux_vers="1.8"
 if ! tmux_vers_check "$min_tmux_vers"; then
