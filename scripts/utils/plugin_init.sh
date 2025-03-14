@@ -104,7 +104,6 @@ get_config_refresh() {
         # Save some
     }
 
-
     [[ -z "$cfg_tmux_conf" ]] && {
         # log_it "><> get_config_refresh() - will get option: @menus_config_file [$default_tmux_conf]"
         tmux_get_option cfg_tmux_conf "@menus_config_file" "$default_tmux_conf"
@@ -216,3 +215,4 @@ prepare_cach
 # Key is not bound until cache (if allowed) has been prepared, so normally
 # no menus will be triggered by the user before this
 bind_plugin_key
+profiling_display "plugin_init.sh done"
