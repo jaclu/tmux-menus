@@ -30,6 +30,6 @@ fi
 
 prefix="C-${prefix_char}"
 
-tmux_error_handler set-option -g prefix "$prefix"
+tmux_error_handler3 set-option -g prefix "$prefix"
 
-tmux_error_handler display-message "Be aware <prefix> is now: $prefix"
+tmux_error_handler3 display-message "Be aware <prefix> is now: $prefix"

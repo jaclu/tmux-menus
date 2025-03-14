@@ -340,7 +340,12 @@ tmux_error_handler() {
     exit 1
 }
 
-tmux_error_handler2() { # cache references
+tmux_error_handler3() {
+    # fake assigning a variable
+    tmux_error_handler_assign _dont_store_result_ "$@"
+}
+
+tmux_error_handler_assign() { # cache references
     #
     #  Detects any errors reported by tmux commands and gives notification
     #
@@ -348,8 +353,11 @@ tmux_error_handler2() { # cache references
     shift
     the_cmd="$*"
     # $teh_debug &&
-    log_it "><> tmux_error_handler2($varname, $the_cmd)"
-
+    if [ "$varname" = "_dont_store_result_" ]; then
+        log_it "><> tmux_error_handler3($the_cmd)"
+    else
+        log_it "><> tmux_error_handler_assign($varname, $the_cmd)"
+    fi
     if $cfg_use_cache; then
         d_errors="$d_cache"
     else
@@ -406,6 +414,15 @@ tmux_error_handler2() { # cache references
     }
     teh_debug=false
     eval "$varname=\$value"
+
+    if [ "$varname" = "_dont_store_result_" ]; then
+        [ -n "$value" ] && {
+            log_it "  <--  tmux_error_handler3() unintended output: [$value]"
+        }
+    # else
+    #     log_it "  <--  tmux_error_handler_assign() got: [$value]"
+    fi
+
     return 0
 }
 

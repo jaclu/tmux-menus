@@ -17,12 +17,12 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 
 log_it "running: $0 $1"
 
-if tmux_error_handler2 foo source-file "$1"; then
+if tmux_error_handler3 source-file "$1"; then
     msg="Sourced it!"
     log_it "$msg"
-    tmux_error_handler2 foo display "$msg"
+    tmux_error_handler3 display "$msg"
 else
     msg="tmux config file could not be sourced: $1"
     log_it "$msg"
-    tmux_error_handler2 foo display "$msg"
+    tmux_error_handler3 display "$msg"
 fi

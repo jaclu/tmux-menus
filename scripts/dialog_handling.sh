@@ -240,7 +240,7 @@ alt_command() {
     if $keep_cmd; then
         wt_actions="$wt_actions $key_action | $cmd $external_action_separator"
     else
-        wt_actions="$wt_actions $key_action | tmux_error_handler $cmd $external_action_separator"
+        wt_actions="$wt_actions $key_action | tmux_error_handler2 foo $cmd $external_action_separator"
     fi
 }
 

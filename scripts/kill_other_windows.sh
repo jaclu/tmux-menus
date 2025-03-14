@@ -18,11 +18,28 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 _this="kill_other_windows.sh" # error prone if script name is changed :(
 [ "$current_script" != "$_this" ] && error_msg_safe "$_this should NOT be sourced"
 
-window_list="$(IFS=" " tmux_error_handler list-windows -F '#{window_id}')"
-current_window="$(tmux_error_handler display-message -p '#{window_id}')"
+# linter helpers
+window_list=""
+current_window=""
+
+# window_list="$(IFS=" " tmux_error_handler list-windows -F '#{window_id}')"
+ORG_IFS=$IFS
+tmux_error_handler_assign window_list list-windows -F '#{window_id}' || {
+    error_msg "Failed to list windows"
+}
+IFS=$ORG_IFS
+
+# current_window="$(tmux_error_handler display-message -p '#{window_id}')"
+tmux_error_handler_assign current_window display-message -p '#{window_id}' || {
+    error_msg "Failed to get current window_id"
+}
+
+[ "$window_list" = "$current_window" ] && {
+    tmux_error_handler3 display-message "No other windows to kill!"
+}
 
 for w in $window_list; do
     if [ "$w" != "$current_window" ]; then
-        tmux_error_handler kill-window -t "$w"
+        tmux_error_handler3 kill-window -t "$w"
     fi
 done
