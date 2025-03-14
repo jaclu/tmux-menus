@@ -31,15 +31,16 @@ display_char() {
 
         if $pending_paste; then
             #  prefix with pending paste buffer
-            c="$(tmux_error_handler show-buffer)$c"
+            tmux_error_handler_assign b show-buffer
+            c="$b$c"
         else
-            tmux_error_handler set-option -g "$wt_pasting" 'yes'
+            tmux_error_handler3 set-option -g "$wt_pasting" 'yes'
         fi
 
         # log_it "setting buffer to '$c'"
-        tmux_error_handler set-buffer "$c"
+        tmux_error_handler3 set-buffer "$c"
     else
-        tmux_error_handler send-keys "$c"
+        tmux_error_handler3 send-keys "$c"
     fi
 }
 

@@ -417,7 +417,8 @@ tmux_error_handler_assign() { # cache references
 
     if [ "$varname" = "_dont_store_result_" ]; then
         [ -n "$value" ] && {
-            log_it "  <--  tmux_error_handler3() unintended output: [$value]"
+            # since it's not an assignment, just output it
+            echo "$value"
         }
     # else
     #     log_it "  <--  tmux_error_handler_assign() got: [$value]"

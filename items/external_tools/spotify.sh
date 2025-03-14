@@ -15,7 +15,7 @@ display_currently_playing_track() {
     track="$(spotify status track)"
     artist="$(spotify status artist)"
     album="$(spotify status album)"
-    tmux_error_handler display "$track - Artist: $artist - Album: $album"
+    tmux_error_handler3 display "$track - Artist: $artist - Album: $album"
     exit 0
 }
 

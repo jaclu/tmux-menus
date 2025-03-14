@@ -15,8 +15,9 @@ dynamic_content() {
     #  Gather some info in order to be able to show states
     #
     if tmux_vers_check 2.1; then
-        current_prefix="$(tmux_error_handler show-options -gv prefix)"
-        current_mouse_status="$(tmux_error_handler show-options -gv mouse)"
+        tmux_error_handler_assign current_prefix show-options -gv prefix
+        tmux_error_handler_assign current_mouse_status show-options -gv mouse
+        # shellcheck disable=SC2154
         if [ "$current_mouse_status" = "on" ]; then
             new_mouse_status="off"
         else
@@ -24,6 +25,7 @@ dynamic_content() {
         fi
     fi
 
+    # shellcheck disable=SC2154
     set -- \
         2.1 C M "Toggle mouse to: $new_mouse_status" "set-option -g mouse \
         $new_mouse_status $menu_reload" \
@@ -89,8 +91,8 @@ static_content() {
     menu_segment=$((menu_segment + 1))
 
     $cfg_use_hint_overlays && $cfg_show_key_hints && tmux_vers_check 2.7 && {
-	    # Only generate this segment if any content will be displayed
-	    # i.e. tmux >= 2.7
+        # Only generate this segment if any content will be displayed
+        # i.e. tmux >= 2.7
         set -- \
             2.7 M K "Key hints - Disconnect $nav_next" \
             "$d_hints/choose-client.sh $f_current_script"

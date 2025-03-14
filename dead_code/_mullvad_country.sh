@@ -30,7 +30,9 @@ error_msg_safe "THIS IS NOT USED ATM!"
 
 offset="${1:-0}" #  optional param indicating first item to display
 
-lines="$(tmux_error_handler display -p '#{window_height}')"
+tmux_error_handler_assign lines display -p '#{window_height}'
+
+# shellcheck disable=SC2154
 display_items=$((lines - 7))
 max_item=$((offset + display_items))
 
@@ -113,8 +115,9 @@ done
 
 menu_items="$menu_items $nav"
 
-echo "$menu_items" | xargs tmux_error_handler display-menu \
-    -T "#[align=centre] $menu_name " \
-    -x "$cfg_mnu_loc_x" -y "$cfg_mnu_loc_y"
+# obsolete usage of tmux error handler
+# echo "$menu_items" | xargs old_tmux_error_handler display-menu \
+#     -T "#[align=centre] $menu_name " \
+#     -x "$cfg_mnu_loc_x" -y "$cfg_mnu_loc_y"
 
-ensure_menu_fits_on_screen
+# ensure_menu_fits_on_screen

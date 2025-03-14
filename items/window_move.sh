@@ -11,7 +11,7 @@
 dynamic_content() {
     # Things that change dependent on various states
 
-    other_pane_is_marked="$(tmux_error_handler display -p '#{?pane_marked_set,yes,}')"
+    tmux_error_handler_assign other_pane_is_marked display -p '#{?pane_marked_set,yes,}'
 
     if [ -n "$other_pane_is_marked" ]; then
         set -- \

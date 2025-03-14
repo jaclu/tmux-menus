@@ -21,7 +21,6 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 _this="relocate_param_check.sh" # error prone if script name is changed :(
 [ "$current_script" = "$_this" ] && error_msg_safe "$_this SHOULD be sourced"
 
-
 item_type="$1"
 
 case "$item_type" in
@@ -63,7 +62,8 @@ if [ -z "$raw_dest" ]; then
     error_msg_safe "param_check() - no destination param (\$3) given!"
 fi
 
-cur_ses="$(tmux_error_handler display-message -p '#S')"
+tmux_error_handler_assign cur_ses display-message -p '#S'
+
 dest="${raw_dest#*=}"  # skipping initial =
 dest_ses="${dest%%:*}" # up to first colon excluding it
 

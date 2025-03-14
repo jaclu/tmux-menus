@@ -114,8 +114,7 @@ error_msg_formated() {
 display_message_hold() {
     #
     #  Display a message and hold until key-press
-    #  Can't use tmux_error_handler in this func, since that could
-    #  trigger recursion
+    #  Can't use tmux_error_handler() in this func, since that could trigger recursion
     #
     dmh_msg="$1"
     log_it "display_message_hold($dmh_msg)"
