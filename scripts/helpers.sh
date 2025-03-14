@@ -369,6 +369,8 @@ elif [ "$MENUS_PROFILING" = "1" ] && [ "$profiling_sourced" != "1" ]; then
     # copy the below code using absolute paths
     # shellcheck source=scripts/utils/dbg_profiling.sh
     . "$D_TM_BASE_PATH"/scripts/utils/dbg_profiling.sh
+else
+    log_it "profiling already sourced"
 fi
 
 # minimal support variables
