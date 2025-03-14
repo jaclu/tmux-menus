@@ -164,7 +164,7 @@ profiling_display() {
 
 profiling_sourced=1
 
-[ "$initialize_plugin" = "1" ] && return
+# [ "$initialize_plugin" = "1" ] && return
 
 [ -t 0 ] && {
     _m="Starting profiling for: $0 - using time method: $profiling_selected_get_time"
