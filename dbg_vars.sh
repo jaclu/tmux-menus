@@ -1,10 +1,10 @@
 #!/bin/sh
 
 [ "$1" = "set" ] && {
-    export MENUS_PROFILING=0
-    export TMUX_MENUS_NO_DISPLAY=0 # If 1 don't display menus
+    export MENUS_PROFILING=1
+    export TMUX_MENUS_NO_DISPLAY10 # If 1 don't display menus
     # 1 no log to stderr 2 no profiling to stderr 3 nothing to stderr
-    export TMUX_MENUS_FORCE_SILENT=1
+    export TMUX_MENUS_FORCE_SILENT=3
     # 0 use built in menus if available, otherwise whiptail/dialog if found
     # 1 force whiptail
     # 2 force dialog
