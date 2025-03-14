@@ -75,6 +75,7 @@ dest_pane_idx="${win_pane#*.}"
 #    relocate_window.sh  $dest_ses $dest_win_idx
 #    relocate_pane.sh   $dest_ses $dest_win_idx.${dest_pane_idx}"
 
+# shellcheck disable=SC2154
 set -- "param_check($*) - item_type [$item_type] action [$action]" \
     "cur_ses [$cur_ses] dest [$dest] win_pane [$win_pane]" \
     "dest_ses [$dest_ses] dest_win_idx [$dest_win_idx]" \

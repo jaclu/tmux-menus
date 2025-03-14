@@ -20,6 +20,7 @@ static_content() {
         fi
     }
 
+    # shellcheck disable=SC2154
     rld_cmd="command-prompt -I '$cfg_tmux_conf' -p 'Source file:' \
         'run-shell \"$d_scripts/reload_conf.sh %% $reload_in_runshell\"'"
 

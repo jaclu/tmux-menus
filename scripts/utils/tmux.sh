@@ -336,12 +336,7 @@ tmux_error_handler_old() { # cache references
 }
 
 tmux_error_handler() {
-    error_msg "Call to: tmux_error_handler"
-    exit 1
-}
-
-tmux_error_handler3() {
-    # fake assigning a variable
+    # fake assigning a variable in order to use the same func
     tmux_error_handler_assign _dont_store_result_ "$@"
 }
 
@@ -352,12 +347,13 @@ tmux_error_handler_assign() { # cache references
     varname="$1"
     shift
     the_cmd="$*"
-    # $teh_debug &&
-    if [ "$varname" = "_dont_store_result_" ]; then
-        log_it "><> tmux_error_handler3($the_cmd)"
-    else
-        log_it "><> tmux_error_handler_assign($varname, $the_cmd)"
-    fi
+    $teh_debug && {
+        if [ "$varname" = "_dont_store_result_" ]; then
+            log_it "tmux_error_handler($the_cmd)"
+        else
+            log_it "tmux_error_handler_assign($the_cmd) -> $varname"
+        fi
+    }
     if $cfg_use_cache; then
         d_errors="$d_cache"
     else
@@ -412,18 +408,20 @@ tmux_error_handler_assign() { # cache references
         fi
         return 1
     }
+
+    $teh_debug && {
+        if [ "$varname" = "_dont_store_result_" ]; then
+            [ -n "$value" ] && {
+                # since it's not an assignment, just output it
+                echo "$value"
+                log_it "  <--  tmux_error_handler() got: [$value]"
+            }
+        else
+            log_it "  <--  tmux_error_handler_assign() got: [$value]"
+        fi
+    }
     teh_debug=false
     eval "$varname=\$value"
-
-    if [ "$varname" = "_dont_store_result_" ]; then
-        [ -n "$value" ] && {
-            # since it's not an assignment, just output it
-            echo "$value"
-        }
-    # else
-    #     log_it "  <--  tmux_error_handler_assign() got: [$value]"
-    fi
-
     return 0
 }
 

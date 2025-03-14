@@ -41,7 +41,7 @@ if [ "$cur_ses" = "$dest_ses" ]; then
     #
     #  Move within the current session
     #
-    tmux_error_handler3 move-window -b -t ":${dest_win_idx}"
+    tmux_error_handler move-window -b -t ":${dest_win_idx}"
 else
     #
     #  tmux move only works in same session, so we use link & unlink for
@@ -49,24 +49,24 @@ else
     #
 
     # Create a link to this at destination
-    tmux_error_handler3 link-window -b -t "$dest_ses:$dest_win_idx"
+    tmux_error_handler link-window -b -t "$dest_ses:$dest_win_idx"
     if [ "$action" != "L" ]; then
         #
         # Unlink window at current location, ie get rid of original instance
         # And re-indix previous session
         #
-        tmux_error_handler3 unlink-window
+        tmux_error_handler unlink-window
     fi
     #
     #  When Window / Pane is moved to another session, focus does not
     #  auto-switch, so this manually sets focus.
     #
-    tmux_error_handler3 switch-client -t "$dest_ses" # switch focus to new location
+    tmux_error_handler switch-client -t "$dest_ses" # switch focus to new location
 fi
 
 if [ -z "$dest_win_idx" ]; then
     #
     # No dest windows idx given, assume it should go last
     #
-    tmux_error_handler3 move-window -t 999
+    tmux_error_handler move-window -t 999
 fi
