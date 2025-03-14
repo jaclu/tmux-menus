@@ -530,6 +530,12 @@ handle_static_cached() {
 
         rm -rf "$d_menu_cache" || error_msg_safe "Failed to remove: $d_menu_cache"
         mkdir -p "$d_menu_cache" || error_msg_safe "Failed to create: $d_menu_cache"
+
+        [ "$menu_name" = "Main menu" ] && {
+            # give branch hint on main menu if not main
+            branch="$(cd "$D_TM_BASE_PATH" && git branch --show-current)"
+            [ "$branch" != "main" ] && menu_name="$menu_name [$branch]"
+        }
         # now static content can be cached
         static_content
     fi
