@@ -741,9 +741,9 @@ check_screen_size() {
         actual_height="$($TMUX_BIN display-message -p "#{client_height}")"
         [ "$window_height" -gt "$actual_height" ] && {
             define_f_menu_rel
-            msg="$f_menu_rel aborted, win height > actual: "
-            msg="$msg $window_height > $actual_height"
-            log_it "$msg"
+            _warn="$f_menu_rel aborted, win height > actual: "
+            _warn="$_warn $window_height > $actual_height"
+            log_it "$_warn"
             return 1
         }
         # log_it "window_height valid"
@@ -751,9 +751,9 @@ check_screen_size() {
     [ -n "$window_width" ] && {
         actual_width="$($TMUX_BIN display-message -p "#{client_width}")"
         [ "$window_width" -gt "$actual_width" ] && {
-            msg="menu display aborted, win width > actual: "
-            msg="$msg $window_width > $actual_width"
-            log_it "$msg"
+            _warn="menu display aborted, win width > actual: "
+            _warn="$_warn $window_width > $actual_width"
+            log_it "$_warn"
             return 1
         }
         # log_it "window_width valid"

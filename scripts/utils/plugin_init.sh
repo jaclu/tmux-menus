@@ -14,27 +14,28 @@
 #
 #---------------------------------------------------------------
 
+print_stderr() {
+    [[ -t 0 ]] && {
+        echo "$1" >/dev/stderr
+    }
+}
+
 log_basic() {
     if log_file_writeable; then
         log_it "$1"
     else
-        _m="[bl] $1"
-        [[ -t 0 ]] && {
-            echo "$1">/dev/stderr
-        }
+        print_stderr "[bl] $1"
         $TMUX_BIN display-message "[$plugin_name]$1"
     fi
 }
 
 error_basic() {
     # Used before the env is setup, and normal error handling is unavailable
-    err_msg="ERROR: $plugin_name - $1"
+    _err_msg="ERROR: $plugin_name - $1"
     if log_file_writeable; then
-        log_it "$err_msg"
+        log_it "$_err_msg"
     else
-        [[ -t 0 ]] && {
-            echo "$err_msg" >/dev/stderr
-        }
+        print_stderr "$_err_msg"
     fi
     $TMUX_BIN display-message "ERROR: [$plugin_name][bl] $1"
     exit 1
@@ -46,20 +47,24 @@ log_file_unset() {
 
 log_file_writeable() {
     # if it is undefined or absent assume it can't be used
-    [[ -z "$cfg_log_file" ]] && [[ ! -f "$cfg_log_file" ]] && return 1
-
+    # log_basic "log_file_writeable()"
+    [[ -z "$cfg_log_file" ]] && [[ ! -f "$cfg_log_file" ]] && {
+        print_stderr "log_file_writeable() -  log_file undefined or missing: $cfg_log_file"
+        return 1
+    }
     _d_log="$(dirname -- "$cfg_log_file")"
     if [[ -z "$_d_log" ]] || [[ ! -d "$_d_log" ]]; then
         # folder for logfile undefined or missing
         log_file_unset
+        print_stderr "log_file_writeable() -  WARNING: log folder missing: $_d_log"
         return 1
     fi
     touch "$cfg_log_file" || {
         # failed to write to log_file
         log_file_unset
+        print_stderr "log_file_writeable() -  Unable to write to: $cfg_log_file"
         return 1
     }
-    echo "><> cfg_log_file: $cfg_log_file" >/dev/stderr
     return 0
 }
 
@@ -77,16 +82,29 @@ get_config_refresh() {
     log_basic "get_config_refresh()"
     # profiling_display "[helpers] get_config_refresh()"
 
+    # _m="><> get_config_refresh(), start -"
+    # _m="$_m tpt_current_vers [$tpt_current_vers]"
+    # _m="$_m tpt_current_vers_i [$tpt_current_vers_i]"
+    # _m="$_m tpt_current_vers_suffix [$tpt_current_vers_suffix]"
+    # log_basic "$_m"
+
     [[ -f "$f_cache_params" ]] && {
         # Only really need cfg_tmux_conf at this point
-        # shellcheck disable=SC1090
+        log_basic "><> attempting to source: $f_cache_params"
+        # shellcheck source=cache/plugin_params
         . "$f_cache_params" || {
             log_basic "WARNING: Failed to source: $f_cache_params, removing it"
             rm -f "$f_cache_params"
-            cfg_tmux_conf="$(tmux_get_option "@menus_config_file" "$default_tmux_conf")"
-            return
         }
+        log_basic "reading cfg_tmux_conf - sourced: $f_cache_params"
     }
+
+    [[ -z "$cfg_tmux_conf" ]] && {
+        log_basic "><> get_config_refresh() - will get option: @menus_config_file [$default_tmux_conf]"
+        tmux_get_option cfg_tmux_conf "@menus_config_file" "$default_tmux_conf"
+    }
+
+    [[ -z "$tpt_current_vers" ]] && exit 1
 
     if [[ -f "$cfg_tmux_conf" ]] && [[ -f "$f_cache_params" ]]; then
         #
@@ -100,7 +118,8 @@ get_config_refresh() {
     else
         # Failed to find tmux conf, but since this is plugin init, play it safe
         # and recreate param cache
-        # log_basic "tmux conf and cache could not be verified, manually updating cache"
+
+        log_basic "tmux conf and cache could not be verified, manually updating cache"
         get_config_uncached
     fi
 }
@@ -168,9 +187,6 @@ initialize_plugin=1
 
 $all_helpers_sourced || source_all_helpers "always done by menus.tmux"
 
-# log_interactive_to_stderr=0
-
-
 if [[ -d "$d_cache" ]]; then
     d_work_space="$d_cache"
     # clear out obsolete cache items
@@ -178,10 +194,12 @@ if [[ -d "$d_cache" ]]; then
 else
     d_work_space="$(mktemp -d -t "tmux-menus-$(id -u)-$$-XXXX")"
     [[ -z "$d_work_space" ]] && error_basic "Failed to create temp workspace"
+    log_basic "d_work_space: $d_work_space"
 fi
 
 # Create a LF in log_file to easier separate runs
-log_file_writeable && log_it
+log_file_writeable && log_basic
+
 get_config_refresh
 
 prepare_cach

@@ -13,10 +13,11 @@
 tmux_vers_check_do_compare() {
     # Called fomh helpers.sh:tmux_vers_check if checked version was not cached
     _v_comp="$1"
-    # log_it "tmux_vers_check_do_compare($_v_comp)"
+    [ -z "$_v_comp" ] && error_msg "tmux_vers_check_do_compare() - no param!"
+    log_it "tmux_vers_check_do_compare($_v_comp)"
 
     # Compare numeric parts first for quick decisions.
-    _i_comp="$(tpt_digits_from_string "$_v_comp")"
+    tpt_digits_from_string _i_comp "$_v_comp"
     [ "$_i_comp" -lt "$tpt_current_vers_i" ] && {
         cache_add_ok_vers "$_v_comp"
         return 0
@@ -93,34 +94,40 @@ tmux_get_defaults() {
     fi
 
     default_log_file=""
-    # log_it "><>   tmux_get_defaults() - done"
 }
 
 cache_tmux_options() {
     [ -f "$f_cached_tmux_options" ] && return
     # log_it "cache_tmux_options()"
     # profiling_display "[tmux] cache_tmux_options()"
-    tmux_error_handler show-options -g | grep ^@menus_ >"$f_cached_tmux_options"
+    $TMUX_BIN show-options -g | grep ^@menus_ >"$f_cached_tmux_options"
+    $TMUX_BIN show-options -g | grep @use_bind_key_notes_in_plugins \
+        >>"$f_cached_tmux_options"
     # profiling_display "[tmux] cache_tmux_options() - done"
 }
 
 tmux_get_option() {
-    tgo_option="$1"
-    tgo_default="$2"
+    tgo_varname="$1" # The variable name to store the result in
+    tgo_option="$2"
+    tgo_default="$3"
 
-    # log_it "tmux_get_option($tgo_option, $tgo_default)"
+    log_it "tmux_get_option($tgo_varname, $tgo_option, $tgo_default)"
 
-    [ -z "$tgo_option" ] && error_msg "tmux_get_option() param 1 empty!"
+    [ -z "$tgo_varname" ] && error_msg "tmux_get_option() param 1 empty!"
+    [ -z "$tgo_option" ] && error_msg "tmux_get_option() param 2 empty!"
 
     if [ "$TMUX" = "" ]; then
         # this is run standalone, just report the defaults
+        log_it "tmux_get_option() - no TMUX!"
         echo "$tgo_default"
         return
     elif ! tmux_vers_check 1.8; then
         # before 1.8 no support for user params
+        log_it "tmux_get_option() - tmux < 1.8!"
         echo "$tgo_default"
         return
     fi
+
     if $cfg_use_cache && [ -d "$d_cache" ]; then
         cache_tmux_options
         # profiling_display "[tmux] cache_tmux_options done"
@@ -138,10 +145,13 @@ tmux_get_option() {
         fi
         # profiling_display "[tmux] missing value checked"
     else
+        log_it "><> tmux_get_option() - not using cache"
+
         tgo_value="$($TMUX_BIN show-options -gv "$tgo_option" 2>/dev/null)"
         tgo_was_found="$?"
         # profiling_display "[tmux] show-options used"
     fi
+
     if [ "$tgo_was_found" != 0 ]; then
         #
         #  Since tmux doesn't differentiate between the variable being absent
@@ -149,7 +159,8 @@ tmux_get_option() {
         #
         tgo_value="$tgo_default"
     fi
-    echo "$tgo_value"
+    log_it "tmux_get_option() - using [$tgo_value]"
+    eval "$tgo_varname=\$tgo_value"
 }
 
 tmux_get_plugin_options() { # cache references
@@ -162,6 +173,7 @@ tmux_get_plugin_options() { # cache references
         error_msg "tmux_get_plugin_options() has already been called"
     }
     # profiling_display "[tmux] tmux_get_plugin_options()"
+
     tmux_get_defaults
     # profiling_display "[tmux] tmux_get_defaults done"
 
@@ -178,7 +190,9 @@ tmux_get_plugin_options() { # cache references
     fi
     # profiling_display "[tmux] normalize_bool_param done"
 
-    cfg_trigger_key="$(tmux_get_option "@menus_trigger" "$default_trigger_key")"
+    #cfg_trigger_key="$(tmux_get_option_old "@menus_trigger" "$default_trigger_key")"
+    tmux_get_option cfg_trigger_key "@menus_trigger" "$default_trigger_key"
+
     if normalize_bool_param "@menus_without_prefix" "$default_no_prefix"; then
         cfg_no_prefix=true
     else
@@ -212,25 +226,26 @@ tmux_get_plugin_options() { # cache references
         cfg_nav_prev="$default_nav_prev"
         cfg_nav_home="$default_nav_home"
     else
-        cfg_simple_style_selected="$(tmux_get_option "@menus_simple_style_selected" \
-            "$default_simple_style_selected")"
-        cfg_simple_style="$(tmux_get_option "@menus_simple_style" \
-            "$default_simple_style")"
-        cfg_simple_style_border="$(tmux_get_option "@menus_simple_style_border" \
-            "$default_simple_style_border")"
-        cfg_format_title="$(tmux_get_option "@menus_format_title" \
-            "$default_format_title")"
+        tmux_get_option cfg_simple_style_selected "@menus_simple_style_selected" \
+            "$default_simple_style_selected"
 
-        cfg_mnu_loc_x="$(tmux_get_option "@menus_location_x" "$default_location_x")"
-        cfg_mnu_loc_y="$(tmux_get_option "@menus_location_y" "$default_location_y")"
-        cfg_nav_next="$(tmux_get_option "@menus_nav_next" "$default_nav_next")"
-        cfg_nav_prev="$(tmux_get_option "@menus_nav_prev" "$default_nav_prev")"
-        cfg_nav_home="$(tmux_get_option "@menus_nav_home" "$default_nav_home")"
+        tmux_get_option cfg_simple_style "@menus_simple_style" \
+            "$default_simple_style"
+        tmux_get_option cfg_simple_style_border "@menus_simple_style_border" \
+            "$default_simple_style_border"
+        tmux_get_option cfg_format_title "@menus_format_title" \
+            "$default_format_title"
+
+        tmux_get_option cfg_mnu_loc_x "@menus_location_x" "$default_location_x"
+        tmux_get_option cfg_mnu_loc_y "@menus_location_y" "$default_location_y"
+        tmux_get_option cfg_nav_next "@menus_nav_next" "$default_nav_next"
+        tmux_get_option cfg_nav_prev "@menus_nav_prev" "$default_nav_prev"
+        tmux_get_option cfg_nav_home "@menus_nav_home" "$default_nav_home"
     fi
     # profiling_display "[tmux] whiptail part done"
 
-    cfg_tmux_conf="$(tmux_get_option "@menus_config_file" "$default_tmux_conf")"
-    _f="$(tmux_get_option "@menus_log_file" "$default_log_file")"
+    tmux_get_option cfg_tmux_conf "@menus_config_file" "$default_tmux_conf"
+    tmux_get_option _f "@menus_log_file" "$default_log_file"
     [ -z "$cfg_log_file" ] && [ -n "$_f" ] && {
         #  If a debug logfile has been set, the tmux setting will be ignored.
         cfg_log_file="$_f"
@@ -244,23 +259,24 @@ tmux_get_plugin_options() { # cache references
     #
     if tmux_vers_check 3.1 &&
         normalize_bool_param "@use_bind_key_notes_in_plugins" No; then
-        # log_it "><> using notes"
+        log_it "><> using notes"
         cfg_use_notes=true
     else
-        # log_it "><> ignoring notes"
+        log_it "><> ignoring notes"
         cfg_use_notes=false
     fi
     plugin_options_have_been_read=true
+
     # profiling_display "[tmux] tmux_get_plugin_options() - done"
-    # log_it "  tmux_get_plugin_options() - done"
 }
 
-tmux_error_handler() { # cache references
+tmux_error_handler_old() { # cache references
     #
     #  Detects any errors reported by tmux commands and gives notification
     #
     the_cmd="$*"
-    $teh_debug && log_it "><> tmux_error_handler($the_cmd)"
+    # $teh_debug &&
+    log_it "><> tmux_error_handler($the_cmd)"
 
     if $cfg_use_cache; then
         d_errors="$d_cache"
@@ -319,6 +335,80 @@ tmux_error_handler() { # cache references
     return 0
 }
 
+tmux_error_handler() {
+    error_msg "Call to: tmux_error_handler"
+    exit 1
+}
+
+tmux_error_handler2() { # cache references
+    #
+    #  Detects any errors reported by tmux commands and gives notification
+    #
+    varname="$1"
+    shift
+    the_cmd="$*"
+    # $teh_debug &&
+    log_it "><> tmux_error_handler2($varname, $the_cmd)"
+
+    if $cfg_use_cache; then
+        d_errors="$d_cache"
+    else
+        d_errors="$d_tmp"
+    fi
+    # ensure it exists
+    [ ! -d "$d_errors" ] && mkdir -p "$d_errors"
+    f_tmux_err="$d_errors"/tmux-err
+    $teh_debug && log_it "><>teh $TMUX_BIN $*"
+    # $TMUX_BIN "$@" 2>"$f_tmux_err" && rm -f "$f_tmux_err"
+    value=$($TMUX_BIN "$@" 2>"$f_tmux_err") && rm -f "$f_tmux_err"
+    $teh_debug && log_it "><>teh cmd done [$?] [$value]"
+    [ -s "$f_tmux_err" ] && {
+        #
+        #  First save the error to a named file
+        #
+        _f_name="$(tr -cs '[:alnum:]._' '_' <"$f_tmux_err")"
+        [ -z "$_f_name" ] && _f_name="tmux-error"
+        f_error_log="$d_errors/error-$_f_name"
+
+        [ -f "$f_error_log" ] && {
+            _idx=1
+            f_error_log="${f_error_log}-$_idx"
+            while [ -f "$f_error_log" ]; do
+                _idx=$((_idx + 1))
+                f_error_log="${f_tmux_err}-$_idx"
+                [ "$_idx" -gt 1000 ] && {
+                    error_msg "Aborting runaway loop - _idx=$_idx"
+                }
+            done
+        }
+        (
+            echo "\$TMUX_BIN $the_cmd"
+            echo
+            cat "$f_tmux_err"
+        ) >"$f_error_log"
+
+        if $teh_debug; then
+            log_it "$(
+                printf "tmux cmd failed:\n\n%s\n" "$(cat "$f_error_log")"
+            )"
+        else
+            log_it "saved error to: $f_error_log"
+            error_msg "$(
+                printf "tmux cmd failed:\n\n%s\n
+                \nThe full error message has been saved in:\n%s
+                \nFull path:\n%s\n" \
+                    "$(cat "$f_error_log")" \
+                    "$(relative_path "$f_error_log")" \
+                    "$f_error_log"
+            )"
+        fi
+        return 1
+    }
+    teh_debug=false
+    eval "$varname=\$value"
+    return 0
+}
+
 #===============================================================
 #
 #   Main
@@ -334,8 +424,6 @@ tmux_error_handler() { # cache references
 #  plugin.
 #
 
-[ "$initialize_plugin" = "1" ] && return
-
 if [ -n "$TMUX" ]; then
     tmux_pid="$(echo "$TMUX" | cut -d',' -f2)"
 else
@@ -345,4 +433,4 @@ fi
 
 teh_debug=false
 
-# log_it "scripts/utils/tmux.sh - completed"
+# log_it "===  Completed: scripts/utils/tmux.sh  =="

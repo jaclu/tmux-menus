@@ -43,7 +43,7 @@ error_msg() {
     exit_code="${2:-0}"
     do_display_message=${3:-true}
     TMUX_MENUS_FORCE_SILENT=0 # errors should always be displayed
-    log_it "error_msg($em_msg)"
+    log_it "error_msg($em_msg, $exit_code)"
 
     # with no tmux env, dumping it to stderr is the only option
     [ -z "$TMUX" ] && log_interactive_to_stderr=1
@@ -78,7 +78,6 @@ error_msg() {
     fi
 
     [ "$exit_code" -gt -1 ] && exit "$exit_code"
-
 }
 
 error_msg_formated() {
@@ -171,7 +170,7 @@ get_digits_from_string() {
     # `tmux 1.9` => `19`
     # `1.9a`     => `19`
 
-    log_it "get_digits_from_string($1)"
+    # log_it "get_digits_from_string($1)"
     _i="$(echo "$1" | tr -dC '[:digit:]')"
     # log_it "get_digits_from_string($s) -> [$i]"
     echo "$_i"
@@ -200,7 +199,7 @@ normalize_bool_param() {
     nbp_variable_name=""
     # profiling_display "[helpers-full] normalize_bool_param() starts"
 
-    # log_it "normalize_bool_param($nbp_param, $nbp_default) [$nbp_variable_name]"
+    log_it "normalize_bool_param($nbp_param, $nbp_default) [$nbp_variable_name]"
     [ "${nbp_param%"${nbp_param#?}"}" = "@" ] && {
         #
         #  If it starts with "@", assume it is a tmux option, thus
@@ -210,7 +209,8 @@ normalize_bool_param() {
         [ -z "$nbp_default" ] && {
             error_msg "normalize_bool_param($nbp_param) - no default"
         }
-        nbp_param="$(tmux_get_option "$nbp_param" "$nbp_default")"
+        tmux_get_option nbp_param "$nbp_param" "$nbp_default"
+        log_it "><> normalize_bool_param() - found: $nbp_param"
         # profiling_display "[helpers-full] tmux_get_option() - done"
     }
 
@@ -316,7 +316,7 @@ env_initialized=false
 # shellcheck source=scripts/utils/tmux.sh
 . "$d_scripts"/utils/tmux.sh
 
-# log_it "><>===================================================== $0"
+# log_it "><>==========  sourcing the other helpers done  $0"
 
 if $cfg_use_whiptail; then
     menu_reload="; $f_current_script"
@@ -331,4 +331,4 @@ else
 fi
 
 env_initialized=true # indicates that env is fully configured
-#clog_it "><> scripts/utils/helpers-full.sh - completed"
+# log_it "><> scripts/utils/helpers-full.sh - completed"

@@ -46,6 +46,7 @@ source_all_helpers() {
     $all_helpers_sourced && {
         error_msg_safe "source_all_helpers() called when it was already done"
     }
+    # log_it "source_all_helpers()"
     all_helpers_sourced=true # set it early to avoid recursion
 
     # shellcheck source=scripts/utils/helpers-full.sh
@@ -97,12 +98,6 @@ tmux_select_menu_handler() {
         cfg_use_whiptail=false
         cfg_alt_menu_handler=""
     fi
-
-    if $cfg_use_whiptail; then
-        log_it "==> [helpers] Using Alternate dialog handler: $cfg_alt_menu_handler"
-        # else
-        # log_it "==> [helpers] Using tmux menu handler"
-    fi
 }
 
 #---------------------------------------------------------------
@@ -117,6 +112,7 @@ get_config_uncached() {
 
     # log_it "get_config_uncached()"
     $all_helpers_sourced || source_all_helpers "get_config_uncached()"
+
     cache_config_get_save
 }
 
@@ -135,7 +131,6 @@ get_config() { # tmux stuff
         # shellcheck disable=SC1090
         if . "$f_cache_params"; then
             cache_params_retrieved=1
-            # log_it "><> cache_params_retrieved"
         else
             log_it "WARNING: failed to source: $f_cache_params, doing manual param read"
             get_config_uncached
@@ -203,7 +198,8 @@ safe_now() {
 
 tmux_vers_check() {
     _v_comp="$1" # Desired minimum version to check against
-    # log_it "><> tmux_vers_check($_v_comp) $0"
+    log_it "tmux_vers_check($_v_comp)"
+    [ -z "$_v_comp" ] && error_msg_safe "tmux_vers_check() - no param!"
 
     # Retrieve and cache the current tmux version on the first call,
     # unless it has been read from the param cache
@@ -217,9 +213,14 @@ tmux_vers_check() {
             # get known good/bad versions if this hasn't been sourced yet
             #
             # shellcheck source=/dev/null
-            . "$f_cache_known_tmux_vers"
+            . "$f_cache_known_tmux_vers" || {
+                log_it "WARNING: Failed to source: f_cache_known_tmux_vers"
+                # make them non empty to prevent further attempts to be sourced
+                cached_ok_tmux_versions=" "
+                cached_bad_tmux_versions=" "
+            }
         }
-        case "$cached_ok_tmux_versions $tvc_v_ref " in
+        case " $cached_ok_tmux_versions " in
         *"$_v_comp "*) return 0 ;;
         *) ;;
         esac
@@ -249,8 +250,9 @@ tpt_retrieve_running_tmux_vers() {
     # log_it "tpt_retrieve_running_tmux_vers()"
     tpt_current_vers="$($TMUX_BIN -V | cut -d' ' -f2)"
     # log_it "  tpt_current_vers [$tpt_current_vers]"
-    tpt_current_vers_i="$(tpt_digits_from_string "$tpt_current_vers")"
-    tpt_current_vers_suffix="$(tpt_tmux_vers_suffix "$tpt_current_vers")"
+    tpt_digits_from_string tpt_current_vers_i "$tpt_current_vers"
+    # tpt_current_vers_suffix="$(tpt_tmux_vers_suffix "$tpt_current_vers")"
+    tpt_tmux_vers_suffix tpt_current_vers_suffix "$tpt_current_vers"
 }
 
 tpt_digits_from_string() {
@@ -258,11 +260,20 @@ tpt_digits_from_string() {
     # Example inputs and outputs:
     #   "tmux 1.9" => "19"
     #   "1.9a"     => "19"
-    # log_it "><> tpt_digits_from_string($1)"
+    varname="$1"
+    log_it "tpt_digits_from_string($varname,$2)"
+
+    [ -z "$varname" ] && error_msg_safe "tpt_digits_from_string() - no variable name!"
+    [ -z "$2" ] && error_msg_safe "tpt_digits_from_string() - no param!"
+
     # the first sed removes -rc suffixes, to avoid anny numerical rc like -rc1 from
     # being included in the int extraction
-    _i="$(echo "$1" | sed 's/-rc[0-9]*//' | tr -cd '0-9')" # Use 'tr' to keep only digits
-    echo "$_i"
+    # Use 'tr' to keep only digits
+    _i="$(echo "$2" | sed 's/-rc[0-9]*//' | tr -cd '0-9')" || {
+        error_msg_safe "tpt_digits_from_string() - Failed to extract digits"
+    }
+    [ -z "$_i" ] && error_msg_safe "tpt_digits_from_string() - result empty"
+    eval "$varname=\$_i"
 }
 
 tpt_tmux_vers_suffix() {
@@ -271,8 +282,13 @@ tpt_tmux_vers_suffix() {
     # Example inputs and outputs:
     #   "3.2"  => ""
     #   "3.2a" => "a"
-    # log_it "><> tpt_tmux_vers_suffix($1)"
-    echo "$1" | sed 's/.*[0-9]\([a-zA-Z]*\)$/\1/'
+    varname="$1"
+    log_it "><> tpt_tmux_vers_suffix($varname, $2)"
+    _s="$(echo "$2" | sed 's/.*[0-9]\([a-zA-Z]*\)$/\1/')" || {
+        error_msg_safe "tpt_tmux_vers_suffix() - Failed to extract suffix"
+    }
+    log_it " <-- tpt_tmux_vers_suffix() - result [$_s]"
+    eval "$varname=\$_s"
 }
 
 #===============================================================
@@ -373,9 +389,14 @@ else
     cfg_use_cache=false
 fi
 
-
 [ "$initialize_plugin" = "1" ] && {
     return
+}
+
+[ "$1" != "quick" ] && {
+    # for cache optimized sourcings of this set it to quick, to avoid the
+    #  entire help environment from being sourced
+    $all_helpers_sourced || source_all_helpers "get_config_uncached()"
 }
 
 get_config
