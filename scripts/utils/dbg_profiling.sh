@@ -164,6 +164,8 @@ profiling_display() {
 
 profiling_sourced=1
 
+log_it "sourced profiling"
+
 # [ "$initialize_plugin" = "1" ] && return
 
 [ -t 0 ] && {
