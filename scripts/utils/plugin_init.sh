@@ -85,15 +85,9 @@ get_config_refresh() {
     log_it "get_config_refresh()"
     # profiling_display "[helpers] get_config_refresh()"
 
-    # _m="><> get_config_refresh(), start -"
-    # _m="$_m tpt_current_vers [$tpt_current_vers]"
-    # _m="$_m tpt_current_vers_i [$tpt_current_vers_i]"
-    # _m="$_m tpt_current_vers_suffix [$tpt_current_vers_suffix]"
-    # log_it "$_m"
-
     [[ -f "$f_cache_params" ]] && {
         # Only really need cfg_tmux_conf at this point
-        # log_it "><> attempting to source: $f_cache_params"
+        log_it "><> attempting to source: $f_cache_params"
         # shellcheck source=cache/plugin_params
         . "$f_cache_params" || {
             log_it "WARNING: Failed to source: $f_cache_params, removing it"

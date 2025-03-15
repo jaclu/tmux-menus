@@ -139,13 +139,15 @@ get_config() {
     #  This is used by everything else sourcing helpers.sh, then trusting
     #  that the param cache is valid if found
     #
-    # log_it "get_config()"
+    log_it "get_config()"
     # profiling_display "[helpers] get_config()"
 
     if [ -f "$f_no_cache_hint" ]; then
-        log_it "Will call it due to f_no_cache_hint"
+        _m="Will call get_config_read_save_if_uncached due to f_no_cache_hint"
+        log_it " get_config() - $m"
         get_config_read_save_if_uncached
     elif [ -f "$f_cache_params" ]; then
+        log_it " get_config() - sourcing: $f_cache_params"
         # shellcheck disable=SC1090
         if . "$f_cache_params"; then
             cache_params_retrieved=1
@@ -322,7 +324,7 @@ plugin_name="tmux-menus"
 #  This is mostly for debugging early stuff before the settings have
 #  been processed. Should normally be commented out!
 #
-# cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
+cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
 
 #
 #  If set to "1" log will happen to stderr if script is run in an interactive
