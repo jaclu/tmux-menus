@@ -6,7 +6,7 @@
     # 1 no log to stderr
     # 2 no log or profiling to stderr
     # 3 nothing to stderr
-    export TMUX_MENUS_FORCE_SILENT=2
+    export TMUX_MENUS_FORCE_SILENT=1
     # 0 use built in menus if available, otherwise whiptail/dialog if found
     # 1 force whiptail
     # 2 force dialog

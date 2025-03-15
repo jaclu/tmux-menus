@@ -360,7 +360,7 @@ fi
 if [ "$MENUS_PROFILING" != "1" ]; then
     # profiling calls should not be left in the code base long term, this
     # is primarily intended to capture them when profiling is temporarily disabled
-    log_it "creating dummy profiler"
+    log_it "><> ------------ creating dummy profiler"
     profiling_display() {
         true
     }
