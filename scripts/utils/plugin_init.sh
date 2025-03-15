@@ -82,12 +82,11 @@ get_config_refresh() {
     #  Retrieves cached env params, rebuilding the cache if tmux conf was
     #  more recent, or not found
     #
-    log_it "get_config_refresh()"
+    # log_it "get_config_refresh()"
     # profiling_display "[helpers] get_config_refresh()"
 
     [[ -f "$f_cache_params" ]] && {
         # Only really need cfg_tmux_conf at this point
-        log_it "><> attempting to source: $f_cache_params"
         # shellcheck source=cache/plugin_params
         . "$f_cache_params" || {
             log_it "WARNING: Failed to source: $f_cache_params, removing it"
@@ -104,7 +103,6 @@ get_config_refresh() {
         # log_it "><> get_config_refresh() - will get option: @menus_config_file [$default_tmux_conf]"
         tmux_get_option cfg_tmux_conf "@menus_config_file" "$default_tmux_conf"
     }
-    log_it "><>   get_config_refresh() -  cfg_tmux_conf [$cfg_tmux_conf]"
     if [[ -f "$cfg_tmux_conf" ]] && [[ -f "$f_cache_params" ]]; then
         #
         # if the wrong tmux conf was provided, don't see it as an error, just
@@ -187,7 +185,6 @@ initialize_plugin=1
 $all_helpers_sourced || source_all_helpers "always done by plugin_init.sh"
 
 if [[ -d "$d_cache" ]]; then
-    # d_work_space="$d_cache"
     # clear out potentially obsolete cache items
 
     # if this is removed cache_clear() will erase cached items, can it be avoided?
@@ -195,10 +192,6 @@ if [[ -d "$d_cache" ]]; then
 
     rm -f "$f_cached_tmux_options"
     rm -f "$f_cache_known_tmux_vers"
-# else
-#     d_work_space="$(mktemp -d -t "tmux-menus-$(id -u)-$$-XXXX")"
-#     [[ -z "$d_work_space" ]] && error_msg "Failed to create temp workspace"
-#     log_it "d_work_space: $d_work_space"
 fi
 
 # Create a LF in log_file to easier separate runs

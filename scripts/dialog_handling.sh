@@ -444,7 +444,7 @@ menu_parse() {
 
         *)
             # Error
-            log_it "--- Menu created so far ---"
+            log_it "  menu_parse()  ---  Menu created so far  ---"
             log_it "$menu_items"
             error_msg_safe "ERROR: [$1]"
             ;;

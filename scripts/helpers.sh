@@ -52,7 +52,7 @@ error_msg_safe() {
 }
 
 source_all_helpers() {
-    log_it "source_all_helpers() - $1"
+    # log_it "source_all_helpers() - $1"
     profiling_display "[helpers] ----->  source_all_helpers [$0] $1"
     $all_helpers_sourced && {
         error_msg_safe "source_all_helpers() called when it was already done"
@@ -139,7 +139,7 @@ get_config() {
     #  This is used by everything else sourcing helpers.sh, then trusting
     #  that the param cache is valid if found
     #
-    log_it "get_config()"
+    # log_it "get_config()"
     # profiling_display "[helpers] get_config()"
 
     if [ -f "$f_no_cache_hint" ]; then
@@ -147,7 +147,7 @@ get_config() {
         log_it " get_config() - $m"
         get_config_read_save_if_uncached
     elif [ -f "$f_cache_params" ]; then
-        log_it " get_config() - sourcing: $f_cache_params"
+        # log_it " get_config() - sourcing: $f_cache_params"
         # shellcheck disable=SC1090
         if . "$f_cache_params"; then
             cache_params_retrieved=1
@@ -365,7 +365,7 @@ fi
 if [ "$MENUS_PROFILING" != "1" ]; then
     # profiling calls should not be left in the code base long term, this
     # is primarily intended to capture them when profiling is temporarily disabled
-    log_it "><> ------------ creating dummy profiler"
+    # log_it "><> ------------ creating dummy profiler"
     profiling_display() {
         true
     }
@@ -375,9 +375,9 @@ elif [ "$MENUS_PROFILING" = "1" ] && [ "$profiling_sourced" != "1" ]; then
     # copy the below code using absolute paths
     # shellcheck source=scripts/utils/dbg_profiling.sh
     . "$D_TM_BASE_PATH"/scripts/utils/dbg_profiling.sh
-    log_it "profiling sourced"
-else
-    log_it "profiling already sourced"
+#     log_it "profiling sourced"
+# else
+#     log_it "profiling already sourced"
 fi
 
 # minimal support variables

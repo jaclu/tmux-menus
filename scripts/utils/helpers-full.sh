@@ -144,8 +144,6 @@ posix_get_char() {
     #  Configure terminal to read a single character without echoing,
     #  restoring the terminal and returning the char
     #
-    # log_it "posix_get_char()"
-
     _org_stty=$(stty -g)
     stty raw -echo
     dd bs=1 count=1 2>/dev/null
@@ -153,14 +151,12 @@ posix_get_char() {
 }
 
 extract_char() {
-    # log_it "extract_char($1,$2)"
     _str="$1"
     _pos="$2"
     printf '%s\n' "$_str" | cut -c "$_pos"
 }
 
 lowercase_it() {
-    # log_it "lowercase_it($1)"
     echo "$1" | tr '[:upper:]' '[:lower:]'
 }
 
@@ -169,9 +165,7 @@ get_digits_from_string() {
     # `tmux 1.9` => `19`
     # `1.9a`     => `19`
 
-    # log_it "get_digits_from_string($1)"
     _i="$(echo "$1" | tr -dC '[:digit:]')"
-    # log_it "get_digits_from_string($s) -> [$i]"
     echo "$_i"
 }
 
@@ -230,7 +224,7 @@ normalize_bool_param() {
 }
 
 has_lf_not_at_end() {
-    log_it "has_lf_not_at_end()" # with cache:
+    # log_it "has_lf_not_at_end()" # with cache:
 
     #
     #  POSIX hack I came up with to check if a string contains LF
@@ -247,26 +241,6 @@ has_lf_not_at_end() {
 #
 #---------------------------------------------------------------
 
-# safe_now() {
-#     log_it "safe_now()" # with cache:
-#     #
-#     #  MacOS date only display whole seconds, if gdate (GNU-date) is
-#     #  installed, it can  display times with more precision
-#     #
-#     if [ -d /proc ] && [ -f /proc/version ]; then
-#         #  On Linux the native date supports sub second precision
-#         #  unless its the busybox date - only gives seconds...
-#         date +%s.%N
-#     else
-#         # Running on macOS
-#         if [ -n "$(command -v gdate)" ]; then
-#             gdate +%s.%N
-#         else
-#             date +%s
-#         fi
-#     fi
-# }
-
 wait_to_close_display() {
     #
     #  When a menu item writes to stdout, unfortunately how to close
@@ -274,7 +248,7 @@ wait_to_close_display() {
     #  call this to display an appropriate suggestion, and in the
     #  whiptail case wait for that key
     #
-    log_it "wait_to_close_display()" # with cache:
+    # log_it "wait_to_close_display()" # with cache:
     echo
     # shellcheck disable=SC2154
     if $cfg_use_whiptail; then
@@ -314,8 +288,6 @@ env_initialized=false
 
 # shellcheck source=scripts/utils/tmux.sh
 . "$d_scripts"/utils/tmux.sh
-
-# log_it "><>==========  sourcing the other helpers done  $0"
 
 if $cfg_use_whiptail; then
     menu_reload="; $f_current_script"

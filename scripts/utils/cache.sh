@@ -63,7 +63,6 @@ cache_prepare() {
     $cfg_use_cache || error_msg "cache_prepare() - called when not using cache" 1
 
     cache_create_folder
-    # log_it "  <-- cache_prepare() - done created: $d_cache"
     return 0
 }
 
@@ -116,8 +115,8 @@ cache_save_known_tmux_versions() { # tmux stuff
         error_msg "cache_save_known_tmux_versions() - called when not using cache"
     }
     [ -d "$d_cache" ] || {
-        log_it "cache_save_known_tmux_versions() aborting, no cache folder: $d_cache"
-        return
+        log_it "WARNING: cache_save_known_tmux_versions() aborting, no cache folder: $d_cache"
+        return 1
     }
 
     cache_prepare
@@ -137,6 +136,7 @@ cached_bad_tmux_versions=\"$cached_bad_tmux_versions\"" >"$f_cache_known_tmux_ve
         error_msg "Failed to save known versions: $f_cache_known_tmux_vers"
     }
     #endregion
+    return 0
 }
 
 cache_escape_special_chars() {
@@ -269,7 +269,7 @@ cache_config_get_save() {
         profiling_display "[cache] cache_param_write - done"
         return 0
     else
-        log_it "didn't save due to:"
+        log_it "  cache_config_get_save() - didn't save due to:"
         [ -f "$f_no_cache_hint" ] && log_it "  presence of f_no_cache_hint [$f_no_cache_hint]"
         $cfg_use_cache || log_it "  cfg_use_cache: $cfg_use_cache"
         return 1

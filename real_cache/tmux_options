@@ -1,0 +1,4 @@
+@menus_nav_home "#[fg=colour84]<=="
+@menus_nav_next "#[fg=colour220]-->"
+@menus_nav_prev "#[fg=colour71]<--"
+@use_bind_key_notes_in_plugins Yes

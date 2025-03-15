@@ -157,7 +157,6 @@ profiling_update_time_stamps() {
 
 profiling_display() {
     [ "$TMUX_MENUS_FORCE_SILENT" = "3" ] && return
-    log_it "><>   profiling_display($1)"
     profiling_update_time_stamps
 
     _s="$1 - total: $_since_start   since last: $_sine_update"

@@ -103,7 +103,7 @@ cache_save_options_defined_in_tmux() {
     $TMUX_BIN show-options -g | grep ^@menus_ >"$f_cached_tmux_options"
     $TMUX_BIN show-options -g | grep @use_bind_key_notes_in_plugins \
         >>"$f_cached_tmux_options"
-    log_it "  <-- cache_save_options_defined_in_tmux() - wrote: $f_cached_tmux_options"
+    # log_it "  <-- cache_save_options_defined_in_tmux() - wrote: $f_cached_tmux_options"
     # profiling_display "[tmux] cache_save_options_defined_in_tmux() - done"
 }
 
@@ -273,71 +273,6 @@ tmux_get_plugin_options() { # cache references
     plugin_options_have_been_read=true
 
     # profiling_display "[tmux] tmux_get_plugin_options() - done"
-}
-
-tmux_error_handler_old() { # cache references
-    #
-    #  Detects any errors reported by tmux commands and gives notification
-    #
-    the_cmd="$*"
-    # $teh_debug &&
-    log_it "><> tmux_error_handler($the_cmd)"
-
-    if $cfg_use_cache; then
-        d_errors="$d_cache"
-    else
-        d_errors="$d_tmp"
-    fi
-    # ensure it exists
-    [ ! -d "$d_errors" ] && mkdir -p "$d_errors"
-    f_tmux_err="$d_errors"/tmux-err
-    $teh_debug && log_it "><>teh $TMUX_BIN $*"
-    $TMUX_BIN "$@" 2>"$f_tmux_err" && rm -f "$f_tmux_err"
-    $teh_debug && log_it "><>teh cmd done [$?]"
-    [ -s "$f_tmux_err" ] && {
-        #
-        #  First save the error to a named file
-        #
-        _f_name="$(tr -cs '[:alnum:]._' '_' <"$f_tmux_err")"
-        [ -z "$_f_name" ] && _f_name="tmux-error"
-        f_error_log="$d_errors/error-$_f_name"
-
-        [ -f "$f_error_log" ] && {
-            _idx=1
-            f_error_log="${f_error_log}-$_idx"
-            while [ -f "$f_error_log" ]; do
-                _idx=$((_idx + 1))
-                f_error_log="${f_tmux_err}-$_idx"
-                [ "$_idx" -gt 1000 ] && {
-                    error_msg "Aborting runaway loop - _idx=$_idx"
-                }
-            done
-        }
-        (
-            echo "\$TMUX_BIN $the_cmd"
-            echo
-            cat "$f_tmux_err"
-        ) >"$f_error_log"
-
-        if $teh_debug; then
-            log_it "$(
-                printf "tmux cmd failed:\n\n%s\n" "$(cat "$f_error_log")"
-            )"
-        else
-            log_it "saved error to: $f_error_log"
-            error_msg "$(
-                printf "tmux cmd failed:\n\n%s\n
-                \nThe full error message has been saved in:\n%s
-                \nFull path:\n%s\n" \
-                    "$(cat "$f_error_log")" \
-                    "$(relative_path "$f_error_log")" \
-                    "$f_error_log"
-            )"
-        fi
-        return 1
-    }
-    teh_debug=false
-    return 0
 }
 
 tmux_error_handler() {
