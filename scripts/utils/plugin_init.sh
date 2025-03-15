@@ -208,7 +208,9 @@ fi
 # Create a LF in log_file to easier separate runs
 log_it
 
+profiling_display "will do: get_config_refresh"
 get_config_refresh
+profiling_display "returned from: get_config_refresh"
 
 prepare_cach
 
