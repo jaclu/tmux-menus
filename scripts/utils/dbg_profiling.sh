@@ -112,14 +112,20 @@ profiling_get_time() {
     #
     #  Sets profiling_t_now to current epoch
     #
-    case "$profiling_selected_get_time" in
-    date) profiling_set_t_date ;;
-    gdate) profiling_set_t_gdate ;;
-    perl) profiling_set_t_perl ;;
-    *) profiling_select_timing_method ;;
-    esac
-    # safe_now
-    # profiling_t_now="$t_now"
+    if [ "$_profiling_use_default_timer" = "1" ]; then
+        safe_now
+        profiling_t_now="$t_now"
+    else
+        case "$profiling_selected_get_time" in
+        date) profiling_set_t_date ;;
+        gdate) profiling_set_t_gdate ;;
+        perl) profiling_set_t_perl ;;
+        *)
+        profiling_select_timing_method
+        # profiling_selected_get_time="perl" # override
+        ;;
+        esac
+    fi
 
     [ -z "$profiling_t_start" ] && {
         profiling_t_start="$profiling_t_now"
@@ -138,11 +144,13 @@ profiling_get_time() {
 
 profiling_update_time_stamps() {
     profiling_get_time
-    # _since_start="$(echo "$profiling_t_now - $profiling_t_start" | bc)"
-    # _sine_update="$(echo "$profiling_t_now - $profiling_t_last_update" | bc)"
-    _since_start=$((profiling_t_now - profiling_t_start))
-    _sine_update=$((profiling_t_now - profiling_t_last_update))
-
+    if [ "$_profiling_use_default_timer" = "1" ]; then
+        _since_start="$(echo "$profiling_t_now - $profiling_t_start" | bc)"
+        _sine_update="$(echo "$profiling_t_now - $profiling_t_last_update" | bc)"
+    else
+        _since_start=$((profiling_t_now - profiling_t_start))
+        _sine_update=$((profiling_t_now - profiling_t_last_update))
+    fi
     profiling_t_last_update="$profiling_t_now"
 }
 
@@ -163,6 +171,7 @@ profiling_display() {
     # profiling_update_time_stamps
 }
 
+_profiling_use_default_timer=0
 profiling_sourced=1
 
 
@@ -179,5 +188,5 @@ profiling_sourced=1
     *) ;;
     esac
 
-    profiling_display_it "$_m"
+    profiling_display "$_m"
 }
