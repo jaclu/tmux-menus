@@ -99,6 +99,8 @@ get_config_refresh() {
             log_it "WARNING: Failed to source: $f_cache_params, removing it"
             rm -f "$f_cache_params"
         }
+        profiling_display "sourced: $f_cache_params"
+
         # log_it "reading cfg_tmux_conf - sourced: $f_cache_params"
 
         # Save some

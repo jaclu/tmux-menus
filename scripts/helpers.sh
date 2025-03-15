@@ -122,12 +122,15 @@ get_config_read_save_if_uncached() {
     # reads config, and if allowed saves it to cache
     # profiling_display "[helpers] get_config_read_save_if_uncached()"
 
+    profiling_display "get_config_read_save_if_uncached()"
+
     $all_helpers_sourced || source_all_helpers "get_config_read_save_if_uncached()"
     cache_config_get_save || {
         # cache couldn't be saved, indicate cache not available
         log_it "  <-- get_config_read_save_if_uncached() - unable to save cache params"
         cfg_use_cache=false
     }
+    profiling_display "get_config_read_save_if_uncached() - done"
 }
 
 get_config() {
