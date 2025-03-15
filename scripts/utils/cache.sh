@@ -266,7 +266,7 @@ cache_config_get_save() {
     # profiling_display "[cache] tmux_get_plugin_options - done"
     if [ ! -f "$f_no_cache_hint" ] && $cfg_use_cache; then
         cache_param_write
-        profiling_display "[cache] cache_param_write - done"
+        # profiling_display "[cache] cache_param_write - done"
         return 0
     else
         log_it "didn't save due to:"

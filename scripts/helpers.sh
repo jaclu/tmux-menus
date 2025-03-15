@@ -335,6 +335,7 @@ log_interactive_to_stderr=1
     esac
 }
 
+min_tmux_vers="1.8"
 cfg_use_whiptail=false
 plugin_options_have_been_read=false # only need to read param once
 # for performance only a minimum of support features are in this file
@@ -359,7 +360,7 @@ fi
 if [ "$MENUS_PROFILING" != "1" ]; then
     # profiling calls should not be left in the code base long term, this
     # is primarily intended to capture them when profiling is temporarily disabled
-
+    log_it "creating dummy profiler"
     profiling_display() {
         true
     }
@@ -369,6 +370,7 @@ elif [ "$MENUS_PROFILING" = "1" ] && [ "$profiling_sourced" != "1" ]; then
     # copy the below code using absolute paths
     # shellcheck source=scripts/utils/dbg_profiling.sh
     . "$D_TM_BASE_PATH"/scripts/utils/dbg_profiling.sh
+    log_it "profiling sourced"
 else
     log_it "profiling already sourced"
 fi
@@ -418,7 +420,6 @@ fi
 
 get_config
 
-min_tmux_vers="1.8"
 if ! tmux_vers_check "$min_tmux_vers"; then
     # @variables are not usable prior to 1.8
     error_msg "need at least tmux $min_tmux_vers to work!"

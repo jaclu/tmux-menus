@@ -108,7 +108,7 @@ get_config_refresh() {
         # log_it "><> get_config_refresh() - will get option: @menus_config_file [$default_tmux_conf]"
         tmux_get_option cfg_tmux_conf "@menus_config_file" "$default_tmux_conf"
     }
-
+    log_it "><>   get_config_refresh() -  cfg_tmux_conf [$cfg_tmux_conf]"
     if [[ -f "$cfg_tmux_conf" ]] && [[ -f "$f_cache_params" ]]; then
         #
         # if the wrong tmux conf was provided, don't see it as an error, just
@@ -214,5 +214,5 @@ prepare_cach
 
 # Key is not bound until cache (if allowed) has been prepared, so normally
 # no menus will be triggered by the user before this
-bind_plugin_key
 profiling_display "plugin_init.sh done"
+bind_plugin_key

@@ -49,9 +49,9 @@ profiling_log_it() {
     # During normal sourcing of this it has been, but if this is early sourced
     # in some other script, this is not initially available
     if [ -t 0 ] && [ "$TMUX_MENUS_FORCE_SILENT" != "2" ]; then
-        profiling_display_it "$@"
+        profiling_display_it "$1"
     elif profiling_is_function_defined "log_it"; then
-        log_it profiling "$@" || exit 2
+        log_it "$1" profiling  || exit 2
     elif [ -n "$cfg_log_file" ]; then
         printf '%s\n' "[P] [no log_it] $*" >>"$cfg_log_file"
     fi
