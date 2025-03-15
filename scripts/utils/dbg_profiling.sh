@@ -123,6 +123,7 @@ profiling_get_time() {
         *)
         profiling_select_timing_method
         # profiling_selected_get_time="perl" # override
+        profiling_get_time
         ;;
         esac
     fi
