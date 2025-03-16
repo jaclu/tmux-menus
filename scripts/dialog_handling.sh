@@ -532,8 +532,10 @@ handle_static_cached() {
 
         [ "$menu_name" = "Main menu" ] && {
             # give branch hint on main menu if not main
-            branch="$(cd "$D_TM_BASE_PATH" && git branch --show-current)"
-            [ "$branch" != "main" ] && menu_name="$menu_name [$branch]"
+            branch="$(cd "$D_TM_BASE_PATH" && git branch --show-current)" && {
+		# previous check, if the git is to old and lacks show-current, skip this
+		[ "$branch" != "main" ] && menu_name="$menu_name [$branch]"
+	    }
         }
         # now static content can be cached
         static_content
