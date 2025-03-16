@@ -1,5 +1,10 @@
 # Plan
 
+## Caching tweak
+
+During cache creation, of no dynamic cache was generated, ensure only one
+cache segment exists, to cut down on reading the cache
+
 ## Changing menu handler
 
 Noticed on: iSH MacOs Linux
