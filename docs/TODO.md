@@ -1,5 +1,9 @@
 # Plan
 
+## hepp
+
+move f_current_script to helpers-full
+
 ## support scripts needing all helpers
 
 should source scripts/helpers_all.sh

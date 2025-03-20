@@ -297,7 +297,7 @@ if $cfg_use_whiptail; then
     #
     reload_in_runshell=""
 else
-    menu_reload="\; run-shell \"$f_current_script\""
+    menu_reload="\; run-shell $f_current_script"
     reload_in_runshell=" ; $f_current_script"
 fi
 log_it "><> helpers-full menu_reload set [$menu_reload]"
