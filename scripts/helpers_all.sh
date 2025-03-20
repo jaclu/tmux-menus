@@ -32,4 +32,4 @@ fi
 # shellcheck source=scripts/helpers.sh
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
-$all_helpers_sourced || source_all_helpers "helpers_full.sh"
+$all_helpers_sourced || source_all_helpers "helpers_all.sh"

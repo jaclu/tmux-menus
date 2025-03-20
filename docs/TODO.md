@@ -1,5 +1,9 @@
 # Plan
 
+## support scripts needing all helpers
+
+should source scripts/helpers_all.sh
+
 ## Caching tweak
 
 During cache creation, of no dynamic cache was generated, ensure only one
