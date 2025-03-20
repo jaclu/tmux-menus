@@ -290,16 +290,17 @@ env_initialized=false
 . "$d_scripts"/utils/tmux.sh
 
 if $cfg_use_whiptail; then
-    menu_reload="; $f_current_script"
+    menu_reload="\; $f_current_script"
     #
     #  I haven't been able do to menu reload with whiptail/dialog yet,
     #  so disabled for now
     #
     reload_in_runshell=""
 else
-    menu_reload="; run-shell \"$f_current_script\""
+    menu_reload="\; run-shell \"$f_current_script\""
     reload_in_runshell=" ; $f_current_script"
 fi
+log_it "><> helpers-full menu_reload set [$menu_reload]"
 
 env_initialized=true # indicates that env is fully configured
 # log_it "><> scripts/utils/helpers-full.sh - completed"

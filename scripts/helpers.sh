@@ -162,6 +162,14 @@ get_config() {
     fi
 }
 
+get_d_current_script() {
+    # shellcheck disable=SC2164
+    d_current_script="$(
+        cd "$(dirname "$0")"
+        pwd
+    )"
+}
+
 #---------------------------------------------------------------
 #
 #   get a time stamp
@@ -397,11 +405,6 @@ f_cache_params="$d_cache"/plugin_params
 #  for caching, so save it to a variable as well
 #
 
-# shellcheck disable=SC2164
-d_current_script="$(
-    cd "$(dirname "$0")"
-    pwd
-)"
 current_script=${0##*/}
 f_current_script="$d_current_script/$current_script"
 

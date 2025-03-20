@@ -73,6 +73,7 @@ define_f_menu_rel() {
     # to optimize and skip the external process used by relative_path() only
     # define this when needed
     [ -n "$f_menu_rel" ] && return
+    get_d_current_script
     f_menu_rel="$(relative_path "$d_current_script")/$current_script"
 }
 
@@ -497,6 +498,7 @@ set_menu_env_variables() {
     if $cfg_use_cache; then
         # Include relative script path in cache folder name to avoid name collisions
         #  items/main.sh -> cache/items/main.sh/
+        get_d_current_script
         d_menu_cache="$d_cache/$(relative_path "$d_current_script")/$current_script"
         $cfg_use_whiptail && d_wt_actions="$d_menu_cache/wt_actions"
     else
@@ -513,14 +515,14 @@ handle_static_cached() {
     #
     # log_it "handle_static_cached() - [$0] d_menu_cache [$d_menu_cache]"
     if [ ! -d "$d_menu_cache" ] || [ "$(get_mtime "$0")" -gt "$(get_mtime "$d_menu_cache")" ]; then
+        $all_helpers_sourced || {
+            source_all_helpers "handle_static_cached() - case error"
+        }
         # log_it "  regenerate cache for: $d_menu_cache"
         # Ensure d_menu_cache seems to be valid before doing erase
         case "$d_menu_cache" in
         *"$plugin_name"*) ;;
         *)
-            $all_helpers_sourced || {
-                source_all_helpers "handle_static_cached() - case error"
-            }
             _s="d_menu_cache seems wrong [$d_menu_cache] plugin-name not in that"
             _s="$_m path [$plugin_name]"
             error_msg_safe "$_s"
@@ -840,6 +842,7 @@ display_menu() {
 
     # Try to log this one even if other logging is disabled
     [ "$TMUX_MENUS_FORCE_SILENT" = "3" ] && TMUX_MENUS_FORCE_SILENT=1
+    get_d_current_script
     log_it "Menu $(relative_path "$d_current_script")/$current_script - processing time:  $_t"
 
     [ "$TMUX_MENUS_NO_DISPLAY" = "1" ] && return
