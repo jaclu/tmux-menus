@@ -13,8 +13,8 @@
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 
-# shellcheck source=scripts/helpers.sh
-. "$D_TM_BASE_PATH"/scripts/helpers.sh
+# shellcheck source=scripts/utils/helpers-full.sh
+. "$D_TM_BASE_PATH"/scripts/utils/helpers-full.sh
 
 if $cfg_use_hint_overlays && ! $cfg_use_whiptail; then
     "$d_hints"/choose-tree.sh skip-oversized &
