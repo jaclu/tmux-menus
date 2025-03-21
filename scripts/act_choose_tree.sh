@@ -16,10 +16,6 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 # shellcheck source=scripts/helpers_all.sh
 . "$D_TM_BASE_PATH"/scripts/helpers_all.sh
 
-# print_stderr "><> print_stderr cfg_log_file [$cfg_log_file] log_interactive_to_stderr [$log_interactive_to_stderr]"
-# log_it "><> hepp"
-# exit 1
-
 if $cfg_use_hint_overlays && ! $cfg_use_whiptail; then
     "$d_hints"/choose-tree.sh skip-oversized &
 fi

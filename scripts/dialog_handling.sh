@@ -888,7 +888,7 @@ display_menu() {
 
 exit_if_dialog_doesnt_fit_screen() {
     # Useful for hints, if it doesn't fit on screen, just skip this menu
-    log_it "exit_if_dialog_doesnt_fit_screen()"
+    # log_it "exit_if_dialog_doesnt_fit_screen()"
     check_screen_size && return
     exit 0
 }

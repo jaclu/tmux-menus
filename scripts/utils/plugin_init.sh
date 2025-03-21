@@ -6,76 +6,8 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#  Try to init the cache if allowed
-
-#---------------------------------------------------------------
+#  Initiate plugin, should be run in background from .tmux file
 #
-#   tmux version related support functions
-#
-#---------------------------------------------------------------
-
-# log_basic() {
-#     if log_file_writeable; then
-#         log_it "$1"
-#     else
-#         print_stderr "[bl] $1" || {
-#             # it couldn't be printed to stderr, use display-message...
-#             $TMUX_BIN display-message "[$plugin_name]$1"
-#         }
-#     fi
-# }
-
-# error_basic() {
-#     # Used before the env is setup, and normal error handling is unavailable
-#     _err_msg="ERROR: $plugin_name - $1"
-#     if log_file_writeable; then
-#         log_it "$_err_msg"
-#     else
-#         print_stderr "$_err_msg"
-#     fi
-#     $TMUX_BIN display-message "ERROR: [$plugin_name][bl] $1"
-#     exit 1
-# }
-
-# log_file_set() {
-#     cfg_log_file="$1"
-#     status_log_file_writeable=""
-# }
-
-# log_file_writeable() {
-#     #
-#     # if it is undefined or absent assume it can't be used
-#     # to avoid recursion - don't call any log or err funcs from here!
-#     #
-
-#     [[ -n "$status_log_file_writeable" ]] && return 0
-
-#     [[ -z "$cfg_log_file" ]] && [[ ! -f "$cfg_log_file" ]] && {
-#         print_stderr "log_file_writeable() -  log_file undefined or missing: $cfg_log_file"
-#         return 1
-#     }
-#     _d_log="$(dirname -- "$cfg_log_file")"
-#     if [[ -z "$_d_log" ]] || [[ ! -d "$_d_log" ]]; then
-#         # folder for logfile undefined or missing
-#         log_file_set
-#         print_stderr "log_file_writeable() -  WARNING: log folder missing: $_d_log"
-#         return 1
-#     fi
-#     touch "$cfg_log_file" || {
-#         # failed to write to log_file
-#         log_file_set
-#         print_stderr "log_file_writeable() -  Unable to write to: $cfg_log_file"
-#         return 1
-#     }
-#     status_log_file_writeable="$cfg_log_file"
-#     return 0
-# }
-
-#---------------------------------------------------------------
-#
-#   setup plugin
-#
-#---------------------------------------------------------------
 
 get_config_refresh() {
     #
