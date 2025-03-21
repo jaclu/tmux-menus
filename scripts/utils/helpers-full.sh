@@ -294,7 +294,9 @@ f_current_script="$d_current_script/$current_script"
 . "$d_scripts"/utils/tmux.sh
 
 if $cfg_use_whiptail; then
-    menu_reload="\; $f_current_script"
+    menu_reload="\; \"$f_current_script\""
+    #                      "resize-pane -Z ; run-shell \"/home/jaclu/git_repos/mine/tmux-menus/items/panes.sh\""
+    # "Toggle pane zoom" z "resize-pane -Z \; run-shell /home/jaclu/git_repos/mine/tmux-menus/items/panes.sh"
     #
     #  I haven't been able do to menu reload with whiptail/dialog yet,
     #  so disabled for now
