@@ -23,28 +23,31 @@ static_content() {
         2.1 C m "Toggle mark current pane" "select-pane -m $menu_reload" \
         1.9 C y "Toggle synchronized panes" "set -w synchronize-panes $menu_reload" \
         2.6 C c "Clear screen & history" \
-        "send-keys C-l ; run 'sleep 0.3' ; clear-history" \
+        "send-keys C-l ; run 'sleep 0.3' ; clear-history $menu_reload" \
         1.8 C h 'history (enter \"copy mode\")' "copy-mode" \
         2.6 C t "Set Pane Title" "command-prompt -I '#T'  -p 'Title: '  \
             'select-pane -T \"%%\"' $menu_reload" \
-        1.7 C n "Display pane numbers" "display-panes $menu_reload" \
+        1.7 C '\#' "Display pane numbers" "display-panes $menu_reload" \
         1.7 C d "Display pane size" "display-message \
             'Pane: #P size: #{pane_width}x#{pane_height}' $menu_reload" \
         0.0 S \
+        1.7 C p "Previous pane [in order]" "select-pane -t - $menu_reload" \
+        1.7 C n "Next     pane [in order]" "select-pane -t + $menu_reload" \
+        0.0 S \
         2.0 C s "Save pane history no escapes" "command-prompt -p \
             'Save to (no escapes):' -I '$d_history/tmux-history' \
-            'capture-pane -S - -E - ; save-buffer %1 ; delete-buffer'" \
+            'capture-pane -S - -E - ; save-buffer %1 ; delete-buffer'  $menu_reload" \
         2.0 C e "Save pane history with escapes" "command-prompt -p \
             'Save to (with escapes):' -I '$d_history/tmux-history-escapes' \
-            'capture-pane -S - -E - -e ; save-buffer %1 ; delete-buffer'" \
+            'capture-pane -S - -E - -e ; save-buffer %1 ; delete-buffer'  $menu_reload" \
         0.0 S \
         2.0 C r "Respawn current pane" "confirm-before -p \
-            'respawn-pane #P? (y/n)' 'respawn-pane -k'" \
+            'respawn-pane #P? (y/n)' 'respawn-pane -k' $menu_reload" \
         2.0 C x "Kill current pane" "confirm-before -p \
-            'kill-pane #T (#P)? (y/n)' kill-pane" \
+            'kill-pane #T (#P)? (y/n)' kill-pane  $menu_reload" \
         2.0 C o "Kill all other panes" "confirm-before -p \
             'Are you sure you want to kill all other panes? (y/n)' \
-            'kill-pane -a'" \
+            'kill-pane -a'  $menu_reload" \
         0.0 S \
         0.0 M H "Help $nav_next" "$d_help/help_panes.sh $f_current_script"
 

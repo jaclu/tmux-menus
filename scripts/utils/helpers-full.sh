@@ -309,18 +309,17 @@ f_current_script="$d_current_script/$current_script"
 
 if $cfg_use_whiptail; then
     menu_reload="\; \"$f_current_script\""
-    #                      "resize-pane -Z ; run-shell \"/home/jaclu/git_repos/mine/tmux-menus/items/panes.sh\""
-    # "Toggle pane zoom" z "resize-pane -Z \; run-shell /home/jaclu/git_repos/mine/tmux-menus/items/panes.sh"
     #
     #  I haven't been able do to menu reload with whiptail/dialog yet,
     #  so disabled for now
     #
     reload_in_runshell=""
 else
-    menu_reload="\; run-shell $f_current_script"
-    reload_in_runshell=" ; $f_current_script"
+    menu_reload="; run-shell \"$f_current_script\""
+    #                      "resize-pane -Z ; run-shell \"/home/jaclu/git_repos/mine/tmux-menus/items/panes.sh\""
+    # "Toggle pane zoom" z "resize-pane -Z \; run-shell \"/home/jaclu/git_repos/mine/tmux-menus/items/panes.sh\""
+    reload_in_runshell=" ; \"$f_current_script\""
 fi
-log_it "><> menu_reload [$menu_reload]"
 
 env_initialized=2 # indicates that env is fully configured
 # log_it "><> scripts/utils/helpers-full.sh - completed"
