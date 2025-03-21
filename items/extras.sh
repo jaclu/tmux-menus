@@ -20,7 +20,7 @@ is_avalable() {
     fi
 }
 
-static_content() {
+dynamic_content() {
     d_extras="$d_items"/external_tools
 
     set -- \
