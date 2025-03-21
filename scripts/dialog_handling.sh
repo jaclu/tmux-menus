@@ -573,6 +573,7 @@ handle_dynamic() {
         wt_actions_static="$wt_actions"
         wt_actions=""
         is_dynamic_content=true
+        mkdir -p "$d_menu_cache"
         dynamic_content
         is_dynamic_content=false
         wt_actions="$wt_actions_static"
