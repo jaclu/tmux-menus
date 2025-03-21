@@ -123,7 +123,7 @@ get_config_refresh() {
 
 prepare_cach() {
     if $cfg_use_cache; then
-        cache_add_ok_vers "$tpt_current_vers"
+        cache_add_ok_vers "$current_tmux_vers"
 
         if [[ -d "$d_custom_items" ]]; then
             $f_update_custom_inventory

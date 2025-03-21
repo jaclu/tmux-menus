@@ -32,9 +32,9 @@ cfg_log_file="/Users/jaclu/tmp/tmux-menus-dbg.log"
 
 cfg_use_notes="true"
 
-tpt_current_vers="3.5a"
-tpt_current_vers_i="35"
-tpt_current_vers_suffix="a"
+current_tmux_vers="3.5a"
+current_tmux_vers_i="35"
+current_tmux_vers_suffix="a"
 
 #
 # Get version hints for repo and local changes,

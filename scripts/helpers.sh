@@ -227,7 +227,7 @@ tmux_vers_check() {
 
     # Retrieve and cache the current tmux version on the first call,
     # unless it has been read from the param cache
-    if [ -z "$tpt_current_vers" ] || [ -z "$tpt_current_vers_i" ]; then
+    if [ -z "$current_tmux_vers" ] || [ -z "$current_tmux_vers_i" ]; then
         tpt_retrieve_running_tmux_vers
     fi
 
@@ -272,11 +272,11 @@ tpt_retrieve_running_tmux_vers() {
     # be accessed before the first call to tmux_vers_ok this can be called.
     #
     # log_it "tpt_retrieve_running_tmux_vers()"
-    tpt_current_vers="$($TMUX_BIN -V | cut -d' ' -f2)"
-    # log_it "  tpt_current_vers [$tpt_current_vers]"
-    tpt_digits_from_string tpt_current_vers_i "$tpt_current_vers"
-    # tpt_current_vers_suffix="$(tpt_tmux_vers_suffix "$tpt_current_vers")"
-    tpt_tmux_vers_suffix tpt_current_vers_suffix "$tpt_current_vers"
+    current_tmux_vers="$($TMUX_BIN -V | cut -d' ' -f2)"
+    # log_it "  current_tmux_vers [$current_tmux_vers]"
+    tpt_digits_from_string current_tmux_vers_i "$current_tmux_vers"
+    # current_tmux_vers_suffix="$(tpt_tmux_vers_suffix "$current_tmux_vers")"
+    tpt_tmux_vers_suffix current_tmux_vers_suffix "$current_tmux_vers"
 }
 
 tpt_digits_from_string() {

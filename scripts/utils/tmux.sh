@@ -18,11 +18,11 @@ tmux_vers_check_do_compare() {
 
     # Compare numeric parts first for quick decisions.
     tpt_digits_from_string _i_comp "$_v_comp"
-    [ "$_i_comp" -lt "$tpt_current_vers_i" ] && {
+    [ "$_i_comp" -lt "$current_tmux_vers_i" ] && {
         cache_add_ok_vers "$_v_comp"
         return 0
     }
-    [ "$_i_comp" -gt "$tpt_current_vers_i" ] && {
+    [ "$_i_comp" -gt "$current_tmux_vers_i" ] && {
         cache_add_bad_vers "$_v_comp"
         return 1
     }
@@ -30,17 +30,17 @@ tmux_vers_check_do_compare() {
     # Compare suffixes only if numeric parts are equal.
     _suf="$(tpt_tmux_vers_suffix "$_v_comp")"
     # - If no suffix is required or suffix matches, return success
-    [ -z "$_suf" ] || [ "$_suf" = "$tpt_current_vers_suffix" ] && {
+    if [ -z "$_suf" ] || [ "$_suf" = "$current_tmux_vers_suffix" ]; then
         cache_add_ok_vers "$_v_comp"
         return 0
-    }
+    fi
     # If the desired version has a suffix but the running version doesn't, fail
-    [ -n "$_suf" ] && [ -z "$tpt_current_vers_suffix" ] && {
+    [ -n "$_suf" ] && [ -z "$current_tmux_vers_suffix" ] && {
         cache_add_bad_vers "$_v_comp"
         return 1
     }
     # Perform lexicographical comparison of suffixes only if necessary
-    [ "$(printf '%s\n%s\n' "$_suf" "$tpt_current_vers_suffix" |
+    [ "$(printf '%s\n%s\n' "$_suf" "$current_tmux_vers_suffix" |
         LC_COLLATE=C sort | head -n 1)" = "$_suf" ] && {
         cache_add_ok_vers "$_v_comp"
         return 0
