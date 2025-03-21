@@ -16,7 +16,7 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 . "$D_TM_BASE_PATH"/scripts/helpers_all.sh
 
 _this="kill_other_windows.sh" # error prone if script name is changed :(
-[ "$bn_current_script" != "$_this" ] && error_msg_safe "$_this should NOT be sourced"
+[ "$bn_current_script" != "$_this" ] && error_msg "$_this should NOT be sourced"
 
 # linter helpers
 window_list=""
