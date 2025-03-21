@@ -19,7 +19,7 @@ get_config_refresh() {
 
     [[ -f "$f_cache_params" ]] && {
         # Only really need cfg_tmux_conf at this point
-        # shellcheck source=cache/plugin_params
+        # shellcheck source=/dev/null
         . "$f_cache_params" || {
             log_it "WARNING: Failed to source: $f_cache_params, removing it"
             rm -f "$f_cache_params"
@@ -85,6 +85,7 @@ bind_plugin_key() {
     }
     if $cfg_no_prefix; then
         cmd+=" -n"
+        # shellcheck disable=SC2154
         trigger_sequence="Menus bound to: $cfg_trigger_key"
     else
         trigger_sequence="Menus bound to: <prefix> $cfg_trigger_key"
