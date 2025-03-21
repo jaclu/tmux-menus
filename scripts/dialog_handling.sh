@@ -498,8 +498,10 @@ set_menu_env_variables() {
     if $cfg_use_cache; then
         # Include relative script path in cache folder name to avoid name collisions
         #  items/main.sh -> cache/items/main.sh/
-        get_d_current_script set_menu_env_variables
-        d_menu_cache="$d_cache/$(relative_path "$d_current_script")/$bn_current_script"
+        # [ "$env_initialized" -lt 2 ] && error_msg_safe "env not fully initialized"
+        d_menu_cache="$d_cache/$(relative_path "$d_basic_current_script")"
+        d_menu_cache="$d_menu_cache/$bn_current_script_no_ext"
+
         $cfg_use_whiptail && d_wt_actions="$d_menu_cache/wt_actions"
     else
         uncached_menu=""
@@ -535,9 +537,9 @@ handle_static_cached() {
         [ "$menu_name" = "Main menu" ] && {
             # give branch hint on main menu if not main
             branch="$(cd "$D_TM_BASE_PATH" && git branch --show-current)" && {
-		# previous check, if the git is to old and lacks show-current, skip this
-		[ "$branch" != "main" ] && menu_name="$menu_name [$branch]"
-	    }
+                # previous check, if the git is to old and lacks show-current, skip this
+                [ "$branch" != "main" ] && menu_name="$menu_name [$branch]"
+            }
         }
         # now static content can be cached
         static_content
@@ -841,8 +843,8 @@ display_menu() {
 
     # Try to log this one even if other logging is disabled
     [ "$TMUX_MENUS_FORCE_SILENT" = "3" ] && TMUX_MENUS_FORCE_SILENT=1
-    get_d_current_script display_menu
-    log_it "Menu $(relative_path "$d_current_script")/$bn_current_script - processing time:  $_t"
+
+    log_it "Menu $(relative_path "$d_basic_current_script")/$bn_current_script - processing time:  $_t"
 
     [ "$TMUX_MENUS_NO_DISPLAY" = "1" ] && return
 
@@ -886,7 +888,7 @@ if [ -z "$D_TM_BASE_PATH" ]; then
 fi
 
 # Only import if needed, checking a random variable
-[ -z "$f_no_cache_hint" ] && {
+[ -z "$d_scripts" ] && {
     # shellcheck source=scripts/helpers.sh
     . "$D_TM_BASE_PATH"/scripts/helpers.sh
     # profiling_display "[dialog_handling] sourced helpers"
