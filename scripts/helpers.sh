@@ -163,11 +163,7 @@ get_config() {
 }
 
 get_d_current_script() {
-    # shellcheck disable=SC2164
-    d_current_script="$(
-        cd "$(dirname "$0")"
-        pwd
-    )"
+    error_msg_safe "Call to get_d_current_script($1)"
 }
 
 #---------------------------------------------------------------
@@ -400,13 +396,12 @@ d_cache="$D_TM_BASE_PATH"/cache
 f_cache_known_tmux_vers="$d_cache"/known_tmux_versions
 f_cache_params="$d_cache"/plugin_params
 
+bn_current_script=${0##*/} # same but faster than "$(basename "$0")"
+
 #
 #  Convert script name to full actual path notation the path is used
 #  for caching, so save it to a variable as well
 #
-
-current_script=${0##*/}
-f_current_script="$d_current_script/$current_script"
 
 if [ -d "$d_cache" ]; then
     cfg_use_cache=true

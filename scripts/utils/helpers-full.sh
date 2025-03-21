@@ -280,6 +280,13 @@ f_custom_items_index="$d_custom_items"/_index.sh
 f_update_custom_inventory="$d_scripts"/update_custom_inventory.sh
 f_cached_tmux_options="$d_cache"/tmux_options
 
+current_script=${0##*/}
+d_current_script="$(
+    cd "$(dirname "$0")" || exit
+    pwd
+)"
+f_current_script="$d_current_script/$current_script"
+
 # will be set to true at end of this, this indicates everything is prepared
 env_initialized=false
 

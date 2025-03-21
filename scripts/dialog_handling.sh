@@ -73,8 +73,8 @@ define_f_menu_rel() {
     # to optimize and skip the external process used by relative_path() only
     # define this when needed
     [ -n "$f_menu_rel" ] && return
-    get_d_current_script
-    f_menu_rel="$(relative_path "$d_current_script")/$current_script"
+    get_d_current_script define_f_menu_rel
+    f_menu_rel="$(relative_path "$d_current_script")/$bn_current_script"
 }
 
 update_wt_actions() {
@@ -498,8 +498,8 @@ set_menu_env_variables() {
     if $cfg_use_cache; then
         # Include relative script path in cache folder name to avoid name collisions
         #  items/main.sh -> cache/items/main.sh/
-        get_d_current_script
-        d_menu_cache="$d_cache/$(relative_path "$d_current_script")/$current_script"
+        get_d_current_script set_menu_env_variables
+        d_menu_cache="$d_cache/$(relative_path "$d_current_script")/$bn_current_script"
         $cfg_use_whiptail && d_wt_actions="$d_menu_cache/wt_actions"
     else
         uncached_menu=""
@@ -704,13 +704,12 @@ ensure_menu_fits_on_screen() {
     # Display time menu was shown
     safe_now
     disp_time="$(echo "$t_now - $dh_t_start" | bc)"
-    # log_it "ensure_menu_fits_on_screen() Menu $current_script - Display time:  $disp_time"
+    # log_it "ensure_menu_fits_on_screen() Menu $bn_current_script - Display time:  $disp_time"
 
     if [ "$(echo "$disp_time < 0.5" | bc)" -eq 1 ]; then
         $all_helpers_sourced || {
             source_all_helpers "ensure_menu_fits_on_screen()  short display, give warning"
         }
-        define_f_menu_rel
         if [ -n "$window_width" ] && [ -n "$window_height" ]; then
             _s="$f_menu_rel: screen mins: ${window_width}x$window_height"
         elif [ -n "$window_height" ]; then
@@ -842,8 +841,8 @@ display_menu() {
 
     # Try to log this one even if other logging is disabled
     [ "$TMUX_MENUS_FORCE_SILENT" = "3" ] && TMUX_MENUS_FORCE_SILENT=1
-    get_d_current_script
-    log_it "Menu $(relative_path "$d_current_script")/$current_script - processing time:  $_t"
+    get_d_current_script display_menu
+    log_it "Menu $(relative_path "$d_current_script")/$bn_current_script - processing time:  $_t"
 
     [ "$TMUX_MENUS_NO_DISPLAY" = "1" ] && return
 
