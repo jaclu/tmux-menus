@@ -740,8 +740,9 @@ check_screen_size() {
     $cfg_use_whiptail && return 0
     # log_it "check_screen_size()"
 
+    $all_helpers_sourced || source_all_helpers "check_screen_size()"
+    define_actual_size
     [ -n "$window_height" ] && {
-        actual_height="$($TMUX_BIN display-message -p "#{client_height}")"
         [ "$window_height" -gt "$actual_height" ] && {
             define_f_menu_rel
             _warn="$f_menu_rel aborted, win height > actual: "
@@ -752,7 +753,6 @@ check_screen_size() {
         # log_it "window_height valid"
     }
     [ -n "$window_width" ] && {
-        actual_width="$($TMUX_BIN display-message -p "#{client_width}")"
         [ "$window_width" -gt "$actual_width" ] && {
             _warn="menu display aborted, win width > actual: "
             _warn="$_warn $window_width > $actual_width"

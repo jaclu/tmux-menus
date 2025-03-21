@@ -237,6 +237,20 @@ has_lf_not_at_end() {
 
 #---------------------------------------------------------------
 #
+#   Get some not often used states
+#
+#---------------------------------------------------------------
+
+define_actual_size() {
+    # Sets some variable indicating screen size
+    # log_it "define_actual_size()"
+
+    actual_height="$($TMUX_BIN display-message -p "#{client_height}")"
+    actual_width="$($TMUX_BIN display-message -p "#{client_width}")"
+}
+
+#---------------------------------------------------------------
+#
 #   Other
 #
 #---------------------------------------------------------------
