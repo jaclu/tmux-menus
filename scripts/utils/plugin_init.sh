@@ -121,7 +121,13 @@ get_config_refresh() {
     fi
 }
 
-prepare_cach() {
+prepare_cache() {
+    # log_it "prepare_cache() current_tmux_vers"
+
+    # dummy check to get current vers, 0.0 is often used in dialogs, so not a wasted
+    # effort to cache it as valid
+    tmux_vers_check 0.0
+
     if $cfg_use_cache; then
         cache_add_ok_vers "$current_tmux_vers"
 
@@ -197,7 +203,7 @@ profiling_display "will do: get_config_refresh"
 get_config_refresh
 profiling_display "returned from: get_config_refresh"
 
-prepare_cach
+prepare_cache
 
 # Key is not bound until cache (if allowed) has been prepared, so normally
 # no menus will be triggered by the user before this
