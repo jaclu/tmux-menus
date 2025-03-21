@@ -52,7 +52,7 @@ error_msg_safe() {
 }
 
 source_all_helpers() {
-    # log_it "source_all_helpers() - $1"
+    log_it "source_all_helpers() - $1"
     profiling_display "[helpers] ----->  source_all_helpers [$0] $1"
     $all_helpers_sourced && {
         error_msg_safe "source_all_helpers() called when it was already done"
@@ -323,6 +323,9 @@ tpt_tmux_vers_suffix() {
 
 plugin_name="tmux-menus"
 
+# will be 1 when limited env is ready, 2 when full env is ready
+env_initialized=0
+
 #
 #  Setting a cfg_log_file here will ignore the tmux setting @menus_log_file
 #  This is mostly for debugging early stuff before the settings have
@@ -396,7 +399,9 @@ d_cache="$D_TM_BASE_PATH"/cache
 f_cache_known_tmux_vers="$d_cache"/known_tmux_versions
 f_cache_params="$d_cache"/plugin_params
 
+d_basic_current_script=${0%/*}
 bn_current_script=${0##*/} # same but faster than "$(basename "$0")"
+bn_current_script_no_ext=${bn_current_script%.*}
 
 #
 #  Convert script name to full actual path notation the path is used
@@ -427,5 +432,7 @@ if ! tmux_vers_check "$min_tmux_vers"; then
     # @variables are not usable prior to 1.8
     error_msg "need at least tmux $min_tmux_vers to work!"
 fi
+
+[ "$env_initialized" -eq 0 ] && env_initialized=1 # basic init done
 
 # log_it "><> scripts/helpers.sh - completed"

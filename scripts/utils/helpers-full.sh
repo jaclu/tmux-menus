@@ -67,7 +67,7 @@ error_msg() {
             msg_hold="$plugin_name ERR: $em_msg"
             # shellcheck disable=SC2154
             actual_win_width="$($TMUX_BIN display-message -p "#{window_width}")"
-            if $env_initialized && (
+            if [ "$env_initialized" -eq 2 ] && (
                 [ "${#msg_hold}" -gt "$actual_win_width" ] || has_lf_not_at_end "$em_msg"
             ); then
                 error_msg_formated "$em_msg"
@@ -287,9 +287,6 @@ d_current_script="$(
 )"
 f_current_script="$d_current_script/$current_script"
 
-# will be set to true at end of this, this indicates everything is prepared
-env_initialized=false
-
 # shellcheck source=scripts/utils/cache.sh
 . "$d_scripts"/utils/cache.sh
 
@@ -307,7 +304,6 @@ else
     menu_reload="\; run-shell $f_current_script"
     reload_in_runshell=" ; $f_current_script"
 fi
-log_it "><> helpers-full menu_reload set [$menu_reload]"
 
-env_initialized=true # indicates that env is fully configured
+env_initialized=2 # indicates that env is fully configured
 # log_it "><> scripts/utils/helpers-full.sh - completed"
