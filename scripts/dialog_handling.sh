@@ -562,8 +562,10 @@ handle_static_cached() {
             }
         }
         # now static content can be cached
-        static_content
-        static_cache_updated=true
+        is_function_defined "static_content" && {
+            static_content
+            static_cache_updated=true
+        }
     fi
 }
 
