@@ -307,12 +307,12 @@ tpt_tmux_vers_suffix() {
     #   "3.2"  => ""
     #   "3.2a" => "a"
     varname="$1"
-    # log_it "tpt_tmux_vers_suffix($varname, $2)"
+    # log_it "tpt_tmux_vers_suffix($varname,$2)"
     _s="$(echo "$2" | sed 's/.*[0-9]\([a-zA-Z]*\)$/\1/')" || {
         error_msg_safe "tpt_tmux_vers_suffix() - Failed to extract suffix"
     }
-    # log_it " <-- tpt_tmux_vers_suffix() - result [$_s]"
-    eval "$varname=\$_s"
+    eval "$varname=\"\$_s\""
+    # log_it " <-- tpt_tmux_vers_suffix() - result [$varname]"
 }
 
 #===============================================================

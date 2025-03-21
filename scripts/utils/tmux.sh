@@ -28,7 +28,7 @@ tmux_vers_check_do_compare() {
     }
 
     # Compare suffixes only if numeric parts are equal.
-    _suf="$(tpt_tmux_vers_suffix "$_v_comp")"
+    tpt_tmux_vers_suffix _suf "$_v_comp"
     # - If no suffix is required or suffix matches, return success
     if [ -z "$_suf" ] || [ "$_suf" = "$current_tmux_vers_suffix" ]; then
         cache_add_ok_vers "$_v_comp"
