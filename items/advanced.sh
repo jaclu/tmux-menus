@@ -15,6 +15,7 @@ dynamic_content() {
     #  Gather some info in order to be able to show states
     #
     if tmux_vers_check 2.1; then
+        $all_helpers_sourced || source_all_helpers "advanced:dynamic_content()"
         tmux_error_handler_assign current_prefix show-options -gv prefix
         tmux_error_handler_assign current_mouse_status show-options -gv mouse
         # shellcheck disable=SC2154
@@ -29,9 +30,9 @@ dynamic_content() {
     set -- \
         2.1 C M "Toggle mouse to: $new_mouse_status" "set-option -g mouse \
         $new_mouse_status $menu_reload" \
-        2.4 C p "Change prefix (C-$current_prefix)" "command-prompt -1 -p \
+        2.4 C p "Change prefix (Current: $current_prefix)" "command-prompt -1 -p \
             'prefix (will take effect imeditally)' \
-            'run-shell \"$d_scripts/change_prefix.sh %1 $reload_in_runshell\"'" \
+            'run-shell \"$d_scripts/change_prefix.sh %1 $reload_in_runshell\" $menu_reload'" \
         0.0 S
 
     menu_generate_part 2 "$@"

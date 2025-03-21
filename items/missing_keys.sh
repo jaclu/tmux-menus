@@ -26,6 +26,8 @@ display_char() {
     c="$1"
     [ -z "$c" ] && error_msg_safe "display_char() - no param"
     if $cfg_use_whiptail; then
+        $all_helpers_sourced || source_all_helpers "missing_keys:display_char()"
+
         normalize_bool_param "$wt_pasting" false &&
             pending_paste=true || pending_paste=false
 
