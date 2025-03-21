@@ -250,6 +250,7 @@ tmux_get_plugin_options() { # cache references
     fi
     # profiling_display "[tmux] whiptail part done"
 
+    tmux_get_option cfg_tmux_conf "@menus_config_file" "$default_tmux_conf"
     [ -z "$cfg_log_file" ] && {
         #  If a debug logfile has been set, the tmux setting will be ignored.
         tmux_get_option cfg_log_file "@menus_log_file" "$default_log_file"
