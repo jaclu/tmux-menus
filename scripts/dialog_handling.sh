@@ -104,6 +104,8 @@ update_wt_actions() {
 menu_generate_part() {
     # Generate one menu segment
     # log_it "menu_generate_part($1)"
+
+    $is_dynamic_content && dynamic_content_found=true
     $all_helpers_sourced || source_all_helpers "menu_generate_part()"
 
     menu_idx="$1"
@@ -510,6 +512,24 @@ set_menu_env_variables() {
     fi
 }
 
+static_files_reduction() {
+    # if only static content was generated, compact all parts into one
+    # for quicker cach loading
+    $dynamic_content_found && {
+        error_msg "static_files_reduction() called when dynamic content was generated"
+    }
+    log_it "static_files_reduction()"
+    _items="$(find "$d_menu_cache" -maxdepth 1 -type f | wc -l)"
+    [ "$_items" -gt 1 ] && {
+        sort_menu_items
+        rm -f "$d_menu_cache"/* || {
+            error_msg "static_files_reduction() - failed to clear cache: $d_menu_cache"
+        }
+        echo "$menu_items" >"$d_menu_cache/1"
+        unset menu_items # clear it
+    }
+}
+
 handle_static_cached() {
     #
     # Ensure the cache folder is present, and newer than the menu file, making sure
@@ -543,8 +563,8 @@ handle_static_cached() {
         }
         # now static content can be cached
         static_content
+        static_cache_updated=true
     fi
-
 }
 
 handle_dynamic() {
@@ -672,6 +692,8 @@ prepare_menu() {
     # 2 - Handle dynamic parts (if any)
     handle_dynamic
     # profiling_display "[dialog_handling] handle_dynamic() done"
+
+    $static_cache_updated && ! $dynamic_content_found && static_files_reduction
 
     # 3 - Gather each item in correct order
     sort_menu_items
@@ -894,7 +916,9 @@ fi
     # profiling_display "[dialog_handling] sourced helpers"
 }
 
-is_dynamic_content=false
+is_dynamic_content=false    # indicates if a dynamic content segment is being processed
+dynamic_content_found=false # indicate dynamic content was generated
+static_cache_updated=false  # used to decide if static cache file reduction should happen
 
 # Some sanity checks
 [ "$TMUX_MENUS_NO_DISPLAY" != "1" ] && {
