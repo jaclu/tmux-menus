@@ -514,7 +514,7 @@ set_menu_env_variables() {
 
 static_files_reduction() {
     # if only static content was generated, compact all parts into one
-    # for quicker cach loading
+    # for quicker cache loading
     $dynamic_content_found && {
         error_msg "static_files_reduction() called when dynamic content was generated"
     }
