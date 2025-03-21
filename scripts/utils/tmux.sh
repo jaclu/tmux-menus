@@ -193,7 +193,7 @@ tmux_get_plugin_options() { # cache references
 
     select_menu_handler
 
-    # [ "$current_script" = "plugin_init.sh" ] && {
+    # [ "$bn_current_script" = "plugin_init.sh" ] && {
     #     # Since this is only needed by plugin_init.sh, save some time
     #     # when @menus_use_cache is No and skip this one for menu items
     tmux_get_option cfg_trigger_key "@menus_trigger" "$default_trigger_key"

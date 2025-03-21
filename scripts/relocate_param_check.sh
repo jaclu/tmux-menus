@@ -19,7 +19,7 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 
 # Should be sourced
 _this="relocate_param_check.sh" # error prone if script name is changed :(
-[ "$current_script" = "$_this" ] && error_msg_safe "$_this SHOULD be sourced"
+[ "$bn_current_script" = "$_this" ] && error_msg_safe "$_this SHOULD be sourced"
 
 item_type="$1"
 
