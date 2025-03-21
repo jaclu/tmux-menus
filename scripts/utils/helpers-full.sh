@@ -304,6 +304,7 @@ else
     menu_reload="\; run-shell $f_current_script"
     reload_in_runshell=" ; $f_current_script"
 fi
+log_it "><> menu_reload [$menu_reload]"
 
 env_initialized=2 # indicates that env is fully configured
 # log_it "><> scripts/utils/helpers-full.sh - completed"

@@ -24,7 +24,6 @@ static_content() {
     rld_cmd="command-prompt -I '$cfg_tmux_conf' -p 'Source file:' \
         'run-shell \"$d_scripts/reload_conf.sh %% $reload_in_runshell\"'"
 
-    error_msg "><> cfg_tmux_conf [$cfg_tmux_conf] rld_cmd [$rld_cmd]"
     if $cfg_use_cache && [ -f "$f_custom_items_index" ]; then
         set -- \
             0.0 M \+ "Custom items      $nav_next" "$f_custom_items_index"
