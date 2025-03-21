@@ -40,7 +40,7 @@ error_msg() {
     #  If exit_code is set to -1, process is not exited
     #
     em_msg="$1"
-    exit_code="${2:-0}"
+    exit_code="${2:-1}"
     do_display_message=${3:-true}
     TMUX_MENUS_FORCE_SILENT=0 # errors should always be displayed
     log_it "error_msg($em_msg, $exit_code)"

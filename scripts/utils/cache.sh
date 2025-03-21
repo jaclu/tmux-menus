@@ -76,7 +76,7 @@ cache_add_ok_vers() {
     [ -z "$1" ] && error_msg "cache_add_ok_vers() - no param"
 
     case "$cached_ok_tmux_versions" in
-    *"$1"*) ;;
+    *"$1 "*) ;;
     *)
         cached_ok_tmux_versions="${cached_ok_tmux_versions}$1 "
         # log_it "Adding ok tmux vers: $1"
@@ -120,9 +120,6 @@ cache_save_known_tmux_versions() { # tmux stuff
     }
 
     cache_prepare
-
-    # cat <<EOF "  1
-
     #region known tmux versions
     printf '%s\n' "\
 #!/bin/sh
