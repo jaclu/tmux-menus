@@ -1,5 +1,14 @@
 # Plan
 
+## external_tools/dropbox.sh
+
+toggle not working
+
+## check env needs
+
+- currencies
+- external_tools/spotify
+
 ## hepp
 
 move f_current_script to helpers-full
