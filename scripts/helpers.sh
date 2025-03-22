@@ -134,8 +134,8 @@ get_config() {
         get_config_read_save_if_uncached
     elif [ -f "$f_cache_params" ]; then
         # log_it " get_config() - sourcing: $f_cache_params"
-        # shellcheck disable=SC1090
-        if . "$f_cache_params"; then
+
+        if source_config; then
             cache_params_retrieved=1
         else
             log_it "WARNING: failed to source: $f_cache_params, doing manual param read"

@@ -284,6 +284,20 @@ cache_config_get_save() {
     fi
 }
 
+source_config() {
+    # log_it "source_config()"
+    _result=0
+    [ "$cfg_log_file_forced" = 1 ] && orig_log_file="$cfg_log_file"
+    # shellcheck disable=SC1090
+    . "$f_cache_params" || _result=1
+    [ -n "$orig_log_file" ] && {
+        cfg_log_file="$orig_log_file"
+        unset orig_log_file
+        # log_it "restored cfg_log_file"
+    }
+    return "$_result"
+}
+
 #===============================================================
 #
 #   Main
