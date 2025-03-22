@@ -282,7 +282,6 @@ min_display_t_append_to_params() {
         log_it "min_display_t_append_to_params() - no such file: $_f_params"
         return 1
     }
-    log_it "><> min_display_t_append_to_params() - grep file"
     grep -q t_minimal_display_time "$_f_params" && {
         # already set
         return 0
