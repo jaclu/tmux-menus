@@ -256,7 +256,7 @@ define_actual_size() {
 #---------------------------------------------------------------
 
 min_display_read() {
-    log_it "min_display_read()"
+    log_it "-T-  min_display_read()"
     [ -f "$f_min_display_time" ] || {
         error_msg "min_display_read() - missing file: $f_min_display_time"
     }
@@ -265,7 +265,7 @@ min_display_read() {
 
 min_display_set() {
     t_minimal_display_time="$1"
-    log_it "min_display_set($t_minimal_display_time)"
+    log_it "-T-  min_display_set($t_minimal_display_time)"
     [ -z "$t_minimal_display_time" ] && error_msg_safe "min_display_set() - no param"
     echo "$t_minimal_display_time" >"$f_min_display_time"
     # shellcheck disable=SC2154
@@ -274,7 +274,7 @@ min_display_set() {
 
 min_display_append_to_params() {
     _f_params="$1"
-    log_it "min_display_append_to_params()"
+    log_it "-T-  min_display_append_to_params()"
     grep -q t_minimal_display_time "$_f_params" && {
         # already set
         return
