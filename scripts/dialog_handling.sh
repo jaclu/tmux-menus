@@ -15,7 +15,7 @@
 #    2 min screen height required for menu
 #  If provided, screen size is chcecked and
 
-#  Menus are expected to define the foolowing:
+#  Menus are expected to define the following:
 #   D_TM_BASE_PATH  - base location for tmux-menus plugin
 #   menu_name       - Name of menu
 #   menu_min_vers   - If set, min version of tmux menu supports
