@@ -259,7 +259,7 @@ safe_remove() {
     pattern="$1"
     [ -z "$pattern" ] && error_msg "safe_remove() - no param supplied!"
 
-    log_it "safe_remove($pattern)"
+    # log_it "safe_remove($pattern)"
 
     tmpdir_noslash="${TMPDIR%/}" # Remove trailing slash if present
 

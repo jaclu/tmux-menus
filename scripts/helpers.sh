@@ -52,7 +52,7 @@ error_msg_safe() {
 }
 
 source_all_helpers() {
-    log_it "source_all_helpers() - $1"
+    # log_it "source_all_helpers() - $1"
     profiling_display "[helpers] ----->  source_all_helpers [$0] $1"
     $all_helpers_sourced && {
         error_msg_safe "source_all_helpers() called when it was already done"

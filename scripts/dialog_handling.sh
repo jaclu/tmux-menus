@@ -518,8 +518,9 @@ static_files_reduction() {
     $dynamic_content_found && {
         error_msg "static_files_reduction() called when dynamic content was generated"
     }
-    log_it "static_files_reduction()"
+    # log_it "static_files_reduction()"
     _items="$(find "$d_menu_cache" -maxdepth 1 -type f | wc -l)"
+
     [ "$_items" -gt 1 ] && {
         sort_menu_items
         for f_name in $(find "$d_menu_cache" -maxdepth 1 -type f); do
