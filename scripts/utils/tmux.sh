@@ -183,7 +183,7 @@ tmux_get_plugin_options() { # cache references
         # log_it "><> removing: $f_no_cache_hint"
         safe_remove "$f_no_cache_hint"
         # do it as early as possible, so that further tmux options are cached
-        cache_create_folder
+        cache_create_folder "@menus_use_cache is true"
     else
         cfg_use_cache=false
         # log_it "><> touching: $f_no_cache_hint"

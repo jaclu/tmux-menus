@@ -23,7 +23,7 @@ cache_create_folder() {
     }
     [ -d "$d_cache" ] && return 0 # already created
 
-    log_it "cache_create_folder() - $d_cache"
+    log_it "cache_create_folder() - $1  folder: $d_cache"
     mkdir -p "$d_cache" || {
         error_msg "Failed to create cache folder: $d_cache"
         # Disabling cache
@@ -62,7 +62,7 @@ cache_prepare() {
     # log_it "cache_prepare()"
     $cfg_use_cache || error_msg "cache_prepare() - called when not using cache" 1
 
-    cache_create_folder
+    cache_create_folder "cache_prepare()"
     return 0
 }
 
