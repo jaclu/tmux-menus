@@ -229,9 +229,8 @@ current_tmux_vers_i=\"$current_tmux_vers_i\"
 current_tmux_vers_suffix=\"$current_tmux_vers_suffix\"
 
 #
-# Get version hints for repo and local changes,
-# This ensures cache is cleared next time tmux is started or conf is sourced
-# anytime repo was updated, or any file was changed locally.
+# Get time stamps for repo and local file changes,
+# This ensures cache is cleared any time the code has changed.
 #
 repo_last_changed=\"$repo_last_changed\"
 last_local_edit=\"$last_local_edit\"" >"$_f_params_tmp"
@@ -248,7 +247,7 @@ last_local_edit=\"$last_local_edit\"" >"$_f_params_tmp"
         # If any params have changed, invalidate cache
         # log_it "  cache_param_write() - Config changed - clear cache"
         # error_msg "><> _f_params_tmp [$_f_params_tmp] differs"
-        cache_clear "Environment changed"
+        cache_clear "Environment changed:  $(diff "$_f_params_tmp" "$f_cache_params")"
         mv "$_f_params_tmp" "$f_cache_params"
     else
         safe_remove "$_f_params_tmp" # no changes

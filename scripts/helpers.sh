@@ -345,6 +345,7 @@ cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
 #
 #  If set to "1" log will happen to stderr if script is run in an interactive
 #  shell, so this will not mess it up if the plugin is initiated or run by tmux
+#  If log can't happen to stderr, it will go to cfg_log_file if it is defined
 #
 log_interactive_to_stderr=1
 

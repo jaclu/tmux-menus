@@ -289,6 +289,10 @@ min_display_t_append_to_params() {
     min_display_t_read || return 1 # abort if t_minimal_display_time is not found
     (
         echo
+        echo "#"
+        echo "# If menu is displayed shorter than this, assume it was due to not fitting"
+        echo "# the screen"
+        echo "#"
         echo "t_minimal_display_time=$t_minimal_display_time"
     ) >>"$_f_params" || error_msg "Failed to append t_minimal_display_time to: $_f_params"
     return 0
