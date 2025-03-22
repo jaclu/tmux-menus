@@ -120,6 +120,28 @@ select_menu_handler() {
 #
 #---------------------------------------------------------------
 
+source_cached_params() {
+    log_it "source_cached_params()"
+    result_sourcing=0
+
+    [ "$cfg_log_file_forced" = 1 ] && orig_log_file="$cfg_log_file"
+
+    if [ -f "$f_cache_params" ]; then
+        # shellcheck disable=SC1090
+        . "$f_cache_params" || result_sourcing=1
+    else
+        log_it "source_cached_params() - not found: $f_cache_params"
+        result_sourcing=1
+    fi
+
+    [ "$cfg_log_file_forced" = 1 ] && {
+        cfg_log_file="$orig_log_file"
+        unset orig_log_file
+        # log_it "restored cfg_log_file"
+    }
+    return "$result_sourcing"
+}
+
 get_config() {
     #
     #  The plugin init .tmux script should NOT depend on this!
@@ -135,12 +157,12 @@ get_config() {
     elif [ -f "$f_cache_params" ]; then
         # log_it " get_config() - sourcing: $f_cache_params"
 
-        if source_config; then
+        if source_cached_params; then
             cache_params_retrieved=1
         else
-            log_it "WARNING: failed to source: $f_cache_params, doing manual param read"
+            log_it "WARNING: get_config() failed to source: $f_cache_params, doing manual param read"
             $all_helpers_sourced || {
-                source_all_helpers "get_config() - failed to source cache"
+                source_all_helpers "get_config() - failed to source cached params"
             }
             get_config_read_save_if_uncached
         fi

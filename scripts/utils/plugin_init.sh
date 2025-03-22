@@ -22,8 +22,10 @@ get_config_refresh() {
         # shellcheck source=/dev/null
         [[ "$cfg_log_file_forced" = 1 ]] && orig_log_file="$cfg_log_file"
 
-        source_config || {
-            log_it "WARNING: Failed to source: $f_cache_params, removing it"
+        source_cached_params || {
+            _m="WARNING: get_config_refresh() Failed to source: $f_cache_params,"
+            _m+=" removing it"
+            log_it "$_m"
             safe_remove "$f_cache_params"
         }
         profiling_display "sourced: $f_cache_params"
@@ -112,7 +114,7 @@ bind_plugin_key() {
 check_speed_cutoff() {
     cut_off="$1"
     log_it "><> check_speed_cutoff() - grep file"
-    grep -q t_minimal_display_time "$_f_params" && {
+    [[ -f "$_f_params" ]] && grep -q t_minimal_display_time "$_f_params" && {
         # already set
         # log_it "-T-  check_speed_cutoff() - already set"
         return
@@ -177,7 +179,6 @@ profiling_display "returned from: get_config_refresh"
 #
 
 prepare_cache
-
 
 #
 # Key is not bound until cache (if allowed) has been prepared, so normally
