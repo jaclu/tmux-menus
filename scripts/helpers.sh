@@ -391,7 +391,7 @@ fi
 
 d_tmp="${TMPDIR:-/tmp}"
 d_tmp="${d_tmp%/}" # Removes a trailing slash if present - sometimes set in TMPDIR...
-f_no_cache_hint="$d_tmp"/no-cache-hint
+f_no_cache_hint="$d_tmp"/tmux-menus-no-cache-hint
 
 d_scripts="$D_TM_BASE_PATH"/scripts
 d_items="$D_TM_BASE_PATH"/items
