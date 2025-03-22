@@ -123,6 +123,7 @@ initialize_plugin=1
 
 $all_helpers_sourced || source_all_helpers "always done by plugin_init.sh"
 
+log_it "><> TIMING starts"
 safe_now t_init_start # get a feel for if this is a slow system...
 
 if [[ -d "$d_cache" ]]; then
@@ -147,7 +148,7 @@ prepare_cache
 #
 safe_now
 t_init="$(echo "$t_now - $t_init_start" | bc)"
-log_it "><> init timing: $t_init"
+log_it "><> TIMING result: $t_init"
 if [ "$(echo "$t_init < 1.5" | bc)" -eq 1 ]; then
     min_display_set 0.1
 else
