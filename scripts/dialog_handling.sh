@@ -81,7 +81,7 @@ update_wt_actions() {
     if $cfg_use_cache; then
         [ "$menu_idx" -eq 1 ] && {
             # clear menu actions
-            rm -rf "$d_wt_actions"
+            safe_remove d_wt_actions
         }
         mkdir -p "$d_wt_actions"
         if $is_dynamic_content; then
@@ -551,7 +551,7 @@ handle_static_cached() {
             ;;
         esac
 
-        rm -rf "$d_menu_cache" || error_msg_safe "Failed to remove: $d_menu_cache"
+        safe_remove "$d_menu_cache"
         mkdir -p "$d_menu_cache" || error_msg_safe "Failed to create: $d_menu_cache"
 
         [ "$menu_name" = "Main menu" ] && {

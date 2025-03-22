@@ -42,7 +42,7 @@ cache_clear() {
     $cfg_use_cache || error_msg "cache_clear() - called when not using cache"
     [ -z "$d_cache" ] && error_msg "cache_clear() - called when d_cache is undefined"
 
-    rm -rf "$d_cache"
+    safe_remove "$d_cache"
     cache_prepare
 
     # might as well do it now, to save processing time on next call
@@ -240,7 +240,7 @@ last_local_edit=\"$last_local_edit\"" >"$_f_params_tmp"
         cache_clear "Environment changed"
         mv "$_f_params_tmp" "$f_cache_params"
     else
-        rm -f "$_f_params_tmp" # no changes
+        safe_remove "$_f_params_tmp" # no changes
         # ensure time stamp is updated for tmux.conf age comparisons
         touch "$f_cache_params"
     fi

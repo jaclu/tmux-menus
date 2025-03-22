@@ -28,13 +28,13 @@ clear_cache_main() {
     # clear cache for main menu, so that next time its run it will not include
     # the alternate items index
 
-    rm -rf "$d_cache"/items/main
+    safe_remove "$d_cache"/items/main
 }
 
 clear_custom_content_template() {
     # log_it "clear_custom_content_template()"
     # remove temp file - items being added to custom menu
-    rm -f "$f_custom_items_content"
+    safe_remove "$f_custom_items_content"
 }
 
 clear_cache_custom_items() {
@@ -42,9 +42,9 @@ clear_cache_custom_items() {
     [ -z "$d_cache" ] && error_msg_safe "variable d_cache was unexpectedly undefined!"
 
     # remove all cached custom items
-    rm -rf "$d_cache"/custom_items_*/
+    safe_remove "$d_cache"/custom_items_*/
 
-    rm -f "$f_chksum_custom"
+    safe_remove "$f_chksum_custom"
 
     # only time this should not be done is when cache...
     [ "$1" != "keep_content_template" ] && clear_custom_content_template
@@ -52,7 +52,7 @@ clear_cache_custom_items() {
 
 remove_custom_item_content() {
     # Remove custom item index page and all related caches
-    rm -f "$f_custom_items_index"
+    safe_remove "$f_custom_items_index"
     clear_cache_custom_items # just to be sure its not pointing this file
 }
 
@@ -130,7 +130,7 @@ create_custom_index() {
     [ -z "$f_custom_items_content" ] && {
         error_msg_safe "variable f_custom_items_content undefined"
     }
-    rm -f "$f_custom_items_content" # make sure its nothing there
+    safe_remove "$f_custom_items_content" # make sure its nothing there
     clear_cache_main
 
     for custom_menu in $1; do
@@ -193,7 +193,7 @@ process_custom_items() {
     # If it would be present during the folder scan it would be added to the list
     # of menus to be listed within it :)
     # log_it "process_custom_items()"
-    rm -f "$f_custom_items_index"
+    safe_remove "$f_custom_items_index"
 
     # create list of runnable scripts in this folder
     # the name filter is intended to filter out foo.sh~ and foo.bash~ names
@@ -234,8 +234,8 @@ process_custom_items() {
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 
-# shellcheck source=scripts/helpers.sh
-. "$D_TM_BASE_PATH"/scripts/helpers.sh
+# shellcheck source=scripts/helpers_all.sh
+. "$D_TM_BASE_PATH"/scripts/helpers_all.sh
 
 f_chksum_custom="$d_cache"/chksum_custom_content
 

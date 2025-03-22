@@ -255,6 +255,37 @@ define_actual_size() {
 #
 #---------------------------------------------------------------
 
+safe_remove() {
+    # first check if variable is defined, and not a sensitive folder, then remove content
+    varname="$1"
+    [ -z "$varname" ] && error_msg "safe_remove() - no varname param supplied!"
+    eval "pattern=\"\$$varname\""
+    [ -z "$pattern" ] && error_msg "safe_remove() - failed to set pattern"
+
+    log_it "safe_remove($pattern)"
+    _folder="$pattern"
+    [ -d "$_folder" ] || {
+        # in case it was a file name, check if the parent is a folder
+        _folder=${_folder%/*}
+        [ -d "$_folder" ] || {
+            # it is ok if it doesn't exist, sometimes a folder is cleared in case
+            # it exists
+            return 0
+        }
+    }
+    case "$_folder" in
+    /etc | /usr | /var | $HOME | /home | /Users | /bin | /sbin | /lib | /lib64 | \
+        /boot | /mnt | /media | /run | /opt | /root | /dev | /proc | /sys | /lost+found)
+        error_msg "safe_remove() - refusing to delete protected directory: $pattern"
+        return 1
+        ;;
+    *) ;;
+    esac
+
+    rm -rf "$pattern" || error_msg "safe_remove() - Failed to delete: $pattern"
+    return 0
+}
+
 wait_to_close_display() {
     #
     #  When a menu item writes to stdout, unfortunately how to close

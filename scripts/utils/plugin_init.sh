@@ -22,7 +22,7 @@ get_config_refresh() {
         # shellcheck source=/dev/null
         . "$f_cache_params" || {
             log_it "WARNING: Failed to source: $f_cache_params, removing it"
-            rm -f "$f_cache_params"
+            safe_remove "$f_cache_params"
         }
         profiling_display "sourced: $f_cache_params"
 
@@ -125,8 +125,8 @@ $all_helpers_sourced || source_all_helpers "always done by plugin_init.sh"
 
 if [[ -d "$d_cache" ]]; then
     # clear out potentially obsolete cache items
-    rm -f "$f_cached_tmux_options"
-    rm -f "$f_cache_known_tmux_vers"
+    safe_remove "$f_cached_tmux_options"
+    safe_remove "$f_cache_known_tmux_vers"
 fi
 
 # Create a LF in log_file to easier separate runs
