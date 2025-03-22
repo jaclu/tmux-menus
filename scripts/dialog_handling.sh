@@ -522,10 +522,11 @@ static_files_reduction() {
     _items="$(find "$d_menu_cache" -maxdepth 1 -type f | wc -l)"
     [ "$_items" -gt 1 ] && {
         sort_menu_items
-        safe_remove "$d_menu_cache"/* || {
-            error_msg "static_files_reduction() - failed to clear cache: $d_menu_cache"
-        }
-        echo "$menu_items" >"$d_menu_cache/1"
+        for f_name in $(find "$d_menu_cache" -maxdepth 1 -type f); do
+            log_it "><> static_files_reduction() - will remove: $f_name"
+            safe_remove "$f_name"
+            echo "$menu_items" >"$d_menu_cache/1"
+        done
         unset menu_items # clear it
     }
 }
