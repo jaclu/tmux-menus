@@ -266,10 +266,10 @@ tmux_get_plugin_options() { # cache references
     #
     if tmux_vers_check 3.1 &&
         normalize_bool_param "@use_bind_key_notes_in_plugins" No; then
-        log_it "><> using notes"
+        # log_it "><> using notes"
         cfg_use_notes=true
     else
-        log_it "><> ignoring notes"
+        # log_it "><> ignoring notes"
         cfg_use_notes=false
     fi
     plugin_options_have_been_read=true
