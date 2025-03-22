@@ -137,7 +137,7 @@ tmux_get_option() {
             '$1 == option { gsub(/^"|"$/, "", $2); print $2 }' "$f_cached_tmux_options")"
         # profiling_display "[tmux] tgo_value defined"
 
-        if [ -z "$tgo_value" ] &&
+        if [ -f "$f_cached_tmux_options" ] && [ -z "$tgo_value" ] &&
             ! grep -q "$tgo_option" "$f_cached_tmux_options" 2>/dev/null; then
 
             tgo_was_found=1 # option not found
