@@ -31,7 +31,7 @@ log_it() {
     [ "$log_interactive_to_stderr" = "1" ] && {
         # log to stderr if in interactive mode
         # printf "[%s] log: %s\n" "$(date '+%H:%M:%S')" "$_msg" >/dev/stderr
-        print_stderr "[$(date '+%H:%M:%S')] log: $_msg" && return
+        print_stderr "log: $_msg" && return
         # continue if not an interactive session and use logfile
     }
 
@@ -60,7 +60,9 @@ source_all_helpers() {
     all_helpers_sourced=true # set it early to avoid recursion
 
     # shellcheck source=scripts/utils/helpers-full.sh
-    . "$D_TM_BASE_PATH"/scripts/utils/helpers-full.sh
+    . "$D_TM_BASE_PATH"/scripts/utils/helpers-full.sh || {
+        error_msg_safe "Failed to source: scripts/utils/helpers-full.sh"
+    }
     profiling_display "[helpers] <-----  source_all_helpers() - done"
 }
 
@@ -118,33 +120,17 @@ select_menu_handler() {
 #
 #---------------------------------------------------------------
 
-get_config_read_save_if_uncached() {
-    # reads config, and if allowed saves it to cache
-    # profiling_display "[helpers] get_config_read_save_if_uncached()"
-
-    profiling_display "get_config_read_save_if_uncached()"
-
-    $all_helpers_sourced || source_all_helpers "get_config_read_save_if_uncached()"
-    cache_config_get_save || {
-        # cache couldn't be saved, indicate cache not available
-        log_it "  <-- get_config_read_save_if_uncached() - unable to save cache params"
-        cfg_use_cache=false
-    }
-    profiling_display "get_config_read_save_if_uncached() - done"
-}
-
 get_config() {
     #
     #  The plugin init .tmux script should NOT depend on this!
     #  This is used by everything else sourcing helpers.sh, then trusting
     #  that the param cache is valid if found
     #
-    log_it "get_config()"
+    # log_it "get_config()"
     # profiling_display "[helpers] get_config()"
 
     if [ -f "$f_no_cache_hint" ]; then
-        _m="Will call get_config_read_save_if_uncached due to f_no_cache_hint"
-        log_it " get_config() - $m"
+        $all_helpers_sourced || source_all_helpers "get_config() - not using cache"
         get_config_read_save_if_uncached
     elif [ -f "$f_cache_params" ]; then
         # log_it " get_config() - sourcing: $f_cache_params"
@@ -153,11 +139,15 @@ get_config() {
             cache_params_retrieved=1
         else
             log_it "WARNING: failed to source: $f_cache_params, doing manual param read"
+            $all_helpers_sourced || {
+                source_all_helpers "get_config() - failed to source cache"
+            }
             get_config_read_save_if_uncached
         fi
         return 0
     else
         log_it "WARNING: no f_no_cache_hint and no f_cache_params!"
+        $all_helpers_sourced || source_all_helpers "get_config() - no cache found"
         get_config_read_save_if_uncached
     fi
 }
@@ -364,6 +354,8 @@ log_interactive_to_stderr=1
     esac
 }
 
+[ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
+
 min_tmux_vers="1.8"
 cfg_use_whiptail=false
 plugin_options_have_been_read=false # only need to read param once
@@ -371,8 +363,6 @@ plugin_options_have_been_read=false # only need to read param once
 # as long as cache is used, it is sufficient, if extra features are needed
 # a call to source_all_helpers will be done, this ensures it only happens once
 all_helpers_sourced=false
-
-[ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
 
 if [ -z "$D_TM_BASE_PATH" ]; then
     # helpers not yet sourced, so error_msg_safe() not yet available
@@ -391,7 +381,7 @@ if [ "$MENUS_PROFILING" != "1" ]; then
     # is primarily intended to capture them when profiling is temporarily disabled
     # log_it "><> ------------ creating dummy profiler"
     profiling_display() {
-        true
+        :
     }
 elif [ "$MENUS_PROFILING" = "1" ] && [ "$profiling_sourced" != "1" ]; then
     # Here it is sourced  after D_TM_BASE_PATH is verified

@@ -146,7 +146,7 @@ tmux_get_option() {
         fi
         # profiling_display "[tmux] missing value checked"
     else
-        log_it "><> tmux_get_option($tgo_option) - not using cache"
+        log_it "tmux_get_option($tgo_option) - not using cache"
 
         tgo_value="$($TMUX_BIN show-options -gv "$tgo_option" 2>/dev/null)"
         tgo_was_found="$?"

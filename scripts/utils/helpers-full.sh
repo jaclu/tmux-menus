@@ -256,7 +256,7 @@ define_actual_size() {
 #---------------------------------------------------------------
 
 min_display_t_read() {
-    log_it "-T-  min_display_t_read()"
+    # log_it "-T-  min_display_t_read()"
     [ -f "$f_min_display_time" ] && {
         t_minimal_display_time="$(cat "$f_min_display_time")"
         return 0
@@ -266,7 +266,7 @@ min_display_t_read() {
 
 min_display_t_set() {
     t_minimal_display_time="$1"
-    log_it "-T-  min_display_t_set($t_minimal_display_time)"
+    # log_it "-T-  min_display_t_set($t_minimal_display_time)"
     [ -z "$t_minimal_display_time" ] && error_msg_safe "min_display_t_set() - no param"
     echo "$t_minimal_display_time" >"$f_min_display_time"
     # shellcheck disable=SC2154
@@ -277,7 +277,7 @@ min_display_t_append_to_params() {
     #
     #  Append t_minimal_display_time to plugin_params if
     _f_params="$1"
-    log_it "-T-  min_display_t_append_to_params($_f_params)"
+    # log_it "-T-  min_display_t_append_to_params($_f_params)"
     [ -f "$_f_params" ] || {
         error_msg "min_display_t_append_to_params() - no such file: $_f_params"
     }
@@ -298,6 +298,20 @@ min_display_t_append_to_params() {
 #   Other
 #
 #---------------------------------------------------------------
+
+get_config_read_save_if_uncached() {
+    # reads config, and if allowed saves it to cache
+    # profiling_display "[helpers] get_config_read_save_if_uncached()"
+
+    profiling_display "get_config_read_save_if_uncached()"
+
+    cache_config_get_save || {
+        # cache couldn't be saved, indicate cache not available
+        log_it "  <-- get_config_read_save_if_uncached() - unable to save cache params"
+        cfg_use_cache=false
+    }
+    profiling_display "get_config_read_save_if_uncached() - done"
+}
 
 safe_remove() {
     pattern="$1"

@@ -14,7 +14,7 @@ get_config_refresh() {
     #  Retrieves cached env params, rebuilding the cache if tmux conf was
     #  more recent, or not found
     #
-    log_it "get_config_refresh()"
+    # log_it "get_config_refresh()"
     # profiling_display "[helpers] get_config_refresh()"
 
     [[ -f "$f_cache_params" ]] && {
@@ -25,25 +25,20 @@ get_config_refresh() {
             safe_remove "$f_cache_params"
         }
         profiling_display "sourced: $f_cache_params"
-
-        log_it "reading cfg_tmux_conf - sourced: $f_cache_params"
-
-        # Save some
+        # log_it "reading cfg_tmux_conf - sourced: $f_cache_params"
     }
 
     [[ -z "$cfg_tmux_conf" ]] && {
-        log_it "><> get_config_refresh() - will get option: @menus_config_file [$default_tmux_conf]"
         tmux_get_option cfg_tmux_conf "@menus_config_file" "$default_tmux_conf"
     }
     if [[ -f "$cfg_tmux_conf" ]] && [[ -f "$f_cache_params" ]]; then
-        log_it "><> cfg_tmux_conf & f_cache_params found"
         #
         # if the wrong tmux conf was provided, don't see it as an error, just
         # skip checking age of config file vs cache
         #
 
         if [[ -n "$(find "$cfg_tmux_conf" -newer "$f_cache_params" 2>/dev/null)" ]]; then
-            log_it "$cfg_tmux_conf has been updated, parse again for current settings"
+            # log_it "$cfg_tmux_conf has been updated, parse again for current settings"
             get_config_read_save_if_uncached
         else
             check_speed_cutoff 0.1
@@ -52,7 +47,7 @@ get_config_refresh() {
         # Failed to find tmux conf, but since this is plugin init, play it safe
         # and recreate param cache
 
-        log_it "tmux conf and cache could not be verified, manually updating cache"
+        # log_it "tmux conf and cache could not be verified, manually updating cache"
         get_config_read_save_if_uncached
     fi
     check_speed_cutoff 1
@@ -116,15 +111,15 @@ check_speed_cutoff() {
     cut_off="$1"
     grep -q t_minimal_display_time "$_f_params" && {
         # already set
-        log_it "-T-  check_speed_cutoff() - already set"
+        # log_it "-T-  check_speed_cutoff() - already set"
         return
     }
 
-    log_it "-T-  check_speed_cutoff($cut_off)"
+    # log_it "-T-  check_speed_cutoff($cut_off)"
     safe_now
     # shellcheck disable=SC2154
     t_init="$(echo "$t_now - $t_init_start" | bc)"
-    log_it "-T-  TIMING result: $t_init"
+    # log_it "-T-  TIMING result: $t_init"
     if [[ "$(echo "$t_init < $cut_off" | bc)" -eq 1 ]]; then
         min_display_t_set 0.1
     else
@@ -163,7 +158,6 @@ if [[ -d "$d_cache" ]]; then
     # safe_remove "$f_min_display_time"
 fi
 
-log_it "><> TIMING starts"
 safe_now t_init_start # get a feel for if this is a slow system...
 
 # Create a LF in log_file to easier separate runs

@@ -146,7 +146,7 @@ cache_param_write() {
     #  Writes all config params to file
     #  if it differed with previous params, clear cache
     #
-    log_it "cache_param_write()"
+    # log_it "cache_param_write()"
     # profiling_display "[cache] cache_param_write()"
 
     $cfg_use_cache || error_msg "cache_param_write() - called when not using cache"
@@ -237,7 +237,7 @@ last_local_edit=\"$last_local_edit\"" >"$_f_params_tmp"
     elif ! diff -q "$_f_params_tmp" "$f_cache_params" >/dev/null 2>&1; then
         # diff reports success if files don't fiffer, hence the !
         # If any params have changed, invalidate cache
-        log_it "  cache_param_write() - Config changed - clear cache"
+        # log_it "  cache_param_write() - Config changed - clear cache"
         # error_msg "><> _f_params_tmp [$_f_params_tmp] differs"
         cache_clear "Environment changed"
         mv "$_f_params_tmp" "$f_cache_params"
@@ -257,7 +257,7 @@ cache_config_get_save() {
     # cfg_use_cache is false
     # returns true if cache was written, otherwise false
     #
-    log_it "cache_config_get_save()"
+    # log_it "cache_config_get_save()"
     profiling_display "[cache] cache_config_get_save()"
 
     tmux_get_plugin_options # ensure env is retrieved

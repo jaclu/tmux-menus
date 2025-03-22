@@ -32,7 +32,6 @@ fi
 # shellcheck source=scripts/helpers.sh
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
-log_it "><> helpers-all.sh - helpers sourced"
 $all_helpers_sourced || source_all_helpers "helpers_all.sh"
 
-log_it "><> helpers-all.sh - all sourced"
+# log_it "===  Completed: scripts/helpers-all.sh  =="
