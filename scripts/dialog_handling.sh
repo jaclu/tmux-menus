@@ -530,15 +530,15 @@ static_files_reduction() {
     }
 }
 
-handle_static_cached() {
+cache_static_content() {
     #
     # Ensure the cache folder is present, and newer than the menu file, making sure
     # obsolete cache is dropped.
     #
-    # log_it "handle_static_cached() - [$0] d_menu_cache [$d_menu_cache]"
+    # log_it "cache_static_content() - [$0] d_menu_cache [$d_menu_cache]"
     if [ ! -d "$d_menu_cache" ] || [ "$(get_mtime "$0")" -gt "$(get_mtime "$d_menu_cache")" ]; then
         $all_helpers_sourced || {
-            source_all_helpers "handle_static_cached() - case error"
+            source_all_helpers "cache_static_content() - case error"
         }
         # log_it "  regenerate cache for: $d_menu_cache"
         # Ensure d_menu_cache seems to be valid before doing erase
@@ -685,8 +685,8 @@ prepare_menu() {
     # 1 - Handle static parts, use cache if enabled and available
     # profiling_display "[dialog_handling] handling static content"
     if $cfg_use_cache; then
-        handle_static_cached
-        # profiling_display "[dialog_handling] handle_static_cached() done"
+        cache_static_content
+        # profiling_display "[dialog_handling] cache_static_content() done"
     else
         static_content
         # profiling_display "[dialog_handling] static_content() done"
