@@ -356,6 +356,7 @@ d_custom_items="$D_TM_BASE_PATH"/custom_items
 f_custom_items_index="$d_custom_items"/_index.sh
 # shellcheck disable=SC2154
 f_update_custom_inventory="$d_scripts"/update_custom_inventory.sh
+f_chksum_custom="$d_cache"/chksum_custom_content
 f_cached_tmux_options="$d_cache"/tmux_options
 f_min_display_time="$d_cache"/min_display_time
 

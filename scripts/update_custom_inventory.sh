@@ -237,8 +237,6 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 # shellcheck source=scripts/helpers_all.sh
 . "$D_TM_BASE_PATH"/scripts/helpers_all.sh
 
-f_chksum_custom="$d_cache"/chksum_custom_content
-
 template_splitter="CUSTOM_ITEMS_SPLITTER" # items will be inserted at his point
 f_custom_items_template="$D_TM_BASE_PATH"/items/custom_index_template.sh
 # File used during generation of custom image index

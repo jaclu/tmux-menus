@@ -123,14 +123,22 @@ initialize_plugin=1
 
 $all_helpers_sourced || source_all_helpers "always done by plugin_init.sh"
 
-log_it "><> TIMING starts"
-safe_now t_init_start # get a feel for if this is a slow system...
-
 if [[ -d "$d_cache" ]]; then
     # clear out potentially obsolete cache items
     safe_remove "$f_cached_tmux_options"
     safe_remove "$f_cache_known_tmux_vers"
+    safe_remove "$f_min_display_time"
+
+    #
+    # If theese are removed, it can't be detected if config changed, so
+    # there is no hint if cached items should be dropped or not
+    #
+    # safe_remove "$f_cache_params"
+    # safe_remove "$f_chksum_custom"
 fi
+
+log_it "><> TIMING starts"
+safe_now t_init_start # get a feel for if this is a slow system...
 
 # Create a LF in log_file to easier separate runs
 log_it
@@ -139,13 +147,12 @@ profiling_display "will do: get_config_refresh"
 get_config_refresh
 profiling_display "returned from: get_config_refresh"
 
-prepare_cache
-
 #
 # Setup a hint for how short a menu display is indicating screen to small
 # for normal systems this can be really low, for slower it needs to allow
 # for the time needed to generate the menu
 #
+
 safe_now
 t_init="$(echo "$t_now - $t_init_start" | bc)"
 log_it "><> TIMING result: $t_init"
@@ -155,6 +162,9 @@ else
     # for slower systems
     min_display_set 0.5
 fi
+
+prepare_cache
+
 
 #
 # Key is not bound until cache (if allowed) has been prepared, so normally
