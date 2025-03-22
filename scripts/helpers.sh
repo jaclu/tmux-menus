@@ -48,7 +48,7 @@ log_it() {
 error_msg_safe() {
     #  Used when potentially called without having sourced everything
     $all_helpers_sourced || source_all_helpers "error_msg_safe($*)"
-    error_msg "$@"
+    error_msg "$1" "$2"
 }
 
 source_all_helpers() {

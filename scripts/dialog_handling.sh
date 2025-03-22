@@ -732,8 +732,7 @@ ensure_menu_fits_on_screen() {
     safe_now
     disp_time="$(echo "$t_now - $dh_t_start" | bc)"
     # log_it "ensure_menu_fits_on_screen() Menu $bn_current_script - Display time:  $disp_time"
-
-    if [ "$(echo "$disp_time < 0.5" | bc)" -eq 1 ]; then
+    if [ "$(echo "$disp_time < $t_minimal_display_time" | bc)" -eq 1 ]; then
         $all_helpers_sourced || {
             source_all_helpers "ensure_menu_fits_on_screen()  short display, give warning"
         }
@@ -747,7 +746,7 @@ ensure_menu_fits_on_screen() {
             _s="$f_menu_rel: Screen might be too small"
         fi
         # log_it "$_s"
-        error_msg_safe "$_s"
+        error_msg_safe "$_s" 0
     fi
 }
 

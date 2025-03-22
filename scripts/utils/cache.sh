@@ -227,6 +227,7 @@ current_tmux_vers_suffix=\"$current_tmux_vers_suffix\"
 repo_last_changed=\"$repo_last_changed\"
 last_local_edit=\"$last_local_edit\"" >"$_f_params_tmp"
     #endregion
+    [ -f "$f_min_display_time" ] && min_display_append_to_params
     # profiling_display "[cache] write $_f_params_tmp - done"
 
     if [ ! -f "$f_cache_params" ]; then

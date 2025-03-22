@@ -251,6 +251,34 @@ define_actual_size() {
 
 #---------------------------------------------------------------
 #
+#   minimal display time to trigger screen might be too small warning
+#
+#---------------------------------------------------------------
+
+min_display_read() {
+    log_it "min_display_read()"
+    [ -f "$f_min_display_time" ] || {
+        error_msg "min_display_read() - missing file: $f_min_display_time"
+    }
+    t_minimal_display_time="$(cat "$f_min_display_time")"
+}
+
+min_display_set() {
+    t_minimal_display_time="$1"
+    log_it "min_display_set($t_minimal_display_time)"
+    [ -z "$t_minimal_display_time" ] && error_msg_safe "min_display_set() - no param"
+    echo "$t_minimal_display_time" >"$f_min_display_time"
+    min_display_append_to_params
+}
+
+min_display_append_to_params() {
+    log_it "min_display_append_to_params()"
+    min_display_read
+    echo "t_minimal_display_time=$t_minimal_display_time" >>"$f_cache_params"
+}
+
+#---------------------------------------------------------------
+#
 #   Other
 #
 #---------------------------------------------------------------
@@ -322,6 +350,7 @@ f_custom_items_index="$d_custom_items"/_index.sh
 # shellcheck disable=SC2154
 f_update_custom_inventory="$d_scripts"/update_custom_inventory.sh
 f_cached_tmux_options="$d_cache"/tmux_options
+f_min_display_time="$d_cache"/min_display_time
 
 current_script=${0##*/}
 d_current_script="$(

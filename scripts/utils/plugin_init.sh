@@ -140,7 +140,24 @@ profiling_display "returned from: get_config_refresh"
 
 prepare_cache
 
+#
+# Setup a hint for how short a menu display is indicating screen to small
+# for normal systems this can be really low, for slower it needs to allow
+# for the time needed to generate the menu
+#
+safe_now
+t_init="$(echo "$t_now - $t_init_start" | bc)"
+echo "><> init timing: $t_init"
+if [ "$(echo "$t_init < 0.5" | bc)" -eq 1 ]; then
+    min_display_set 0.1
+else
+    # for slower systems
+    min_display_set 0.5
+fi
+
+#
 # Key is not bound until cache (if allowed) has been prepared, so normally
 # no menus will be triggered by the user before this
+#
 profiling_display "plugin_init.sh done"
 bind_plugin_key
