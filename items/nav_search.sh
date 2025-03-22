@@ -9,7 +9,6 @@
 #
 
 static_content() {
-    menu_segment=1
     choose_tree="choose-tree"
     if tmux_vers_check 2.7; then
         #  zooms the pane
@@ -48,17 +47,12 @@ static_content() {
             "$d_hints/choose-tree.sh $f_current_script"
     }
 
-    menu_generate_part "$menu_segment" "$@"
-    menu_segment=$((menu_segment + 1))
-
-    set -- \
+    set -- "$@" \
         1.8 S \
         1.8 T "-#[nodim]Search in all $fw_span" \
         1.8 C s "$fw_lbl_line2" "$fw_cmd"
 
-    menu_generate_part "$menu_segment" "$@"
-    menu_segment=$((menu_segment + 1))
-
+    menu_generate_part 1 "$@"
 }
 
 #===============================================================

@@ -9,8 +9,6 @@
 #
 
 static_content() {
-    menu_segment=1
-
     tmux_vers_check 3.2 && {
         customize_mode_cmd="$TMUX_BIN customize-mode -Z "
         if $cfg_use_hint_overlays && ! $cfg_use_whiptail; then
@@ -24,16 +22,15 @@ static_content() {
     rld_cmd="command-prompt -I '$cfg_tmux_conf' -p 'Source file:' \
         'run-shell \"$d_scripts/reload_conf.sh %% $reload_in_runshell\"'"
 
-    if $cfg_use_cache && [ -f "$f_custom_items_index" ]; then
-        set -- \
-            0.0 M \+ "Custom items      $nav_next" "$f_custom_items_index"
+    set --
 
-        menu_generate_part "$menu_segment" "$@"
-        menu_segment=$((menu_segment + 1))
+    if $cfg_use_cache && [ -f "$f_custom_items_index" ]; then
+        set -- "$@" \
+            0.0 M \+ "Custom items      $nav_next" "$f_custom_items_index"
     fi
 
     #  Menu items definition
-    set -- \
+    set -- "$@" \
         1.8 M N "Navigate & Search $nav_next" nav_search.sh \
         0.0 M P "Handling Pane     $nav_next" panes.sh \
         0.0 M W "Handling Window   $nav_next" windows.sh \
@@ -48,20 +45,14 @@ static_content() {
         3.2 T "-#[nodim]On-the-Fly Config" \
         3.2 E c "  (customize-mode)" "$customize_mode_cmd"
 
-    menu_generate_part "$menu_segment" "$@"
-    menu_segment=$((menu_segment + 1))
-
     $cfg_use_hint_overlays && $cfg_show_key_hints && {
-        set -- \
+        set -- "$@" \
             3.2 T "-#[nodim]Key hints - " \
             3.2 M K "  customize-mode  $nav_next" \
             "$d_hints/customize-mode.sh $f_current_script"
-
-        menu_generate_part "$menu_segment" "$@"
-        menu_segment=$((menu_segment + 1))
     }
 
-    set -- \
+    set -- "$@" \
         1.8 E p "Plugins inventory" "plugins.sh" \
         0.0 C r "Reload tmux conf" "$rld_cmd" \
         0.0 C d 'Detach from tmux' detach-client \
@@ -69,7 +60,7 @@ static_content() {
         0.0 M H "Help              $nav_next" \
         "$d_help/help_summary.sh $f_current_script"
 
-    menu_generate_part "$menu_segment" "$@"
+    menu_generate_part 1 "$@"
 }
 
 #===============================================================

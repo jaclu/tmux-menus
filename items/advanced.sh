@@ -39,7 +39,6 @@ dynamic_content() {
 }
 
 static_content() {
-    menu_segment=1
     $cfg_use_hint_overlays && ! $cfg_use_whiptail && {
         hint="\& $d_hints/choose-client.sh skip-oversized"
     }
@@ -49,8 +48,7 @@ static_content() {
         0.0 M Left "Back to Main menu $nav_home" main.sh \
         0.0 S
 
-    menu_generate_part "$menu_segment" "$@"
-    menu_segment=$((menu_segment + 2)) # increment past dynamic segment
+    menu_generate_part 1 "$@"
 
     set --
 
@@ -78,35 +76,24 @@ static_content() {
         1.9 C t "Tmux terminal bindings" 'show-messages -T' \
         0.0 C : "Enter a tmux command" command-prompt \
         0.0 C s "Toggle status line" "set status $menu_reload"
-
-    menu_generate_part "$menu_segment" "$@"
-    menu_segment=$((menu_segment + 1))
-
-    # shellcheck disable=SC2154
-    set -- \
         1.8 S \
         2.7 E c "Disconnect clients" \
         "$TMUX_BIN choose-client -Z $hint"
 
-    menu_generate_part "$menu_segment" "$@"
-    menu_segment=$((menu_segment + 1))
-
     $cfg_use_hint_overlays && $cfg_show_key_hints && tmux_vers_check 2.7 && {
         # Only generate this segment if any content will be displayed
         # i.e. tmux >= 2.7
-        set -- \
+        set -- "$@" \
             2.7 M K "Key hints - Disconnect $nav_next" \
             "$d_hints/choose-client.sh $f_current_script"
 
-        menu_generate_part "$menu_segment" "$@"
-        menu_segment=$((menu_segment + 1))
     }
     # shellcheck disable=SC2154
-    set -- \
+    set -- "$@" \
         1.8 C x "Kill server" "confirm-before -p \
             'kill tmux server defined in($TMUX_SOURCE) ? (y/n)' kill-server"
 
-    menu_generate_part "$menu_segment" "$@"
+    menu_generate_part 3 "$@"
 }
 
 #===============================================================
