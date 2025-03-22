@@ -227,7 +227,7 @@ current_tmux_vers_suffix=\"$current_tmux_vers_suffix\"
 repo_last_changed=\"$repo_last_changed\"
 last_local_edit=\"$last_local_edit\"" >"$_f_params_tmp"
     #endregion
-    [ -f "$f_min_display_time" ] && min_display_append_to_params
+    [ -f "$f_min_display_time" ] && min_display_append_to_params "$_f_params_tmp"
     # profiling_display "[cache] write $_f_params_tmp - done"
 
     if [ ! -f "$f_cache_params" ]; then
@@ -238,6 +238,7 @@ last_local_edit=\"$last_local_edit\"" >"$_f_params_tmp"
         # diff reports success if files don't fiffer, hence the !
         # If any params have changed, invalidate cache
         log_it "  cache_param_write() - Config changed - clear cache"
+        # error_msg "><> _f_params_tmp [$_f_params_tmp] differs"
         cache_clear "Environment changed"
         mv "$_f_params_tmp" "$f_cache_params"
     else

@@ -268,12 +268,14 @@ min_display_set() {
     log_it "min_display_set($t_minimal_display_time)"
     [ -z "$t_minimal_display_time" ] && error_msg_safe "min_display_set() - no param"
     echo "$t_minimal_display_time" >"$f_min_display_time"
-    min_display_append_to_params
+    # shellcheck disable=SC2154
+    min_display_append_to_params "$f_cache_params"
 }
 
 min_display_append_to_params() {
+    _f_params="$1"
     log_it "min_display_append_to_params()"
-    grep -q t_minimal_display_time "$f_cache_params" && {
+    grep -q t_minimal_display_time "$_f_params" && {
         # already set
         return
     }
@@ -281,7 +283,7 @@ min_display_append_to_params() {
     (
         echo
         echo "t_minimal_display_time=$t_minimal_display_time"
-    ) >>"$f_cache_params"
+    ) >>"$_f_params"
 }
 
 #---------------------------------------------------------------
@@ -304,7 +306,7 @@ safe_remove() {
         return 1
         ;;
     "$tmpdir_noslash"/*) ;; # Allow anything inside TMPDIR
-    /etc | /etc/* | /usr | /usr/* | /var | /var/* | $HOME | /home | \
+    /etc | /etc/* | /usr | /usr/* | /var | /var/* | "$HOME" | /home | \
         /Users | /bin | /bin/* | /sbin | /sbin/* | /lib | /lib/* | \
         /lib64 | /lib64/* | /boot | /boot/* | /mnt | /mnt/* | /media | /media/* | \
         /run | /run/* | /opt | /opt/* | /root | /root/* | /dev | /dev/* | \

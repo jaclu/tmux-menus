@@ -127,7 +127,6 @@ if [[ -d "$d_cache" ]]; then
     # clear out potentially obsolete cache items
     safe_remove "$f_cached_tmux_options"
     safe_remove "$f_cache_known_tmux_vers"
-    safe_remove "$f_min_display_time"
 
     #
     # If theese are removed, it can't be detected if config changed, so
@@ -135,6 +134,7 @@ if [[ -d "$d_cache" ]]; then
     #
     # safe_remove "$f_cache_params"
     # safe_remove "$f_chksum_custom"
+    # safe_remove "$f_min_display_time"
 fi
 
 log_it "><> TIMING starts"
@@ -154,9 +154,10 @@ profiling_display "returned from: get_config_refresh"
 #
 
 safe_now
+# shellcheck disable=SC2154
 t_init="$(echo "$t_now - $t_init_start" | bc)"
 log_it "><> TIMING result: $t_init"
-if [ "$(echo "$t_init < 1.5" | bc)" -eq 1 ]; then
+if [[ "$(echo "$t_init < 0.5" | bc)" -eq 1 ]]; then
     min_display_set 0.1
 else
     # for slower systems
