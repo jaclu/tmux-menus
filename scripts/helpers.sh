@@ -198,20 +198,37 @@ select_safe_now_method() {
         selected_get_time_mthd="date"
     fi
     # log_it "[$0] Using  safe_now() timing method: $selected_get_time_mthd"
-    safe_now
 }
 
 safe_now() {
     #
-    #  Sets t_now
+    #  Sets t_now and if variable provided as param sets this variable
     #
-    # log_it "safe_now() mthd: [$selected_get_time_mthd]"
+    varname="$1"
+    # [ -z "$varname" ] && error_msg_safe "safe_now() - no param"
+
+    # log_it "safe_now($varname) mthd: [$selected_get_time_mthd]"
     case "$selected_get_time_mthd" in
     date) t_now="$(date +%s.%N)" ;;
     gdate) t_now="$(gdate +%s.%N)" ;;
     perl) t_now="$(perl -MTime::HiRes=time -E '$t = time; printf "%.9f\n", $t')" ;;
-    *) select_safe_now_method ;;
+    *)
+        select_safe_now_method
+
+        # to prevent infinite recursion, eunsure a valid timing method is now selected
+        case "$selected_get_time_mthd" in
+        date | gdate | perl) ;;
+        *) error_msg_safe "safe_now($varname) - failed to select a timing method" ;;
+        esac
+
+        safe_now "$varname"
+        return
+        ;;
     esac
+    [ -n "$varname" ] && {
+        # if variable name provided set it to t_now
+        eval "$varname=\$t_now"
+    }
 }
 
 #---------------------------------------------------------------

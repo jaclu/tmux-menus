@@ -123,6 +123,8 @@ initialize_plugin=1
 
 $all_helpers_sourced || source_all_helpers "always done by plugin_init.sh"
 
+safe_now t_init_start # get a feel for if this is a slow system...
+
 if [[ -d "$d_cache" ]]; then
     # clear out potentially obsolete cache items
     safe_remove "$f_cached_tmux_options"

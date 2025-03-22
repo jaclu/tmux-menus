@@ -113,8 +113,7 @@ profiling_get_time() {
     #  Sets profiling_t_now to current epoch
     #
     if [ "$_profiling_use_default_timer" = "1" ]; then
-        safe_now
-        profiling_t_now="$t_now"
+        safe_now profiling_t_now
     else
         case "$profiling_selected_get_time" in
         date) profiling_set_t_date ;;

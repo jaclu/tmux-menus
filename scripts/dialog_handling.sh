@@ -678,8 +678,7 @@ prepare_menu() {
     #  then process it in dynamic_content()
     #
     # log_it "prepare_menu()"
-    safe_now
-    dh_t_mnu_processing_start="$t_now"
+    safe_now dh_t_mnu_processing_start
 
     set_menu_env_variables
 
@@ -881,8 +880,7 @@ display_menu() {
         [ -n "$menu_selection" ] && handle_wt_selecion
         true #  hides none true exit if whiptail menu was cancelled
     else
-        safe_now
-        dh_t_start="$t_now"
+        safe_now dh_t_start
         eval "$menu_items"
 
         ensure_menu_fits_on_screen
