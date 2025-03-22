@@ -14,7 +14,7 @@ get_config_refresh() {
     #  Retrieves cached env params, rebuilding the cache if tmux conf was
     #  more recent, or not found
     #
-    # log_it "get_config_refresh()"
+    log_it "get_config_refresh()"
     # profiling_display "[helpers] get_config_refresh()"
 
     [[ -f "$f_cache_params" ]] && {
@@ -26,13 +26,13 @@ get_config_refresh() {
         }
         profiling_display "sourced: $f_cache_params"
 
-        # log_it "reading cfg_tmux_conf - sourced: $f_cache_params"
+        log_it "reading cfg_tmux_conf - sourced: $f_cache_params"
 
         # Save some
     }
 
     [[ -z "$cfg_tmux_conf" ]] && {
-        # log_it "><> get_config_refresh() - will get option: @menus_config_file [$default_tmux_conf]"
+        log_it "><> get_config_refresh() - will get option: @menus_config_file [$default_tmux_conf]"
         tmux_get_option cfg_tmux_conf "@menus_config_file" "$default_tmux_conf"
     }
     if [[ -f "$cfg_tmux_conf" ]] && [[ -f "$f_cache_params" ]]; then
@@ -41,14 +41,14 @@ get_config_refresh() {
         # skip checking age of config file vs cache
         #
         [[ -n "$(find "$cfg_tmux_conf" -newer "$f_cache_params" 2>/dev/null)" ]] && {
-            # log_it "$cfg_tmux_conf has been updated, parse again for current settings"
+            log_it "$cfg_tmux_conf has been updated, parse again for current settings"
             get_config_read_save_if_uncached
         }
     else
         # Failed to find tmux conf, but since this is plugin init, play it safe
         # and recreate param cache
 
-        # log_it "tmux conf and cache could not be verified, manually updating cache"
+        log_it "tmux conf and cache could not be verified, manually updating cache"
         get_config_read_save_if_uncached
     fi
 }

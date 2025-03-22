@@ -139,7 +139,7 @@ get_config() {
     #  This is used by everything else sourcing helpers.sh, then trusting
     #  that the param cache is valid if found
     #
-    # log_it "get_config()"
+    log_it "get_config()"
     # profiling_display "[helpers] get_config()"
 
     if [ -f "$f_no_cache_hint" ]; then
