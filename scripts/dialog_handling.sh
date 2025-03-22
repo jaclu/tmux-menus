@@ -743,6 +743,7 @@ ensure_menu_fits_on_screen() {
         elif [ -n "$window_width" ]; then
             _s="$f_menu_rel: Width required: $window_width"
         else
+            log_it "><> disp_time was: $disp_time"
             _s="$f_menu_rel: Screen might be too small"
         fi
         # log_it "$_s"
