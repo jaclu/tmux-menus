@@ -17,14 +17,15 @@ static_content() {
     fi
     cli_dtch_mode="set -s detach-on-destroy $_s"
 
+    # shellcheck disable=SC2154
     set -- \
         0.0 M Left "Back to Main menu $nav_home" main.sh \
         0.0 S \
         0.0 C r "Rename this session" "command-prompt -I '#S' \
-            'rename-session -- \"%%\"'" \
+            'rename-session -- \"%%\"' $menu_reload" \
         0.0 C \+ "New session" "command-prompt -p \
             'Name of new session: ' \
-            'new-session -d -s \"%1\" ; switch-client -t \"%1\"'" \
+            'new-session -d -s \"%1\" ; switch-client -t \"%1\"' $menu_reload" \
         0.0 S \
         0.0 C l "Last selected session" "switch-client -l $menu_reload" \
         0.0 C p "Previous session [in order]" "switch-client -p $menu_reload" \
