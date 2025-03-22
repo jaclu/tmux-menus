@@ -81,7 +81,7 @@ update_wt_actions() {
     if $cfg_use_cache; then
         [ "$menu_idx" -eq 1 ] && {
             # clear menu actions
-            safe_remove d_wt_actions
+            safe_remove "$d_wt_actions"
         }
         mkdir -p "$d_wt_actions"
         if $is_dynamic_content; then
