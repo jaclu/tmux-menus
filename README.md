@@ -20,7 +20,8 @@ experienced users, then add more for newbies.
 
 ## Recent Changes
 
-- Further optimized menu generation.
+- Plugin is initialized in the background, to cut down on tpm processing time.
+- Further optimized caching, cutting rendeing times in half.
 - Fixed a bug where disabling caching caused the plugin to crash due to incorrect
   escaping of special chars - was done at read, not at save to cache, made uncached
   trigger key unusable, also incorrectly using Custom Menus even if caching is
@@ -28,9 +29,6 @@ experienced users, then add more for newbies.
 - Explained boolean parameters and ensured all parameter samples in
   this README is consistent when it comes to quoting.
 - New feature [Custom menus](docs/CustomMenus.md)
-- Display available keys in an key-hints overlay when selecting an action displaying
-  a tmux choose dialog.<br>
-  Can be disabled with `set -g @menus_use_hint_overlays 'No'`
 
 </details>
 <details>
@@ -379,8 +377,10 @@ it just does not display the menu.
 The only hint is that the menu is terminated instantaneously.
 
 Since this test is far from perfect, and some computers are really slow,
-the current assumption is that if it was displayed < 0.5 seconds,
+the current assumption is that if it was displayed < 0.1 seconds,
 it was likely due to screen size.
+On really slow systems, the cut-off is 0.5 seconds, since they would typically
+need > 0.1 just to process the menu.
 In that case this error will be displayed on the status-bar:
 
 ```tmux
