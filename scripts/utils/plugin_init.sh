@@ -20,7 +20,9 @@ get_config_refresh() {
     [[ -f "$f_cache_params" ]] && {
         # Only really need cfg_tmux_conf at this point
         # shellcheck source=/dev/null
-        . "$f_cache_params" || {
+        [[ "$cfg_log_file_forced" = 1 ]] && orig_log_file="$cfg_log_file"
+
+        source_config || {
             log_it "WARNING: Failed to source: $f_cache_params, removing it"
             safe_remove "$f_cache_params"
         }

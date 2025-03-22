@@ -178,6 +178,15 @@ cache_param_write() {
 
     _f_params_tmp=$(mktemp) || error_msg "Failed to create tmp config file"
 
+    # ensure cfg is not from a previous cache
+    plugin_options_have_been_read=false # allow for it to be read again
+    [ "$cfg_log_file_forced" != 1 ] && {
+        # log_it "><> not forced, disabling logfile"
+        cfg_log_file=""
+    }
+    tmux_get_plugin_options
+    [ "$cfg_log_file_forced" != 1 ] && [ -n "$cfg_log_file" ] && log_it # create empty line indicating startup
+
     # profiling_display "[cache] will write: $_f_params_tmp"
     #region param cache file
     printf '%s\n' "\

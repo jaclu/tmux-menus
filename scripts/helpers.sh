@@ -334,10 +334,12 @@ plugin_name="tmux-menus"
 env_initialized=0
 
 #
-#  Setting a cfg_log_file here will ignore the tmux setting @menus_log_file
+#  Setting cfg_log_file_forced here will ignore
+#  the tmux setting @menus_log_file
 #  This is mostly for debugging early stuff before the settings have
 #  been processed. Should normally be commented out!
 #
+cfg_log_file_forced="1"
 cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
 
 #
