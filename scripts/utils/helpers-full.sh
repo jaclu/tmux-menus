@@ -273,8 +273,15 @@ min_display_set() {
 
 min_display_append_to_params() {
     log_it "min_display_append_to_params()"
+    grep -q t_minimal_display_time "$f_cache_params" && {
+        # already set
+        return
+    }
     min_display_read
-    echo "t_minimal_display_time=$t_minimal_display_time" >>"$f_cache_params"
+    (
+        echo
+        echo "t_minimal_display_time=$t_minimal_display_time"
+    ) >>"$f_cache_params"
 }
 
 #---------------------------------------------------------------
