@@ -97,6 +97,7 @@ get_variable_from_script() {
     _variable_to_verify="$2"
     _show_error="$3"
     # log_it "get_variable_from_script($_file, $_variable_to_verify, $_show_error)"
+    log_it "><> get_variable_from_script() - grep file"
     _code_snippet="$(grep ^"${_variable_to_verify}"= "$_file")"
     [ -z "$_code_snippet" ] && {
         error_msg_safe "$_file does not define $_variable_to_verify" -1

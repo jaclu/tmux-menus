@@ -111,6 +111,7 @@ bind_plugin_key() {
 
 check_speed_cutoff() {
     cut_off="$1"
+    log_it "><> check_speed_cutoff() - grep file"
     grep -q t_minimal_display_time "$_f_params" && {
         # already set
         # log_it "-T-  check_speed_cutoff() - already set"
