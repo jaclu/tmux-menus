@@ -147,8 +147,8 @@ prepare_cache
 #
 safe_now
 t_init="$(echo "$t_now - $t_init_start" | bc)"
-echo "><> init timing: $t_init"
-if [ "$(echo "$t_init < 0.5" | bc)" -eq 1 ]; then
+log_it "><> init timing: $t_init"
+if [ "$(echo "$t_init < 1.2" | bc)" -eq 1 ]; then
     min_display_set 0.1
 else
     # for slower systems
