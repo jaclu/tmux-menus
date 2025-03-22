@@ -41,10 +41,13 @@ get_config_refresh() {
         # if the wrong tmux conf was provided, don't see it as an error, just
         # skip checking age of config file vs cache
         #
-        [[ -n "$(find "$cfg_tmux_conf" -newer "$f_cache_params" 2>/dev/null)" ]] && {
+
+        if [[ -n "$(find "$cfg_tmux_conf" -newer "$f_cache_params" 2>/dev/null)" ]]; then
             log_it "$cfg_tmux_conf has been updated, parse again for current settings"
             get_config_read_save_if_uncached
-        }
+        else
+            check_speed_cutoff 0.1
+        fi
     else
         # Failed to find tmux conf, but since this is plugin init, play it safe
         # and recreate param cache
