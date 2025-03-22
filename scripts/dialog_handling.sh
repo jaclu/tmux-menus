@@ -613,16 +613,15 @@ generate_menu_items_in_sorted_order() {
 sort_menu_items() {
     # log_it "sort_menu_items()"
     if $cfg_use_cache; then
-        for file in "$d_menu_cache"/*; do
-            # # skip special files
-            # fn="$(basename "$file")"
-            # [ "${#fn}" -gt "2" ] && continue
+        for f_name in "$d_menu_cache"/*; do
+            # log_it "><> sort_menu_items() - processing: $f_name"
 
-            # # Check if the file is a regular file
-            # if [ -f "$file" ]; then
+            # skip special files
+            b_name=${f_name##*/} # basename equiv
+            [ "${#b_name}" -gt "2" ] && continue
+
             # Read the content of the file and append it to the dialog variable
-            menu_items="$menu_items $(cat "$file")"
-            # fi
+            menu_items="$menu_items $(cat "$f_name")"
         done
     else
         # _s="[dialog_handling] sort_menu_items()"
