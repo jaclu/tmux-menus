@@ -129,7 +129,7 @@ if [[ -d "$d_cache" ]]; then
     safe_remove "$f_cache_known_tmux_vers"
 
     #
-    # If theese are removed, it can't be detected if config changed, so
+    # If these are removed, it can't be detected if config changed, so
     # there is no hint if cached items should be dropped or not
     #
     # safe_remove "$f_cache_params"
