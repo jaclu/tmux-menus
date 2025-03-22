@@ -36,6 +36,7 @@ get_config_refresh() {
         tmux_get_option cfg_tmux_conf "@menus_config_file" "$default_tmux_conf"
     }
     if [[ -f "$cfg_tmux_conf" ]] && [[ -f "$f_cache_params" ]]; then
+        log_it "><> cfg_tmux_conf & f_cache_params found"
         #
         # if the wrong tmux conf was provided, don't see it as an error, just
         # skip checking age of config file vs cache
@@ -51,6 +52,7 @@ get_config_refresh() {
         log_it "tmux conf and cache could not be verified, manually updating cache"
         get_config_read_save_if_uncached
     fi
+    check_speed_cutoff 1
 }
 
 prepare_cache() {
@@ -107,6 +109,21 @@ bind_plugin_key() {
     log_it "$trigger_sequence"
 }
 
+check_speed_cutoff() {
+    cut_off="$1"
+    log_it "check_speed_cutoff($cut_off)"
+    safe_now
+    # shellcheck disable=SC2154
+    t_init="$(echo "$t_now - $t_init_start" | bc)"
+    log_it "><> TIMING result: $t_init"
+    if [[ "$(echo "$t_init < $cut_off" | bc)" -eq 1 ]]; then
+        min_display_set 0.1
+    else
+        # for slower systems
+        min_display_set 0.5
+    fi
+}
+
 #===============================================================
 #
 #   Main
@@ -152,17 +169,6 @@ profiling_display "returned from: get_config_refresh"
 # for normal systems this can be really low, for slower it needs to allow
 # for the time needed to generate the menu
 #
-
-safe_now
-# shellcheck disable=SC2154
-t_init="$(echo "$t_now - $t_init_start" | bc)"
-log_it "><> TIMING result: $t_init"
-if [[ "$(echo "$t_init < 0.1" | bc)" -eq 1 ]]; then
-    min_display_set 0.1
-else
-    # for slower systems
-    min_display_set 0.5
-fi
 
 prepare_cache
 
