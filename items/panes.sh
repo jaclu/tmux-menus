@@ -16,6 +16,7 @@ static_content() {
     fi
     set -- \
         0.0 M Left "Back to Main menu    $nav_home" main.sh \
+        0.0 M S "Split pane           $nav_next" pane_split.sh \
         0.0 M M "Move pane            $nav_next" pane_move.sh \
         0.0 M R "Resize pane          $nav_next" pane_resize.sh \
         0.0 S \
