@@ -70,7 +70,7 @@ static_content() {
     set -- "$@" \
         3.1 C n "Key bindings with notes" "list-keys -N" \
         0.0 C a "All key bindings" "list-keys" \
-        3.1 C k "Describe (prefix) key" "command-prompt -k \
+        3.1 C d "Describe (prefix) key" "command-prompt -k \
             -p key 'list-keys -N \"%1\" ; list-keys -T prefix \"%1\"'" \
         0.0 C m "Tmux messages" 'show-messages' \
         1.9 C t "Tmux terminal bindings" 'show-messages -T' \
