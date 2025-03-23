@@ -20,15 +20,9 @@ experienced users, then add more for newbies.
 
 ## Recent Changes
 
+- Removed jk as shortcuts, so they can be used for up/down menu navigation in all menus.
 - Plugin is initialized in the background, to cut down on tpm processing time.
 - Further optimized caching, cutting rendeing times in half.
-- Fixed a bug where disabling caching caused the plugin to crash due to incorrect
-  escaping of special chars - was done at read, not at save to cache, made uncached
-  trigger key unusable, also incorrectly using Custom Menus even if caching is
-  disabled.
-- Explained boolean parameters and ensured all parameter samples in
-  this README is consistent when it comes to quoting.
-- New feature [Custom menus](docs/CustomMenus.md)
 
 </details>
 <details>
