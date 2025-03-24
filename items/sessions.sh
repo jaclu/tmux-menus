@@ -21,7 +21,7 @@ static_content() {
     set -- \
         0.0 M Left "Back to Main menu  $nav_home" main.sh \
         0.0 S \
-        0.0 C r "Rename this session" "command-prompt -I '#S' \
+        0.0 C r "Rename this session" "command-prompt -I '#{session_name}' \
             'rename-session -- \"%%\"' $menu_reload" \
         0.0 C \+ "New session" "command-prompt -p \
             'Name of new session: ' \
@@ -33,7 +33,7 @@ static_content() {
         0.0 S \
         1.8 C x "Kill current session" \
         "confirm-before -p \
-        'Are you sure you want to kill this session? (y/n)' \
+        'Are you sure you want to kill this session: [#S] (y/n)' \
         '$cli_dtch_mode ; kill-session'" \
         1.8 C o "Kill all other sessions" "confirm-before -p \
         'Are you sure you want to kill all other sessions? (y/n)' \

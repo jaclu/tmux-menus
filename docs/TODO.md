@@ -1,5 +1,9 @@
 # Plan
 
+## Release check
+
+up to excluding Missing keys
+
 ## Whiptail menu reload
 
 Disabled for now should try to solve it
