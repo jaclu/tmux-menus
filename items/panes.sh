@@ -9,17 +9,12 @@
 #
 
 static_content() {
-    if [ -d "$HOME"/tmp ]; then
-        d_history="$HOME"/tmp
-    else
-        d_history="$d_tmp"
-    fi
     set -- \
         0.0 M Left "Back to Main menu  $nav_home" main.sh \
         0.0 M M "Move pane          $nav_next" pane_move.sh \
         0.0 M R "Resize pane        $nav_next" pane_resize.sh \
         0.0 M S "Split pane         $nav_next" pane_split.sh \
-        0.0 M I "pane hIstory       $nav_next" pane_history.sh \
+        0.0 M I "Pane history       $nav_next" pane_history.sh \
         0.0 S \
         1.8 C z "Toggle pane zoom" "resize-pane -Z $menu_reload" \
         2.1 C m "Toggle mark current pane" "select-pane -m $menu_reload" \
@@ -30,6 +25,7 @@ static_content() {
         1.7 C d "Display pane size" "display-message \
             'Pane: #P size: #{pane_width}x#{pane_height}' $menu_reload" \
         0.0 S \
+        1.7 C l "Last selected pane" "last-pane $menu_reload" \
         1.7 C p "Previous pane [in order]" "select-pane -t - $menu_reload" \
         1.7 C n "Next     pane [in order]" "select-pane -t + $menu_reload" \
         0.0 S \
@@ -42,7 +38,6 @@ static_content() {
             'kill-pane -a'  $menu_reload"
 
     menu_generate_part 1 "$@"
-    unset d_history
 }
 
 #===============================================================

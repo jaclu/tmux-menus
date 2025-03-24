@@ -9,6 +9,11 @@
 #
 
 static_content() {
+    if [ -d "$HOME"/tmp ]; then
+        d_history="$HOME"/tmp
+    else
+        d_history="$d_tmp"
+    fi
     set -- \
         0.0 M Left "Back to Handling Pane  $nav_prev" panes.sh \
         0.0 M Home "Back to Main menu      $nav_home" main.sh \
@@ -26,6 +31,7 @@ static_content() {
         0.0 M H "Help                   $nav_next" "$d_help/help_pane_history.sh $f_current_script"
 
     menu_generate_part 1 "$@"
+    unset d_history
 }
 
 #===============================================================
