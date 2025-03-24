@@ -863,7 +863,7 @@ alt_parse_selection() {
             eval "$action"
             break
         }
-        [ "$lst" = "" ] && break # we have processed last group
+        [ -z "$lst" ] && break # we have processed last group
     done
 }
 

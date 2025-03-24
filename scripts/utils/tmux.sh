@@ -117,7 +117,7 @@ tmux_get_option() {
     [ -z "$tgo_varname" ] && error_msg "tmux_get_option() param 1 empty!"
     [ -z "$tgo_option" ] && error_msg "tmux_get_option() param 2 empty!"
 
-    if [ "$TMUX" = "" ]; then
+    if [ -z "$TMUX" ]; then
         # this is run standalone, just report the defaults
         log_it "tmux_get_option() - no TMUX!"
         echo "$tgo_default"
