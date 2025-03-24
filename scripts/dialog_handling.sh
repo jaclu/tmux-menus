@@ -125,8 +125,27 @@ menu_generate_part() {
 #---------------------------------------------------------------
 
 mnu_prefix() {
+    # case "$TMUX_BIN" in
+    # *-L*)
+    #     log_it "==== already using socket ===="
+    T2="$TMUX_BIN"
+    #     ;; # already contains socket info
+    # *)
+    #     #
+    #     # in case an inner tmux is using this plugin, make sure the current socket is
+    #     # used to avoid picking up states from the outer tmux
+    #     #
+    #     f_name_socket="$(echo $TMUX | cut -d, -f 1)"
+    #     log_it "><> f_name_socket [$f_name_socket]"
+    #     socket="${f_name_socket##*/}"
+    #     log_it "><> socket [$socket]"
+    #     T2="$TMUX_BIN -L $socket"
+    #     log_it "><> mnu_prefix() - TMUX_BIN [$TMUX_BIN] "
+    #     ;;
+    # esac
+
     _n="$(echo "$cfg_format_title" | sed "s/#{@menu_name}/$menu_name/g")"
-    menu_items="$TMUX_BIN display-menu  \
+    menu_items="$T2 display-menu  \
         -T $_n \
         -x '$cfg_mnu_loc_x' -y '$cfg_mnu_loc_y'"
     tmux_vers_check 3.4 && {
