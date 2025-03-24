@@ -580,6 +580,7 @@ cache_static_content() {
         }
         # now static content can be cached
         is_function_defined "static_content" && {
+            set_menu_reload
             static_content
             static_cache_updated=true
         }
@@ -593,6 +594,7 @@ handle_dynamic() {
         wt_actions=""
         is_dynamic_content=true
         mkdir -p "$d_menu_cache"
+        set_menu_reload
         dynamic_content
         is_dynamic_content=false
         wt_actions="$wt_actions_static"

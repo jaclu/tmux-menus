@@ -365,6 +365,23 @@ wait_to_close_display() {
     fi
 }
 
+set_menu_reload() {
+    log_it "set_menu_reload() - cfg_use_whiptail [$cfg_use_whiptail]"
+    if $cfg_use_whiptail; then
+        #
+        #  I haven't been able do to menu reload with whiptail/dialog yet,
+        #  so disabled for now
+        #
+        # menu_reload="\; run-shell \\\"$m$d_scripts/external_dialog_trigger.sh $f_current_script\\\""
+        # menu_reload="\; run-shell \\\"$f_current_script\\\""
+        menu_reload=""
+        reload_in_runshell=""
+    else
+        menu_reload="; run-shell \"$f_current_script\""
+        reload_in_runshell=" ; \"$f_current_script\""
+    fi
+}
+
 #===============================================================
 #
 #   Main
@@ -400,19 +417,6 @@ f_current_script="$d_current_script/$current_script"
 
 # shellcheck source=scripts/utils/tmux.sh
 . "$d_scripts"/utils/tmux.sh
-
-if $cfg_use_whiptail; then
-    #
-    #  I haven't been able do to menu reload with whiptail/dialog yet,
-    #  so disabled for now
-    #
-    # menu_reload="\; run-shell '$d_scripts/external_dialog_trigger.sh $f_current_script'"
-    menu_reload=""
-    reload_in_runshell=""
-else
-    menu_reload="; run-shell \"$f_current_script\""
-    reload_in_runshell=" ; \"$f_current_script\""
-fi
 
 env_initialized=2 # indicates that env is fully configured
 # log_it "><> scripts/utils/helpers-full.sh - completed [$0]"
