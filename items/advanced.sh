@@ -75,7 +75,7 @@ static_content() {
         0.0 C m "Tmux messages" 'show-messages' \
         1.9 C t "Tmux terminal bindings" 'show-messages -T' \
         0.0 C : "Enter a tmux command" command-prompt \
-        0.0 C s "Toggle status line" "set status $menu_reload"
+        0.0 C s "Toggle status line" "set status $menu_reload" \
         1.8 S \
         2.7 E c "Disconnect clients" \
         "$TMUX_BIN choose-client -Z $hint"
