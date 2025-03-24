@@ -1,5 +1,9 @@
 # Plan
 
+## Whiptail menu reload
+
+Disbled for now should try to solve it
+
 ## external_tools/dropbox.sh
 
 toggle not working

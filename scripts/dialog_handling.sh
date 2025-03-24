@@ -241,7 +241,7 @@ alt_command() {
 
     menu_items="$menu_items $key \"$label\""
     if $keep_cmd; then
-        wt_actions="$wt_actions $key_action | $cmd $external_action_separator"
+        wt_actions="$wt_actions $key_action | tmux_error_handler $cmd $external_action_separator"
     else
         wt_actions="$wt_actions $key_action | tmux_error_handler $cmd $external_action_separator"
     fi
@@ -334,7 +334,7 @@ menu_parse() {
             [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
 
             if $cfg_use_whiptail; then
-                alt_command "$label" "$key" "$cmd" "$keep_cmd"
+                alt_command "$label" "$key" "\"$cmd\"" "$keep_cmd"
             else
                 mnu_command "$label" "$key" "$cmd" "$keep_cmd"
             fi
@@ -678,7 +678,6 @@ prepare_menu() {
     #  then process it in dynamic_content()
     #
     # log_it "prepare_menu()"
-    safe_now dh_t_mnu_processing_start
 
     set_menu_env_variables
 
@@ -841,6 +840,9 @@ alt_parse_selection() {
         action="$(echo "$section" | cut -d'|' -f 2 | awk '{$1=$1};1')"
 
         if [ "$key" = "$menu_selection" ] && [ -n "$action" ]; then
+            $all_helpers_sourced || source_all_helpers "alt_parse_selection()"
+            log_it "><> action: $action"
+            teh_debug=true
             eval "$action"
             break
         fi
@@ -860,10 +862,10 @@ handle_wt_selecion() {
 }
 
 display_menu() {
-    # log_it "display_menu()"
+    log_it "display_menu()"
     # Display time to generate menu
     safe_now
-    _t="$(echo "$t_now - $dh_t_mnu_processing_start" | bc)"
+    _t="$(echo "$t_now - $t_mnu_processing_start" | bc)"
 
     # Try to log this one even if other logging is disabled
     [ "$TMUX_MENUS_FORCE_SILENT" = "3" ] && TMUX_MENUS_FORCE_SILENT=1

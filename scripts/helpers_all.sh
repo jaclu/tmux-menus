@@ -34,4 +34,4 @@ fi
 
 $all_helpers_sourced || source_all_helpers "helpers_all.sh"
 
-# log_it "===  Completed: scripts/helpers-all.sh  =="
+log_it "===  Completed: scripts/helpers-all.sh  == [$0]"

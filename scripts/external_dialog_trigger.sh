@@ -11,10 +11,14 @@
 #  any sourcing.
 #
 
+[ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 
-[ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
+# Select next menu to display
+menu="$1"
+[ -z "$menu" ] && menu="$D_TM_BASE_PATH"/items/main.sh
+export TMUX_MENUS_EXTERNAL_MENU="$menu"
 
 $TMUX_BIN send-keys C-z
 sleep 0.1 # give time for task to be suspended, and shell ready for input
