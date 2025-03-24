@@ -37,7 +37,7 @@ static_content() {
     fw_cmd="command-prompt -p 'Search for:' 'find-window $fw_flags %%'"
 
     set -- \
-        0.0 M Left "Back to Main menu $nav_home" main.sh \
+        0.0 M Left "Back to Main menu  $nav_home" main.sh \
         0.0 S \
         1.7 E n "Navigate & select ses/win/pane" "$navigate_cmd"
 

@@ -13,8 +13,8 @@ dynamic_content() {
 
     if [ -n "$prev_menu" ]; then
         set -- \
-            0.0 M Left "Back to Previous menu $nav_prev" "$prev_menu" \
-            0.0 M Home "Back to Main menu     $nav_home" main.sh
+            0.0 M Left "Back to Previous menu  $nav_prev" "$prev_menu" \
+            0.0 M Home "Back to Main menu      $nav_home" main.sh
     else
         set -- \
             0.0 T "Press Esc or q to close this help overlay"

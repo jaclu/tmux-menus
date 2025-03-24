@@ -45,7 +45,7 @@ static_content() {
 
     # 2.7 M M "Manage clients    $nav_next" advanced_manage_clients.sh \
     set -- \
-        0.0 M Left "Back to Main menu $nav_home" main.sh \
+        0.0 M Left "Back to Main menu  $nav_home" main.sh \
         0.0 S
 
     menu_generate_part 1 "$@"

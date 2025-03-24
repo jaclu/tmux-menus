@@ -19,7 +19,7 @@ static_content() {
 
     # shellcheck disable=SC2154
     set -- \
-        0.0 M Left "Back to Main menu $nav_home" main.sh \
+        0.0 M Left "Back to Main menu  $nav_home" main.sh \
         0.0 S \
         0.0 C r "Rename this session" "command-prompt -I '#S' \
             'rename-session -- \"%%\"' $menu_reload" \
