@@ -10,8 +10,8 @@
 
 static_content() {
     set -- \
-        0.0 M Left "Back to Handling Pane $nav_prev" panes.sh \
-        0.0 M Home "Back to Main menu     $nav_home" main.sh \
+        0.0 M Left "Back to Handling Pane  $nav_prev" panes.sh \
+        0.0 M Home "Back to Main menu      $nav_home" main.sh \
         0.0 S \
         2.0 C l "Left" "split-window     -hb -c '#{pane_current_path}' $menu_reload" \
         1.7 C r "Right" "split-window -h  -c '#{pane_current_path}' $menu_reload" \

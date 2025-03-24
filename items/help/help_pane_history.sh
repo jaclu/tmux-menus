@@ -16,8 +16,8 @@ dynamic_content() {
     fi
 
     set -- \
-        0.0 M Left "Back to Previous menu $nav_prev" "$prev_menu" \
-        0.0 M Home "Back to Main menu     $nav_home" main.sh
+        0.0 M Left "Back to Previous menu  $nav_prev" "$prev_menu" \
+        0.0 M Home "Back to Main menu      $nav_home" main.sh
 
     menu_generate_part 1 "$@"
 }
@@ -43,7 +43,7 @@ static_content() {
 #===============================================================
 
 [ -n "$1" ] && prev_menu="$(realpath "$1")"
-menu_name="Help Panes"
+menu_name="Help Pane History"
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"

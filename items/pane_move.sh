@@ -24,8 +24,8 @@ dynamic_content() {
 
 static_content() {
     set -- \
-        0.0 M Left "Back to Handling Pane $nav_prev" panes.sh \
-        0.0 M Home "Back to Main menu     $nav_home" main.sh \
+        0.0 M Left "Back to Handling Pane  $nav_prev" panes.sh \
+        0.0 M Home "Back to Main menu      $nav_home" main.sh \
         1.7 S
 
     menu_generate_part 1 "$@"
@@ -45,7 +45,7 @@ static_content() {
 
     set -- "$@" \
         0.0 S \
-        1.7 M H "Help, explaining move     $nav_next" \
+        1.7 M H "Help, Move to other    $nav_next" \
         "$d_help/help_pane_move.sh $f_current_script"
 
     menu_generate_part 3 "$@"
