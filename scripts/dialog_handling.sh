@@ -129,13 +129,13 @@ mnu_prefix() {
     menu_items="$TMUX_BIN display-menu  \
         -T $_n \
         -x '$cfg_mnu_loc_x' -y '$cfg_mnu_loc_y'"
-    if tmux_vers_check 3.4; then
+    tmux_vers_check 3.4 && {
         # Styling is supported
         menu_items="$menu_items \
             -H \"$cfg_simple_style_selected\" \
             -s \"$cfg_simple_style\" \
             -S \"$cfg_simple_style_border\" "
-    fi
+    }
 }
 
 mnu_open_menu() {
@@ -255,9 +255,9 @@ alt_text_line() {
     #
     txt="$(echo "$1" | sed 's/^[-]//' | sed 's/#\[[^]]*\]//g')"
 
-    if [ "$(printf '%s' "$txt" | cut -c1)" = "-" ]; then
+    [ "$(printf '%s' "$txt" | cut -c1)" = "-" ] && {
         txt=" ${txt#?}"
-    fi
+    }
 
     menu_items="$menu_items '' \"$txt\""
 }
@@ -369,9 +369,7 @@ menu_parse() {
             #  Expand relative PATH at one spot, before calling the
             #  various implementations
             #
-            if echo "$cmd" | grep -vq /; then
-                cmd="$d_scripts/$cmd"
-            fi
+            echo "$cmd" | grep -vq / && cmd="$d_scripts/$cmd"
 
             [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
 
@@ -400,9 +398,7 @@ menu_parse() {
             #  If menu is not full PATH, assume it to be a tmux-menus
             #  item
             #
-            if echo "$menu" | grep -vq /; then
-                menu="$d_items/$menu"
-            fi
+            echo "$menu" | grep -vq / && menu="$d_items/$menu"
 
             [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] menu[$menu]"
 
@@ -573,7 +569,7 @@ cache_static_content() {
 
 handle_dynamic() {
     # log_it "handle_dynamic()"
-    if is_function_defined "dynamic_content"; then
+    is_function_defined "dynamic_content" && {
         wt_actions_static="$wt_actions"
         wt_actions=""
         is_dynamic_content=true
@@ -581,7 +577,7 @@ handle_dynamic() {
         dynamic_content
         is_dynamic_content=false
         wt_actions="$wt_actions_static"
-    fi
+    }
 }
 
 generate_menu_items_in_sorted_order() {
@@ -731,7 +727,7 @@ ensure_menu_fits_on_screen() {
     safe_now
     disp_time="$(echo "$t_now - $dh_t_start" | bc)"
     # log_it "ensure_menu_fits_on_screen() Menu $bn_current_script - Display time:  $disp_time"
-    if [ "$(echo "$disp_time < $t_minimal_display_time" | bc)" -eq 1 ]; then
+    [ "$(echo "$disp_time < $t_minimal_display_time" | bc)" -eq 1 ] && {
         $all_helpers_sourced || {
             source_all_helpers "ensure_menu_fits_on_screen()  short display, give warning"
         }
@@ -746,7 +742,7 @@ ensure_menu_fits_on_screen() {
             _s="$f_menu_rel: Screen might be too small"
         fi
         error_msg_safe "$_s" 0
-    fi
+    }
 }
 
 check_screen_size() {
@@ -802,14 +798,14 @@ wt_cached_selection() {
         [ "${#fn}" -le "2" ] && continue # skip . & ..
 
         # Check if the file is a regular file
-        if [ -f "$file" ]; then
+        [ -f "$file" ] && {
             all_wt_actions="$all_wt_actions $(cat "$file")"
             #
             #  Read the content of the file and append it to
             #  the dialog variable
             #
             menu_items="$menu_items $(cat "$file")"
-        fi
+        }
     done
 }
 
@@ -839,13 +835,13 @@ alt_parse_selection() {
         key="$(echo "$section" | cut -d'|' -f 1 | awk '{$1=$1};1')"
         action="$(echo "$section" | cut -d'|' -f 2 | awk '{$1=$1};1')"
 
-        if [ "$key" = "$menu_selection" ] && [ -n "$action" ]; then
+        [ "$key" = "$menu_selection" ] && [ -n "$action" ] && {
             $all_helpers_sourced || source_all_helpers "alt_parse_selection()"
             log_it "><> action: $action"
             teh_debug=true
             eval "$action"
             break
-        fi
+        }
         [ "$lst" = "" ] && break # we have processed last group
     done
 }
@@ -901,7 +897,7 @@ exit_if_dialog_doesnt_fit_screen() {
 #
 #===============================================================
 
-if [ -z "$D_TM_BASE_PATH" ]; then
+[ -z "$D_TM_BASE_PATH" ] && {
     # helpers not yet sourced, so error_msg_safe() not yet available
     msg="ERROR: dialog_handling.sh - D_TM_BASE_PATH must be set!"
     (
@@ -910,7 +906,7 @@ if [ -z "$D_TM_BASE_PATH" ]; then
         echo
     )
     exit 1
-fi
+}
 
 # Only import if needed, checking a random variable
 [ -z "$d_scripts" ] && {
@@ -953,3 +949,4 @@ prepare_menu
 profiling_display "[dialog_handling] prepare_menu() done"
 
 display_menu
+return 0

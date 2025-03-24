@@ -12,6 +12,7 @@
 #
 
 [ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
+
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 

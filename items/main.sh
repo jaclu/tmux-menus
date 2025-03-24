@@ -74,6 +74,7 @@ menu_name="Main menu"
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 
+# shellcheck disable=SC2154
 if [ "$MENUS_PROFILING" = "1" ] && [ "$profiling_sourced" != "1" ]; then
     . "$D_TM_BASE_PATH"/scripts/utils/dbg_profiling.sh
 fi

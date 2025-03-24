@@ -415,4 +415,4 @@ else
 fi
 
 env_initialized=2 # indicates that env is fully configured
-log_it "><> scripts/utils/helpers-full.sh - completed [$0]"
+# log_it "><> scripts/utils/helpers-full.sh - completed [$0]"

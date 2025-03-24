@@ -1,7 +1,6 @@
 #!/bin/sh
 # Always sourced file - Fake bang path to help editors
 # shellcheck disable=SC2034,SC2154
-
 #
 #   Copyright (c) 2025: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -13,6 +12,7 @@
 #
 
 print_stderr() {
+    # will print to stderr if this is run interactively
     if [ -t 0 ]; then
         echo "$1" >/dev/stderr
         return 0
@@ -185,31 +185,22 @@ get_d_current_script() {
 #---------------------------------------------------------------
 
 select_safe_now_method() {
-    # figure out what method to use and save the selection for future usage
-    # log_it "select_safe_now_method()"
+    # Select and save the time method for future use.
     [ -n "$selected_get_time_mthd" ] && {
-        # if this is called when the method was selected something is wrong...
-        error_msg_safe "recursive call to: select_safe_now_method()"
+        error_msg_safe "Recursive call to: select_safe_now_method"
     }
 
     if [ -d /proc ] && [ -f /proc/version ]; then
-        #  On Linux the native date supports sub second precision
-        #  unless its the busybox date - only gives seconds...
-        selected_get_time_mthd="date"
+        selected_get_time_mthd="date" # Linux with sub-second precision
     elif [ "$(uname)" = "Linux" ]; then
-        # Non-standard devices still being Linux, such as termux
-        selected_get_time_mthd="date"
-    elif [ -n "$(command -v gdate)" ]; then
-        # The MacOS date doesn't support sub seconds, if gdate is available use it.
-        selected_get_time_mthd="gdate"
-    elif [ -n "$(command -v perl)" ]; then
-        # Slower than gdate but still usable, built-in on MacOS
-        selected_get_time_mthd="perl"
+        selected_get_time_mthd="date" # Termux or other Linux variations
+    elif command -v gdate >/dev/null; then
+        selected_get_time_mthd="gdate" # macOS, using GNU date if available
+    elif command -v perl >/dev/null; then
+        selected_get_time_mthd="perl" # Use Perl if date is not available
     else
-        # Fallback
-        selected_get_time_mthd="date"
+        selected_get_time_mthd="date" # Fallback
     fi
-    # log_it "[$0] Using  safe_now() timing method: $selected_get_time_mthd"
 }
 
 safe_now() {
@@ -260,38 +251,39 @@ tmux_vers_check() {
         tpt_retrieve_running_tmux_vers
     fi
 
+    # Use cache if available and enabled
     $cfg_use_cache && {
-        [ -z "$cached_ok_tmux_versions" ] && [ -f "$f_cache_known_tmux_vers" ] && {
-            #
-            # get known good/bad versions if this hasn't been sourced yet
-            #
+        if [ -z "$cached_ok_tmux_versions" ] && [ -f "$f_cache_known_tmux_vers" ]; then
+            # Source known versions only if not already cached
             # shellcheck source=/dev/null
             . "$f_cache_known_tmux_vers" || {
                 log_it "WARNING: Failed to source: f_cache_known_tmux_vers"
-                # make them non empty to prevent further attempts to be sourced
-                cached_ok_tmux_versions=" "
+                cached_ok_tmux_versions=" " # Mark as failure to avoid further attempts
                 cached_bad_tmux_versions=" "
             }
-        }
+        fi
+
+        # Check if the version is in the cached good or bad lists using case statements
         case " $cached_ok_tmux_versions " in
-        *"$_v_comp "*) return 0 ;;
+        *"$_v_comp "*) return 0 ;; # Version found in good list
         *) ;;
         esac
         case "$cached_bad_tmux_versions" in
-        *"$_v_comp "*) return 1 ;;
+        *"$_v_comp "*) return 1 ;; # Version found in bad list
         *) ;;
         esac
     }
 
+    # If helpers aren't sourced yet, source them before continuing the version check
     $all_helpers_sourced || {
-        # During sourcing, other version checks might be done, thus
-        # preserve the current version being inspected
+        # tmux_vers_check might be called as the other helpers are sourced, so
+        # ensure that the original check is retained
         _preserve_check_version="$_v_comp"
         source_all_helpers "tmux_vers_check($_v_comp) - non-cached version"
         _v_comp="$_preserve_check_version"
     }
 
-    # posix inherits return code from last cmd
+    # Perform the actual version comparison check
     tmux_vers_check_do_compare "$_v_comp"
 }
 
@@ -314,34 +306,32 @@ tpt_digits_from_string() {
     #   "tmux 1.9" => "19"
     #   "1.9a"     => "19"
     varname="$1"
-    # log_it "tpt_digits_from_string($varname,$2)"
 
+    # Ensure arguments are present
     [ -z "$varname" ] && error_msg_safe "tpt_digits_from_string() - no variable name!"
     [ -z "$2" ] && error_msg_safe "tpt_digits_from_string() - no param!"
 
-    # the first sed removes -rc suffixes, to avoid anny numerical rc like -rc1 from
-    # being included in the int extraction
-    # Use 'tr' to keep only digits
-    _i="$(echo "$2" | sed 's/-rc[0-9]*//' | tr -cd '0-9')" || {
-        error_msg_safe "tpt_digits_from_string() - Failed to extract digits"
-    }
+    # Remove "-rc" suffix and extract digits using parameter expansion
+    _i=$(echo "$2" | tr -cd '0-9') # Keep only digits
+
+    # Check if result is empty after digit extraction
     [ -z "$_i" ] && error_msg_safe "tpt_digits_from_string() - result empty"
+
+    # Assign result to the variable
     eval "$varname=\$_i"
 }
 
 tpt_tmux_vers_suffix() {
     # Extracts any alphabetic suffix from the end of a version string.
     # If no suffix exists, returns an empty string.
-    # Example inputs and outputs:
-    #   "3.2"  => ""
-    #   "3.2a" => "a"
     varname="$1"
-    # log_it "tpt_tmux_vers_suffix($varname,$2)"
-    _s="$(echo "$2" | sed 's/.*[0-9]\([a-zA-Z]*\)$/\1/')" || {
-        error_msg_safe "tpt_tmux_vers_suffix() - Failed to extract suffix"
-    }
+    vers="$2"
+
+    # Remove all leading digits and dots, leaving only the suffix
+    _s="${vers##*([0-9.])}"
+
+    # Assign result to the variable name
     eval "$varname=\"\$_s\""
-    # log_it " <-- tpt_tmux_vers_suffix() - result [$varname]"
 }
 
 #===============================================================
@@ -350,6 +340,7 @@ tpt_tmux_vers_suffix() {
 #
 #===============================================================
 
+[ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
 plugin_name="tmux-menus"
 
 # will be 1 when limited env is ready, 2 when full env is ready
@@ -371,18 +362,27 @@ cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
 #
 # log_interactive_to_stderr=1
 
-#  Set this as early as possible to be able to calculate the entire menu processing time
+[ -z "$D_TM_BASE_PATH" ] && {
+    # helpers not yet sourced, so error_msg() not yet available
+    msg="$plugin_name ERROR: $0 - D_TM_BASE_PATH must be set!"
+    print_stderr "$msg"
+    $TMUX_BIN display-message "$msg"
+    exit 1
+}
+
+# Set this as early as possible to be able to calculate the entire menu processing time
 safe_now t_mnu_processing_start
 
-[ "$log_interactive_to_stderr" = "1" ] && {
+case "$log_interactive_to_stderr" in
+"1")
     # TMUX_MENUS_FORCE_SILENT overrides and disables log_interactive_to_stderr
     case "$TMUX_MENUS_FORCE_SILENT" in
     1 | 2) log_interactive_to_stderr=0 ;;
     *) ;;
     esac
-}
-
-[ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
+    ;;
+*) ;;
+esac
 
 min_tmux_vers="1.8"
 cfg_use_whiptail=false
@@ -392,35 +392,27 @@ plugin_options_have_been_read=false # only need to read param once
 # a call to source_all_helpers will be done, this ensures it only happens once
 all_helpers_sourced=false
 
-if [ -z "$D_TM_BASE_PATH" ]; then
-    # helpers not yet sourced, so error_msg_safe() not yet available
-    msg="$plugin_name ERROR: $0 - D_TM_BASE_PATH must be set!"
-    (
-        echo
-        echo "$msg"
-        echo
-    )
-    $TMUX_BIN display-message "$msg"
-    exit 1
-fi
-
-if [ "$MENUS_PROFILING" != "1" ]; then
+case "$MENUS_PROFILING" in
+"1")
+    case "$profiling_sourced" in
+    "1") ;;
+    *)
+        # Here it is sourced  after D_TM_BASE_PATH is verified
+        # if the intent is to start timing the earliest stages of other scripts
+        # copy the below code using absolute paths
+        # shellcheck source=scripts/utils/dbg_profiling.sh
+        . "$D_TM_BASE_PATH"/scripts/utils/dbg_profiling.sh
+        ;;
+    esac
+    ;;
+*)
     # profiling calls should not be left in the code base long term, this
     # is primarily intended to capture them when profiling is temporarily disabled
-    # log_it "><> ------------ creating dummy profiler"
     profiling_display() {
         :
     }
-elif [ "$MENUS_PROFILING" = "1" ] && [ "$profiling_sourced" != "1" ]; then
-    # Here it is sourced  after D_TM_BASE_PATH is verified
-    # if the intent is to start timing the earliest stages of other scripts
-    # copy the below code using absolute paths
-    # shellcheck source=scripts/utils/dbg_profiling.sh
-    . "$D_TM_BASE_PATH"/scripts/utils/dbg_profiling.sh
-#     log_it "profiling sourced"
-# else
-#     log_it "profiling already sourced"
-fi
+    ;;
+esac
 
 # minimal support variables
 
@@ -470,4 +462,4 @@ fi
 
 [ "$env_initialized" -eq 0 ] && env_initialized=1 # basic init done
 
-log_it "><> scripts/helpers.sh - completed [$0]"
+# log_it "><> scripts/helpers.sh - completed [$0]"

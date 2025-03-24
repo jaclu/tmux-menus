@@ -17,7 +17,7 @@
 #
 #===============================================================
 
-if [ -z "$D_TM_BASE_PATH" ]; then
+[ -z "$D_TM_BASE_PATH" ] && {
     # helpers not yet sourced, so error_msg_safe() not yet available
     msg="$plugin_name ERROR: $0 - D_TM_BASE_PATH must be set!"
     (
@@ -27,7 +27,7 @@ if [ -z "$D_TM_BASE_PATH" ]; then
     )
     $TMUX_BIN display-message "$msg"
     exit 1
-fi
+}
 
 # shellcheck source=scripts/helpers.sh
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
