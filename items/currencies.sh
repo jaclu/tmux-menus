@@ -9,68 +9,6 @@
 #  depending on keyboards or their mappings.
 #
 
-#  Function to display a character, considering Whiptail limitations
-display_char() {
-    #
-    #  Normally the char is just sent into the current buffer
-    #  If whiptail is used, this can't be done, since whatever was
-    #  running was suspended. Instead selected chars are saved into a
-    #  buffer, that can later be pasted.
-    #
-    c="$1"
-    [ -z "$c" ] && error_msg_safe "display_char() - no param"
-    if $cfg_use_whiptail; then
-        normalize_bool_param "$wt_pasting" false &&
-            pending_paste=true || pending_paste=false
-
-        if $pending_paste; then
-            #  prefix with pending paste buffer
-            tmux_error_handler_assign b show-buffer
-            # shellcheck disable=SC2154
-            c="$b$c"
-        else
-            tmux_error_handler set-option -g "$wt_pasting" 'yes'
-        fi
-
-        # log_it "setting buffer to '$c'"
-        tmux_error_handler set-buffer "$c"
-    else
-        tmux_error_handler send-keys "$c"
-    fi
-}
-
-#
-#  Function to handle a character, mainly used when script has a command
-#  line parameter
-#
-handle_char() {
-    s_in="$1"
-    [ -z "$s_in" ] && error_msg_safe "handle_char() - no param"
-
-    case "$s_in" in
-    0x*)
-        # handle it as a hex code
-        # shellcheck disable=SC2059
-        s="$(printf "\\$(printf "%o" "0x${s_in#0x}")")"
-        ;;
-    *)
-        s="$s_in"
-        if [ "$(uname)" = "Darwin" ]; then
-            _check="${#s_in}"
-        else
-            #
-            #  On Linux, it seems checking str length the normal way
-            #  doesn't work for some chars, like §
-            #  This seems more resilient
-            #
-            # shellcheck disable=SC2003,SC2034,SC2308
-            _check="$(expr length "$s_in")"
-        fi
-        ;;
-    esac
-    display_char "$s"
-}
-
 show_label() {
     # Some Currency symbols can't be printed in whiptail
     if $cfg_use_whiptail; then
@@ -128,7 +66,6 @@ static_content() {
 
 menu_name="Currency symbols"
 menu_min_vers=2.0
-wt_pasting="@menus_wt_paste_in_progress" # only used by whiptail
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
@@ -137,7 +74,8 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 if [ -n "$1" ]; then
-    handle_char "$1"
+    $d_scripts/act_display_char.sh "$1"
+    # handle_char "$1"
 elif $cfg_use_whiptail; then
     #
     #  As long as this menu is restarted with a char param

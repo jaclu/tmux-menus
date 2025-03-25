@@ -52,7 +52,7 @@ error_msg_safe() {
 }
 
 source_all_helpers() {
-    # log_it "source_all_helpers() - $1"
+    log_it "source_all_helpers() - $1"
     profiling_display "[helpers] ----->  source_all_helpers [$0] $1"
     $all_helpers_sourced && {
         error_msg_safe "source_all_helpers() called when it was already done"
@@ -429,6 +429,8 @@ f_cache_params="$d_cache"/plugin_params
 d_basic_current_script=${0%/*}
 bn_current_script=${0##*/} # same but faster than "$(basename "$0")"
 bn_current_script_no_ext=${bn_current_script%.*}
+
+wt_pasting="@menus_wt_paste_in_progress" # only used by whiptail
 
 #
 #  Convert script name to full actual path notation the path is used
