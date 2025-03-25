@@ -33,7 +33,7 @@ can be used for a template how to load the full environment.
 Look for the line:
 
 ```posix
-$all_helpers_sourced || source_all_helpers "advanced:dynamic_content()"
+"$all_helpers_sourced" || source_all_helpers "advanced:dynamic_content()"
 ```
 
 The initial condition ensures that the call to source all helpers is only done

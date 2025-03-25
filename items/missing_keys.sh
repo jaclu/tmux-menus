@@ -53,7 +53,7 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 if [ -n "$1" ]; then
-    $d_scripts/act_display_char.sh "$1"
+    "$d_scripts"/act_display_char.sh "$1"
     # handle_char "$1"
 elif $cfg_use_whiptail; then
     #
