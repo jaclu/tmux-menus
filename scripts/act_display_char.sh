@@ -23,14 +23,16 @@ display_char() {
     #  buffer, that can later be pasted.
     #
     c="$1"
-    log_it "display_char($c)"
+    # log_it "display_char($c)"
     [ -z "$c" ] && error_msg_safe "display_char() - no param"
     if $cfg_use_whiptail; then
-        log_it "bool check wt_pasting [$wt_pasting]"
-        normalize_bool_param "$wt_pasting" false &&
-            pending_paste=true || pending_paste=false
+        if normalize_bool_param "$wt_pasting" false no_cache; then
+        #     pending_paste=true
+        # else
+        #     pending_paste=false
+        # fi
 
-        if $pending_paste; then
+        # if $pending_paste; then
             #  prefix with pending paste buffer
             tmux_error_handler_assign b show-buffer
             # shellcheck disable=SC2154
@@ -39,7 +41,6 @@ display_char() {
             tmux_error_handler set-option -g "$wt_pasting" 'yes'
         fi
 
-        # log_it "setting buffer to '$c'"
         tmux_error_handler set-buffer "$c"
     else
         tmux_error_handler send-keys "$c"
@@ -53,7 +54,7 @@ display_char() {
 handle_char() {
     s_in="$1"
     [ -z "$s_in" ] && error_msg_safe "handle_char() - no param"
-    log_it "handle_char($s_in)"
+    # log_it "handle_char($s_in)"
     $all_helpers_sourced || source_all_helpers "act_display_char:handle_char()"
 
     case "$s_in" in
@@ -88,7 +89,6 @@ handle_char() {
 #   Main
 #
 #===============================================================
-
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"

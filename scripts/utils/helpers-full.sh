@@ -174,25 +174,35 @@ normalize_bool_param() {
     # Take a boolean style text param and convert it into an actual boolean
     # that can be used in your code. If the param starts with @ it is first read
     # from tmux
-    #    Example of usage:
+    #
+    # For performance reasons all @menus... params are cached once when cache is
+    # initialized. In case some other tmux variable needs to be checked,
+    # ignore this cashe and do a read by providing a third param, "no_cache" or similar,
+    # it's content doesn't matter, if a 3rd param is provided, the cache will be ignored.
+    #
+    #    Examples of usage:
     #
     # if normalize_bool_param "@menus_without_prefix" "$default_no_prefix"; then
     #     cfg_no_prefix=true
     # else
     #     cfg_no_prefix=false
     # fi
-
-    #  normalize_bool_param "@menus_without_prefix" "$default_no_prefix" &&
-    #      cfg_no_prefix=true || cfg_no_prefix=false
     #
-    #  $cfg_no_prefix && echo "Don't use prefix"
+    #  if normalize_bool_param "$wt_pasting" false no_cache; then
+    #
+    #  # boolean check on regular variable - no default is needed
+    #  a="YES"
+    #  if normalize_bool_param "$a"; then
+    #      do thing is it was true
+    #  fi
     #
     nbp_param="$1"
-    nbp_default="$2" # only used for tmux options
-    nbp_variable_name=""
+    nbp_default="$2"  # only needed for tmux options
+    nbp_no_cache="$3" # if non-empty, the cache will be ignored
+
     # profiling_display "[helpers-full] normalize_bool_param() starts"
 
-    # log_it "normalize_bool_param($nbp_param, $nbp_default) [$nbp_variable_name]"
+    # log_it "normalize_bool_param($nbp_param, $nbp_default) [$nbp_no_cache]"
     [ "${nbp_param%"${nbp_param#?}"}" = "@" ] && {
         #
         #  If it starts with "@", assume it is a tmux option, thus
@@ -202,12 +212,11 @@ normalize_bool_param() {
         [ -z "$nbp_default" ] && {
             error_msg "normalize_bool_param($nbp_param) - no default"
         }
-        tmux_get_option nbp_param "$nbp_param" "$nbp_default"
+        tmux_get_option nbp_param "$nbp_param" "$nbp_default" "$nbp_no_cache"
         # profiling_display "[helpers-full] tmux_get_option() - done"
     }
 
     nbp_value_lc="$(lowercase_it "$nbp_param")"
-    # log_it "><> normalize_bool_param() - found: $nbp_value_lc"
     # profiling_display "[helpers-full] normalize_bool_param() - done"
 
     case "$nbp_value_lc" in
@@ -219,7 +228,7 @@ normalize_bool_param() {
     #
     1 | yes | true) return 0 ;;
     0 | no | false) return 1 ;;
-    *) error_msg "[$nbp_value_lc] - should be yes/true/1 or no/false/0" ;;
+    *) error_msg "[$nbp_value_lc]  - should be yes/true/1 or no/false/0" ;;
     esac
 }
 

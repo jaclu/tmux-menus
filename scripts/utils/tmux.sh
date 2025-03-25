@@ -111,25 +111,31 @@ tmux_get_option() {
     tgo_varname="$1" # The variable name to store the result in
     tgo_option="$2"
     tgo_default="$3"
+    tgo_no_cache="$4" # if non-empty, prevent cache from being used - for odd variables
 
-    # log_it "tmux_get_option($tgo_varname, $tgo_option, $tgo_default)"
+    # log_it "tmux_get_option($tgo_varname, $tgo_option, $tgo_default, $tgo_no_cache)"
 
     [ -z "$tgo_varname" ] && error_msg "tmux_get_option() param 1 empty!"
     [ -z "$tgo_option" ] && error_msg "tmux_get_option() param 2 empty!"
+    if [ -z "$tgo_no_cache" ] && $cfg_use_cache && [ -d "$d_cache" ]; then
+        tgo_use_cache=true
+    else
+        tgo_use_cache=false
+    fi
 
     if [ -z "$TMUX" ]; then
         # this is run standalone, just report the defaults
-        log_it "tmux_get_option() - no TMUX!"
+        log_it "tmux_get_option() - no \$TMUX - using default"
         echo "$tgo_default"
         return
     elif ! tmux_vers_check 1.8; then
         # before 1.8 no support for user params
-        log_it "tmux_get_option() - tmux < 1.8!"
+        log_it "tmux_get_option() - tmux < 1.8 - using default"
         echo "$tgo_default"
         return
     fi
 
-    if $cfg_use_cache && [ -d "$d_cache" ]; then
+    if $tgo_use_cache; then
         cache_save_options_defined_in_tmux
         # profiling_display "[tmux] cache_save_options_defined_in_tmux done"
 
