@@ -177,7 +177,7 @@ normalize_bool_param() {
     #
     # For performance reasons all @menus... params are cached once when cache is
     # initialized. In case some other tmux variable needs to be checked,
-    # ignore this cashe and do a read by providing a third param, "no_cache" or similar,
+    # ignore this cache and do a read by providing a third param, "no_cache" or similar,
     # it's content doesn't matter, if a 3rd param is provided, the cache will be ignored.
     #
     #    Examples of usage:
@@ -375,7 +375,7 @@ wait_to_close_display() {
 }
 
 set_menu_reload() {
-    log_it "set_menu_reload() - cfg_use_whiptail [$cfg_use_whiptail]"
+    # log_it "set_menu_reload() - cfg_use_whiptail [$cfg_use_whiptail]"
     if $cfg_use_whiptail; then
         #
         #  I haven't been able do to menu reload with whiptail/dialog yet,
