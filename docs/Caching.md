@@ -3,7 +3,7 @@
 Several approaches are used to render menus quickly.
 
 Purely static menus that have been cached typically renders in < 0.01 seconds on
-reasnably modern systems. Enabling a log_file will print rende times for each menu
+reasnably modern systems. Enabling a log_file will print render times for each menu
 
 ## Scripts environment
 

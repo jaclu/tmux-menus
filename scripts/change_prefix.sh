@@ -28,7 +28,7 @@ elif [ "$(printf '%s' "$prefix_char" | wc -m)" -ne 1 ]; then
     error_msg_safe "Must be exactly one char! Was:[$prefix_char]"
 fi
 
-prefix="C-$(lowercase_it $prefix_char)"
+prefix="C-$(lowercase_it "$prefix_char")"
 
 tmux_error_handler set-option -g prefix "$prefix"
 

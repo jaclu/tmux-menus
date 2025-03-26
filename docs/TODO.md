@@ -2,6 +2,8 @@
 
 ## Release check
 
+- remove branch check for main menu label in dialog_handling:cache_static_content
+
 ### WhipTail
 
 - menu_reload is not working, so disabled

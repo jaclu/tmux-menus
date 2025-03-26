@@ -83,7 +83,7 @@ static_content() {
     }
     menu_generate_part 1 "$@"
 
-    # # shellcheck disable=SC2154
+    # shellcheck disable=SC2154
     set -- \
         0.0 S \
         2.7 E c "Disconnect clients" \
