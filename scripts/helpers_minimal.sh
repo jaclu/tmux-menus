@@ -153,7 +153,9 @@ get_config() {
 
     if [ -f "$f_no_cache_hint" ]; then
         $all_helpers_sourced || source_all_helpers "get_config() - not using cache"
-        get_config_read_save_if_uncached
+        tmux_get_plugin_options
+        check_speed_cutoff 1
+        # t_minimal_display_time=0.5 # since speed is unknown, use a concervative value
     elif [ -f "$f_cache_params" ]; then
         # log_it " get_config() - sourcing: $f_cache_params"
 

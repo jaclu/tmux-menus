@@ -111,27 +111,6 @@ bind_plugin_key() {
     log_it "$trigger_sequence"
 }
 
-check_speed_cutoff() {
-    cut_off="$1"
-    [[ -f "$_f_params" ]] && grep -q t_minimal_display_time "$_f_params" && {
-        # already set
-        # log_it "-T-  check_speed_cutoff() - already set"
-        return
-    }
-
-    # log_it "-T-  check_speed_cutoff($cut_off)"
-    safe_now
-    # shellcheck disable=SC2154
-    t_init="$(echo "$t_now - $t_init_start" | bc)"
-    # log_it "-T-  TIMING result: $t_init"
-    if [[ "$(echo "$t_init < $cut_off" | bc)" -eq 1 ]]; then
-        min_display_t_set 0.1
-    else
-        # for slower systems
-        min_display_t_set 0.5
-    fi
-}
-
 #===============================================================
 #
 #   Main
