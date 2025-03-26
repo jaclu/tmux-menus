@@ -809,7 +809,7 @@ wt_cached_selection() {
     #  Public variables
     #   all_wt_actions - lists all actions
     #
-    log_it "wt_cached_selection()"
+    # log_it "wt_cached_selection()"
     # gathering action files from cache
     all_wt_actions=""
     for file in "$d_wt_actions"/*; do
@@ -837,7 +837,7 @@ alt_parse_selection() {
     #  action, and then perform it
     #
     wt_actions="$1"
-    log_it "alt_parse_selection($wt_action)"
+    # log_it "alt_parse_selection($wt_action)"
     [ -z "$wt_actions" ] && {
         error_msg_safe "alt_parse_selection() - called without param"
     }
@@ -858,7 +858,6 @@ alt_parse_selection() {
 
         [ "$key" = "$menu_selection" ] && [ -n "$action" ] && {
             $all_helpers_sourced || source_all_helpers "alt_parse_selection()"
-            log_it "><> action: $action"
             teh_debug=true
             eval "$action"
             break
@@ -868,7 +867,7 @@ alt_parse_selection() {
 }
 
 handle_wt_selecion() {
-    log_it "handle_wt_selecion($menu_selection)"
+    # log_it "handle_wt_selecion($menu_selection)"
     if $cfg_use_cache; then
         wt_cached_selection
     else
@@ -879,7 +878,7 @@ handle_wt_selecion() {
 }
 
 display_menu() {
-    log_it "display_menu()"
+    # log_it "display_menu()"
     # Display time to generate menu
     safe_now
     _t="$(echo "$t_now - $t_mnu_processing_start" | bc)"

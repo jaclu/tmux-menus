@@ -52,7 +52,7 @@ error_msg_safe() {
 }
 
 source_all_helpers() {
-    log_it "source_all_helpers() - $1"
+    # log_it "source_all_helpers() - $1"
     profiling_display "[helpers] ----->  source_all_helpers [$0] $1"
     $all_helpers_sourced && {
         error_msg_safe "source_all_helpers() called when it was already done"
@@ -121,7 +121,7 @@ select_menu_handler() {
 #---------------------------------------------------------------
 
 source_cached_params() {
-    log_it "source_cached_params()"
+    # log_it "source_cached_params()"
     result_sourcing=0
 
     [ "$cfg_log_file_forced" = 1 ] && orig_log_file="$cfg_log_file"
