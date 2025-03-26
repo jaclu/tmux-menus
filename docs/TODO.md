@@ -2,7 +2,7 @@
 
 ## Release check
 
-up to excluding Missing keys
+- pane resize does nothing
 
 ## Whiptail menu reload
 
