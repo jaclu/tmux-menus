@@ -905,6 +905,24 @@ display_menu() {
     fi
 }
 
+set_menu_reload() {
+    # log_it "set_menu_reload() - cfg_use_whiptail [$cfg_use_whiptail]"
+    if $cfg_use_whiptail; then
+        #
+        #  I haven't been able do to menu reload with whiptail/dialog yet,
+        #  so disabled for now
+        #
+        # menu_reload="\; run-shell \\\"$m$d_scripts/external_dialog_trigger.sh $f_current_script\\\""
+        # menu_reload="\; run-shell \\\"$f_current_script\\\""
+        menu_reload=""
+        reload_in_runshell=""
+        log_it "><> whiptail - disabling menu_reload"
+    else
+        menu_reload="; run-shell \"$0\""
+        reload_in_runshell=" ; $0"
+    fi
+}
+
 exit_if_dialog_doesnt_fit_screen() {
     # Useful for hints, if it doesn't fit on screen, just skip this menu
     # log_it "exit_if_dialog_doesnt_fit_screen()"
