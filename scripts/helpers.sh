@@ -430,7 +430,7 @@ d_basic_current_script=${0%/*}
 bn_current_script=${0##*/} # same but faster than "$(basename "$0")"
 bn_current_script_no_ext=${bn_current_script%.*}
 
-wt_pasting="@menus_wt_paste_in_progress" # only used by whiptail
+wt_pasting="@tmp_menus_wt_paste_in_progress" # only used by whiptail
 
 #
 #  Convert script name to full actual path notation the path is used
