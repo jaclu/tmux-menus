@@ -555,7 +555,7 @@ cache_static_content() {
     # log_it "cache_static_content() - [$0] d_menu_cache [$d_menu_cache]"
     if [ ! -d "$d_menu_cache" ] || [ "$(get_mtime "$0")" -gt "$(get_mtime "$d_menu_cache")" ]; then
         $all_helpers_sourced || {
-            source_all_helpers "cache_static_content() - case error"
+            source_all_helpers "cache_static_content() - cache error"
         }
         # log_it "  regenerate cache for: $d_menu_cache"
         # Ensure d_menu_cache seems to be valid before doing erase

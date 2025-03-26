@@ -79,10 +79,9 @@ if [ -n "$1" ]; then
 elif $cfg_use_whiptail; then
     #
     #  As long as this menu is restarted with a char param
-    #  it is added  to the paste buffer, as soon as it is called
-    #  without a param this buffer is reset
+    #  it is added to the paste buffer if whiptail is used,
+    #  as soon as it is called without a param this buffer is reset
     #
-    # log_it "clearing pending paste buffer indicator"
     $TMUX_BIN set-option -gqu "$wt_pasting" 2>/dev/null # ignore error if not set
 fi
 
