@@ -265,10 +265,12 @@ define_actual_size() {
 #---------------------------------------------------------------
 
 check_speed_cutoff() {
-    # if processing was slower than the suplied param, set a higher minimal
+    # if processing was slower than the supplied param, set a higher minimal
     # display time before triggering "SCREEN might be too small" warning
     cut_off="$1"
-    [[ -f "$f_cache_params" ]] && grep -q t_minimal_display_time "$f_cache_params" && {
+
+    # shellcheck disable=SC2154
+    [ -f "$f_cache_params" ] && grep -q t_minimal_display_time "$f_cache_params" && {
         # already set
         return
     }
@@ -278,7 +280,7 @@ check_speed_cutoff() {
     # shellcheck disable=SC2154
     t_init="$(echo "$t_now - $t_script_start" | bc)"
     log_it "-T-  TIMING result: $t_init [$t_minimal_display_time]"
-    if [[ "$(echo "$t_init < $cut_off" | bc)" -eq 1 ]]; then
+    if [ "$(echo "$t_init < $cut_off" | bc)" -eq 1 ]; then
         min_display_t_set 0.1
     else
         # for slower systems
