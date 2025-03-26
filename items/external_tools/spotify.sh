@@ -21,7 +21,7 @@ display_currently_playing_track() {
 
 static_content() {
 
-    reload_no_output=" > /dev/null ; $f_current_script"
+    reload_no_output=" > /dev/null ; $0"
 
     [ -z "$(command -v spotify)" ] && error_msg_safe "spotify bin not found!"
 
@@ -30,7 +30,7 @@ static_content() {
         0.0 M Home "Back to Main menu  $nav_home" main.sh \
         0.0 S \
         0.0 E t "Title - currently playing track" \
-        "$f_current_script -t $reload_no_output" \
+        "$0 -t $reload_no_output" \
         0.0 S \
         0.0 E Space "Pause/Resume" "spotify pause    $reload_no_output" \
         0.0 E n "Next" "spotify             next     $reload_no_output" \

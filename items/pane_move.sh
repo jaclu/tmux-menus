@@ -40,13 +40,13 @@ static_content() {
     $cfg_use_hint_overlays && $cfg_show_key_hints && {
         set -- "$@" \
             1.7 M K "Key hints - Move to other $nav_next" \
-            "$d_hints/choose-tree.sh $f_current_script"
+            "$d_hints/choose-tree.sh $0"
     }
 
     set -- "$@" \
         0.0 S \
         1.7 M H "Help, Move to other    $nav_next" \
-        "$d_help/help_pane_move.sh $f_current_script"
+        "$d_help/help_pane_move.sh $0"
 
     menu_generate_part 3 "$@"
 }

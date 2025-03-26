@@ -33,11 +33,11 @@ static_content() {
     $cfg_use_hint_overlays && $cfg_show_key_hints && {
         set -- "$@" \
             0.0 M S "Key hints - Select paste buffer $nav_next" \
-            "$d_hints/choose-buffer.sh $f_current_script"
+            "$d_hints/choose-buffer.sh $0"
     }
     set -- "$@" \
         0.0 M H "Help                            $nav_next" \
-        "$d_help/help_paste_buffers.sh $f_current_script"
+        "$d_help/help_paste_buffers.sh $0"
 
     menu_generate_part 1 "$@"
 }

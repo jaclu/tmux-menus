@@ -33,7 +33,7 @@ dynamic_content() {
 
 static_content() {
 
-    # suffix=" > /dev/null' ; run-shell '$f_current_script'"
+    # suffix=" > /dev/null' ; run-shell '$0'"
 
     [ -z "$(command -v mullvad)" ] && error_msg_safe "mullvad bin not found!"
 

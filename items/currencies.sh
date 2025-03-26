@@ -38,21 +38,21 @@ static_content() {
     # ₿ (bitcoin)
 
     set -- "$@" \
-        0.0 E b "$(show_label ฿ baht)" "$f_current_script ฿" \
-        0.0 E c "$(show_label ¢ Cent)" "$f_current_script ¢" \
-        0.0 E e "$(show_label € euro)" "$f_current_script €" \
-        0.0 E h "$(show_label ₴ hryvnia)" "$f_current_script ₴" \
-        0.0 E l "$(show_label ₺ lira)" "$f_current_script ₺" \
-        0.0 E p "$(show_label £ pound)" "$f_current_script £" \
-        0.0 E i "$(show_label ៛ riel)" "$f_current_script ៛" \
-        0.0 E r "$(show_label ₽ rubel)" "$f_current_script ₽" \
-        0.0 E R "$(show_label ₹ rupee)" "$f_current_script ₹" \
-        0.0 E s "$(show_label ₪ shekel)" "$f_current_script ₪" \
-        0.0 E w "$(show_label ₩ won)" "$f_current_script ₩" \
-        0.0 E y "$(show_label ¥ yen/yuan)" "$f_current_script ¥" \
-        0.0 E z "$(show_label zł zloty)" "$f_current_script zł" \
+        0.0 E b "$(show_label ฿ baht)" "$0 ฿" \
+        0.0 E c "$(show_label ¢ Cent)" "$0 ¢" \
+        0.0 E e "$(show_label € euro)" "$0 €" \
+        0.0 E h "$(show_label ₴ hryvnia)" "$0 ₴" \
+        0.0 E l "$(show_label ₺ lira)" "$0 ₺" \
+        0.0 E p "$(show_label £ pound)" "$0 £" \
+        0.0 E i "$(show_label ៛ riel)" "$0 ៛" \
+        0.0 E r "$(show_label ₽ rubel)" "$0 ₽" \
+        0.0 E R "$(show_label ₹ rupee)" "$0 ₹" \
+        0.0 E s "$(show_label ₪ shekel)" "$0 ₪" \
+        0.0 E w "$(show_label ₩ won)" "$0 ₩" \
+        0.0 E y "$(show_label ¥ yen/yuan)" "$0 ¥" \
+        0.0 E z "$(show_label zł zloty)" "$0 zł" \
         0.0 S \
-        0.0 M H "Help                  $nav_next" "$d_help/help_currencies.sh $f_current_script"
+        0.0 M H "Help                  $nav_next" "$d_help/help_currencies.sh $0"
 
     menu_generate_part 1 "$@"
 

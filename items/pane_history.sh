@@ -28,7 +28,7 @@ static_content() {
             'capture-pane -S - -E - -e ; save-buffer %1 ; delete-buffer'  $menu_reload" \
         1.8 C h 'View scrollback (enter \"copy mode\")' "copy-mode" \
         0.0 S \
-        0.0 M H "Help                   $nav_next" "$d_help/help_pane_history.sh $f_current_script"
+        0.0 M H "Help                   $nav_next" "$d_help/help_pane_history.sh $0"
 
     menu_generate_part 1 "$@"
     unset d_history

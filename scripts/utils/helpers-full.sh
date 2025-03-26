@@ -94,7 +94,7 @@ error_msg_formated() {
 
     emf_msg="$(
         # shellcheck disable=SC2154
-        echo "ERROR in plugin $plugin_name: $(relative_path "$f_current_script") [$$]"
+        echo "ERROR in plugin $plugin_name: $(relative_path "$0") [$$]"
         echo
         echo "$emf_err"
     )"
@@ -397,15 +397,17 @@ f_chksum_custom="$d_cache"/chksum_custom_content
 f_cached_tmux_options="$d_cache"/tmux_options
 f_min_display_time="$d_cache"/min_display_time
 
-current_script=${0##*/}
-d_current_script="$(
-    cd "$(dirname "$0")" || exit
-    pwd
-)"
-
+#
+# No longer used
+#
+# current_script=${0##*/}
+# d_current_script="$(
+#     cd "$(dirname "$0")" || exit
+#     pwd
+# )"
 # This is the full path expanded version of $0, be carefull to use it in
 # dynamic_content to be accessibele all helpers must have been sourced
-f_current_script="$d_current_script/$current_script"
+# f_current_script="$d_current_script/$current_script"
 
 # shellcheck source=scripts/utils/cache.sh
 . "$d_scripts"/utils/cache.sh

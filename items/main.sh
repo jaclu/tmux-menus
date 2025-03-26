@@ -49,7 +49,7 @@ static_content() {
         set -- "$@" \
             3.2 T "-#[nodim]Key hints - " \
             3.2 M K "  customize-mode  $nav_next" \
-            "$d_hints/customize-mode.sh $f_current_script"
+            "$d_hints/customize-mode.sh $0"
     }
 
     set -- "$@" \
@@ -58,7 +58,7 @@ static_content() {
         0.0 C d 'Detach from tmux' detach-client \
         0.0 S \
         0.0 M H "Help              $nav_next" \
-        "$d_help/help_summary.sh $f_current_script"
+        "$d_help/help_summary.sh $0"
 
     menu_generate_part 1 "$@"
 }

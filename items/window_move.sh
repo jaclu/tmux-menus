@@ -39,13 +39,13 @@ static_content() {
 
     $cfg_use_hint_overlays && $cfg_show_key_hints && {
         set -- "$@" \
-            1.7 M K "Key hints - Move/Link      $nav_next" "$d_hints/choose-tree.sh $f_current_script"
+            1.7 M K "Key hints - Move/Link      $nav_next" "$d_hints/choose-tree.sh $0"
     }
 
     set -- "$@" \
         0.0 C u "Unlink window from this session" "unlink-window" \
         1.7 S \
-        1.7 M H "Help, explaining Move/Link $nav_next" "$d_help/help_window_move.sh $f_current_script"
+        1.7 M H "Help, explaining Move/Link $nav_next" "$d_help/help_window_move.sh $0"
 
     menu_generate_part 3 "$@"
 }

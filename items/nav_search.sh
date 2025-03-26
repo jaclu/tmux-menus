@@ -44,7 +44,7 @@ static_content() {
     $cfg_use_hint_overlays && $cfg_show_key_hints && {
         set -- "$@" \
             1.7 M K "Key hints - Navigate & select  $nav_next" \
-            "$d_hints/choose-tree.sh $f_current_script"
+            "$d_hints/choose-tree.sh $0"
     }
 
     set -- "$@" \
