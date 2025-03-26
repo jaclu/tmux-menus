@@ -419,6 +419,9 @@ d_current_script="$(
     cd "$(dirname "$0")" || exit
     pwd
 )"
+
+# This is the full path expanded version of $0, be carefull to use it in
+# dynamic_content to be accessibele all helpers must have been sourced
 f_current_script="$d_current_script/$current_script"
 
 # shellcheck source=scripts/utils/cache.sh

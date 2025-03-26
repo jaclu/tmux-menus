@@ -20,13 +20,13 @@ dynamic_content() {
 
     #  Add conditional lines
     if mullvad status | grep -q Connected; then
-        set -- 0.0 E d Disconnect "mullvad disconnect ; $f_current_script"
+        set -- 0.0 E d Disconnect "mullvad disconnect ; $0"
     else
-        set -- 0.0 E c Connect "mullvad connect ; $f_current_script"
+        set -- 0.0 E c Connect "mullvad connect ; $0"
     fi
 
     set -- "$@" \
-        0.0 E l "$lan_label LAN sharing" "mullvad lan set $lan_cmd; $f_current_script"
+        0.0 E l "$lan_label LAN sharing" "mullvad lan set $lan_cmd; $0"
 
     menu_generate_part 2 "$@"
 }
