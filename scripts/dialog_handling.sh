@@ -948,8 +948,8 @@ exit_if_dialog_doesnt_fit_screen() {
 
 # Only import if needed, checking a random variable
 [ -z "$d_scripts" ] && {
-    # shellcheck source=scripts/helpers.sh
-    . "$D_TM_BASE_PATH"/scripts/helpers.sh
+    # shellcheck source=scripts/helpers_minimal.sh
+    . "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
     # profiling_display "[dialog_handling] sourced helpers"
 }
 

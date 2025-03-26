@@ -11,7 +11,7 @@
 # shellcheck disable=SC2034,SC2154
 
 tmux_vers_check_do_compare() {
-    # Called fomh helpers.sh:tmux_vers_check if checked version was not cached
+    # Called fomh helpers_minimal.sh:tmux_vers_check() if checked version was not cached
     _v_comp="$1"
     [ -z "$_v_comp" ] && error_msg "tmux_vers_check_do_compare() - no param!"
     # log_it "tmux_vers_check_do_compare($_v_comp)"

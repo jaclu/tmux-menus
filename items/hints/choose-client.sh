@@ -74,8 +74,8 @@ fi
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"
 
-# shellcheck source=scripts/helpers.sh
-. "$D_TM_BASE_PATH"/scripts/helpers.sh
+# shellcheck source=scripts/helpers_minimal.sh
+. "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
 
 window_width=50
 window_height=22

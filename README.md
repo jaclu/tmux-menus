@@ -407,7 +407,7 @@ line to check for syntax errors:
 This will immediately execute the menu and display any errors in the terminal.
 
 If `@menus_log_file` is set—either in the tmux configuration or hardcoded in
-`scripts/helpers.sh` (around line 344, look for assignment of cfg_log_file)
+`scripts/helpers_minimal.sh` (around line 355, look for assignment of cfg_log_file)
 logging can be used within menus:
 
 ```bash

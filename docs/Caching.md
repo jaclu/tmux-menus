@@ -27,7 +27,7 @@ so everything is available.
 ## Dynamic content
 
 Since this is rendered each time a menu is displayed, the full environment has not
-been loaded to keep it lean, so only what is in `scripts/helpers.sh` is available.
+been loaded to keep it lean, so only what is in `scripts/helpers_minimal.sh` is available.
 
 If the full environment is needed, it has to be loaded. For example `items/advanced.sh`
 can be used for a template how to load the full environment.
@@ -45,3 +45,8 @@ if it has not been done previously.
 These also use caching same as tmux built in `display-menu`, but due to rendering
 such menus take a noticeable time, they will not be displayed as quickly despite
 using caching.
+
+## Cached menu
+
+dialog_handlinh.sh
+prepare_menu

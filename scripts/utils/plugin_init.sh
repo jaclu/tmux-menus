@@ -143,8 +143,8 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(dirname -- "$(realpath "$0")")")")
 initialize_plugin=1
 
 # can't read source when mixing bah & posix
-# shellcheck disable=SC2154,SC2001,SC2292 source=scripts/helpers.sh
-. "$D_TM_BASE_PATH"/scripts/helpers.sh
+# shellcheck disable=SC2154,SC2001,SC2292 source=scripts/helpers_minimal.sh
+. "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
 
 $all_helpers_sourced || source_all_helpers "always done by plugin_init.sh"
 

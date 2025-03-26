@@ -145,7 +145,7 @@ source_cached_params() {
 get_config() {
     #
     #  The plugin init .tmux script should NOT depend on this!
-    #  This is used by everything else sourcing helpers.sh, then trusting
+    #  This is used by everything else sourcing helpers_minimal.sh, then trusting
     #  that the param cache is valid if found
     #
     # log_it "get_config()"
@@ -296,7 +296,6 @@ tpt_retrieve_running_tmux_vers() {
     current_tmux_vers="$($TMUX_BIN -V | cut -d' ' -f2)"
     # log_it "  current_tmux_vers [$current_tmux_vers]"
     tpt_digits_from_string current_tmux_vers_i "$current_tmux_vers"
-    # current_tmux_vers_suffix="$(tpt_tmux_vers_suffix "$current_tmux_vers")"
     tpt_tmux_vers_suffix current_tmux_vers_suffix "$current_tmux_vers"
 }
 
@@ -464,4 +463,4 @@ fi
 
 [ "$env_initialized" -eq 0 ] && env_initialized=1 # basic init done
 
-# log_it "><> scripts/helpers.sh - completed [$0]"
+# log_it "><> scripts/helpers_minimal.sh - completed [$0]"
