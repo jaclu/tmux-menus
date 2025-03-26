@@ -719,43 +719,24 @@ prepare_menu() {
 #
 #---------------------------------------------------------------
 
-ensure_menu_fits_on_screen() {
-    #
-    #  Since tmux display-menu returns 0 even if it failed to display the
-    #  menu due to not fitting on the screen, the display time is checked.
-    #  If it seems to have closed right away, display a message that there
-    #  might be a screen size issue.
-    #
-    #  This is not ideal, since a very slow computer might take some time
-    #  for this, and if the user hits q right away, this message will also
-    #  be displayed.
-    #
-    #  This gets slightly more complicated with tmux 3.3, since now tmux
-    #  shrinks menus that don't fit due to width, so tmux might decide it
-    #  can show a menu, but due to shrinkage, the labels might be so
-    #  shortened that they are off little help explaining what the option
-    #  would do.
-    #
-    # Display time menu was shown
-    safe_now
-    disp_time="$(echo "$t_now - $dh_t_start" | bc)"
-    # log_it "ensure_menu_fits_on_screen() Menu $bn_current_script - Display time:  $disp_time"
-    [ "$(echo "$disp_time < $t_minimal_display_time" | bc)" -eq 1 ] && {
-        $all_helpers_sourced || {
-            source_all_helpers "ensure_menu_fits_on_screen()  short display, give warning"
-        }
-        if [ -n "$window_width" ] && [ -n "$window_height" ]; then
-            _s="$f_menu_rel: screen mins: ${window_width}x$window_height"
-        elif [ -n "$window_height" ]; then
-            _s="$f_menu_rel: Height required: $window_height"
-        elif [ -n "$window_width" ]; then
-            _s="$f_menu_rel: Width required: $window_width"
-        else
-            log_it "display time was: $disp_time"
-            _s="$f_menu_rel: Screen might be too small"
-        fi
-        error_msg_safe "$_s" 0
-    }
+set_menu_reload() {
+    # log_it "set_menu_reload() - cfg_use_whiptail [$cfg_use_whiptail]"
+    if $cfg_use_whiptail; then
+        #
+        #  I haven't been able do to menu reload with whiptail/dialog yet,
+        #  so disabled for now
+        #
+        # menu_reload="\; run-shell \\\"$m$d_scripts/external_dialog_trigger.sh $0\\\""
+        # menu_reload="\; run-shell \\\"$0\\\""
+        menu_reload=""
+        reload_in_runshell=""
+        log_it "><> whiptail - disabling menu_reload"
+    else
+        # shellcheck disable=SC2034
+        menu_reload="; run-shell \"$0\""
+        # shellcheck disable=SC2034
+        reload_in_runshell=" ; $0"
+    fi
 }
 
 check_screen_size() {
@@ -869,11 +850,50 @@ handle_wt_selecion() {
     unset all_wt_actions
 }
 
+ensure_menu_fits_on_screen() {
+    #
+    #  Since tmux display-menu returns 0 even if it failed to display the
+    #  menu due to not fitting on the screen, the display time is checked.
+    #  If it seems to have closed right away, display a message that there
+    #  might be a screen size issue.
+    #
+    #  This is not ideal, since a very slow computer might take some time
+    #  for this, and if the user hits q right away, this message will also
+    #  be displayed.
+    #
+    #  This gets slightly more complicated with tmux 3.3, since now tmux
+    #  shrinks menus that don't fit due to width, so tmux might decide it
+    #  can show a menu, but due to shrinkage, the labels might be so
+    #  shortened that they are off little help explaining what the option
+    #  would do.
+    #
+    # Display time menu was shown
+    safe_now
+    disp_time="$(echo "$t_now - $dh_t_start" | bc)"
+    # log_it "ensure_menu_fits_on_screen() Menu $bn_current_script - Display time:  $disp_time ($t_minimal_display_time)"
+    [ "$(echo "$disp_time < $t_minimal_display_time" | bc)" -eq 1 ] && {
+        $all_helpers_sourced || {
+            source_all_helpers "ensure_menu_fits_on_screen()  short display, give warning"
+        }
+        if [ -n "$window_width" ] && [ -n "$window_height" ]; then
+            _s="$f_menu_rel: screen mins: ${window_width}x$window_height"
+        elif [ -n "$window_height" ]; then
+            _s="$f_menu_rel: Height required: $window_height"
+        elif [ -n "$window_width" ]; then
+            _s="$f_menu_rel: Width required: $window_width"
+        else
+            # log_it "display time was: $disp_time"
+            _s="$f_menu_rel: Screen might be too small"
+        fi
+        error_msg_safe "$_s" 0
+    }
+}
+
 display_menu() {
     # log_it "display_menu()"
     # Display time to generate menu
     safe_now
-    _t="$(echo "$t_now - $t_mnu_processing_start" | bc)"
+    _t="$(echo "$t_now - $t_script_start" | bc)"
 
     # Try to log this one even if other logging is disabled
     [ "$TMUX_MENUS_FORCE_SILENT" = "3" ] && TMUX_MENUS_FORCE_SILENT=1
@@ -893,26 +913,6 @@ display_menu() {
         eval "$menu_items"
 
         ensure_menu_fits_on_screen
-    fi
-}
-
-set_menu_reload() {
-    # log_it "set_menu_reload() - cfg_use_whiptail [$cfg_use_whiptail]"
-    if $cfg_use_whiptail; then
-        #
-        #  I haven't been able do to menu reload with whiptail/dialog yet,
-        #  so disabled for now
-        #
-        # menu_reload="\; run-shell \\\"$m$d_scripts/external_dialog_trigger.sh $0\\\""
-        # menu_reload="\; run-shell \\\"$0\\\""
-        menu_reload=""
-        reload_in_runshell=""
-        log_it "><> whiptail - disabling menu_reload"
-    else
-        # shellcheck disable=SC2034
-        menu_reload="; run-shell \"$0\""
-        # shellcheck disable=SC2034
-        reload_in_runshell=" ; $0"
     fi
 }
 
