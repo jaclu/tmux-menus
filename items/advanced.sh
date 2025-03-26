@@ -31,7 +31,7 @@ dynamic_content() {
         2.1 C M "Toggle mouse to: $new_mouse_status" "set-option -g mouse \
         $new_mouse_status $menu_reload" \
         2.4 C p "Change prefix (Current: $current_prefix)" "command-prompt -1 -p \
-            'key without C- (will take effect imeditally)' \
+            'Prefix key without C- (will take effect imeditally)' \
             'run-shell \"$d_scripts/change_prefix.sh %1 $reload_in_runshell\"'"
 
     menu_generate_part 2 "$@"
