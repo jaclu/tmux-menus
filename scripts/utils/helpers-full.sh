@@ -329,6 +329,8 @@ get_config_read_save_if_uncached() {
 
 safe_remove() {
     pattern="$1"
+    skip_plugin_name_in_path_check="$2"
+
     [ -z "$pattern" ] && error_msg "safe_remove() - no param supplied!"
 
     # log_it "safe_remove($pattern)"
@@ -351,6 +353,16 @@ safe_remove() {
         ;;
     *) ;;
     esac
+
+    [ -z "$skip_plugin_name_in_path_check" ] && {
+        case "$pattern" in
+        *"$plugin_name"*) ;;
+        *)
+            _s="safe_remove($pattern) seems wrong - $plugin_name not in that path"
+            error_msg_safe "$_s"
+            ;;
+        esac
+    }
 
     rm -rf "$pattern" || error_msg "safe_remove() - Failed to delete: $pattern"
     return 0
@@ -405,7 +417,7 @@ f_min_display_time="$d_cache"/min_display_time
 #     cd "$(dirname "$0")" || exit
 #     pwd
 # )"
-# This is the full path expanded version of $0, be carefull to use it in
+# This is the full path expanded version of $0, be careful to use it in
 # dynamic_content to be accessibele all helpers must have been sourced
 # f_current_script="$d_current_script/$current_script"
 

@@ -554,20 +554,11 @@ cache_static_content() {
     #
     # log_it "cache_static_content() - [$0] d_menu_cache [$d_menu_cache]"
     if [ ! -d "$d_menu_cache" ] || [ "$(get_mtime "$0")" -gt "$(get_mtime "$d_menu_cache")" ]; then
+        # Cache is obsolete, regenerate it
+        # log_it "  regenerate cache for: $d_menu_cache"
         $all_helpers_sourced || {
             source_all_helpers "cache_static_content() - cache error"
         }
-        # log_it "  regenerate cache for: $d_menu_cache"
-        # Ensure d_menu_cache seems to be valid before doing erase
-        case "$d_menu_cache" in
-        *"$plugin_name"*) ;;
-        *)
-            _s="d_menu_cache seems wrong [$d_menu_cache] plugin-name not in that"
-            _s="$_m path [$plugin_name]"
-            error_msg_safe "$_s"
-            ;;
-        esac
-
         safe_remove "$d_menu_cache"
         mkdir -p "$d_menu_cache" || error_msg_safe "Failed to create: $d_menu_cache"
 
@@ -704,6 +695,7 @@ prepare_menu() {
         cache_static_content
         # profiling_display "[dialog_handling] cache_static_content() done"
     else
+        set_menu_reload
         static_content
         # profiling_display "[dialog_handling] static_content() done"
     fi
@@ -917,7 +909,9 @@ set_menu_reload() {
         reload_in_runshell=""
         log_it "><> whiptail - disabling menu_reload"
     else
+        # shellcheck disable=SC2034
         menu_reload="; run-shell \"$0\""
+        # shellcheck disable=SC2034
         reload_in_runshell=" ; $0"
     fi
 }
