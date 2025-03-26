@@ -152,7 +152,7 @@ tmux_get_option() {
         fi
         # profiling_display "[tmux] missing value checked"
     else
-        log_it "tmux_get_option($tgo_option) - not using cache"
+        # log_it "tmux_get_option($tgo_option) - not using cache"
 
         tgo_value="$($TMUX_BIN show-options -gv "$tgo_option" 2>/dev/null)"
         tgo_was_found="$?"
@@ -186,8 +186,7 @@ tmux_get_plugin_options() { # cache references
 
     if normalize_bool_param "@menus_use_cache" "$default_use_cache"; then
         cfg_use_cache=true
-        # log_it "><> removing: $f_no_cache_hint"
-        safe_remove "$f_no_cache_hint"
+        safe_remove "$f_no_cache_hint" skip-path-check
         # do it as early as possible, so that further tmux options are cached
         cache_create_folder "@menus_use_cache is true"
     else

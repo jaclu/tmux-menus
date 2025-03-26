@@ -23,7 +23,7 @@ cache_create_folder() {
     }
     [ -d "$d_cache" ] && return 0 # already created
 
-    log_it "cache_create_folder() - $1  folder: $d_cache"
+    # log_it "cache_create_folder() - $1  folder: $d_cache"
     mkdir -p "$d_cache" || {
         error_msg "Failed to create cache folder: $d_cache"
         # Disabling cache
@@ -252,7 +252,7 @@ last_local_edit=\"$last_local_edit\"" >"$_f_params_tmp"
         cache_clear "Environment changed:  $(diff "$_f_params_tmp" "$f_cache_params")"
         mv "$_f_params_tmp" "$f_cache_params"
     else
-        safe_remove "$_f_params_tmp" # no changes
+        safe_remove "$_f_params_tmp" skip-path-check # no changes
         # ensure time stamp is updated for tmux.conf age comparisons
         touch "$f_cache_params"
     fi
@@ -279,9 +279,9 @@ cache_config_get_save() {
         profiling_display "[cache] cache_param_write - done"
         return 0
     else
-        log_it "  cache_config_get_save() - didn't save due to:"
-        [ -f "$f_no_cache_hint" ] && log_it "  presence of f_no_cache_hint [$f_no_cache_hint]"
-        $cfg_use_cache || log_it "  cfg_use_cache: $cfg_use_cache"
+        # log_it "  cache_config_get_save() - didn't save due to:"
+        # [ -f "$f_no_cache_hint" ] && log_it "  presence of f_no_cache_hint [$f_no_cache_hint]"
+        # $cfg_use_cache || log_it "  cfg_use_cache: $cfg_use_cache"
         return 1
     fi
 }

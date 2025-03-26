@@ -288,6 +288,13 @@ check_speed_cutoff() {
 
 min_display_t_read() {
     # log_it "-T-  min_display_t_read()"
+    [ -n "$min_display_t_set" ] && return 0 # no-cache situation, already set
+    $cfg_use_cache || {
+        # not using cache
+        log_it "-T-  min_display_t_read() - not using cache, hardcoding t_minimal_display_time"
+        t_minimal_display_time=0.5
+        return 0
+    }
     [ -f "$f_min_display_time" ] && {
         t_minimal_display_time="$(cat "$f_min_display_time")"
         return 0
@@ -298,6 +305,8 @@ min_display_t_read() {
 min_display_t_set() {
     t_minimal_display_time="$1"
     # log_it "-T-  min_display_t_set($t_minimal_display_time)"
+    $cfg_use_cache || return # skip if not using cache
+
     [ -z "$t_minimal_display_time" ] && error_msg_safe "min_display_t_set() - no param"
     echo "$t_minimal_display_time" >"$f_min_display_time"
     # shellcheck disable=SC2154
@@ -343,7 +352,7 @@ get_config_read_save_if_uncached() {
 
     cache_config_get_save || {
         # cache couldn't be saved, indicate cache not available
-        log_it "  <-- get_config_read_save_if_uncached() - unable to save cache params"
+        # log_it "  <-- get_config_read_save_if_uncached() - unable to save cache params"
         cfg_use_cache=false
     }
     profiling_display "get_config_read_save_if_uncached() - done"

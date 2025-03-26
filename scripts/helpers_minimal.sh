@@ -372,7 +372,7 @@ cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
 }
 
 # Set this as early as possible to be able to calculate the entire menu processing time
-safe_now t_mnu_processing_start
+safe_now t_script_start
 
 case "$log_interactive_to_stderr" in
 "1")

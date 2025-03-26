@@ -51,7 +51,7 @@ get_config_refresh() {
         # Failed to find tmux conf, but since this is plugin init, play it safe
         # and recreate param cache
 
-        log_it "tmux conf and cache could not be verified, manually updating cache"
+        # log_it "tmux conf and cache could not be verified, manually updating cache"
         get_config_read_save_if_uncached
     fi
     check_speed_cutoff 1
