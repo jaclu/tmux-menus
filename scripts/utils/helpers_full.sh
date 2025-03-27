@@ -16,7 +16,7 @@
 #
 #---------------------------------------------------------------
 
-# profiling_display "[helpers-full] - start"
+# profiling_display "[helpers_full] - start"
 
 error_msg() {
     #
@@ -184,7 +184,7 @@ normalize_bool_param() {
     nbp_default="$2"  # only needed for tmux options
     nbp_no_cache="$3" # if non-empty, the cache will be ignored
 
-    # profiling_display "[helpers-full] normalize_bool_param() starts"
+    # profiling_display "[helpers_full] normalize_bool_param() starts"
 
     # log_it "normalize_bool_param($nbp_param, $nbp_default) [$nbp_no_cache]"
     [ "${nbp_param%"${nbp_param#?}"}" = "@" ] && {
@@ -197,11 +197,11 @@ normalize_bool_param() {
             error_msg "normalize_bool_param($nbp_param) - no default"
         }
         tmux_get_option nbp_param "$nbp_param" "$nbp_default" "$nbp_no_cache"
-        # profiling_display "[helpers-full] tmux_get_option() - done"
+        # profiling_display "[helpers_full] tmux_get_option() - done"
     }
 
     nbp_value_lc="$(lowercase_it "$nbp_param")"
-    # profiling_display "[helpers-full] normalize_bool_param() - done"
+    # profiling_display "[helpers_full] normalize_bool_param() - done"
 
     case "$nbp_value_lc" in
     #
@@ -445,4 +445,4 @@ f_min_display_time="$d_cache"/min_display_time
 . "$d_scripts"/utils/tmux.sh
 
 env_initialized=2 # indicates that env is fully configured
-# log_it "><> scripts/utils/helpers-full.sh - completed [$0]"
+# log_it "><> scripts/utils/helpers_full.sh - completed [$0]"

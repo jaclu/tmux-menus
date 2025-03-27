@@ -5,7 +5,7 @@ src="https://github.com/user-attachments/assets/410e3b46-bf7e-47fe-8ba7-dbc6822a
 <img width="250" alt="main-styled"
 src="https://github.com/user-attachments/assets/e00caffb-630d-4717-9f12-e4be22a29fd5" />
 
-## Summary
+## Summary - release 2.0
 
 Popup menus to help with managing the tmux environment. If so desired,
 [styling](docs/Styling.md) can be used.
@@ -20,7 +20,7 @@ experienced users, then add more for newbies.
 
 ## Recent Changes
 
-- Removed jk as shortcuts, so they can be used for up/down menu navigation in all menus.
+- Removed all jk shortcuts in menus, allowing for consistent vim style navigation.
 - Plugin is initialized in the background, to cut down on tpm processing time.
 - Further optimized caching, cutting rendeing times in half.
 
@@ -38,7 +38,7 @@ seemed like the right solution.
 
 Not solely meant for beginners, I use it myself all the time:
 
-- When connecting using terminals without much support for Meta or Ctrl,
+- When connecting using terminals without much support for Meta or even lacking arrows,
   this gives access to all the actions that aren't available with the
   regular shortcuts. For instance, when running the built in Terminal on
   MacOS the console keyboard is pretty limited.

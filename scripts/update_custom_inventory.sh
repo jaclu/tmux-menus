@@ -234,8 +234,8 @@ process_custom_items() {
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 
-# shellcheck source=scripts/helpers_all.sh
-. "$D_TM_BASE_PATH"/scripts/helpers_all.sh
+# shellcheck source=scripts/helpers.sh
+. "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 template_splitter="CUSTOM_ITEMS_SPLITTER" # items will be inserted at his point
 f_custom_items_template="$D_TM_BASE_PATH"/items/custom_index_template.sh

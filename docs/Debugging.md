@@ -12,7 +12,8 @@ Some environment variables that can be used
 
 ## TMUX_MENUS_LOGGING_MINIMAL
 
-If set to 1 only errors and menu rendering times will be logged
+If set to 1 only errors and menu rendering times will be logged, practicall if
+a lot of logging has been enabled to temporarily dial it down
 
 ## TMUX_MENUS_HANDLER
 
@@ -33,20 +34,3 @@ If not set to 1 `profiling_display` statements will be ignored,
 
 If set to `1` menu will be processed, but not actually displayed, it will also
 prevent the cfg_trigger_key from being bound.
-
-## other
-
-tmux_get_plugin_options
-
-- retrieves from tmux, only relying on f_cached_tmux_options
-
-get_config
-
-- returns cache directly if found
-- reads from tmux - tmux_get_plugin_options
-- save if allowed
-
-get_config_refresh
-
-- removes old param cache if need be
-- cache_config_get_save

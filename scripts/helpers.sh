@@ -32,6 +32,6 @@
 # shellcheck source=scripts/helpers_minimal.sh
 . "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
 
-$all_helpers_sourced || source_all_helpers "helpers_all.sh"
+$all_helpers_sourced || source_all_helpers "helpers.sh"
 
-log_it "===  Completed: scripts/helpers-all.sh  == [$0]"
+log_it "===  Completed: scripts/helpers_full.sh  == [$0]"

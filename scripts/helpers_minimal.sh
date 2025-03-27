@@ -58,9 +58,9 @@ source_all_helpers() {
     }
     all_helpers_sourced=true # set it early to avoid recursion
 
-    # shellcheck source=scripts/utils/helpers-full.sh
-    . "$D_TM_BASE_PATH"/scripts/utils/helpers-full.sh || {
-        error_msg_safe "Failed to source: scripts/utils/helpers-full.sh"
+    # shellcheck source=scripts/utils/helpers_full.sh
+    . "$D_TM_BASE_PATH"/scripts/utils/helpers_full.sh || {
+        error_msg_safe "Failed to source: scripts/utils/helpers_full.sh"
     }
     profiling_display "[helpers] <-----  source_all_helpers() - done"
 }

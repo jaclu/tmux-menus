@@ -2,20 +2,13 @@
 
 ## Release check
 
-- remove branch check for main menu label in dialog_handling:cache_static_content
-
 ### WhipTail
 
 - menu_reload is not working, so disabled
-- pane resize does nothing
 
 ## external_tools/dropbox.sh
 
 toggle not working
-
-## support scripts needing all helpers
-
-should source scripts/helpers_all.sh
 
 ## Caching tweak
 
