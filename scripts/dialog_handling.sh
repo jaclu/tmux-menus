@@ -525,6 +525,23 @@ set_menu_env_variables() {
         uncached_wt_actions=""
         uncached_item_splitter="||||"
     fi
+
+    if $cfg_use_whiptail; then
+        #
+        #  I haven't been able do to menu reload with whiptail/dialog yet,
+        #  so disabled for now
+        #
+        # menu_reload="\; run-shell \\\"$m$d_scripts/external_dialog_trigger.sh $0\\\""
+        # menu_reload="\; run-shell \\\"$0\\\""
+        menu_reload=""
+        reload_in_runshell=""
+        log_it "><> whiptail - disabling menu_reload"
+    else
+        # shellcheck disable=SC2034
+        menu_reload="; run-shell \"$0\""
+        # shellcheck disable=SC2034
+        reload_in_runshell=" ; $0"
+    fi
 }
 
 static_files_reduction() {
@@ -554,7 +571,7 @@ cache_static_content() {
     #
     # log_it "cache_static_content() - [$0] d_menu_cache [$d_menu_cache]"
     if [ ! -d "$d_menu_cache" ] || [ "$(get_mtime "$0")" -gt "$(get_mtime "$d_menu_cache")" ]; then
-        # Cache is obsolete, regenerate it
+        # Cache is missing or obsolete, regenerate it
         # log_it "  regenerate cache for: $d_menu_cache"
         $all_helpers_sourced || {
             source_all_helpers "cache_static_content() - cache error"
@@ -562,16 +579,7 @@ cache_static_content() {
         safe_remove "$d_menu_cache"
         mkdir -p "$d_menu_cache" || error_msg_safe "Failed to create: $d_menu_cache"
 
-        [ "$menu_name" = "Main menu" ] && {
-            # give branch hint on main menu if not main
-            branch="$(cd "$D_TM_BASE_PATH" && git branch --show-current)" && {
-                # previous check, if the git is to old and lacks show-current, skip this
-                [ "$branch" != "main" ] && menu_name="$menu_name [$branch]"
-            }
-        }
-        # now static content can be cached
         is_function_defined "static_content" && {
-            set_menu_reload
             static_content
             static_cache_updated=true
         }
@@ -584,8 +592,7 @@ handle_dynamic() {
         wt_actions_static="$wt_actions"
         wt_actions=""
         is_dynamic_content=true
-        mkdir -p "$d_menu_cache"
-        set_menu_reload
+        mkdir -p "$d_menu_cache" # needed if menu is purely dynamic
         dynamic_content
         is_dynamic_content=false
         wt_actions="$wt_actions_static"
@@ -695,7 +702,6 @@ prepare_menu() {
         cache_static_content
         # profiling_display "[dialog_handling] cache_static_content() done"
     else
-        set_menu_reload
         static_content
         # profiling_display "[dialog_handling] static_content() done"
     fi
@@ -718,26 +724,6 @@ prepare_menu() {
 #   Display menu and handling Screen size
 #
 #---------------------------------------------------------------
-
-set_menu_reload() {
-    # log_it "set_menu_reload() - cfg_use_whiptail [$cfg_use_whiptail]"
-    if $cfg_use_whiptail; then
-        #
-        #  I haven't been able do to menu reload with whiptail/dialog yet,
-        #  so disabled for now
-        #
-        # menu_reload="\; run-shell \\\"$m$d_scripts/external_dialog_trigger.sh $0\\\""
-        # menu_reload="\; run-shell \\\"$0\\\""
-        menu_reload=""
-        reload_in_runshell=""
-        log_it "><> whiptail - disabling menu_reload"
-    else
-        # shellcheck disable=SC2034
-        menu_reload="; run-shell \"$0\""
-        # shellcheck disable=SC2034
-        reload_in_runshell=" ; $0"
-    fi
-}
 
 check_screen_size() {
     #
