@@ -7,7 +7,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#  Common tools and settings for this plugins
+#  The rest of the helpers
 #
 
 #---------------------------------------------------------------

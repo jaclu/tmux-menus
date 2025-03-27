@@ -1,14 +1,13 @@
 #!/bin/sh
 # Always sourced file - Fake bang path to help editors
 # shellcheck disable=SC2034,SC2154
-
 #
 #   Copyright (c) 2025: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#  Source the entire helpeers suite
+#  Source the entire helpers suite
 #
 
 #===============================================================
