@@ -1,5 +1,6 @@
 #!/bin/sh
 # Always sourced file - Fake bang path to help editors
+# shellcheck disable=SC2034,SC2154
 #
 #   Copyright (c) 2022-2025: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -8,7 +9,6 @@
 #
 #  Handling tmux env
 #
-# shellcheck disable=SC2034,SC2154
 
 tmux_vers_check_do_compare() {
     # Called fomh helpers_minimal.sh:tmux_vers_check() if checked version was not cached
@@ -310,8 +310,8 @@ tmux_error_handler_assign() { # cache references
     [ ! -d "$d_errors" ] && mkdir -p "$d_errors"
     f_tmux_err="$d_errors"/tmux-err
     $teh_debug && log_it "><>teh $TMUX_BIN $*"
-    # $TMUX_BIN "$@" 2>"$f_tmux_err" && safe_remove "$f_tmux_err"
-    value=$($TMUX_BIN "$@" 2>"$f_tmux_err") && safe_remove "$f_tmux_err"
+    # shellcheck disable=SC2068  # intentional to keep params seeparate here
+    value=$($TMUX_BIN $@ 2>"$f_tmux_err") && safe_remove "$f_tmux_err"
     $teh_debug && log_it "><>teh cmd done [$?] [$value]"
     [ -s "$f_tmux_err" ] && {
         #
