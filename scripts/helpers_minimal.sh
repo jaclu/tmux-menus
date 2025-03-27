@@ -22,12 +22,15 @@ print_stderr() {
 }
 
 log_it() {
-    #  early abort if no logging, should not be needed, but might improve
-    #  performance?
-    [ "$TMUX_MENUS_FORCE_SILENT" = "3" ] && return
+    [ "$TMUX_MENUS_LOGGING_MINIMAL" = "1" ] && return
+    log_it_always "$1"
+}
 
+log_it_always() {
+    # Call this directly for things that should be logged even when
+    # TMUX_MENUS_LOGGING_MINIMAL is 1
     _msg="$1"
-    _type="$2"
+
     [ "$log_interactive_to_stderr" = "1" ] && {
         # log to stderr if in interactive mode
         # printf "[%s] log: %s\n" "$(date '+%H:%M:%S')" "$_msg" >/dev/stderr
@@ -37,11 +40,7 @@ log_it() {
 
     [ -n "$cfg_log_file" ] && {
         # log to file
-        if [ "$_type" = "profiling" ]; then
-            printf "[p] %s\n" "$_msg" >>"$cfg_log_file"
-        else
-            printf "[%s] %s\n" "$(date '+%H:%M:%S')" "$_msg" >>"$cfg_log_file"
-        fi
+        printf "[%s] %s\n" "$(date '+%H:%M:%S')" "$_msg" >>"$cfg_log_file"
     }
 }
 
@@ -74,7 +73,7 @@ relative_path() {
 
 select_menu_handler() {
     #
-    # If an older version is used, or TMUX_MENU_HANDLER is 1/2
+    # If an older version is used, or TMUX_MENUS_HANDLER is 1/2
     # set cfg_use_whiptail true
     #
     # log_it "select_menu_handler()"
@@ -89,7 +88,7 @@ select_menu_handler() {
             error_msg_safe "Neither whiptail or dialog found, plugin aborted"
         fi
         cfg_use_whiptail=true
-    elif [ "$TMUX_MENU_HANDLER" = 1 ]; then
+    elif [ "$TMUX_MENUS_HANDLER" = 1 ]; then
         _cmd=whiptail
         if command -v "$_cmd" >/dev/null; then
             cfg_alt_menu_handler="$_cmd"
@@ -97,8 +96,8 @@ select_menu_handler() {
             error_msg_safe "$_cmd not available, plugin aborted"
         fi
         cfg_use_whiptail=true
-        log_it "NOTICE: $_cmd is selected due to TMUX_MENU_HANDLER=1"
-    elif [ "$TMUX_MENU_HANDLER" = 2 ]; then
+        log_it "NOTICE: $_cmd is selected due to TMUX_MENUS_HANDLER=1"
+    elif [ "$TMUX_MENUS_HANDLER" = 2 ]; then
         _cmd=dialog
         if command -v "$_cmd" >/dev/null; then
             cfg_alt_menu_handler="$_cmd"
@@ -106,7 +105,7 @@ select_menu_handler() {
             error_msg_safe "$_cmd not available, plugin aborted"
         fi
         cfg_use_whiptail=true
-        log_it "NOTICE: $_cmd is selected due to TMUX_MENU_HANDLER=2"
+        log_it "NOTICE: $_cmd is selected due to TMUX_MENUS_HANDLER=2"
     else
         cfg_use_whiptail=false
         cfg_alt_menu_handler=""
@@ -374,17 +373,6 @@ cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
 # Set this as early as possible to be able to calculate the entire menu processing time
 safe_now t_script_start
 
-case "$log_interactive_to_stderr" in
-"1")
-    # TMUX_MENUS_FORCE_SILENT overrides and disables log_interactive_to_stderr
-    case "$TMUX_MENUS_FORCE_SILENT" in
-    1 | 2) log_interactive_to_stderr=0 ;;
-    *) ;;
-    esac
-    ;;
-*) ;;
-esac
-
 min_tmux_vers="1.8"
 cfg_use_whiptail=false
 plugin_options_have_been_read=false # only need to read param once
@@ -393,7 +381,7 @@ plugin_options_have_been_read=false # only need to read param once
 # a call to source_all_helpers will be done, this ensures it only happens once
 all_helpers_sourced=false
 
-case "$MENUS_PROFILING" in
+case "$TMUX_MENUS_PROFILING" in
 "1")
     case "$profiling_sourced" in
     "1") ;;
@@ -427,8 +415,8 @@ d_cache="$D_TM_BASE_PATH"/cache
 f_cache_known_tmux_vers="$d_cache"/known_tmux_versions
 f_cache_params="$d_cache"/plugin_params
 
-d_basic_current_script=${0%/*}
-bn_current_script=${0##*/} # same but faster than "$(basename "$0")"
+d_basic_current_script=${0%/*} # quick vers, won't expand rel dirs or soft links
+bn_current_script=${0##*/}     # same but faster than "$(basename "$0")"
 bn_current_script_no_ext=${bn_current_script%.*}
 
 wt_pasting="@tmp_menus_wt_paste_in_progress" # only used by whiptail

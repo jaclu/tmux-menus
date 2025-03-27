@@ -121,7 +121,7 @@ get_variable_from_script() {
 failed_to_extract_variable() {
     msg="Odd error, this should not happen...\nFailed to extract \"$2\" from\n"
     msg="$msg $1\nDuring create_index\nthis custom item will be skipped for now"
-    error_msg_safe "$msg" -1
+    error_msg_safe "$msg"
 }
 
 create_custom_index() {

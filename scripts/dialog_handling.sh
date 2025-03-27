@@ -471,7 +471,7 @@ menu_parse() {
     done
 
     if $cfg_use_cache; then
-        log_it "Caching: $(relative_path "$f_cache_file")"
+        log_it_always "Caching: $(relative_path "$f_cache_file")"
         echo "$menu_items" >"$f_cache_file" || {
             error_msg_safe "Failed to write to: $f_cache_file"
         }
@@ -885,7 +885,7 @@ ensure_menu_fits_on_screen() {
             # log_it "display time was: $disp_time"
             _s="$f_menu_rel: Screen might be too small"
         fi
-        error_msg_safe "$_s" 0
+        error_msg_safe "$_s"
     }
 }
 
@@ -895,10 +895,9 @@ display_menu() {
     safe_now
     _t="$(echo "$t_now - $t_script_start" | bc)"
 
-    # Try to log this one even if other logging is disabled
-    [ "$TMUX_MENUS_FORCE_SILENT" = "3" ] && TMUX_MENUS_FORCE_SILENT=1
-
-    log_it "Menu $(relative_path "$d_basic_current_script")/$bn_current_script - processing time:  $_t"
+    _m="Menu $(relative_path "$d_basic_current_script")/$bn_current_script"
+    _m="$_m - processing time:  $_t"
+    log_it_always "$_m"
 
     [ "$TMUX_MENUS_NO_DISPLAY" = "1" ] && return
 

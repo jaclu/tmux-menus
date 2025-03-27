@@ -190,8 +190,8 @@ and does not at all support special keys like 'Left' or 'Home'
 
 To use external dialog handling on modern tmuxes set this env variable:
 
-- for `whiptail` use `export TMUX_MENU_HANDLER=1`
-- for `dialog` use `export TMUX_MENU_HANDLER=2`
+- for `whiptail` use `export TMUX_MENUS_HANDLER=1`
+- for `dialog` use `export TMUX_MENUS_HANDLER=2`
 
 In most cases whiptail is installed by default on Linux distros. If not, install
 it using the package manager.

@@ -60,7 +60,7 @@ cache_prepare() {
     #  returns 0 if cache folder exists / was created
     #
     # log_it "cache_prepare()"
-    $cfg_use_cache || error_msg "cache_prepare() - called when not using cache" 1
+    $cfg_use_cache || error_msg "cache_prepare() - called when not using cache"
 
     cache_create_folder "cache_prepare()"
     return 0

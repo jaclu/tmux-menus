@@ -4,11 +4,12 @@ Several approaches are used to render menus quickly.
 
 Purely static menus that have been cached typically renders in < 0.01 seconds on
 reasnably modern systems. Enabling a log_file will print render times for each menu
+displayed.
 
 ## Scripts environment
 
 When a menu script is started only a minimal env is loaded, the full support env
-is only loaded when needed. All to cut down overhead. This minimal env is enough
+is only loaded when needed. All to cut down on overhead. This minimal env is enough
 to display cached static content.
 
 Dynamic content will be slightly slower, since it has to be generated each time,
@@ -42,7 +43,7 @@ if it has not been done previously.
 
 ## whiptail / dialog
 
-These also use caching same as tmux built in `display-menu`, but due to rendering
+These also use caching same as tmux built in `display-menu`, but due to displaying
 such menus take a noticeable time, they will not be displayed as quickly despite
 using caching.
 

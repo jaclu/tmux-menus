@@ -30,9 +30,9 @@
 #       profiling_display "get_config done"
 #
 
-[ "$MENUS_PROFILING" != "1" ] && {
+[ "$TMUX_MENUS_PROFILING" != "1" ] && {
     echo
-    echo "ERROR: sourcing dbg_pofiling.sh without MENUS_PROFILING being 1 [$0]"
+    echo "ERROR: sourcing dbg_pofiling.sh without TMUX_MENUS_PROFILING being 1 [$0]"
     exit 1
 }
 
@@ -41,34 +41,24 @@ profiling_is_function_defined() {
 }
 
 profiling_display_it() {
-    printf '%s\n' "$@" >/dev/stderr
-}
-
-profiling_log_it() {
-    # Only call log_it if it has been defined
-    # During normal sourcing of this it has been, but if this is early sourced
-    # in some other script, this is not initially available
-    if [ -t 0 ] && [ "$TMUX_MENUS_FORCE_SILENT" != "2" ]; then
-        profiling_display_it "$1"
-    elif profiling_is_function_defined "log_it"; then
-        log_it "$1" profiling  || exit 2
+    if [ -t 0 ]; then
+        printf '%s\n' "$1" >/dev/stderr
     elif [ -n "$cfg_log_file" ]; then
-        printf '%s\n' "[P] [no log_it] $*" >>"$cfg_log_file"
+        printf '[P] %s\n' "$1" >>"$cfg_log_file"
     fi
 }
 
-profiling_set_t_date() {
-    _t="$(date +%s%N)"
-    profiling_t_now="${_t%??????}" # Strip last 6 digits → milliseconds
-}
-
-profiling_set_t_gdate() {
-    _t="$(gdate +%s%N)"
-    profiling_t_now="${_t%??????}" # Strip last 6 digits → milliseconds
-}
-
-profiling_set_t_perl() { # represented as milliseconds
-    profiling_t_now="$(perl -MTime::HiRes=time -E 'say int(time * 1e3)')"
+profiling_error_msg() {
+    # If this file was sourced befoe helpers_minimal error_msg_safe is not
+    # yet available...
+    if profiling_is_function_defined "error_msg_safe"; then
+        error_msg_safe "$_m"
+    else
+        profiling_display_it
+        profiling_display_it "ERROR: $_m"
+        profiling_display_it
+    fi
+    exit 2
 }
 
 profiling_select_timing_method() {
@@ -76,17 +66,7 @@ profiling_select_timing_method() {
     [ -n "$profiling_selected_get_time" ] && {
         # if this is called when the method was selected something is wrong...
         _m="recursive call to: profiling_select_timing_method()"
-        if profiling_is_function_defined "error_msg_safe"; then
-            error_msg_safe "$_m"
-            # exit should have already happened, but since this is a recursion error
-            # play it safe and ensure exit happens...
-            exit 2
-        else
-            profiling_display_it
-            profiling_display_it "ERROR: $_m"
-            profiling_display_it
-            exit 2
-        fi
+        profiling_error_msg "$_m"
     }
 
     if [ -d /proc ] && [ -f /proc/version ]; then
@@ -110,20 +90,28 @@ profiling_select_timing_method() {
 
 profiling_get_time() {
     #
-    #  Sets profiling_t_now to current epoch
+    #  Sets profiling_t_now to current time in milliseconds
     #
-    if [ "$_profiling_use_default_timer" = "1" ]; then
+    if [ "$profiling_use_default_timer" = "1" ]; then
         safe_now profiling_t_now
     else
         case "$profiling_selected_get_time" in
-        date) profiling_set_t_date ;;
-        gdate) profiling_set_t_gdate ;;
-        perl) profiling_set_t_perl ;;
+        date)
+            _t="$(date +%s%N)"
+            profiling_t_now="${_t%??????}" # Strip last 6 digits → milliseconds
+             ;;
+        gdate)
+            _t="$(gdate +%s%N)"
+            profiling_t_now="${_t%??????}" # Strip last 6 digits → milliseconds
+             ;;
+        perl)
+            profiling_t_now="$(perl -MTime::HiRes=time -E 'say int(time * 1e3)')"
+            ;;
         *)
-        profiling_select_timing_method
-        # profiling_selected_get_time="perl" # override
-        profiling_get_time
-        ;;
+            _m="Call to profiling_get_time without first cslling"
+            _m="$_m profiling_select_timing_method"
+            profiling_error_msg "$_m"
+            ;;
         esac
     fi
 
@@ -133,59 +121,41 @@ profiling_get_time() {
     }
 }
 
-[ "$profiling_sourced" != "1" ] && {
-    # Only start timer first time this is sourced
-
-    # if profiling should go to log file, disable this
-    [ "$TMUX_MENUS_FORCE_SILENT" = "2" ] && log_interactive_to_stderr="0"
-
-    profiling_get_time # start timer as early as possible
-}
-
 profiling_update_time_stamps() {
     profiling_get_time
-    if [ "$_profiling_use_default_timer" = "1" ]; then
-        _since_start="$(echo "$profiling_t_now - $profiling_t_start" | bc)"
-        _sine_update="$(echo "$profiling_t_now - $profiling_t_last_update" | bc)"
+    if [ "$profiling_use_default_timer" = "1" ]; then
+        t_prof_since_start="$(echo "$profiling_t_now - $profiling_t_start" | bc)"
+        t_prof_sine_update="$(echo "$profiling_t_now - $profiling_t_last_update" | bc)"
     else
-        _since_start=$((profiling_t_now - profiling_t_start))
-        _sine_update=$((profiling_t_now - profiling_t_last_update))
+        t_prof_since_start=$((profiling_t_now - profiling_t_start))
+        t_prof_sine_update=$((profiling_t_now - profiling_t_last_update))
     fi
     profiling_t_last_update="$profiling_t_now"
 }
 
 profiling_display() {
-    [ "$TMUX_MENUS_FORCE_SILENT" = "3" ] && return
     profiling_update_time_stamps
 
-    _s="$1 - total: $_since_start   since last: $_sine_update"
-    if [ -t 0 ] && [ "$TMUX_MENUS_FORCE_SILENT" != "2" ]; then
-        printf '%s\n' "$_s" >/dev/stderr
-    elif [ -n "$cfg_log_file" ]; then
-        profiling_log_it "$_s"
-    fi
-
-    # do it again to not count this update in processing time
-    # only makes sense on slowish systems
-    # profiling_update_time_stamps
+    _s="$1 - total: $t_prof_since_start   since last: $t_prof_sine_update"
+    profiling_display_it "$_s"
 }
 
-_profiling_use_default_timer=0
-profiling_sourced=1
+#===============================================================
+#
+#   Main
+#
+#===============================================================
 
-
-# [ "$initialize_plugin" = "1" ] && return
-
-[ -t 0 ] && {
-    _m="Starting profiling for: $0 - using time method: $profiling_selected_get_time"
-    case "$TMUX_MENUS_FORCE_SILENT" in
-    2)
-        profiling_log_it
-        profiling_log_it "$_m"
-        ;;
-    3) return ;;
-    *) ;;
-    esac
-
-    profiling_display "$_m"
+[ "$profiling_sourced" = 1 ] && {
+    profiling_error_msg "scripts/utils/dbg_profiling.sh already sourced"
 }
+
+profiling_use_default_timer=0
+profiling_sourced=1 # Indicate this has been sourced
+
+_m="Starting profiling for: $0 - using time method: $profiling_selected_get_time"
+profiling_display_it "$_m"
+
+profiling_select_timing_method
+profiling_get_time # start timer as early as possible
+

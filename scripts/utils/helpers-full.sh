@@ -1,5 +1,6 @@
 #!/bin/sh
 # Always sourced file - Fake bang path to help editors
+# shellcheck disable=SC2034
 #
 #   Copyright (c) 2022-2025: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -8,7 +9,6 @@
 #
 #  Common tools and settings for this plugins
 #
-# shellcheck disable=SC2034
 
 #---------------------------------------------------------------
 #
@@ -20,8 +20,7 @@
 
 error_msg() {
     #
-    #  Display $1 as an error message in log and as a tmux display-message
-    #  unless do_display_message is false
+    #  Display an error message in log and as a tmux display-message
     #
     #  Using do_display_message is only practical for short one liners,
     #  for longer error msgs, needing formatting, use error_msg_formated()
@@ -32,50 +31,36 @@ error_msg() {
     #  If the script exits with something else than 0, the current pane
     #  will be temporary replaced by an error message mentioning the exit
     #  code. Which is both redundant and much less informative than the
-    #  display-message that is also printed.
-    #  If display-message is not desired it would make sense to use a more
-    #  normal positive exit_code to indicate error, making the 2 & 3
-    #  params be something like: 1 false
-    #
+    #  display-message that is shown.
     #  If exit_code is set to -1, process is not exited
     #
     em_msg="$1"
-    exit_code="${2:-1}"
-    do_display_message=${3:-true}
-    TMUX_MENUS_FORCE_SILENT=0 # errors should always be displayed
-    log_it "error_msg($em_msg, $exit_code)"
+    exit_code="${2:-0}"
+    do_display_message=${3:-1}
+    log_it_always "error_msg($em_msg, $exit_code)"
 
-    # with no tmux env, dumping it to stderr is the only option
-    [ -z "$TMUX" ] && log_interactive_to_stderr=1
+    [ -z "$TMUX" ] && {
+        # with no tmux env, dumping it to stderr & log-file is the only output options
+        log_it_always "***  This does not seem to be running in a tmux env  ***"
+    }
 
-    if [ "$log_interactive_to_stderr" = 1 ] && [ -t 0 ]; then
-        [ -z "$TMUX" ] && {
-            (
-                echo
-                echo "***  This does not seem to be running in a tmux env  ***"
-                echo
-            ) >/dev/stderr
-        }
-        echo "ERROR: $em_msg" >/dev/stderr
-    else
-        log_it
-        log_it "ERROR: $em_msg"
-        log_it
+    log_it_always
+    log_it_always "ERROR: $em_msg"
+    log_it_always
 
-        $do_display_message && {
-            # shellcheck disable=SC2154
-            msg_hold="$plugin_name ERR: $em_msg"
-            # shellcheck disable=SC2154
-            actual_win_width="$($TMUX_BIN display-message -p "#{window_width}")"
-            if [ "$env_initialized" -eq 2 ] && (
-                [ "${#msg_hold}" -gt "$actual_win_width" ] || has_lf_not_at_end "$em_msg"
-            ); then
-                error_msg_formated "$em_msg"
-            else
-                display_message_hold "$msg_hold"
-            fi
-        }
-    fi
+    [ -n "$TMUX" ] && {
+        # shellcheck disable=SC2154
+        msg_hold="$plugin_name ERR: $em_msg"
+        # shellcheck disable=SC2154
+        actual_win_width="$($TMUX_BIN display-message -p "#{window_width}")"
+        if [ "$env_initialized" -eq 2 ] && (
+            [ "${#msg_hold}" -ge "$actual_win_width" ] || has_lf_not_at_end "$em_msg"
+        ); then
+            error_msg_formated "$em_msg"
+        else
+            display_message_hold "$msg_hold"
+        fi
+    }
 
     [ "$exit_code" -gt -1 ] && exit "$exit_code"
 }
@@ -90,7 +75,7 @@ error_msg_formated() {
     #
     emf_err="$1"
 
-    log_it "error_msg_formated($emf_err)"
+    # log_it "error_msg_formated($emf_err)"
 
     emf_msg="$(
         # shellcheck disable=SC2154
@@ -107,7 +92,6 @@ error_msg_formated() {
         echo
         echo "Press Ctrl-C to close this message"
     )"
-    # posix way to wait forever - MacOS doesn't have: sleep infinity
     $TMUX_BIN new-window -n "tmux-error" "echo '$emf_msg' ; tail -f /dev/null "
 }
 
@@ -117,7 +101,7 @@ display_message_hold() {
     #  Can't use tmux_error_handler() in this func, since that could trigger recursion
     #
     dmh_msg="$1"
-    log_it "display_message_hold($dmh_msg)"
+    # log_it "display_message_hold($dmh_msg)"
 
     if tmux_vers_check 3.2; then
         # message will remain until key-press
