@@ -21,7 +21,7 @@
 #
 
 clear_cache_main() {
-    # log_it "clear_cache_main()"
+    # log_it "UCI: clear_cache_main()"
     # when:
     #  no custom_items > custom_items
     #  custom_items > no custom_items
@@ -31,18 +31,12 @@ clear_cache_main() {
     safe_remove "$d_cache"/items/main
 }
 
-clear_custom_content_template() {
-    # log_it "clear_custom_content_template()"
-    # remove temp file - items being added to custom menu
-    safe_remove "$f_custom_items_content"
-}
-
 clear_cache_custom_items() {
-    # log_it "clear_cache_custom_items()"
+    # log_it "UCI: clear_cache_custom_items()"
     [ -z "$d_cache" ] && error_msg_safe "variable d_cache was unexpectedly undefined!"
 
     # remove all cached custom items
-    safe_remove "$d_cache"/custom_items_*/
+    safe_remove "$d_cache"/custom_items
 
     safe_remove "$f_chksum_custom"
 
@@ -50,21 +44,28 @@ clear_cache_custom_items() {
     [ "$1" != "keep_content_template" ] && clear_custom_content_template
 }
 
+clear_custom_content_template() {
+    # remove temp file - items being added to custom menu
+    # log_it "UCI: clear_custom_content_template()"
+    safe_remove "$f_custom_items_content"
+}
+
 remove_custom_item_content() {
     # Remove custom item index page and all related caches
+    # log_it "remove_custom_item_content()"
     safe_remove "$f_custom_items_index"
     clear_cache_custom_items # just to be sure its not pointing this file
 }
 
 checksum_content_read() {
-    # log_it "checksum_content_read()"
+    # log_it "UCI: checksum_content_read()"
     if [ -f "$f_chksum_custom" ]; then
         cat "$f_chksum_custom"
     fi
 }
 
 checksum_content_write() {
-    # log_it "checksum_content_write()"
+    # log_it "UCI: checksum_content_write()"
     find "$d_custom_items/" -type f -exec sha256sum {} + | sort |
         sha256sum >"$f_chksum_custom" || {
 
@@ -73,17 +74,17 @@ checksum_content_write() {
 }
 
 custom_items_changed_check() {
-    # log_it "custom_items_changed_check()"
+    # log_it "UCI: custom_items_changed_check()"
 
     previous_content_chksum="$(checksum_content_read)"
-    log_it "><> custom_items_changed_check() - previous  chksum: $previous_content_chksum"
+    # log_it "UCI: ><> custom_items_changed_check() - previous  chksum: $previous_content_chksum"
 
     checksum_content_write
     current_content_chksum="$(checksum_content_read)"
     [ -z "$current_content_chksum" ] && {
         error_msg_safe "Failed to scan content in: $d_custom_items"
     }
-    log_it "><> custom_items_changed_check() - current  chksum:  $current_content_chksum"
+    # log_it "UCI: ><> custom_items_changed_check() - current  chksum:  $current_content_chksum"
 
     [ "$previous_content_chksum" != "$current_content_chksum" ]
 }
@@ -125,7 +126,7 @@ failed_to_extract_variable() {
 }
 
 create_custom_index() {
-    # log_it "create_custom_index()"
+    # log_it "UCI: create_custom_index()"
     cache_create_folder "create_custom_index()" # make sure it exists
     [ -z "$f_custom_items_content" ] && {
         error_msg_safe "variable f_custom_items_content undefined"
@@ -159,19 +160,19 @@ create_custom_index() {
         printf '        %s \\\n        %s' \
             "0.0 M \"$_menu_key\" \"$_menu_name  $cfg_nav_next\"" \
             "$custom_menu" >>"$f_custom_items_content"
-        log_it "Will use: $custom_menu"
+        # log_it "UCI: Will use: $custom_menu"
     done
     [ ! -f "$f_custom_items_content" ] && {
         # All supposedly valid custom items failed to be processed,
         # abort generating this index
         remove_custom_item_content
-        log_it "WARNING: Despite valid custom menus was found, none could be added"
+        log_it "UCI: WARNING: Despite valid custom menus was found, none could be added"
         return 1
     }
     echo >>"$f_custom_items_content" # adding final lf
 
     # make sure cache is cleared
-    clear_cache_custom_items keep_content_template
+    # clear_cache_custom_items keep_content_template
 
     # Generate custom index menu
     sed "/$template_splitter/q" "$f_custom_items_template" | sed '$d' \
@@ -192,7 +193,7 @@ process_custom_items() {
     # This index will be regenerated
     # If it would be present during the folder scan it would be added to the list
     # of menus to be listed within it :)
-    # log_it "process_custom_items()"
+    # log_it "UCI: process_custom_items()"
     safe_remove "$f_custom_items_index"
 
     # create list of runnable scripts in this folder
@@ -206,23 +207,23 @@ process_custom_items() {
         # as an custom menu
         #
         get_variable_from_script "$custom_menu" menu_key || continue
-        # log_it "><> found: menu_key"
+        # log_it "UCI: ><> found: menu_key"
 
         get_variable_from_script "$custom_menu" menu_name || continue
-        # log_it "><> found: menu_name"
+        # log_it "UCI: ><> found: menu_name"
 
         valid_menus="$valid_menus $custom_menu"
-        # log_it "Validated src: $custom_menu"
+        # log_it "UCI: Validated src: $custom_menu"
     done
     [ -z "$valid_menus" ] && {
         # none of the custom items are valid abort generation
 
         remove_custom_item_content
-        log_it "No valid custom items found"
+        log_it "UCI: No valid custom items found"
         return 1
     }
     create_custom_index "$valid_menus"
-    log_it "Updated $f_custom_items_index"
+    log_it "UCI: Updated $f_custom_items_index"
 }
 
 #===============================================================
@@ -246,15 +247,13 @@ f_custom_items_content="$d_cache"/custom_items_content
 
 $cfg_use_cache || return 0 # if caching is disabled custom_items can't be processed
 
-$all_helpers_sourced || source_all_helpers "always done by update_custom_inventory.sh"
-
 # debug helper
 # [ "$LOG_TO_STDERR" = "1" ] && log_interactive_to_stderr=1
 
 if [ ! -d "$d_custom_items" ]; then
     # Folder missing, clear custom items cache and exit
     [ -f "$f_chksum_custom" ] && {
-        log_it "No longer present: $d_custom_items"
+        # log_it "UCI: No longer present: $d_custom_items"
         # only clear main menu cache if custom menus is present
         # otherwise it would be cleared on each plugin startip
         clear_cache_main
@@ -265,6 +264,6 @@ fi
 
 if custom_items_changed_check; then
     process_custom_items
-else
-    log_it "No changes detected in: $d_custom_items"
+# else
+#     log_it "UCI: No changes detected in: $d_custom_items"
 fi

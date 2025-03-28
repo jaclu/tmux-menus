@@ -36,7 +36,6 @@ error_msg() {
     #
     em_msg="$1"
     exit_code="${2:-0}"
-    do_display_message=${3:-1}
     log_it_always "error_msg($em_msg, $exit_code)"
 
     [ -z "$TMUX" ] && {
@@ -263,7 +262,7 @@ check_speed_cutoff() {
     safe_now
     # shellcheck disable=SC2154
     t_init="$(echo "$t_now - $t_script_start" | bc)"
-    log_it "-T-  TIMING result: $t_init [$t_minimal_display_time]"
+    # log_it "-T-  TIMING result: $t_init [$t_minimal_display_time]"
     if [ "$(echo "$t_init < $cut_off" | bc)" -eq 1 ]; then
         min_display_t_set 0.1
     else
@@ -277,7 +276,7 @@ min_display_t_read() {
     [ -n "$min_display_t_set" ] && return 0 # no-cache situation, already set
     $cfg_use_cache || {
         # not using cache
-        log_it "-T-  min_display_t_read() - not using cache, hardcoding t_minimal_display_time"
+        # log_it "-T-  min_display_t_read() - not using cache, hardcoding t_minimal_display_time"
         t_minimal_display_time=0.5
         return 0
     }

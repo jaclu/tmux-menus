@@ -309,10 +309,12 @@ tmux_error_handler_assign() { # cache references
     # ensure it exists
     [ ! -d "$d_errors" ] && mkdir -p "$d_errors"
     f_tmux_err="$d_errors"/tmux-err
-    $teh_debug && log_it "><>teh $TMUX_BIN $*"
+    $teh_debug && {
+        log_it "teh: $TMUX_BIN $the_cmd"
+    }
     # shellcheck disable=SC2068  # intentional to keep params seeparate here
-    value=$($TMUX_BIN $@ 2>"$f_tmux_err") && safe_remove "$f_tmux_err"
-    $teh_debug && log_it "><>teh cmd done [$?] [$value]"
+    value=$($TMUX_BIN "$@" 2>"$f_tmux_err") && safe_remove "$f_tmux_err"
+    $teh_debug && log_it "teh: cmd done [$?] >>$value<<"
     [ -s "$f_tmux_err" ] && {
         #
         #  First save the error to a named file
@@ -361,10 +363,10 @@ tmux_error_handler_assign() { # cache references
             [ -n "$value" ] && {
                 # since it's not an assignment, just output it
                 echo "$value"
-                log_it "  <--  tmux_error_handler() got: [$value]"
+                log_it "  <--  tmux_error_handler() got: >>$value<<"
             }
         else
-            log_it "  <--  tmux_error_handler_assign() got: [$value]"
+            log_it "  <--  tmux_error_handler_assign() got: >>$value<<"
         fi
     }
     teh_debug=false

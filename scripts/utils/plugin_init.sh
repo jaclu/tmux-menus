@@ -66,10 +66,7 @@ prepare_cache() {
 
     if $cfg_use_cache; then
         cache_add_ok_vers "$current_tmux_vers"
-
-        if [[ -d "$d_custom_items" ]]; then
-            $f_update_custom_inventory
-        fi
+        [[ -f "$f_update_custom_inventory" ]] && $f_update_custom_inventory
     else
         log_it "-->  cache is disabled!  <--"
     fi

@@ -353,7 +353,7 @@ menu_parse() {
             [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
 
             if $cfg_use_whiptail; then
-                alt_command "$label" "$key" "\"$cmd\"" "$keep_cmd"
+                alt_command "$label" "$key" "$cmd" "$keep_cmd"
             else
                 mnu_command "$label" "$key" "$cmd" "$keep_cmd"
             fi
@@ -817,7 +817,6 @@ alt_parse_selection() {
 
         [ "$key" = "$menu_selection" ] && [ -n "$action" ] && {
             $all_helpers_sourced || source_all_helpers "alt_parse_selection()"
-            teh_debug=true
             eval "$action"
             break
         }

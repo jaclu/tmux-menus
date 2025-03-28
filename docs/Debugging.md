@@ -10,6 +10,12 @@ of the log_file logging decision
 
 Some environment variables that can be used
 
+by putting the line `teh_debug=true` before a call to `tmux_error_handler` that
+call will be logged in great detail in order to trace syntax issues before resetting
+teh_debug to false.
+It will also limit the error_display in case of errors to a one-liner in the log_file
+In order not to flood the log with an elaborate error report.
+
 ## TMUX_MENUS_LOGGING_MINIMAL
 
 If set to 1 only errors and menu rendering times will be logged, practicall if
