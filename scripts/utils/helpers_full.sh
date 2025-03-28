@@ -262,7 +262,7 @@ check_speed_cutoff() {
     safe_now
     # shellcheck disable=SC2154
     t_init="$(echo "$t_now - $t_script_start" | bc)"
-    # log_it "-T-  TIMING result: $t_init [$t_minimal_display_time]"
+    log_it "-T-  TIMING result: $t_init [$t_minimal_display_time]"
     if [ "$(echo "$t_init < $cut_off" | bc)" -eq 1 ]; then
         min_display_t_set 0.1
     else
@@ -272,11 +272,11 @@ check_speed_cutoff() {
 }
 
 min_display_t_read() {
-    # log_it "-T-  min_display_t_read()"
+    log_it "-T-  min_display_t_read()"
     [ -n "$min_display_t_set" ] && return 0 # no-cache situation, already set
     $cfg_use_cache || {
         # not using cache
-        # log_it "-T-  min_display_t_read() - not using cache, hardcoding t_minimal_display_time"
+        log_it "-T-  min_display_t_read() - not using cache, hardcoding t_minimal_display_time"
         t_minimal_display_time=0.5
         return 0
     }
@@ -289,7 +289,7 @@ min_display_t_read() {
 
 min_display_t_set() {
     t_minimal_display_time="$1"
-    # log_it "-T-  min_display_t_set($t_minimal_display_time)"
+    log_it "-T-  min_display_t_set($t_minimal_display_time)"
     $cfg_use_cache || return # skip if not using cache
 
     [ -z "$t_minimal_display_time" ] && error_msg_safe "min_display_t_set() - no param"
@@ -302,7 +302,7 @@ min_display_t_append_to_params() {
     #
     #  Append t_minimal_display_time to plugin_params if
     _f_params="$1"
-    # log_it "-T-  min_display_t_append_to_params($_f_params)"
+    log_it "-T-  min_display_t_append_to_params($_f_params)"
     [ -f "$_f_params" ] || {
         log_it "min_display_t_append_to_params() - no such file: $_f_params"
         return 1
@@ -349,7 +349,7 @@ safe_remove() {
 
     [ -z "$pattern" ] && error_msg "safe_remove() - no param supplied!"
 
-    # log_it "safe_remove($pattern)"
+    log_it "--->>  safe_remove($pattern)"
 
     tmpdir_noslash="${TMPDIR%/}" # Remove trailing slash if present
 
