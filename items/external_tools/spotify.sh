@@ -9,8 +9,8 @@
 #
 
 display_currently_playing_track() {
-    # shellcheck source=scripts/helpers.sh
-    . "$D_TM_BASE_PATH"/scripts/helpers.sh
+    # shellcheck source=scripts/helpers_minimal.sh
+    . "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
 
     track="$(spotify status track)"
     artist="$(spotify status artist)"
@@ -21,16 +21,16 @@ display_currently_playing_track() {
 
 static_content() {
 
-    reload_no_output=" > /dev/null ; $f_current_script"
+    reload_no_output=" > /dev/null ; $0"
 
-    [ -z "$(command -v spotify)" ] && error_msg "spotify bin not found!"
+    [ -z "$(command -v spotify)" ] && error_msg_safe "spotify bin not found!"
 
     set -- \
         0.0 M Left "Back to Extras     $nav_prev" extras.sh \
         0.0 M Home "Back to Main menu  $nav_home" main.sh \
         0.0 S \
         0.0 E t "Title - currently playing track" \
-        "$f_current_script -t $reload_no_output" \
+        "$0 -t $reload_no_output" \
         0.0 S \
         0.0 E Space "Pause/Resume" "spotify pause    $reload_no_output" \
         0.0 E n "Next" "spotify             next     $reload_no_output" \

@@ -15,8 +15,14 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 # shellcheck source=scripts/helpers.sh
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
+log_it "running: $0 $1"
+
 if tmux_error_handler source-file "$1"; then
-    tmux_error_handler display 'Sourced it!'
+    _m="Sourced it!"
+    log_it "$_m"
+    tmux_error_handler display "$_m"
 else
-    tmux_error_handler display 'File could not be sourced - not found?'
+    _m="tmux config file could not be sourced: $1"
+    log_it "$_m"
+    tmux_error_handler display "$_m"
 fi

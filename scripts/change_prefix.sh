@@ -16,19 +16,19 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 _this="change_prefix.sh" # error prone if script name is changed :(
-[ "$current_script" != "$_this" ] && error_msg "$_this should NOT be sourced"
+[ "$bn_current_script" != "$_this" ] && error_msg_safe "$_this should NOT be sourced"
 
 #
 #  Since this is a critical param, make extra sure we have valid input
 #
 prefix_char="$1"
 if [ -z "$prefix_char" ]; then
-    error_msg "change_prefix.sh No prefix given!"
+    error_msg_safe "change_prefix.sh No prefix given!"
 elif [ "$(printf '%s' "$prefix_char" | wc -m)" -ne 1 ]; then
-    error_msg "Must be exactly one char! Was:[$prefix_char]"
+    error_msg_safe "Must be exactly one char! Was:[$prefix_char]"
 fi
 
-prefix="C-${prefix_char}"
+prefix="C-$(lowercase_it "$prefix_char")"
 
 tmux_error_handler set-option -g prefix "$prefix"
 

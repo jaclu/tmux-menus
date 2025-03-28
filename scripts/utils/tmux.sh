@@ -1,5 +1,6 @@
 #!/bin/sh
 # Always sourced file - Fake bang path to help editors
+# shellcheck disable=SC2034,SC2154
 #
 #   Copyright (c) 2022-2025: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -8,7 +9,46 @@
 #
 #  Handling tmux env
 #
-# shellcheck disable=SC2034,SC2154
+
+tmux_vers_check_do_compare() {
+    # Called fomh helpers_minimal.sh:tmux_vers_check() if checked version was not cached
+    _v_comp="$1"
+    [ -z "$_v_comp" ] && error_msg "tmux_vers_check_do_compare() - no param!"
+    # log_it "tmux_vers_check_do_compare($_v_comp)"
+
+    # Compare numeric parts first for quick decisions.
+    tpt_digits_from_string _i_comp "$_v_comp"
+    [ "$_i_comp" -lt "$current_tmux_vers_i" ] && {
+        cache_add_ok_vers "$_v_comp"
+        return 0
+    }
+    [ "$_i_comp" -gt "$current_tmux_vers_i" ] && {
+        cache_add_bad_vers "$_v_comp"
+        return 1
+    }
+
+    # Compare suffixes only if numeric parts are equal.
+    tpt_tmux_vers_suffix _suf "$_v_comp"
+    # - If no suffix is required or suffix matches, return success
+    if [ -z "$_suf" ] || [ "$_suf" = "$current_tmux_vers_suffix" ]; then
+        cache_add_ok_vers "$_v_comp"
+        return 0
+    fi
+    # If the desired version has a suffix but the running version doesn't, fail
+    [ -n "$_suf" ] && [ -z "$current_tmux_vers_suffix" ] && {
+        cache_add_bad_vers "$_v_comp"
+        return 1
+    }
+    # Perform lexicographical comparison of suffixes only if necessary
+    [ "$(printf '%s\n%s\n' "$_suf" "$current_tmux_vers_suffix" |
+        LC_COLLATE=C sort | head -n 1)" = "$_suf" ] && {
+        cache_add_ok_vers "$_v_comp"
+        return 0
+    }
+    # If none of the above conditions are met, the version is insufficient
+    cache_add_bad_vers "$_v_comp"
+    return 1
+}
 
 tmux_get_defaults() {
     #
@@ -54,50 +94,80 @@ tmux_get_defaults() {
     fi
 
     default_log_file=""
-    # log_it "><>   tmux_get_defaults() - done"
 }
 
-tmux_is_option_defined() {
-    # log_it "><> tmux_is_option_defined($1)"
-    tmux_error_handler show-options -gq | grep -q "^$1"
+cache_save_options_defined_in_tmux() {
+    [ -f "$f_cached_tmux_options" ] && return
+    # log_it "cache_save_options_defined_in_tmux()"
+    # profiling_display "[tmux] cache_save_options_defined_in_tmux()"
+    $TMUX_BIN show-options -g | grep ^@menus_ >"$f_cached_tmux_options"
+    $TMUX_BIN show-options -g | grep @use_bind_key_notes_in_plugins \
+        >>"$f_cached_tmux_options"
+    # log_it "  <-- cache_save_options_defined_in_tmux() - wrote: $f_cached_tmux_options"
+    # profiling_display "[tmux] cache_save_options_defined_in_tmux() - done"
 }
 
 tmux_get_option() {
-    tgo_option="$1"
-    tgo_default="$2"
+    tgo_varname="$1" # The variable name to store the result in
+    tgo_option="$2"
+    tgo_default="$3"
+    tgo_no_cache="$4" # if non-empty, prevent cache from being used - for odd variables
 
-    # log_it "tmux_get_option($tgo_option, $tgo_default)"
+    # log_it "tmux_get_option($tgo_varname, $tgo_option, $tgo_default, $tgo_no_cache)"
 
-    [ -z "$tgo_option" ] && error_msg "tmux_get_option() param 1 empty!"
+    [ -z "$tgo_varname" ] && error_msg "tmux_get_option() param 1 empty!"
+    [ -z "$tgo_option" ] && error_msg "tmux_get_option() param 2 empty!"
+    if [ -z "$tgo_no_cache" ] && $cfg_use_cache && [ -d "$d_cache" ]; then
+        tgo_use_cache=true
+    else
+        tgo_use_cache=false
+    fi
 
-    if [ "$TMUX" = "" ]; then
+    if [ -z "$TMUX" ]; then
         # this is run standalone, just report the defaults
+        log_it "tmux_get_option() - no \$TMUX - using default"
         echo "$tgo_default"
         return
     elif ! tmux_vers_check 1.8; then
         # before 1.8 no support for user params
+        log_it "tmux_get_option() - tmux < 1.8 - using default"
         echo "$tgo_default"
         return
     fi
 
-    if tgo_value="$(tmux_error_handler show-options -gvq "$tgo_option" 2>/dev/null)"; then
-        [ -z "$tgo_value" ] && ! tmux_is_option_defined "$tgo_option" && {
-            #
-            #  Since tmux doesn't differentiate between the variable being absent
-            #  and being assigned to "", an extra check is done to see if it is
-            #  present, if not the default will be used
-            #
-            tgo_value="$tgo_default"
-        }
+    if $tgo_use_cache; then
+        cache_save_options_defined_in_tmux
+        # profiling_display "[tmux] cache_save_options_defined_in_tmux done"
+
+        tgo_value="$(awk -v option="$tgo_option" \
+            '$1 == option { gsub(/^"|"$/, "", $2); print $2 }' "$f_cached_tmux_options")"
+        # profiling_display "[tmux] tgo_value defined"
+
+        if [ -f "$f_cached_tmux_options" ] && [ -z "$tgo_value" ] &&
+            ! grep -q "$tgo_option" "$f_cached_tmux_options" 2>/dev/null; then
+
+            tgo_was_found=1 # option not found
+        else
+            tgo_was_found=0
+        fi
+        # profiling_display "[tmux] missing value checked"
     else
-        #  All other versions correctly fails on unassigned @options
+        # log_it "tmux_get_option($tgo_option) - not using cache"
+
+        tgo_value="$($TMUX_BIN show-options -gv "$tgo_option" 2>/dev/null)"
+        tgo_was_found="$?"
+        # profiling_display "[tmux] show-options used"
+    fi
+
+    if [ "$tgo_was_found" != 0 ]; then
+        #
+        #  Since tmux doesn't differentiate between the variable being absent
+        #  and being assigned to "", use not found to select the default
+        #
         tgo_value="$tgo_default"
     fi
-    echo "$tgo_value"
-
-    unset tgo_option
-    unset tgo_default
-    unset tgo_value
+    # log_it "tmux_get_option() - using [$tgo_value]"
+    eval "$tgo_varname=\$tgo_value"
 }
 
 tmux_get_plugin_options() { # cache references
@@ -106,19 +176,38 @@ tmux_get_plugin_options() { # cache references
     #   cfg_  config variables, either read from tmux or the default
     #
     # log_it "tmux_get_plugin_options()"
+    $plugin_options_have_been_read && {
+        error_msg "tmux_get_plugin_options() has already been called"
+    }
+    # profiling_display "[tmux] tmux_get_plugin_options()"
 
     tmux_get_defaults
+    # profiling_display "[tmux] tmux_get_defaults done"
 
-    cfg_trigger_key="$(tmux_get_option "@menus_trigger" "$default_trigger_key")"
+    if normalize_bool_param "@menus_use_cache" "$default_use_cache"; then
+        cfg_use_cache=true
+        safe_remove "$f_no_cache_hint" skip-path-check
+        # do it as early as possible, so that further tmux options are cached
+        cache_create_folder "@menus_use_cache is true"
+    else
+        cfg_use_cache=false
+        # log_it "><> touching: $f_no_cache_hint"
+        touch "$f_no_cache_hint"
+    fi
+    # profiling_display "[tmux] normalize_bool_param done"
+
+    select_menu_handler
+
+    # [ "$bn_current_script" = "plugin_init.sh" ] && {
+    #     # Since this is only needed by plugin_init.sh, save some time
+    #     # when @menus_use_cache is No and skip this one for menu items
+    tmux_get_option cfg_trigger_key "@menus_trigger" "$default_trigger_key"
+    # }
+
     if normalize_bool_param "@menus_without_prefix" "$default_no_prefix"; then
         cfg_no_prefix=true
     else
         cfg_no_prefix=false
-    fi
-    if normalize_bool_param "@menus_use_cache" "$default_use_cache"; then
-        cfg_use_cache=true
-    else
-        cfg_use_cache=false
     fi
     if normalize_bool_param "@menus_use_hint_overlays" "$default_use_hint_overlays"; then
         cfg_use_hint_overlays=true
@@ -131,6 +220,8 @@ tmux_get_plugin_options() { # cache references
         cfg_show_key_hints=false
     fi
 
+    # profiling_display "[tmux] whiptail part starts"
+
     if $cfg_use_whiptail; then
         _whiptail_ignore_msg="not used with whiptail"
 
@@ -140,35 +231,37 @@ tmux_get_plugin_options() { # cache references
         cfg_format_title="$_whiptail_ignore_msg"
         cfg_mnu_loc_x="$_whiptail_ignore_msg"
         cfg_mnu_loc_y="$_whiptail_ignore_msg"
-        unset _whiptail_ignore_msg
 
         # Whiptail skips any styling
         cfg_nav_next="$default_nav_next"
         cfg_nav_prev="$default_nav_prev"
         cfg_nav_home="$default_nav_home"
     else
-        cfg_simple_style_selected="$(tmux_get_option "@menus_simple_style_selected" \
-            "$default_simple_style_selected")"
-        cfg_simple_style="$(tmux_get_option "@menus_simple_style" \
-            "$default_simple_style")"
-        cfg_simple_style_border="$(tmux_get_option "@menus_simple_style_border" \
-            "$default_simple_style_border")"
-        cfg_format_title="$(tmux_get_option "@menus_format_title" \
-            "$default_format_title")"
+        tmux_get_option cfg_simple_style_selected "@menus_simple_style_selected" \
+            "$default_simple_style_selected"
 
-        cfg_nav_next="$(tmux_get_option "@menus_nav_next" "$default_nav_next")"
-        cfg_nav_prev="$(tmux_get_option "@menus_nav_prev" "$default_nav_prev")"
-        cfg_nav_home="$(tmux_get_option "@menus_nav_home" "$default_nav_home")"
-        cfg_mnu_loc_x="$(tmux_get_option "@menus_location_x" "$default_location_x")"
-        cfg_mnu_loc_y="$(tmux_get_option "@menus_location_y" "$default_location_y")"
+        tmux_get_option cfg_simple_style "@menus_simple_style" \
+            "$default_simple_style"
+        tmux_get_option cfg_simple_style_border "@menus_simple_style_border" \
+            "$default_simple_style_border"
+        tmux_get_option cfg_format_title "@menus_format_title" \
+            "$default_format_title"
+
+        tmux_get_option cfg_mnu_loc_x "@menus_location_x" "$default_location_x"
+        tmux_get_option cfg_mnu_loc_y "@menus_location_y" "$default_location_y"
+        tmux_get_option cfg_nav_next "@menus_nav_next" "$default_nav_next"
+        tmux_get_option cfg_nav_prev "@menus_nav_prev" "$default_nav_prev"
+        tmux_get_option cfg_nav_home "@menus_nav_home" "$default_nav_home"
     fi
+    # profiling_display "[tmux] whiptail part done"
 
-    cfg_tmux_conf="$(tmux_get_option "@menus_config_file" "$default_tmux_conf")"
-    _f="$(tmux_get_option "@menus_log_file" "$default_log_file")"
-    [ -z "$cfg_log_file" ] && [ -n "$_f" ] && {
+    tmux_get_option cfg_tmux_conf "@menus_config_file" "$default_tmux_conf"
+    [ "$cfg_log_file_forced" != 1 ] && {
         #  If a debug logfile has been set, the tmux setting will be ignored.
-        cfg_log_file="$_f"
+        log_it "><> tmux will read cfg_log_file"
+        tmux_get_option cfg_log_file "@menus_log_file" "$default_log_file"
     }
+
     #
     #  Generic plugin setting I use to add Notes to keys that are bound
     #  This makes this key binding show up when doing <prefix> ?
@@ -184,17 +277,30 @@ tmux_get_plugin_options() { # cache references
         # log_it "><> ignoring notes"
         cfg_use_notes=false
     fi
-    # log_it "  tmux_get_plugin_options() - done"
+    plugin_options_have_been_read=true
+
+    # profiling_display "[tmux] tmux_get_plugin_options() - done"
 }
 
-tmux_error_handler() { # cache references
+tmux_error_handler() {
+    # fake assigning a variable in order to use the same func
+    tmux_error_handler_assign _dont_store_result_ "$@"
+}
+
+tmux_error_handler_assign() { # cache references
     #
     #  Detects any errors reported by tmux commands and gives notification
     #
+    varname="$1"
+    shift
     the_cmd="$*"
-
-    $teh_debug && log_it "><> tmux_error_handler($the_cmd)"
-
+    $teh_debug && {
+        if [ "$varname" = "_dont_store_result_" ]; then
+            log_it "tmux_error_handler($the_cmd)"
+        else
+            log_it "tmux_error_handler_assign($the_cmd) -> $varname"
+        fi
+    }
     if $cfg_use_cache; then
         d_errors="$d_cache"
     else
@@ -203,29 +309,30 @@ tmux_error_handler() { # cache references
     # ensure it exists
     [ ! -d "$d_errors" ] && mkdir -p "$d_errors"
     f_tmux_err="$d_errors"/tmux-err
-    $teh_debug && log_it "><>teh $TMUX_BIN $*"
-    $TMUX_BIN "$@" 2>"$f_tmux_err" && rm -f "$f_tmux_err"
-    $teh_debug && log_it "><>teh cmd done [$?]"
+    $teh_debug && {
+        log_it "teh: $TMUX_BIN $the_cmd"
+    }
+    # shellcheck disable=SC2068  # intentional to keep params seeparate here
+    value=$($TMUX_BIN "$@" 2>"$f_tmux_err") && safe_remove "$f_tmux_err"
+    $teh_debug && log_it "teh: cmd done [$?] >>$value<<"
     [ -s "$f_tmux_err" ] && {
         #
         #  First save the error to a named file
         #
-        base_fname="$(tr -cs '[:alnum:]._' '_' <"$f_tmux_err")"
-        [ -z "$base_fname" ] && base_fname="tmux-error"
-        f_error_log="$d_errors/error-$base_fname"
-        unset base_fname
+        _f_name="$(tr -cs '[:alnum:]._' '_' <"$f_tmux_err")"
+        [ -z "$_f_name" ] && _f_name="tmux-error"
+        f_error_log="$d_errors/error-$_f_name"
 
         [ -f "$f_error_log" ] && {
-            _i=1
-            f_error_log="${f_error_log}-$_i"
+            _idx=1
+            f_error_log="${f_error_log}-$_idx"
             while [ -f "$f_error_log" ]; do
-                _i=$((_i + 1))
-                f_error_log="${f_tmux_err}-$_i"
-                [ "$_i" -gt 1000 ] && {
-                    error_msg "Aborting runaway loop - _i=$_i"
+                _idx=$((_idx + 1))
+                f_error_log="${f_tmux_err}-$_idx"
+                [ "$_idx" -gt 1000 ] && {
+                    error_msg "Aborting runaway loop - _idx=$_idx"
                 }
             done
-            unset _i
         }
         (
             echo "\$TMUX_BIN $the_cmd"
@@ -248,154 +355,23 @@ tmux_error_handler() { # cache references
                     "$f_error_log"
             )"
         fi
-        unset f_error_log
         return 1
     }
-    unset the_cmd
+
+    $teh_debug && {
+        if [ "$varname" = "_dont_store_result_" ]; then
+            [ -n "$value" ] && {
+                # since it's not an assignment, just output it
+                echo "$value"
+                log_it "  <--  tmux_error_handler() got: >>$value<<"
+            }
+        else
+            log_it "  <--  tmux_error_handler_assign() got: >>$value<<"
+        fi
+    }
     teh_debug=false
+    eval "$varname=\$value"
     return 0
-}
-
-tmux_select_menu_handler() {
-    # support old env variable, cam be deleted eventually 241220
-    [ -n "$FORCE_WHIPTAIL_MENUS" ] && TMUX_MENU_HANDLER="$FORCE_WHIPTAIL_MENUS"
-
-    #
-    # If an older version is used, or TMUX_MENU_HANDLER is 1/2
-    # set cfg_use_whiptail true
-    #
-    if ! tmux_vers_check 3.0; then
-        if command -v whiptail >/dev/null; then
-            cfg_alt_menu_handler=whiptail
-            log_it "tmux below 3.0 - using: whiptail"
-        elif command -v dialog >/dev/null; then
-            cfg_alt_menu_handler=dialog
-            log_it "tmux below 3.0 - using: dialog"
-        else
-            error_msg "Neither whiptail or dialog found, plugin aborted"
-        fi
-        cfg_use_whiptail=true
-    elif [ "$TMUX_MENU_HANDLER" = 1 ]; then
-        _cmd=whiptail
-        if command -v "$_cmd" >/dev/null; then
-            cfg_alt_menu_handler="$_cmd"
-        else
-            error_msg "$_cmd not available, plugin aborted"
-        fi
-        cfg_use_whiptail=true
-        log_it "$_cmd is selected due to TMUX_MENU_HANDLER=1"
-        unset _cmd
-    elif [ "$TMUX_MENU_HANDLER" = 2 ]; then
-        _cmd=dialog
-        if command -v "$_cmd" >/dev/null; then
-            cfg_alt_menu_handler="$_cmd"
-        else
-            error_msg "$_cmd not available, plugin aborted"
-        fi
-        cfg_use_whiptail=true
-        log_it "$_cmd is selected due to TMUX_MENU_HANDLER=2"
-        unset _cmd
-    else
-        cfg_use_whiptail=false
-    fi
-}
-
-#---------------------------------------------------------------
-#
-#   tmux version related support functions
-#
-#---------------------------------------------------------------
-
-tmux_vers_check() {
-    _v_comp="$1" # Desired minimum version to check against
-    # log_it "><> tmux_vers_ok($_v_comp) $0"
-
-    # Retrieve and cache the current tmux version on the first call
-    if [ -z "$tpt_current_vers" ] || [ -z "$tpt_current_vers_i" ]; then
-        tpt_retrieve_running_tmux_vers
-    fi
-
-    $cfg_use_cache && {
-        [ -z "$cached_ok_tmux_versions" ] && [ -f "$f_cache_known_tmux_vers" ] && {
-            #
-            # get known good/bad versions if this hasn't been sourced yet
-            #
-            # shellcheck source=/dev/null
-            . "$f_cache_known_tmux_vers"
-        }
-        case "$cached_ok_tmux_versions $tvc_v_ref " in
-        *"$_v_comp "*) return 0 ;;
-        *) ;;
-        esac
-        case "$cached_bad_tmux_versions" in
-        *"$_v_comp "*) return 1 ;;
-        *) ;;
-        esac
-    }
-
-    # Compare numeric parts first for quick decisions.
-    _i_comp="$(tpt_digits_from_string "$_v_comp")"
-    [ "$_i_comp" -lt "$tpt_current_vers_i" ] && {
-        cache_add_ok_vers "$_v_comp"
-        return 0
-    }
-    [ "$_i_comp" -gt "$tpt_current_vers_i" ] && {
-        cache_add_bad_vers "$_v_comp"
-        return 1
-    }
-
-    # Compare suffixes only if numeric parts are equal.
-    _suf="$(tpt_tmux_vers_suffix "$_v_comp")"
-    # - If no suffix is required or suffix matches, return success
-    [ -z "$_suf" ] || [ "$_suf" = "$tpt_current_vers_suffix" ] && {
-        cache_add_ok_vers "$_v_comp"
-        return 0
-    }
-    # If the desired version has a suffix but the running version doesn't, fail
-    [ -n "$_suf" ] && [ -z "$tpt_current_vers_suffix" ] && {
-        cache_add_bad_vers "$_v_comp"
-        return 1
-    }
-    # Perform lexicographical comparison of suffixes only if necessary
-    [ "$(printf '%s\n%s\n' "$_suf" "$tpt_current_vers_suffix" |
-        LC_COLLATE=C sort | head -n 1)" = "$_suf" ] && {
-        cache_add_ok_vers "$_v_comp"
-        return 0
-    }
-    # If none of the above conditions are met, the version is insufficient
-    cache_add_bad_vers "$_v_comp"
-    return 1
-}
-
-tpt_retrieve_running_tmux_vers() {
-    #
-    # If the variables defining the currently used tmux version needs to
-    # be accessed before the first call to tmux_vers_ok this can be called.
-    #
-    # log_it "tpt_retrieve_running_tmux_vers()"
-    tpt_current_vers="$($TMUX_BIN -V | cut -d' ' -f2)"
-    tpt_current_vers_i="$(tpt_digits_from_string "$tpt_current_vers")"
-    tpt_current_vers_suffix="$(tpt_tmux_vers_suffix "$tpt_current_vers")"
-}
-
-# Extracts all numeric digits from a string, ignoring other characters.
-# Example inputs and outputs:
-#   "tmux 1.9" => "19"
-#   "1.9a"     => "19"
-tpt_digits_from_string() {
-    # the first sed removes -rc suffixes, to avoid anny numerical rc like -rc1 from
-    # being included in the int extraction
-    _i="$(echo "$1" | sed 's/-rc[0-9]*//' | tr -cd '0-9')" # Use 'tr' to keep only digits
-    echo "$_i"
-}
-
-# Extracts any alphabetic suffix from the end of a version string.
-# If no suffix exists, returns an empty string.
-# Example inputs and outputs:
-#   "3.2"  => ""
-#   "3.2a" => "a"
-tpt_tmux_vers_suffix() {
-    echo "$1" | sed 's/.*[0-9]\([a-zA-Z]*\)$/\1/'
 }
 
 #===============================================================
@@ -413,8 +389,6 @@ tpt_tmux_vers_suffix() {
 #  plugin.
 #
 
-[ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
-
 if [ -n "$TMUX" ]; then
     tmux_pid="$(echo "$TMUX" | cut -d',' -f2)"
 else
@@ -423,8 +397,5 @@ else
 fi
 
 teh_debug=false
-cfg_alt_menu_handler=""
 
-tmux_select_menu_handler
-
-# log_it "scripts/utils/tmux.sh - completed"
+# log_it "===  Completed: scripts/utils/tmux.sh  =="

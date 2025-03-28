@@ -91,7 +91,7 @@ check_unknown_items() {
 D_TM_BASE_PATH=$(dirname "$(dirname -- "$(realpath "$0")")")
 
 #  shellcheck source=/dev/null
-. "$D_TM_BASE_PATH"/scripts/helpers.sh
+. "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
 
 _this="plugins.sh" # error prone if script name is changed :(
 defined_plugins=() #  plugins mentioned in config file
@@ -105,7 +105,7 @@ valid_items=(tpm)  # additional folders expected to be in plugins folders
 
 [[ "$(basename "$0")" != "$_this" ]] && {
     # mostly to ensure this file isn't accidentally sourced from a menu
-    error_msg "$_this should NOT be sourced"
+    error_msg_safe "$_this should NOT be sourced"
 }
 
 # shellcheck disable=SC2154

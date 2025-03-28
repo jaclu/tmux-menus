@@ -11,7 +11,7 @@
 is_avalable() {
     cmd="$1"
     if [ -z "$cmd" ]; then
-        error_msg "extras.is_available - no param!"
+        error_msg_safe "extras.is_available - no param!"
     fi
     if [ -z "$(command -v "$cmd")" ]; then
 	# shellcheck disable=SC2039
@@ -20,7 +20,7 @@ is_avalable() {
     fi
 }
 
-static_content() {
+dynamic_content() {
     d_extras="$d_items"/external_tools
 
     set -- \
@@ -31,7 +31,7 @@ static_content() {
         0.0 M M "$(is_avalable mullvad)Mullvad VPN  $nav_next" "$d_extras"/mullvad.sh \
         0.0 S \
         0.0 E i "public IP" public_ip.sh \
-        0.0 M H "Help $nav_next" "$d_help/help_extras.sh $f_current_script"
+        0.0 M H "Help  $nav_next" "$d_help/help_extras.sh $0"
 
     menu_generate_part 1 "$@"
 }

@@ -20,16 +20,16 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 #  Directives for shellcheck directly after bang path are global
 
 _this="move_menu.sh" # error prone if script name is changed :(
-[ "$current_script" != "$_this" ] && error_msg "$_this should NOT be sourced"
+[ "$bn_current_script" != "$_this" ] && error_msg_safe "$_this should NOT be sourced"
 
-error_msg "THIS IS NOT USED ATM! - $_this"
+error_msg_safe "THIS IS NOT USED ATM! - $_this"
 
 action="$1"
 # param_1="$2"
 # param_2="$3"
 
 if [ -z "$action" ]; then
-    error_msg "move_menu.sh was called without action param"
+    error_msg_safe "move_menu.sh was called without action param"
 fi
 
 #  It will be created with defaults if not present

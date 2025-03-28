@@ -30,7 +30,7 @@ if [ "$1" = "P" ]; then
 elif [ "$1" = "W" ]; then
     template="$d_scripts/relocate_window.sh W $2"
 else
-    error_msg "$f_current_script: param 1 must be P or W"
+    error_msg_safe "$0: param 1 must be P or W"
 fi
 
-$TMUX_BIN choose-tree "$flags" "run-shell \"$template %%\""
+tmux_error_handler choose-tree "$flags" "run-shell \"$template %%\""

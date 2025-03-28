@@ -9,7 +9,6 @@
 #
 
 static_content() {
-    menu_segment=1
     choose_tree="choose-tree"
     if tmux_vers_check 2.7; then
         #  zooms the pane
@@ -38,27 +37,22 @@ static_content() {
     fw_cmd="command-prompt -p 'Search for:' 'find-window $fw_flags %%'"
 
     set -- \
-        0.0 M Left "Back to Main menu $nav_home" main.sh \
+        0.0 M Left "Back to Main menu  $nav_home" main.sh \
         0.0 S \
         1.7 E n "Navigate & select ses/win/pane" "$navigate_cmd"
 
     $cfg_use_hint_overlays && $cfg_show_key_hints && {
         set -- "$@" \
             1.7 M K "Key hints - Navigate & select  $nav_next" \
-            "$d_hints/choose-tree.sh $f_current_script"
+            "$d_hints/choose-tree.sh $0"
     }
 
-    menu_generate_part "$menu_segment" "$@"
-    menu_segment=$((menu_segment + 1))
-
-    set -- \
+    set -- "$@" \
         1.8 S \
         1.8 T "-#[nodim]Search in all $fw_span" \
         1.8 C s "$fw_lbl_line2" "$fw_cmd"
 
-    menu_generate_part "$menu_segment" "$@"
-    menu_segment=$((menu_segment + 1))
-
+    menu_generate_part 1 "$@"
 }
 
 #===============================================================

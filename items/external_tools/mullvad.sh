@@ -20,22 +20,22 @@ dynamic_content() {
 
     #  Add conditional lines
     if mullvad status | grep -q Connected; then
-        set -- 0.0 E d Disconnect "mullvad disconnect ; $f_current_script"
+        set -- 0.0 E d Disconnect "mullvad disconnect ; $0"
     else
-        set -- 0.0 E c Connect "mullvad connect ; $f_current_script"
+        set -- 0.0 E c Connect "mullvad connect ; $0"
     fi
 
     set -- "$@" \
-        0.0 E l "$lan_label LAN sharing" "mullvad lan set $lan_cmd; $f_current_script"
+        0.0 E l "$lan_label LAN sharing" "mullvad lan set $lan_cmd; $0"
 
     menu_generate_part 2 "$@"
 }
 
 static_content() {
 
-    # suffix=" > /dev/null' ; run-shell '$f_current_script'"
+    # suffix=" > /dev/null' ; run-shell '$0'"
 
-    [ -z "$(command -v mullvad)" ] && error_msg "mullvad bin not found!"
+    [ -z "$(command -v mullvad)" ] && error_msg_safe "mullvad bin not found!"
 
     # By using '' this will not be processed as the string is defined.
     # it will be  executed when it is displayed.

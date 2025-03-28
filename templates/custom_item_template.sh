@@ -35,7 +35,6 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 
 # A custom items menu must define a menu_key, that will be its shortcut in the
 # index listing custom items.
-
 # Since this will be used to point to this menu from the index,
 # it is recommended to use uppercase in order to follow the conventions
 # in this plugin, but anything goes!

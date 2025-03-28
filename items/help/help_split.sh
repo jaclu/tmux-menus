@@ -12,22 +12,17 @@ dynamic_content() {
     # Things that change dependent on various states
 
     if [ -z "$prev_menu" ]; then
-        error_msg "$current_script was called without notice of what called it"
+        error_msg_safe "$bn_current_script was called without notice of what called it"
     fi
 
     set -- \
-        0.0 M Left "Back to Previous menu $nav_prev" "$prev_menu" \
-        0.0 M Home "Back to Main menu     $nav_home" main.sh
+        0.0 M Left "Back to Previous menu  $nav_prev" "$prev_menu" \
+        0.0 M Home "Back to Main menu      $nav_home" main.sh
 
     menu_generate_part 1 "$@"
 }
 
 static_content() {
-    #
-    #  TODO: For odd reasons this title needs multiple right padding spaces,
-    #        in order to actually print one, figure out what's going on
-    #
-
     set -- \
         0.0 S \
         0.0 T "-#[nodim]Creating a new pane by" \
