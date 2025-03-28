@@ -36,7 +36,7 @@ static_content() {
             "$d_hints/choose-buffer.sh $0"
     }
     set -- "$@" \
-        0.0 M H "Help                            $nav_next" \
+        0.0 M H "Help               $nav_next" \
         "$d_help/help_paste_buffers.sh $0"
 
     menu_generate_part 1 "$@"
