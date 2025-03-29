@@ -18,6 +18,7 @@ dynamic_content() {
         tgl_lbl="sTart"
     fi
 
+    # shellcheck disable=SC2154
     set -- \
         0.0 E t "$tgl_lbl" "$d_current_script/_dropbox_toggle.sh $menu_reload"
 

@@ -1,6 +1,4 @@
 #!/bin/sh
-#  Directives for shellcheck directly after bang path are global
-
 #
 #   Copyright (c) 2022-2025: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -31,6 +29,7 @@ _this="relocate_window.sh" # error prone if script name is changed :(
 
 param_check "$@"
 
+# shellcheck disable=SC2154
 if [ "$cur_ses" = "$dest_ses" ]; then
     #
     #  to same session

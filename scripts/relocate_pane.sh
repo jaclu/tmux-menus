@@ -23,6 +23,7 @@ _this="relocate_pane.sh" # error prone if script name is changed :(
 
 tmux_error_handler move-pane -t "${dest_ses}:${dest_win_idx}.${dest_pane_idx}"
 
+# shellcheck disable=SC2154
 if [ "$cur_ses" != "$dest_ses" ]; then
     #
     #  When Window / Pane is moved to another session, focus does not
