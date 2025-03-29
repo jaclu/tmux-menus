@@ -147,12 +147,10 @@ cache_param_write() {
     #  if it differed with previous params, clear cache
     #
     # log_it "cache_param_write()"
-    # profiling_display "[cache] cache_param_write()"
 
     $cfg_use_cache || error_msg "cache_param_write() - called when not using cache"
 
     cache_prepare
-    # profiling_display "[cache] cache_prepare - done"
 
     # need to be in repo base dir for the git chcecks below
     cd "$D_TM_BASE_PATH" || error_msg "Failed to cd into $D_TM_BASE_PATH"
@@ -268,15 +266,12 @@ cache_config_get_save() {
     # returns true if cache was written, otherwise false
     #
     # log_it "cache_config_get_save()"
-    profiling_display "[cache] cache_config_get_save()"
 
     tmux_get_plugin_options # ensure env is retrieved
 
-    profiling_display "[cache] tmux_get_plugin_options - done"
     if [ ! -f "$f_no_cache_hint" ] && $cfg_use_cache; then
         # will read plugin options again to ensure changes are preserved
         cache_param_write
-        profiling_display "[cache] cache_param_write - done"
         return 0
     else
         # log_it "  cache_config_get_save() - didn't save due to:"

@@ -99,12 +99,10 @@ tmux_get_defaults() {
 cache_save_options_defined_in_tmux() {
     [ -f "$f_cached_tmux_options" ] && return
     # log_it "cache_save_options_defined_in_tmux()"
-    # profiling_display "[tmux] cache_save_options_defined_in_tmux()"
     $TMUX_BIN show-options -g | grep ^@menus_ >"$f_cached_tmux_options"
     $TMUX_BIN show-options -g | grep @use_bind_key_notes_in_plugins \
         >>"$f_cached_tmux_options"
     # log_it "  <-- cache_save_options_defined_in_tmux() - wrote: $f_cached_tmux_options"
-    # profiling_display "[tmux] cache_save_options_defined_in_tmux() - done"
 }
 
 tmux_get_option() {
@@ -137,11 +135,9 @@ tmux_get_option() {
 
     if $tgo_use_cache; then
         cache_save_options_defined_in_tmux
-        # profiling_display "[tmux] cache_save_options_defined_in_tmux done"
 
         tgo_value="$(awk -v option="$tgo_option" \
             '$1 == option { gsub(/^"|"$/, "", $2); print $2 }' "$f_cached_tmux_options")"
-        # profiling_display "[tmux] tgo_value defined"
 
         if [ -f "$f_cached_tmux_options" ] && [ -z "$tgo_value" ] &&
             ! grep -q "$tgo_option" "$f_cached_tmux_options" 2>/dev/null; then
@@ -150,13 +146,11 @@ tmux_get_option() {
         else
             tgo_was_found=0
         fi
-        # profiling_display "[tmux] missing value checked"
     else
         # log_it "tmux_get_option($tgo_option) - not using cache"
 
         tgo_value="$($TMUX_BIN show-options -gv "$tgo_option" 2>/dev/null)"
         tgo_was_found="$?"
-        # profiling_display "[tmux] show-options used"
     fi
 
     if [ "$tgo_was_found" != 0 ]; then
@@ -179,11 +173,7 @@ tmux_get_plugin_options() { # cache references
     $plugin_options_have_been_read && {
         error_msg "tmux_get_plugin_options() has already been called"
     }
-    # profiling_display "[tmux] tmux_get_plugin_options()"
-
     tmux_get_defaults
-    # profiling_display "[tmux] tmux_get_defaults done"
-
     if normalize_bool_param "@menus_use_cache" "$default_use_cache"; then
         cfg_use_cache=true
         safe_remove "$f_no_cache_hint" skip-path-check
@@ -194,7 +184,6 @@ tmux_get_plugin_options() { # cache references
         # log_it "><> touching: $f_no_cache_hint"
         touch "$f_no_cache_hint"
     fi
-    # profiling_display "[tmux] normalize_bool_param done"
 
     select_menu_handler
 
@@ -219,8 +208,6 @@ tmux_get_plugin_options() { # cache references
     else
         cfg_show_key_hints=false
     fi
-
-    # profiling_display "[tmux] whiptail part starts"
 
     if $cfg_use_whiptail; then
         _whiptail_ignore_msg="not used with whiptail"
@@ -253,12 +240,11 @@ tmux_get_plugin_options() { # cache references
         tmux_get_option cfg_nav_prev "@menus_nav_prev" "$default_nav_prev"
         tmux_get_option cfg_nav_home "@menus_nav_home" "$default_nav_home"
     fi
-    # profiling_display "[tmux] whiptail part done"
 
     tmux_get_option cfg_tmux_conf "@menus_config_file" "$default_tmux_conf"
     [ "$cfg_log_file_forced" != 1 ] && {
         #  If a debug logfile has been set, the tmux setting will be ignored.
-        log_it "><> tmux will read cfg_log_file"
+        # log_it "tmux will read cfg_log_file"
         tmux_get_option cfg_log_file "@menus_log_file" "$default_log_file"
     }
 
@@ -278,8 +264,6 @@ tmux_get_plugin_options() { # cache references
         cfg_use_notes=false
     fi
     plugin_options_have_been_read=true
-
-    # profiling_display "[tmux] tmux_get_plugin_options() - done"
 }
 
 tmux_error_handler() {

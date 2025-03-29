@@ -16,8 +16,6 @@
 #
 #---------------------------------------------------------------
 
-# profiling_display "[helpers_full] - start"
-
 error_msg() {
     #
     #  Display an error message in log and as a tmux display-message
@@ -183,8 +181,6 @@ normalize_bool_param() {
     nbp_default="$2"  # only needed for tmux options
     nbp_no_cache="$3" # if non-empty, the cache will be ignored
 
-    # profiling_display "[helpers_full] normalize_bool_param() starts"
-
     # log_it "normalize_bool_param($nbp_param, $nbp_default) [$nbp_no_cache]"
     [ "${nbp_param%"${nbp_param#?}"}" = "@" ] && {
         #
@@ -196,11 +192,9 @@ normalize_bool_param() {
             error_msg "normalize_bool_param($nbp_param) - no default"
         }
         tmux_get_option nbp_param "$nbp_param" "$nbp_default" "$nbp_no_cache"
-        # profiling_display "[helpers_full] tmux_get_option() - done"
     }
 
     nbp_value_lc="$(lowercase_it "$nbp_param")"
-    # profiling_display "[helpers_full] normalize_bool_param() - done"
 
     case "$nbp_value_lc" in
     #
@@ -262,7 +256,7 @@ check_speed_cutoff() {
     safe_now
     # shellcheck disable=SC2154
     t_init="$(echo "$t_now - $t_script_start" | bc)"
-    log_it "-T-  TIMING result: $t_init [$t_minimal_display_time]"
+    # log_it "-T-  TIMING result: $t_init [$t_minimal_display_time]"
     if [ "$(echo "$t_init < $cut_off" | bc)" -eq 1 ]; then
         min_display_t_set 0.1
     else
@@ -272,11 +266,11 @@ check_speed_cutoff() {
 }
 
 min_display_t_read() {
-    log_it "-T-  min_display_t_read()"
+    # log_it "-T-  min_display_t_read()"
     [ -n "$min_display_t_set" ] && return 0 # no-cache situation, already set
     $cfg_use_cache || {
         # not using cache
-        log_it "-T-  min_display_t_read() - not using cache, hardcoding t_minimal_display_time"
+        # log_it "-T-  min_display_t_read() - not using cache, hardcoding t_minimal_display_time"
         t_minimal_display_time=0.5
         return 0
     }
@@ -289,7 +283,7 @@ min_display_t_read() {
 
 min_display_t_set() {
     t_minimal_display_time="$1"
-    log_it "-T-  min_display_t_set($t_minimal_display_time)"
+    # log_it "-T-  min_display_t_set($t_minimal_display_time)"
     $cfg_use_cache || return # skip if not using cache
 
     [ -z "$t_minimal_display_time" ] && error_msg_safe "min_display_t_set() - no param"
@@ -302,7 +296,7 @@ min_display_t_append_to_params() {
     #
     #  Append t_minimal_display_time to plugin_params if
     _f_params="$1"
-    log_it "-T-  min_display_t_append_to_params($_f_params)"
+    # log_it "-T-  min_display_t_append_to_params($_f_params)"
     [ -f "$_f_params" ] || {
         log_it "min_display_t_append_to_params() - no such file: $_f_params"
         return 1
@@ -331,25 +325,20 @@ min_display_t_append_to_params() {
 
 get_config_read_save_if_uncached() {
     # reads config, and if allowed saves it to cache
-    # profiling_display "[helpers] get_config_read_save_if_uncached()"
-
-    profiling_display "get_config_read_save_if_uncached()"
 
     cache_config_get_save || {
         # cache couldn't be saved, indicate cache not available
         # log_it "  <-- get_config_read_save_if_uncached() - unable to save cache params"
         cfg_use_cache=false
     }
-    profiling_display "get_config_read_save_if_uncached() - done"
 }
 
 safe_remove() {
     pattern="$1"
     skip_plugin_name_in_path_check="$2"
 
+    # log_it "--->>  safe_remove($pattern)"
     [ -z "$pattern" ] && error_msg "safe_remove() - no param supplied!"
-
-    log_it "--->>  safe_remove($pattern)"
 
     tmpdir_noslash="${TMPDIR%/}" # Remove trailing slash if present
 

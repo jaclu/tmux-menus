@@ -52,7 +52,6 @@ error_msg_safe() {
 
 source_all_helpers() {
     # log_it "source_all_helpers() - $1"
-    profiling_display "[helpers] ----->  source_all_helpers [$0] $1"
     $all_helpers_sourced && {
         error_msg_safe "source_all_helpers() called when it was already done"
     }
@@ -62,7 +61,6 @@ source_all_helpers() {
     . "$D_TM_BASE_PATH"/scripts/utils/helpers_full.sh || {
         error_msg_safe "Failed to source: scripts/utils/helpers_full.sh"
     }
-    profiling_display "[helpers] <-----  source_all_helpers() - done"
 }
 
 relative_path() {
@@ -148,7 +146,6 @@ get_config() {
     #  that the param cache is valid if found
     #
     # log_it "get_config()"
-    # profiling_display "[helpers] get_config()"
 
     if [ -f "$f_no_cache_hint" ]; then
         $all_helpers_sourced || source_all_helpers "get_config() - not using cache"
@@ -397,9 +394,9 @@ case "$TMUX_MENUS_PROFILING" in
 *)
     # profiling calls should not be left in the code base long term, this
     # is primarily intended to capture them when profiling is temporarily disabled
-    profiling_display() {
-        :
-    }
+    # profiling_display() {
+    #     :
+    # }
     ;;
 esac
 

@@ -642,9 +642,7 @@ sort_menu_items() {
     else
         # _s="[dialog_handling] sort_menu_items()"
         # _s="$_s - calling: generate_menu_items_in_sorted_order"
-        # profiling_display "$_s"
         generate_menu_items_in_sorted_order
-        # profiling_display "[dialog_handling] returned from generate_menu_items_in_sorted_order"
     fi
 }
 
@@ -697,26 +695,20 @@ prepare_menu() {
     set_menu_env_variables
 
     # 1 - Handle static parts, use cache if enabled and available
-    # profiling_display "[dialog_handling] handling static content"
     if $cfg_use_cache; then
         cache_static_content
-        # profiling_display "[dialog_handling] cache_static_content() done"
     else
         static_content
-        # profiling_display "[dialog_handling] static_content() done"
     fi
 
     # 2 - Handle dynamic parts (if any)
     handle_dynamic
-    # profiling_display "[dialog_handling] handle_dynamic() done"
 
     $static_cache_updated && ! $dynamic_content_found && static_files_reduction
 
     # 3 - Gather each item in correct order
     sort_menu_items
-    # profiling_display "[dialog_handling] sort_menu_items() done"
     verify_menu_runable
-    # profiling_display "[dialog_handling] verify_menu_runable() done"
 }
 
 #---------------------------------------------------------------
@@ -886,7 +878,6 @@ display_menu() {
 
     [ "$TMUX_MENUS_NO_DISPLAY" = "1" ] && return
 
-    # profiling_display "[dialog_handling] displaying menu"
     if $cfg_use_whiptail; then
         # display whiptail menu
         menu_selection=$(eval "$menu_items" 3>&2 2>&1 1>&3)
@@ -928,7 +919,6 @@ exit_if_dialog_doesnt_fit_screen() {
 [ -z "$d_scripts" ] && {
     # shellcheck source=scripts/helpers_minimal.sh
     . "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
-    # profiling_display "[dialog_handling] sourced helpers"
 }
 
 is_dynamic_content=false    # indicates if a dynamic content segment is being processed
@@ -960,9 +950,7 @@ menu_debug="" # Set to 1 to use echo 2 to use log_it
 
 # $all_helpers_sourced || source_all_helpers "end of dialog_handling"
 
-profiling_display "[dialog_handling] ----->  before prepare_menu()  <-----"
 prepare_menu
-profiling_display "[dialog_handling] prepare_menu() done"
 
 display_menu
 return 0

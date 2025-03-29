@@ -15,20 +15,17 @@ get_config_refresh() {
     #  more recent, or not found
     #
     # log_it "get_config_refresh()"
-    # profiling_display "[helpers] get_config_refresh()"
 
     [[ -f "$f_cache_params" ]] && {
-        # Only really need cfg_tmux_conf at this point
-        # shellcheck source=/dev/null
-        [[ "$cfg_log_file_forced" = 1 ]] && orig_log_file="$cfg_log_file"
+        # [[ "$cfg_log_file_forced" = 1 ]] && orig_log_file="$cfg_log_file"
 
+        # Only really need cfg_tmux_conf at this point
         source_cached_params || {
             _m="WARNING: get_config_refresh() Failed to source: $f_cache_params,"
             _m+=" removing it"
             log_it "$_m"
             safe_remove "$f_cache_params"
         }
-        profiling_display "sourced: $f_cache_params"
         # log_it "reading cfg_tmux_conf - sourced: $f_cache_params"
     }
 
@@ -143,9 +140,7 @@ safe_now t_init_start # get a feel for if this is a slow system...
 # Create a LF in log_file to easier separate runs
 log_it
 
-profiling_display "will do: get_config_refresh"
 get_config_refresh
-profiling_display "returned from: get_config_refresh"
 
 #
 # Setup a hint for how short a menu display is indicating screen to small
@@ -159,5 +154,4 @@ prepare_cache
 # Key is not bound until cache (if allowed) has been prepared, so normally
 # no menus will be triggered by the user before this
 #
-profiling_display "plugin_init.sh done"
 bind_plugin_key
