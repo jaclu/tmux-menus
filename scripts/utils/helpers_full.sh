@@ -182,20 +182,22 @@ normalize_bool_param() {
     nbp_no_cache="$3" # if non-empty, the cache will be ignored
 
     # log_it "normalize_bool_param($nbp_param, $nbp_default) [$nbp_no_cache]"
-    [ "${nbp_param%"${nbp_param#?}"}" = "@" ] && {
+    if [ "${nbp_param%"${nbp_param#?}"}" = "@" ]; then
         #
         #  If it starts with "@", assume it is a tmux option, thus
         #  read its value from the tmux environment.
         #  In this case $2 must be given as the default value!
         #
+        _tmux_param=true
         [ -z "$nbp_default" ] && {
             error_msg "normalize_bool_param($nbp_param) - no default"
         }
-        tmux_get_option nbp_param "$nbp_param" "$nbp_default" "$nbp_no_cache"
-    }
-
-    nbp_value_lc="$(lowercase_it "$nbp_param")"
-
+        tmux_get_option _v "$nbp_param" "$nbp_default" "$nbp_no_cache"
+    else
+        _tmux_param=false
+        _v="$nbp_param"
+    fi
+    nbp_value_lc="$(lowercase_it "$_v")"
     case "$nbp_value_lc" in
     #
     #  Be a nice guy and accept some common positive notations
@@ -205,7 +207,13 @@ normalize_bool_param() {
     #
     1 | yes | true) return 0 ;;
     0 | no | false) return 1 ;;
-    *) error_msg "[$nbp_value_lc]  - should be yes/true/1 or no/false/0" ;;
+    *)
+        if $_tmux_param; then
+            error_msg "$nbp_param = [$nbp_value_lc] - should be yes/true/1 or no/false/0"
+        else
+            error_msg "[$nbp_param] - should be yes/true/1 or no/false/0"
+        fi
+        ;;
     esac
 }
 
