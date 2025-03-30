@@ -39,5 +39,5 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 # it is recommended to use uppercase in order to follow the conventions
 # in this plugin, but anything goes!
 # If a "special" char is used it might need to be prefixed with \
-# shellcheck disable=SC2034
+# shellcheck disable=SC2034,SC2317
 menu_key="?"

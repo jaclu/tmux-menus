@@ -31,6 +31,7 @@ _this="relocate_window.sh" # error prone if script name is changed :(
 
 param_check "$@"
 
+# shellcheck disable=SC2154
 if [ "$cur_ses" = "$dest_ses" ]; then
     #
     #  to same session
