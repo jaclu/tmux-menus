@@ -532,11 +532,11 @@ set_menu_env_variables() {
         #  I haven't been able do to menu reload with whiptail/dialog yet,
         #  so disabled for now
         #
-        # menu_reload="\; run-shell \\\"$m$d_scripts/external_dialog_trigger.sh $0\\\""
+        # menu_reload=""
         # menu_reload="\; run-shell \\\"$0\\\""
-        menu_reload=""
-        reload_in_runshell=""
-        log_it "><> whiptail - disabling menu_reload"
+        menu_reload="\; run-shell \"$m$d_scripts/external_dialog_trigger.sh $0\""
+        reload_in_runshell="\; \"$m$d_scripts/external_dialog_trigger.sh $0\""
+        # log_it "><> whiptail - disabling menu_reload"
     else
         # shellcheck disable=SC2034
         menu_reload="; run-shell \"$0\""
@@ -761,7 +761,7 @@ wt_cached_selection() {
     #  Public variables
     #   all_wt_actions - lists all actions
     #
-    # log_it "wt_cached_selection()"
+    log_it "wt_cached_selection()"
     # gathering action files from cache
     all_wt_actions=""
     for file in "$d_wt_actions"/*; do
@@ -789,7 +789,7 @@ alt_parse_selection() {
     #  action, and then perform it
     #
     wt_actions="$1"
-    # log_it "alt_parse_selection($wt_action)"
+    log_it "alt_parse_selection($wt_action)"
     [ -z "$wt_actions" ] && {
         error_msg_safe "alt_parse_selection() - called without param"
     }
@@ -810,7 +810,9 @@ alt_parse_selection() {
 
         [ "$key" = "$menu_selection" ] && [ -n "$action" ] && {
             $all_helpers_sourced || source_all_helpers "alt_parse_selection()"
-            eval "$action"
+            log_it "  alt_parse_selection() - doing >>$action<<"
+            teh_debug=true
+            tmux_error_handler "$action"
             break
         }
         [ -z "$lst" ] && break # we have processed last group
@@ -818,7 +820,7 @@ alt_parse_selection() {
 }
 
 handle_wt_selecion() {
-    # log_it "handle_wt_selecion($menu_selection)"
+    log_it "handle_wt_selecion($menu_selection)"
     if $cfg_use_cache; then
         wt_cached_selection
     else
