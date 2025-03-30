@@ -111,7 +111,7 @@ tmux_get_option() {
     tgo_default="$3"
     tgo_no_cache="$4" # if non-empty, prevent cache from being used - for odd variables
 
-    # log_it "tmux_get_option($tgo_varname, $tgo_option, $tgo_default, $tgo_no_cache)"
+    log_it "tmux_get_option($tgo_varname, $tgo_option, $tgo_default, $tgo_no_cache)"
 
     [ -z "$tgo_varname" ] && error_msg "tmux_get_option() param 1 empty!"
     [ -z "$tgo_option" ] && error_msg "tmux_get_option() param 2 empty!"
