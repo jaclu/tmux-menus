@@ -198,6 +198,7 @@ normalize_bool_param() {
         _v="$nbp_param"
     fi
     nbp_value_lc="$(lowercase_it "$_v")"
+    log_it "><> _tmux_param [$_tmux_param] _v [$_v] nbp_value_lc [$nbp_value_lc]"
     case "$nbp_value_lc" in
     #
     #  Be a nice guy and accept some common positive notations
