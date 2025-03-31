@@ -529,7 +529,9 @@ The best way to send feedback is to file an
 
 ## Thanks to
 
-- [sumskyi](https://github.com/sumskyi) for notifying me that the boolean check error message for invalid values lacked the significant info about what variable contained the incorrect value. Adressed in release 2.0.2
+- [sumskyi](https://github.com/sumskyi) for notifying me that the boolean check
+error message for invalid values lacked the significant info about what variable
+contained the incorrect value. Addressed in release 2.0.2
 - [GaikwadPratik](https://github.com/GaikwadPratik) for notifying me that the
   Disable caching feature was broken
 - [Tony Soloveyv](https://github.com/tony-sol) for spotting an unintentional
