@@ -1,5 +1,11 @@
 # Plan
 
+## New feature: Show cmds
+
+By pressing `!` for each command in current menu list current binding (if any).
+Otherwise show the tmux sequence needed for the command including any support
+scripts, but excluding menu reload.
+
 ## WhipTail
 
 - menu_reload is not working, so disabled
