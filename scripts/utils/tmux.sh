@@ -151,8 +151,21 @@ tmux_get_option() {
 
         tgo_value="$($TMUX_BIN show-options -gv "$tgo_option" 2>/dev/null)"
         tgo_was_found="$?"
+        [ "$tgo_was_found" = 0 ] && [ -z "$tgo_value" ] && {
+            #
+            # tmux 3.0 - 3.2a exits 0 even if variable was not found,
+            # so the value being set to "" vs not beeing defined can't be detected
+            # vua exit code for those versions. Thus this extra check, if the option
+            # isn't defined use the default. This allows a variable to be set to ""
+            #
+            $TMUX_BIN show-options -g | grep -q "$tgo_option" || {
+                # log_it " value unset, using default
+                tgo_value="$tgo_default"
+            }
+        }
     fi
 
+    # if tmux_vers_check 3.0 && ! tmux_vers_check 3.3 &&
     if [ "$tgo_was_found" != 0 ]; then
         #
         #  Since tmux doesn't differentiate between the variable being absent
