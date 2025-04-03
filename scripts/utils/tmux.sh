@@ -154,8 +154,8 @@ tmux_get_option() {
         [ "$tgo_was_found" = 0 ] && [ -z "$tgo_value" ] && {
             #
             # tmux 3.0 - 3.2a exits 0 even if variable was not found,
-            # so the value being set to "" vs not beeing defined can't be detected
-            # vua exit code for those versions. Thus this extra check, if the option
+            # so the value being set to "" vs not being defined can't be detected
+            # via exit code for those versions. Thus this extra check, if the option
             # isn't defined use the default. This allows a variable to be set to ""
             #
             $TMUX_BIN show-options -g | grep -q "$tgo_option" || {
