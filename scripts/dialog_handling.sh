@@ -303,6 +303,19 @@ verify_menu_key() {
     [ -z "$_key" ] && error_msg_safe "Key was empty for: $_item in: $0"
 }
 
+show_cmd() {
+
+    # printf '1: >>%s<<\n' "$1" >>"$cfg_log_file"
+    # printf 'menu_reload: >>%s<<\n' "$menu_reload" >>"$cfg_log_file"
+    cmd_bare="${1%" $menu_reload"}"
+    # cmd="${1%$menu_reload}" # filter out trailing menu_reload
+
+    log_it
+    log_it "show_cmd($cmd_bare)"
+    # [ -z "$cmd" ] && error_msg "show_cmd() - no param"
+    $b_show_commands && return # keep it disabled for now
+}
+
 menu_parse() {
     #
     #  Since the various menu entries have different numbers of params
@@ -357,6 +370,7 @@ menu_parse() {
                 alt_command "$label" "$key" "$cmd" "$keep_cmd"
             else
                 mnu_command "$label" "$key" "$cmd" "$keep_cmd"
+                $b_show_commands && show_cmd "$cmd"
             fi
             ;;
 
@@ -539,7 +553,7 @@ set_menu_env_variables() {
         # log_it "><> whiptail - disabling menu_reload"
     else
         # shellcheck disable=SC2034
-        menu_reload="; run-shell \"$0\""
+        menu_reload="; run-shell '$0'"
         # shellcheck disable=SC2034
         reload_in_runshell=" ; $0"
     fi
@@ -927,6 +941,11 @@ exit_if_dialog_doesnt_fit_screen() {
 is_dynamic_content=false    # indicates if a dynamic content segment is being processed
 dynamic_content_found=false # indicate dynamic content was generated
 static_cache_updated=false  # used to decide if static cache file reduction should happen
+
+# if true, do not use normal caching, build custom menu including cmds under each
+# action item
+[ "$TMUX_MENUS_SHOW_CMDS" = "1" ] && b_show_commands=true || b_show_commands=false
+b_show_commands=true
 
 # Some sanity checks
 [ "$TMUX_MENUS_NO_DISPLAY" != "1" ] && {
