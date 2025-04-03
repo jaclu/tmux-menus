@@ -30,7 +30,7 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 
 win_name="$($TMUX_BIN display-message -p '#W')"
 
-# tmux list-windows -a -F "#{session_name}:#{window_index} #{window_id} #{window_name}"
+# $TMUX_BIN list-windows -a -F "#{session_name}:#{window_index} #{window_id} #{window_name}"
 
 # instances="$($TMUX_BIN list-windows -a -F "#{session_name}:#{window_id}" |
 #     grep "$win_name" | wc -l)"
