@@ -12,10 +12,8 @@
 #
 
 prefix_replace_cmd() {
+    # If a single prefix cmd matches display it as a prefix bind instead of command
     log_it "prefix_replace_cmd($cmd_bare)"
-
-    # $TMUX_BIN list-keys | grep -iv mouse | grep "$cmd_bare" | awk '{$1=""; sub(/^[ \t]+/, ""); print}'
-    # $TMUX_BIN list-keys | grep -iv mouse | grep "$cmd_bare" | awk '{$1=""; sub(/^[ \t]+/, ""); print}'
 
     _prefix_cmd="$($TMUX_BIN list-keys | grep -iv mouse | grep "$cmd_bare" |
         sed -n 's/^[^ ][^ ]*[ ][ ]*-T[ ][ ]*prefix[ ][ ]*\([^ ][^ ]*\).*/<Prefix> \1/p')"
@@ -47,9 +45,9 @@ prefix_replace_cmd() {
 
 show_cmd() {
     #
-    # First filter out menu_reload component if it is present
+    # First filter out menu_reload components if present
     # then try to match command to a prefix key-bind. If a match is foond
-    # display the prefix sequence needed, otherwise describe the tmux command needed
+    # display the prefix sequence matching the cmd, otherwise display the command uses
     #
     _s1="${1%" $menu_reload"}"             # skip menu_reload suffix if found
     _s2="${_s1%" $reload_in_runshell"}"    # skip reload_in_runshell suffix if found
@@ -58,14 +56,8 @@ show_cmd() {
     # reduce excessive whitespace
     cmd_bare=$(printf '%s\n' "$_s4" | awk '{$1=$1; print}')
 
-    # printf '1: >>%s<<\n' "$1" >>"$cfg_log_file"
-    # printf 'menu_reload: >>%s<<\n' "$menu_reload" >>"$cfg_log_file"
-    # cmd="${1%$menu_reload}" # filter out trailing menu_reload
-
-    log_it
     log_it "show_cmd($cmd_bare)"
     [ -z "$cmd_bare" ] && error_msg "show_cmd() - no command could be extracted"
-    #$b_show_commands && return # keep it disabled for now
 
     prefix_replace_cmd
 
@@ -73,10 +65,7 @@ show_cmd() {
     while [ -n "$cmd" ]; do
         chunk=$(printf '%.70s' "$cmd")
         log_it "  chunk: >>$chunk<<"
-        mnu_text_line "  $chunk"
+        mnu_text_line "-#[nodim]  $chunk"
         cmd=${cmd#"$chunk"}
     done
-
-    # mnu_text_line "$cmd_bare"
-    # error_msg "cmd_bare [$cmd_bare]"
 }
