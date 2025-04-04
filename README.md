@@ -22,7 +22,7 @@ experienced users, then add more for newbies.
 
 - Added new feature Display Commands, see `Display menu commands` in the Configuration
   section, using this will display all commands in the menu.
-- Fixed handling of menu options in tmux 3.0 - 3.2a since they don't return an
+- Fixed handling of options for tmux 3.0 - 3.2a since they don't return an
   error for missing options
 - Removed all jk shortcuts in menus, allowing for consistent vim style navigation.
 - Plugin is initialized in the background, to cut down on tpm processing time.
