@@ -221,6 +221,11 @@ tmux_get_plugin_options() { # cache references
     else
         cfg_show_key_hints=false
     fi
+    if normalize_bool_param "@menus_display_commands" "$default_show_key_hints"; then
+        cfg_display_cmds=true
+    else
+        cfg_display_cmds=false
+    fi
 
     if $cfg_use_whiptail; then
         _whiptail_ignore_msg="not used with whiptail"
@@ -310,7 +315,7 @@ tmux_error_handler_assign() { # cache references
         log_it "teh: $TMUX_BIN $the_cmd"
     }
     # shellcheck disable=SC2068  # intentional to keep params seeparate here
-    value=$($TMUX_BIN "$@" 2>"$f_tmux_err") && safe_remove "$f_tmux_err"
+    value=$($TMUX_BIN "$@" 2>"$f_tmux_err") && safe_remove "$f_tmux_err" skip-path-check
     $teh_debug && log_it "teh: cmd done [$?] >>$value<<"
     [ -s "$f_tmux_err" ] && {
         #

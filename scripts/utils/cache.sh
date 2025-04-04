@@ -203,6 +203,7 @@ cfg_no_prefix=\"$cfg_no_prefix\"
 cfg_use_cache=\"$cfg_use_cache\"
 cfg_use_hint_overlays=\"$cfg_use_hint_overlays\"
 cfg_show_key_hints=\"$cfg_show_key_hints\"
+cfg_display_cmds=\"$cfg_display_cmds\"
 
 cfg_use_whiptail=\"$cfg_use_whiptail\"
 cfg_alt_menu_handler=\"$cfg_alt_menu_handler\"
