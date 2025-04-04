@@ -555,7 +555,7 @@ set_menu_env_variables() {
         log_it "><> whiptail - disabling menu_reload"
     else
         # shellcheck disable=SC2034
-        menu_reload="; run-shell \"$0\""
+        menu_reload="; run-shell '$0'"
         # shellcheck disable=SC2034
         reload_in_runshell=" ; $0"
     fi
