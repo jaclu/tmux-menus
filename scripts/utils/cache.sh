@@ -178,14 +178,14 @@ cache_param_write() {
 
     # ensure no cfg variables are from a previous cache
     plugin_options_have_been_read=false # allow for it to be read again
-    [ "$cfg_log_file_forced" != 1 ] && {
+    [ "$log_file_forced" != 1 ] && {
         # log_it "><> not forced, disabling logfile"
         cfg_log_file=""
     }
     tmux_get_plugin_options
 
     # create empty log line indicating startup
-    [ "$cfg_log_file_forced" != 1 ] && [ -n "$cfg_log_file" ] && log_it
+    [ "$log_file_forced" != 1 ] && [ -n "$cfg_log_file" ] && log_it
 
     # profiling_display "[cache] will write: $_f_params_tmp"
     #region param cache file
@@ -203,6 +203,7 @@ cfg_no_prefix=\"$cfg_no_prefix\"
 cfg_use_cache=\"$cfg_use_cache\"
 cfg_use_hint_overlays=\"$cfg_use_hint_overlays\"
 cfg_show_key_hints=\"$cfg_show_key_hints\"
+cfg_display_cmds=\"$cfg_display_cmds\"
 
 cfg_use_whiptail=\"$cfg_use_whiptail\"
 cfg_alt_menu_handler=\"$cfg_alt_menu_handler\"

@@ -9,6 +9,7 @@
 #
 
 static_content() {
+
     select_cmd="$TMUX_BIN choose-buffer"
     tmux_vers_check 2.6 && select_cmd="$select_cmd -Z"
 
@@ -17,7 +18,11 @@ static_content() {
     fi
 
     set -- \
-        0.0 M Left "Back to Main menu  $nav_home" main.sh \
+        0.0 M Left "Back to Main menu  $nav_home" main.sh
+    menu_generate_part 1 "$@"
+    $cfg_display_cmds && display_commands_toggle 2
+
+    set -- \
         0.0 S
 
     if ! $cfg_use_whiptail; then
@@ -39,7 +44,7 @@ static_content() {
         0.0 M H "Help               $nav_next" \
         "$d_help/help_paste_buffers.sh $0"
 
-    menu_generate_part 1 "$@"
+    menu_generate_part 3 "$@"
 }
 
 #===============================================================

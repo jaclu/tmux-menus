@@ -149,6 +149,7 @@ tmux_get_option() {
     else
         # log_it "tmux_get_option($tgo_option) - not using cache"
 
+        # tmux_error_handler is not used, since errors are handled in place
         tgo_value="$($TMUX_BIN show-options -gv "$tgo_option" 2>/dev/null)"
         tgo_was_found="$?"
         [ "$tgo_was_found" = 0 ] && [ -z "$tgo_value" ] && {
@@ -165,7 +166,6 @@ tmux_get_option() {
         }
     fi
 
-    # if tmux_vers_check 3.0 && ! tmux_vers_check 3.3 &&
     if [ "$tgo_was_found" != 0 ]; then
         #
         #  Since tmux doesn't differentiate between the variable being absent
@@ -221,6 +221,11 @@ tmux_get_plugin_options() { # cache references
     else
         cfg_show_key_hints=false
     fi
+    if normalize_bool_param "@menus_display_commands" "$default_show_key_hints"; then
+        cfg_display_cmds=true
+    else
+        cfg_display_cmds=false
+    fi
 
     if $cfg_use_whiptail; then
         _whiptail_ignore_msg="not used with whiptail"
@@ -255,7 +260,7 @@ tmux_get_plugin_options() { # cache references
     fi
 
     tmux_get_option cfg_tmux_conf "@menus_config_file" "$default_tmux_conf"
-    [ "$cfg_log_file_forced" != 1 ] && {
+    [ "$log_file_forced" != 1 ] && {
         #  If a debug logfile has been set, the tmux setting will be ignored.
         # log_it "tmux will read cfg_log_file"
         tmux_get_option cfg_log_file "@menus_log_file" "$default_log_file"
@@ -310,7 +315,7 @@ tmux_error_handler_assign() { # cache references
         log_it "teh: $TMUX_BIN $the_cmd"
     }
     # shellcheck disable=SC2068  # intentional to keep params seeparate here
-    value=$($TMUX_BIN "$@" 2>"$f_tmux_err") && safe_remove "$f_tmux_err"
+    value=$($TMUX_BIN "$@" 2>"$f_tmux_err") && safe_remove "$f_tmux_err" skip-path-check
     $teh_debug && log_it "teh: cmd done [$?] >>$value<<"
     [ -s "$f_tmux_err" ] && {
         #

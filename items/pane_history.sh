@@ -16,7 +16,11 @@ static_content() {
     fi
     set -- \
         0.0 M Left "Back to Handling Pane  $nav_prev" panes.sh \
-        0.0 M Home "Back to Main menu      $nav_home" main.sh \
+        0.0 M Home "Back to Main menu      $nav_home" main.sh
+    menu_generate_part 1 "$@"
+    $cfg_display_cmds && display_commands_toggle 2
+
+    set -- \
         0.0 S \
         2.6 C c "Clear screen & history" \
         "send-keys C-l ; run 'sleep 0.3' ; clear-history $menu_reload" \
@@ -30,7 +34,7 @@ static_content() {
         0.0 S \
         0.0 M H "Help                   $nav_next" "$d_help/help_pane_history.sh $0"
 
-    menu_generate_part 1 "$@"
+    menu_generate_part 3 "$@"
     unset d_history
 }
 

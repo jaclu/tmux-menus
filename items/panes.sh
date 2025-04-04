@@ -14,7 +14,11 @@ static_content() {
         0.0 M M "Move pane          $nav_next" pane_move.sh \
         0.0 M R "Resize pane        $nav_next" pane_resize.sh \
         0.0 M S "Split pane         $nav_next" pane_split.sh \
-        0.0 M I "Pane history       $nav_next" pane_history.sh \
+        0.0 M I "Pane history       $nav_next" pane_history.sh
+    menu_generate_part 1 "$@"
+    $cfg_display_cmds && display_commands_toggle 2
+
+    set -- \
         0.0 S \
         1.8 C z "Toggle pane zoom" "resize-pane -Z $menu_reload" \
         2.1 C m "Toggle mark current pane" "select-pane -m $menu_reload" \
@@ -37,7 +41,7 @@ static_content() {
             'Are you sure you want to kill all other panes? (y/n)' \
             'kill-pane -a'  $menu_reload"
 
-    menu_generate_part 1 "$@"
+    menu_generate_part 3 "$@"
 }
 
 #===============================================================

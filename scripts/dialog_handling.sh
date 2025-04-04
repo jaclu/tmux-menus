@@ -356,6 +356,7 @@ menu_parse() {
                 alt_command "$label" "$key" "$cmd" "$keep_cmd"
             else
                 mnu_command "$label" "$key" "$cmd" "$keep_cmd"
+                $b_show_commands && show_cmd "$cmd"
             fi
             ;;
 
@@ -396,6 +397,7 @@ menu_parse() {
                 alt_external_cmd "$label" "$key" "$cmd"
             else
                 mnu_external_cmd "$label" "$key" "$cmd"
+                $b_show_commands && [ "$key" != "!" ] && show_cmd "$cmd"
             fi
             ;;
 
@@ -487,6 +489,21 @@ menu_parse() {
 #
 #---------------------------------------------------------------
 
+display_commands_toggle() {
+    menu_part="$1"
+    log_it "add_display_commands($menu_part)"
+    [ -z "$menu_part" ] && error_msg "add_display_commands() - called with no param"
+
+    if $b_show_commands; then
+        set -- \
+            0.0 E ! "Hide Commands" "TMUX_MENUS_SHOW_CMDS=0 $0"
+    else
+        set -- \
+            0.0 E ! "Display Commands" "TMUX_MENUS_SHOW_CMDS=1 $0"
+    fi
+    menu_generate_part "$menu_part" "$@"
+}
+
 set_menu_env_variables() {
     # log_it "set_menu_env_variables()"
     #
@@ -538,7 +555,7 @@ set_menu_env_variables() {
         log_it "><> whiptail - disabling menu_reload"
     else
         # shellcheck disable=SC2034
-        menu_reload="; run-shell \"$0\""
+        menu_reload="; run-shell '$0'"
         # shellcheck disable=SC2034
         reload_in_runshell=" ; $0"
     fi
@@ -847,6 +864,7 @@ ensure_menu_fits_on_screen() {
     # Display time menu was shown
     safe_now
     disp_time="$(echo "$t_now - $dh_t_start" | bc)"
+
     # log_it "ensure_menu_fits_on_screen() Menu $bn_current_script - Display time:  $disp_time ($t_minimal_display_time)"
     [ "$(echo "$disp_time < $t_minimal_display_time" | bc)" -eq 1 ] && {
         $all_helpers_sourced || {
@@ -924,6 +942,17 @@ exit_if_dialog_doesnt_fit_screen() {
 is_dynamic_content=false    # indicates if a dynamic content segment is being processed
 dynamic_content_found=false # indicate dynamic content was generated
 static_cache_updated=false  # used to decide if static cache file reduction should happen
+
+if [ "$TMUX_MENUS_SHOW_CMDS" = "1" ]; then
+    # if true, do not use normal caching, build custom menu including cmds under each
+    # action item
+    cfg_use_cache=false
+    b_show_commands=true
+    # shellcheck source=scripts/show_cmd.sh
+    . "$D_TM_BASE_PATH"/scripts/show_cmd.sh
+else
+    b_show_commands=false
+fi
 
 # Some sanity checks
 [ "$TMUX_MENUS_NO_DISPLAY" != "1" ] && {
