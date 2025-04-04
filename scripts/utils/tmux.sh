@@ -286,7 +286,7 @@ tmux_get_plugin_options() { # cache references
 
 tmux_error_handler() {
     # fake assigning a variable in order to use the same func
-    tmux_error_handler_assign _dont_store_result_ "$@"
+    tmux_error_handler_assign _dont_store_result "$@"
 }
 
 tmux_error_handler_assign() { # cache references
@@ -297,7 +297,7 @@ tmux_error_handler_assign() { # cache references
     shift
     the_cmd="$*"
     $teh_debug && {
-        if [ "$varname" = "_dont_store_result_" ]; then
+        if [ "$varname" = "_dont_store_result" ]; then
             log_it "tmux_error_handler($the_cmd)"
         else
             log_it "tmux_error_handler_assign($the_cmd) -> $varname"
@@ -361,7 +361,7 @@ tmux_error_handler_assign() { # cache references
     }
 
     $teh_debug && {
-        if [ "$varname" = "_dont_store_result_" ]; then
+        if [ "$varname" = "_dont_store_result" ]; then
             [ -n "$value" ] && {
                 # since it's not an assignment, just output it
                 echo "$value"
