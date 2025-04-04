@@ -317,7 +317,9 @@ This boolean parameter defaults to `No`
 If set to true each menu will include an extra item `Display Commands` with the
 shortcut `!`
 
-Pressing this will display what commands are used for each action.
+Pressing this will display what commands are used for each action. If a command
+matches a defined prefix, this prefix sequence will be displayed instead of the
+command.
 
 Be aware that the menu will be taller when using this, so make sure the screen is
 large enough to handle it!
