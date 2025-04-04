@@ -31,7 +31,11 @@ static_content() {
 
     set -- \
         0.0 M Left "Back to Missing Keys  $nav_prev" missing_keys.sh \
-        0.0 M Home "Back to Main menu     $nav_home" main.sh \
+        0.0 M Home "Back to Main menu     $nav_home" main.sh
+    menu_generate_part 1 "$@"
+    $cfg_display_cmds && display_commands_toggle 2
+
+    set -- \
         0.0 S
 
     # how to print?
@@ -54,8 +58,7 @@ static_content() {
         0.0 S \
         0.0 M H "Help                  $nav_next" "$d_help/help_currencies.sh $0"
 
-    menu_generate_part 1 "$@"
-
+    menu_generate_part 3 "$@"
 }
 
 #===============================================================

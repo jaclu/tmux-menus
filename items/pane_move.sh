@@ -19,16 +19,20 @@ dynamic_content() {
                 3.0 C m "Swap current pane with marked" "swap-pane $menu_reload"
         }
     }
-    menu_generate_part 2 "$@" # needs to be generated even if empty, to keep an item 2
+    menu_generate_part 4 "$@" # needs to be generated even if empty, to keep an item 2
 }
 
 static_content() {
     set -- \
         0.0 M Left "Back to Handling Pane  $nav_prev" panes.sh \
-        0.0 M Home "Back to Main menu      $nav_home" main.sh \
+        0.0 M Home "Back to Main menu      $nav_home" main.sh
+    menu_generate_part 1 "$@"
+    $cfg_display_cmds && display_commands_toggle 2
+
+    set -- \
         1.7 S
 
-    menu_generate_part 1 "$@"
+    menu_generate_part 3 "$@"
 
     set -- \
         1.7 C p "Swap pane with prev" "swap-pane -U $menu_reload" \
@@ -48,7 +52,7 @@ static_content() {
         1.7 M H "Help, Move to other    $nav_next" \
         "$d_help/help_pane_move.sh $0"
 
-    menu_generate_part 3 "$@"
+    menu_generate_part 5 "$@"
 }
 
 #===============================================================

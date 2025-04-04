@@ -19,7 +19,11 @@ static_content() {
 
     # shellcheck disable=SC2154
     set -- \
-        0.0 M Left "Back to Main menu  $nav_home" main.sh \
+        0.0 M Left "Back to Main menu  $nav_home" main.sh
+    menu_generate_part 1 "$@"
+    $cfg_display_cmds && display_commands_toggle 2
+
+    set -- \
         0.0 S \
         0.0 C r "Rename this session" "command-prompt -I '#{session_name}' \
             'rename-session -- \"%%\"' $menu_reload" \
@@ -39,7 +43,7 @@ static_content() {
         'Are you sure you want to kill all other sessions? (y/n)' \
         'kill-session -a'"
 
-    menu_generate_part 1 "$@"
+    menu_generate_part 3 "$@"
 }
 
 #===============================================================

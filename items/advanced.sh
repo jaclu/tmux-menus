@@ -34,7 +34,7 @@ dynamic_content() {
             'Prefix key without C- (will take effect imeditally)' \
             'run-shell \"$d_scripts/change_prefix.sh %1 $reload_in_runshell\"'"
 
-    menu_generate_part 2 "$@"
+    menu_generate_part 4 "$@"
 }
 
 static_content() {
@@ -44,7 +44,11 @@ static_content() {
 
     # 2.7 M M "Manage clients    $nav_next" advanced_manage_clients.sh \
     set -- \
-        0.0 M Left "Back to Main menu  $nav_home" main.sh \
+        0.0 M Left "Back to Main menu  $nav_home" main.sh
+    menu_generate_part 1 "$@"
+    $cfg_display_cmds && display_commands_toggle 2
+
+    set -- \
         0.0 S
 
     if $cfg_use_whiptail; then
@@ -81,7 +85,7 @@ static_content() {
             "$d_hints/choose-client.sh $0"
 
     }
-    menu_generate_part 1 "$@"
+    menu_generate_part 3 "$@"
 
     # shellcheck disable=SC2154
     set -- \
@@ -91,8 +95,7 @@ static_content() {
         1.8 C x "Kill server" "confirm-before -p \
             'kill tmux server defined in($TMUX_SOURCE) ? (y/n)' kill-server"
 
-    menu_generate_part 3 "$@"
-
+    menu_generate_part 5 "$@"
 }
 
 #===============================================================

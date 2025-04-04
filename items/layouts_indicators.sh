@@ -11,7 +11,11 @@
 static_content() {
     set -- \
         0.0 M Left "Back to Layouts    $nav_prev" layouts.sh \
-        0.0 M Home "Back to Main menu  $nav_home" main.sh \
+        0.0 M Home "Back to Main menu  $nav_home" main.sh
+    menu_generate_part 1 "$@"
+    $cfg_display_cmds && display_commands_toggle 2
+
+    set -- \
         3.3 S \
         3.3 T "-#[align=centre,nodim]pane-border-indicators" \
         3.3 C "o" "off" "set -g pane-border-indicators off    $menu_reload" \
@@ -19,7 +23,7 @@ static_content() {
         3.3 C "a" "arrows" "set -g pane-border-indicators arrows $menu_reload" \
         3.3 C "b" "both" "set -g pane-border-indicators both   $menu_reload"
 
-    menu_generate_part 1 "$@"
+    menu_generate_part 3 "$@"
 }
 
 #===============================================================

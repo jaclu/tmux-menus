@@ -22,7 +22,11 @@ static_content() {
     #
     set -- \
         0.0 M Left "Back to Main menu  $nav_home" main.sh \
-        0.0 M C "Currencies         $nav_next" currencies.sh \
+        0.0 M C "Currencies         $nav_next" currencies.sh
+    menu_generate_part 1 "$@"
+    $cfg_display_cmds && display_commands_toggle 2
+
+    set -- \
         0.0 S \
         0.0 E e "Send Escape" "$0  0x1b" \
         0.0 E b "Send back-tick" "$0  0x60" \
@@ -33,8 +37,7 @@ static_content() {
         0.0 S \
         0.0 M H "Help               $nav_next" "$d_help/help_missing_keys.sh $0"
 
-    menu_generate_part 1 "$@"
-
+    menu_generate_part 3 "$@"
 }
 
 #===============================================================

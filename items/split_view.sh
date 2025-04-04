@@ -10,7 +10,11 @@
 
 static_content() {
     set -- \
-        0.0 M Left "Back to Main menu  $nav_home" main.sh \
+        0.0 M Left "Back to Main menu  $nav_home" main.sh
+    menu_generate_part 1 "$@"
+    $cfg_display_cmds && display_commands_toggle 2
+
+    set -- \
         0.0 S \
         0.0 T "-#[align=centre,nodim]----  Split Pane  ----" \
         2.0 C l "Left" "split-window     -hb -c '#{pane_current_path}' $menu_reload" \
@@ -25,7 +29,7 @@ static_content() {
         0.0 S \
         0.0 M H "Help               $nav_next" "$d_help/help_split.sh $0"
 
-    menu_generate_part 1 "$@"
+    menu_generate_part 3 "$@"
 }
 
 #===============================================================

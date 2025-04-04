@@ -8,7 +8,7 @@ scripts, but excluding menu reload.
 
 ## Currencies - Zloty
 
-The symbol is two chars, so work arround the current one char limitation
+The symbol is two chars, so work around the current one char limitation
 
 ## WhipTail
 

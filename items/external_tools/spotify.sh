@@ -21,13 +21,17 @@ display_currently_playing_track() {
 
 static_content() {
 
-    reload_no_output=" > /dev/null ; $0"
+    reload_no_output=" >/dev/null ; $0"
 
     [ -z "$(command -v spotify)" ] && error_msg_safe "spotify bin not found!"
 
     set -- \
         0.0 M Left "Back to Extras     $nav_prev" extras.sh \
-        0.0 M Home "Back to Main menu  $nav_home" main.sh \
+        0.0 M Home "Back to Main menu  $nav_home" main.sh
+    menu_generate_part 1 "$@"
+    $cfg_display_cmds && display_commands_toggle 2
+
+    set -- \
         0.0 S \
         0.0 E t "Title - currently playing track" \
         "$0 -t $reload_no_output" \
@@ -43,7 +47,7 @@ static_content() {
         0.0 E i "Copy URI to clipboard" "spotify share uri $reload_no_output" \
         0.0 E l "Copy URL to clipboard" "spotify share url $reload_no_output"
 
-    menu_generate_part 1 "$@"
+    menu_generate_part 3 "$@"
 }
 
 #===============================================================

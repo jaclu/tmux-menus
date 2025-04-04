@@ -20,16 +20,20 @@ dynamic_content() {
             0.0 C s " containing marked pane" swap-window
     fi
 
-    menu_generate_part 2 "$@"
+    menu_generate_part 4 "$@"
 }
 
 static_content() {
     set -- \
         0.0 M Left "Back to Handling Window  $nav_prev" windows.sh \
-        0.0 M Home "Back to Main menu        $nav_home" main.sh \
-        0.0 S
-
+        0.0 M Home "Back to Main menu        $nav_home" main.sh
     menu_generate_part 1 "$@"
+    $cfg_display_cmds && display_commands_toggle 2
+
+    set -- \
+        0.0 S
+    menu_generate_part 3 "$@"
+
     set -- \
         0.0 C "\<" "Swap window Left" "swap-window -dt:-1 $menu_reload" \
         0.0 C "\>" "Swap window Right" "swap-window -dt:+1 $menu_reload" \
@@ -47,7 +51,7 @@ static_content() {
         1.7 S \
         1.7 M H "Help, explaining Move/Link $nav_next" "$d_help/help_window_move.sh $0"
 
-    menu_generate_part 3 "$@"
+    menu_generate_part 5 "$@"
 }
 
 #===============================================================
