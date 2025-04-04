@@ -24,7 +24,11 @@ dynamic_content() {
     d_extras="$d_items"/external_tools
 
     set -- \
-        0.0 M Left "Back to Main menu  $nav_prev" main.sh \
+        0.0 M Left "Back to Main menu  $nav_prev" main.sh
+    menu_generate_part 1 "$@"
+    $cfg_display_cmds && display_commands_toggle 2
+
+    set -- \
         0.0 S \
         0.0 M D "$(is_avalable dropbox)Dropbox      $nav_next" "$d_extras"/dropbox.sh \
         0.0 M S "$(is_avalable spotify)Spotify      $nav_next" "$d_extras"/spotify.sh \
@@ -33,7 +37,7 @@ dynamic_content() {
         0.0 E i "public IP" public_ip.sh \
         0.0 M H "Help  $nav_next" "$d_help/help_extras.sh $0"
 
-    menu_generate_part 1 "$@"
+    menu_generate_part 3 "$@"
 }
 
 #===============================================================

@@ -11,7 +11,11 @@
 static_content() {
     set -- \
         0.0 M Left "Back to Main menu  $nav_home" main.sh \
-        0.0 M M "Move window        $nav_next" window_move.sh \
+        0.0 M M "Move window        $nav_next" window_move.sh
+    menu_generate_part 1 "$@"
+    $cfg_display_cmds && display_commands_toggle 2
+
+    set -- \
         0.0 S \
         1.7 C r "Rename window" "command-prompt -I '#W'  \
             -p 'New window name: ' 'rename-window %%' $menu_reload" \
@@ -34,7 +38,7 @@ static_content() {
             'Are you sure you want to kill all other windows? (y/n)' \
             'run-shell \"${d_scripts}/kill_other_windows.sh\"' $menu_reload"
 
-    menu_generate_part 1 "$@"
+    menu_generate_part 3 "$@"
 }
 
 #===============================================================

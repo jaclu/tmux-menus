@@ -16,6 +16,11 @@ teh_debug to false.
 It will also limit the error_display in case of errors to a one-liner in the log_file
 In order not to flood the log with an elaborate error report.
 
+## TMUX_MENUS_SHOW_CMDS
+
+If this is set to 1 menus will always show commands, regardless of what
+`@menus_display_commands` is set to.
+
 ## TMUX_MENUS_LOGGING_MINIMAL
 
 If set to 1 only errors and menu rendering times will be logged, practicall if

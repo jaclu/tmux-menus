@@ -28,7 +28,7 @@ dynamic_content() {
     set -- "$@" \
         0.0 E l "$lan_label LAN sharing" "mullvad lan set $lan_cmd; $0"
 
-    menu_generate_part 2 "$@"
+    menu_generate_part 4 "$@"
 }
 
 static_content() {
@@ -43,11 +43,15 @@ static_content() {
     mulv_status_chk='Mullvad status: $(mullvad status | head -n 1)'
     set -- \
         0.0 M Left "Back to Extras     $nav_prev" extras.sh \
-        0.0 M Home "'Back to Main menu  $nav_home'" main.sh \
+        0.0 M Home "'Back to Main menu  $nav_home'" main.sh
+    menu_generate_part 1 "$@"
+    $cfg_display_cmds && display_commands_toggle 2
+
+    set -- \
         0.0 S \
         0.0 C s Status "display '$mulv_status_chk' $menu_reload"
 
-    menu_generate_part 1 "$@"
+    menu_generate_part 3 "$@"
 }
 
 #===============================================================

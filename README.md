@@ -20,9 +20,13 @@ experienced users, then add more for newbies.
 
 ## Recent Changes
 
+- Added new feature Display Commands, see `Display menu commands` in the Configuration
+  section
+- Fixed handling of menu options in tmux 3.0 - 3.2a since they don't return an
+  error for missing options
+- Added display commands feature, see Display menu commands section in
 - Removed all jk shortcuts in menus, allowing for consistent vim style navigation.
 - Plugin is initialized in the background, to cut down on tpm processing time.
-- Further optimized caching, cutting rendeing times in half.
 
 </details>
 <details>
@@ -146,10 +150,210 @@ The plugin should now be activated.
 
 </details>
 <details>
+<summary>Configuration</summary>
+
+## Configuration
+
+### Boolean parameters
+
+All boolean parameters accept the following values:
+
+- `Yes` `True` `1`
+- `No` `False` `0`
+
+This is case-insensitive, meaning any combination of uppercase and lowercase
+letters is accepted.
+
+### Display menus
+
+The default trigger is `<prefix> \` The trigger is configured like this:
+
+```tmux
+set -g @menus_trigger 'F12'
+```
+
+Note: Non-standard keys, such as the default backslash (`\`), must be prefixed with `\`
+(e.g., `\\`) to prevent confusion in tmux.
+
+Handling special keys becomes more complex when using quotes:
+
+- Inside single quotes, both `'\'` and `'\\'` work.
+- Inside double quotes, only `"\\"` is valid.
+
+To avoid unexpected errors when switching between quoting styles, it's recommended
+to always prefix special keys with `\` inside both single and double quotes,
+as well as when not using quotes.
+
+### Display without using prefix
+
+```tmux
+set -g @menus_without_prefix 'Yes'
+```
+
+This boolean parameter defaults to `No`
+
+Use this in order to trigger menus without first hitting `<prefix>`
+
+### Pointer to the config file
+
+```tmux
+set -g @menus_config_file '~/.configs/tmux.conf'
+```
+
+In the main menu, the tmux config file to be reloaded.
+The default location for this is:
+
+1. `@menus_config_file` - if this is defined in the tmux config file, it will be used.
+2. `$TMUX_CONF` - if this is present in the environment, it will be used.
+3. `$XDG_CONFIG_HOME/tmux/tmux.conf` - if `$XDG_CONFIG_HOME` is defined.
+4. `~/.tmux.conf` - Default if none of the above are set.
+
+When a reload is requested, the conf file will be prompted for, defaulting
+to the first match above. It can be manually changed.
+
+### Menu location
+
+The default locations are: `C` for tmux >= 3.2 `P` otherwise. If whiptail/dialog
+is used, menu location is ignored
+
+```tmux
+set -g @menus_location_x 'W'
+set -g @menus_location_y 'S'
+```
+
+For all location options see the tmux man page, search for `display-menu`.
+The basic options are:
+
+| Value | Flag | Meaning                                        |
+| ----- | ---- | ---------------------------------------------- |
+| C     | Both | The centre of the terminal (tmux 3.2 or newer) |
+| R     | -x   | The right side of the terminal                 |
+| P     | Both | The bottom left of the pane                    |
+| M     | Both | The mouse position                             |
+| W     | Both | The window position on the status line         |
+| S     | -y   | The line above or below the status line        |
+
+### Disable caching
+
+```tmux
+set -g @menus_use_cache 'No'
+```
+
+This boolean parameter defaults to `Yes`
+
+By default menu items are cached.
+
+Disabling caching also disables the Custom Menus feature.
+
+To be more precise, items listed inside `static_content()` are cached.
+Some items need to be freshly generated each time a menu is displayed,
+those items are defines in `dynamic_content()` see
+[scripts/pane_move.sh](items/pane_move.sh) for an example of this. In that case,
+"Swap current pane with marked" is only displayed if there is a marked pane.
+
+The plugin remembers what tmux version was used last time.
+If another version is detected as the plugin is initialized, the entire
+cache is dropped, so that the right version dependent items can be
+selected as the cache is re-populated.
+Same if a menu script is changed, if the script is newer than the cache,
+that cache item is regenerated.
+
+### Use Hint Overlays
+
+```tmux
+set -g @menus_use_hint_overlays 'No'
+```
+
+This boolean parameter defaults to `Yes`
+
+Some menu items will display tmux dialogs, where each have their own rather complex
+set of special key bindings - choose-buffer, choose-client, choose-tree and
+customize-mode
+
+When entering such a dialog, per default an overlay will first be presented lisitng
+the keys available for that dialog, if it fits on screen.
+
+Use this setting to disable the overlay feature.
+
+If `@menus_use_hint_overlays` is enabled, there is a support option
+`@menus_show_key_hints` (defaults to 'No') that also can be toggled.
+If `@menus_use_hint_overlays` is disabled, `@menus_show_key_hints` is ignored.
+
+#### Show Key Hints
+
+```tmux
+set -g @menus_show_key_hints 'Yes'
+```
+
+This boolean parameter defaults to `No`
+
+Related to `@menus_use_hint_overlays` Since those key-listings tend to be rather long
+they might not fit on screen, and thus be silently skipped.
+Enabling this will offer an extra option `Key Hints` on each menu featuring an
+alternative that will display such a dialog, and mentioning which item on that
+menu it is related to.
+
+This Key Hint will display the dialog the normal way, giving a warning if the
+screen is to small, mentioning required screen size.
+
+It will also serve as a hint as to what menu entries are expected to display an overlay.
+
+### Logging
+
+Per default logging is disabled. If this is desired, provide a log file name
+like this:
+
+```tmux
+set -g @menus_log_file '~/tmp/tmux-menus.log'
+```
+
+### Display menu commands
+
+```tmux
+set -g @menus_display_commands 'Yes'
+```
+
+This boolean parameter defaults to `No`
+
+If set to true each menu will include an extra item `Display Commands` with the
+shortcut `!` pressing this will display what command is used for each action.
+
+Be aware that the menu will be taller when using this, so make sure the screen is
+large enough to display it!
+
+</details>
+<details>
+<summary>Screen might be too small</summary>
+<br>
+
+## Screen might be too small
+
+tmux does not give any error if a menu doesn't fit the available screen,
+it just does not display the menu.
+
+The only hint is that the menu is terminated instantaneously.
+
+Since this test is far from perfect, and some computers are really slow,
+the current assumption is that if it was displayed < 0.1 seconds,
+it was likely due to screen size.
+On really slow systems, the cut-off is 0.5 seconds, since they would typically
+need > 0.1 just to process the menu.
+In that case this error will be displayed on the status-bar:
+
+```tmux
+tmux-menus ERROR: Screen might be too small
+```
+
+It will also be displayed if the menu is closed right away intentionally
+or unintentionally, so there will no doubt sometimes be false positives.
+If it doesn't happen the next time the menu is attempted, it can be ignored.
+
+</details>
+<details>
 <summary>Using Styling for menus</summary>
 <br>
 
-### Using Styling for menus
+## Using Styling for menus
 
 See [docs/Styling.md](docs/Styling.md)
 
@@ -200,191 +404,6 @@ One gotcha is that in the Red Hat universe the package is not called whiptail,
 the package containing whiptail is called `newt`.
 
 MacOS does not come with whiptail, but it is available in the Homebrew package `newt`.
-
-</details>
-<details>
-<summary>Configuration</summary>
-
-## Configuration
-
-### Boolean parameters
-
-All boolean parameters accept the following values:
-
-- `Yes` `True` `1`
-- `No` `False` `0`
-
-This is case-insensitive, meaning any combination of uppercase and lowercase
-letters is accepted.
-
-### Display menus
-
-The default trigger is `<prefix> \` The trigger is configured like this:
-
-```tmux
-set -g @menus_trigger 'F12'
-```
-
-Note: Non-standard keys, such as the default backslash (`\`), must be prefixed with `\`
-(e.g., `\\`) to prevent confusion in tmux.
-
-Handling special keys becomes more complex when using quotes:
-
-- Inside single quotes, both `'\'` and `'\\'` work.
-- Inside double quotes, only `"\\"` is valid.
-
-To avoid unexpected errors when switching between quoting styles, it's recommended
-to always prefix special keys with `\` inside both single and double quotes,
-as well as when not using quotes.
-
-### Display without using prefix
-
-In order to trigger menus without first hitting `<prefix>`
-
-```tmux
-set -g @menus_without_prefix 'Yes'
-```
-
-This boolean parameter can be either `Yes` or `No` (the default)
-
-### Menu location
-
-The default locations are: `C` for tmux >= 3.2 `P` otherwise. If whiptail/dialog is used,
-menu location is ignored
-
-```tmux
-set -g @menus_location_x 'W'
-set -g @menus_location_y 'S'
-```
-
-For all location options see the tmux man page, search for `display-menu`.
-The basic options are:
-
-| Value | Flag | Meaning                                        |
-| ----- | ---- | ---------------------------------------------- |
-| C     | Both | The centre of the terminal (tmux 3.2 or newer) |
-| R     | -x   | The right side of the terminal                 |
-| P     | Both | The bottom left of the pane                    |
-| M     | Both | The mouse position                             |
-| W     | Both | The window position on the status line         |
-| S     | -y   | The line above or below the status line        |
-
-### Disable caching
-
-By default menu items are cached, set this to `No` to disable all caching.
-
-```tmux
-set -g @menus_use_cache 'No'
-```
-
-This boolean parameter can be either `Yes` (the default) or `No`
-
-Disabling caching also disables the Custom Menus feature.
-
-To be more precise, items listed inside `static_content()` are cached.
-Some items need to be freshly generated each time a menu is displayed,
-those items are defines in `dynamic_content()` see
-[scripts/pane_move.sh](items/pane_move.sh) for an example of this. In that case,
-"Swap current pane with marked" is only displayed if there is a marked pane.
-
-The plugin remembers what tmux version was used last time.
-If another version is detected as the plugin is initialized, the entire
-cache is dropped, so that the right version dependent items can be
-selected as the cache is re-populated.
-Same if a menu script is changed, if the script is newer than the cache,
-that cache item is regenerated.
-
-### Use Hint Overlays
-
-Some menu items will display tmux dialogs, where each have their own rather complex
-set of special key bindings - choose-buffer, choose-client, choose-tree and customize-mode
-
-When entering such a dialog, per default an overlay will first be presented lisitng
-the keys available for that dialog, if it fits on screen.
-
-Use this setting to disable the overlay feature.
-
-```tmux
-set -g @menus_use_hint_overlays 'No'
-```
-
-This boolean parameter can be either `Yes` (the default) or `No`
-
-If `@menus_use_hint_overlays` is enabled, there is a support option
-`@menus_show_key_hints` (defaults to 'No') that also can be toggled. If `@menus_use_hint_overlays`
-is disabled, `@menus_show_key_hints` is ignored.
-
-#### Show Key Hints
-
-Related to `@menus_use_hint_overlays` Since those key-listings tend to be rather long
-they might not fit on screen, and thus be silently skipped.
-Enabling this will offer an extra option `Key Hints` on each menu featuring an
-alternative that will display such a dialog, and mentioning which item on that
-menu it is related to.
-
-This Key Hint will display the dialog the normal way, giving a warning if the
-screen is to small, mentioning required screen size.
-
-It will also serve as a hint as to what menu entries are expected to display an overlay.
-
-```tmux
-set -g @menus_show_key_hints 'Yes'
-```
-
-This boolean parameter can be either `Yes` or `No` (the default)
-
-### Pointer to the config file
-
-```tmux
-set -g @menus_config_file '~/.configs/tmux.conf'
-```
-
-In the main menu, the tmux config file to be reloaded.
-The default location for this is:
-
-1. `@menus_config_file` - if this is defined in the tmux config file, it will be used.
-2. `$TMUX_CONF` - if this is present in the environment, it will be used.
-3. `$XDG_CONFIG_HOME/tmux/tmux.conf` - if `$XDG_CONFIG_HOME` is defined.
-4. `~/.tmux.conf` - Default if none of the above are set.
-
-When a reload is requested, the conf file will be prompted for, defaulting
-to the first match above. It can be manually changed.
-
-### Logging
-
-Per default logging is disabled. If this is desired, provide a log file name
-like this:
-
-```tmux
-set -g @menus_log_file '~/tmp/tmux-menus.log'
-```
-
-</details>
-<details>
-<summary>Screen might be too small</summary>
-<br>
-
-## Screen might be too small
-
-tmux does not give any error if a menu doesn't fit the available screen,
-it just does not display the menu.
-
-The only hint is that the menu is terminated instantaneously.
-
-Since this test is far from perfect, and some computers are really slow,
-the current assumption is that if it was displayed < 0.1 seconds,
-it was likely due to screen size.
-On really slow systems, the cut-off is 0.5 seconds, since they would typically
-need > 0.1 just to process the menu.
-In that case this error will be displayed on the status-bar:
-
-```tmux
-tmux-menus ERROR: Screen might be too small
-```
-
-It will also be displayed if the menu is closed right away intentionally
-or unintentionally, so there will no doubt sometimes be false positives.
-If it doesn't happen the next time the menu is attempted, it can be ignored.
 
 </details>
 <details>
@@ -530,8 +549,8 @@ The best way to send feedback is to file an
 ## Thanks to
 
 - [sumskyi](https://github.com/sumskyi) for notifying me that the boolean check
-error message for invalid values lacked the significant info about what variable
-contained the incorrect value. Addressed in release 2.0.2
+  error message for invalid values lacked the significant info about what variable
+  contained the incorrect value. Addressed in release 2.0.2
 - [GaikwadPratik](https://github.com/GaikwadPratik) for notifying me that the
   Disable caching feature was broken
 - [Tony Soloveyv](https://github.com/tony-sol) for spotting an unintentional

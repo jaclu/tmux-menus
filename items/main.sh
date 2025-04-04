@@ -39,7 +39,11 @@ static_content() {
         0.0 M V "split View         $nav_next" split_view.sh \
         2.0 M M "Missing keys       $nav_next" missing_keys.sh \
         0.0 M A "Advanced options   $nav_next" advanced.sh \
-        0.0 M E "Extras             $nav_next" extras.sh \
+        0.0 M E "Extras             $nav_next" extras.sh
+    menu_generate_part 1 "$@"
+    $cfg_display_cmds && display_commands_toggle 2
+
+    set -- \
         0.0 S \
         3.2 T "-#[nodim]On-the-Fly Config" \
         3.2 E c "  (customize-mode)" "$customize_mode_cmd"
@@ -50,7 +54,6 @@ static_content() {
             3.2 M K "  customize-mode  $nav_next" \
             "$d_hints/customize-mode.sh $0"
     }
-
     set -- "$@" \
         1.8 E p "Plugins inventory" plugins.sh \
         0.0 C r "Reload tmux conf" "$rld_cmd" \
@@ -59,7 +62,8 @@ static_content() {
         0.0 M H "Help              $nav_next" \
         "$d_help/help_summary.sh $0"
 
-    menu_generate_part 1 "$@"
+    menu_generate_part 3 "$@"
+
 }
 
 #===============================================================
