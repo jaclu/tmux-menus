@@ -17,7 +17,7 @@ get_config_refresh() {
     # log_it "get_config_refresh()"
 
     [[ -f "$f_cache_params" ]] && {
-        # [[ "$cfg_log_file_forced" = 1 ]] && orig_log_file="$cfg_log_file"
+        # [[ "$log_file_forced" = 1 ]] && orig_log_file="$cfg_log_file"
 
         # Only really need cfg_tmux_conf at this point
         source_cached_params || {

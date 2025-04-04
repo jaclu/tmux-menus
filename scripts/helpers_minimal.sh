@@ -121,7 +121,7 @@ source_cached_params() {
     # log_it "source_cached_params()"
     result_sourcing=0
 
-    [ "$cfg_log_file_forced" = 1 ] && orig_log_file="$cfg_log_file"
+    [ "$log_file_forced" = 1 ] && orig_log_file="$cfg_log_file"
 
     if [ -f "$f_cache_params" ]; then
         # shellcheck disable=SC1090
@@ -131,7 +131,7 @@ source_cached_params() {
         result_sourcing=1
     fi
 
-    [ "$cfg_log_file_forced" = 1 ] && {
+    [ "$log_file_forced" = 1 ] && {
         cfg_log_file="$orig_log_file"
         unset orig_log_file
         # log_it "restored cfg_log_file"
@@ -344,13 +344,14 @@ plugin_name="tmux-menus"
 env_initialized=0
 
 #
-#  Setting cfg_log_file_forced here will ignore
+#  Setting log_file_forced here will ignore
 #  the tmux setting @menus_log_file
 #  This is mostly for debugging early stuff before the settings have
 #  been processed. Should normally be commented out!
+#  If this is set, cfg_log_file must also be defined since it won't be read from tmux.
 #
-# cfg_log_file_forced="1"
-# cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
+log_file_forced="1"
+cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
 
 #
 #  If set to "1" log will happen to stderr if script is run in an interactive
