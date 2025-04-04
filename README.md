@@ -336,7 +336,9 @@ possible it will be split on the last white space before `@menus_display_cmds_co
 length. If no white space is found, the cmd will be split at the indicated max length.
 
 In case this is set too wide, and the line doesn't fit on the display, tmux will
-cut the line ending it with `>`. Since This means part of the command was truncated.
+cut the line ending it with `>`. 
+
+Such lines are truncated. And the entire command was not displayed.
 
 If commands end with `>` it is recomended to use a narrower setting.
 
