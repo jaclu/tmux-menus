@@ -63,6 +63,8 @@ tmux_get_defaults() {
     default_trigger_key=\\
     default_no_prefix=No
 
+    default_display_cmds_cols=75
+
     default_simple_style_selected=default
     default_simple_style=default
     default_simple_style_border=default
@@ -221,11 +223,6 @@ tmux_get_plugin_options() { # cache references
     else
         cfg_show_key_hints=false
     fi
-    if normalize_bool_param "@menus_display_commands" "$default_show_key_hints"; then
-        cfg_display_cmds=true
-    else
-        cfg_display_cmds=false
-    fi
 
     if $cfg_use_whiptail; then
         _whiptail_ignore_msg="not used with whiptail"
@@ -242,6 +239,19 @@ tmux_get_plugin_options() { # cache references
         cfg_nav_prev="$default_nav_prev"
         cfg_nav_home="$default_nav_home"
     else
+        if normalize_bool_param "@menus_display_commands" "$default_show_key_hints"; then
+            cfg_display_cmds=true
+            tmux_get_option cfg_display_cmds_cols "@menus_display_cmds_cols" \
+                "$default_display_cmds_cols"
+            is_int "$cfg_display_cmds_cols" || {
+                error_msg "@menus_display_cmds_cols is not int: $cfg_display_cmds_cols"
+            }
+        else
+            cfg_display_cmds=false
+            # No point reading tmux for this if it isn't going to be used anyhow
+            cfg_display_cmds_cols="$default_display_cmds_cols"
+        fi
+
         tmux_get_option cfg_simple_style_selected "@menus_simple_style_selected" \
             "$default_simple_style_selected"
 

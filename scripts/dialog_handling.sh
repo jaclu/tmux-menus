@@ -870,6 +870,13 @@ ensure_menu_fits_on_screen() {
         $all_helpers_sourced || {
             source_all_helpers "ensure_menu_fits_on_screen()  short display, give warning"
         }
+        #
+        # Save menu that failed to show, helpful to try to figure out why it failed
+        #
+        # _f_mnu="$d_tmp"/tmux-menus-failed-to-show.cmd
+        # echo "$menu_items" >"$_f_mnu"
+        # log_it "Failed menu saved to: $_f_mnu"
+
         if [ -n "$window_width" ] && [ -n "$window_height" ]; then
             _s="$f_menu_rel: screen mins: ${window_width}x$window_height"
         elif [ -n "$window_height" ]; then

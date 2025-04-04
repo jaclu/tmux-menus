@@ -229,6 +229,13 @@ has_lf_not_at_end() {
     [ "$1" != "$(printf "$1" | tr '\n' 'X')" ]
 }
 
+is_int() {
+    case $1 in
+    '' | *[!0-9]*) return 1 ;; # Contains non-numeric characters
+    *) return 0 ;;             # Contains only digits
+    esac
+}
+
 #---------------------------------------------------------------
 #
 #   Get some not often used states

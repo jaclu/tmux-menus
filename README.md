@@ -315,10 +315,25 @@ set -g @menus_display_commands 'Yes'
 This boolean parameter defaults to `No`
 
 If set to true each menu will include an extra item `Display Commands` with the
-shortcut `!` pressing this will display what command is used for each action.
+shortcut `!`
+
+Pressing this will display what commands are used for each action.
 
 Be aware that the menu will be taller when using this, so make sure the screen is
-large enough to display it!
+large enough to handle it!
+
+If this is defined, there is a support setting that can be used:
+
+```tmux
+set -g @menus_display_cmds_cols 160
+```
+
+This is the maximum line length that will be used to display commands.
+It defaults to `75` but can be changed if the display is really wide or narrow.
+
+If the displayed command doesn't fit on one line, it will be split in chunks, if
+possible it will be split on the last white space before `@menus_display_cmds_cols`
+length. If no white space is found, the cmd will be split at the indicated max length.
 
 </details>
 <details>

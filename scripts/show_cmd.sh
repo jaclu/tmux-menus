@@ -53,7 +53,7 @@ show_cmd() {
     _s2="${_s1%" $reload_in_runshell"}"    # skip reload_in_runshell suffix if found
     _s3="${_s2%"; $0"}"                    # Remove trailing reload of menu
     _s4="$(echo "$_s3" | sed 's/\\&.*//')" # skip hint overlays, ie part after \&
-    # reduce excessive whitespace
+    # reduce excessive white space
     cmd_bare=$(printf '%s\n' "$_s4" | awk '{$1=$1; print}')
 
     log_it "show_cmd($cmd_bare)"
@@ -61,11 +61,28 @@ show_cmd() {
 
     prefix_replace_cmd
 
-    cmd=$cmd_bare
+    cmd="$cmd_bare"
     while [ -n "$cmd" ]; do
-        chunk=$(printf '%.70s' "$cmd")
+        chunk=$(printf '%s\n' "$cmd" | awk -v max="$cfg_display_cmds_cols" '
+        {
+            if (length($0) <= max) {
+                print $0
+            } else {
+                for (i = max; i > 0; i--) {
+                    if (substr($0, i, 1) ~ /[[:space:]]/) {
+                        print substr($0, 1, i)
+                        exit
+                    }
+                }
+                # No space found, just cut at max
+                print substr($0, 1, max)
+            }
+        }')
+
         log_it "  chunk: >>$chunk<<"
         mnu_text_line "-#[nodim]  $chunk"
+
         cmd=${cmd#"$chunk"}
+        cmd=${cmd#" "}
     done
 }
