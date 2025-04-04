@@ -149,6 +149,7 @@ tmux_get_option() {
     else
         # log_it "tmux_get_option($tgo_option) - not using cache"
 
+        # tmux_error_handler is not used, since errors are handled in place
         tgo_value="$($TMUX_BIN show-options -gv "$tgo_option" 2>/dev/null)"
         tgo_was_found="$?"
         [ "$tgo_was_found" = 0 ] && [ -z "$tgo_value" ] && {
@@ -165,7 +166,6 @@ tmux_get_option() {
         }
     fi
 
-    # if tmux_vers_check 3.0 && ! tmux_vers_check 3.3 &&
     if [ "$tgo_was_found" != 0 ]; then
         #
         #  Since tmux doesn't differentiate between the variable being absent

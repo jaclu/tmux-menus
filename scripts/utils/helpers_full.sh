@@ -238,9 +238,8 @@ has_lf_not_at_end() {
 define_actual_size() {
     # Sets some variable indicating screen size
     # log_it "define_actual_size()"
-
-    actual_height="$($TMUX_BIN display-message -p "#{client_height}")"
-    actual_width="$($TMUX_BIN display-message -p "#{client_width}")"
+    tmux_error_handler_assign actual_height display-message -p "#{client_height}"
+    tmux_error_handler_assign actual_width display-message -p "#{client_width}"
 }
 
 #---------------------------------------------------------------
