@@ -27,12 +27,12 @@ display_char() {
     [ -z "$c" ] && error_msg_safe "display_char() - no param"
     if $cfg_use_whiptail; then
         if normalize_bool_param "$wt_pasting" false no_cache; then
-        #     pending_paste=true
-        # else
-        #     pending_paste=false
-        # fi
+            #     pending_paste=true
+            # else
+            #     pending_paste=false
+            # fi
 
-        # if $pending_paste; then
+            # if $pending_paste; then
             #  prefix with pending paste buffer
             tmux_error_handler_assign b show-buffer
             # shellcheck disable=SC2154
@@ -63,23 +63,7 @@ handle_char() {
         # shellcheck disable=SC2059
         s="$(printf "\\$(printf "%o" "0x${s_in#0x}")")"
         ;;
-    *)
-        s="$s_in"
-        if [ "$(uname)" = "Darwin" ]; then
-            _check="${#s_in}"
-        else
-            #
-            #  On Linux, it seems checking str length the normal way
-            #  doesn't work for some chars, like §
-            #  This seems more resilient
-            #
-            # shellcheck disable=SC2003,SC2308
-            _check="$(expr length "$s_in")"
-        fi
-        if [ "$_check" -gt 1 ]; then
-            error_msg_safe "param can only be single char! [$s]"
-        fi
-        ;;
+    *) s="$s_in" ;;
     esac
     display_char "$s"
 }
