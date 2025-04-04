@@ -239,7 +239,7 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 template_splitter="CUSTOM_ITEMS_SPLITTER" # items will be inserted at his point
-f_custom_items_template="$D_TM_BASE_PATH"/items/custom_index_template.sh
+f_custom_items_template="$D_TM_BASE_PATH"/templates/custom_index_template.sh
 # File used during generation of custom image index
 # as each custom item is verified, it is added here
 # then inserted into the custom index and removed
