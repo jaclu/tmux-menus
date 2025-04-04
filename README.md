@@ -335,6 +335,11 @@ If the displayed command doesn't fit on one line, it will be split in chunks, if
 possible it will be split on the last white space before `@menus_display_cmds_cols`
 length. If no white space is found, the cmd will be split at the indicated max length.
 
+In case this is set too wide, and the line doesn't fit on the display, tmux will
+cut the line ending it with `>`. Since This means part of the command was truncated.
+
+If commands end with `>` it is recomended to use a narrower setting.
+
 </details>
 <details>
 <summary>Screen might be too small</summary>
