@@ -65,7 +65,7 @@ show_cmd() {
     while [ -n "$cmd" ]; do
         chunk=$(printf '%.70s' "$cmd")
         log_it "  chunk: >>$chunk<<"
-        mnu_text_line "  $chunk"
+        mnu_text_line "-#[nodim]  $chunk"
         cmd=${cmd#"$chunk"}
     done
 }
