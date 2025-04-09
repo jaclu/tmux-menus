@@ -8,6 +8,43 @@
 #  Can be used independent of tmux-menus
 #
 
+find_plugin_path() {
+    [[ -n "$TMUX_PLUGIN_MANAGER_PATH" ]] && {
+        # if TMUX_PLUGIN_MANAGER_PATH is defined and it exists, assume it to be valid
+        if [[ -d "$TMUX_PLUGIN_MANAGER_PATH" ]]; then
+            d_plugins="$TMUX_PLUGIN_MANAGER_PATH"
+            log_it " <-- find_plugin_path() - found via TMUX_PLUGIN_MANAGER_PATH"
+            return 0
+        else
+            msg="Env variable TMUX_PLUGIN_MANAGER_PATH defined, but it does not point"
+            msg+=" to a valid path: $TMUX_PLUGIN_MANAGER_PATH"
+            error_msg "$msg"
+        fi
+    }
+    [[ -n "$XDG_CONFIG_HOME" ]] && {
+        # if XDG_CONFIG_HOME is defined and pligin_name can be found, use that path
+        if [[ -d "$XDG_CONFIG_HOME" ]]; then
+            # check if tmux-menus is inside this file tree, if found assume it to
+            # be the plugin folder
+            # shellcheck disable=SC2154
+            _d_this_plugin="$(find "$XDG_CONFIG_HOME" | grep "$plugin_name\$")"
+            if [[ -n "$_d_this_plugin" ]]; then
+                d_plugins="$(dirname "$_d_this_plugin")"
+                log_it " <-- find_plugin_path() - found via XDG_CONFIG_HOME"
+                return 0
+            else
+                msg="$XDG_CONFIG_HOME defined, but no folder ending in $plugin_name"
+                msg+=" found therein"
+                error_msg "$msg"
+            fi
+        else
+            msg="$XDG_CONFIG_HOME defined, but not pointing to a folder: $XDG_CONFIG_HOME"
+            error_msg "$msg"
+        fi
+    }
+    return 1
+}
+
 gather_plugins() {
     #
     #  List of plugins defined in config file
@@ -36,7 +73,7 @@ list_install_status() {
     for plugin in "${defined_plugins[@]}"; do
         d_name="$(echo "$plugin" | cut -d/ -f2)"
         valid_items+=("$d_name") # add item supposed to be in plugins dir
-        if [[ -d "$plugins_dir/$d_name" ]]; then
+        if [[ -d "$d_plugins/$d_name" ]]; then
             echo "    $plugin"
         else
             echo "NOT INSTALLED: $plugin"
@@ -52,22 +89,22 @@ check_uninstalled() {
             echo "You can install plugins listed as NOT INSTALLED with <prefix> I"
         else
             echo "Follow the plugins instruction for manual install, and"
-            echo "save it into: $plugins_dir"
+            echo "save it into: $d_plugins"
         fi
     fi
 }
 
 check_unknown_items() {
     #
-    #  List all items in plugins_dir not supposed to be there
+    #  List all items in d_plugins not supposed to be there
     #
     undefined_item=false
     echo
-    for file in "$plugins_dir"/*; do
+    for file in "$d_plugins"/*; do
         item="$(echo "$file" | sed s/'plugins'/\|/ | cut -d'|' -f2 | sed s/.//)"
         if [[ ! ${valid_items[*]} =~ ${item} ]]; then
             # whatever you want to do when array doesn't contain value
-            echo "Undefined item: $plugins_dir/$item"
+            echo "Undefined item: $d_plugins/$item"
             undefined_item=true
         fi
     done
@@ -91,9 +128,8 @@ check_unknown_items() {
 D_TM_BASE_PATH=$(dirname "$(dirname -- "$(realpath "$0")")")
 
 #  shellcheck source=/dev/null
-. "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
+. "$D_TM_BASE_PATH"/scripts/helpers.sh
 
-_this="plugins.sh" # error prone if script name is changed :(
 defined_plugins=() #  plugins mentioned in config file
 valid_items=(tpm)  # additional folders expected to be in plugins folders
 
@@ -103,29 +139,18 @@ valid_items=(tpm)  # additional folders expected to be in plugins folders
     exit 1
 }
 
-[[ "$(basename "$0")" != "$_this" ]] && {
-    # mostly to ensure this file isn't accidentally sourced from a menu
-    error_msg_safe "$_this should NOT be sourced"
+find_plugin_path || {
+    msg="Failed to locate plugin folder\n\n"
+    msg+="Please set TMUX_PLUGIN_MANAGER_PATH in tmux conf\n\n"
+    msg+="Something like:\n"
+    msg+="  TMUX_PLUGIN_MANAGER_PATH=/path/to/plugins"
+    error_msg "$msg"
 }
-
-# shellcheck disable=SC2154
-if [[ -n "$TMUX_CONF" ]]; then
-    d_conf="$(dirname "$TMUX_CONF")"
-    if [[ "$d_conf" = "$HOME" ]]; then
-        plugins_dir="$HOME"/.tmux/plugins
-    else
-        plugins_dir="$d_conf"/plugins
-    fi
-elif [[ -n "$XDG_CONFIG_HOME" ]]; then
-    plugins_dir="$(dirname "$XDG_CONFIG_HOME")/tmux/plugins"
-else
-    plugins_dir="$HOME/.tmux/plugins"
-fi
+# Removes a trailing slash if present - sometimes set in TMUX_PLUGIN_MANAGER_PATH...
+d_plugins="${d_plugins%/}"
 
 gather_plugins
 list_install_status
-# exit 0
-
 check_uninstalled
 check_unknown_items
 
