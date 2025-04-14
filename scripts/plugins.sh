@@ -52,10 +52,10 @@ gather_plugins() {
     if [[ -z "$(command -v mapfile)" ]] || [[ -d /proc/ish ]]; then
         # iSH has very limited /dev impl, doesn't support mapfile
         #  shellcheck disable=SC2207
-        defined_plugins=($(grep "set -g @plugin" "$TMUX_CONF" |
+        defined_plugins=($(grep "set -g @plugin" "$cfg_tmux_conf" |
             awk '{ print $4 }' | sed 's/"//g'))
     else
-        mapfile -t defined_plugins < <(grep "set -g @plugin" "$TMUX_CONF" |
+        mapfile -t defined_plugins < <(grep "set -g @plugin" "$cfg_tmux_conf" |
             awk '{ print $4 }' | sed 's/"//g')
     fi
 }
