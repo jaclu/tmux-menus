@@ -179,6 +179,39 @@ tmux_get_option() {
     eval "$tgo_varname=\$tgo_value"
 }
 
+fix_home_path() {
+    #
+    #  If a variable with ~ or $HOME is wrapped in single quotes in tmux.conf,
+    #  those will be prefixed with \ and thus unusable, this removes such backslashes
+    #  and expands $HOME
+    #
+    #  Assigning the supplied variable name instead of printing output, depending
+    #  on doing this in a subshell, for better performance
+    #
+    fhp_varname="$1"
+    fhp_path="$2"
+
+    # log_it "fix_home_path($fhp_varname,$fhp_path)"
+    [ -z "$fhp_varname" ] && error_msg "fix_home_path() param 1 empty!"
+    [ -z "$fhp_path" ] && error_msg "fix_home_path() param 2 empty!"
+
+    case "$fhp_path" in
+    \\~/*)
+        fhp_path="${fhp_path#\\}"        # Remove leading backslash
+        fhp_path="${HOME}${fhp_path#\~}" # Expand ~ to $HOME
+        # log_it " - found \\~ - changed into: $fhp_path"
+        ;;
+    \\\$HOME/*)
+        fhp_path="${fhp_path#\\}"            # Remove leading backslash
+        fhp_path="${HOME}${fhp_path#\$HOME}" # Expand ~ to $HOME
+        # log_it " - found \\\$HOME - changed into: $fhp_path"
+        ;;
+    *) ;;
+    esac
+
+    eval "$fhp_varname=\$fhp_path"
+}
+
 tmux_get_plugin_options() { # cache references
     #
     #  Public variables
@@ -269,11 +302,16 @@ tmux_get_plugin_options() { # cache references
         tmux_get_option cfg_nav_home "@menus_nav_home" "$default_nav_home"
     fi
 
-    tmux_get_option cfg_tmux_conf "@menus_config_file" "$default_tmux_conf"
+    tmux_get_option _tmux_conf "@menus_config_file" "$default_tmux_conf"
+    # Handle the case of ~ or $HOME being wrapped in single quotes in tmux.conf
+    fix_home_path cfg_tmux_conf "$_tmux_conf"
+
     [ "$log_file_forced" != 1 ] && {
         #  If a debug logfile has been set, the tmux setting will be ignored.
         # log_it "tmux will read cfg_log_file"
-        tmux_get_option cfg_log_file "@menus_log_file" "$default_log_file"
+        tmux_get_option _log_file "@menus_log_file" "$default_log_file"
+        # Handle the case of ~ or $HOME being wrapped in single quotes in tmux.conf
+        fix_home_path cfg_log_file "$_log_file"
     }
 
     #
