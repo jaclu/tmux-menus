@@ -132,6 +132,7 @@ source_cached_params() {
     fi
 
     [ "$log_file_forced" = 1 ] && {
+        # use the forced log_file, ignoring any potential cached entry
         cfg_log_file="$orig_log_file"
         unset orig_log_file
         # log_it "restored cfg_log_file"

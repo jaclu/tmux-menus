@@ -6,6 +6,9 @@
 #   Part of https://github.com/jaclu/tmux-menus
 #
 #  Can be used independent of tmux-menus
+#  First checks TMUX_PLUGIN_MANAGER_PATH - typically set by tpm
+#  Then checks XDG_CONFIG_HOME If defined and a folder named tmux-menus is found
+#  inside this hierarchy, assume this to be the relevant plugin-path
 #
 
 find_plugin_path() {
@@ -141,9 +144,9 @@ valid_items=(tpm)  # additional folders expected to be in plugins folders
 
 find_plugin_path || {
     msg="Failed to locate plugin folder\n\n"
-    msg+="Please set TMUX_PLUGIN_MANAGER_PATH in tmux conf\n\n"
+    msg+="Please set TMUX_PLUGIN_MANAGER_PATH in tmux conf (usually done by tpm)\n\n"
     msg+="Something like:\n"
-    msg+="  TMUX_PLUGIN_MANAGER_PATH=/path/to/plugins"
+    msg+='  TMUX_PLUGIN_MANAGER_PATH="/path/to/plugins"'
     error_msg "$msg"
 }
 # Removes a trailing slash if present - sometimes set in TMUX_PLUGIN_MANAGER_PATH...
