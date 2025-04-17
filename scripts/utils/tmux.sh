@@ -99,6 +99,10 @@ tmux_get_defaults() {
 }
 
 cache_save_options_defined_in_tmux() {
+    #
+    #  On slow systems, doing individual show-options takes a ridiculous amount of
+    #  time. Here we read all relevant options in one go and store them in a cache file
+    #
     [ -f "$f_cached_tmux_options" ] && return
     # log_it "cache_save_options_defined_in_tmux()"
     $TMUX_BIN show-options -g | grep ^@menus_ >"$f_cached_tmux_options"
@@ -326,6 +330,10 @@ tmux_error_handler() {
 tmux_error_handler_assign() { # cache references
     #
     #  Detects any errors reported by tmux commands and gives notification
+    #
+    #
+    #  Assigning the supplied variable name instead of printing output in a subshell,
+    #  for better performance
     #
     varname="$1"
     shift

@@ -206,8 +206,10 @@ safe_now() {
     #
     #  Sets t_now and if variable provided as param sets this variable
     #
+    #  Assigning the supplied variable name instead of printing output in a subshell,
+    #  for better performance
+    #
     varname="$1"
-    # [ -z "$varname" ] && error_msg_safe "safe_now() - no param"
 
     # log_it "safe_now($varname) mthd: [$selected_get_time_mthd]"
     case "$selected_get_time_mthd" in
@@ -303,6 +305,10 @@ tpt_digits_from_string() {
     # Example inputs and outputs:
     #   "tmux 1.9" => "19"
     #   "1.9a"     => "19"
+    #
+    #  Assigning the supplied variable name instead of printing output in a subshell,
+    #  for better performance
+    #
     varname="$1"
 
     # Ensure arguments are present
@@ -322,6 +328,10 @@ tpt_digits_from_string() {
 tpt_tmux_vers_suffix() {
     # Extracts any alphabetic suffix from the end of a version string.
     # If no suffix exists, returns an empty string.
+    #
+    #  Assigning the supplied variable name instead of printing output in a subshell,
+    #  for better performance
+    #
     varname="$1"
     vers="$2"
 
