@@ -296,11 +296,8 @@ tmux_get_plugin_options() { # cache references
         #  If a debug logfile has been set, the tmux setting will be ignored.
         # log_it "tmux will read cfg_log_file"
         tmux_get_option _log_file "@menus_log_file" "$default_log_file"
-
-        if [ -n "$_log_file" ]; then
-            # Handle the case of ~ or $HOME being wrapped in single quotes in tmux.conf
-            fix_home_path cfg_log_file "$_log_file"
-        fi
+        # Handle the case of ~ or $HOME being wrapped in single quotes in tmux.conf
+        fix_home_path cfg_log_file "$_log_file"
     }
 
     #
