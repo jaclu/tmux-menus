@@ -126,16 +126,12 @@ tmux_get_option() {
     if [ -z "$TMUX" ]; then
         # this is run standalone, just report the defaults
         log_it "tmux_get_option() - no \$TMUX - using default"
-        echo "$tgo_default"
-        return
+        _line=""
     elif ! tmux_vers_check 1.8; then
         # before 1.8 no support for user params
         log_it "tmux_get_option() - tmux < 1.8 - using default"
-        echo "$tgo_default"
-        return
-    fi
-
-    if $tgo_use_cache; then
+        _line=""
+    elif $tgo_use_cache; then
         cache_save_options_defined_in_tmux
         _line=
         while IFS= read -r _cache_line; do
@@ -147,6 +143,7 @@ tmux_get_option() {
             *) ;;
             esac
         done <"$f_cached_tmux_options"
+        # _line="$(grep "$tgo_option" "$f_cached_tmux_options")"
     else
         # log_it "tmux_get_option($tgo_option) - not using cache"
         _line="$($TMUX_BIN show-options -g "$tgo_option" 2>/dev/null)"
