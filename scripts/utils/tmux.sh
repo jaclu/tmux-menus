@@ -111,12 +111,15 @@ tmux_get_option() {
     tgo_varname="$1" # The variable name to store the result in
     tgo_option="$2"
     tgo_default="$3"
-    tgo_no_cache="$4" # if non-empty, prevent cache from being used - for odd variables
+    # if non-empty, prevent cache from being used - when options other than
+    #  @menux_ needs to be read
+    tgo_no_cache="$4"
 
     # log_it "tmux_get_option($tgo_varname, $tgo_option, $tgo_default, $tgo_no_cache)"
 
     [ -z "$tgo_varname" ] && error_msg "tmux_get_option() param 1 empty!"
     [ -z "$tgo_option" ] && error_msg "tmux_get_option() param 2 empty!"
+    [ -z "$tgo_default" ] && log_it "tmux_get_option($tgo_option) - No default supplied"
     if [ -z "$tgo_no_cache" ] && $cfg_use_cache && [ -d "$d_cache" ]; then
         tgo_use_cache=true
     else
@@ -124,56 +127,40 @@ tmux_get_option() {
     fi
 
     if [ -z "$TMUX" ]; then
-        # this is run standalone, just report the defaults
+        # this is run standalone outside tmux, just report the defaults
         log_it "tmux_get_option() - no \$TMUX - using default"
-        echo "$tgo_default"
-        return
+        _line=""
     elif ! tmux_vers_check 1.8; then
-        # before 1.8 no support for user params
+        # before 1.8 no support for user options
         log_it "tmux_get_option() - tmux < 1.8 - using default"
-        echo "$tgo_default"
-        return
-    fi
-
-    if $tgo_use_cache; then
+        _line=""
+    elif $tgo_use_cache; then
         cache_save_options_defined_in_tmux
-
-        tgo_value="$(awk -v option="$tgo_option" \
-            '$1 == option { gsub(/^"|"$/, "", $2); print $2 }' "$f_cached_tmux_options")"
-
-        if [ -f "$f_cached_tmux_options" ] && [ -z "$tgo_value" ] &&
-            ! grep -q "$tgo_option" "$f_cached_tmux_options" 2>/dev/null; then
-
-            tgo_was_found=1 # option not found
-        else
-            tgo_was_found=0
-        fi
+        # more code, but noticeably faster than doing a grep on the file on slow systems
+        _line=
+        while IFS= read -r _cache_line; do
+            case $_cache_line in
+            "$tgo_option"*)
+                _line=$_cache_line
+                break
+                ;;
+            *) ;;
+            esac
+        done <"$f_cached_tmux_options"
     else
         # log_it "tmux_get_option($tgo_option) - not using cache"
-
-        # tmux_error_handler is not used, since errors are handled in place
-        tgo_value="$($TMUX_BIN show-options -gv "$tgo_option" 2>/dev/null)"
-        tgo_was_found="$?"
-        [ "$tgo_was_found" = 0 ] && [ -z "$tgo_value" ] && {
-            #
-            # tmux 3.0 - 3.2a exits 0 even if variable was not found,
-            # so the value being set to "" vs not being defined can't be detected
-            # via exit code for those versions. Thus this extra check, if the option
-            # isn't defined use the default. This allows a variable to be set to ""
-            #
-            $TMUX_BIN show-options -g | grep -q "$tgo_option" || {
-                # log_it " value unset, using default
-                tgo_value="$tgo_default"
-            }
-        }
+        _line="$($TMUX_BIN show-options -g "$tgo_option" 2>/dev/null)"
     fi
 
-    if [ "$tgo_was_found" != 0 ]; then
-        #
-        #  Since tmux doesn't differentiate between the variable being absent
-        #  and being assigned to "", use not found to select the default
-        #
+    if [ -z "$_line" ]; then
         tgo_value="$tgo_default"
+    else
+        # shell built-in string splitting and unqoting avoids spawning external processes
+
+        # shellcheck disable=SC2086
+        set -- $_line
+        tgo_value=${2#\"}         # get rid of pottential ""
+        tgo_value=${tgo_value%\"} # wrapping
     fi
     # log_it "tmux_get_option() - using [$tgo_value]"
     eval "$tgo_varname=\$tgo_value"
