@@ -909,6 +909,7 @@ display_menu() {
         [ -n "$menu_selection" ] && handle_wt_selecion
         true #  hides none true exit if whiptail menu was cancelled
     else
+        # log_it "><> menu_items >>$menu_items<<"
         safe_now dh_t_start
         eval "$menu_items"
 
