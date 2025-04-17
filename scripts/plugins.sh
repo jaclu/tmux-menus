@@ -11,11 +11,32 @@
 #  inside this hierarchy, assume this to be the relevant plugin-path
 #
 
+extract_defined_plugins() {
+    #
+    #  List of plugins defined in config file
+    #
+    log_it "extract_defined_plugins()"
+    [[ -z "$cfg_tmux_conf" ]] && {
+        error_msg "tmux.conf not defined, can be set using @menus_config_file"
+    }
+    if [[ -z "$(command -v mapfile)" ]] || [[ -d /proc/ish ]]; then
+        # iSH has very limited /dev impl, doesn't support mapfile
+        #  shellcheck disable=SC2207
+        defined_plugins=($(grep "set -g @plugin" "$cfg_tmux_conf" |
+            awk '{ print $4 }' | sed 's/"//g'))
+    else
+        mapfile -t defined_plugins < <(grep "set -g @plugin" "$cfg_tmux_conf" |
+            awk '{ print $4 }' | sed 's/"//g')
+    fi
+}
+
 find_plugin_path() {
     [[ -n "$TMUX_PLUGIN_MANAGER_PATH" ]] && {
         # if TMUX_PLUGIN_MANAGER_PATH is defined and it exists, assume it to be valid
         if [[ -d "$TMUX_PLUGIN_MANAGER_PATH" ]]; then
             d_plugins="$TMUX_PLUGIN_MANAGER_PATH"
+            d_plugins="${d_plugins%/}" # Removes a trailing slash if present
+
             log_it " <-- find_plugin_path() - found via TMUX_PLUGIN_MANAGER_PATH"
             return 0
         else
@@ -33,6 +54,7 @@ find_plugin_path() {
             _d_this_plugin="$(find "$XDG_CONFIG_HOME" | grep "$plugin_name\$")"
             if [[ -n "$_d_this_plugin" ]]; then
                 d_plugins="$(dirname "$_d_this_plugin")"
+                d_plugins="${d_plugins%/}" # Removes a trailing slash if present
                 log_it " <-- find_plugin_path() - found via XDG_CONFIG_HOME"
                 return 0
             else
@@ -46,21 +68,6 @@ find_plugin_path() {
         fi
     }
     return 1
-}
-
-gather_plugins() {
-    #
-    #  List of plugins defined in config file
-    #
-    if [[ -z "$(command -v mapfile)" ]] || [[ -d /proc/ish ]]; then
-        # iSH has very limited /dev impl, doesn't support mapfile
-        #  shellcheck disable=SC2207
-        defined_plugins=($(grep "set -g @plugin" "$cfg_tmux_conf" |
-            awk '{ print $4 }' | sed 's/"//g'))
-    else
-        mapfile -t defined_plugins < <(grep "set -g @plugin" "$cfg_tmux_conf" |
-            awk '{ print $4 }' | sed 's/"//g')
-    fi
 }
 
 list_install_status() {
@@ -142,6 +149,7 @@ valid_items=(tpm)  # additional folders expected to be in plugins folders
     exit 1
 }
 
+extract_defined_plugins
 find_plugin_path || {
     msg="Failed to locate plugin folder\n\n"
     msg+="Please set TMUX_PLUGIN_MANAGER_PATH in tmux conf (usually done by tpm)\n\n"
@@ -149,10 +157,6 @@ find_plugin_path || {
     msg+='  TMUX_PLUGIN_MANAGER_PATH="/path/to/plugins"'
     error_msg "$msg"
 }
-# Removes a trailing slash if present - sometimes set in TMUX_PLUGIN_MANAGER_PATH...
-d_plugins="${d_plugins%/}"
-
-gather_plugins
 list_install_status
 check_uninstalled
 check_unknown_items
