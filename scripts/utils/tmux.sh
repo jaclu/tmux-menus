@@ -172,15 +172,14 @@ fix_home_path() {
     #  those will be prefixed with \ and thus unusable, this removes such backslashes
     #  and expands $HOME
     #
-    #  Assigning the supplied variable name instead of printing output, depending
-    #  on doing this in a subshell, for better performance
+    #  Assigning the supplied variable name instead of printing output in a subshell,
+    #  for better performance
     #
     fhp_varname="$1"
     fhp_path="$2"
 
     # log_it "fix_home_path($fhp_varname,$fhp_path)"
     [ -z "$fhp_varname" ] && error_msg "fix_home_path() param 1 empty!"
-    [ -z "$fhp_path" ] && error_msg "fix_home_path() param 2 empty!"
 
     case "$fhp_path" in
     \\~/*)
