@@ -30,7 +30,11 @@ get_config_refresh() {
     }
 
     [[ -z "$cfg_tmux_conf" ]] && {
-        tmux_get_option cfg_tmux_conf "@menus_config_file" "$default_tmux_conf"
+        tmux_get_defaults
+        tmux_get_option _tmux_conf "@menus_config_file" "$default_tmux_conf"
+        # Handle the case of ~ or $HOME being wrapped in single quotes in tmux.conf
+        # shellcheck disable=SC2154
+        fix_home_path cfg_tmux_conf "$_tmux_conf"
     }
     if [[ -f "$cfg_tmux_conf" ]] && [[ -f "$f_cache_params" ]]; then
         #
