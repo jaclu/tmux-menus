@@ -20,9 +20,9 @@ log_it "running: $0 $1"
 if tmux_error_handler source-file "$1"; then
     _m="Sourced it!"
     log_it "$_m"
-    tmux_error_handler display "$_m"
+    tmux_error_handler display-message "$_m"
 else
     _m="tmux config file could not be sourced: $1"
     log_it "$_m"
-    tmux_error_handler display "$_m"
+    tmux_error_handler display-message "$_m"
 fi
