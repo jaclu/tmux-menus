@@ -390,11 +390,13 @@ tmux_error_handler_assign() { # cache references
             )"
         else
             log_it "saved error to: $f_error_log"
+            _err_frame_line="--------------------\n"
             error_msg "$(
-                printf "tmux cmd failed:\n\n%s\n
-                \nThe full error message has been saved in:\n%s
-                \nFull path:\n%s\n" \
+                printf 'tmux cmd failed:\n\n%s%s\n%s\n%s: %s\n\nFull path: %s' \
+                    "$_err_frame_line" \
                     "$(cat "$f_error_log")" \
+                    "$_err_frame_line" \
+                    "The error message has been saved in" \
                     "$(relative_path "$f_error_log")" \
                     "$f_error_log"
             )"
