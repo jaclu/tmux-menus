@@ -356,7 +356,7 @@ menu_parse() {
                 alt_command "$label" "$key" "$cmd" "$keep_cmd"
             else
                 mnu_command "$label" "$key" "$cmd" "$keep_cmd"
-                $b_show_commands && show_cmd "$cmd"
+                $b_show_commands && show_cmd "$TMUX_BIN $cmd"
             fi
             ;;
 
