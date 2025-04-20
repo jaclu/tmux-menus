@@ -65,7 +65,7 @@ source_all_helpers() {
 
 relative_path() {
     # remove D_TM_BASE_PATH prefix
-    # log_it "helpers:relative_path($1)"
+    # log_it "relative_path($1)"
     printf '%s\n' "${1#"$D_TM_BASE_PATH"/}"
 }
 
@@ -171,11 +171,6 @@ get_config() {
         $all_helpers_sourced || source_all_helpers "get_config() - no cache found"
         get_config_read_save_if_uncached
     fi
-}
-
-get_d_current_script() {
-    # will capture calls to this that didn't source helpers_full.sh
-    error_msg_safe "Call to get_d_current_script($1)"
 }
 
 #---------------------------------------------------------------

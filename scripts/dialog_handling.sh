@@ -69,15 +69,6 @@ is_function_defined() {
     [ "$(command -v "$1")" = "$1" ]
 }
 
-define_f_menu_rel() {
-    # to optimize and skip the external process used by relative_path() only
-    # define this when needed
-    log_it "><>========>  define_f_menu_rel() f_menu_rel [$f_menu_rel]"
-    [ -n "$f_menu_rel" ] && return
-    get_d_current_script define_f_menu_rel
-    f_menu_rel="$(relative_path "$d_current_script")/$bn_current_script"
-}
-
 update_wt_actions() {
     if $cfg_use_cache; then
         [ "$menu_idx" -eq 1 ] && {
@@ -975,14 +966,26 @@ static_cache_updated=false  # used to decide if static cache file reduction shou
 }
 [ -z "$menu_name" ] && error_msg_safe "menu_name not defined"
 [ -n "$menu_min_vers" ] && {
-    # Abort with error if tmux version is insufficient
+    # Abort with error if tmux version is insufficient for this menu
     tmux_vers_check "$menu_min_vers" || {
-        define_f_menu_rel
-        error_msg_safe "$(relative_path "$f_menu_rel") needs tmux: $menu_min_vers"
+        error_msg_safe "$(relative_path "$0") needs tmux: $menu_min_vers"
     }
 }
 
-[ "$skip_oversized" = "1" ] && exit_if_dialog_doesnt_fit_screen
+[ "$skip_oversized" = "1" ] && {
+    # To minimize overhead, the normal case is to rely on oversized menus instantly
+    # closing and the displayal of the warning: Screen might be too small
+    #
+    # only do this check if it is requested, this assumes at least one of
+    # menu_height or menu_width must have been set
+    #
+    [ -z "$menu_height" ] && [ -z "$menu_width" ] && {
+        _m="With neither menu_height or menu_width defined"
+        _m="$_m\n It is not possible to check if menu fits on screen"
+        error_msg "$_m"
+    }
+    exit_if_menu_doesnt_fit_screen
+}
 
 #
 #  If @menus_use_cache is not disabled, any cached items will not be
