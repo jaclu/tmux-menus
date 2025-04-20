@@ -18,10 +18,10 @@ static_content() {
     set -- \
         3.3 S \
         3.3 T "-#[align=centre,nodim]pane-border-indicators" \
-        3.3 C "o" "off" "set -g pane-border-indicators off    $menu_reload" \
-        3.3 C "c" "colour" "set -g pane-border-indicators colour $menu_reload" \
-        3.3 C "a" "arrows" "set -g pane-border-indicators arrows $menu_reload" \
-        3.3 C "b" "both" "set -g pane-border-indicators both   $menu_reload"
+        3.3 C "o" "off" "set-option -g pane-border-indicators off    $menu_reload" \
+        3.3 C "c" "colour" "set-option -g pane-border-indicators colour $menu_reload" \
+        3.3 C "a" "arrows" "set-option -g pane-border-indicators arrows $menu_reload" \
+        3.3 C "b" "both" "set-option -g pane-border-indicators both   $menu_reload"
 
     menu_generate_part 3 "$@"
 }

@@ -22,7 +22,7 @@ static_content() {
         0.0 S \
         1.8 C z "Toggle pane zoom" "resize-pane -Z $menu_reload" \
         2.1 C m "Toggle mark current pane" "select-pane -m $menu_reload" \
-        1.9 C s "Toggle synchronized panes" "set -w synchronize-panes $menu_reload" \
+        1.9 C s "Toggle synchronized panes" "set-option -w synchronize-panes $menu_reload" \
         2.6 C t "Set Pane Title" "command-prompt -I '#T'  -p 'Title: '  \
             'select-pane -T \"%%\"' $menu_reload" \
         1.7 C '\#' "Display pane numbers" "display-panes $menu_reload" \
