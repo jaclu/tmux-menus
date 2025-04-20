@@ -357,7 +357,7 @@ menu_parse() {
                 alt_command "$label" "$key" "$cmd" "$keep_cmd"
             else
                 mnu_command "$label" "$key" "$cmd" "$keep_cmd"
-                $b_show_commands && show_cmd "$TMUX_BIN $cmd"
+                [ "$TMUX_MENUS_SHOW_CMDS" = "1" ] && show_cmd "$TMUX_BIN $cmd"
             fi
             ;;
 
@@ -398,7 +398,7 @@ menu_parse() {
                 alt_external_cmd "$label" "$key" "$cmd"
             else
                 mnu_external_cmd "$label" "$key" "$cmd"
-                $b_show_commands && [ "$key" != "!" ] && show_cmd "$cmd"
+                [ "$TMUX_MENUS_SHOW_CMDS" = "1" ] && [ "$key" != "!" ] && show_cmd "$cmd"
             fi
             ;;
 
@@ -490,12 +490,23 @@ menu_parse() {
 #
 #---------------------------------------------------------------
 
+prepare_show_commands() {
+    # if true, do not use normal caching, build custom menu including cmds under each
+    # action item
+    $all_helpers_sourced || source_all_helpers "prepare_show_commands"
+    tmux_error_handler display "preparing TMUX_MENUS_SHOW_CMDS ..."
+
+    cfg_use_cache=false
+    # shellcheck source=scripts/show_cmd.sh
+    . "$D_TM_BASE_PATH"/scripts/show_cmd.sh
+}
+
 display_commands_toggle() {
     menu_part="$1"
     log_it "add_display_commands($menu_part)"
     [ -z "$menu_part" ] && error_msg "add_display_commands() - called with no param"
 
-    if $b_show_commands; then
+    if [ "$TMUX_MENUS_SHOW_CMDS" = "1" ]; then
         set -- \
             0.0 E ! "Hide Commands" "TMUX_MENUS_SHOW_CMDS=0 $0"
     else
@@ -895,6 +906,11 @@ ensure_menu_fits_on_screen() {
 display_menu() {
     # log_it "display_menu()"
     # Display time to generate menu
+
+    [ "$TMUX_MENUS_SHOW_CMDS" = "1" ] && { # clear status msg
+        tmux_error_handler display-message ""
+    }
+
     safe_now
     _t="$(echo "$t_now - $t_script_start" | bc)"
 
@@ -951,16 +967,7 @@ is_dynamic_content=false    # indicates if a dynamic content segment is being pr
 dynamic_content_found=false # indicate dynamic content was generated
 static_cache_updated=false  # used to decide if static cache file reduction should happen
 
-if [ "$TMUX_MENUS_SHOW_CMDS" = "1" ]; then
-    # if true, do not use normal caching, build custom menu including cmds under each
-    # action item
-    cfg_use_cache=false
-    b_show_commands=true
-    # shellcheck source=scripts/show_cmd.sh
-    . "$D_TM_BASE_PATH"/scripts/show_cmd.sh
-else
-    b_show_commands=false
-fi
+[ "$TMUX_MENUS_SHOW_CMDS" = "1" ] && prepare_show_commands
 
 # Some sanity checks
 [ "$TMUX_MENUS_NO_DISPLAY" != "1" ] && {

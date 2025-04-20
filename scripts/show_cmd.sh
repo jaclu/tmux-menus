@@ -52,11 +52,12 @@ extract_key_bind() {
     '
 }
 
-filter_last_char() {
+filter_bind_escapes() {
     #
-    # In some cases the \ needs to be kept for a prefix sequence in order
-    # for it to be displayed in a menu, as those are displayed the
-    # menu will filter out this remaining esc char so that it is not displayed
+    # Filter out \ prefix on key binds.
+    # In some cases the \ needs to be kept for a key sequence in order
+    # for it to be displayed in a menu, in such cases the menu will filter out
+    # the prefix, so that it is not displayed
     #
     flc_input="$1"
     flc_last_char=$(expr "$flc_input" : '.*\(.\)$')
@@ -83,20 +84,19 @@ check_key_binds() {
     ckb_cmd="$1"
     log_it "check_key_binds($ckb_cmd)"
 
+    # remove tmux bin, since that would make it
     ckb_no_tmux_bin="$(echo "$ckb_cmd" | sed "s#^$TMUX_BIN ##")"
+
     ckb_prefix_bind="$(extract_key_bind prefix "$ckb_no_tmux_bin")"
-    log_it " ><> ckb_prefix_bind [$ckb_prefix_bind]"
-    [ -n "$ckb_prefix_bind" ] && {
-        filter_last_char "$ckb_prefix_bind"
-        # echo "$ckb_prefix_bind"
-        return
-    }
-    _root_bind="$(extract_key_bind root "$ckb_no_tmux_bin")"
-    if [ -n "$_root_bind" ]; then
-        filter_last_char "$_root_bind"
-        # echo "$_root_bind"
+    if [ -n "$ckb_prefix_bind" ]; then
+        filter_bind_escapes "$ckb_prefix_bind"
     else
-        echo "$ckb_cmd"
+        ckb_root_bind="$(extract_key_bind root "$ckb_no_tmux_bin")"
+        if [ -n "$ckb_root_bind" ]; then
+            filter_bind_escapes "$ckb_root_bind"
+        else
+            echo "$ckb_cmd"
+        fi
     fi
 }
 
@@ -106,23 +106,26 @@ show_cmd() {
     # then try to match command to a prefix key-bind. If a match is foond
     # display the prefix sequence matching the cmd, otherwise display the command uses
     #
+    #  Feeding the menu creation via calls to mnu_text_line()
+    #
     _s1="${1%" $menu_reload"}"             # skip menu_reload suffix if found
     _s2="${_s1%" $reload_in_runshell"}"    # skip reload_in_runshell suffix if found
     _s3="${_s2%"; $0"}"                    # Remove trailing reload of menu
     _s4="$(echo "$_s3" | sed 's/\\&.*//')" # skip hint overlays, ie part after \&
     # reduce excessive white space
-    cmd_bare=$(printf '%s\n' "$_s4" | awk '{$1=$1; print}')
+    sc_cmd=$(printf '%s\n' "$_s4" | awk '{$1=$1; print}')
+    log_it "show_cmd($sc_cmd)"
 
-    log_it "show_cmd($cmd_bare)"
-    [ -z "$cmd_bare" ] && error_msg "show_cmd() - no command could be extracted"
-    cmd="$(check_key_binds "$cmd_bare")"
+    [ -z "$sc_cmd" ] && error_msg "show_cmd() - no command could be extracted"
+    sc_cmd="$(check_key_binds "$sc_cmd")"
 
     #
     #  Line break cmd if needed, to fit inside the menu width
     #  then calls mnu_text_line() for each line of the command to be displayed
     #
-    while [ -n "$cmd" ]; do
-        chunk=$(printf '%s\n' "$cmd" | awk -v max="$cfg_display_cmds_cols" '
+    sc_remainder="$sc_cmd"
+    while [ -n "$sc_remainder" ]; do
+        chunk=$(printf '%s\n' "$sc_remainder" | awk -v max="$cfg_display_cmds_cols" '
         {
             if (length($0) <= max) {
                 print $0
@@ -140,7 +143,7 @@ show_cmd() {
         log_it "  chunk: >>$chunk<<"
         mnu_text_line "-#[nodim]  $chunk"
 
-        cmd=${cmd#"$chunk"}
-        cmd=${cmd#" "}
+        sc_remainder=${sc_remainder#"$chunk"}
+        sc_remainder=${sc_remainder#" "}
     done
 }
