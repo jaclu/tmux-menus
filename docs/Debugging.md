@@ -28,7 +28,7 @@ a lot of logging has been enabled to temporarily dial it down
 
 ## TMUX_MENUS_HANDLER
 
-- `0` - use built in menus if available, otherwise whiptail/dialog if found
+- `0` - (default) use built in menus if available, otherwise whiptail/dialog if found
 - `1` - force whiptail
 - `2` - force dialog
 
