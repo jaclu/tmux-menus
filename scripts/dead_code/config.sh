@@ -24,8 +24,8 @@ static_content() {
     #  The -p sequence will get wrecked by lnie breaks,
     #  so left as one annoyingly long line
     #
-    # prompt1="horizontal pos (max: #{window_width}):"
-    # prompt2="vertical pos (max: #{window_height}):"
+    # prompt1="horizontal pos (max: #{menu_width}):"
+    # prompt2="vertical pos (max: #{menu_height}):"
 
     # set -- "command-prompt" \
     #     "-I \"$location_x\",\"$location_y\"" \

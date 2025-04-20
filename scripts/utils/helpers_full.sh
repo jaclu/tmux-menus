@@ -49,7 +49,7 @@ error_msg() {
         # shellcheck disable=SC2154
         msg_hold="$plugin_name ERR: $em_msg"
         # shellcheck disable=SC2154
-        actual_win_width="$($TMUX_BIN display-message -p "#{window_width}")"
+        actual_win_width="$($TMUX_BIN display-message -p "#{menu_width}")"
         if [ "$env_initialized" -eq 2 ] && (
             [ "${#msg_hold}" -ge "$actual_win_width" ] || has_lf_not_at_end "$em_msg"
         ); then
@@ -242,11 +242,11 @@ is_int() {
 #
 #---------------------------------------------------------------
 
-define_actual_size() {
-    # Sets some variable indicating screen size
-    # log_it "define_actual_size()"
-    tmux_error_handler_assign actual_height display-message -p "#{client_height}"
-    tmux_error_handler_assign actual_width display-message -p "#{client_width}"
+get_screen_size_variables() {
+    # Sets variables current_screen_rows & current_screen_cols - indicating screen-size
+    log_it "get_screen_size_variables()"
+    tmux_error_handler_assign current_screen_rows display-message -p "#{client_height}"
+    tmux_error_handler_assign current_screen_cols display-message -p "#{client_width}"
 }
 
 #---------------------------------------------------------------
@@ -421,10 +421,6 @@ wait_to_close_display() {
 d_help="$d_items"/help
 d_hints="$d_items"/hints
 d_custom_items="$D_TM_BASE_PATH"/custom_items
-d_current_script="$(
-    cd "$(dirname "$0")" || exit
-    pwd
-)"
 
 f_custom_items_index="$d_custom_items"/_index.sh
 # shellcheck disable=SC2154
@@ -432,14 +428,6 @@ f_update_custom_inventory="$d_scripts"/update_custom_inventory.sh
 f_chksum_custom="$d_cache"/chksum_custom_content
 f_cached_tmux_options="$d_cache"/tmux_options
 f_min_display_time="$d_cache"/min_display_time
-
-#
-# No longer used
-#
-# current_script=${0##*/}
-# This is the full path expanded version of $0, be careful to use it in
-# dynamic_content to be accessibele all helpers must have been sourced
-# f_current_script="$d_current_script/$current_script"
 
 # shellcheck source=scripts/utils/cache.sh
 . "$d_scripts"/utils/cache.sh

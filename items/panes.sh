@@ -51,8 +51,8 @@ static_content() {
 #===============================================================
 
 menu_name="Handling Pane"
-# window_width=38
-# window_height=23
+# menu_width=38
+# menu_height=23
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"

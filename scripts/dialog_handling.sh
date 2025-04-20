@@ -654,7 +654,7 @@ sort_menu_items() {
             b_name=${f_name##*/} # basename equiv
             [ "${#b_name}" -gt "2" ] && continue
 
-            # Read the content of the file and append it to the dialog variable
+            # Read the content of the file and append it to the menu_items variable
             menu_items="$menu_items $(cat "$f_name")"
         done
     else
@@ -740,9 +740,9 @@ check_screen_size() {
     #  Only consider checking win size if not whiptail/dialog, since they
     #  can scroll menus that don't fit the screen
     #
-    #  Only checks if window_width and or window_height has been set
+    #  Only checks if menu_width and or menu_height has been set
     #
-    #  Examining client_height instead of window_height, includes the entire terminal
+    #  Examining client_height instead of menu_height, includes the entire terminal
     #  including lines covered by a status bar. Since Menus can cover the status bar
     #  This gives the actual screen limits for menus
     #
@@ -750,25 +750,24 @@ check_screen_size() {
     # log_it "check_screen_size()"
 
     $all_helpers_sourced || source_all_helpers "check_screen_size()"
-    define_actual_size
-    [ -n "$window_height" ] && {
-        [ "$window_height" -gt "$actual_height" ] && {
-            define_f_menu_rel
-            _warn="$f_menu_rel aborted, win height > actual: "
-            _warn="$_warn $window_height > $actual_height"
+
+    [ -n "$menu_height" ] && {
+        [ -z "$current_screen_rows" ] && get_screen_size_variables # only get if not defined
+        [ "$menu_height" -gt "$current_screen_rows" ] && {
+            _warn="$(relative_path "$0") aborted, win height > actual: "
+            _warn="$_warn $menu_height > $current_screen_rows"
             log_it "$_warn"
             return 1
         }
-        # log_it "window_height valid"
     }
-    [ -n "$window_width" ] && {
-        [ "$window_width" -gt "$actual_width" ] && {
+    [ -n "$menu_width" ] && {
+        [ -z "$current_screen_cols" ] && get_screen_size_variables # only get if not defined
+        [ "$menu_width" -gt "$current_screen_cols" ] && {
             _warn="menu display aborted, win width > actual: "
-            _warn="$_warn $window_width > $actual_width"
+            _warn="$_warn $menu_width > $current_screen_cols"
             log_it "$_warn"
             return 1
         }
-        # log_it "window_width valid"
     }
     return 0
 }
@@ -878,12 +877,13 @@ ensure_menu_fits_on_screen() {
         # echo "$menu_items" >"$_f_mnu"
         # log_it "Failed menu saved to: $_f_mnu"
 
-        if [ -n "$window_width" ] && [ -n "$window_height" ]; then
-            _s="$f_menu_rel: screen mins: ${window_width}x$window_height"
-        elif [ -n "$window_height" ]; then
-            _s="$f_menu_rel: Height required: $window_height"
-        elif [ -n "$window_width" ]; then
-            _s="$f_menu_rel: Width required: $window_width"
+        f_menu_rel="$(relative_path "$0")"
+        if [ -n "$menu_width" ] && [ -n "$menu_height" ]; then
+            _s="$f_menu_rel: screen mins: ${menu_width}x$menu_height"
+        elif [ -n "$menu_height" ]; then
+            _s="$f_menu_rel: Height required: $menu_height"
+        elif [ -n "$menu_width" ]; then
+            _s="$f_menu_rel: Width required: $menu_width"
         else
             # log_it "display time was: $disp_time"
             _s="$f_menu_rel: Screen might be too small"
@@ -917,11 +917,11 @@ display_menu() {
     fi
 }
 
-exit_if_dialog_doesnt_fit_screen() {
-    # Useful for hints, if it doesn't fit on screen, just skip this menu
-    # log_it "exit_if_dialog_doesnt_fit_screen()"
+exit_if_menu_doesnt_fit_screen() {
+    # Useful for hints, if it doesn't fit on screen, just silently skip this menu
+    # log_it "exit_if_menu_doesnt_fit_screen()"
     check_screen_size && return
-    exit 0
+    exit 0 # menu won't fit on screen, exit nicely without any warnings/errors
 }
 
 #===============================================================
