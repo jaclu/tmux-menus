@@ -485,7 +485,7 @@ prepare_show_commands() {
     # if true, do not use normal caching, build custom menu including cmds under each
     # action item
     $all_helpers_sourced || source_all_helpers "prepare_show_commands"
-    tmux_error_handler display "preparing TMUX_MENUS_SHOW_CMDS ..."
+    tmux_error_handler display-message "preparing TMUX_MENUS_SHOW_CMDS ..."
 
     cfg_use_cache=false
     # shellcheck source=scripts/show_cmd.sh

@@ -146,4 +146,6 @@ show_cmd() {
         sc_remainder=${sc_remainder#"$chunk"}
         sc_remainder=${sc_remainder#" "}
     done
+    # refresh it for each cmd processed in case
+    tmux_error_handler display-message "preparing TMUX_MENUS_SHOW_CMDS ..."
 }
