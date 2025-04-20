@@ -11,36 +11,93 @@
 #  if the command is available using a prefix bind, display this instead of the cmd
 #
 
-prefix_replace_cmd() {
-    # If a single prefix cmd matches display it as a prefix bind instead of command
-    log_it "prefix_replace_cmd($cmd_bare)"
+extract_key_bind() {
+    #
+    #  If a single key bind matches:           <prefix> K
+    #  if it is non-prefix (-T root) key bind: <NO prefix> M-S-Up
+    #  multiple binds are shown as:            <prefix> K  or  <prefix> C-Up
+    #  No matches: return empty string
+    #
+    ekb_key_type="$1"
+    ekb_cmd="$2"
 
-    _prefix_cmd="$($TMUX_BIN list-keys | grep -iv mouse | grep "$cmd_bare" |
-        sed -n 's/^[^ ][^ ]*[ ][ ]*-T[ ][ ]*prefix[ ][ ]*\([^ ][^ ]*\).*/<Prefix> \1/p')"
-    [ -n "$_prefix_cmd" ] && {
-        # _lc="$(echo "$_prefix_cmd" | wc -l)"
-        _lc=$(printf '%s' "$_prefix_cmd" | awk 'END{print NR}')
-        [ "$_lc" != "1" ] && return # multiple prefix matches, display command as is
-
-        #
-        # In some cases the \ needs to be kept for a prefix sequence in order
-        # for it to be displayed in a menu, as those are displayed the
-        # menu will filter out this remaining esc char so that it is not displayed
-        #
-        last_char=$(expr "$_prefix_cmd" : '.*\(.\)$')
-        log_it "><> last_char [$last_char]"
-        case "$last_char" in
-        ';' | '"')
-            # Some characters needs to be prefixed in order to be displayed in a menu
-            cmd_bare="$_prefix_cmd"
-            log_it "><> keeping esc char: [$cmd_bare]"
-            ;;
-        *)
-            # Extract \ char prefix from <Prefix> listigs
-            cmd_bare="$(echo "$_prefix_cmd" | sed 's/\\//g')"
-            ;;
-        esac
+    case "$ekb_key_type" in
+    prefix) ekb_pref_str="<prefix>" ;;
+    root) ekb_pref_str="<NO prefix>" ;;
+    *) error_msg "extract_key_bind($ekb_key_type) - first param must be prefix or root" ;;
+    esac
+    [ -z "$ekb_cmd" ] && {
+        error_msg "extract_key_bind($ekb_key_type, $ekb_cmd) - second param empty"
     }
+
+    $TMUX_BIN list-keys | grep -iv mouse | grep "$ekb_cmd\$" |
+        awk -v target="$ekb_key_type" -v label="$ekb_pref_str" '
+        $0 ~ "-T[ ]*" target {
+            for (i = 1; i <= NF; i++) {
+                if ($i == target && i < NF) {
+                    keys[++count] = $(i+1)
+                    break
+                }
+            }
+        }
+        END {
+            if (count == 1) {
+                print label " " keys[1]
+            } else if (count > 1) {
+                for (i = 1; i <= count; i++) {
+                    printf "%s %s%s", label, keys[i], (i < count ? "  or  " : "\n")
+                }
+            }
+        }
+    '
+}
+
+filter_last_char() {
+    #
+    # In some cases the \ needs to be kept for a prefix sequence in order
+    # for it to be displayed in a menu, as those are displayed the
+    # menu will filter out this remaining esc char so that it is not displayed
+    #
+    flc_input="$1"
+    flc_last_char=$(expr "$flc_input" : '.*\(.\)$')
+    log_it "><> flc_last_char [$flc_last_char]"
+
+    case "$flc_last_char" in
+    ';' | '"')
+        # Some characters needs to be prefixed in order to be displayed in a menu
+        echo "$flc_input"
+        ;;
+    *)
+        # Extract \ char prefix from <Prefix> listigs
+        echo "$flc_input" | sed 's/\\//g'
+        ;;
+    esac
+}
+
+check_key_binds() {
+    #
+    #  If a '-T prefix' or '-T root' key bind matches, display the key bind
+    #  otherwise display the original command.
+    #  Please note, if a prefix bind is found, no check for root binds are done
+    #
+    ckb_cmd="$1"
+    log_it "check_key_binds($ckb_cmd)"
+
+    ckb_no_tmux_bin="$(echo "$ckb_cmd" | sed "s#^$TMUX_BIN ##")"
+    ckb_prefix_bind="$(extract_key_bind prefix "$ckb_no_tmux_bin")"
+    log_it " ><> ckb_prefix_bind [$ckb_prefix_bind]"
+    [ -n "$ckb_prefix_bind" ] && {
+        filter_last_char "$ckb_prefix_bind"
+        # echo "$ckb_prefix_bind"
+        return
+    }
+    _root_bind="$(extract_key_bind root "$ckb_no_tmux_bin")"
+    if [ -n "$_root_bind" ]; then
+        filter_last_char "$_root_bind"
+        # echo "$_root_bind"
+    else
+        echo "$ckb_cmd"
+    fi
 }
 
 show_cmd() {
@@ -58,10 +115,12 @@ show_cmd() {
 
     log_it "show_cmd($cmd_bare)"
     [ -z "$cmd_bare" ] && error_msg "show_cmd() - no command could be extracted"
+    cmd="$(check_key_binds "$cmd_bare")"
 
-    prefix_replace_cmd
-
-    cmd="$cmd_bare"
+    #
+    #  Line break cmd if needed, to fit inside the menu width
+    #  then calls mnu_text_line() for each line of the command to be displayed
+    #
     while [ -n "$cmd" ]; do
         chunk=$(printf '%s\n' "$cmd" | awk -v max="$cfg_display_cmds_cols" '
         {
@@ -78,7 +137,6 @@ show_cmd() {
                 print substr($0, 1, max)
             }
         }')
-
         log_it "  chunk: >>$chunk<<"
         mnu_text_line "-#[nodim]  $chunk"
 
