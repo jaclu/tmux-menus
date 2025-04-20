@@ -75,8 +75,9 @@ log_it "status change completed"
 # Hack to clear msg
 #
 tmux_error_handler set-option -g display-time 1
-tmux_error_handler display ""
-
+tmux_error_handler display "" # clear status message
 # Restore org value
-# shellcheck disable=SC2154
-tmux_error_handler set-option -g display-time "$org_disp_time"
+[ -n "$org_disp_time" ] && {
+    # shellcheck disable=SC2154
+    tmux_error_handler set-option -g display-time "$org_disp_time"
+}
