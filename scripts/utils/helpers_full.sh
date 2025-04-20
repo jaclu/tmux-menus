@@ -421,6 +421,11 @@ wait_to_close_display() {
 d_help="$d_items"/help
 d_hints="$d_items"/hints
 d_custom_items="$D_TM_BASE_PATH"/custom_items
+d_current_script="$(
+    cd "$(dirname "$0")" || exit
+    pwd
+)"
+
 f_custom_items_index="$d_custom_items"/_index.sh
 # shellcheck disable=SC2154
 f_update_custom_inventory="$d_scripts"/update_custom_inventory.sh
@@ -432,10 +437,6 @@ f_min_display_time="$d_cache"/min_display_time
 # No longer used
 #
 # current_script=${0##*/}
-# d_current_script="$(
-#     cd "$(dirname "$0")" || exit
-#     pwd
-# )"
 # This is the full path expanded version of $0, be careful to use it in
 # dynamic_content to be accessibele all helpers must have been sourced
 # f_current_script="$d_current_script/$current_script"

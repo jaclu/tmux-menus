@@ -174,6 +174,7 @@ get_config() {
 }
 
 get_d_current_script() {
+    # will capture calls to this that didn't source helpers_full.sh
     error_msg_safe "Call to get_d_current_script($1)"
 }
 

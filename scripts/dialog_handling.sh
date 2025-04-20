@@ -72,6 +72,7 @@ is_function_defined() {
 define_f_menu_rel() {
     # to optimize and skip the external process used by relative_path() only
     # define this when needed
+    log_it "><>========>  define_f_menu_rel() f_menu_rel [$f_menu_rel]"
     [ -n "$f_menu_rel" ] && return
     get_d_current_script define_f_menu_rel
     f_menu_rel="$(relative_path "$d_current_script")/$bn_current_script"
