@@ -81,16 +81,17 @@ filter_bind_escapes() {
 add_result() {
     # log_it "add_rslt($1)"
 
-    if [ -z "$rslt" ]; then
-        rslt="$1"
+    if [ -z "$ckb_rslt" ]; then
+        ckb_rslt="$1"
     else
-        rslt="$rslt  or  $1"
+        ckb_rslt="$ckb_rslt  or  $1"
     fi
 }
 
 check_key_binds() {
     ckb_cmd="$1"
-    rslt=""
+    ckb_output_var="$2"
+    ckb_rslt=""
     # log_it "check_key_binds($ckb_cmd)"
 
     # Strip $TMUX_BIN from beginning if present
@@ -110,21 +111,24 @@ check_key_binds() {
     [ -n "$ckb_root_bind" ] && {
         # shellcheck disable=SC2086 # intentional in this case
         set -- $ckb_root_bind
-        for line; do
-            add_result "(NO-Prefix) $line"
+        for _l; do
+            add_result "(NO-Prefix) $_l"
         done
     }
-
     [ -n "$ckb_prefix_bind" ] && {
         # shellcheck disable=SC2086 # intentional in this case
         set -- $ckb_prefix_bind
-        for line; do
-            add_result "<prefix> $line"
+        for _l; do
+            add_result "<prefix> $_l"
         done
     }
+    [ -z "$ckb_rslt" ] && ckb_rslt="$ckb_cmd" # if no binds were found display command
 
-    [ -z "$rslt" ] && rslt="$ckb_cmd" # if no binds were found display command
-    echo "$rslt"
+    if [ -n "$ckb_output_var" ]; then
+        eval "$ckb_output_var=\"\$ckb_rslt\""
+    else
+        echo "$ckb_rslt"
+    fi
     profiling_display "result generated"
 }
 
@@ -148,7 +152,10 @@ show_cmd() {
     # log_it "show_cmd($sc_cmd)"
 
     [ -z "$sc_cmd" ] && error_msg "show_cmd() - no command could be extracted"
-    sc_cmd="$(check_key_binds "$sc_cmd")"
+
+    # sc_cmd="$(check_key_binds "$sc_cmd")"
+    check_key_binds "$sc_cmd" sc_cmd
+
     profiling_display "check_key_binds done"
 
     #  Replaces initial tmux-cmd with (TMUX) for clarity and to avoid risking
