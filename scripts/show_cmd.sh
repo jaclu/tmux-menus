@@ -23,18 +23,32 @@ extract_key_bind() {
     }
 
     profiling_update_time_stamps
+    # keys=$(
+    #     $TMUX_BIN list-keys | grep -iv display-menu | grep -- "$ekb_cmd\$" |
+    #         awk -v target="$ekb_key_type" '
+    #         $0 ~ "-T[ ]*" target {
+    #             for (i = 1; i <= NF; i++) {
+    #                 if ($i == target && i+1 <= NF) {
+    #                     print $(i+1)
+    #                     break
+    #                 }
+    #             }
+    #         }'
+    # )
     keys=$(
-        $TMUX_BIN list-keys | grep -iv display-menu | grep -- "$ekb_cmd\$" |
-            awk -v target="$ekb_key_type" '
-            $0 ~ "-T[ ]*" target {
-                for (i = 1; i <= NF; i++) {
-                    if ($i == target && i+1 <= NF) {
-                        print $(i+1)
-                        break
-                    }
+        $TMUX_BIN list-keys |
+            awk -v target="$ekb_key_type" -v cmd="$ekb_cmd" '
+        tolower($0) !~ /display-menu/ && $0 ~ cmd "$" {
+            for (i = 1; i <= NF; i++) {
+                if ($i == "-T" && i+1 <= NF && $(i+1) == target && i+2 <= NF) {
+                    print $(i+2)
+                    break
                 }
-            }'
+            }
+        }
+    '
     )
+
     profiling_display "+++ after awk"
 
     if [ -n "$ekb_output_var" ]; then
