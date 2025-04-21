@@ -22,6 +22,7 @@ extract_key_bind() {
         error_msg "extract_key_bind($ekb_key_type, $ekb_cmd) - command empty"
     }
 
+    profiling_update_time_stamps
     keys=$(
         $TMUX_BIN list-keys | grep -iv display-menu | grep -- "$ekb_cmd\$" |
             awk -v target="$ekb_key_type" '
@@ -34,11 +35,10 @@ extract_key_bind() {
                 }
             }'
     )
+    profiling_display "+++ after awk"
 
     if [ -n "$ekb_output_var" ]; then
-        profiling_display "before eval"
         eval "$ekb_output_var=\"\$keys\""
-        profiling_display "after eval"
     else
         echo "$keys"
     fi
@@ -118,7 +118,7 @@ show_cmd() {
     #  Feeding the menu creation via calls to mnu_text_line()
     #
     log_it
-    profiling_display "start show_cmd()"
+    profiling_update_time_stamps
     _s1="${1%" $menu_reload"}"             # skip menu_reload suffix if found
     _s2="${_s1%" $reload_in_runshell"}"    # skip reload_in_runshell suffix if found
     _s3="${_s2%"; $0"}"                    # Remove trailing reload of menu
