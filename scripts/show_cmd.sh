@@ -26,23 +26,35 @@ extract_key_bind() {
         error_msg "extract_key_bind() not found: $f_cached_tmux_key_binds"
     }
     profiling_update_time_stamps
+
     keys=$(
-        awk -v target="$ekb_key_type" -v cmd="$ekb_cmd\$" '
-        {
-            found_target = 0
-            for (i = 1; i <= NF; i++) {
-                if ($i == "-T" && (i+1) <= NF && $(i+1) == target) {
-                    found_target = 1
-                    key_field = i + 2
-                }
+        awk -v target="$ekb_key_type" -v cmd="$ekb_cmd" '
+    {
+        found_target = 0
+        key_field = 0
+        for (i = 1; i <= NF; i++) {
+            if ($i == "-T" && (i+1) <= NF && $(i+1) == target) {
+                found_target = 1
+                key_field = i + 2
+            }
+        }
+
+        if (found_target) {
+            # Rebuild command string from the fields after the key
+            cmd_start = key_field + 1
+            actual_cmd = ""
+            for (j = cmd_start; j <= NF; j++) {
+                actual_cmd = actual_cmd (j == cmd_start ? "" : " ") $j
             }
 
-            if (found_target && $0 ~ cmd "$") {
+            if (actual_cmd == cmd) {
                 print $(key_field)
             }
         }
+    }
     ' "$f_cached_tmux_key_binds"
     )
+
     profiling_display "++++ awk done"
     if [ -n "$ekb_output_var" ]; then
         eval "$ekb_output_var=\"\$keys\""
