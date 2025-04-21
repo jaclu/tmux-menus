@@ -484,7 +484,7 @@ menu_parse() {
 prepare_show_commands() {
     # if true, do not use normal caching, build custom menu including cmds under each
     # action item
-    log_it "prepare_show_commands()"
+    # log_it "prepare_show_commands()"
     safe_now t_show_cmds
     $all_helpers_sourced || source_all_helpers "prepare_show_commands"
 
@@ -504,7 +504,7 @@ prepare_show_commands() {
 
 display_commands_toggle() {
     menu_part="$1"
-    log_it "add_display_commands($menu_part)"
+    # log_it "display_commands_toggle($menu_part)"
     [ -z "$menu_part" ] && error_msg "add_display_commands() - called with no param"
 
     if [ "$TMUX_MENUS_SHOW_CMDS" = "1" ]; then

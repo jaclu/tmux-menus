@@ -19,11 +19,11 @@
 #  set_profiling_t_now is called so depending on what you want to measure the dropin
 #  point for this code can make a difference!
 #
-#  at any point you want to see timings before/after, do this:
+#   If you want to see the precise time for an action, do this:
 #
-#    profiling_display "will source cache"
+#    profiling_update_time_stamps
 #    . "$d_scripts"/utils/cache.sh
-#    profiling_display "source cache - done!"
+#    profiling_display "sourced cache"
 #
 #   If you just want to see how much time have been spent at a certain point,
 #   including time since last time update, use it like:
