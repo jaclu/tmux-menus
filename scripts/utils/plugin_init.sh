@@ -127,8 +127,9 @@ $all_helpers_sourced || source_all_helpers "always done by plugin_init.sh"
 
 if [[ -d "$d_cache" ]]; then
     # clear out potentially obsolete cache items
-    safe_remove "$f_cached_tmux_options"
     safe_remove "$f_cache_known_tmux_vers"
+    safe_remove "$f_cached_tmux_options"
+    safe_remove "$f_cached_tmux_key_binds"
 
     #
     # If these are removed, it can't be detected if config changed, so

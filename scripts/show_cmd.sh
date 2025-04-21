@@ -22,33 +22,22 @@ extract_key_bind() {
         error_msg "extract_key_bind($ekb_key_type, $ekb_cmd) - command empty"
     }
 
-    # keys=$(
-    #     $TMUX_BIN list-keys | grep -iv display-menu | grep -- "$ekb_cmd\$" |
-    #         awk -v target="$ekb_key_type" '
-    #         $0 ~ "-T[ ]*" target {
-    #             for (i = 1; i <= NF; i++) {
-    #                 if ($i == target && i+1 <= NF) {
-    #                     print $(i+1)
-    #                     break
-    #                 }
-    #             }
-    #         }'
-    # )
     profiling_update_time_stamps
     keys=$(
-        $TMUX_BIN list-keys |
-            awk -v target="$ekb_key_type" -v cmd="$ekb_cmd" '
-        tolower($0) !~ /display-menu/ && $0 ~ cmd "$" {
-            for (i = 1; i <= NF; i++) {
-                if ($i == "-T" && i+1 <= NF && $(i+1) == target && i+2 <= NF) {
-                    print $(i+2)
+        awk -v target="$ekb_key_type" -v cmd="$ekb_cmd" '
+        $0 ~ cmd "$" {
+            line = $0
+            n = split(line, fields, " ")
+            for (i = 1; i <= n; i++) {
+                if (tolower(fields[i]) == "display-menu") next
+                if (fields[i] == "-T" && i+1 <= n && fields[i+1] == target && i+2 <= n) {
+                    print fields[i+2]
                     break
                 }
             }
         }
-    '
+    ' "$f_cached_tmux_key_binds"
     )
-
     profiling_display "+++ after awk"
 
     if [ -n "$ekb_output_var" ]; then
