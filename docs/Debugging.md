@@ -18,8 +18,15 @@ In order not to flood the log with an elaborate error report.
 
 ## TMUX_MENUS_SHOW_CMDS
 
-If this is set to 1 menus will always show commands, regardless of what
+If this is defined `Display commands` will be available, regardless of what
 `@menus_display_commands` is set to.
+
+Be aware, if this feature is used, it is in most cases recomended to set
+it to `0` this will make `Display commands` available but not enabled by default.
+
+- `0` - `Display commands` forced to be available, menus defaults to not show commands
+- `1` - `Display commands` forced to be available, menus defaults to show commands
+- Any other value will be treated as a `0`
 
 ## TMUX_MENUS_LOGGING_MINIMAL
 
