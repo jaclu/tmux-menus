@@ -83,7 +83,7 @@ check_key_binds() {
     # shellcheck disable=SC2086 # intentional in this case
     set -- $ckb_root_bind
     for line; do
-        add_result "<NO prefix> $line"
+        add_result "(NO-Prefix) $line"
     done
 
     # shellcheck disable=SC2086 # intentional in this case
@@ -104,6 +104,7 @@ show_cmd() {
     #
     #  Feeding the menu creation via calls to mnu_text_line()
     #
+    profiling_display "start show_cmd()"
     _s1="${1%" $menu_reload"}"             # skip menu_reload suffix if found
     _s2="${_s1%" $reload_in_runshell"}"    # skip reload_in_runshell suffix if found
     _s3="${_s2%"; $0"}"                    # Remove trailing reload of menu
@@ -111,7 +112,7 @@ show_cmd() {
     # reduce excessive white space
     sc_cmd=$(printf '%s\n' "$_s4" | awk '{$1=$1; print}')
 
-    log_it "show_cmd($sc_cmd)"
+    # log_it "show_cmd($sc_cmd)"
 
     [ -z "$sc_cmd" ] && error_msg "show_cmd() - no command could be extracted"
     sc_cmd="$(check_key_binds "$sc_cmd")"
@@ -147,17 +148,6 @@ show_cmd() {
 
     # refresh it for each cmd processed in case the display timeout is shortish
     tmux_error_handler display-message "Preparing Display Commands ..."
+
+    profiling_display "end show_cmd()"
 }
-
-#===============================================================
-#
-#   Main
-#
-#===============================================================
-
-# D_TM_BASE_PATH=$(dirname "$(dirname -- "$(realpath "$0")")")
-
-# #  shellcheck source=/scripts/helpers.sh
-# . "$D_TM_BASE_PATH"/scripts/helpers.sh
-
-# check_key_binds "resize-pane -QQ"
