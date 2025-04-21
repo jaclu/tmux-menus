@@ -36,7 +36,9 @@ extract_key_bind() {
     )
 
     if [ -n "$ekb_output_var" ]; then
+        profiling_display "before eval"
         eval "$ekb_output_var=\"\$keys\""
+        profiling_display "after eval"
     else
         echo "$keys"
     fi
@@ -77,10 +79,13 @@ check_key_binds() {
 
     extract_key_bind prefix "$ckb_no_tmux_bin" ckb_prefix_raw
     profiling_display "extract_key_bind prefix"
+
     ckb_prefix_bind=$(printf "%s\n" "$ckb_prefix_raw" | filter_bind_escapes)
     profiling_display "filter_bind_escapes prefix"
+
     extract_key_bind root "$ckb_no_tmux_bin" ckb_root_raw
     profiling_display "extract_key_bind root"
+
     ckb_root_bind=$(printf "%s\n" "$ckb_root_raw" | filter_bind_escapes)
     profiling_display "filter_bind_escapes root"
 
