@@ -22,7 +22,6 @@ extract_key_bind() {
         error_msg "extract_key_bind($ekb_key_type, $ekb_cmd) - command empty"
     }
 
-    profiling_update_time_stamps
     keys=$(
         awk -v target="$ekb_key_type" -v cmd="$ekb_cmd" '
         $0 ~ cmd "$" {
@@ -38,7 +37,6 @@ extract_key_bind() {
         }
     ' "$f_cached_tmux_key_binds"
     )
-    profiling_display "+++ after awk"
 
     if [ -n "$ekb_output_var" ]; then
         eval "$ekb_output_var=\"\$keys\""
