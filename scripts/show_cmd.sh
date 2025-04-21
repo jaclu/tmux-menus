@@ -108,6 +108,7 @@ show_cmd() {
     #
     #  Feeding the menu creation via calls to mnu_text_line()
     #
+    log_it
     profiling_display "start show_cmd()"
     _s1="${1%" $menu_reload"}"             # skip menu_reload suffix if found
     _s2="${_s1%" $reload_in_runshell"}"    # skip reload_in_runshell suffix if found
