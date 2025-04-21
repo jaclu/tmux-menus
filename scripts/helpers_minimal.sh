@@ -111,6 +111,13 @@ select_menu_handler() {
     # log_it "  <-- select_menu_handler() - done"
 }
 
+validate_varname() {
+    case "$1" in
+    [a-zA-Z_][a-zA-Z0-9_]*) return 0 ;;
+    *) error_msg_safe "$2 Invalid variable name: $1" ;;
+    esac
+}
+
 #---------------------------------------------------------------
 #
 #   get configuration
@@ -206,6 +213,7 @@ safe_now() {
     #  for better performance
     #
     varname="$1"
+    # validate_varname "$varname" "safe_now()()" # disabled for performance
 
     # log_it "safe_now($varname) mthd: [$selected_get_time_mthd]"
     case "$selected_get_time_mthd" in
@@ -227,7 +235,7 @@ safe_now() {
     esac
     [ -n "$varname" ] && {
         # if variable name provided set it to t_now
-        eval "$varname=\$t_now"
+        eval "$varname=\"\$t_now\""
     }
 }
 
@@ -306,35 +314,34 @@ tpt_digits_from_string() {
     #  for better performance
     #
     varname="$1"
+    validate_varname "$varname" "tpt_digits_from_string()"
 
     # Ensure arguments are present
     [ -z "$varname" ] && error_msg_safe "tpt_digits_from_string() - no variable name!"
     [ -z "$2" ] && error_msg_safe "tpt_digits_from_string() - no param!"
 
     # Remove "-rc" suffix and extract digits using parameter expansion
-    _i=$(echo "$2" | tr -cd '0-9') # Keep only digits
+    _i=$(echo "$2" | cut -d'-' -f1 | tr -cd '0-9') # Keep only digits
 
     # Check if result is empty after digit extraction
     [ -z "$_i" ] && error_msg_safe "tpt_digits_from_string() - result empty"
 
     # Assign result to the variable
-    eval "$varname=\$_i"
+    eval "$varname=\"\$_i\""
 }
 
 tpt_tmux_vers_suffix() {
     # Extracts any alphabetic suffix from the end of a version string.
     # If no suffix exists, returns an empty string.
     #
-    #  Assigning the supplied variable name instead of printing output in a subshell,
-    #  for better performance
-    #
+    # Assigning the supplied variable name instead of printing output in a subshell,
+    # for better performance
     varname="$1"
     vers="$2"
+    validate_varname "$varname" "tpt_tmux_vers_suffix()"
+    # Remove leading digits, dots, and dashes to isolate suffix
+    _s=$(printf "%s" "$vers" | sed 's/^[0-9.-]*//')
 
-    # Remove all leading digits and dots, leaving only the suffix
-    _s="${vers##*([0-9.])}"
-
-    # Assign result to the variable name
     eval "$varname=\"\$_s\""
 }
 

@@ -121,7 +121,8 @@ tmux_get_option() {
 
     # log_it "tmux_get_option($tgo_varname, $tgo_option, $tgo_default, $tgo_no_cache)"
 
-    [ -z "$tgo_varname" ] && error_msg "tmux_get_option() param 1 empty!"
+    validate_varname "$tgo_varname" "tmux_get_option()"
+    # [ -z "$tgo_varname" ] && error_msg "tmux_get_option() param 1 empty!"
     [ -z "$tgo_option" ] && error_msg "tmux_get_option() param 2 empty!"
     [ -z "$tgo_default" ] && log_it "tmux_get_option($tgo_option) - No default supplied"
     if [ -z "$tgo_no_cache" ] && $cfg_use_cache && [ -d "$d_cache" ]; then
@@ -167,7 +168,7 @@ tmux_get_option() {
         tgo_value=${tgo_value%\"} # wrapping
     fi
     # log_it "tmux_get_option() - using [$tgo_value]"
-    eval "$tgo_varname=\$tgo_value"
+    eval "$tgo_varname=\"\$tgo_value\""
 }
 
 fix_home_path() {
@@ -183,7 +184,9 @@ fix_home_path() {
     fhp_path="$2"
 
     # log_it "fix_home_path($fhp_varname,$fhp_path)"
-    [ -z "$fhp_varname" ] && error_msg "fix_home_path() param 1 empty!"
+
+    validate_varname "$fhp_varname" "fix_home_path()"
+    # [ -z "$fhp_varname" ] && error_msg "fix_home_path() param 1 empty!"
 
     case "$fhp_path" in
     \\~/*)
@@ -199,7 +202,7 @@ fix_home_path() {
     *) ;;
     esac
 
-    eval "$fhp_varname=\$fhp_path"
+    eval "$fhp_varname=\"\$fhp_path\""
 }
 
 tmux_get_plugin_options() { # cache references
@@ -338,6 +341,8 @@ tmux_error_handler_assign() { # cache references
     varname="$1"
     shift
     the_cmd="$*"
+
+    validate_varname "$varname" "tmux_error_handler_assign()"
     $teh_debug && {
         if [ "$varname" = "_dont_store_result_" ]; then
             log_it "tmux_error_handler($the_cmd)"
@@ -416,7 +421,7 @@ tmux_error_handler_assign() { # cache references
         fi
     }
     teh_debug=false
-    eval "$varname=\$value"
+    eval "$varname=\"\$value\""
     return 0
 }
 
