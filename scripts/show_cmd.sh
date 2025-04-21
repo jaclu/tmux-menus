@@ -22,22 +22,26 @@ extract_key_bind() {
         error_msg "extract_key_bind($ekb_key_type, $ekb_cmd) - command empty"
     }
 
+    [ ! -f "$f_cached_tmux_key_binds" ] && {
+        error_msg "extract_key_bind() not found: $f_cached_tmux_key_binds"
+    }
     keys=$(
         awk -v target="$ekb_key_type" -v cmd="$ekb_cmd" '
-        $0 ~ cmd "$" {
-            line = $0
-            n = split(line, fields, " ")
-            for (i = 1; i <= n; i++) {
-                if (tolower(fields[i]) == "display-menu") next
-                if (fields[i] == "-T" && i+1 <= n && fields[i+1] == target && i+2 <= n) {
-                    print fields[i+2]
-                    break
+        {
+            found_target = 0
+            for (i = 1; i <= NF; i++) {
+                if ($i == "-T" && (i+1) <= NF && $(i+1) == target) {
+                    found_target = 1
+                    key_field = i + 2
                 }
+            }
+
+            if (found_target && $0 ~ cmd "$") {
+                print $(key_field)
             }
         }
     ' "$f_cached_tmux_key_binds"
     )
-
     if [ -n "$ekb_output_var" ]; then
         eval "$ekb_output_var=\"\$keys\""
     else
@@ -80,13 +84,11 @@ check_key_binds() {
 
     extract_key_bind prefix "$ckb_no_tmux_bin" ckb_prefix_raw
     profiling_display "extract_key_bind prefix"
-
     ckb_prefix_bind=$(printf "%s\n" "$ckb_prefix_raw" | filter_bind_escapes)
     profiling_display "filter_bind_escapes prefix"
 
     extract_key_bind root "$ckb_no_tmux_bin" ckb_root_raw
     profiling_display "extract_key_bind root"
-
     ckb_root_bind=$(printf "%s\n" "$ckb_root_raw" | filter_bind_escapes)
     profiling_display "filter_bind_escapes root"
 

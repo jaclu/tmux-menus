@@ -486,11 +486,12 @@ prepare_show_commands() {
     # action item
     log_it "prepare_show_commands()"
     safe_now t_show_cmds
+    $all_helpers_sourced || source_all_helpers "prepare_show_commands"
+
     [ ! -f "$f_cached_tmux_key_binds" ] && {
+        log_it "Creating: $f_cached_tmux_key_binds"
         $TMUX_BIN list-keys | grep -iv display-menu >"$f_cached_tmux_key_binds"
     }
-
-    $all_helpers_sourced || source_all_helpers "prepare_show_commands"
 
     [ "$TMUX_MENUS_SHOW_CMDS" = "1" ] && {
         tmux_error_handler display-message "Preparing Display Commands ..."
