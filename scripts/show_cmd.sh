@@ -84,17 +84,21 @@ check_key_binds() {
     ckb_root_bind=$(printf "%s\n" "$ckb_root_raw" | filter_bind_escapes)
     profiling_display "filter_bind_escapes root"
 
-    # shellcheck disable=SC2086 # intentional in this case
-    set -- $ckb_root_bind
-    for line; do
-        add_result "(NO-Prefix) $line"
-    done
+    [ -n "$ckb_root_bind" ] && {
+        # shellcheck disable=SC2086 # intentional in this case
+        set -- $ckb_root_bind
+        for line; do
+            add_result "(NO-Prefix) $line"
+        done
+    }
 
-    # shellcheck disable=SC2086 # intentional in this case
-    set -- $ckb_prefix_bind
-    for line; do
-        add_result "<prefix> $line"
-    done
+    [ -n "$ckb_prefix_bind" ] && {
+        # shellcheck disable=SC2086 # intentional in this case
+        set -- $ckb_prefix_bind
+        for line; do
+            add_result "<prefix> $line"
+        done
+    }
 
     [ -z "$rslt" ] && rslt="$ckb_cmd" # if no binds were found display command
     echo "$rslt"
