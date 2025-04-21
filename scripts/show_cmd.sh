@@ -94,6 +94,7 @@ check_key_binds() {
     ckb_root_bind=$(printf "%s\n" "$ckb_root_raw" | filter_bind_escapes)
     profiling_display "filter_bind_escapes root"
 
+    profiling_update_time_stamps
     [ -n "$ckb_root_bind" ] && {
         # shellcheck disable=SC2086 # intentional in this case
         set -- $ckb_root_bind
@@ -112,6 +113,7 @@ check_key_binds() {
 
     [ -z "$rslt" ] && rslt="$ckb_cmd" # if no binds were found display command
     echo "$rslt"
+    profiling_display "result generated"
 }
 
 show_cmd() {
