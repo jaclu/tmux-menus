@@ -22,7 +22,6 @@ extract_key_bind() {
         error_msg "extract_key_bind($ekb_key_type, $ekb_cmd) - command empty"
     }
 
-    profiling_update_time_stamps
     # keys=$(
     #     $TMUX_BIN list-keys | grep -iv display-menu | grep -- "$ekb_cmd\$" |
     #         awk -v target="$ekb_key_type" '
@@ -35,6 +34,7 @@ extract_key_bind() {
     #             }
     #         }'
     # )
+    profiling_update_time_stamps
     keys=$(
         $TMUX_BIN list-keys |
             awk -v target="$ekb_key_type" -v cmd="$ekb_cmd" '
