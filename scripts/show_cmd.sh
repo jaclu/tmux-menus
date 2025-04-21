@@ -25,7 +25,6 @@ extract_key_bind() {
     [ ! -f "$f_cached_tmux_key_binds" ] && {
         error_msg "extract_key_bind() not found: $f_cached_tmux_key_binds"
     }
-    profiling_update_time_stamps
 
     keys=$(
         awk -v target="$ekb_key_type" -v cmd="$ekb_cmd" '
@@ -55,7 +54,6 @@ extract_key_bind() {
     ' "$f_cached_tmux_key_binds"
     )
 
-    profiling_display "++++ awk done"
     if [ -n "$ekb_output_var" ]; then
         eval "$ekb_output_var=\"\$keys\""
     else
