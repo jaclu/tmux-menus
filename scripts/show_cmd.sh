@@ -95,18 +95,12 @@ check_key_binds() {
     # Strip $TMUX_BIN from beginning if present
     ckb_no_tmux_bin=${ckb_cmd#"$TMUX_BIN "}
 
-    profiling_update_time_stamps
     extract_key_bind prefix "$ckb_no_tmux_bin" ckb_prefix_raw
-    profiling_display "extract_key_bind prefix"
     ckb_prefix_bind=$(printf "%s\n" "$ckb_prefix_raw" | filter_bind_escapes)
-    profiling_display "filter_bind_escapes prefix"
 
     extract_key_bind root "$ckb_no_tmux_bin" ckb_root_raw
-    profiling_display "extract_key_bind root"
     ckb_root_bind=$(printf "%s\n" "$ckb_root_raw" | filter_bind_escapes)
-    profiling_display "filter_bind_escapes root"
 
-    profiling_update_time_stamps
     [ -n "$ckb_root_bind" ] && {
         # shellcheck disable=SC2086 # intentional in this case
         set -- $ckb_root_bind
@@ -128,7 +122,6 @@ check_key_binds() {
     else
         echo "$ckb_rslt"
     fi
-    profiling_display "result generated"
 }
 
 show_cmd() {
@@ -139,15 +132,12 @@ show_cmd() {
     #
     #  Feeding the menu creation via calls to mnu_text_line()
     #
-    [ "$TMUX_MENUS_PROFILING" = "1" ] && log_it # create a LF between each call
-    profiling_update_time_stamps
     _s1="${1%" $menu_reload"}"             # skip menu_reload suffix if found
     _s2="${_s1%" $reload_in_runshell"}"    # skip reload_in_runshell suffix if found
     _s3="${_s2%"; $0"}"                    # Remove trailing reload of menu
     _s4="$(echo "$_s3" | sed 's/\\&.*//')" # skip hint overlays, ie part after \&
     # reduce excessive white space
     sc_cmd=$(printf '%s\n' "$_s4" | awk '{$1=$1; print}')
-    profiling_display "sc_cmd defined"
     # log_it "show_cmd($sc_cmd)"
 
     [ -z "$sc_cmd" ] && error_msg "show_cmd() - no command could be extracted"
@@ -155,12 +145,9 @@ show_cmd() {
     # sc_cmd="$(check_key_binds "$sc_cmd")"
     check_key_binds "$sc_cmd" sc_cmd
 
-    profiling_display "check_key_binds done"
-
     #  Replaces initial tmux-cmd with (TMUX) for clarity and to avoid risking
     #  starting with a long path
     sc_cmd="$(echo "$sc_cmd" | sed "s#^$TMUX_BIN #(TMUX)  #")"
-    profiling_display "TMUX prefix removed"
 
     #  Line break cmd if needed, to fit inside the menu width
     #  then calls mnu_text_line() for each line of the command to be displayed.
@@ -186,10 +173,7 @@ show_cmd() {
         sc_remainder=${sc_remainder#"$chunk"}
         sc_remainder=${sc_remainder#" "}
     done
-    profiling_display "result line split"
 
     # refresh it for each cmd processed in case the display timeout is shortish
     tmux_error_handler display-message "Preparing Display Commands ..."
-
-    profiling_display "end show_cmd()"
 }
