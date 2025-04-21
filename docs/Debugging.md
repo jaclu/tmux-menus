@@ -21,7 +21,7 @@ In order not to flood the log with an elaborate error report.
 If this is defined `Display commands` will be available, regardless of what
 `@menus_display_commands` is set to.
 
-Be aware, if this feature is used, it is in most cases recomended to set
+Be aware, if this feature is used, it is in most cases recommended to set
 it to `0` this will make `Display commands` available but not enabled by default.
 
 - `0` - `Display commands` forced to be available, menus defaults to not show commands
