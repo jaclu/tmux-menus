@@ -485,7 +485,10 @@ prepare_show_commands() {
     # if true, do not use normal caching, build custom menu including cmds under each
     # action item
     $all_helpers_sourced || source_all_helpers "prepare_show_commands"
-    tmux_error_handler display-message "preparing TMUX_MENUS_SHOW_CMDS ..."
+
+    [ "$TMUX_MENUS_SHOW_CMDS" = "1" ] && {
+        tmux_error_handler display-message "Preparing Display Commands ..."
+    }
 
     cfg_use_cache=false
     # shellcheck source=scripts/show_cmd.sh
@@ -722,7 +725,7 @@ prepare_menu() {
     if $cfg_use_cache; then
         cache_static_content
     else
-        static_content
+        is_function_defined "static_content" && static_content
     fi
 
     # 2 - Handle dynamic parts (if any)
@@ -903,7 +906,13 @@ display_menu() {
     # Display time to generate menu
 
     [ "$TMUX_MENUS_SHOW_CMDS" = "1" ] && { # clear status msg
-        tmux_error_handler display-message ""
+        if tmux_vers_check 3.2; then
+            tmux_error_handler display-message -d 1 ""
+        else
+            # Older tmuxes don't have the time out feature, so the
+            # empty message will remain potentially until a key-press
+            tmux_error_handler display-message ""
+        fi
     }
 
     safe_now
@@ -962,7 +971,12 @@ is_dynamic_content=false    # indicates if a dynamic content segment is being pr
 dynamic_content_found=false # indicate dynamic content was generated
 static_cache_updated=false  # used to decide if static cache file reduction should happen
 
-[ "$TMUX_MENUS_SHOW_CMDS" = "1" ] && prepare_show_commands
+[ -n "$TMUX_MENUS_SHOW_CMDS" ] && {
+    # override @menus_display_commands setting
+    cfg_display_cmds=true
+}
+
+$cfg_display_cmds && prepare_show_commands
 
 # Some sanity checks
 [ "$TMUX_MENUS_NO_DISPLAY" != "1" ] && {

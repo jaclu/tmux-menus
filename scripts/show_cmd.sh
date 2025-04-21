@@ -13,9 +13,9 @@
 
 extract_key_bind() {
     #
-    #  If a single key bind matches:           <prefix> K
-    #  if it is non-prefix (-T root) key bind: <NO prefix> M-S-Up
-    #  multiple binds are shown as:            <prefix> K  or  <prefix> C-Up
+    #  If a single key bind matches:            <prefix> K
+    #  if it is non-prefix (-T root) key bind:  <NO prefix> M-S-Up
+    #  multiple binds are shown as:             <prefix> K  or  <prefix> C-Up
     #  No matches: return empty string
     #
     ekb_key_type="$1"
@@ -30,7 +30,9 @@ extract_key_bind() {
         error_msg "extract_key_bind($ekb_key_type, $ekb_cmd) - second param empty"
     }
 
-    $TMUX_BIN list-keys | grep -iv mouse | grep "$ekb_cmd\$" |
+    # Filter out display-menu, to avoid unintentionally finding something embedded
+    # in a menu
+    $TMUX_BIN list-keys | grep -iv display-menu | grep "$ekb_cmd\$" |
         awk -v target="$ekb_key_type" -v label="$ekb_pref_str" '
         $0 ~ "-T[ ]*" target {
             for (i = 1; i <= NF; i++) {
@@ -87,16 +89,16 @@ check_key_binds() {
     # remove tmux bin, since that would make it
     ckb_no_tmux_bin="$(echo "$ckb_cmd" | sed "s#^$TMUX_BIN ##")"
 
-    ckb_prefix_bind="$(extract_key_bind prefix "$ckb_no_tmux_bin")"
-    if [ -n "$ckb_prefix_bind" ]; then
-        filter_bind_escapes "$ckb_prefix_bind"
+    ckb_prefix_bind="$(filter_bind_escapes "$(extract_key_bind prefix "$ckb_no_tmux_bin")")"
+    ckb_root_bind="$(filter_bind_escapes "$(extract_key_bind root "$ckb_no_tmux_bin")")"
+    if [ -z "$ckb_prefix_bind" ] && [ -z "$ckb_root_bind" ]; then
+        echo "$ckb_cmd"
+    elif [ -n "$ckb_prefix_bind" ] && [ -z "$ckb_root_bind" ]; then
+        echo "$ckb_prefix_bind"
+    elif [ -z "$ckb_prefix_bind" ] && [ -n "$ckb_root_bind" ]; then
+        echo "$ckb_root_bind"
     else
-        ckb_root_bind="$(extract_key_bind root "$ckb_no_tmux_bin")"
-        if [ -n "$ckb_root_bind" ]; then
-            filter_bind_escapes "$ckb_root_bind"
-        else
-            echo "$ckb_cmd"
-        fi
+        echo "$ckb_root_bind  or  $ckb_prefix_bind"
     fi
 }
 
@@ -149,6 +151,7 @@ show_cmd() {
         sc_remainder=${sc_remainder#"$chunk"}
         sc_remainder=${sc_remainder#" "}
     done
-    # refresh it for each cmd processed in case
-    tmux_error_handler display-message "preparing TMUX_MENUS_SHOW_CMDS ..."
+
+    # refresh it for each cmd processed in case the display timeout is shortish
+    tmux_error_handler display-message "Preparing Display Commands ..."
 }
