@@ -12,94 +12,88 @@
 #
 
 extract_key_bind() {
-    #
-    #  If a single key bind matches:            <prefix> K
-    #  if it is non-prefix (-T root) key bind:  <NO prefix> M-S-Up
-    #  multiple binds are shown as:             <prefix> K  or  <prefix> C-Up
-    #  No matches: return empty string
-    #
     ekb_key_type="$1"
     ekb_cmd="$2"
+    ekb_output_var="$3"
 
-    case "$ekb_key_type" in
-    prefix) ekb_pref_str="<prefix>" ;;
-    root) ekb_pref_str="<NO prefix>" ;;
-    *) error_msg "extract_key_bind($ekb_key_type) - first param must be prefix or root" ;;
-    esac
+    # log_it "extract_key_bind($ekb_key_type, $ekb_cmd, $ekb_output_var)"
+
     [ -z "$ekb_cmd" ] && {
-        error_msg "extract_key_bind($ekb_key_type, $ekb_cmd) - second param empty"
+        error_msg "extract_key_bind($ekb_key_type, $ekb_cmd) - command empty"
     }
 
-    # Filter out display-menu, to avoid unintentionally finding something embedded
-    # in a menu
-    $TMUX_BIN list-keys | grep -iv display-menu | grep "$ekb_cmd\$" |
-        awk -v target="$ekb_key_type" -v label="$ekb_pref_str" '
-        $0 ~ "-T[ ]*" target {
-            for (i = 1; i <= NF; i++) {
-                if ($i == target && i < NF) {
-                    keys[++count] = $(i+1)
-                    break
+    keys=$(
+        $TMUX_BIN list-keys | grep -iv display-menu | grep -- "$ekb_cmd\$" |
+            awk -v target="$ekb_key_type" '
+            $0 ~ "-T[ ]*" target {
+                for (i = 1; i <= NF; i++) {
+                    if ($i == target && i+1 <= NF) {
+                        print $(i+1)
+                        break
+                    }
                 }
-            }
-        }
-        END {
-            if (count == 1) {
-                print label " " keys[1]
-            } else if (count > 1) {
-                for (i = 1; i <= count; i++) {
-                    printf "%s %s%s", label, keys[i], (i < count ? "  or  " : "\n")
-                }
-            }
-        }
-    '
+            }'
+    )
+
+    if [ -n "$ekb_output_var" ]; then
+        eval "$ekb_output_var=\"\$keys\""
+    else
+        echo "$keys"
+    fi
 }
 
 filter_bind_escapes() {
-    #
-    # Filter out \ prefix on key binds.
-    # In some cases the \ needs to be kept for a key sequence in order
-    # for it to be displayed in a menu, in such cases the menu will filter out
-    # the prefix, so that it is not displayed
-    #
-    flc_input="$1"
-    flc_last_char=$(expr "$flc_input" : '.*\(.\)$')
-    log_it "><> flc_last_char [$flc_last_char]"
+    # log_it "filter_bind_escapes($$key)"
+    while IFS= read -r key; do
+        last_char=$(expr "$key" : '.*\(.\)$')
+        case "$last_char" in
+        ';' | '"')
+            echo "$key"
+            ;;
+        *)
+            echo "$key" | sed 's/\\//g'
+            ;;
+        esac
+    done
+}
 
-    case "$flc_last_char" in
-    ';' | '"')
-        # Some characters needs to be prefixed in order to be displayed in a menu
-        echo "$flc_input"
-        ;;
-    *)
-        # Extract \ char prefix from <Prefix> listigs
-        echo "$flc_input" | sed 's/\\//g'
-        ;;
-    esac
+add_result() {
+    # log_it "add_rslt($1)"
+
+    if [ -z "$rslt" ]; then
+        rslt="$1"
+    else
+        rslt="$rslt  or  $1"
+    fi
 }
 
 check_key_binds() {
-    #
-    #  If a '-T prefix' or '-T root' key bind matches, display the key bind
-    #  otherwise display the original command.
-    #  Please note, if a prefix bind is found, no check for root binds are done
-    #
     ckb_cmd="$1"
-    log_it "check_key_binds($ckb_cmd)"
+    rslt=""
+    # log_it "check_key_binds($ckb_cmd)"
 
-    # remove tmux bin, since that would make it
-    ckb_no_tmux_bin="$(echo "$ckb_cmd" | sed "s#^$TMUX_BIN ##")"
+    # Strip $TMUX_BIN from beginning if present
+    ckb_no_tmux_bin=${ckb_cmd#"$TMUX_BIN "}
 
-    ckb_prefix_bind="$(filter_bind_escapes "$(extract_key_bind prefix "$ckb_no_tmux_bin")")"
-    ckb_root_bind="$(filter_bind_escapes "$(extract_key_bind root "$ckb_no_tmux_bin")")"
-    if [ -z "$ckb_prefix_bind" ] && [ -z "$ckb_root_bind" ]; then
-        echo "$ckb_cmd"
-    elif [ -n "$ckb_prefix_bind" ] && [ -z "$ckb_root_bind" ]; then
-        echo "$ckb_prefix_bind"
-    elif [ -z "$ckb_prefix_bind" ] && [ -n "$ckb_root_bind" ]; then
-        echo "$ckb_root_bind"
-    else
-        echo "$ckb_root_bind  or  $ckb_prefix_bind"
-    fi
+    extract_key_bind prefix "$ckb_no_tmux_bin" ckb_prefix_raw
+    ckb_prefix_bind=$(printf "%s\n" "$ckb_prefix_raw" | filter_bind_escapes)
+    extract_key_bind root "$ckb_no_tmux_bin" ckb_root_raw
+    ckb_root_bind=$(printf "%s\n" "$ckb_root_raw" | filter_bind_escapes)
+
+    # shellcheck disable=SC2086 # intentional in this case
+    set -- $ckb_root_bind
+    for line; do
+        add_result "<NO prefix> $line"
+    done
+
+    # shellcheck disable=SC2086 # intentional in this case
+    set -- $ckb_prefix_bind
+    for line; do
+        add_result "<prefix> $line"
+    done
+
+    [ -z "$rslt" ] && rslt="$ckb_cmd" # if no binds were found display command
+    echo "$rslt"
 }
 
 show_cmd() {
@@ -145,7 +139,6 @@ show_cmd() {
                 print substr($0, 1, max)
             }
         }')
-        log_it "  chunk: >>$chunk<<"
         mnu_text_line "-#[nodim]  $chunk"
 
         sc_remainder=${sc_remainder#"$chunk"}
@@ -155,3 +148,16 @@ show_cmd() {
     # refresh it for each cmd processed in case the display timeout is shortish
     tmux_error_handler display-message "Preparing Display Commands ..."
 }
+
+#===============================================================
+#
+#   Main
+#
+#===============================================================
+
+# D_TM_BASE_PATH=$(dirname "$(dirname -- "$(realpath "$0")")")
+
+# #  shellcheck source=/scripts/helpers.sh
+# . "$D_TM_BASE_PATH"/scripts/helpers.sh
+
+# check_key_binds "resize-pane -QQ"
