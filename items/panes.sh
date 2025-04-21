@@ -30,7 +30,7 @@ static_content() {
             'Pane: #P size: #{pane_width}x#{pane_height}' $menu_reload" \
         0.0 S \
         1.7 C l "Last selected pane" "last-pane $menu_reload" \
-        1.7 C p "Previous pane [in order]" "select-pane -t - $menu_reload" \
+        1.7 C p "Previous pane [in order]" "select-pane -t :.- $menu_reload" \
         1.7 C n "Next     pane [in order]" "select-pane -t :.+ $menu_reload" \
         0.0 S \
         2.0 C r "Respawn current pane" "confirm-before -p \
