@@ -95,6 +95,7 @@ check_key_binds() {
     # Strip $TMUX_BIN from beginning if present
     ckb_no_tmux_bin=${ckb_cmd#"$TMUX_BIN "}
 
+    profiling_update_time_stamps
     extract_key_bind prefix "$ckb_no_tmux_bin" ckb_prefix_raw
     profiling_display "extract_key_bind prefix"
     ckb_prefix_bind=$(printf "%s\n" "$ckb_prefix_raw" | filter_bind_escapes)
