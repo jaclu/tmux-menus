@@ -27,7 +27,7 @@ extract_key_bind() {
     }
     profiling_update_time_stamps
     keys=$(
-        awk -v target="$ekb_key_type" -v cmd="$ekb_cmd" '
+        awk -v target="$ekb_key_type" -v cmd="$ekb_cmd\$" '
         {
             found_target = 0
             for (i = 1; i <= NF; i++) {
