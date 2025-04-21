@@ -114,15 +114,18 @@ show_cmd() {
     _s4="$(echo "$_s3" | sed 's/\\&.*//')" # skip hint overlays, ie part after \&
     # reduce excessive white space
     sc_cmd=$(printf '%s\n' "$_s4" | awk '{$1=$1; print}')
+
     log_it "show_cmd($sc_cmd)"
 
     [ -z "$sc_cmd" ] && error_msg "show_cmd() - no command could be extracted"
     sc_cmd="$(check_key_binds "$sc_cmd")"
 
-    #
+    #  Replaces initial tmux-cmd with (TMUX) for clarity and to avoid risking
+    #  starting with a long path
+    sc_cmd="$(echo "$sc_cmd" | sed "s#^$TMUX_BIN #(TMUX)  #")"
+
     #  Line break cmd if needed, to fit inside the menu width
-    #  then calls mnu_text_line() for each line of the command to be displayed
-    #
+    #  then calls mnu_text_line() for each line of the command to be displayed.
     sc_remainder="$sc_cmd"
     while [ -n "$sc_remainder" ]; do
         chunk=$(printf '%s\n' "$sc_remainder" | awk -v max="$cfg_display_cmds_cols" '
