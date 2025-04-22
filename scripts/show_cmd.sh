@@ -125,19 +125,21 @@ check_key_binds() {
     extract_key_bind prefix "$ckb_no_tmux_bin" ckb_prefix_raw
     extract_key_bind root "$ckb_no_tmux_bin" ckb_root_raw
 
-    ckb_prefix_bind=""
-    for key in $ckb_prefix_raw; do
-        escaped=$(filter_bind_escapes_single "$key")
-        ckb_prefix_bind="${ckb_prefix_bind}${ckb_prefix_bind:+ }$escaped"
-    done
-    ckb_root_bind=""
-    for key in $ckb_root_raw; do
-        escaped=$(filter_bind_escapes_single "$key")
-        ckb_root_bind="${ckb_root_bind}${ckb_root_bind:+ }$escaped"
-    done
-
-    # ckb_prefix_bind=$(printf "%s\n" "$ckb_prefix_raw" | old_filter_bind_escapes)
-    # ckb_root_bind=$(printf "%s\n" "$ckb_root_raw" | old_filter_bind_escapes)
+    if true; then
+	ckb_prefix_bind=""
+	for key in $ckb_prefix_raw; do
+            escaped=$(filter_bind_escapes_single "$key")
+            ckb_prefix_bind="${ckb_prefix_bind}${ckb_prefix_bind:+ }$escaped"
+	done
+	ckb_root_bind=""
+	for key in $ckb_root_raw; do
+            escaped=$(filter_bind_escapes_single "$key")
+            ckb_root_bind="${ckb_root_bind}${ckb_root_bind:+ }$escaped"
+	done
+    else
+	ckb_prefix_bind=$(printf "%s\n" "$ckb_prefix_raw" | old_filter_bind_escapes)
+	ckb_root_bind=$(printf "%s\n" "$ckb_root_raw" | old_filter_bind_escapes)
+    fi
 
     [ -n "$ckb_root_bind" ] && {
         # shellcheck disable=SC2086 # intentional in this case
