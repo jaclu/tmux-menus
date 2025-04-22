@@ -62,7 +62,14 @@ extract_key_bind() {
 }
 
 filter_bind_escapes() {
-    # log_it "filter_bind_escapes($$key)"
+    # some bind chars are prefixed with \
+    # this func removed them, except for a few special cases that must be escaped
+    # in order to be displayed with display-menu.
+    # For those chars, display-menu will unescape them.
+    #
+    # Reads content fom stdin
+
+    # log_it "filter_bind_escapes()"
     while IFS= read -r key; do
         last_char=$(expr "$key" : '.*\(.\)$')
         case "$last_char" in
@@ -77,8 +84,9 @@ filter_bind_escapes() {
 }
 
 add_result() {
-    # log_it "add_rslt($1)"
+    # If multiple results are found, join them with '  or  '
 
+    # log_it "add_rslt($1)"
     if [ -z "$ckb_rslt" ]; then
         ckb_rslt="$1"
     else
@@ -87,6 +95,9 @@ add_result() {
 }
 
 check_key_binds() {
+    # Check if command is bound to a tmux shortcut.
+    # If so list the shortcut(-s), otherwise display the command
+
     ckb_cmd="$1"
     ckb_output_var="$2"
     ckb_rslt=""
