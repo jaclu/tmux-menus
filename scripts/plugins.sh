@@ -15,7 +15,6 @@ extract_defined_plugins() {
     #
     #  List of plugins defined in config file
     #
-    log_it "extract_defined_plugins()"
     [[ -z "$cfg_tmux_conf" ]] && {
         error_msg "tmux.conf not defined, can be set using @menus_config_file"
     }
@@ -31,7 +30,7 @@ extract_defined_plugins() {
 }
 
 find_plugin_path() {
-    [[ -n "$TMUX_PLUGIN_MANAGER_PATH" ]] && {
+    if [[ -n "$TMUX_PLUGIN_MANAGER_PATH" ]]; then
         # if TMUX_PLUGIN_MANAGER_PATH is defined and it exists, assume it to be valid
         if [[ -d "$TMUX_PLUGIN_MANAGER_PATH" ]]; then
             d_plugins="$TMUX_PLUGIN_MANAGER_PATH"
@@ -44,7 +43,16 @@ find_plugin_path() {
             msg+=" to a valid path: $TMUX_PLUGIN_MANAGER_PATH"
             error_msg "$msg"
         fi
-    }
+    else
+        msg="Failed to locate plugin folder\n\n"
+        msg+="Please set TMUX_PLUGIN_MANAGER_PATH in tmux conf (usually done by tpm)\n\n"
+        msg+="Something like:\n"
+        msg+='  TMUX_PLUGIN_MANAGER_PATH="/path/to/plugins"'
+        error_msg "$msg"
+    fi
+}
+
+unused_obsolete_stuff() {
     [[ -n "$XDG_CONFIG_HOME" ]] && {
         # if XDG_CONFIG_HOME is defined and pligin_name can be found, use that path
         if [[ -d "$XDG_CONFIG_HOME" ]]; then
@@ -150,13 +158,11 @@ valid_items=(tpm)  # additional folders expected to be in plugins folders
 }
 
 extract_defined_plugins
-find_plugin_path || {
-    msg="Failed to locate plugin folder\n\n"
-    msg+="Please set TMUX_PLUGIN_MANAGER_PATH in tmux conf (usually done by tpm)\n\n"
-    msg+="Something like:\n"
-    msg+='  TMUX_PLUGIN_MANAGER_PATH="/path/to/plugins"'
-    error_msg "$msg"
-}
+echo "Extract defined plugins from: $cfg_tmux_conf"
+find_plugin_path
+echo "Plugin folder detected:       $d_plugins"
+echo
+
 list_install_status
 check_uninstalled
 check_unknown_items
