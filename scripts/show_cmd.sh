@@ -47,7 +47,12 @@ extract_key_bind() {
             }
 
             if (actual_cmd == cmd) {
-                print $(key_field)
+                key = $(key_field)
+                if (key == "*") {
+                    print "\\" key
+                } else {
+                    print key
+                }
             }
         }
     }
@@ -61,7 +66,7 @@ extract_key_bind() {
     fi
 }
 
-filter_bind_escapes_single() {
+old_filter_bind_escapes_single() {
     # some bind chars are prefixed with \
     # this func removed them, except for a few special cases that must be escaped
     # in order to be displayed with display-menu.
@@ -78,6 +83,34 @@ filter_bind_escapes_single() {
         # shellcheck disable=SC1003
         clean_key=$(printf '%s' "$key" | tr -d '\\')
         printf '%s\n' "$clean_key"
+        ;;
+    esac
+}
+
+filter_bind_escapes_single() {
+    # some bind chars are prefixed with \
+    # this func removed them, except for a few special cases that must be escaped
+    # in order to be displayed with display-menu.
+    # For those chars, display-menu will unescape them.
+    key=$1
+    fbes_output_var="$2"
+    last_char=$(printf '%s' "$key" | awk '{print substr($0,length,1)}')
+
+    # log_it "filter_bind_escapes_single($key, $fbes_output_var) [$last_char]"
+    [ -z "$fbes_output_var" ] && {
+        error_msg "filter_bind_escapes_single() - missing param 2"
+    }
+
+    case "$last_char" in
+    ';' | '"')
+        # printf '%s\n' "$key"
+        eval "$fbes_output_var=\"$key\""
+        ;;
+    *)
+        # shellcheck disable=SC1003 # in this case it is actually POSIX-compliant
+        clean_key=$(printf '%s' "$key" | tr -d '\\')
+        # printf '%s\n' "$clean_key"
+        eval "$fbes_output_var=\"$clean_key\""
         ;;
     esac
 }
@@ -108,17 +141,21 @@ check_key_binds() {
     extract_key_bind prefix "$ckb_no_tmux_bin" ckb_prefix_raw
     ckb_prefix_bind=""
     for key in $ckb_prefix_raw; do
-        escaped=$(filter_bind_escapes_single "$key")
-        ckb_prefix_bind="${ckb_prefix_bind}${ckb_prefix_bind:+ }$escaped"
+        # ckb_escaped=$(old_filter_bind_escapes_single "$key")
+        filter_bind_escapes_single "$key" ckb_escaped
+        ckb_prefix_bind="${ckb_prefix_bind}${ckb_prefix_bind:+ }$ckb_escaped"
     done
+    # log_it "><> ckb_prefix_raw [$ckb_prefix_raw] - ckb_prefix_bind [$ckb_prefix_bind]"
 
     extract_key_bind root "$ckb_no_tmux_bin" ckb_root_raw
     ckb_root_bind=""
     for key in $ckb_root_raw; do
-        escaped=$(filter_bind_escapes_single "$key")
-        ckb_root_bind="${ckb_root_bind}${ckb_root_bind:+ }$escaped"
+        # ckb_escaped=$(old_filter_bind_escapes_single "$key")
+        filter_bind_escapes_single "$key" ckb_escaped
+        ckb_root_bind="${ckb_root_bind}${ckb_root_bind:+ }$ckb_escaped"
     done
 
+    set -f # disable globbing - needed in case a bind is *
     [ -n "$ckb_root_bind" ] && {
         # shellcheck disable=SC2086 # intentional in this case
         set -- $ckb_root_bind
@@ -133,6 +170,8 @@ check_key_binds() {
             add_result "<prefix> $_l"
         done
     }
+    set +f # re-enable globbing
+
     [ -z "$ckb_rslt" ] && ckb_rslt="$ckb_cmd" # if no binds were found display command
 
     if [ -n "$ckb_output_var" ]; then
@@ -156,6 +195,11 @@ show_cmd() {
     _s4="$(echo "$_s3" | sed 's/\\&.*//')" # skip hint overlays, ie part after \&
     # reduce excessive white space
     sc_cmd=$(printf '%s\n' "$_s4" | awk '{$1=$1; print}')
+
+    # [ "$sc_cmd" = "$TMUX_BIN set-option -w synchronize-panes" ] && {
+    #     cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
+    #     log_it
+    # }
     # log_it "show_cmd($sc_cmd)"
 
     [ -z "$sc_cmd" ] && error_msg "show_cmd() - no command could be extracted"
@@ -194,4 +238,7 @@ show_cmd() {
 
     # refresh it for each cmd processed in case the display timeout is shortish
     tmux_error_handler display-message "Preparing Display Commands ..."
+
+    # # shellcheck disable=SC2034
+    # cfg_log_file=""
 }
