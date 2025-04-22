@@ -61,29 +61,11 @@ extract_key_bind() {
     fi
 }
 
-old_filter_bind_escapes() {
+filter_bind_escapes_single() {
     # some bind chars are prefixed with \
     # this func removed them, except for a few special cases that must be escaped
     # in order to be displayed with display-menu.
     # For those chars, display-menu will unescape them.
-    #
-    # Reads content from stdin
-
-    # log_it "filter_bind_escapes()"
-    while IFS= read -r key; do
-        last_char=$(expr "$key" : '.*\(.\)$')
-        case "$last_char" in
-        ';' | '"')
-            echo "$key"
-            ;;
-        *)
-            echo "$key" | sed 's/\\//g'
-            ;;
-        esac
-    done
-}
-
-filter_bind_escapes_single() {
     key=$1
     last_char=$(printf '%s' "$key" | awk '{print substr($0,length,1)}')
 
@@ -124,23 +106,18 @@ check_key_binds() {
     ckb_no_tmux_bin=${ckb_cmd#"$TMUX_BIN "}
 
     extract_key_bind prefix "$ckb_no_tmux_bin" ckb_prefix_raw
-    extract_key_bind root "$ckb_no_tmux_bin" ckb_root_raw
+    ckb_prefix_bind=""
+    for key in $ckb_prefix_raw; do
+        escaped=$(filter_bind_escapes_single "$key")
+        ckb_prefix_bind="${ckb_prefix_bind}${ckb_prefix_bind:+ }$escaped"
+    done
 
-    if true; then
-        ckb_prefix_bind=""
-        for key in $ckb_prefix_raw; do
-            escaped=$(filter_bind_escapes_single "$key")
-            ckb_prefix_bind="${ckb_prefix_bind}${ckb_prefix_bind:+ }$escaped"
-        done
-        ckb_root_bind=""
-        for key in $ckb_root_raw; do
-            escaped=$(filter_bind_escapes_single "$key")
-            ckb_root_bind="${ckb_root_bind}${ckb_root_bind:+ }$escaped"
-        done
-    else
-        ckb_prefix_bind=$(printf "%s\n" "$ckb_prefix_raw" | old_filter_bind_escapes)
-        ckb_root_bind=$(printf "%s\n" "$ckb_root_raw" | old_filter_bind_escapes)
-    fi
+    extract_key_bind root "$ckb_no_tmux_bin" ckb_root_raw
+    ckb_root_bind=""
+    for key in $ckb_root_raw; do
+        escaped=$(filter_bind_escapes_single "$key")
+        ckb_root_bind="${ckb_root_bind}${ckb_root_bind:+ }$escaped"
+    done
 
     [ -n "$ckb_root_bind" ] && {
         # shellcheck disable=SC2086 # intentional in this case
