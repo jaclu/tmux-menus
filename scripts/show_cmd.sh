@@ -66,27 +66,6 @@ extract_key_bind() {
     fi
 }
 
-old_filter_bind_escapes_single() {
-    # some bind chars are prefixed with \
-    # this func removed them, except for a few special cases that must be escaped
-    # in order to be displayed with display-menu.
-    # For those chars, display-menu will unescape them.
-    key=$1
-    last_char=$(printf '%s' "$key" | awk '{print substr($0,length,1)}')
-
-    case "$last_char" in
-    ';' | '"')
-        printf '%s\n' "$key"
-        ;;
-    *)
-        # POSIX-compliant backslash remover (no sed, no bashisms)
-        # shellcheck disable=SC1003
-        clean_key=$(printf '%s' "$key" | tr -d '\\')
-        printf '%s\n' "$clean_key"
-        ;;
-    esac
-}
-
 filter_bind_escapes_single() {
     # some bind chars are prefixed with \
     # this func removed them, except for a few special cases that must be escaped
@@ -141,7 +120,6 @@ check_key_binds() {
     extract_key_bind prefix "$ckb_no_tmux_bin" ckb_prefix_raw
     ckb_prefix_bind=""
     for key in $ckb_prefix_raw; do
-        # ckb_escaped=$(old_filter_bind_escapes_single "$key")
         filter_bind_escapes_single "$key" ckb_escaped
         ckb_prefix_bind="${ckb_prefix_bind}${ckb_prefix_bind:+ }$ckb_escaped"
     done
@@ -150,7 +128,6 @@ check_key_binds() {
     extract_key_bind root "$ckb_no_tmux_bin" ckb_root_raw
     ckb_root_bind=""
     for key in $ckb_root_raw; do
-        # ckb_escaped=$(old_filter_bind_escapes_single "$key")
         filter_bind_escapes_single "$key" ckb_escaped
         ckb_root_bind="${ckb_root_bind}${ckb_root_bind:+ }$ckb_escaped"
     done
@@ -196,12 +173,6 @@ show_cmd() {
     # reduce excessive white space
     sc_cmd=$(printf '%s\n' "$_s4" | awk '{$1=$1; print}')
 
-    # [ "$sc_cmd" = "$TMUX_BIN set-option -w synchronize-panes" ] && {
-    #     cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
-    #     log_it
-    # }
-    # log_it "show_cmd($sc_cmd)"
-
     [ -z "$sc_cmd" ] && error_msg "show_cmd() - no command could be extracted"
 
     # sc_cmd="$(check_key_binds "$sc_cmd")"
@@ -238,7 +209,4 @@ show_cmd() {
 
     # refresh it for each cmd processed in case the display timeout is shortish
     tmux_error_handler display-message "Preparing Display Commands ..."
-
-    # # shellcheck disable=SC2034
-    # cfg_log_file=""
 }
