@@ -1028,4 +1028,6 @@ menu_debug="" # Set to 1 to use echo 2 to use log_it
 prepare_menu
 
 display_menu
-return 0
+
+# log_it "[$$]   COMPLETED: scripts/dialog_handling.sh"
+return 0 # ensuring this exits true

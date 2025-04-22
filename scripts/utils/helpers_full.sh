@@ -49,8 +49,8 @@ error_msg() {
         # shellcheck disable=SC2154
         msg_hold="$plugin_name ERR: $em_msg"
         # shellcheck disable=SC2154
-        actual_win_width="$($TMUX_BIN display-message -p "#{menu_width}")"
         if [ "$env_initialized" -eq 2 ] && (
+            actual_win_width="$($TMUX_BIN display-message -p "#{client_width}")"
             [ "${#msg_hold}" -ge "$actual_win_width" ] || has_lf_not_at_end "$em_msg"
         ); then
             error_msg_formated "$em_msg"
@@ -260,20 +260,19 @@ check_speed_cutoff() {
     # display time before triggering "SCREEN might be too small" warning
     cut_off="$1"
 
-    # shellcheck disable=SC2154
-    [ -f "$f_cache_params" ] && grep -q t_minimal_display_time "$f_cache_params" && {
-        # already set
-        return
+    # log_it "-T- check_speed_cutoff($cut_off)"
+    [ -f "$f_min_display_time" ] && {
+        # log_it "  -T- check_speed_cutoff - already present: $f_min_display_time"
+        return 0
     }
 
-    log_it "check_speed_cutoff($cut_off)"
     safe_now
     # shellcheck disable=SC2154
     t_init="$(echo "$t_now - $t_script_start" | bc)"
-    # log_it "-T-  TIMING result: $t_init [$t_minimal_display_time]"
     if [ "$(echo "$t_init < $cut_off" | bc)" -eq 1 ]; then
         min_display_t_set 0.1
     else
+        log_it "  Failed cutoff time, considered a slow system: $t_init >= $cut_off"
         # for slower systems
         min_display_t_set 0.5
     fi
@@ -281,29 +280,37 @@ check_speed_cutoff() {
 
 min_display_t_read() {
     # log_it "-T-  min_display_t_read()"
-    [ -n "$min_display_t_set" ] && return 0 # no-cache situation, already set
+    [ -n "$t_minimal_display_time" ] && {
+        # log_it " already defined: $t_minimal_display_time"
+        return 0 # no-cache situation, already set
+    }
     $cfg_use_cache || {
         # not using cache
-        # log_it "-T-  min_display_t_read() - not using cache, hardcoding t_minimal_display_time"
+
+        # _m="-T-  min_display_t_read() - not using cache,"
+        # _m="$_m hardcoding t_minimal_display_time"
+        # log_it "$_m"
         t_minimal_display_time=0.5
         return 0
     }
     [ -f "$f_min_display_time" ] && {
         t_minimal_display_time="$(cat "$f_min_display_time")"
+        # log_it "-T-  min_display_t_read() -  found in tmp file: $f_min_display_time"
         return 0
     }
-    return 1
+    error_msg "min_display_t_read() - Failed to read t_minimal_display_time"
 }
 
 min_display_t_set() {
     t_minimal_display_time="$1"
     # log_it "-T-  min_display_t_set($t_minimal_display_time)"
+    [ -z "$t_minimal_display_time" ] && error_msg_safe "min_display_t_set() - no param"
+    [ -z "$f_min_display_time" ] && {
+        error_msg_safe "min_display_t_set() - f_min_display_time undefined"
+    }
     $cfg_use_cache || return # skip if not using cache
 
-    [ -z "$t_minimal_display_time" ] && error_msg_safe "min_display_t_set() - no param"
     echo "$t_minimal_display_time" >"$f_min_display_time"
-    # shellcheck disable=SC2154
-    min_display_t_append_to_params "$f_cache_params"
 }
 
 min_display_t_append_to_params() {
@@ -312,14 +319,17 @@ min_display_t_append_to_params() {
     _f_params="$1"
     # log_it "-T-  min_display_t_append_to_params($_f_params)"
     [ -f "$_f_params" ] || {
-        log_it "min_display_t_append_to_params() - no such file: $_f_params"
-        return 1
+        error_msg "min_display_t_append_to_params() - no such file: $_f_params"
     }
     grep -q t_minimal_display_time "$_f_params" && {
         # already set
         return 0
     }
-    min_display_t_read || return 1 # abort if t_minimal_display_time is not found
+    min_display_t_read || {
+        # abort if t_minimal_display_time is not found
+        error_msg "min_display_t_append_to_params() - t_minimal_display_time not defined"
+        return 1
+    }
     (
         echo
         echo "#"
@@ -337,14 +347,57 @@ min_display_t_append_to_params() {
 #
 #---------------------------------------------------------------
 
+get_config_refresh() {
+    #
+    #  Reads tmux env to check:
+    #    should cache be used
+    #
+    #  Retrieves cached env params, rebuilding the cache if tmux conf was
+    #  more recent, or not found
+    #
+    # log_it "get_config_refresh()"
+
+    # Don't trust cached env, get the basics directly from tmux
+    tmux_get_defaults
+
+    if normalize_bool_param "@menus_use_cache" "$default_use_cache"; then
+        cfg_use_cache=true
+
+        # shellcheck disable=SC2154
+        safe_remove "$f_no_cache_hint" skip-path-check
+
+        tmux_get_option _s "@menus_config_file" "$default_tmux_conf"
+        fix_home_path cfg_tmux_conf "$_s"
+
+        # do it as early as possible, so that further tmux options are cached
+        cache_prepare "get_config_refresh()"
+
+        check_speed_cutoff 0.3
+        get_config_read_save_if_uncached
+    else
+        cfg_use_cache=false
+
+        touch "$f_no_cache_hint"
+
+        # Since cache is disabled read all options
+        tmux_get_plugin_options
+
+        log_it "-->  cache is disabled!  <--"
+        # in principle cache folder should be deleted since it is not used,
+        # but if this is a no cache system, assume writes should not be done for now....
+    fi
+}
+
 get_config_read_save_if_uncached() {
     # reads config, and if allowed saves it to cache
+    # log_it "[$$] get_config_read_save_if_uncached()"
 
     cache_config_get_save || {
         # cache couldn't be saved, indicate cache not available
         # log_it "  <-- get_config_read_save_if_uncached() - unable to save cache params"
         cfg_use_cache=false
     }
+    # log_it "[$$]    get_config_read_save_if_uncached() - done"
 }
 
 safe_remove() {
@@ -411,6 +464,8 @@ wait_to_close_display() {
 #
 #===============================================================
 
+# log_it "><> [$$] STARTING: scripts/utils/helpers_full.sh"
+
 [ -z "$D_TM_BASE_PATH" ] && error_msg "D_TM_BASE_PATH undefined"
 
 #
@@ -437,4 +492,4 @@ f_min_display_time="$d_cache"/min_display_time
 . "$d_scripts"/utils/tmux.sh
 
 env_initialized=2 # indicates that env is fully configured
-# log_it "><> scripts/utils/helpers_full.sh - completed [$0]"
+# log_it "><> [$$] scripts/utils/helpers_full.sh - completed [$0]"

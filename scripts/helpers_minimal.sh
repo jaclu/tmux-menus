@@ -51,7 +51,7 @@ error_msg_safe() {
 }
 
 source_all_helpers() {
-    # log_it "source_all_helpers() - $1"
+    # log_it "[$$] source_all_helpers() - $1"
     $all_helpers_sourced && {
         error_msg_safe "source_all_helpers() called when it was already done"
     }
@@ -128,7 +128,10 @@ source_cached_params() {
     # log_it "source_cached_params()"
     result_sourcing=0
 
-    [ "$log_file_forced" = 1 ] && orig_log_file="$cfg_log_file"
+    [ "$log_file_forced" = 1 ] && {
+        # if log file is forced, save setting, in order to ignore cached config
+        orig_log_file="$cfg_log_file"
+    }
 
     if [ -f "$f_cache_params" ]; then
         # shellcheck disable=SC1090
@@ -156,13 +159,12 @@ get_config() {
     # log_it "get_config()"
 
     if [ -f "$f_no_cache_hint" ]; then
+        log_it "no cache hint detected: $f_no_cache_hint"
         $all_helpers_sourced || source_all_helpers "get_config() - not using cache"
         tmux_get_plugin_options
+        log_it "><> get_config() - back from tmux_get_plugin_options"
         check_speed_cutoff 1
-        # t_minimal_display_time=0.5 # since speed is unknown, use a concervative value
     elif [ -f "$f_cache_params" ]; then
-        # log_it " get_config() - sourcing: $f_cache_params"
-
         if source_cached_params; then
             cache_params_retrieved=1
         else
@@ -172,11 +174,11 @@ get_config() {
             }
             get_config_read_save_if_uncached
         fi
-        return 0
     else
-        log_it "WARNING: no f_no_cache_hint and no f_cache_params!"
+        _m="WARNING: no f_no_cache_hint and no f_cache_params - attempting to create cache"
+        log_it "$_m"
         $all_helpers_sourced || source_all_helpers "get_config() - no cache found"
-        get_config_read_save_if_uncached
+        get_config_refresh
     fi
 }
 
@@ -364,14 +366,16 @@ env_initialized=0
 #  been processed. Should normally be commented out!
 #  If this is set, cfg_log_file must also be defined since it won't be read from tmux.
 #
-# log_file_forced="1"
-# cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
+log_file_forced="1"
+cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
+# log_it "><> [$$] STARTING: scripts/helpers_minimal.sh"
 
 #
 #  If set to "1" log will happen to stderr if script is run in an interactive
 #  shell, so this will not mess it up if the plugin is initiated or run by tmux
 #  If log can't happen to stderr, it will go to cfg_log_file if it is defined
 #
+
 # log_interactive_to_stderr=1
 
 [ -z "$D_TM_BASE_PATH" ] && {
@@ -446,23 +450,17 @@ else
     cfg_use_cache=false
 fi
 
-[ "$initialize_plugin" = "1" ] && {
-    return
+[ "$initialize_plugin" != "1" ] && {
+    # scripts/utils/plugin_init.s will call get_config_refresh directly,
+    # so should not call get_config
+
+    get_config
+    if ! tmux_vers_check "$min_tmux_vers"; then
+        # @variables are not usable prior to 1.8
+        error_msg "need at least tmux $min_tmux_vers to work!"
+    fi
+
+    [ "$env_initialized" -eq 0 ] && env_initialized=1 # basic init done
 }
 
-# [ "$1" != "quick" ] && {
-#     # for cache optimized sourcings of this set it to quick, to avoid the
-#     #  entire help environment from being sourced
-#     $all_helpers_sourced || source_all_helpers "helpers - main"
-# }
-
-get_config
-
-if ! tmux_vers_check "$min_tmux_vers"; then
-    # @variables are not usable prior to 1.8
-    error_msg "need at least tmux $min_tmux_vers to work!"
-fi
-
-[ "$env_initialized" -eq 0 ] && env_initialized=1 # basic init done
-
-# log_it "><> scripts/helpers_minimal.sh - completed [$0]"
+# log_it "><> [$$] scripts/helpers_minimal.sh - completed [$0]"

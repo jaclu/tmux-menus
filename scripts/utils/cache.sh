@@ -17,11 +17,17 @@
 #---------------------------------------------------------------
 
 cache_create_folder() {
+    # Returns 0 if already present or could be created, 1 for failure to create
+    ccf_reason="$1"
     $cfg_use_cache || error_msg "cache_create_folder() - called when cache is disabled"
     [ -z "$d_cache" ] && {
         error_msg "variable d_cache undefined"
     }
-    [ -d "$d_cache" ] && return 0 # already created
+    # log_it "cache_create_folder($ccf_reason)"
+    [ -d "$d_cache" ] && {
+        # log_it "  Cache folder already created: $d_cache"
+        return 0 # already created
+    }
 
     # log_it "cache_create_folder() - $1  folder: $d_cache"
     mkdir -p "$d_cache" || {
@@ -29,7 +35,20 @@ cache_create_folder() {
         # Disabling cache
         cfg_use_cache=false
         d_cache=""
+        return 1
     }
+    return 0
+}
+
+cache_prepare() {
+    #
+    #  Creates cache folder if absent, call this before any cache write
+    #
+    #  Aborts with error if it couldn't be created
+    #
+    # log_it "cache_prepare($1)"
+    $cfg_use_cache || error_msg "cache_prepare() - called when not using cache"
+    [ ! -d "$d_cache" ] && cache_create_folder "cache_prepare()"
 }
 
 cache_clear() {
@@ -42,8 +61,9 @@ cache_clear() {
     $cfg_use_cache || error_msg "cache_clear() - called when not using cache"
     [ -z "$d_cache" ] && error_msg "cache_clear() - called when d_cache is undefined"
 
+    # error_msg "cache_clear() - would clear cache"
     safe_remove "$d_cache"
-    cache_prepare
+    cache_prepare "cache_clear()"
 
     # might as well do it now, to save processing time on next call
     cache_save_options_defined_in_tmux
@@ -51,19 +71,6 @@ cache_clear() {
     # Invalidate what might have already been sourced
     cached_ok_tmux_versions=""
     cached_bad_tmux_versions=""
-}
-
-cache_prepare() {
-    #
-    #  Make sure cache folder exists, call this before any cache write
-    #
-    #  returns 0 if cache folder exists / was created
-    #
-    # log_it "cache_prepare()"
-    $cfg_use_cache || error_msg "cache_prepare() - called when not using cache"
-
-    cache_create_folder "cache_prepare()"
-    return 0
 }
 
 cache_add_ok_vers() {
@@ -91,8 +98,8 @@ cache_add_bad_vers() {
     #  Add param to list of bad versions (>running tmux vers),
     #  if it wasn't cached already
     #
-    # log_it "cache_add_bad_vers($1)"
     $cfg_use_cache || return 1
+    # log_it "cache_add_bad_vers($1)"
     [ -z "$1" ] && error_msg "cache_add_bad_vers() - no param"
 
     case "$cached_bad_tmux_versions" in
@@ -111,6 +118,7 @@ cache_save_known_tmux_versions() { # tmux stuff
     #  The order the versions are saved doesn't matter,
     #  since they are checked with a case to speed things up
     #
+    # log_it "cache_save_known_tmux_versions()"
     $cfg_use_cache || {
         error_msg "cache_save_known_tmux_versions() - called when not using cache"
     }
@@ -119,7 +127,7 @@ cache_save_known_tmux_versions() { # tmux stuff
         return 1
     }
 
-    cache_prepare
+    cache_prepare "cache_save_known_tmux_versions()"
     #region known tmux versions
     printf '%s\n' "\
 #!/bin/sh
@@ -150,7 +158,7 @@ cache_param_write() {
 
     $cfg_use_cache || error_msg "cache_param_write() - called when not using cache"
 
-    cache_prepare
+    cache_prepare "cache_param_write()"
 
     # need to be in repo base dir for the git chcecks below
     cd "$D_TM_BASE_PATH" || error_msg "Failed to cd into $D_TM_BASE_PATH"
@@ -242,8 +250,8 @@ last_local_edit=\"$last_local_edit\"" >"$_f_params_tmp"
     # profiling_display "[cache] write $_f_params_tmp - done"
 
     if [ ! -f "$f_cache_params" ]; then
-        log_it "  cache_param_write() - Creating: $f_cache_params"
         cache_clear "No $f_cache_params found"
+        log_it "cache_param_write() - Creating: $f_cache_params"
         mv "$_f_params_tmp" "$f_cache_params"
     elif ! diff -q "$_f_params_tmp" "$f_cache_params" >/dev/null 2>&1; then
         # diff reports success if files don't fiffer, hence the !

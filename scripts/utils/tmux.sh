@@ -219,7 +219,7 @@ tmux_get_plugin_options() { # cache references
         cfg_use_cache=true
         safe_remove "$f_no_cache_hint" skip-path-check
         # do it as early as possible, so that further tmux options are cached
-        cache_create_folder "@menus_use_cache is true"
+        cache_create_folder "tmux_get_plugin_options()"
     else
         cfg_use_cache=false
         # log_it "><> touching: $f_no_cache_hint"
