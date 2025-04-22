@@ -67,7 +67,7 @@ old_filter_bind_escapes() {
     # in order to be displayed with display-menu.
     # For those chars, display-menu will unescape them.
     #
-    # Reads content fom stdin
+    # Reads content from stdin
 
     # log_it "filter_bind_escapes()"
     while IFS= read -r key; do
@@ -93,6 +93,7 @@ filter_bind_escapes_single() {
         ;;
     *)
         # POSIX-compliant backslash remover (no sed, no bashisms)
+        # shellcheck disable=SC1003
         clean_key=$(printf '%s' "$key" | tr -d '\\')
         printf '%s\n' "$clean_key"
         ;;
@@ -126,19 +127,19 @@ check_key_binds() {
     extract_key_bind root "$ckb_no_tmux_bin" ckb_root_raw
 
     if true; then
-	ckb_prefix_bind=""
-	for key in $ckb_prefix_raw; do
+        ckb_prefix_bind=""
+        for key in $ckb_prefix_raw; do
             escaped=$(filter_bind_escapes_single "$key")
             ckb_prefix_bind="${ckb_prefix_bind}${ckb_prefix_bind:+ }$escaped"
-	done
-	ckb_root_bind=""
-	for key in $ckb_root_raw; do
+        done
+        ckb_root_bind=""
+        for key in $ckb_root_raw; do
             escaped=$(filter_bind_escapes_single "$key")
             ckb_root_bind="${ckb_root_bind}${ckb_root_bind:+ }$escaped"
-	done
+        done
     else
-	ckb_prefix_bind=$(printf "%s\n" "$ckb_prefix_raw" | old_filter_bind_escapes)
-	ckb_root_bind=$(printf "%s\n" "$ckb_root_raw" | old_filter_bind_escapes)
+        ckb_prefix_bind=$(printf "%s\n" "$ckb_prefix_raw" | old_filter_bind_escapes)
+        ckb_root_bind=$(printf "%s\n" "$ckb_root_raw" | old_filter_bind_escapes)
     fi
 
     [ -n "$ckb_root_bind" ] && {
