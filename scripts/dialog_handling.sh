@@ -590,7 +590,6 @@ static_files_reduction() {
     [ "$_items" -gt 1 ] && {
         sort_menu_items
         find "$d_menu_cache" -maxdepth 1 -type f | while IFS= read -r f_name; do
-            log_it "><> static_files_reduction() - will remove: $f_name"
             safe_remove "$f_name"
             echo "$menu_items" >"$d_menu_cache/1"
         done
@@ -635,29 +634,50 @@ handle_dynamic() {
 
 generate_menu_items_in_sorted_order() {
     #
-    #  Since dynamic content is generated after static content
-    #  $uncached_menu might be out of order, this extracts each item
-    #  incrementally, in order to display the menu as intended
+    # Since dynamic_content is generated after static_content, it can't be assumed
+    # that the menu fragments were generated in proper order, in addition the
+    # display_commands_toggle segment will not be generated when caching is disabled.
+    # adding gaps in the segment sequence.
     #
-    # log_it "generate_menu_items_in_sorted_order()"
-    menu_items=""
-    idx=1
-    while true; do
-        case "$uncached_menu" in
-        "$idx "*)
-            this_section="${uncached_menu#*"${idx}" }"
-            this_section="${this_section%%"${uncached_item_splitter}"*}"
-            menu_items="$menu_items $this_section"
+    # One of the no-cache assumptions is that tmp files can't be used, so all this put
+    # together, leads to this rather hackish in-memory implementation of sorting
+    # the uncached_menu clearly lots of room for improvement...
+    #
+    gmi_entries=""
+
+    # Replace splitter with a temporary token to avoid using newline
+    # Loop using parameter expansion instead of line-based tools
+    gmi_rest="$uncached_menu"
+    while :; do
+        case "$gmi_rest" in
+        *"$uncached_item_splitter"*)
+            gmi_part=${gmi_rest%%"$uncached_item_splitter"*}
+            gmi_rest=${gmi_rest#*"$uncached_item_splitter"}
             ;;
-        *"$uncached_item_splitter$idx"*)
-            this_section="${uncached_menu#*"${uncached_item_splitter}""${idx}" }"
-            this_section="${this_section%%"${uncached_item_splitter}"*}"
-            menu_items="$menu_items $this_section"
+        *)
+            gmi_part=$gmi_rest
+            gmi_rest=''
             ;;
-        *) break ;; # no more sections
         esac
-        idx=$((idx + 1))
+
+        idx=$(printf "%s" "$gmi_part" | cut -d' ' -f1)
+        gmi_body=$(printf "%s" "$gmi_part" | cut -d' ' -f2-)
+        # Save as index<TAB>content
+        gmi_entries="$gmi_entries
+$idx	$gmi_body"
+
+        [ -z "$gmi_rest" ] && break
     done
+
+    # Now sort and print, skipping initial empty line
+    menu_items="$(
+        printf "%s\n" "$gmi_entries" | sed 1d | sort -n | while IFS='	' read -r idx this_section; do
+            # menu_items="$menu_items $this_section"
+            log_it "Index: $idx"
+            printf '%s' "$this_section"
+        done
+        printf '%s' "$menu_items" # send it back to the script
+    )"
 }
 
 sort_menu_items() {
@@ -703,18 +723,17 @@ verify_menu_runable() {
         msg="The processed menu should start with a menu handler."
         msg="$msg\nIn the current environment this was expected:"
         msg="$msg\n\n  $_mnu_first"
+        msg="$msg\nThis was found:"
+        msg="$msg\n\n  [$_actual_first]"
         msg="$msg\n\nWas no part 1 created?\n"
         msg="$msg\nThe menu handler and other menu definitions like title"
         msg="$msg and styling\nare prepended to the part defined by:"
         msg="$msg\n\n  menu_generate_part 1 \""'$@'"\"\n"
         msg="$msg\nGenerated menu:\n"
-        #  | sed 's/"//g' | sed "s/'//g" | sed 's/%//g' | sed "s/\$(/(/g" | sed 's/\&//g'
 
         # filter ; ini order not to execute when displaying the error msg
         escaped="$(printf '%s' "$menu_items" | sed 's/;//g')"
         error_msg_safe "$msg\n$escaped"
-        # log_it "$msg\n$escaped"
-        # exit 1
     }
 }
 
@@ -925,12 +944,16 @@ display_menu() {
         fi
     }
 
-    safe_now
-    _t="$(echo "$t_now - $t_script_start" | bc)"
+    [ -n "$cfg_log_file" ] && {
+        # If logging is disabled - no point in generating this log msg
 
-    _m="Menu $(relative_path "$d_basic_current_script")/$bn_current_script"
-    _m="$_m - processing time:  $_t"
-    log_it_always "$_m"
+        safe_now
+        _t="$(echo "$t_now - $t_script_start" | bc)"
+
+        _m="Menu $(relative_path "$d_basic_current_script")/$bn_current_script"
+        _m="$_m - processing time:  $_t"
+        log_it_always "$_m"
+    }
 
     [ "$TMUX_MENUS_NO_DISPLAY" = "1" ] && return
 
