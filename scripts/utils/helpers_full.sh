@@ -34,16 +34,16 @@ error_msg() {
     #
     em_msg="$1"
     exit_code="${2:-0}"
-    log_it_always "error_msg($em_msg, $exit_code)"
+    log_it_minimal "error_msg($em_msg, $exit_code)"
 
     [ -z "$TMUX" ] && {
         # with no tmux env, dumping it to stderr & log-file is the only output options
-        log_it_always "***  This does not seem to be running in a tmux env  ***"
+        log_it_minimal "***  This does not seem to be running in a tmux env  ***"
     }
 
-    log_it_always
-    log_it_always "ERROR: $em_msg"
-    log_it_always
+    log_it_minimal
+    log_it_minimal "ERROR: $em_msg"
+    log_it_minimal
 
     [ -n "$TMUX" ] && {
         # shellcheck disable=SC2154

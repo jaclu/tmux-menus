@@ -23,10 +23,10 @@ print_stderr() {
 
 log_it() {
     [ "$TMUX_MENUS_LOGGING_MINIMAL" = "1" ] && return
-    log_it_always "$1"
+    log_it_minimal "$1"
 }
 
-log_it_always() {
+log_it_minimal() {
     # Call this directly for things that should be logged even when
     # TMUX_MENUS_LOGGING_MINIMAL is 1
     # if TMUX_MENUS_LOGGING_MINIMAL=2 logging is completely disabled

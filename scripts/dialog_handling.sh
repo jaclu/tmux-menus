@@ -465,7 +465,7 @@ menu_parse() {
     done
 
     if $cfg_use_cache; then
-        log_it_always "Caching: $(relative_path "$f_cache_file")"
+        log_it_minimal "Caching: $(relative_path "$f_cache_file")"
         echo "$menu_items" >"$f_cache_file" || {
             error_msg_safe "Failed to write to: $f_cache_file"
         }
@@ -947,7 +947,7 @@ display_menu() {
 
         _m="Menu $(relative_path "$d_basic_current_script")/$bn_current_script"
         _m="$_m - processing time:  $_t"
-        log_it_always "$_m"
+        log_it_minimal "$_m"
     }
 
     [ "$TMUX_MENUS_NO_DISPLAY" = "1" ] && return
