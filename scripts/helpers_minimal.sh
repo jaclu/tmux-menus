@@ -159,6 +159,7 @@ get_config() {
             source_all_helpers "get_config() - no cache hint found"
         }
         tmux_get_plugin_options
+        check_speed_cutoff 0.5
     elif [ -f "$f_cache_params" ]; then
         source_cached_params || {
             replace_config=true
