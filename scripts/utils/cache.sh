@@ -264,7 +264,7 @@ t_minimal_display_time=\"$t_minimal_display_time\"
             )"
             mv "$_f_params_tmp" "$f_cache_params" # replace even if unchanged
         else
-            log_it " config unchanged - param cache"
+            log_it " config unchanged - param cache not cleared"
             rm "$_f_params_tmp"
         fi
     else
