@@ -21,12 +21,7 @@
 #
 
 clear_cache_main() {
-    log_it "UCI:clear_cache_main()"
-    # when:
-    #  no custom_items > custom_items
-    #  custom_items > no custom_items
-    # clear cache for main menu, so that next time its run it will not include
-    # the alternate items index
+    # log_it "UCI:clear_cache_main()"
 
     safe_remove "$d_cache"/items/main
 }
@@ -56,14 +51,14 @@ remove_custom_item_content() {
 }
 
 checksum_content_read() {
-    log_it "UCI:checksum_content_read()"
+    # log_it "UCI:checksum_content_read()"
     if [ -f "$f_chksum_custom" ]; then
         cat "$f_chksum_custom"
     fi
 }
 
 checksum_content_write() {
-    log_it "UCI:checksum_content_write()"
+    # log_it "UCI:checksum_content_write()"
     find "$d_custom_items/" -type f -exec sha256sum {} + | sort |
         sha256sum >"$f_chksum_custom" || {
 
@@ -72,17 +67,17 @@ checksum_content_write() {
 }
 
 custom_items_changed_check() {
-    log_it "UCI:custom_items_changed_check()"
+    # log_it "UCI:custom_items_changed_check()"
 
     previous_content_chksum="$(checksum_content_read)"
-    log_it "UCI:><> custom_items_changed_check() - previous  chksum: $previous_content_chksum"
+    # log_it "UCI:><> custom_items_changed_check() - previous  chksum: $previous_content_chksum"
 
     checksum_content_write
     current_content_chksum="$(checksum_content_read)"
     [ -z "$current_content_chksum" ] && {
         error_msg_safe "Failed to scan content in: $d_custom_items"
     }
-    log_it "UCI:><> custom_items_changed_check() - current  chksum:  $current_content_chksum"
+    # log_it "UCI:><> custom_items_changed_check() - current  chksum:  $current_content_chksum"
 
     [ "$previous_content_chksum" != "$current_content_chksum" ]
 }
@@ -124,7 +119,7 @@ failed_to_extract_variable() {
 }
 
 create_custom_index() {
-    log_it "UCI:create_custom_index()"
+    # log_it "UCI:create_custom_index()"
     cache_create_folder "create_custom_index()" # make sure it exists
     [ -z "$f_custom_items_content" ] && {
         error_msg_safe "variable f_custom_items_content undefined"
@@ -158,7 +153,7 @@ create_custom_index() {
         printf '        %s \\\n        %s' \
             "0.0 M \"$_menu_key\" \"$_menu_name  $cfg_nav_next\"" \
             "$custom_menu" >>"$f_custom_items_content"
-        log_it "UCI:Will use: $custom_menu"
+        # log_it "UCI:Will use: $custom_menu"
     done
     [ ! -f "$f_custom_items_content" ] && {
         # All supposedly valid custom items failed to be processed,
@@ -183,7 +178,13 @@ create_custom_index() {
     chmod 0755 "$f_custom_items_index"
     checksum_content_write # custom index change
     # Verify that custom_items/_index.sh was correctly generated
-    run_in_sub_shell="$(printf 'export TMUX_MENUS_NO_DISPLAY=1\n%s\n' "$f_custom_items_index")"
+    run_in_sub_shell="$(
+        printf '%s\n%s\n%s\n' \
+            "export TMUX_MENUS_NO_DISPLAY=1" \
+            "export TMUX_MENUS_LOGGING_MINIMAL=2" \
+            "$f_custom_items_index"
+    )"
+    # 'export TMUX_MENUS_LOGGING_MINIMAL=2' \
     variable_content=$(sh -c "$run_in_sub_shell")
 }
 
@@ -191,7 +192,8 @@ process_custom_items() {
     # This index will be regenerated
     # If it would be present during the folder scan it would be added to the list
     # of menus to be listed within it :)
-    log_it "UCI:process_custom_items()"
+    # log_it "UCI:process_custom_items()"
+
     safe_remove "$f_custom_items_index"
 
     # create list of runnable scripts in this folder
@@ -205,13 +207,10 @@ process_custom_items() {
         # as an custom menu
         #
         get_variable_from_script "$custom_menu" menu_key || continue
-        log_it "UCI:><> found: menu_key"
-
         get_variable_from_script "$custom_menu" menu_name || continue
-        log_it "UCI:><> found: menu_name"
 
         valid_menus="$valid_menus $custom_menu"
-        log_it "UCI:Validated src: $custom_menu"
+        # log_it "UCI:Validated src: $custom_menu"
     done
     [ -z "$valid_menus" ] && {
         # none of the custom items are valid abort generation
@@ -236,7 +235,7 @@ custom_items_prepare() {
         if custom_items_changed_check; then
             process_custom_items
         else
-            log_it "UCI:No changes detected in: $d_custom_items"
+            log_it "UCI:No changes detected in custom_items"
         fi
     fi
 }
