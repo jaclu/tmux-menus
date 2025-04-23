@@ -214,11 +214,11 @@ cfg_use_cache=\"$cfg_use_cache\"
 cfg_use_hint_overlays=\"$cfg_use_hint_overlays\"
 cfg_show_key_hints=\"$cfg_show_key_hints\"
 
-cfg_display_cmds=\"$cfg_display_cmds\"
-cfg_display_cmds_cols=\"$cfg_display_cmds_cols\"
-
 cfg_use_whiptail=\"$cfg_use_whiptail\"
 cfg_alt_menu_handler=\"$cfg_alt_menu_handler\"
+
+cfg_display_cmds=\"$cfg_display_cmds\"
+cfg_display_cmds_cols=\"$cfg_display_cmds_cols\"
 
 cfg_nav_next=\"$(cache_escape_special_chars "$cfg_nav_next")\"
 cfg_nav_prev=\"$(cache_escape_special_chars "$cfg_nav_prev")\"

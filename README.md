@@ -314,6 +314,8 @@ set -g @menus_display_commands 'Yes'
 
 This boolean parameter defaults to `No`
 
+This feature is disabled when whiptail / dialog is used.
+
 If set to true each menu will include an extra item `Display Commands` with the
 shortcut `!`
 
