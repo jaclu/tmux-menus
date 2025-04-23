@@ -83,8 +83,9 @@ safe_now t_init_start # get a feel for if this is a slow system...
 
 # Create a LF in log_file to easier separate runs
 log_it
-
-get_config_refresh
+log_it
+log_it
+config_setup
 
 #
 #  If custom inventory is used, update link to its main index

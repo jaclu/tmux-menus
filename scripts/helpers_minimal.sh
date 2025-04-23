@@ -53,7 +53,7 @@ error_msg_safe() {
 source_all_helpers() {
     # log_it "[$$] source_all_helpers() - $1"
     $all_helpers_sourced && {
-        error_msg_safe "source_all_helpers() called when it was already done"
+        error_msg_safe "source_all_helpers() called when it was already done - $1"
     }
     all_helpers_sourced=true # set it early to avoid recursion
 
@@ -70,45 +70,7 @@ relative_path() {
 }
 
 select_menu_handler() {
-    #
-    # If an older version is used, or TMUX_MENUS_HANDLER is 1/2
-    # set cfg_use_whiptail true
-    #
-    # log_it "select_menu_handler()"
-    if ! tmux_vers_check 3.0; then
-        if command -v whiptail >/dev/null; then
-            cfg_alt_menu_handler=whiptail
-            log_it "NOTICE: tmux below 3.0 - using: whiptail"
-        elif command -v dialog >/dev/null; then
-            cfg_alt_menu_handler=dialog
-            log_it "NOTICE: tmux below 3.0 - using: dialog"
-        else
-            error_msg_safe "Neither whiptail or dialog found, plugin aborted"
-        fi
-        cfg_use_whiptail=true
-    elif [ "$TMUX_MENUS_HANDLER" = 1 ]; then
-        _cmd=whiptail
-        if command -v "$_cmd" >/dev/null; then
-            cfg_alt_menu_handler="$_cmd"
-        else
-            error_msg_safe "$_cmd not available, plugin aborted"
-        fi
-        cfg_use_whiptail=true
-        log_it "NOTICE: $_cmd is selected due to TMUX_MENUS_HANDLER=1"
-    elif [ "$TMUX_MENUS_HANDLER" = 2 ]; then
-        _cmd=dialog
-        if command -v "$_cmd" >/dev/null; then
-            cfg_alt_menu_handler="$_cmd"
-        else
-            error_msg_safe "$_cmd not available, plugin aborted"
-        fi
-        cfg_use_whiptail=true
-        log_it "NOTICE: $_cmd is selected due to TMUX_MENUS_HANDLER=2"
-    else
-        cfg_use_whiptail=false
-        cfg_alt_menu_handler=""
-    fi
-    # log_it "  <-- select_menu_handler() - done"
+    error_msg "select_menu_handler() was called"
 }
 
 validate_varname() {
@@ -125,8 +87,7 @@ validate_varname() {
 #---------------------------------------------------------------
 
 source_cached_params() {
-    # log_it "source_cached_params()"
-    result_sourcing=0
+    log_it "source_cached_params()"
 
     [ "$log_file_forced" = 1 ] && {
         # if log file is forced, save setting, in order to ignore cached config
@@ -135,10 +96,13 @@ source_cached_params() {
 
     if [ -f "$f_cache_params" ]; then
         # shellcheck disable=SC1090
-        . "$f_cache_params" || result_sourcing=1
+        . "$f_cache_params" || {
+            log_it "source_cached_params() - Failed to source: $f_cache_params"
+            return 1
+        }
     else
-        log_it "source_cached_params() - not found: $f_cache_params"
-        result_sourcing=1
+        # log_it "source_cached_params() - not found: $f_cache_params"
+        return 1
     fi
 
     [ "$log_file_forced" = 1 ] && {
@@ -147,7 +111,39 @@ source_cached_params() {
         unset orig_log_file
         # log_it "restored cfg_log_file"
     }
-    return "$result_sourcing"
+    return 0
+}
+
+handle_env_variables() {
+    # Check env variables and apply relevant config overrides
+    # log_it "handle_env_variables()"
+
+    # TMUX_MENUS_SHOW_CMDS - is handled directly by dialog_handling.sh - no config needed
+    # TMUX_MENUS_LOGGING_MINIMAL - is handled directly by log_it() - no config needed
+    # TMUX_MENUS_PROFILING - is handled directly - no config needed
+    # TMUX_MENUS_NO_DISPLAY -  is handled directly - no config needed
+    b_whiptail_forced=false
+    if [ "$TMUX_MENUS_HANDLER" = 1 ]; then
+        _cmd=whiptail
+        if command -v "$_cmd" >/dev/null; then
+            cfg_alt_menu_handler="$_cmd"
+        else
+            error_msg_safe "$_cmd not available, plugin aborted"
+        fi
+        cfg_use_whiptail=true
+        log_it "NOTICE: $_cmd is selected due to TMUX_MENUS_HANDLER=1"
+        b_whiptail_forced=true
+    elif [ "$TMUX_MENUS_HANDLER" = 2 ]; then
+        _cmd=dialog
+        if command -v "$_cmd" >/dev/null; then
+            cfg_alt_menu_handler="$_cmd"
+        else
+            error_msg_safe "$_cmd not available, plugin aborted"
+        fi
+        cfg_use_whiptail=true
+        log_it "NOTICE: $_cmd is selected due to TMUX_MENUS_HANDLER=2"
+        b_whiptail_forced=true
+    fi
 }
 
 get_config() {
@@ -157,28 +153,31 @@ get_config() {
     #  that the param cache is valid if found
     #
     # log_it "get_config()"
-
+    replace_config=false
     if [ -f "$f_no_cache_hint" ]; then
-        log_it "no cache hint detected: $f_no_cache_hint"
-        $all_helpers_sourced || source_all_helpers "get_config() - not using cache"
         tmux_get_plugin_options
-        log_it "><> get_config() - back from tmux_get_plugin_options"
-        check_speed_cutoff 1
     elif [ -f "$f_cache_params" ]; then
-        if source_cached_params; then
-            cache_params_retrieved=1
-        else
-            log_it "WARNING: get_config() failed to source: $f_cache_params, doing manual param read"
-            $all_helpers_sourced || {
-                source_all_helpers "get_config() - failed to source cached params"
-            }
-            get_config_read_save_if_uncached
-        fi
+        source_cached_params || {
+            replace_config=true
+            _m="WARNING: get_config() failed to source: $f_cache_params,"
+            _m="$_m calling config_setup"
+            log_it "$_m"
+        }
+    fi
+
+    if $replace_config; then
+        $all_helpers_sourced || {
+            source_all_helpers "get_config() - failed to source cached params"
+        }
+        config_setup
     else
-        _m="WARNING: no f_no_cache_hint and no f_cache_params - attempting to create cache"
-        log_it "$_m"
-        $all_helpers_sourced || source_all_helpers "get_config() - no cache found"
-        get_config_refresh
+        handle_env_variables
+        $b_whiptail_forced && {
+            $all_helpers_sourced || {
+                source_all_helpers "get_config() needs use_whiptail_env"
+            }
+            use_whiptail_env
+        }
     fi
 }
 
@@ -299,8 +298,8 @@ tpt_retrieve_running_tmux_vers() {
     # If the variables defining the currently used tmux version needs to
     # be accessed before the first call to tmux_vers_ok this can be called.
     #
-    # log_it "tpt_retrieve_running_tmux_vers()"
     current_tmux_vers="$($TMUX_BIN -V | cut -d' ' -f2)"
+    log_it "tpt_retrieve_running_tmux_vers() - $current_tmux_vers"
     # log_it "  current_tmux_vers [$current_tmux_vers]"
     tpt_digits_from_string current_tmux_vers_i "$current_tmux_vers"
     tpt_tmux_vers_suffix current_tmux_vers_suffix "$current_tmux_vers"
@@ -390,7 +389,6 @@ cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
 safe_now t_script_start
 
 min_tmux_vers="1.8"
-cfg_use_whiptail=false
 plugin_options_have_been_read=false # only need to read param once
 # for performance only a minimum of support features are in this file
 # as long as cache is used, it is sufficient, if extra features are needed
@@ -415,10 +413,10 @@ case "$TMUX_MENUS_PROFILING" in
     # is primarily intended to capture them when profiling is temporarily disabled
     profiling_update_time_stamps() {
         :
-     }
+    }
     profiling_display() {
         :
-     }
+    }
     ;;
 esac
 
@@ -454,7 +452,7 @@ else
 fi
 
 [ "$initialize_plugin" != "1" ] && {
-    # scripts/utils/plugin_init.s will call get_config_refresh directly,
+    # scripts/utils/plugin_init.s will call config_setup directly,
     # so should not call get_config
 
     get_config

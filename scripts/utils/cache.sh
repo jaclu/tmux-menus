@@ -21,21 +21,12 @@ cache_create_folder() {
     ccf_reason="$1"
     $cfg_use_cache || error_msg "cache_create_folder() - called when cache is disabled"
     [ -z "$d_cache" ] && {
-        error_msg "variable d_cache undefined"
+        error_msg "cache_create_folder() - variable d_cache undefined"
     }
-    # log_it "cache_create_folder($ccf_reason)"
-    [ -d "$d_cache" ] && {
-        # log_it "  Cache folder already created: $d_cache"
-        return 0 # already created
-    }
-
-    # log_it "cache_create_folder() - $1  folder: $d_cache"
+    [ -d "$d_cache" ] && return 0 # already created
+    # log_it "cache_create_folder($ccf_reason) - folder: $d_cache"
     mkdir -p "$d_cache" || {
-        error_msg "Failed to create cache folder: $d_cache"
-        # Disabling cache
-        cfg_use_cache=false
-        d_cache=""
-        return 1
+        error_msg "cache_create_folder() - Failed to create cache folder: $d_cache"
     }
     return 0
 }
@@ -46,9 +37,9 @@ cache_prepare() {
     #
     #  Aborts with error if it couldn't be created
     #
-    # log_it "cache_prepare($1)"
+    # log_it "cache_prepare() - $1"
     $cfg_use_cache || error_msg "cache_prepare() - called when not using cache"
-    [ ! -d "$d_cache" ] && cache_create_folder "cache_prepare()"
+    cache_create_folder "cache_prepare()"
 }
 
 cache_clear() {
@@ -60,17 +51,14 @@ cache_clear() {
     log_it "cache_clear() $1"
     $cfg_use_cache || error_msg "cache_clear() - called when not using cache"
     [ -z "$d_cache" ] && error_msg "cache_clear() - called when d_cache is undefined"
-
-    # error_msg "cache_clear() - would clear cache"
-    safe_remove "$d_cache"
+    safe_remove "$d_cache" "cache_clear()"
     cache_prepare "cache_clear()"
-
-    # might as well do it now, to save processing time on next call
-    cache_save_options_defined_in_tmux
 
     # Invalidate what might have already been sourced
     cached_ok_tmux_versions=""
     cached_bad_tmux_versions=""
+
+    cache_was_cleared=1 # hint that cache has been cleared
 }
 
 cache_add_ok_vers() {
@@ -149,6 +137,50 @@ cache_escape_special_chars() {
     printf '%s\n' "$1" | sed 's/[\\`"$]/\\&/g'
 }
 
+examine_code_base() {
+    # examins state of code base, to ensure cache is cleared if anything has been
+    # changed
+    #
+    # Public variables:
+    # repo_last_changed - time stamp for rep
+    # last_local_edit - timestamp and filename for last local change
+    #
+    # log_it "examine_code_base()"
+
+    command -v git >/dev/null || {
+        # this check depends on git being available
+        log_it "examine_code_base() - no git found!"
+        _m="no git installed"
+        repo_last_changed="$_m"
+        last_local_edit="$_m"
+        return
+    }
+
+    # need to be in repo base dir for the git chcecks below
+    cd "$D_TM_BASE_PATH" || {
+        error_msg "examine_code_base() - Failed to cd into $D_TM_BASE_PATH"
+    }
+
+    #
+    # Log last repo change and if & when latest local changes were done
+    # to ensure any code changes will trigger a cache reset
+    #
+
+    # Timestamp for latest change of repo that hs been pulled
+    new_repo_last_changed="$(git log -1 --format="%ad" --date=iso 2>/dev/null)"
+
+    # Timestamp and file name for latest locally changed file
+    # will be "" if no local edits have been done
+    # the xargs stderr redirect is to avoid errors about removed files
+    if [ "$(uname -s)" = "Darwin" ]; then
+        new_last_local_edit="$(git ls-files -m 2>/dev/null |
+            xargs -r stat -f '%m %N' 2>/dev/null | sort -nr | head -1)"
+    else
+        new_last_local_edit="$(git ls-files -m 2>/dev/null |
+            xargs -r stat -c '%Y %n' 2>/dev/null | sort -nr | head -1)"
+    fi
+}
+
 cache_param_write() {
     #
     #  Writes all config params to file
@@ -158,44 +190,14 @@ cache_param_write() {
 
     $cfg_use_cache || error_msg "cache_param_write() - called when not using cache"
 
-    cache_prepare "cache_param_write()"
+    check_speed_cutoff 0.3
+    examine_code_base
 
-    # need to be in repo base dir for the git chcecks below
-    cd "$D_TM_BASE_PATH" || error_msg "Failed to cd into $D_TM_BASE_PATH"
-
-    #
-    # Log last repo change and if & when latest local changes were done
-    # to ensure any code changes will trigger a cache reset
-    #
-
-    # Timestamp for latest change of repo that hs been pulled
-    repo_last_changed="$(git log -1 --format="%ad" --date=iso 2>/dev/null)"
-
-    # Timestamp and file name for latest locally changed file
-    # will be "" if no local edits have been done
-    # the xargs stderr redirect is to avoid errors about removed files
-    if [ "$(uname -s)" = "Darwin" ]; then
-        last_local_edit="$(git ls-files -m 2>/dev/null |
-            xargs -r stat -f '%m %N' 2>/dev/null | sort -nr | head -1)"
-    else
-        last_local_edit="$(git ls-files -m 2>/dev/null |
-            xargs -r stat -c '%Y %n' 2>/dev/null | sort -nr | head -1)"
-    fi
-
-    _f_params_tmp=$(mktemp) || error_msg "Failed to create tmp config file"
-
-    # ensure no cfg variables are from a previous cache
-    plugin_options_have_been_read=false # allow for it to be read again
-    [ "$log_file_forced" != 1 ] && {
-        # log_it "><> not forced, disabling logfile"
-        cfg_log_file=""
+    _f_params_tmp=$(mktemp) || {
+        error_msg "cache_param_write() - Failed to create tmp config file"
     }
-    tmux_get_plugin_options
+    # fi
 
-    # create empty log line indicating startup
-    [ "$log_file_forced" != 1 ] && [ -n "$cfg_log_file" ] && log_it
-
-    # profiling_display "[cache] will write: $_f_params_tmp"
     #region param cache file
     printf '%s\n' "\
 #!/bin/sh
@@ -243,52 +245,31 @@ current_tmux_vers_suffix=\"$current_tmux_vers_suffix\"
 # Get time stamps for repo and local file changes,
 # This ensures cache is cleared any time the code has changed.
 #
-repo_last_changed=\"$repo_last_changed\"
-last_local_edit=\"$last_local_edit\"" >"$_f_params_tmp"
+repo_last_changed=\"$new_repo_last_changed\"
+last_local_edit=\"$new_last_local_edit\"
+
+#
+# If menu is displayed shorter than this, assume it was due to not fitting
+# the screen
+#
+t_minimal_display_time=\"$t_minimal_display_time\"
+" >"$_f_params_tmp"
     #endregion
-    min_display_t_append_to_params "$_f_params_tmp"
-    # profiling_display "[cache] write $_f_params_tmp - done"
-
-    if [ ! -f "$f_cache_params" ]; then
-        cache_clear "No $f_cache_params found"
-        log_it "cache_param_write() - Creating: $f_cache_params"
-        mv "$_f_params_tmp" "$f_cache_params"
-    elif ! diff -q "$_f_params_tmp" "$f_cache_params" >/dev/null 2>&1; then
-        # diff reports success if files don't fiffer, hence the !
-        # If any params have changed, invalidate cache
-        # log_it "  cache_param_write() - Config changed - clear cache"
-        # error_msg "><> _f_params_tmp [$_f_params_tmp] differs"
-        cache_clear "Environment changed:  $(diff "$_f_params_tmp" "$f_cache_params")"
-        mv "$_f_params_tmp" "$f_cache_params"
+    if [ -f "$f_cache_params" ]; then
+        if ! diff -q "$_f_params_tmp" "$f_cache_params" >/dev/null 2>&1; then
+            # diff reports success if files don't differ, hence the !
+            # If any params have changed, invalidate cache
+            cache_clear "=======   Environment changed:  $(
+                diff "$_f_params_tmp" "$f_cache_params"
+            )"
+            mv "$_f_params_tmp" "$f_cache_params" # replace even if unchanged
+        else
+            log_it " config unchanged - param cache"
+            rm "$_f_params_tmp"
+        fi
     else
-        safe_remove "$_f_params_tmp" skip-path-check # no changes
-        # ensure time stamp is updated for tmux.conf age comparisons
-        touch "$f_cache_params"
-    fi
-    unset _f_params_tmp # since its gone, ensure nothing tries to reference it
-    return 0            # cache was or is now valid
-}
-
-# cache_update_param_cache()
-cache_config_get_save() {
-    #
-    # Reads plugin options from tmux and save the param cache, unless
-    # cfg_use_cache is false
-    # returns true if cache was written, otherwise false
-    #
-    # log_it "cache_config_get_save()"
-
-    tmux_get_plugin_options # ensure env is retrieved
-
-    if [ ! -f "$f_no_cache_hint" ] && $cfg_use_cache; then
-        # will read plugin options again to ensure changes are preserved
-        cache_param_write
-        return 0
-    else
-        # log_it "  cache_config_get_save() - didn't save due to:"
-        # [ -f "$f_no_cache_hint" ] && log_it "  presence of f_no_cache_hint [$f_no_cache_hint]"
-        # $cfg_use_cache || log_it "  cfg_use_cache: $cfg_use_cache"
-        return 1
+        log_it " param cache created"
+        mv "$_f_params_tmp" "$f_cache_params" # replace even if unchanged
     fi
 }
 

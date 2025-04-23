@@ -261,84 +261,16 @@ check_speed_cutoff() {
     cut_off="$1"
 
     # log_it "-T- check_speed_cutoff($cut_off)"
-    [ -f "$f_min_display_time" ] && {
-        # log_it "  -T- check_speed_cutoff - already present: $f_min_display_time"
-        return 0
-    }
-
     safe_now
     # shellcheck disable=SC2154
     t_init="$(echo "$t_now - $t_script_start" | bc)"
     if [ "$(echo "$t_init < $cut_off" | bc)" -eq 1 ]; then
-        min_display_t_set 0.1
+        t_minimal_display_time=0.1
     else
         log_it "  Failed cutoff time, considered a slow system: $t_init >= $cut_off"
         # for slower systems
-        min_display_t_set 0.5
-    fi
-}
-
-min_display_t_read() {
-    # log_it "-T-  min_display_t_read()"
-    [ -n "$t_minimal_display_time" ] && {
-        # log_it " already defined: $t_minimal_display_time"
-        return 0 # no-cache situation, already set
-    }
-    $cfg_use_cache || {
-        # not using cache
-
-        # _m="-T-  min_display_t_read() - not using cache,"
-        # _m="$_m hardcoding t_minimal_display_time"
-        # log_it "$_m"
         t_minimal_display_time=0.5
-        return 0
-    }
-    [ -f "$f_min_display_time" ] && {
-        t_minimal_display_time="$(cat "$f_min_display_time")"
-        # log_it "-T-  min_display_t_read() -  found in tmp file: $f_min_display_time"
-        return 0
-    }
-    error_msg "min_display_t_read() - Failed to read t_minimal_display_time"
-}
-
-min_display_t_set() {
-    t_minimal_display_time="$1"
-    # log_it "-T-  min_display_t_set($t_minimal_display_time)"
-    [ -z "$t_minimal_display_time" ] && error_msg_safe "min_display_t_set() - no param"
-    [ -z "$f_min_display_time" ] && {
-        error_msg_safe "min_display_t_set() - f_min_display_time undefined"
-    }
-    $cfg_use_cache || return # skip if not using cache
-
-    echo "$t_minimal_display_time" >"$f_min_display_time"
-}
-
-min_display_t_append_to_params() {
-    #
-    #  Append t_minimal_display_time to plugin_params if
-    _f_params="$1"
-    # log_it "-T-  min_display_t_append_to_params($_f_params)"
-    [ -f "$_f_params" ] || {
-        error_msg "min_display_t_append_to_params() - no such file: $_f_params"
-    }
-    grep -q t_minimal_display_time "$_f_params" && {
-        # already set
-        return 0
-    }
-    min_display_t_read || {
-        # abort if t_minimal_display_time is not found
-        error_msg "min_display_t_append_to_params() - t_minimal_display_time not defined"
-        return 1
-    }
-    (
-        echo
-        echo "#"
-        echo "# If menu is displayed shorter than this, assume it was due to not fitting"
-        echo "# the screen"
-        echo "#"
-        echo "t_minimal_display_time=$t_minimal_display_time"
-    ) >>"$_f_params" || error_msg "Failed to append t_minimal_display_time to: $_f_params"
-    return 0
+    fi
 }
 
 #---------------------------------------------------------------
@@ -347,57 +279,43 @@ min_display_t_append_to_params() {
 #
 #---------------------------------------------------------------
 
-get_config_refresh() {
-    #
-    #  Reads tmux env to check:
-    #    should cache be used
-    #
-    #  Retrieves cached env params, rebuilding the cache if tmux conf was
-    #  more recent, or not found
-    #
-    # log_it "get_config_refresh()"
+create_param_cache() {
+    # via config_setup() it is already established that @menus_use_cache was true
+    # log_it "create_param_cache()"
 
-    # Don't trust cached env, get the basics directly from tmux
-    tmux_get_defaults
+    cache_prepare
+    source_cached_params # get additional env config if available
+    tpt_retrieve_running_tmux_vers # ensure we refer to current tmux version
 
-    if normalize_bool_param "@menus_use_cache" "$default_use_cache"; then
-        cfg_use_cache=true
+    # shellcheck disable=SC2154
+    log_it "  post source_cached_params - current_tmux_vers [$current_tmux_vers]"
 
-        # shellcheck disable=SC2154
-        safe_remove "$f_no_cache_hint" skip-path-check
+    # cfg_use_whiptail=false
+    tmux_get_plugin_options
+    # shellcheck disable=SC2154
+    log_it "  post tmux_get_plugin_options - current_tmux_vers [$current_tmux_vers]"
+    log_it "  cfg_use_whiptail [$cfg_use_whiptail]"
 
-        tmux_get_option _s "@menus_config_file" "$default_tmux_conf"
-        fix_home_path cfg_tmux_conf "$_s"
-
-        # do it as early as possible, so that further tmux options are cached
-        cache_prepare "get_config_refresh()"
-
-        check_speed_cutoff 0.3
-        get_config_read_save_if_uncached
-    else
-        cfg_use_cache=false
-
-        touch "$f_no_cache_hint"
-
-        # Since cache is disabled read all options
-        tmux_get_plugin_options
-
-        log_it "-->  cache is disabled!  <--"
-        # in principle cache folder should be deleted since it is not used,
-        # but if this is a no cache system, assume writes should not be done for now....
-    fi
+    cache_param_write
+    log_it "  post cache_param_write - cfg_use_whiptail [$cfg_use_whiptail]"
 }
 
-get_config_read_save_if_uncached() {
-    # reads config, and if allowed saves it to cache
-    # log_it "[$$] get_config_read_save_if_uncached()"
+config_setup() {
+    # Examins tmux env, and depending on caching config either plainly read
+    # tmux.conf, or prepare a f_cache_params
+    # log_it "config_setup()"
 
-    cache_config_get_save || {
-        # cache couldn't be saved, indicate cache not available
-        # log_it "  <-- get_config_read_save_if_uncached() - unable to save cache params"
-        cfg_use_cache=false
-    }
-    # log_it "[$$]    get_config_read_save_if_uncached() - done"
+    # only need default_use_cache at this point but might as well get them all
+    tmux_get_defaults
+    if normalize_bool_param "@menus_use_cache" "$default_use_cache"; then
+        cfg_use_cache=true
+        # shellcheck disable=SC2154
+        safe_remove "$f_no_cache_hint" config_setup
+        create_param_cache
+    else
+        touch "$f_no_cache_hint"
+        tmux_get_plugin_options
+    fi
 }
 
 safe_remove() {

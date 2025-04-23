@@ -50,7 +50,7 @@ tmux_vers_check_do_compare() {
     return 1
 }
 
-tmux_get_defaults() {
+tmux_get_defaults() { # new init
     #
     #  Defaults for plugin params
     #
@@ -205,34 +205,20 @@ fix_home_path() {
     eval "$fhp_varname=\"\$fhp_path\""
 }
 
-tmux_get_plugin_options() { # cache references
+tmux_get_plugin_options() { # new init
+    #
+    #  This only reads all plugin options from tmux env, any decisions based
+    #  on debug variables etc are handled by create_param_cache()
     #
     #  Public variables
     #   cfg_  config variables, either read from tmux or the default
     #
-    # log_it "tmux_get_plugin_options()"
-    $plugin_options_have_been_read && {
-        error_msg "tmux_get_plugin_options() has already been called"
-    }
+    log_it "tmux_get_plugin_options()"
     tmux_get_defaults
-    if normalize_bool_param "@menus_use_cache" "$default_use_cache"; then
-        cfg_use_cache=true
-        safe_remove "$f_no_cache_hint" skip-path-check
-        # do it as early as possible, so that further tmux options are cached
-        cache_create_folder "tmux_get_plugin_options()"
-    else
-        cfg_use_cache=false
-        # log_it "><> touching: $f_no_cache_hint"
-        touch "$f_no_cache_hint"
-    fi
 
-    select_menu_handler
+    log_it "><>  tmux_get_plugin_options - current_tmux_vers [$current_tmux_vers]"
 
-    # [ "$bn_current_script" = "plugin_init.sh" ] && {
-    #     # Since this is only needed by plugin_init.sh, save some time
-    #     # when @menus_use_cache is No and skip this one for menu items
     tmux_get_option cfg_trigger_key "@menus_trigger" "$default_trigger_key"
-    # }
 
     if normalize_bool_param "@menus_without_prefix" "$default_no_prefix"; then
         cfg_no_prefix=true
@@ -250,34 +236,43 @@ tmux_get_plugin_options() { # cache references
         cfg_show_key_hints=false
     fi
 
-    if $cfg_use_whiptail; then
-        _whiptail_ignore_msg="not used with whiptail"
-
-        cfg_simple_style_selected="$_whiptail_ignore_msg"
-        cfg_simple_style="$_whiptail_ignore_msg"
-        cfg_simple_style_border="$_whiptail_ignore_msg"
-        cfg_format_title="$_whiptail_ignore_msg"
-        cfg_mnu_loc_x="$_whiptail_ignore_msg"
-        cfg_mnu_loc_y="$_whiptail_ignore_msg"
-
-        # Whiptail skips any styling
-        cfg_nav_next="$default_nav_next"
-        cfg_nav_prev="$default_nav_prev"
-        cfg_nav_home="$default_nav_home"
+    if normalize_bool_param "@menus_display_commands" "$default_show_key_hints"; then
+        cfg_display_cmds=true
+        tmux_get_option cfg_display_cmds_cols "@menus_display_cmds_cols" \
+            "$default_display_cmds_cols"
+        is_int "$cfg_display_cmds_cols" || {
+            error_msg "@menus_display_cmds_cols is not int: $cfg_display_cmds_cols"
+        }
     else
-        if normalize_bool_param "@menus_display_commands" "$default_show_key_hints"; then
-            cfg_display_cmds=true
-            tmux_get_option cfg_display_cmds_cols "@menus_display_cmds_cols" \
-                "$default_display_cmds_cols"
-            is_int "$cfg_display_cmds_cols" || {
-                error_msg "@menus_display_cmds_cols is not int: $cfg_display_cmds_cols"
-            }
-        else
-            cfg_display_cmds=false
-            # No point reading tmux for this if it isn't going to be used anyhow
-            cfg_display_cmds_cols="$default_display_cmds_cols"
-        fi
+        cfg_display_cmds=false
+        # No point reading tmux for this if it isn't going to be used anyhow
+        cfg_display_cmds_cols="$default_display_cmds_cols"
+    fi
 
+    if ! tmux_vers_check 3.0; then
+        # if on next plugin_setup a menus able tmux is detected the relevant
+        # additional settings will be cached
+        if command -v whiptail >/dev/null; then
+            cfg_alt_menu_handler=whiptail
+            log_it "NOTICE: tmux below 3.0 - using: whiptail"
+        elif command -v dialog >/dev/null; then
+            cfg_alt_menu_handler=dialog
+            log_it "NOTICE: tmux below 3.0 - using: dialog"
+        else
+            error_msg_safe "Neither whiptail or dialog found, plugin aborted"
+        fi
+        log_it "--- Activating cfg_use_whiptail due to tmux < 3.0"
+        cfg_use_whiptail=true
+    else
+        cfg_use_whiptail=false
+        cfg_alt_menu_handler=""
+    fi
+
+    handle_env_variables # potential cfg_use_whiptail override
+
+    if $cfg_use_whiptail; then
+        use_whiptail_env
+    else
         tmux_get_option cfg_simple_style_selected "@menus_simple_style_selected" \
             "$default_simple_style_selected"
 
@@ -287,7 +282,6 @@ tmux_get_plugin_options() { # cache references
             "$default_simple_style_border"
         tmux_get_option cfg_format_title "@menus_format_title" \
             "$default_format_title"
-
         tmux_get_option cfg_mnu_loc_x "@menus_location_x" "$default_location_x"
         tmux_get_option cfg_mnu_loc_y "@menus_location_y" "$default_location_y"
         tmux_get_option cfg_nav_next "@menus_nav_next" "$default_nav_next"
@@ -306,7 +300,6 @@ tmux_get_plugin_options() { # cache references
         # Handle the case of ~ or $HOME being wrapped in single quotes in tmux.conf
         fix_home_path cfg_log_file "$_log_file"
     }
-
     #
     #  Generic plugin setting I use to add Notes to keys that are bound
     #  This makes this key binding show up when doing <prefix> ?
@@ -322,7 +315,27 @@ tmux_get_plugin_options() { # cache references
         # log_it "><> ignoring notes"
         cfg_use_notes=false
     fi
-    plugin_options_have_been_read=true
+}
+
+use_whiptail_env() {
+    # if this is moved to helpers_minimal, ensure to also
+    # move the required defaults to that file
+    # log_it "use_whiptail_env()"
+    if $cfg_use_whiptail; then
+        _whiptail_ignore_msg="not used with whiptail"
+
+        cfg_simple_style_selected="$_whiptail_ignore_msg"
+        cfg_simple_style="$_whiptail_ignore_msg"
+        cfg_simple_style_border="$_whiptail_ignore_msg"
+        cfg_format_title="$_whiptail_ignore_msg"
+        cfg_mnu_loc_x="$_whiptail_ignore_msg"
+        cfg_mnu_loc_y="$_whiptail_ignore_msg"
+
+        # Whiptail skips any styling
+        cfg_nav_next="$default_nav_next"
+        cfg_nav_prev="$default_nav_prev"
+        cfg_nav_home="$default_nav_home"
+    fi
 }
 
 tmux_error_handler() {
