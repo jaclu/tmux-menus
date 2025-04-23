@@ -225,9 +225,7 @@ process_custom_items() {
 }
 
 custom_items_prepare() {
-    # debug helper
-    # [ "$LOG_TO_STDERR" = "1" ] && log_interactive_to_stderr=1
-
+    # log_it "UCI:custom_items_prepare()"
     if [ ! -d "$d_custom_items" ]; then
         [ -f "$f_chksum_custom" ] && {
             safe_remove "$d_cache"/items/main # clear main menu cache
