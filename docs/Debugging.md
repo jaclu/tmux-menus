@@ -46,7 +46,10 @@ will print total time and time since last profiling_display
 
 For more details check `scripts/utils/dbg_profiling.sh`
 
-If not set to 1 `profiling_display` statements will be ignored,
+If not set to 1 `profiling_display` statements will be ignored
+
+might be practical to also use`export TMUX_MENUS_LOGGING_MINIMAL=1`
+for isolation of profiling output
 
 ## TMUX_MENUS_NO_DISPLAY
 
