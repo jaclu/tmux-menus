@@ -1023,11 +1023,7 @@ static_cache_updated=false  # used to decide if static cache file reduction shou
 #
 menu_debug="" # Set to 1 to use echo 2 to use log_it
 
-# $all_helpers_sourced || source_all_helpers "end of dialog_handling"
-
-# profiling_update_time_stamps
 prepare_menu
-profiling_display "prepare menu"
 display_menu
 
 # log_it "[$$]   COMPLETED: scripts/dialog_handling.sh"

@@ -125,6 +125,13 @@ tmux_get_option() {
     # [ -z "$tgo_varname" ] && error_msg "tmux_get_option() param 1 empty!"
     [ -z "$tgo_option" ] && error_msg "tmux_get_option() param 2 empty!"
     [ -z "$tgo_default" ] && log_it "tmux_get_option($tgo_option) - No default supplied"
+
+    [ "$tgo_default" = "EMPTY" ] && {
+        # a bit of a hack, supply something so the No default supplied isnt displayed
+        # yet still set default to empty string
+        tgo_default=""
+    }
+
     if [ -z "$tgo_no_cache" ] && $cfg_use_cache && [ -d "$d_cache" ]; then
         tgo_use_cache=true
     else
@@ -213,10 +220,8 @@ tmux_get_plugin_options() { # new init
     #  Public variables
     #   cfg_  config variables, either read from tmux or the default
     #
-    log_it "tmux_get_plugin_options()"
+    # log_it "tmux_get_plugin_options()"
     tmux_get_defaults
-
-    log_it "><>  tmux_get_plugin_options - current_tmux_vers [$current_tmux_vers]"
 
     tmux_get_option cfg_trigger_key "@menus_trigger" "$default_trigger_key"
 
@@ -296,7 +301,7 @@ tmux_get_plugin_options() { # new init
     [ "$log_file_forced" != 1 ] && {
         #  If a debug logfile has been set, the tmux setting will be ignored.
         # log_it "tmux will read cfg_log_file"
-        tmux_get_option _log_file "@menus_log_file" "$default_log_file"
+        tmux_get_option _log_file "@menus_log_file" EMPTY
         # Handle the case of ~ or $HOME being wrapped in single quotes in tmux.conf
         fix_home_path cfg_log_file "$_log_file"
     }
@@ -335,6 +340,9 @@ use_whiptail_env() {
         cfg_nav_next="$default_nav_next"
         cfg_nav_prev="$default_nav_prev"
         cfg_nav_home="$default_nav_home"
+
+        # other variables only used by whiptail
+        wt_pasting="@tmp_menus_wt_paste_in_progress"
     fi
 }
 

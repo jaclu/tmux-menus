@@ -87,7 +87,7 @@ validate_varname() {
 #---------------------------------------------------------------
 
 source_cached_params() {
-    log_it "source_cached_params()"
+    # log_it "source_cached_params()"
 
     [ "$log_file_forced" = 1 ] && {
         # if log file is forced, save setting, in order to ignore cached config
@@ -155,6 +155,9 @@ get_config() {
     # log_it "get_config()"
     replace_config=false
     if [ -f "$f_no_cache_hint" ]; then
+        $all_helpers_sourced || {
+            source_all_helpers "get_config() - no cache hint found"
+        }
         tmux_get_plugin_options
     elif [ -f "$f_cache_params" ]; then
         source_cached_params || {
@@ -298,8 +301,8 @@ tpt_retrieve_running_tmux_vers() {
     # If the variables defining the currently used tmux version needs to
     # be accessed before the first call to tmux_vers_ok this can be called.
     #
+    # log_it "tpt_retrieve_running_tmux_vers()"
     current_tmux_vers="$($TMUX_BIN -V | cut -d' ' -f2)"
-    log_it "tpt_retrieve_running_tmux_vers() - $current_tmux_vers"
     # log_it "  current_tmux_vers [$current_tmux_vers]"
     tpt_digits_from_string current_tmux_vers_i "$current_tmux_vers"
     tpt_tmux_vers_suffix current_tmux_vers_suffix "$current_tmux_vers"
@@ -367,7 +370,6 @@ env_initialized=0
 #
 log_file_forced="1"
 cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
-# log_it "><> [$$] STARTING: scripts/helpers_minimal.sh"
 
 #
 #  If set to "1" log will happen to stderr if script is run in an interactive
@@ -436,18 +438,11 @@ d_basic_current_script=${0%/*} # quick vers, won't expand rel dirs or soft links
 bn_current_script=${0##*/}     # same but faster than "$(basename "$0")"
 bn_current_script_no_ext=${bn_current_script%.*}
 
-wt_pasting="@tmp_menus_wt_paste_in_progress" # only used by whiptail
-
-#
-#  Convert script name to full actual path notation the path is used
-#  for caching, so save it to a variable as well
-#
-
 if [ -d "$d_cache" ]; then
     cfg_use_cache=true
 else
-    # Assume cache is disabled, if this is not the case, this should be harmless
-    # since when tmux options will be read it will be used if enabled
+    # Assume cache is disabled, until env has been inspected, if allowed it will
+    # be used
     cfg_use_cache=false
 fi
 

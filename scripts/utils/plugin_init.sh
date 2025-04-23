@@ -9,7 +9,6 @@
 #  Initiate plugin, should be run in background from .tmux file
 #
 
-
 bind_plugin_key() {
     if $cfg_use_whiptail; then
         bind_cmd="$d_scripts/external_dialog_trigger.sh"
@@ -82,6 +81,7 @@ fi
 safe_now t_init_start # get a feel for if this is a slow system...
 
 # Create a LF in log_file to easier separate runs
+[[ -f "$f_cache_params" ]] && source_cached_params
 log_it
 log_it
 log_it

@@ -284,20 +284,11 @@ create_param_cache() {
     # log_it "create_param_cache()"
 
     cache_prepare
-    source_cached_params # get additional env config if available
+    source_cached_params           # get additional env config if available
     tpt_retrieve_running_tmux_vers # ensure we refer to current tmux version
-
-    # shellcheck disable=SC2154
-    log_it "  post source_cached_params - current_tmux_vers [$current_tmux_vers]"
-
     # cfg_use_whiptail=false
     tmux_get_plugin_options
-    # shellcheck disable=SC2154
-    log_it "  post tmux_get_plugin_options - current_tmux_vers [$current_tmux_vers]"
-    log_it "  cfg_use_whiptail [$cfg_use_whiptail]"
-
     cache_param_write
-    log_it "  post cache_param_write - cfg_use_whiptail [$cfg_use_whiptail]"
 }
 
 config_setup() {
