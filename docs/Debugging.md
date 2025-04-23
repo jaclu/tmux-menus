@@ -30,8 +30,11 @@ it to `0` this will make `Display commands` available but not enabled by default
 
 ## TMUX_MENUS_LOGGING_MINIMAL
 
-If set to 1 only errors and menu rendering times will be logged, practicall if
-a lot of logging has been enabled to temporarily dial it down
+Convenient if a lot of debugging is enabled to temporarily minimize/disable it
+
+- `1` - only calls to log_it_minimal() will be displayed, by default that is errors
+  and menu rendering times
+- `2` - no logging at all
 
 ## TMUX_MENUS_HANDLER
 

@@ -29,6 +29,8 @@ log_it() {
 log_it_always() {
     # Call this directly for things that should be logged even when
     # TMUX_MENUS_LOGGING_MINIMAL is 1
+    # if TMUX_MENUS_LOGGING_MINIMAL=2 logging is completely disabled
+    [ "$TMUX_MENUS_LOGGING_MINIMAL" = "2" ] && return
     _msg="$1"
 
     [ "$log_interactive_to_stderr" = "1" ] && {
