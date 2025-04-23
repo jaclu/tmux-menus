@@ -404,7 +404,7 @@ case "$TMUX_MENUS_PROFILING" in
         # if the intent is to start timing the earliest stages of other scripts
         # copy the below code using absolute paths
         # shellcheck source=scripts/utils/dbg_profiling.sh
-        . "$D_TM_BASE_PATH"/scripts/utils/dbg_profiling.sh
+        [ "$profiling_sourced" != 1 ] && . "$D_TM_BASE_PATH"/scripts/utils/dbg_profiling.sh
         ;;
     esac
     ;;
