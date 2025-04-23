@@ -482,7 +482,7 @@ menu_parse() {
 #---------------------------------------------------------------
 
 prepare_show_commands() {
-    # if true, do not use normal caching, build custom menu including cmds under each
+    # Do not use normal caching, build custom menu including cmds under each
     # action item
     # log_it "prepare_show_commands()"
     safe_now t_show_cmds
@@ -981,11 +981,15 @@ is_dynamic_content=false    # indicates if a dynamic content segment is being pr
 dynamic_content_found=false # indicate dynamic content was generated
 static_cache_updated=false  # used to decide if static cache file reduction should happen
 
+$cfg_use_cache || {
+    # always disabled if cache is not used
+    cfg_display_cmds=false
+    unset TMUX_MENUS_SHOW_CMDS
+}
 [ -n "$TMUX_MENUS_SHOW_CMDS" ] && {
-    # override @menus_display_commands setting
+    # override @menus_display_commands setting, if cache is enabled
     cfg_display_cmds=true
 }
-
 [ "$TMUX_MENUS_SHOW_CMDS" = "1" ] && prepare_show_commands
 
 # Some sanity checks
