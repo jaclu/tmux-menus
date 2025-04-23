@@ -645,8 +645,6 @@ generate_menu_items_in_sorted_order() {
     #
     gmi_entries=""
 
-    # Replace splitter with a temporary token to avoid using newline
-    # Loop using parameter expansion instead of line-based tools
     gmi_rest="$uncached_menu"
     while :; do
         case "$gmi_rest" in
@@ -672,11 +670,8 @@ $idx	$gmi_body"
     # Now sort and print, skipping initial empty line
     menu_items="$(
         printf "%s\n" "$gmi_entries" | sed 1d | sort -n | while IFS='	' read -r idx this_section; do
-            # menu_items="$menu_items $this_section"
-            log_it "Index: $idx"
-            printf '%s' "$this_section"
+            printf '%s' "$this_section" # send it back to the script
         done
-        printf '%s' "$menu_items" # send it back to the script
     )"
 }
 
