@@ -413,9 +413,12 @@ case "$TMUX_MENUS_PROFILING" in
 *)
     # profiling calls should not be left in the code base long term, this
     # is primarily intended to capture them when profiling is temporarily disabled
-    # profiling_display() {
-    #     :
-    # }
+    profiling_update_time_stamps() {
+        :
+     }
+    profiling_display() {
+        :
+     }
     ;;
 esac
 
