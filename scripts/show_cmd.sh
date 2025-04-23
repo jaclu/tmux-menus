@@ -166,6 +166,7 @@ show_cmd() {
     #
     #  Feeding the menu creation via calls to mnu_text_line()
     #
+    profiling_update_time_stamps
     _s1="${1%" $menu_reload"}"             # skip menu_reload suffix if found
     _s2="${_s1%" $reload_in_runshell"}"    # skip reload_in_runshell suffix if found
     _s3="${_s2%"; $0"}"                    # Remove trailing reload of menu
@@ -206,7 +207,7 @@ show_cmd() {
         sc_remainder=${sc_remainder#"$chunk"}
         sc_remainder=${sc_remainder#" "}
     done
-
+    profiling_display "show_cmd($sc_cmd) - done"
     # refresh it for each cmd processed in case the display timeout is shortish
     tmux_error_handler display-message "Preparing Display Commands ..."
 }
