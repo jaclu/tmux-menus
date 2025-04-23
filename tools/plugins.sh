@@ -157,6 +157,7 @@ valid_items=(tpm)  # additional folders expected to be in plugins folders
     exit 1
 }
 
+echo
 extract_defined_plugins
 echo "Extract defined plugins from: $cfg_tmux_conf"
 find_plugin_path

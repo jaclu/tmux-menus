@@ -51,7 +51,7 @@ bind_plugin_key() {
 #
 #===============================================================
 
-D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(dirname -- "$(realpath "$0")")")")"
+D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 
 initialize_plugin=1
 

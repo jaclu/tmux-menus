@@ -127,7 +127,7 @@ tmux_get_option() {
     [ -z "$tgo_default" ] && log_it "tmux_get_option($tgo_option) - No default supplied"
 
     [ "$tgo_default" = "EMPTY" ] && {
-        # a bit of a hack, supply something so the No default supplied isnt displayed
+        # a bit of a hack, supply something so the No default supplied isn't displayed
         # yet still set default to empty string
         tgo_default=""
     }

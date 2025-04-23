@@ -55,7 +55,7 @@ static_content() {
             "$d_hints/customize-mode.sh $0"
     }
     set -- "$@" \
-        1.8 E p "Plugins inventory" plugins.sh \
+        1.8 E p "Plugins inventory" "$D_TM_BASE_PATH"/tools/plugins.sh \
         0.0 C r "Reload tmux conf" "$rld_cmd" \
         0.0 C d 'Detach from tmux' detach-client \
         0.0 S \
