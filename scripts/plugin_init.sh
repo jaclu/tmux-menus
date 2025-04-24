@@ -78,17 +78,27 @@ if [[ -d "$d_cache" ]]; then
     # safe_remove "$f_min_display_time"
 fi
 
-safe_now t_init_start # get a feel for if this is a slow system...
-
-# Create a LF in log_file to easier separate runs
-[[ -f "$f_cache_params" ]] && source_cached_params
+#
+# These will only do something during debugging, if cfg_log_file was hardcoded
+# in helpers_minimal.sh or similar...
+# So harmless normally really convenient when working on the code
+#
 log_it
+log_it
+log_it
+
 config_setup
+
+#
+# If @menus_log_file was defined, it has now taken effect
+# create a blank line in the log to separate tmux sessions
+#
+log_it
 
 #
 #  If custom inventory is used, update link to its main index
 #
-[[ -f "$f_update_custom_inventory" ]] && $f_update_custom_inventory
+"$d_scripts"/update_custom_inventory.sh
 
 #
 # Key is not bound until cache (if allowed) has been prepared, so normally
