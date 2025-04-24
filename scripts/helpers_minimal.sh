@@ -82,6 +82,33 @@ validate_varname() {
     esac
 }
 
+define_profiling_env() {
+    case "$TMUX_MENUS_PROFILING" in
+    "1")
+        case "$profiling_sourced" in
+        "1") ;;
+        *)
+            # Here it is sourced  after D_TM_BASE_PATH is verified
+            # if the intent is to start timing the earliest stages of other scripts
+            # copy the below code using absolute paths
+            # shellcheck source=scripts/utils/dbg_profiling.sh
+            [ "$profiling_sourced" != 1 ] && . "$D_TM_BASE_PATH"/scripts/utils/dbg_profiling.sh
+            ;;
+        esac
+        ;;
+    *)
+        # profiling calls should not be left in the code base long term, this
+        # is primarily intended to capture them when profiling is temporarily disabled
+        profiling_update_time_stamps() {
+            :
+        }
+        profiling_display() {
+            :
+        }
+        ;;
+    esac
+}
+
 #---------------------------------------------------------------
 #
 #   get configuration
@@ -400,31 +427,6 @@ plugin_options_have_been_read=false # only need to read param once
 # a call to source_all_helpers will be done, this ensures it only happens once
 all_helpers_sourced=false
 
-case "$TMUX_MENUS_PROFILING" in
-"1")
-    case "$profiling_sourced" in
-    "1") ;;
-    *)
-        # Here it is sourced  after D_TM_BASE_PATH is verified
-        # if the intent is to start timing the earliest stages of other scripts
-        # copy the below code using absolute paths
-        # shellcheck source=scripts/utils/dbg_profiling.sh
-        [ "$profiling_sourced" != 1 ] && . "$D_TM_BASE_PATH"/scripts/utils/dbg_profiling.sh
-        ;;
-    esac
-    ;;
-*)
-    # profiling calls should not be left in the code base long term, this
-    # is primarily intended to capture them when profiling is temporarily disabled
-    profiling_update_time_stamps() {
-        :
-    }
-    profiling_display() {
-        :
-    }
-    ;;
-esac
-
 # minimal support variables
 
 d_tmp="${TMPDIR:-/tmp}"
@@ -449,9 +451,11 @@ else
     cfg_use_cache=false
 fi
 
+# Only enable if profiling is being used
+# define_profiling_env
+
 [ "$initialize_plugin" != "1" ] && {
-    # scripts/utils/plugin_init.s will call config_setup directly,
-    # so should not call get_config
+    # plugin_init will call config_setup directly, so should not call get_config
 
     get_config
     if ! tmux_vers_check "$min_tmux_vers"; then
