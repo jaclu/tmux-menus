@@ -34,7 +34,7 @@ find_plugin_path() {
         # if TMUX_PLUGIN_MANAGER_PATH is defined and it exists, assume it to be valid
         if [[ -d "$TMUX_PLUGIN_MANAGER_PATH" ]]; then
 
-            log_it " <-- find_plugin_path() - found via TMUX_PLUGIN_MANAGER_PATH"
+            # log_it " <-- find_plugin_path() - found via TMUX_PLUGIN_MANAGER_PATH"
             d_plugins="$TMUX_PLUGIN_MANAGER_PATH"
             d_plugins="${d_plugins%/}" # Removes a trailing slash if present
             return 0
