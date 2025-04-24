@@ -902,10 +902,10 @@ display_menu() {
     # log_it "display_menu()"
     # Display time to generate menu
 
-case "$TMUX_MENUS_SHOW_CMDS" in
+    case "$TMUX_MENUS_SHOW_CMDS" in
     "1" | "2") clear_prep_disp_status ;;
     *) ;;
-esac
+    esac
 
     [ -n "$cfg_log_file" ] && {
         # If logging is disabled - no point in generating this log msg
@@ -913,7 +913,7 @@ esac
         safe_now
         _t="$(echo "$t_now - $t_script_start" | bc)"
 
-        _m="Menu $(relative_path "$d_basic_current_script")/$bn_current_script"
+        _m="Menu $(relative_path "$0")"
         _m="$_m - processing time:  $_t"
         log_it_minimal "$_m"
     }
@@ -964,22 +964,22 @@ display_commands_toggle() {
     menu_part="$1"
     # log_it "display_commands_toggle($menu_part)"
     [ -z "$menu_part" ] && error_msg "add_display_commands() - called with no param"
-    
+
     case "$TMUX_MENUS_SHOW_CMDS" in
-        "1" )
-            _lbl="Display key binds"
-            _i=2
-            ;;
-        "2")
-            _lbl="Hide key binds"
-            _i=0
-            ;;
-        *)
-            _lbl="Display Commands"
-            _i=1
-            ;;
+    "1")
+        _lbl="Display key binds"
+        _i=2
+        ;;
+    "2")
+        _lbl="Hide key binds"
+        _i=0
+        ;;
+    *)
+        _lbl="Display Commands"
+        _i=1
+        ;;
     esac
-    
+
     set -- \
         0.0 E ! "$_lbl" "TMUX_MENUS_SHOW_CMDS=$_i $0"
 
@@ -1025,8 +1025,8 @@ b_do_show_cmds=false
 }
 
 case "$TMUX_MENUS_SHOW_CMDS" in
-    "1" | "2") prepare_show_commands ;;
-    *) ;;
+"1" | "2") prepare_show_commands ;;
+*) ;;
 esac
 
 # Some sanity checks
