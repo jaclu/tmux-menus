@@ -355,6 +355,14 @@ wait_to_close_display() {
     fi
 }
 
+helpers_full_additional_files_sourced() {
+    # shellcheck disable=SC2154 source=scripts/utils/cache.sh
+    . "$d_scripts"/utils/cache.sh
+
+    # shellcheck source=scripts/utils/tmux.sh
+    . "$d_scripts"/utils/tmux.sh
+}
+
 #===============================================================
 #
 #   Main
@@ -362,8 +370,6 @@ wait_to_close_display() {
 #===============================================================
 
 # log_it "><> [$$] STARTING: scripts/utils/helpers_full.sh"
-
-[ -z "$D_TM_BASE_PATH" ] && error_msg "D_TM_BASE_PATH undefined"
 
 #
 #  Convenience shortcuts
@@ -376,17 +382,12 @@ d_custom_items="$D_TM_BASE_PATH"/custom_items
 
 f_custom_items_index="$d_custom_items"/_index.sh
 # shellcheck disable=SC2154
-f_update_custom_inventory="$d_scripts"/update_custom_inventory.sh
 f_chksum_custom="$d_cache"/chksum_custom_content
 f_cached_tmux_options="$d_cache"/tmux_options
 f_cached_tmux_key_binds="$d_cache"/tmux_key_binds
 f_min_display_time="$d_cache"/min_display_time
 
-# shellcheck source=scripts/utils/cache.sh
-. "$d_scripts"/utils/cache.sh
-
-# shellcheck source=scripts/utils/tmux.sh
-. "$d_scripts"/utils/tmux.sh
+helpers_full_additional_files_sourced
 
 env_initialized=2 # indicates that env is fully configured
 # log_it "><> [$$] scripts/utils/helpers_full.sh - completed [$0]"
