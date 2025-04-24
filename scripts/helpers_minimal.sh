@@ -458,8 +458,8 @@ fi
         # @variables are not usable prior to 1.8
         error_msg "need at least tmux $min_tmux_vers to work!"
     fi
-
-    [ "$env_initialized" -eq 0 ] && env_initialized=1 # basic init done
 }
+
+[ "$env_initialized" -eq 0 ] && env_initialized=1 # basic init done
 
 # log_it "><> [$$] scripts/helpers_minimal.sh - completed [$0]"

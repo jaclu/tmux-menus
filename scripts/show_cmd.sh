@@ -175,11 +175,11 @@ show_cmd() {
     sc_cmd=$(printf '%s\n' "$_s4" | awk '{$1=$1; print}')
 
     [ -z "$sc_cmd" ] && error_msg "show_cmd() - no command could be extracted"
-    log_it "show_cmd($sc_cmd) $TMUX_MENUS_SHOW_CMDS"
+    # log_it "show_cmd($sc_cmd) $TMUX_MENUS_SHOW_CMDS"
     
     [ "$TMUX_MENUS_SHOW_CMDS" = "2" ] && {
         check_key_binds "$sc_cmd" sc_cmd
-        log_it " binds [$sc_cmd]"
+        # log_it " binds [$sc_cmd]"
     }
     
     #  Replaces initial tmux-cmd with (TMUX) for clarity and to avoid risking

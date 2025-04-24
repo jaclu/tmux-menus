@@ -886,22 +886,27 @@ ensure_menu_fits_on_screen() {
     }
 }
 
+clear_prep_disp_status() {
+    safe_now
+    log_it "Preparing Display Commands took: $(echo "$t_now - $t_show_cmds" | bc)s"
+
+    if tmux_vers_check 3.2; then
+        tmux_error_handler display-message -d 1 ""
+    else
+        # Older tmuxes don't have the time out feature, so the
+        # empty message will remain potentially until a key-press
+        tmux_error_handler display-message ""
+    fi
+}
+
 display_menu() {
     # log_it "display_menu()"
     # Display time to generate menu
 
-    [ "$TMUX_MENUS_SHOW_CMDS" = "1" ] && { # clear status msg
-        safe_now
-        log_it "Preparing Display Commands took: $(echo "$t_now - $t_show_cmds" | bc)s"
-
-        if tmux_vers_check 3.2; then
-            tmux_error_handler display-message -d 1 ""
-        else
-            # Older tmuxes don't have the time out feature, so the
-            # empty message will remain potentially until a key-press
-            tmux_error_handler display-message ""
-        fi
-    }
+case "$TMUX_MENUS_SHOW_CMDS" in
+    "1" | "2") clear_prep_disp_status ;;
+    *) ;;
+esac
 
     [ -n "$cfg_log_file" ] && {
         # If logging is disabled - no point in generating this log msg
@@ -958,7 +963,7 @@ prepare_show_commands() {
 
 display_commands_toggle() {
     menu_part="$1"
-    log_it "display_commands_toggle($menu_part)"
+    # log_it "display_commands_toggle($menu_part)"
     [ -z "$menu_part" ] && error_msg "add_display_commands() - called with no param"
     
     case "$TMUX_MENUS_SHOW_CMDS" in
@@ -1022,7 +1027,7 @@ b_do_show_cmds=false
 
 case "$TMUX_MENUS_SHOW_CMDS" in
     "1" | "2") prepare_show_commands ;;
-    *) log_it "  TMUX_MENUS_SHOW_CMDS [$TMUX_MENUS_SHOW_CMDS]" ;;
+    *) ;;
 esac
 
 # Some sanity checks
