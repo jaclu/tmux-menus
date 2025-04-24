@@ -279,18 +279,6 @@ check_speed_cutoff() {
 #
 #---------------------------------------------------------------
 
-create_param_cache() {
-    # via config_setup() it is already established that @menus_use_cache was true
-    # log_it "create_param_cache()"
-
-    cache_prepare
-    source_cached_params           # get additional env config if available
-    tpt_retrieve_running_tmux_vers # ensure we refer to current tmux version
-    # cfg_use_whiptail=false
-    tmux_get_plugin_options
-    cache_param_write
-}
-
 config_setup() {
     # Examins tmux env, and depending on caching config either plainly read
     # tmux.conf, or prepare a f_cache_params

@@ -181,20 +181,20 @@ examine_code_base() {
     fi
 }
 
-cache_param_write() {
+cache_write_plugin_params() {
     #
     #  Writes all config params to file
     #  if it differed with previous params, clear cache
     #
-    # log_it "cache_param_write()"
+    # log_it "cache_write_plugin_params()"
 
-    $cfg_use_cache || error_msg "cache_param_write() - called when not using cache"
+    $cfg_use_cache || error_msg "cache_write_plugin_params() - called when not using cache"
 
     check_speed_cutoff 0.3
     examine_code_base
 
     _f_params_tmp=$(mktemp) || {
-        error_msg "cache_param_write() - Failed to create tmp config file"
+        error_msg "cache_write_plugin_params() - Failed to create tmp config file"
     }
     # fi
 
@@ -264,13 +264,25 @@ t_minimal_display_time=\"$t_minimal_display_time\"
             )"
             mv "$_f_params_tmp" "$f_cache_params" # replace even if unchanged
         else
-            log_it " config unchanged - param cache not cleared"
+            # log_it " config unchanged - param cache not cleared"
             rm "$_f_params_tmp"
         fi
     else
         log_it " param cache created"
         mv "$_f_params_tmp" "$f_cache_params" # replace even if unchanged
     fi
+}
+
+create_param_cache() {
+    # via config_setup() it is already established that @menus_use_cache was true
+    # log_it "create_param_cache()"
+
+    cache_prepare
+    source_cached_params           # get additional env config if available
+    tpt_retrieve_running_tmux_vers # ensure we refer to current tmux version
+    # cfg_use_whiptail=false
+    tmux_get_plugin_options
+    cache_write_plugin_params
 }
 
 #===============================================================
