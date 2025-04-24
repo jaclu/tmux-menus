@@ -347,7 +347,10 @@ wait_to_close_display() {
     #  pgrep does not provide the command line, so ignore SC2009
     #  shellcheck disable=SC2009
     if ps -x "$PPID" 2>/dev/null | grep -q tmux-menus && $cfg_use_whiptail; then
-        #  called using whiptail menus
+        #
+        # called using whiptail menus, since a pause is needed, before what
+        # might be a backgrounded process is resumed
+        #
         echo " "
         echo "Press <Enter> to clear this output"
         read -r _
