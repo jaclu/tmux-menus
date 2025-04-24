@@ -83,8 +83,6 @@ safe_now t_init_start # get a feel for if this is a slow system...
 # Create a LF in log_file to easier separate runs
 [[ -f "$f_cache_params" ]] && source_cached_params
 log_it
-log_it
-log_it
 config_setup
 
 #
