@@ -227,6 +227,7 @@ custom_items_prepare() {
     # log_it "UCI:custom_items_prepare()"
     if [ ! -d "$d_custom_items" ]; then
         [ -f "$f_chksum_custom" ] && {
+            log_it "UCI: Clearing main menu cache since custom items are gone"
             safe_remove "$d_cache"/items/main # clear main menu cache
         }
         # Folder missing, clear custom items cache and exit
