@@ -967,7 +967,7 @@ display_commands_toggle() {
             _i=2
             ;;
         "2")
-            _lbl="Hide Commands"
+            _lbl="Hide key binds"
             _i=0
             ;;
         *)

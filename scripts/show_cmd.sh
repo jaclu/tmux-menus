@@ -184,7 +184,7 @@ show_cmd() {
     
     #  Replaces initial tmux-cmd with (TMUX) for clarity and to avoid risking
     #  starting with a long path
-    # sc_cmd="$(echo "$sc_cmd" | sed "s#^$TMUX_BIN #(TMUX)  #")"
+    sc_cmd="$(echo "$sc_cmd" | sed "s#^$TMUX_BIN #[TMUX] #")"
 
     #  Line break cmd if needed, to fit inside the menu width
     #  then calls mnu_text_line() for each line of the command to be displayed.
