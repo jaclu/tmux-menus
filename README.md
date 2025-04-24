@@ -27,7 +27,6 @@ experienced users, then add more for newbies.
 - Fixed handling of options for tmux 3.0 - 3.2a since they don't return an
   error for missing options
 - Removed all jk shortcuts in menus, allowing for consistent vim style navigation.
-- Plugin is initialized in the background, to cut down on tpm processing time.
 
 </details>
 <details>
@@ -316,18 +315,15 @@ set -g @menus_display_commands 'Yes'
 
 This boolean parameter defaults to `No`
 
-This feature is disabled when whiptail / dialog is used.
+This feature is not available when whiptail / dialog is used or caching is disabled.
 
 If set to true each menu will include an extra item `Display Commands` with the
 shortcut `!`
 
 Pressing this will display what commands are used for each action.
 
-If a command matches a defined root or prefix key bind, this will be displayed
-instead of the command. If multiple key binds matches, all of them will be listed.
-
-this prefix sequence will be displayed instead of the
-command.
+Pressing this again will display all matching prefix and root binds.
+If multiple key binds matches, all of them will be listed.
 
 Be aware that the menu will be taller when using this, so make sure the screen is
 large enough to handle it!
