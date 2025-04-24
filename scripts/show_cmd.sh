@@ -166,7 +166,6 @@ show_cmd() {
     #
     #  Feeding the menu creation via calls to mnu_text_line()
     #
-    profiling_update_time_stamps
     _s1="${1%" $menu_reload"}"             # skip menu_reload suffix if found
     _s2="${_s1%" $reload_in_runshell"}"    # skip reload_in_runshell suffix if found
     _s3="${_s2%"; $0"}"                    # Remove trailing reload of menu
@@ -176,12 +175,12 @@ show_cmd() {
 
     [ -z "$sc_cmd" ] && error_msg "show_cmd() - no command could be extracted"
     # log_it "show_cmd($sc_cmd) $TMUX_MENUS_SHOW_CMDS"
-    
+
     [ "$TMUX_MENUS_SHOW_CMDS" = "2" ] && {
         check_key_binds "$sc_cmd" sc_cmd
         # log_it " binds [$sc_cmd]"
     }
-    
+
     #  Replaces initial tmux-cmd with (TMUX) for clarity and to avoid risking
     #  starting with a long path
     sc_cmd="$(echo "$sc_cmd" | sed "s#^$TMUX_BIN #[TMUX] #")"
@@ -210,7 +209,7 @@ show_cmd() {
         sc_remainder=${sc_remainder#"$chunk"}
         sc_remainder=${sc_remainder#" "}
     done
-    profiling_display "show_cmd($sc_cmd) - done"
+
     # refresh it for each cmd processed in case the display timeout is shortish
     tmux_error_handler display-message "Preparing Display Commands ..."
 }
