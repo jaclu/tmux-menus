@@ -143,21 +143,4 @@ if $undefined_item; then
     fi
 fi
 
-#  Busybox ps has no -x and will throw error, so send to /dev/null
-#  pgrep does not provide the command line, so ignore SC2009
-#  shellcheck disable=SC2009,SC2154
-if ps -x "$PPID" 2>/dev/null | grep -q tmux-menus && $cfg_use_whiptail; then
-    #  called using whiptail menus
-    echo " "
-    echo "Press <Enter> to clear this output"
-    read -r _
-else
-    if [[ ! -t 0 ]]; then
-        #
-        #  Not from command-line, ie most likely called from the menus.
-        #  Menu is already closed, so we can't check PPID or similar
-        #
-        echo " "
-        echo "Press <q> or <Escape> to clear this output"
-    fi
-fi
+wait_to_close_display

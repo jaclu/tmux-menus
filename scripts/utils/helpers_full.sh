@@ -343,14 +343,23 @@ wait_to_close_display() {
     #  call this to display an appropriate suggestion, and in the
     #  whiptail case wait for that key
     #
-    # log_it "wait_to_close_display()" # with cache:
-    echo
-    # shellcheck disable=SC2154
-    if $cfg_use_whiptail; then
+    #  Busybox ps has no -x and will throw error, so send to /dev/null
+    #  pgrep does not provide the command line, so ignore SC2009
+    #  shellcheck disable=SC2009
+    if ps -x "$PPID" 2>/dev/null | grep -q tmux-menus && $cfg_use_whiptail; then
+        #  called using whiptail menus
+        echo " "
         echo "Press <Enter> to clear this output"
-        read -r foo
+        read -r _
     else
-        echo "Press <Escape> to clear this output"
+        if [ ! -t 0 ]; then
+            #
+            #  Not from command-line, ie most likely called from the menus.
+            #  Menu is already closed, so we can't check PPID or similar
+            #
+            echo " "
+            echo "Press <q> or <Escape> to clear this output"
+        fi
     fi
 }
 
