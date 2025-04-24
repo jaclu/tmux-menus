@@ -1,6 +1,5 @@
 #!/bin/sh
 # Always sourced file - Fake bang path to help editors
-# shellcheck disable=SC2034,SC2154
 #
 #   Copyright (c) 2025: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -22,6 +21,7 @@ print_stderr() {
 }
 
 log_it() {
+    # shellcheck disable=SC2154
     [ "$TMUX_MENUS_LOGGING_MINIMAL" = "1" ] && return
     log_it_minimal "$1"
 }
@@ -83,6 +83,7 @@ validate_varname() {
 }
 
 define_profiling_env() {
+    # shellcheck disable=SC2154
     case "$TMUX_MENUS_PROFILING" in
     "1")
         case "$profiling_sourced" in
@@ -99,9 +100,12 @@ define_profiling_env() {
     *)
         # profiling calls should not be left in the code base long term, this
         # is primarily intended to capture them when profiling is temporarily disabled
+
+        # shellcheck disable=SC2317
         profiling_update_time_stamps() {
             :
         }
+        # shellcheck disable=SC2317
         profiling_display() {
             :
         }
@@ -152,6 +156,7 @@ handle_env_variables() {
     # TMUX_MENUS_PROFILING - is handled directly - no config needed
     # TMUX_MENUS_NO_DISPLAY -  is handled directly - no config needed
     b_whiptail_forced=false
+    # shellcheck disable=SC2154
     if [ "$TMUX_MENUS_HANDLER" = 1 ]; then
         _cmd=whiptail
         if command -v "$_cmd" >/dev/null; then
@@ -406,8 +411,7 @@ env_initialized=0
 #  shell, so this will not mess it up if the plugin is initiated or run by tmux
 #  If log can't happen to stderr, it will go to cfg_log_file if it is defined
 #
-
-# log_interactive_to_stderr=1
+log_interactive_to_stderr=0
 
 [ -z "$D_TM_BASE_PATH" ] && {
     # helpers not yet sourced, so error_msg() not yet available
@@ -421,7 +425,6 @@ env_initialized=0
 safe_now t_script_start
 
 min_tmux_vers="1.8"
-plugin_options_have_been_read=false # only need to read param once
 # for performance only a minimum of support features are in this file
 # as long as cache is used, it is sufficient, if extra features are needed
 # a call to source_all_helpers will be done, this ensures it only happens once
@@ -439,9 +442,9 @@ d_cache="$D_TM_BASE_PATH"/cache
 f_cache_known_tmux_vers="$d_cache"/known_tmux_versions
 f_cache_params="$d_cache"/plugin_params
 
-d_basic_current_script=${0%/*} # quick vers, won't expand rel dirs or soft links
+# shellcheck disable=SC2034
 bn_current_script=${0##*/}     # same but faster than "$(basename "$0")"
-bn_current_script_no_ext=${bn_current_script%.*}
+# bn_current_script_no_ext=${bn_current_script%.*}
 
 if [ -d "$d_cache" ]; then
     cfg_use_cache=true
@@ -454,6 +457,7 @@ fi
 # Only enable if profiling is being used
 # define_profiling_env
 
+# shellcheck disable=SC2154
 [ "$initialize_plugin" != "1" ] && {
     # plugin_init will call config_setup directly, so should not call get_config
 

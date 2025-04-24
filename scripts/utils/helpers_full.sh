@@ -1,6 +1,5 @@
 #!/bin/sh
 # Always sourced file - Fake bang path to help editors
-# shellcheck disable=SC2034
 #
 #   Copyright (c) 2022-2025: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -375,17 +374,20 @@ helpers_full_additional_files_sourced() {
 #  Convenience shortcuts
 #
 
-# shellcheck disable=SC2154
-d_help="$d_items"/help
-d_hints="$d_items"/hints
-d_custom_items="$D_TM_BASE_PATH"/custom_items
+# shellcheck disable=SC2034
+{
+    # shellcheck disable=SC2154
+    d_help="$d_items"/help
 
-f_custom_items_index="$d_custom_items"/_index.sh
-# shellcheck disable=SC2154
-f_chksum_custom="$d_cache"/chksum_custom_content
+    d_hints="$d_items"/hints
+    d_custom_items="$D_TM_BASE_PATH"/custom_items
+    f_custom_items_index="$d_custom_items"/_index.sh
+    f_chksum_custom="$d_cache"/chksum_custom_content
+    f_cached_tmux_key_binds="$d_cache"/tmux_key_binds
+    f_min_display_time="$d_cache"/min_display_time
+}
+
 f_cached_tmux_options="$d_cache"/tmux_options
-f_cached_tmux_key_binds="$d_cache"/tmux_key_binds
-f_min_display_time="$d_cache"/min_display_time
 
 helpers_full_additional_files_sourced
 

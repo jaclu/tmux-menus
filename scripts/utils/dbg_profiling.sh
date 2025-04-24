@@ -1,7 +1,5 @@
 #!/bin/sh
 # Always sourced file - Fake bang path to help editors
-# shellcheck disable=SC2034,SC2154
-
 #
 #   Copyright (c) 2025: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -30,6 +28,7 @@
 #       profiling_display "get_config done"
 #
 
+# shellcheck disable=SC2154
 [ "$TMUX_MENUS_PROFILING" != "1" ] && {
     echo
     echo "ERROR: sourcing dbg_pofiling.sh without TMUX_MENUS_PROFILING being 1 [$0]"

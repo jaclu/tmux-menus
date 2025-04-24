@@ -1,6 +1,5 @@
 #!/bin/sh
 # Always sourced file - Fake bang path to help editors
-# shellcheck disable=SC2034,SC2154
 #
 #   Copyright (c) 2022-2025: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -18,6 +17,7 @@ tmux_vers_check_do_compare() {
 
     # Compare numeric parts first for quick decisions.
     tpt_digits_from_string _i_comp "$_v_comp"
+    # shellcheck disable=SC2154
     [ "$_i_comp" -lt "$current_tmux_vers_i" ] && {
         cache_add_ok_vers "$_v_comp"
         return 0
@@ -82,7 +82,11 @@ tmux_get_defaults() { # new init
         default_location_y=P
     fi
 
-    default_use_cache=Yes
+    # shellcheck disable=SC2034
+    {
+        default_use_cache=Yes
+        default_log_file=""
+    }
 
     default_use_hint_overlays=Yes
     default_show_key_hints=No
@@ -94,8 +98,6 @@ tmux_get_defaults() { # new init
     else
         default_tmux_conf="$HOME/.tmux.conf"
     fi
-
-    default_log_file=""
 }
 
 cache_save_options_defined_in_tmux() {
@@ -103,8 +105,10 @@ cache_save_options_defined_in_tmux() {
     #  On slow systems, doing individual show-options takes a ridiculous amount of
     #  time. Here we read all relevant options in one go and store them in a cache file
     #
+    # shellcheck disable=SC2154
     [ -f "$f_cached_tmux_options" ] && return
     # log_it "cache_save_options_defined_in_tmux()"
+    # shellcheck disable=SC2154
     $TMUX_BIN show-options -g | grep ^@menus_ >"$f_cached_tmux_options"
     $TMUX_BIN show-options -g | grep @use_bind_key_notes_in_plugins \
         >>"$f_cached_tmux_options"
@@ -132,6 +136,7 @@ tmux_get_option() {
         tgo_default=""
     }
 
+    # shellcheck disable=SC2154
     if [ -z "$tgo_no_cache" ] && $cfg_use_cache && [ -d "$d_cache" ]; then
         tgo_use_cache=true
     else
@@ -228,16 +233,19 @@ tmux_get_plugin_options() { # new init
     if normalize_bool_param "@menus_without_prefix" "$default_no_prefix"; then
         cfg_no_prefix=true
     else
+        # shellcheck disable=SC2034
         cfg_no_prefix=false
     fi
     if normalize_bool_param "@menus_use_hint_overlays" "$default_use_hint_overlays"; then
         cfg_use_hint_overlays=true
     else
+        # shellcheck disable=SC2034
         cfg_use_hint_overlays=false
     fi
     if normalize_bool_param "@menus_show_key_hints" "$default_show_key_hints"; then
         cfg_show_key_hints=true
     else
+        # shellcheck disable=SC2034
         cfg_show_key_hints=false
     fi
 
@@ -257,6 +265,7 @@ tmux_get_plugin_options() { # new init
         cfg_use_whiptail=true
     else
         cfg_use_whiptail=false
+        # shellcheck disable=SC2034
         cfg_alt_menu_handler=""
     fi
 
@@ -283,7 +292,6 @@ tmux_get_plugin_options() { # new init
 
     if ! $cfg_use_whiptail &&
         normalize_bool_param "@menus_display_commands" "$default_show_key_hints"; then
-
         cfg_display_cmds=true
         tmux_get_option cfg_display_cmds_cols "@menus_display_cmds_cols" \
             "$default_display_cmds_cols"
@@ -291,6 +299,7 @@ tmux_get_plugin_options() { # new init
             error_msg "@menus_display_cmds_cols is not int: $cfg_display_cmds_cols"
         }
     else
+        # shellcheck disable=SC2034
         cfg_display_cmds=false
         # No point reading tmux for this if it isn't going to be used anyhow
         cfg_display_cmds_cols="$default_display_cmds_cols"
@@ -298,8 +307,10 @@ tmux_get_plugin_options() { # new init
 
     tmux_get_option _tmux_conf "@menus_config_file" "$default_tmux_conf"
     # Handle the case of ~ or $HOME being wrapped in single quotes in tmux.conf
+    # shellcheck disable=SC2154
     fix_home_path cfg_tmux_conf "$_tmux_conf"
 
+    # shellcheck disable=SC2154
     [ "$log_file_forced" != 1 ] && {
         #  If a debug logfile has been set, the tmux setting will be ignored.
         # log_it "tmux will read cfg_log_file"
@@ -320,6 +331,7 @@ tmux_get_plugin_options() { # new init
         cfg_use_notes=true
     else
         # log_it "><> ignoring notes"
+        # shellcheck disable=SC2034
         cfg_use_notes=false
     fi
 }
@@ -331,20 +343,23 @@ use_whiptail_env() {
     if $cfg_use_whiptail; then
         _whiptail_ignore_msg="not used with whiptail"
 
-        cfg_simple_style_selected="$_whiptail_ignore_msg"
-        cfg_simple_style="$_whiptail_ignore_msg"
-        cfg_simple_style_border="$_whiptail_ignore_msg"
-        cfg_format_title="$_whiptail_ignore_msg"
-        cfg_mnu_loc_x="$_whiptail_ignore_msg"
-        cfg_mnu_loc_y="$_whiptail_ignore_msg"
+        # shellcheck disable=SC2034
+        {
+            cfg_simple_style_selected="$_whiptail_ignore_msg"
+            cfg_simple_style="$_whiptail_ignore_msg"
+            cfg_simple_style_border="$_whiptail_ignore_msg"
+            cfg_format_title="$_whiptail_ignore_msg"
+            cfg_mnu_loc_x="$_whiptail_ignore_msg"
+            cfg_mnu_loc_y="$_whiptail_ignore_msg"
 
-        # Whiptail skips any styling
-        cfg_nav_next="$default_nav_next"
-        cfg_nav_prev="$default_nav_prev"
-        cfg_nav_home="$default_nav_home"
+            # Whiptail skips any styling
+            cfg_nav_next="$default_nav_next"
+            cfg_nav_prev="$default_nav_prev"
+            cfg_nav_home="$default_nav_home"
 
-        # other variables only used by whiptail
-        wt_pasting="@tmp_menus_wt_paste_in_progress"
+            # other variables only used by whiptail
+            wt_pasting="@tmp_menus_wt_paste_in_progress"
+        }
     fi
 }
 
@@ -376,6 +391,7 @@ tmux_error_handler_assign() { # cache references
     if $cfg_use_cache; then
         d_errors="$d_cache"
     else
+        # shellcheck disable=SC2154
         d_errors="$d_tmp"
     fi
     # ensure it exists
@@ -455,21 +471,10 @@ tmux_error_handler_assign() { # cache references
 #===============================================================
 
 #
-#  I use an env var TMUX_BIN to point at the current tmux, defined in my
-#  tmux.conf, to pick the version matching the server running.
-#  This is needed when checking backward compatibility with various versions.
-#  If not found, it is set to whatever is in the path, so should have no negative
-#  impact. In all calls to tmux I use TMUX_BIN instead in the rest of this
-#  plugin.
+# tmux_error_handler & tmux_error_handler_assign neve log normally
+# if a specific call should be logged set this to true, it will be disabled again
+# at the end of the call
 #
-
-if [ -n "$TMUX" ]; then
-    tmux_pid="$(echo "$TMUX" | cut -d',' -f2)"
-else
-    # was run outside tmux
-    tmux_pid="-1"
-fi
-
 teh_debug=false
 
 # log_it "===  Completed: scripts/utils/tmux.sh  =="
