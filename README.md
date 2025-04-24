@@ -20,12 +20,10 @@ experienced users, then add more for newbies.
 
 ## Recent Changes
 
+- `Display menu commands` Rotates between displaying commands and all matching prefix and root binds.
 - Re-factored plugin init
-- `Display menu commands` Displays all matching prefix and root binds.
 - Added new feature Display Commands, see `Display menu commands` in the Configuration
   section, using this will display all commands in the menu.
-- Fixed handling of options for tmux 3.0 - 3.2a since they don't return an
-  error for missing options
 - Removed all jk shortcuts in menus, allowing for consistent vim style navigation.
 
 </details>
@@ -346,7 +344,8 @@ cut the line ending it with `>`.
 
 Such lines are truncated. And the entire command was not displayed.
 
-If commands end with `>` it is recommended to use a narrower setting.
+If commands end with `>` it is recommended to use a narrower setting for
+`@menus_display_cmds_cols`
 
 </details>
 <details>

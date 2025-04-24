@@ -59,7 +59,6 @@ static_content() {
         2.6 T "-#[nodim]v      Toggle preview" \
         0.0 T "-#[nodim]Esc/q  Exit mode"
 
-    # 3.0  O
     menu_generate_part 2 "$@"
 }
 
