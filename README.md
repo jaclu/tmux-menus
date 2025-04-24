@@ -20,6 +20,8 @@ experienced users, then add more for newbies.
 
 ## Recent Changes
 
+- Re-factored plugin init
+- `Display menu commands` Displays all matching prefix and root binds.
 - Added new feature Display Commands, see `Display menu commands` in the Configuration
   section, using this will display all commands in the menu.
 - Fixed handling of options for tmux 3.0 - 3.2a since they don't return an
@@ -319,8 +321,12 @@ This feature is disabled when whiptail / dialog is used.
 If set to true each menu will include an extra item `Display Commands` with the
 shortcut `!`
 
-Pressing this will display what commands are used for each action. If a command
-matches a defined prefix, this prefix sequence will be displayed instead of the
+Pressing this will display what commands are used for each action.
+
+If a command matches a defined root or prefix key bind, this will be displayed
+instead of the command. If multiple key binds matches, all of them will be listed.
+
+this prefix sequence will be displayed instead of the
 command.
 
 Be aware that the menu will be taller when using this, so make sure the screen is

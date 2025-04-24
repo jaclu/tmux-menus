@@ -147,9 +147,9 @@ check_key_binds() {
             add_result "<prefix> $_l"
         done
     }
-    set +f # re-enable globbing
+    set +f # re-enable globbing0
 
-    [ -z "$ckb_rslt" ] && ckb_rslt="$ckb_cmd" # if no binds were found display command
+    # [ -z "$ckb_rslt" ] && ckb_rslt="$ckb_cmd" # if no binds were found display command
 
     if [ -n "$ckb_output_var" ]; then
         eval "$ckb_output_var=\"\$ckb_rslt\""
@@ -175,13 +175,16 @@ show_cmd() {
     sc_cmd=$(printf '%s\n' "$_s4" | awk '{$1=$1; print}')
 
     [ -z "$sc_cmd" ] && error_msg "show_cmd() - no command could be extracted"
-
-    # sc_cmd="$(check_key_binds "$sc_cmd")"
-    check_key_binds "$sc_cmd" sc_cmd
-
+    log_it "show_cmd($sc_cmd) $TMUX_MENUS_SHOW_CMDS"
+    
+    [ "$TMUX_MENUS_SHOW_CMDS" = "2" ] && {
+        check_key_binds "$sc_cmd" sc_cmd
+        log_it " binds [$sc_cmd]"
+    }
+    
     #  Replaces initial tmux-cmd with (TMUX) for clarity and to avoid risking
     #  starting with a long path
-    sc_cmd="$(echo "$sc_cmd" | sed "s#^$TMUX_BIN #(TMUX)  #")"
+    # sc_cmd="$(echo "$sc_cmd" | sed "s#^$TMUX_BIN #(TMUX)  #")"
 
     #  Line break cmd if needed, to fit inside the menu width
     #  then calls mnu_text_line() for each line of the command to be displayed.

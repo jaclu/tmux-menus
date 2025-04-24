@@ -348,7 +348,7 @@ menu_parse() {
                 alt_command "$label" "$key" "$cmd" "$keep_cmd"
             else
                 mnu_command "$label" "$key" "$cmd" "$keep_cmd"
-                [ "$TMUX_MENUS_SHOW_CMDS" = "1" ] && show_cmd "$TMUX_BIN $cmd"
+                $b_do_show_cmds && show_cmd "$TMUX_BIN $cmd"
             fi
             ;;
 
@@ -389,7 +389,7 @@ menu_parse() {
                 alt_external_cmd "$label" "$key" "$cmd"
             else
                 mnu_external_cmd "$label" "$key" "$cmd"
-                [ "$TMUX_MENUS_SHOW_CMDS" = "1" ] && [ "$key" != "!" ] && show_cmd "$cmd"
+                $b_do_show_cmds && [ "$key" != "!" ] && show_cmd "$cmd"
             fi
             ;;
 
@@ -480,42 +480,6 @@ menu_parse() {
 #   Preparing menu
 #
 #---------------------------------------------------------------
-
-prepare_show_commands() {
-    # Do not use normal caching, build custom menu including cmds under each
-    # action item
-    # log_it "prepare_show_commands()"
-    safe_now t_show_cmds
-    $all_helpers_sourced || source_all_helpers "prepare_show_commands"
-
-    [ ! -f "$f_cached_tmux_key_binds" ] && {
-        log_it "Creating: $f_cached_tmux_key_binds"
-        $TMUX_BIN list-keys | grep -iv display-menu >"$f_cached_tmux_key_binds"
-    }
-
-    [ "$TMUX_MENUS_SHOW_CMDS" = "1" ] && {
-        tmux_error_handler display-message "Preparing Display Commands ..."
-    }
-
-    cfg_use_cache=false
-    # shellcheck source=scripts/show_cmd.sh
-    . "$D_TM_BASE_PATH"/scripts/show_cmd.sh
-}
-
-display_commands_toggle() {
-    menu_part="$1"
-    # log_it "display_commands_toggle($menu_part)"
-    [ -z "$menu_part" ] && error_msg "add_display_commands() - called with no param"
-
-    if [ "$TMUX_MENUS_SHOW_CMDS" = "1" ]; then
-        set -- \
-            0.0 E ! "Hide Commands" "TMUX_MENUS_SHOW_CMDS=0 $0"
-    else
-        set -- \
-            0.0 E ! "Display Commands" "TMUX_MENUS_SHOW_CMDS=1 $0"
-    fi
-    menu_generate_part "$menu_part" "$@"
-}
 
 set_menu_env_variables() {
     # log_it "set_menu_env_variables()"
@@ -972,6 +936,52 @@ exit_if_menu_doesnt_fit_screen() {
     exit 0 # menu won't fit on screen, exit nicely without any warnings/errors
 }
 
+prepare_show_commands() {
+    # Do not use normal caching, build custom menu including cmds under each
+    # action item
+    # log_it "prepare_show_commands()"
+    safe_now t_show_cmds
+    $all_helpers_sourced || source_all_helpers "prepare_show_commands"
+
+    cfg_use_cache=false
+    b_do_show_cmds=true
+    [ ! -f "$f_cached_tmux_key_binds" ] && {
+        log_it "Creating: $f_cached_tmux_key_binds"
+        $TMUX_BIN list-keys | grep -iv display-menu >"$f_cached_tmux_key_binds"
+    }
+
+    tmux_error_handler display-message "Preparing Display Commands ..."
+
+    # shellcheck source=scripts/show_cmd.sh
+    . "$D_TM_BASE_PATH"/scripts/show_cmd.sh
+}
+
+display_commands_toggle() {
+    menu_part="$1"
+    log_it "display_commands_toggle($menu_part)"
+    [ -z "$menu_part" ] && error_msg "add_display_commands() - called with no param"
+    
+    case "$TMUX_MENUS_SHOW_CMDS" in
+        "1" )
+            _lbl="Display key binds"
+            _i=2
+            ;;
+        "2")
+            _lbl="Hide Commands"
+            _i=0
+            ;;
+        *)
+            _lbl="Display Commands"
+            _i=1
+            ;;
+    esac
+    
+    set -- \
+        0.0 E ! "$_lbl" "TMUX_MENUS_SHOW_CMDS=$_i $0"
+
+    menu_generate_part "$menu_part" "$@"
+}
+
 #===============================================================
 #
 #   Main
@@ -998,17 +1008,22 @@ exit_if_menu_doesnt_fit_screen() {
 is_dynamic_content=false    # indicates if a dynamic content segment is being processed
 dynamic_content_found=false # indicate dynamic content was generated
 static_cache_updated=false  # used to decide if static cache file reduction should happen
+b_do_show_cmds=false
 
-$cfg_use_cache || {
+[ -z "$TMUX_MENUS_SHOW_CMDS" ] && ! $cfg_use_cache && {
     # always disabled if cache is not used
     cfg_display_cmds=false
-    unset TMUX_MENUS_SHOW_CMDS
+    # unset TMUX_MENUS_SHOW_CMDS
 }
 [ -n "$TMUX_MENUS_SHOW_CMDS" ] && {
     # override @menus_display_commands setting, if cache is enabled
     cfg_display_cmds=true
 }
-[ "$TMUX_MENUS_SHOW_CMDS" = "1" ] && prepare_show_commands
+
+case "$TMUX_MENUS_SHOW_CMDS" in
+    "1" | "2") prepare_show_commands ;;
+    *) log_it "  TMUX_MENUS_SHOW_CMDS [$TMUX_MENUS_SHOW_CMDS]" ;;
+esac
 
 # Some sanity checks
 [ "$TMUX_MENUS_NO_DISPLAY" != "1" ] && {
