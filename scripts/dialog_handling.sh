@@ -879,7 +879,7 @@ ensure_menu_fits_on_screen() {
             _s="$f_menu_rel: Width required: $menu_width"
         else
             # log_it "display time was: $disp_time"
-            _s="$f_menu_rel: Screen might be too small"
+            _s="$f_menu_rel: Screen might be too small - menu closed after $disp_time"
         fi
         error_msg_safe "$_s"
     }
