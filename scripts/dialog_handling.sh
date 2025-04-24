@@ -510,8 +510,7 @@ set_menu_env_variables() {
         # Include relative script path in cache folder name to avoid name collisions
         #  items/main.sh -> cache/items/main.sh/
         # [ "$env_initialized" -lt 2 ] && error_msg_safe "env not fully initialized"
-        d_menu_cache="$d_cache/$(relative_path "$d_basic_current_script")"
-        d_menu_cache="$d_menu_cache/$bn_current_script_no_ext"
+        d_menu_cache="$d_cache/$(relative_path "$0")"
 
         $cfg_use_whiptail && d_wt_actions="$d_menu_cache/wt_actions"
     else
