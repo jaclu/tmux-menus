@@ -137,7 +137,7 @@ check_key_binds() {
         # shellcheck disable=SC2086 # intentional in this case
         set -- $ckb_root_bind
         for _l; do
-            add_result "(NO-Prefix) $_l"
+            add_result "$_l" # "[NO-Prefix] $_l"
         done
     }
     [ -n "$ckb_prefix_bind" ] && {
