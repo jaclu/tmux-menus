@@ -33,10 +33,10 @@ find_plugin_path() {
     if [[ -n "$TMUX_PLUGIN_MANAGER_PATH" ]]; then
         # if TMUX_PLUGIN_MANAGER_PATH is defined and it exists, assume it to be valid
         if [[ -d "$TMUX_PLUGIN_MANAGER_PATH" ]]; then
-            d_plugins="$TMUX_PLUGIN_MANAGER_PATH"
-            d_plugins="${d_plugins%/}" # Removes a trailing slash if present
 
             log_it " <-- find_plugin_path() - found via TMUX_PLUGIN_MANAGER_PATH"
+            d_plugins="$TMUX_PLUGIN_MANAGER_PATH"
+            d_plugins="${d_plugins%/}" # Removes a trailing slash if present
             return 0
         else
             msg="Env variable TMUX_PLUGIN_MANAGER_PATH defined, but it does not point"
@@ -44,38 +44,12 @@ find_plugin_path() {
             error_msg "$msg"
         fi
     else
-        msg="Failed to locate plugin folder\n\n"
-        msg+="Please set TMUX_PLUGIN_MANAGER_PATH in tmux conf (usually done by tpm)\n\n"
+        # msg="Failed to locate plugin folder\n\n"
+        msg="Please set TMUX_PLUGIN_MANAGER_PATH in tmux conf (usually done by tpm)\n\n"
         msg+="Something like:\n"
-        msg+='  TMUX_PLUGIN_MANAGER_PATH="/path/to/plugins"'
+        msg+="  set-environment -g TMUX_PLUGIN_MANAGER_PATH \"/some/other/path/\""
         error_msg "$msg"
     fi
-}
-
-unused_obsolete_stuff() {
-    [[ -n "$XDG_CONFIG_HOME" ]] && {
-        # if XDG_CONFIG_HOME is defined and pligin_name can be found, use that path
-        if [[ -d "$XDG_CONFIG_HOME" ]]; then
-            # check if tmux-menus is inside this file tree, if found assume it to
-            # be the plugin folder
-            # shellcheck disable=SC2154
-            _d_this_plugin="$(find "$XDG_CONFIG_HOME" | grep "$plugin_name\$")"
-            if [[ -n "$_d_this_plugin" ]]; then
-                d_plugins="$(dirname "$_d_this_plugin")"
-                d_plugins="${d_plugins%/}" # Removes a trailing slash if present
-                log_it " <-- find_plugin_path() - found via XDG_CONFIG_HOME"
-                return 0
-            else
-                msg="$XDG_CONFIG_HOME defined, but no folder ending in $plugin_name"
-                msg+=" found therein"
-                error_msg "$msg"
-            fi
-        else
-            msg="$XDG_CONFIG_HOME defined, but not pointing to a folder: $XDG_CONFIG_HOME"
-            error_msg "$msg"
-        fi
-    }
-    return 1
 }
 
 list_install_status() {
@@ -100,41 +74,19 @@ list_install_status() {
     done
 }
 
-check_uninstalled() {
-    if $plugin_missing; then
-        echo
-        if tmux_vers_check 1.9; then
-            echo "You can install plugins listed as NOT INSTALLED with <prefix> I"
-        else
-            echo "Follow the plugins instruction for manual install, and"
-            echo "save it into: $d_plugins"
-        fi
-    fi
-}
-
 check_unknown_items() {
     #
     #  List all items in d_plugins not supposed to be there
     #
     undefined_item=false
-    echo
     for file in "$d_plugins"/*; do
         item="$(echo "$file" | sed s/'plugins'/\|/ | cut -d'|' -f2 | sed s/.//)"
         if [[ ! ${valid_items[*]} =~ ${item} ]]; then
-            # whatever you want to do when array doesn't contain value
+            $undefined_item || echo " " # spacer before 1st entry
             echo "Undefined item: $d_plugins/$item"
             undefined_item=true
         fi
     done
-    if $undefined_item; then
-        echo
-        if tmux_vers_check 1.9; then
-            echo "You can remove undefined items with <prefix> M-u"
-        else
-            echo "Please manually remove the listed items"
-        fi
-        echo
-    fi
 }
 
 #===============================================================
@@ -157,22 +109,46 @@ valid_items=(tpm)  # additional folders expected to be in plugins folders
     exit 1
 }
 
-echo
 extract_defined_plugins
-echo "Extract defined plugins from: $cfg_tmux_conf"
 find_plugin_path
-echo "Plugin folder detected:       $d_plugins"
+
 echo
+echo "Extract defined plugins from: $cfg_tmux_conf"
+echo "Plugin folder detected:       $d_plugins"
+echo " "
 
 list_install_status
-check_uninstalled
 check_unknown_items
+
+if $plugin_missing || $undefined_item; then
+    echo " " # spacers
+    echo " "
+fi
+
+if $plugin_missing; then
+    if tmux_vers_check 1.9; then
+        echo "You can install plugins listed as NOT INSTALLED with <prefix> I"
+    else
+        echo "Follow the plugins instruction for manual install, and"
+        echo "save it into: $d_plugins"
+        echo " "
+    fi
+fi
+
+if $undefined_item; then
+    if tmux_vers_check 1.9; then
+        echo "You can remove undefined items with <prefix> M-u"
+    else
+        echo "Please manually remove the listed items"
+    fi
+fi
 
 #  Busybox ps has no -x and will throw error, so send to /dev/null
 #  pgrep does not provide the command line, so ignore SC2009
 #  shellcheck disable=SC2009,SC2154
 if ps -x "$PPID" 2>/dev/null | grep -q tmux-menus && $cfg_use_whiptail; then
     #  called using whiptail menus
+    echo " "
     echo "Press <Enter> to clear this output"
     read -r _
 else
@@ -181,6 +157,7 @@ else
         #  Not from command-line, ie most likely called from the menus.
         #  Menu is already closed, so we can't check PPID or similar
         #
-        echo "Press <Escape> to clear this output"
+        echo " "
+        echo "Press <q> or <Escape> to clear this output"
     fi
 fi
