@@ -944,15 +944,19 @@ prepare_show_commands() {
     # Do not use normal caching, build custom menu including cmds under each
     # action item
     # log_it "prepare_show_commands()"
+
+    # Do this before the timer is started, otherwise the first usage of show commands
+    # will always be slower
+    [ ! -f "$f_cached_tmux_key_binds" ] && {
+        log_it "Creating: $f_cached_tmux_key_binds"
+        $TMUX_BIN list-keys | grep -iv display-menu >"$f_cached_tmux_key_binds"
+    }
+
     safe_now t_show_cmds
     $all_helpers_sourced || source_all_helpers "prepare_show_commands"
 
     cfg_use_cache=false
     b_do_show_cmds=true
-    [ ! -f "$f_cached_tmux_key_binds" ] && {
-        log_it "Creating: $f_cached_tmux_key_binds"
-        $TMUX_BIN list-keys | grep -iv display-menu >"$f_cached_tmux_key_binds"
-    }
 
     tmux_error_handler display-message "Preparing Display Commands ..."
 
