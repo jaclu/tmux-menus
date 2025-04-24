@@ -20,7 +20,8 @@ experienced users, then add more for newbies.
 
 ## Recent Changes
 
-- `Display menu commands` Rotates between displaying commands and all matching prefix and root binds.
+- `Display menu commands` Rotates between displaying commands and all matching
+  prefix and root binds.
 - Re-factored plugin init
 - Added new feature Display Commands, see `Display menu commands` in the Configuration
   section, using this will display all commands in the menu.
