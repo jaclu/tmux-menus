@@ -187,7 +187,7 @@ show_cmd() {
 
     # Replaces script path starting with plugin location with (tmux-menus)
     # to avoid ling absolute paths that are redundant
-    sc_cmd="$(echo "$sc_cmd" | sed "s#^$D_TM_BASE_PATH/#(tmux-menus) #")"
+    sc_cmd="$(echo "$sc_cmd" | sed "s#^$D_TM_BASE_PATH/#[tmux-menus] #")"
 
     # Line break cmd if needed, to fit inside the menu width
     # then calls mnu_text_line() for each line of the command to be displayed.
