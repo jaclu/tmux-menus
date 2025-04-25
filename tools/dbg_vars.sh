@@ -33,3 +33,7 @@ echo "TMUX_MENUS_HANDLER $TMUX_MENUS_HANDLER"
 echo "  0 use built in menus if available, otherwise whiptail/dialog if found"
 echo "  1 force whiptail"
 echo "  2 force dialog"
+echo
+echo "In most cases they need be set with export, to get tmux to pick up on them"
+echo "Example: export TMUX_MENUS_HANDLER=1"
+echo
