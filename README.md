@@ -20,12 +20,14 @@ experienced users, then add more for newbies.
 
 ## Recent Changes
 
+- Main menu help displays kind of an about box info, about what version of the
+  plugin is used
+- `Display menu commands` Rotates between displaying commands and all matching
+  prefix and root binds.
+- Added parameter `@menus_border_type` for Styling
+- Re-factored plugin init
 - Added new feature Display Commands, see `Display menu commands` in the Configuration
   section, using this will display all commands in the menu.
-- Fixed handling of options for tmux 3.0 - 3.2a since they don't return an
-  error for missing options
-- Removed all jk shortcuts in menus, allowing for consistent vim style navigation.
-- Plugin is initialized in the background, to cut down on tpm processing time.
 
 </details>
 <details>
@@ -265,6 +267,8 @@ set -g @menus_use_hint_overlays 'No'
 
 This boolean parameter defaults to `Yes`
 
+This feature is not available when whiptail / dialog is used.
+
 Some menu items will display tmux dialogs, where each have their own rather complex
 set of special key bindings - choose-buffer, choose-client, choose-tree and
 customize-mode
@@ -314,12 +318,15 @@ set -g @menus_display_commands 'Yes'
 
 This boolean parameter defaults to `No`
 
+This feature is not available when whiptail / dialog is used or caching is disabled.
+
 If set to true each menu will include an extra item `Display Commands` with the
 shortcut `!`
 
-Pressing this will display what commands are used for each action. If a command
-matches a defined prefix, this prefix sequence will be displayed instead of the
-command.
+Pressing this will display what commands are used for each action.
+
+Pressing this again will display all matching prefix and root binds.
+If multiple key binds matches, all of them will be listed.
 
 Be aware that the menu will be taller when using this, so make sure the screen is
 large enough to handle it!
@@ -342,7 +349,8 @@ cut the line ending it with `>`.
 
 Such lines are truncated. And the entire command was not displayed.
 
-If commands end with `>` it is recommended to use a narrower setting.
+If commands end with `>` it is recommended to use a narrower setting for
+`@menus_display_cmds_cols`
 
 </details>
 <details>

@@ -16,17 +16,21 @@ the menus with themed environments.
 
 In the table below, Param refers to display-menu parameters (see the tmux man page).
 
-| Param | variable                     | Default                            | Sample config     |
-| ----- | ---------------------------- | ---------------------------------- | ----------------- |
+| Param | variable                     | Default                              | Sample config     |
+| ----- | ---------------------------- | ------------------------------------ | ----------------- |
 | -T    | @menus_format_title          | `"'#[align=centre] #{@menu_name} '"` | `"#{@menu_name}"` |
-| -H    | @menus_simple_style_selected | default                            | fg=blue,bg=yellow |
-| -s    | @menus_simple_style          | default                            | bg=red            |
-| -S    | @menus_simple_style_border   | default                            | fg=green          |
+| -b    | @menus_border_type           |                                      | rounded           |
+| -H    | @menus_simple_style_selected |                                      | fg=blue,bg=yellow |
+| -s    | @menus_simple_style          |                                      | bg=red            |
+| -S    | @menus_simple_style_border   |                                      | fg=green          |
 
 The prefix `simple_style` indicates that it doesn’t support full style notation.
 
 The -T parameter (`@menus_format_title`) is a FORMAT field. Use `#{@menu_name}`
 to display the menu name.
+
+The -b parameter sets the type of characters used for drawing menu borders.
+See popup-border-lines in the tmux man page for possible values for border-lines.
 
 The -H, -s, and -S parameters seem to only support setting fg, bg, and default,
 but I could be mistaken.

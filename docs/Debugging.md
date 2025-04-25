@@ -18,17 +18,27 @@ In order not to flood the log with an elaborate error report.
 
 ## TMUX_MENUS_SHOW_CMDS
 
-If this is set to 1 menus will always show commands, regardless of what
+If this is defined `Display commands` will be available, regardless of what
 `@menus_display_commands` is set to.
+
+Be aware, if this feature is used, it is in most cases recommended to set
+it to `0` this will make `Display commands` available but not enabled by default.
+
+- `0` - `Display commands` forced to be available, menus defaults to not show commands
+- `1` - `Display commands` forced to be available, menus defaults to show commands
+- Any other value will be treated as a `0`
 
 ## TMUX_MENUS_LOGGING_MINIMAL
 
-If set to 1 only errors and menu rendering times will be logged, practicall if
-a lot of logging has been enabled to temporarily dial it down
+Convenient if a lot of debugging is enabled to temporarily minimize/disable it
+
+- `1` - only calls to log_it_minimal() will be displayed, by default that is errors
+  and menu rendering times
+- `2` - no logging at all
 
 ## TMUX_MENUS_HANDLER
 
-- `0` - use built in menus if available, otherwise whiptail/dialog if found
+- `0` - (default) use built in menus if available, otherwise whiptail/dialog if found
 - `1` - force whiptail
 - `2` - force dialog
 
@@ -39,7 +49,10 @@ will print total time and time since last profiling_display
 
 For more details check `scripts/utils/dbg_profiling.sh`
 
-If not set to 1 `profiling_display` statements will be ignored,
+If not set to 1 `profiling_display` statements will be ignored
+
+might be practical to also use`export TMUX_MENUS_LOGGING_MINIMAL=1`
+for isolation of profiling output
 
 ## TMUX_MENUS_NO_DISPLAY
 

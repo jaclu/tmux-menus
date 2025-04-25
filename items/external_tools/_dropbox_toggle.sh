@@ -46,7 +46,7 @@ fi
 #
 tmux_error_handler_assign org_disp_time show-options -gv display-time
 tmux_error_handler set-option -g display-time 30000
-tmux_error_handler display "Doing dropbox $action ..."
+tmux_error_handler display-message "Doing dropbox $action ..."
 
 if [ "$action" = "start" ]; then
     #
@@ -75,8 +75,9 @@ log_it "status change completed"
 # Hack to clear msg
 #
 tmux_error_handler set-option -g display-time 1
-tmux_error_handler display ""
-
+tmux_error_handler display-message "" # clear status message
 # Restore org value
-# shellcheck disable=SC2154
-tmux_error_handler set-option -g display-time "$org_disp_time"
+[ -n "$org_disp_time" ] && {
+    # shellcheck disable=SC2154
+    tmux_error_handler set-option -g display-time "$org_disp_time"
+}

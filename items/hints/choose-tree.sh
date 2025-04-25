@@ -59,7 +59,6 @@ static_content() {
         2.6 T "-#[nodim]v      Toggle preview" \
         0.0 T "-#[nodim]Esc/q  Exit mode"
 
-    # 3.0  O
     menu_generate_part 2 "$@"
 }
 
@@ -84,12 +83,12 @@ D_TM_BASE_PATH="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"
 # shellcheck source=scripts/helpers_minimal.sh
 . "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
 
-window_width=50
-window_height=21
-tmux_vers_check "3.1" && window_height=$((window_height + 1))
-tmux_vers_check "3.2" && window_height=$((window_height + 7))
-tmux_vers_check "3.5" && window_height=$((window_height + 1))
-[ -n "$prev_menu" ] && window_height=$((window_height + 1))
+menu_width=50
+menu_height=21
+tmux_vers_check "3.1" && menu_height=$((menu_height + 1))
+tmux_vers_check "3.2" && menu_height=$((menu_height + 7))
+tmux_vers_check "3.5" && menu_height=$((menu_height + 1))
+[ -n "$prev_menu" ] && menu_height=$((menu_height + 1))
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh

@@ -58,7 +58,7 @@ static_content() {
         #  app. Avoid this by not switching away to the fg app
         #
         set -- "$@" \
-            0.0 T "Most outputs for this dialog will disappear if this is run" \
+            0.0 T "Most outputs for this menu will disappear if this is run" \
             0.0 T "with another app put into the background, since it will" \
             0.0 T "reapear as soon as this menu is closed." \
             0.0 T "Recommended workaround is to run this from a pane" \
@@ -74,7 +74,7 @@ static_content() {
         0.0 C m "Tmux messages" 'show-messages' \
         1.9 C t "Tmux terminal bindings" 'show-messages -T' \
         0.0 C : "Enter a tmux command" command-prompt \
-        0.0 C s "Toggle status line" "set status $menu_reload" \
+        0.0 C s "Toggle status line" "set-option -g status $menu_reload" \
         1.8 S
 
     $cfg_use_hint_overlays && $cfg_show_key_hints && tmux_vers_check 2.7 && {

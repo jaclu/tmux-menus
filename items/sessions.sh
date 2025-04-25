@@ -15,7 +15,7 @@ static_content() {
     else
         _s="off"
     fi
-    cli_dtch_mode="set -s detach-on-destroy $_s"
+    cli_dtch_mode="set-option -s detach-on-destroy $_s"
 
     # shellcheck disable=SC2154
     set -- \

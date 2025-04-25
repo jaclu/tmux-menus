@@ -35,8 +35,8 @@ static_content() {
     menu_generate_part 3 "$@"
 
     set -- \
-        0.0 C "\<" "Swap window Left" "swap-window -dt:-1 $menu_reload" \
-        0.0 C "\>" "Swap window Right" "swap-window -dt:+1 $menu_reload" \
+        0.0 C "\<" "Swap window Left" "swap-window -d -t :-1 $menu_reload" \
+        0.0 C "\>" "Swap window Right" "swap-window -d -t :+1 $menu_reload" \
         0.0 S \
         1.7 E m "Move window to other location" "$d_scripts/act_choose_tree.sh W M" \
         1.7 E l "Link window to other session" "$d_scripts/act_choose_tree.sh W L"

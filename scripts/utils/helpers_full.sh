@@ -1,6 +1,5 @@
 #!/bin/sh
 # Always sourced file - Fake bang path to help editors
-# shellcheck disable=SC2034
 #
 #   Copyright (c) 2022-2025: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -34,23 +33,23 @@ error_msg() {
     #
     em_msg="$1"
     exit_code="${2:-0}"
-    log_it_always "error_msg($em_msg, $exit_code)"
+    log_it_minimal "error_msg($em_msg, $exit_code)"
 
     [ -z "$TMUX" ] && {
         # with no tmux env, dumping it to stderr & log-file is the only output options
-        log_it_always "***  This does not seem to be running in a tmux env  ***"
+        log_it_minimal "***  This does not seem to be running in a tmux env  ***"
     }
 
-    log_it_always
-    log_it_always "ERROR: $em_msg"
-    log_it_always
+    log_it_minimal
+    log_it_minimal "ERROR: $em_msg"
+    log_it_minimal
 
     [ -n "$TMUX" ] && {
         # shellcheck disable=SC2154
         msg_hold="$plugin_name ERR: $em_msg"
         # shellcheck disable=SC2154
-        actual_win_width="$($TMUX_BIN display-message -p "#{window_width}")"
         if [ "$env_initialized" -eq 2 ] && (
+            actual_win_width="$($TMUX_BIN display-message -p "#{client_width}")"
             [ "${#msg_hold}" -ge "$actual_win_width" ] || has_lf_not_at_end "$em_msg"
         ); then
             error_msg_formated "$em_msg"
@@ -242,11 +241,11 @@ is_int() {
 #
 #---------------------------------------------------------------
 
-define_actual_size() {
-    # Sets some variable indicating screen size
-    # log_it "define_actual_size()"
-    tmux_error_handler_assign actual_height display-message -p "#{client_height}"
-    tmux_error_handler_assign actual_width display-message -p "#{client_width}"
+get_screen_size_variables() {
+    # Sets variables current_screen_rows & current_screen_cols - indicating screen-size
+    log_it "get_screen_size_variables()"
+    tmux_error_handler_assign current_screen_rows display-message -p "#{client_height}"
+    tmux_error_handler_assign current_screen_cols display-message -p "#{client_width}"
 }
 
 #---------------------------------------------------------------
@@ -260,75 +259,17 @@ check_speed_cutoff() {
     # display time before triggering "SCREEN might be too small" warning
     cut_off="$1"
 
-    # shellcheck disable=SC2154
-    [ -f "$f_cache_params" ] && grep -q t_minimal_display_time "$f_cache_params" && {
-        # already set
-        return
-    }
-
-    log_it "check_speed_cutoff($cut_off)"
+    # log_it "-T- check_speed_cutoff($cut_off)"
     safe_now
     # shellcheck disable=SC2154
     t_init="$(echo "$t_now - $t_script_start" | bc)"
-    # log_it "-T-  TIMING result: $t_init [$t_minimal_display_time]"
     if [ "$(echo "$t_init < $cut_off" | bc)" -eq 1 ]; then
-        min_display_t_set 0.1
+        t_minimal_display_time=0.1
     else
+        log_it "  Failed cutoff time, considered a slow system: $t_init >= $cut_off"
         # for slower systems
-        min_display_t_set 0.5
-    fi
-}
-
-min_display_t_read() {
-    # log_it "-T-  min_display_t_read()"
-    [ -n "$min_display_t_set" ] && return 0 # no-cache situation, already set
-    $cfg_use_cache || {
-        # not using cache
-        # log_it "-T-  min_display_t_read() - not using cache, hardcoding t_minimal_display_time"
         t_minimal_display_time=0.5
-        return 0
-    }
-    [ -f "$f_min_display_time" ] && {
-        t_minimal_display_time="$(cat "$f_min_display_time")"
-        return 0
-    }
-    return 1
-}
-
-min_display_t_set() {
-    t_minimal_display_time="$1"
-    # log_it "-T-  min_display_t_set($t_minimal_display_time)"
-    $cfg_use_cache || return # skip if not using cache
-
-    [ -z "$t_minimal_display_time" ] && error_msg_safe "min_display_t_set() - no param"
-    echo "$t_minimal_display_time" >"$f_min_display_time"
-    # shellcheck disable=SC2154
-    min_display_t_append_to_params "$f_cache_params"
-}
-
-min_display_t_append_to_params() {
-    #
-    #  Append t_minimal_display_time to plugin_params if
-    _f_params="$1"
-    # log_it "-T-  min_display_t_append_to_params($_f_params)"
-    [ -f "$_f_params" ] || {
-        log_it "min_display_t_append_to_params() - no such file: $_f_params"
-        return 1
-    }
-    grep -q t_minimal_display_time "$_f_params" && {
-        # already set
-        return 0
-    }
-    min_display_t_read || return 1 # abort if t_minimal_display_time is not found
-    (
-        echo
-        echo "#"
-        echo "# If menu is displayed shorter than this, assume it was due to not fitting"
-        echo "# the screen"
-        echo "#"
-        echo "t_minimal_display_time=$t_minimal_display_time"
-    ) >>"$_f_params" || error_msg "Failed to append t_minimal_display_time to: $_f_params"
-    return 0
+    fi
 }
 
 #---------------------------------------------------------------
@@ -337,14 +278,22 @@ min_display_t_append_to_params() {
 #
 #---------------------------------------------------------------
 
-get_config_read_save_if_uncached() {
-    # reads config, and if allowed saves it to cache
+config_setup() {
+    # Examins tmux env, and depending on caching config either plainly read
+    # tmux.conf, or prepare a f_cache_params
+    # log_it "config_setup()"
 
-    cache_config_get_save || {
-        # cache couldn't be saved, indicate cache not available
-        # log_it "  <-- get_config_read_save_if_uncached() - unable to save cache params"
-        cfg_use_cache=false
-    }
+    # only need default_use_cache at this point but might as well get them all
+    tmux_get_defaults
+    if normalize_bool_param "@menus_use_cache" "$default_use_cache"; then
+        cfg_use_cache=true
+        # shellcheck disable=SC2154
+        safe_remove "$f_no_cache_hint" config_setup
+        create_param_cache
+    else
+        touch "$f_no_cache_hint"
+        tmux_get_plugin_options
+    fi
 }
 
 safe_remove() {
@@ -394,15 +343,35 @@ wait_to_close_display() {
     #  call this to display an appropriate suggestion, and in the
     #  whiptail case wait for that key
     #
-    # log_it "wait_to_close_display()" # with cache:
-    echo
-    # shellcheck disable=SC2154
-    if $cfg_use_whiptail; then
+    #  Busybox ps has no -x and will throw error, so send to /dev/null
+    #  pgrep does not provide the command line, so ignore SC2009
+    #  shellcheck disable=SC2009
+    if ps -x "$PPID" 2>/dev/null | grep -q tmux-menus && $cfg_use_whiptail; then
+        #
+        # called using whiptail menus, since a pause is needed, before what
+        # might be a backgrounded process is resumed
+        #
+        echo " "
         echo "Press <Enter> to clear this output"
-        read -r foo
+        read -r _
     else
-        echo "Press <Escape> to clear this output"
+        if [ ! -t 0 ]; then
+            #
+            #  Not from command-line, ie most likely called from the menus.
+            #  Menu is already closed, so we can't check PPID or similar
+            #
+            echo " "
+            echo "Press <q> or <Escape> to clear this output"
+        fi
     fi
+}
+
+helpers_full_additional_files_sourced() {
+    # shellcheck disable=SC2154 source=scripts/utils/cache.sh
+    . "$d_scripts"/utils/cache.sh
+
+    # shellcheck source=scripts/utils/tmux.sh
+    . "$d_scripts"/utils/tmux.sh
 }
 
 #===============================================================
@@ -411,40 +380,28 @@ wait_to_close_display() {
 #
 #===============================================================
 
-[ -z "$D_TM_BASE_PATH" ] && error_msg "D_TM_BASE_PATH undefined"
+# log_it "><> [$$] STARTING: scripts/utils/helpers_full.sh"
 
 #
 #  Convenience shortcuts
 #
 
-# shellcheck disable=SC2154
-d_help="$d_items"/help
-d_hints="$d_items"/hints
-d_custom_items="$D_TM_BASE_PATH"/custom_items
-f_custom_items_index="$d_custom_items"/_index.sh
-# shellcheck disable=SC2154
-f_update_custom_inventory="$d_scripts"/update_custom_inventory.sh
-f_chksum_custom="$d_cache"/chksum_custom_content
+# shellcheck disable=SC2034
+{
+    # shellcheck disable=SC2154
+    d_help="$d_items"/help
+
+    d_hints="$d_items"/hints
+    d_custom_items="$D_TM_BASE_PATH"/custom_items
+    f_custom_items_index="$d_custom_items"/_index.sh
+    f_chksum_custom="$d_cache"/chksum_custom_content
+    f_cached_tmux_key_binds="$d_cache"/tmux_key_binds
+    f_min_display_time="$d_cache"/min_display_time
+}
+
 f_cached_tmux_options="$d_cache"/tmux_options
-f_min_display_time="$d_cache"/min_display_time
 
-#
-# No longer used
-#
-# current_script=${0##*/}
-# d_current_script="$(
-#     cd "$(dirname "$0")" || exit
-#     pwd
-# )"
-# This is the full path expanded version of $0, be careful to use it in
-# dynamic_content to be accessibele all helpers must have been sourced
-# f_current_script="$d_current_script/$current_script"
-
-# shellcheck source=scripts/utils/cache.sh
-. "$d_scripts"/utils/cache.sh
-
-# shellcheck source=scripts/utils/tmux.sh
-. "$d_scripts"/utils/tmux.sh
+helpers_full_additional_files_sourced
 
 env_initialized=2 # indicates that env is fully configured
-# log_it "><> scripts/utils/helpers_full.sh - completed [$0]"
+# log_it "><> [$$] scripts/utils/helpers_full.sh - completed [$0]"

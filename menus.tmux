@@ -35,4 +35,4 @@ D_TM_BASE_PATH="$(dirname -- "$(realpath "$0")")"
 #
 #  Run the plugin setup in the background to not slow down tpm on startup
 #
-"$D_TM_BASE_PATH"/scripts/utils/plugin_init.sh &
+"$D_TM_BASE_PATH"/scripts/plugin_init.sh &

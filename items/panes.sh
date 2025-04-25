@@ -22,7 +22,7 @@ static_content() {
         0.0 S \
         1.8 C z "Toggle pane zoom" "resize-pane -Z $menu_reload" \
         2.1 C m "Toggle mark current pane" "select-pane -m $menu_reload" \
-        1.9 C s "Toggle synchronized panes" "set -w synchronize-panes $menu_reload" \
+        1.9 C s "Toggle synchronized panes" "set-option -w synchronize-panes $menu_reload" \
         2.6 C t "Set Pane Title" "command-prompt -I '#T'  -p 'Title: '  \
             'select-pane -T \"%%\"' $menu_reload" \
         1.7 C '\#' "Display pane numbers" "display-panes $menu_reload" \
@@ -30,8 +30,8 @@ static_content() {
             'Pane: #P size: #{pane_width}x#{pane_height}' $menu_reload" \
         0.0 S \
         1.7 C l "Last selected pane" "last-pane $menu_reload" \
-        1.7 C p "Previous pane [in order]" "select-pane -t - $menu_reload" \
-        1.7 C n "Next     pane [in order]" "select-pane -t + $menu_reload" \
+        1.7 C p "Previous pane [in order]" "select-pane -t :.- $menu_reload" \
+        1.7 C n "Next     pane [in order]" "select-pane -t :.+ $menu_reload" \
         0.0 S \
         2.0 C r "Respawn current pane" "confirm-before -p \
             'respawn-pane #P? (y/n)' 'respawn-pane -k' $menu_reload" \
@@ -51,8 +51,8 @@ static_content() {
 #===============================================================
 
 menu_name="Handling Pane"
-# window_width=38
-# window_height=23
+# menu_width=38
+# menu_height=23
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"

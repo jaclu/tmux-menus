@@ -1,7 +1,5 @@
 #!/bin/sh
 # Always sourced file - Fake bang path to help editors
-# shellcheck disable=SC2034,SC2154
-
 #
 #   Copyright (c) 2025: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -19,17 +17,18 @@
 #  set_profiling_t_now is called so depending on what you want to measure the dropin
 #  point for this code can make a difference!
 #
-#  at any point you want to see timings before/after, do this:
+#   If you want to see the precise time for an action, do this:
 #
-#    profiling_display "will source cache"
+#    profiling_update_time_stamps
 #    . "$d_scripts"/utils/cache.sh
-#    profiling_display "source cache - done!"
+#    profiling_display "sourced cache"
 #
 #   If you just want to see how much time have been spent at a certain point,
 #   including time since last time update, use it like:
 #       profiling_display "get_config done"
 #
 
+# shellcheck disable=SC2154
 [ "$TMUX_MENUS_PROFILING" != "1" ] && {
     echo
     echo "ERROR: sourcing dbg_pofiling.sh without TMUX_MENUS_PROFILING being 1 [$0]"

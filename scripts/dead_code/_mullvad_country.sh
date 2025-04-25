@@ -30,7 +30,7 @@ error_msg_safe "THIS IS NOT USED ATM!"
 
 offset="${1:-0}" #  optional param indicating first item to display
 
-tmux_error_handler_assign lines display -p '#{window_height}'
+tmux_error_handler_assign lines display -p '#{menu_height}'
 
 # shellcheck disable=SC2154
 display_items=$((lines - 7))

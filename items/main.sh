@@ -55,7 +55,7 @@ static_content() {
             "$d_hints/customize-mode.sh $0"
     }
     set -- "$@" \
-        1.8 E p "Plugins inventory" plugins.sh \
+        1.8 E p "Plugins inventory" "$D_TM_BASE_PATH"/tools/plugins.sh \
         0.0 C r "Reload tmux conf" "$rld_cmd" \
         0.0 C d 'Detach from tmux' detach-client \
         0.0 S \
@@ -76,11 +76,6 @@ menu_name="Main menu"
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
-
-# shellcheck disable=SC2154
-if [ "$TMUX_MENUS_PROFILING" = "1" ] && [ "$profiling_sourced" != "1" ]; then
-    . "$D_TM_BASE_PATH"/scripts/utils/dbg_profiling.sh
-fi
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
