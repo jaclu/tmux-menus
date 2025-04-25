@@ -4,6 +4,16 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [Unreleased]
+
+### Changed
+
+- About box via **Help** menu:
+  - Dynamically generate about box content each time that help menu is displayed
+  - In the about box, added tag date, and if repo is newer also time for last commit
+
+---
+
 ## [2.2.0] - 2025-04-25
 
 ### Added
