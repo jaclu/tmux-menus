@@ -134,7 +134,6 @@ mnu_prefix() {
             menu_items="$menu_items -S $cfg_simple_style_border"
         }
     }
-    log_it "><> header [$menu_items]"
 }
 
 mnu_open_menu() {
