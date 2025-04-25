@@ -386,6 +386,28 @@ tpt_tmux_vers_suffix() {
     eval "$varname=\"\$_s\""
 }
 
+define_tmux_bin_socket() {
+    # If a socket needs to be listed to keep tmux session apart, not sure if it
+    # is needed yet...
+
+    case "$TMUX_BIN" in
+    *-L*)
+        #log_it "==== already using socket ===="
+        ;;
+    *)
+        #
+        # in case an inner tmux is using this plugin, make sure the current socket is
+        # used to avoid picking up states from the outer tmux
+        #
+        f_name_socket="$(echo "$TMUX" | cut -d, -f 1)"
+        # log_it "><> f_name_socket [$f_name_socket]"
+        socket="${f_name_socket##*/}"
+        # log_it "><> socket [$socket]"
+        TMUX_BIN="$TMUX_BIN -L $socket"
+        ;;
+    esac
+}
+
 #===============================================================
 #
 #   Main
@@ -393,6 +415,8 @@ tpt_tmux_vers_suffix() {
 #===============================================================
 
 [ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
+# define_tmux_bin_socket
+
 plugin_name="tmux-menus"
 
 # will be 1 when limited env is ready, 2 when full env is ready
@@ -445,7 +469,7 @@ f_cache_known_tmux_vers="$d_cache"/known_tmux_versions
 f_cache_params="$d_cache"/plugin_params
 
 # shellcheck disable=SC2034
-bn_current_script=${0##*/}     # same but faster than "$(basename "$0")"
+bn_current_script=${0##*/} # same but faster than "$(basename "$0")"
 # bn_current_script_no_ext=${bn_current_script%.*}
 
 if [ -d "$d_cache" ]; then
