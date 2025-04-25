@@ -284,10 +284,15 @@ tmux_get_plugin_options() { # new init
     if $cfg_use_whiptail; then
         # variables only used by whiptail
         # shellcheck disable=SC2034
-        wt_pasting="@tmp_menus_wt_paste_in_progress"
-        cfg_display_cmds=false
-        cfg_use_hint_overlays=false
-        cfg_show_key_hints=false
+        {
+            wt_pasting="@tmp_menus_wt_paste_in_progress"
+            cfg_display_cmds=false
+            cfg_use_hint_overlays=false
+            cfg_show_key_hints=false
+            cfg_nav_next="$default_nav_next"
+            cfg_nav_prev="$default_nav_prev"
+            cfg_nav_home="$default_nav_home"
+        }
     else
         tmux_get_option cfg_mnu_loc_x "@menus_location_x" "$default_location_x"
         tmux_get_option cfg_mnu_loc_y "@menus_location_y" "$default_location_y"

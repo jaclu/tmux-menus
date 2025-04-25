@@ -234,12 +234,7 @@ cfg_simple_style_border=\"$(cache_escape_special_chars "$cfg_simple_style_border
 " >>"$_f_params_tmp"
         }
 
-        printf '%s\n' "\
-cfg_nav_next=\"$(cache_escape_special_chars "$cfg_nav_next")\"
-cfg_nav_prev=\"$(cache_escape_special_chars "$cfg_nav_prev")\"
-cfg_nav_home=\"$(cache_escape_special_chars "$cfg_nav_home")\"
-
-cfg_display_cmds=$cfg_display_cmds" >>"$_f_params_tmp"
+        printf '%s\n' "cfg_display_cmds=$cfg_display_cmds" >>"$_f_params_tmp"
 
         $cfg_display_cmds && printf '%s\n' \
             "cfg_display_cmds_cols=\"$cfg_display_cmds_cols\"" >>"$_f_params_tmp"
@@ -247,6 +242,10 @@ cfg_display_cmds=$cfg_display_cmds" >>"$_f_params_tmp"
 
     # shellcheck disable=SC2154
     printf '\n%s\n' "\
+cfg_nav_next=\"$(cache_escape_special_chars "$cfg_nav_next")\"
+cfg_nav_prev=\"$(cache_escape_special_chars "$cfg_nav_prev")\"
+cfg_nav_home=\"$(cache_escape_special_chars "$cfg_nav_home")\"
+
 cfg_use_hint_overlays=$cfg_use_hint_overlays
 cfg_show_key_hints=$cfg_show_key_hints
 
