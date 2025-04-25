@@ -40,10 +40,14 @@ log_it_minimal() {
         # continue if not an interactive session and use logfile
     }
 
-    [ -n "$cfg_log_file" ] && {
+    if [ -n "$cfg_log_file" ]; then
         # log to file
         printf "[%s] %s\n" "$(date '+%H:%M:%S')" "$_msg" >>"$cfg_log_file"
-    }
+    # else
+    #     # if no log file has been defined, try to use stderr
+    #     # should only be used for debugging
+    #     print_stderr "log: $_msg" && return
+    fi
 }
 
 error_msg_safe() {
@@ -386,13 +390,14 @@ tpt_tmux_vers_suffix() {
     eval "$varname=\"\$_s\""
 }
 
-define_tmux_bin_socket() {
-    # If a socket needs to be listed to keep tmux session apart, not sure if it
-    # is needed yet...
+use_tmux_bin_socket() {
+    # if multiple instances of the same tmux bin are used, errors can spill over
+    # and cause issues in the other instance
+    # this ensures that everything is run in the current environment
 
     case "$TMUX_BIN" in
     *-L*)
-        #log_it "==== already using socket ===="
+        # log_it "==== already using socket ===="
         ;;
     *)
         #
@@ -415,7 +420,7 @@ define_tmux_bin_socket() {
 #===============================================================
 
 [ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
-# define_tmux_bin_socket
+use_tmux_bin_socket
 
 plugin_name="tmux-menus"
 
