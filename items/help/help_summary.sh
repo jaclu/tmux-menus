@@ -23,6 +23,22 @@ dynamic_content() {
 }
 
 static_content() {
+    cd "$D_TM_BASE_PATH" || error_msg "Failed to cd into $D_TM_BASE_PATH"
+    current_tag="$(git describe --tags --abbrev=0 2>/dev/null || echo "No tag found")"
+    branch="$(git symbolic-ref --quiet --short HEAD 2>/dev/null)"
+    case "$branch" in
+    main | master) branch="" ;;
+    *) ;;
+    esac
+    # current_rev="$(git log -1 --format=%cd)"
+    current_rev="$(git log -1 --format=%cd --date=format:'%Y-%m-%d %H:%M:%S')"
+    git_repo="$(git config --get remote.origin.url)"
+
+    # Once I start using Annotated tags, this should hopefully give the time when the
+    # tag was created
+    # TAG=$(git describe --tags --abbrev=0 2>/dev/null)
+    # [ -n "$TAG" ] && git for-each-ref --format="%(taggerdate:iso)" "refs/tags/$TAG"
+
     set -- \
         0.0 S \
         0.0 T "-#[nodim] $nav_next#[default]  #[nodim]Open a new menu." \
@@ -30,10 +46,21 @@ static_content() {
         0.0 T "-#[nodim] $nav_home#[default]  #[nodim]Back to start menu." \
         0.0 S \
         0.0 T "-#[nodim]Shortcut keys are usually upper case" \
-        0.0 T "-#[nodim]for menus, and lower case for actions."
+        0.0 T "-#[nodim]for menus, and lower case for actions." \
+        0.0 T " " \
+        0.0 T "-#[align=centre,nodim]--------  About this plugin  -------" \
+        0.0 T "-#[nodim]Latest Tag:   $current_tag"
+
+    [ -n "$branch" ] && set -- "$@" 0.0 T "-#[nodim]Branch:       $branch"
+
+    set -- \
+        "$@" 0.0 T "-#[nodim]Last Updated: $current_rev" \
+        0.0 T "-#[nodim]Repo: $git_repo"
+    # 0.0 T "-#[nodim]$git_repo"
 
     ! $cfg_use_whiptail && {
         set -- "$@" \
+            0.0 S \
             0.0 T "-#[nodim]Exit menus with ESC or Ctrl-C"
     }
 

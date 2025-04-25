@@ -20,13 +20,14 @@ experienced users, then add more for newbies.
 
 ## Recent Changes
 
+- Main menu help displays kind of an about box info, about what version of the
+  plugin is used
 - `Display menu commands` Rotates between displaying commands and all matching
   prefix and root binds.
 - Added parameter `@menus_border_type` for Styling
 - Re-factored plugin init
 - Added new feature Display Commands, see `Display menu commands` in the Configuration
   section, using this will display all commands in the menu.
-- Removed all jk shortcuts in menus, allowing for consistent vim style navigation.
 
 </details>
 <details>
