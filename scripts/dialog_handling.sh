@@ -1008,6 +1008,10 @@ b_do_show_cmds=false
     cfg_display_cmds=false
     # unset TMUX_MENUS_SHOW_CMDS
 }
+
+# in case this was set when whiptail is used
+$cfg_use_whiptail && unset TMUX_MENUS_SHOW_CMDS
+
 [ -n "$TMUX_MENUS_SHOW_CMDS" ] && {
     # override @menus_display_commands setting, if cache is enabled
     cfg_display_cmds=true
