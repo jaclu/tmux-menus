@@ -65,10 +65,11 @@ tmux_get_defaults() { # new init
 
     default_display_cmds_cols=75
 
-    default_simple_style_selected=default
-    default_simple_style=default
-    default_simple_style_border=default
     default_format_title="'#[align=centre]  #{@menu_name} '"
+    default_border_type=""
+    default_simple_style_selected=""
+    default_simple_style=""
+    default_simple_style_border=""
 
     default_nav_next="-->"
     default_nav_prev="<--"
@@ -236,18 +237,6 @@ tmux_get_plugin_options() { # new init
         # shellcheck disable=SC2034
         cfg_no_prefix=false
     fi
-    if normalize_bool_param "@menus_use_hint_overlays" "$default_use_hint_overlays"; then
-        cfg_use_hint_overlays=true
-    else
-        # shellcheck disable=SC2034
-        cfg_use_hint_overlays=false
-    fi
-    if normalize_bool_param "@menus_show_key_hints" "$default_show_key_hints"; then
-        cfg_show_key_hints=true
-    else
-        # shellcheck disable=SC2034
-        cfg_show_key_hints=false
-    fi
 
     if ! tmux_vers_check 3.0; then
         # if on next plugin_setup a menus able tmux is detected the relevant
@@ -272,38 +261,63 @@ tmux_get_plugin_options() { # new init
     handle_env_variables # potential cfg_use_whiptail override
 
     if $cfg_use_whiptail; then
-        use_whiptail_env
+        # variables only used by whiptail
+        # shellcheck disable=SC2034
+        wt_pasting="@tmp_menus_wt_paste_in_progress"
+        cfg_display_cmds=false
+        cfg_use_hint_overlays=false
+        cfg_show_key_hints=false
     else
-        tmux_get_option cfg_simple_style_selected "@menus_simple_style_selected" \
-            "$default_simple_style_selected"
-
-        tmux_get_option cfg_simple_style "@menus_simple_style" \
-            "$default_simple_style"
-        tmux_get_option cfg_simple_style_border "@menus_simple_style_border" \
-            "$default_simple_style_border"
-        tmux_get_option cfg_format_title "@menus_format_title" \
-            "$default_format_title"
         tmux_get_option cfg_mnu_loc_x "@menus_location_x" "$default_location_x"
         tmux_get_option cfg_mnu_loc_y "@menus_location_y" "$default_location_y"
+        tmux_get_option cfg_format_title "@menus_format_title" \
+            "$default_format_title"
+
+        tmux_vers_check 3.4 && {
+            tmux_get_option cfg_border_type "@menus_border_type" "$default_border_type"
+            tmux_get_option cfg_simple_style_selected "@menus_simple_style_selected" \
+                "$default_simple_style_selected"
+            tmux_get_option cfg_simple_style "@menus_simple_style" \
+                "$default_simple_style"
+            tmux_get_option cfg_simple_style_border "@menus_simple_style_border" \
+                "$default_simple_style_border"
+        }
         tmux_get_option cfg_nav_next "@menus_nav_next" "$default_nav_next"
         tmux_get_option cfg_nav_prev "@menus_nav_prev" "$default_nav_prev"
         tmux_get_option cfg_nav_home "@menus_nav_home" "$default_nav_home"
+        if normalize_bool_param "@menus_display_commands" "$default_show_key_hints"; then
+            cfg_display_cmds=true
+            tmux_get_option cfg_display_cmds_cols "@menus_display_cmds_cols" \
+                "$default_display_cmds_cols"
+            # shellcheck disable=SC2154
+            is_int "$cfg_display_cmds_cols" || {
+                error_msg "@menus_display_cmds_cols is not int: $cfg_display_cmds_cols"
+            }
+        else
+            # shellcheck disable=SC2034
+            cfg_display_cmds=false
+        fi
+        if normalize_bool_param "@menus_use_hint_overlays" "$default_use_hint_overlays"; then
+            cfg_use_hint_overlays=true
+        else
+            # shellcheck disable=SC2034
+            cfg_use_hint_overlays=false
+        fi
+        if normalize_bool_param "@menus_show_key_hints" "$default_show_key_hints"; then
+            cfg_show_key_hints=true
+        else
+            # shellcheck disable=SC2034
+            cfg_show_key_hints=false
+        fi
     fi
 
-    if ! $cfg_use_whiptail &&
-        normalize_bool_param "@menus_display_commands" "$default_show_key_hints"; then
-        cfg_display_cmds=true
-        tmux_get_option cfg_display_cmds_cols "@menus_display_cmds_cols" \
-            "$default_display_cmds_cols"
-        is_int "$cfg_display_cmds_cols" || {
-            error_msg "@menus_display_cmds_cols is not int: $cfg_display_cmds_cols"
-        }
-    else
-        # shellcheck disable=SC2034
-        cfg_display_cmds=false
-        # No point reading tmux for this if it isn't going to be used anyhow
-        cfg_display_cmds_cols="$default_display_cmds_cols"
-    fi
+    # if ! $cfg_use_whiptail &&
+    # else
+    #     # shellcheck disable=SC2034
+    #     cfg_display_cmds=false
+    #     # No point reading tmux for this if it isn't going to be used anyhow
+    #     cfg_display_cmds_cols="$default_display_cmds_cols"
+    # fi
 
     tmux_get_option _tmux_conf "@menus_config_file" "$default_tmux_conf"
     # Handle the case of ~ or $HOME being wrapped in single quotes in tmux.conf
@@ -341,24 +355,10 @@ use_whiptail_env() {
     # move the required defaults to that file
     # log_it "use_whiptail_env()"
     if $cfg_use_whiptail; then
-        _whiptail_ignore_msg="not used with whiptail"
-
         # shellcheck disable=SC2034
         {
-            cfg_simple_style_selected="$_whiptail_ignore_msg"
-            cfg_simple_style="$_whiptail_ignore_msg"
-            cfg_simple_style_border="$_whiptail_ignore_msg"
-            cfg_format_title="$_whiptail_ignore_msg"
-            cfg_mnu_loc_x="$_whiptail_ignore_msg"
-            cfg_mnu_loc_y="$_whiptail_ignore_msg"
-
-            # Whiptail skips any styling
-            cfg_nav_next="$default_nav_next"
-            cfg_nav_prev="$default_nav_prev"
-            cfg_nav_home="$default_nav_home"
-
-            # other variables only used by whiptail
-            wt_pasting="@tmp_menus_wt_paste_in_progress"
+            cfg_display_cmds=false
+            cfg_show_key_hints=false
         }
     fi
 }

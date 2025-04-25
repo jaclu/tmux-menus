@@ -206,38 +206,61 @@ cache_write_plugin_params() {
 
 #  This is a cache of configs for the plugin.
 #  By sourcing this instead of gathering it each time, tons of time
-#  is saved.
+#  is saved when generating menus.
 
 cfg_trigger_key=\"$(cache_escape_special_chars "$cfg_trigger_key")\"
-cfg_no_prefix=\"$cfg_no_prefix\"
+cfg_no_prefix=$cfg_no_prefix
 
-cfg_use_cache=\"$cfg_use_cache\"
-cfg_use_hint_overlays=\"$cfg_use_hint_overlays\"
-cfg_show_key_hints=\"$cfg_show_key_hints\"
+cfg_use_cache=$cfg_use_cache
+" >"$_f_params_tmp"
 
-cfg_use_whiptail=\"$cfg_use_whiptail\"
-cfg_alt_menu_handler=\"$cfg_alt_menu_handler\"
+    # shellcheck disable=SC2154
+    if $cfg_use_whiptail; then
+        printf '%s\n' "cfg_display_cmds=$cfg_display_cmds" >>"$_f_params_tmp"
+    else
+        # Only use these settings if not using whiptail/dialog
+        printf '%s\n' "\
+cfg_mnu_loc_x=\"$cfg_mnu_loc_x\"
+cfg_mnu_loc_y=\"$cfg_mnu_loc_y\"
 
-cfg_display_cmds=\"$cfg_display_cmds\"
-cfg_display_cmds_cols=\"$cfg_display_cmds_cols\"
+cfg_format_title=\"$(cache_escape_special_chars "$cfg_format_title")\"" >>"$_f_params_tmp"
 
+        tmux_vers_check 3.4 && {
+            printf '%s' "\
+cfg_border_type=\"$cfg_border_type\"
+cfg_simple_style_selected=\"$(cache_escape_special_chars "$cfg_simple_style_selected")\"
+cfg_simple_style=\"$(cache_escape_special_chars "$cfg_simple_style")\"
+cfg_simple_style_border=\"$(cache_escape_special_chars "$cfg_simple_style_border")\"
+" >>"$_f_params_tmp"
+        }
+
+        printf '%s\n' "\
 cfg_nav_next=\"$(cache_escape_special_chars "$cfg_nav_next")\"
 cfg_nav_prev=\"$(cache_escape_special_chars "$cfg_nav_prev")\"
 cfg_nav_home=\"$(cache_escape_special_chars "$cfg_nav_home")\"
 
-cfg_format_title=\"$(cache_escape_special_chars "$cfg_format_title")\"
-cfg_simple_style=\"$(cache_escape_special_chars "$cfg_simple_style")\"
-cfg_simple_style_border=\"$(cache_escape_special_chars "$cfg_simple_style_border")\"
-cfg_simple_style_selected=\"$(cache_escape_special_chars "$cfg_simple_style_selected")\"
+cfg_display_cmds=$cfg_display_cmds" >>"$_f_params_tmp"
 
-cfg_mnu_loc_x=\"$cfg_mnu_loc_x\"
-cfg_mnu_loc_y=\"$cfg_mnu_loc_y\"
+        $cfg_display_cmds && printf '%s\n' \
+            "cfg_display_cmds_cols=\"$cfg_display_cmds_cols\"" >>"$_f_params_tmp"
+    fi
+
+    # shellcheck disable=SC2154
+    printf '\n%s\n' "\
+cfg_use_hint_overlays=$cfg_use_hint_overlays
+cfg_show_key_hints=$cfg_show_key_hints
+
+cfg_use_whiptail=$cfg_use_whiptail
+cfg_alt_menu_handler=\"$cfg_alt_menu_handler\"
 
 cfg_tmux_conf=\"$cfg_tmux_conf\"
 cfg_log_file=\"$cfg_log_file\"
 
-cfg_use_notes=\"$cfg_use_notes\"
+cfg_use_notes=$cfg_use_notes
 
+#
+#  If tmux version has changed, the entie cache is invalidated
+#
 current_tmux_vers=\"$current_tmux_vers\"
 current_tmux_vers_i=\"$current_tmux_vers_i\"
 current_tmux_vers_suffix=\"$current_tmux_vers_suffix\"
@@ -254,7 +277,7 @@ last_local_edit=\"$new_last_local_edit\"
 # the screen
 #
 t_minimal_display_time=\"$t_minimal_display_time\"
-" >"$_f_params_tmp"
+" >>"$_f_params_tmp"
     #endregion
     # shellcheck disable=SC2154
     if [ -f "$f_cache_params" ]; then
