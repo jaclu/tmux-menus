@@ -150,6 +150,7 @@ create_custom_index() {
             printf ' \\\n' >>"$f_custom_items_content"
         }
         # this generates an item that will be added to custom items index
+        # shellcheck disable=SC2154
         printf '        %s \\\n        %s' \
             "0.0 M \"$_menu_key\" \"$_menu_name  $cfg_nav_next\"" \
             "$custom_menu" >>"$f_custom_items_content"
