@@ -193,26 +193,49 @@ fix_home_path() {
     #
     fhp_varname="$1"
     fhp_path="$2"
-
     # log_it "fix_home_path($fhp_varname,$fhp_path)"
 
     validate_varname "$fhp_varname" "fix_home_path()"
     # [ -z "$fhp_varname" ] && error_msg "fix_home_path() param 1 empty!"
 
-    case "$fhp_path" in
-    \\~/*)
-        fhp_path="${fhp_path#\\}"        # Remove leading backslash
-        fhp_path="${HOME}${fhp_path#\~}" # Expand ~ to $HOME
-        # log_it " - found \\~ - changed into: $fhp_path"
-        ;;
-    \\\$HOME/*)
-        fhp_path="${fhp_path#\\}"            # Remove leading backslash
-        fhp_path="${HOME}${fhp_path#\$HOME}" # Expand ~ to $HOME
-        # log_it " - found \\\$HOME - changed into: $fhp_path"
-        ;;
-    *) ;;
-    esac
+    # But of course tmux changed how they escpe options starting with ~ or $HOME...
+    if tmux_vers_check 3.0; then
+        case "$fhp_path" in
+        \\~/*)
+            fhp_path="${fhp_path#\\}"        # Remove leading backslash
+            fhp_path="${HOME}${fhp_path#\~}" # Expand ~ to $HOME
+            # log_it " - found \\~ - changed into: $fhp_path"
+            ;;
+        \\\$HOME/*)
+            fhp_path="${fhp_path#\\}"            # Remove leading backslash
+            fhp_path="${HOME}${fhp_path#\$HOME}" # Expand ~ to $HOME
+            # log_it " - found \\\$HOME - changed into: $fhp_path"
+            ;;
+        *) ;;
+        esac
+    else
+        case "$fhp_path" in
+        \~/*)
+            fhp_path="${fhp_path#\\}"        # Remove leading backslash
+            fhp_path="${HOME}${fhp_path#\~}" # Expand ~ to $HOME
+            # log_it " - found \\~ - changed into: $fhp_path"
+            ;;
+        \$HOME/*)
+            fhp_path="${fhp_path#\\}"            # Remove leading backslash
+            fhp_path="${HOME}${fhp_path#\$HOME}" # Expand ~ to $HOME
+            # log_it " - found \\\$HOME - changed into: $fhp_path"
+            ;;
+        *) ;;
+        esac
+    fi
 
+    echo "$fhp_path" | grep -q \~ && {
+        error_msg "fix_home_path() - Failed to expand ~ in: $fhp_path"
+    }
+    echo "$fhp_path" | grep -q \$HOME && {
+        error_msg "fix_home_path() - Failed to expand \$HOME in: $fhp_path"
+    }
+    # log_it "><> fix_home_path() result:[$fhp_path]"
     eval "$fhp_varname=\"\$fhp_path\""
 }
 
