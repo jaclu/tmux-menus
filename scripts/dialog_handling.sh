@@ -117,36 +117,24 @@ menu_generate_part() {
 #---------------------------------------------------------------
 
 mnu_prefix() {
-    # case "$TMUX_BIN" in
-    # *-L*)
-    #     log_it "==== already using socket ===="
-    T2="$TMUX_BIN"
-    #     ;; # already contains socket info
-    # *)
-    #     #
-    #     # in case an inner tmux is using this plugin, make sure the current socket is
-    #     # used to avoid picking up states from the outer tmux
-    #     #
-    #     f_name_socket="$(echo $TMUX | cut -d, -f 1)"
-    #     log_it "><> f_name_socket [$f_name_socket]"
-    #     socket="${f_name_socket##*/}"
-    #     log_it "><> socket [$socket]"
-    #     T2="$TMUX_BIN -L $socket"
-    #     log_it "><> mnu_prefix() - TMUX_BIN [$TMUX_BIN] "
-    #     ;;
-    # esac
 
-    _n="$(echo "$cfg_format_title" | sed "s/#{@menu_name}/$menu_name/g")"
-    menu_items="$T2 display-menu  \
-        -T $_n \
-        -x '$cfg_mnu_loc_x' -y '$cfg_mnu_loc_y'"
+    _title="$(echo "$cfg_format_title" | sed "s/#{@menu_name}/$menu_name/g")"
+    menu_items="$TMUX_BIN display-menu -T $_title -x '$cfg_mnu_loc_x' -y '$cfg_mnu_loc_y'"
+
     tmux_vers_check 3.4 && {
         # Styling is supported
-        menu_items="$menu_items \
-            -H \"$cfg_simple_style_selected\" \
-            -s \"$cfg_simple_style\" \
-            -S \"$cfg_simple_style_border\" "
+        [ -n "$cfg_border_type" ] && {
+            menu_items="$menu_items -b $cfg_border_type"
+        }
+        [ -n "$cfg_simple_style_selected" ] && {
+            menu_items="$menu_items -H $cfg_simple_style_selected"
+        }
+        [ -n "$cfg_simple_style" ] && menu_items="$menu_items -s $cfg_simple_style"
+        [ -n "$cfg_simple_style_border" ] && {
+            menu_items="$menu_items -S $cfg_simple_style_border"
+        }
     }
+    log_it "><> header [$menu_items]"
 }
 
 mnu_open_menu() {
@@ -675,7 +663,7 @@ verify_menu_runable() {
     if [ -n "$cfg_alt_menu_handler" ]; then
         _mnu_first="$cfg_alt_menu_handler"
     else
-        _mnu_first="$TMUX_BIN"
+        _mnu_first="${TMUX_BIN%% *}"
     fi
     [ "$_actual_first" = "$_mnu_first" ] || {
         msg="The processed menu should start with a menu handler."

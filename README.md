@@ -22,6 +22,7 @@ experienced users, then add more for newbies.
 
 - `Display menu commands` Rotates between displaying commands and all matching
   prefix and root binds.
+- Added parameter `@menus_border_type` for Styling
 - Re-factored plugin init
 - Added new feature Display Commands, see `Display menu commands` in the Configuration
   section, using this will display all commands in the menu.
@@ -264,6 +265,8 @@ set -g @menus_use_hint_overlays 'No'
 ```
 
 This boolean parameter defaults to `Yes`
+
+This feature is not available when whiptail / dialog is used.
 
 Some menu items will display tmux dialogs, where each have their own rather complex
 set of special key bindings - choose-buffer, choose-client, choose-tree and
