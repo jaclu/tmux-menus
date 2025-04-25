@@ -511,11 +511,11 @@ set_menu_env_variables() {
         #  I haven't been able do to menu reload with whiptail/dialog yet,
         #  so disabled for now
         #
+        # log_it "><> whiptail - disabling menu_reload"
         # menu_reload="\; run-shell \\\"$m$d_scripts/external_dialog_trigger.sh $0\\\""
         # menu_reload="\; run-shell \\\"$0\\\""
         menu_reload=""
         reload_in_runshell=""
-        log_it "><> whiptail - disabling menu_reload"
     else
         # External commands normally needs to use reload_in_runshell!
 
