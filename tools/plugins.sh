@@ -22,10 +22,10 @@ extract_defined_plugins() {
         # iSH has very limited /dev impl, doesn't support mapfile
         #  shellcheck disable=SC2207
         defined_plugins=($(grep "set -g @plugin" "$cfg_tmux_conf" |
-            awk '{ print $4 }' | sed 's/"//g'))
+            awk '{ print $4 }' | sed 's/"//g' | sed "s/'//g"))
     else
         mapfile -t defined_plugins < <(grep "set -g @plugin" "$cfg_tmux_conf" |
-            awk '{ print $4 }' | sed 's/"//g')
+            awk '{ print $4 }' | sed 's/"//g' | sed "s/'//g")
     fi
 }
 
