@@ -63,17 +63,8 @@ tmux_get_defaults() { # new init
     default_trigger_key=\\
     default_no_prefix=No
 
-    default_display_cmds_cols=75
-
-    default_format_title="'#[align=centre]  #{@menu_name} '"
-    default_border_type=""
-    default_simple_style_selected=""
-    default_simple_style=""
-    default_simple_style_border=""
-
-    default_nav_next="-->"
-    default_nav_prev="<--"
-    default_nav_home="<=="
+    # shellcheck disable=SC2034
+    default_use_cache=Yes
 
     if tmux_vers_check 3.2; then
         default_location_x=C
@@ -83,11 +74,17 @@ tmux_get_defaults() { # new init
         default_location_y=P
     fi
 
-    # shellcheck disable=SC2034
-    {
-        default_use_cache=Yes
-        default_log_file=""
-    }
+    default_format_title="'#[align=centre]  #{@menu_name} '"
+    default_border_type="EMPTY"
+    default_simple_style_selected="EMPTY"
+    default_simple_style="EMPTY"
+    default_simple_style_border="EMPTY"
+    default_nav_next="-->"
+    default_nav_prev="<--"
+    default_nav_home="<=="
+
+    default_display_commands=No
+    default_display_cmds_cols=75
 
     default_use_hint_overlays=Yes
     default_show_key_hints=No
@@ -99,6 +96,7 @@ tmux_get_defaults() { # new init
     else
         default_tmux_conf="$HOME/.tmux.conf"
     fi
+    default_log_file="EMPTY"
 }
 
 cache_save_options_defined_in_tmux() {
@@ -285,7 +283,7 @@ tmux_get_plugin_options() { # new init
         tmux_get_option cfg_nav_next "@menus_nav_next" "$default_nav_next"
         tmux_get_option cfg_nav_prev "@menus_nav_prev" "$default_nav_prev"
         tmux_get_option cfg_nav_home "@menus_nav_home" "$default_nav_home"
-        if normalize_bool_param "@menus_display_commands" "$default_show_key_hints"; then
+        if normalize_bool_param "@menus_display_commands" "$default_display_commands"; then
             cfg_display_cmds=true
             tmux_get_option cfg_display_cmds_cols "@menus_display_cmds_cols" \
                 "$default_display_cmds_cols"
@@ -328,7 +326,7 @@ tmux_get_plugin_options() { # new init
     [ "$log_file_forced" != 1 ] && {
         #  If a debug logfile has been set, the tmux setting will be ignored.
         # log_it "tmux will read cfg_log_file"
-        tmux_get_option _log_file "@menus_log_file" EMPTY
+        tmux_get_option _log_file "@menus_log_file" "$default_log_file"
         # Handle the case of ~ or $HOME being wrapped in single quotes in tmux.conf
         fix_home_path cfg_log_file "$_log_file"
     }
