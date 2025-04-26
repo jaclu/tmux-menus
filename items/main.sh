@@ -35,8 +35,6 @@ static_content() {
         0.0 M W "handling Window    $nav_next" windows.sh \
         0.0 M S "handling Sessions  $nav_next" sessions.sh \
         1.8 M B "paste Buffers      $nav_next" paste_buffers.sh \
-        0.0 M L "Layouts            $nav_next" layouts.sh \
-        0.0 M V "split View         $nav_next" split_view.sh \
         2.0 M M "Missing keys       $nav_next" missing_keys.sh \
         0.0 M A "Advanced options   $nav_next" advanced.sh \
         0.0 M E "Extras             $nav_next" extras.sh

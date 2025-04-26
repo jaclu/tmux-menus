@@ -170,7 +170,7 @@ letters is accepted.
 The default trigger is `<prefix> \` The trigger is configured like this:
 
 ```tmux
-set -g @menus_trigger 'F12'
+set -g @menus_trigger 'Space'
 ```
 
 Note: Non-standard keys, such as the default backslash (`\`), must be prefixed with `\`
