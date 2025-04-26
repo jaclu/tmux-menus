@@ -4,6 +4,14 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [Unreleased]
+
+### Changed
+
+- Updated Screenshots
+
+---
+
 ## [2.2.1] - 2025-04-26
 
 ### Changed
