@@ -9,6 +9,14 @@
 #  Available debug variables
 #
 
+[ "$1" = "clear" ] && {
+    unset TMUX_MENUS_SHOW_CMDS
+    unset TMUX_MENUS_LOGGING_MINIMAL
+    unset TMUX_MENUS_NO_DISPLAY
+    unset TMUX_MENUS_PROFILING
+    unset TMUX_MENUS_HANDLER
+}
+
 echo "TMUX_MENUS_SHOW_CMDS $TMUX_MENUS_SHOW_CMDS"
 echo "  1 Display cmd used for an action, if a prefix sequence show it"
 echo
@@ -33,11 +41,3 @@ echo
 echo "To clear all debug variables, source this with option: clear"
 echo "  . $0 clear"
 echo
-
-[ "$1" = "clear" ] && {
-    unset TMUX_MENUS_SHOW_CMDS
-    unset TMUX_MENUS_LOGGING_MINIMAL
-    unset TMUX_MENUS_NO_DISPLAY
-    unset TMUX_MENUS_PROFILING
-    unset TMUX_MENUS_HANDLER
-}
