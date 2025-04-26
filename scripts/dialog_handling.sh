@@ -184,7 +184,7 @@ alt_prefix() {
     whiptail | dialog) ;;
     *) error_msg "Un-recognized cfg_alt_menu_handler: [$cfg_alt_menu_handler]" ;;
     esac
-    menu_items="$cfg_alt_menu_handler --menu \"$menu_name\" 0 0 0 "
+    menu_items="$cfg_alt_menu_handler --title \"$menu_name\"  --menu \"\" 0 0 0 "
 }
 
 alt_open_menu() {

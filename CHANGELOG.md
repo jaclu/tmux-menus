@@ -4,11 +4,14 @@ All notable changes to this project will be documented here.
 
 ---
 
-## [Unreleased]
+## [2.2.2] - 2025-04-26
 
 ### Changed
 
 - Updated Screenshots
+- tools/dbg_vars.sh - When running with 'clear' it clears env before displaying
+  current state
+- whiptail / dialog - useses `--title` option to display title
 
 ---
 
