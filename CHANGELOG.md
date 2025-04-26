@@ -8,6 +8,11 @@ All notable changes to this project will be documented here.
 
 ### Changed
 
+- Moved some tasks into `Handling Window`
+
+  - Split window
+  - Layouts
+
 - About box via **Help** menu:
   - Dynamically generate about box content each time that help menu is displayed
   - In the about box, added tag date, and if repo is newer also time for last commit
