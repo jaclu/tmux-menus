@@ -1,9 +1,5 @@
 # Plan
 
-## Rearange menus
-
-Split window and Layouts should move to Window menu
-
 ## WhipTail
 
 - menu_reload is not working, so disabled
