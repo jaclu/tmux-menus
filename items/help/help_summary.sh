@@ -11,24 +11,22 @@
 calculate_about_box_content() {
     cd "$D_TM_BASE_PATH" || error_msg "Failed to cd into $D_TM_BASE_PATH"
 
-    git_repo="$(git config --get remote.origin.url)"
-
-    td_current_rev="$(git log -1 --format=%cd --date=iso)"
-    current_tag="$(git describe --tags --abbrev=0 2>/dev/null || echo "No tag found")"
-    [ -n "$current_tag" ] && {
-        td_tag="$(git for-each-ref --format="%(taggerdate:iso)" "refs/tags/$current_tag")"
+    td_pull="$(git log -1 --format=%cd --date=iso)"
+    vers_no="$(git describe --tags --abbrev=0 2>/dev/null || echo "No tag found")"
+    [ -n "$vers_no" ] && {
+        td_vers="$(git for-each-ref --format="%(taggerdate:iso)" "refs/tags/$vers_no")"
     }
-    [ -n "$td_tag" ] && [ -n "$td_current_rev" ] && {
+    [ -n "$td_vers" ] && [ -n "$td_pull" ] && {
         # remove tz, since they might differ
-        td_tag_no_tz=${td_tag% *}
-        td_current_rev_no_tz=${td_current_rev% *}
+        td_tag_no_tz=${td_vers% *}
+        td_current_rev_no_tz=${td_pull% *}
 
         case "$td_current_rev_no_tz" in
-        "$td_tag_no_tz") td_current_rev="" ;;
+        "$td_tag_no_tz") td_pull="" ;;
         *)
-            # only keep td_current_rev if it is newer than td_tag
-            td_current_rev="$(printf '%s\n%s\n' "$td_tag_no_tz" "$td_current_rev_no_tz" |
-                sort | tail -1 | grep -qx "$td_current_rev_no_tz" && echo "$td_current_rev")"
+            # only keep td_pull if it is newer than td_vers
+            td_pull="$(printf '%s\n%s\n' "$td_tag_no_tz" "$td_current_rev_no_tz" |
+                sort | tail -1 | grep -qx "$td_current_rev_no_tz" && echo "$td_pull")"
             ;;
         esac
     }
@@ -53,11 +51,11 @@ dynamic_content() {
     menu_generate_part 1 "$@"
 
     calculate_about_box_content
-    set -- # since it is unclear what item is first, do a reset here and then just add
-    [ -n "$current_tag" ] && set -- "$@" 0.0 T "-#[nodim]Latest Tag:    $current_tag"
-    [ -n "$td_tag" ] && set -- "$@" 0.0 T "-#[nodim]Tag date:      $td_tag"
-    [ -n "$branch" ] && set -- "$@" 0.0 T "-#[nodim]Branch:        $branch"
-    [ -n "$td_current_rev" ] && set -- "$@" 0.0 T "-#[nodim]Latest commit: $td_current_rev"
+    set -- # since it is unclear what item is first, do a init here and then just add
+    [ -n "$vers_no" ] && set -- "$@" 0.0 T "-#[nodim]      Version: $vers_no"
+    [ -n "$td_vers" ] && set -- "$@" 0.0 T "-#[nodim] Vers release: $td_vers"
+    [ -n "$branch" ] && set -- "$@" 0.0 T "-#[nodim]       Branch: $branch"
+    [ -n "$td_pull" ] && set -- "$@" 0.0 T "-#[nodim]Latest update: $td_pull"
     menu_generate_part 3 "$@"
 }
 
@@ -74,9 +72,9 @@ static_content() {
         0.0 T "-#[align=centre,nodim]--------  About this plugin  -------"
     menu_generate_part 2 "$@"
 
-    calculate_about_box_content
-    set -- 0.0 T "-#[nodim]Repo: $git_repo"
-
+    git_repo="$(git config --get remote.origin.url)"
+    set --
+    [ -n "$git_repo" ] && set -- "$@" 0.0 T "-#[nodim]Repo: $git_repo"
     ! $cfg_use_whiptail && {
         set -- "$@" \
             0.0 S \

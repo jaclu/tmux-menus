@@ -8,6 +8,7 @@ All notable changes to this project will be documented here.
 
 ### Changed
 
+- Updated about box
 - Moved some tasks into `Handling Window`
 
   - Split window
