@@ -203,6 +203,7 @@ show_cmd() {
         # Replaces script path starting with plugin location with (tmux-menus)
         # to avoid ling absolute paths that are redundant
         sc_processed="$(echo "$_s2" | sed "s#^$D_TM_BASE_PATH/#[tmux-menus] #")"
+        profiling_display "Prepared sc_processed"
         ;;
     2)
         # Strip $TMUX_BIN from beginning if present
