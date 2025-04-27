@@ -207,7 +207,9 @@ show_cmd() {
         # Strip $TMUX_BIN from beginning if present
         cmd_no_tmux_bin=${sc_cmd#"$TMUX_BIN "}
 
+        profiling_display "willd run: check_key_binds"
         check_key_binds "$cmd_no_tmux_bin" sc_processed
+        profiling_display "check_key_binds - done"
         ;;
     *) ;;
     esac
@@ -240,5 +242,5 @@ show_cmd() {
     # refresh it for each cmd processed in case the display timeout is shortish
     display_command_label
     tmux_error_handler display-message "Preparing $_lbl ..."
-    profiling_display "show_cmd()"
+    profiling_display "show_cmd() - done"
 }

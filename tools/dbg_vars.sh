@@ -18,7 +18,7 @@ if [ "$1" = "clear" ]; then
 elif [ "$1" = "set" ]; then
     # Set current default dbg env
     export TMUX_MENUS_PROFILING=1
-    export TMUX_MENUS_LOGGING_MINIMAL=2
+    export TMUX_MENUS_LOGGING_MINIMAL=1
 fi
 
 echo "TMUX_MENUS_SHOW_CMDS $TMUX_MENUS_SHOW_CMDS"
