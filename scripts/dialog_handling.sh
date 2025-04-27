@@ -364,12 +364,6 @@ menu_parse() {
             # first extract the variables, then  if it shouldn't be used move on
             ! tmux_vers_check "$min_vers" && continue
 
-            #
-            #  Expand relative PATH at one spot, before calling the
-            #  various implementations
-            #
-            echo "$cmd" | grep -vq / && cmd="$d_scripts/$cmd"
-
             [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
 
             if $cfg_use_whiptail; then
