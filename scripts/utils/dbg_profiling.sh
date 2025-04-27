@@ -137,6 +137,7 @@ profiling_display() {
 
     _s="$1 - total: $t_prof_since_start   since last: $t_prof_sine_update"
     profiling_display_it "$_s"
+    [ "$2" = "LF" ] && profiling_display_it
 }
 
 #===============================================================

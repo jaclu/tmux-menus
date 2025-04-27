@@ -242,5 +242,5 @@ show_cmd() {
     # refresh it for each cmd processed in case the display timeout is shortish
     display_command_label
     tmux_error_handler display-message "Preparing $_lbl ..."
-    profiling_display "show_cmd() - done"
+    profiling_display "show_cmd() - done" LF
 }
