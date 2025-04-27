@@ -209,7 +209,7 @@ show_cmd() {
         # Strip $TMUX_BIN from beginning if present
         cmd_no_tmux_bin=${sc_cmd#"$TMUX_BIN "}
 
-        profiling_display "willd run: check_key_binds"
+        profiling_display "will run: check_key_binds"
         check_key_binds "$cmd_no_tmux_bin" sc_processed
         profiling_display "check_key_binds - done"
         ;;
