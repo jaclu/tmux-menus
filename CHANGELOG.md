@@ -10,6 +10,11 @@ All notable changes to this project will be documented here.
 
 - Prevent tmux variables from being expanded in `Display Menu Commands`
 
+### Changed
+
+- Removed a relative path expander, no longer needed and caused some external menu
+  actions to fail
+
 ---
 
 ## [2.2.2] - 2025-04-26
