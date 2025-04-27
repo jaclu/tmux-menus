@@ -15,7 +15,7 @@ if [ "$1" = "clear" ]; then
     unset TMUX_MENUS_NO_DISPLAY
     unset TMUX_MENUS_PROFILING
     unset TMUX_MENUS_HANDLER
-else
+elif [ "$1" = "set" ]; then
     # Set current default dbg env
     export TMUX_MENUS_PROFILING=1
     export TMUX_MENUS_LOGGING_MINIMAL=2
