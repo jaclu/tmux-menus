@@ -198,6 +198,7 @@ show_cmd() {
     else
         # Remove leading/trailing whitespace
         sc_cmd=${_s4#"${_s4%%[![:space:]]*}"}       # remove leading
+
         sc_cmd=${sc_cmd%"${sc_cmd##*[![:space:]]}"} # remove trailing
         # Collapse inner whitespace to single spaces
         # shellcheck disable=SC2086 # intentional in this case
