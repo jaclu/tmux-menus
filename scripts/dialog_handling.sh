@@ -335,7 +335,7 @@ menu_parse() {
                 alt_command "$label" "$key" "$cmd" "$keep_cmd"
             else
                 mnu_command "$label" "$key" "$cmd" "$keep_cmd"
-                $b_do_show_cmds && show_cmd "$TMUX_BIN $cmd"
+                $b_do_show_cmds && sc_show_cmd "$TMUX_BIN $cmd"
             fi
             ;;
 
@@ -370,7 +370,7 @@ menu_parse() {
                 alt_external_cmd "$label" "$key" "$cmd"
             else
                 mnu_external_cmd "$label" "$key" "$cmd"
-                $b_do_show_cmds && [ "$key" != "!" ] && show_cmd "$cmd"
+                $b_do_show_cmds && [ "$key" != "!" ] && sc_show_cmd "$cmd"
             fi
             ;;
 
@@ -890,8 +890,6 @@ display_menu() {
     "1" | "2") clear_prep_disp_status ;;
     *) ;;
     esac
-    display_command_label
-    profiling_display "$_lbl"
 
     [ -n "$cfg_log_file" ] && {
         # If logging is disabled - no point in generating this log msg
@@ -933,8 +931,6 @@ prepare_show_commands() {
 
     $all_helpers_sourced || source_all_helpers "prepare_show_commands()"
 
-    define_profiling_env
-
     # Do this before the timer is started, otherwise the first usage of show commands
     # will always be slower
     $all_helpers_sourced || source_all_helpers "prepare_show_commands"
@@ -958,8 +954,6 @@ display_commands_toggle() {
     # log_it "display_commands_toggle($menu_part)"
     [ -z "$menu_part" ] && error_msg "add_display_commands() - called with no param"
 
-    profiling_display "display_commands_toggle()"
-
     # In case we got here via dynamic_content()
     $all_helpers_sourced || source_all_helpers "display_commands_toggle()"
 
@@ -968,7 +962,6 @@ display_commands_toggle() {
         0.0 E ! "$_lbl_next" "TMUX_MENUS_SHOW_CMDS='$_idx_next' $0"
 
     menu_generate_part "$menu_part" "$@"
-    profiling_display "display_commands_toggle() - done"
 }
 
 #===============================================================
