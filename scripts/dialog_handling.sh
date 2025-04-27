@@ -945,7 +945,7 @@ prepare_show_commands() {
     b_do_show_cmds=true
     display_command_label
     tmux_error_handler display-message "Preparing $_lbl ..."
-
+    log_it "><> prepare_show_commands - $_lbl"
     # shellcheck source=scripts/show_cmd.sh
     . "$D_TM_BASE_PATH"/scripts/show_cmd.sh
 }
