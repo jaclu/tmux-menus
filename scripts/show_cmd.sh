@@ -186,9 +186,9 @@ show_cmd() {
 
     if false; then
         log_it_minimal "slow hint overlays skip"
-        _s4="$(echo "$_s3" | sed 's/\\&.*//')" # skip hint overlays, ie part after \&
+        _s4="$(echo "$_s3" | sed 's/\\&.*//')"
     else
-        _s4=${_s3%%\\&*}
+        _s4=${_s3%%\\&*} # skip hint overlays, ie part after \&
     fi
 
     # reduce excessive white space
@@ -199,7 +199,7 @@ show_cmd() {
         log_it_minimal "slow excessive white space reduction"
         sc_cmd=$(printf '%s\n' "$_s4" | awk '{$1=$1; print}')
         ;;
-    2)
+    *)
         # Remove leading spaces (spaces only)
         sc_cmd=${_s4#"${_s4%%[! ]*}"}
 
@@ -211,31 +211,6 @@ show_cmd() {
         set -- $sc_cmd
         sc_cmd=$*
         ;;
-    *)
-        # Should work every where
-
-        # Save IFS
-        old_ifs=$IFS
-
-        sp=' '
-        tab='	' # a literal tab inside quotes
-        IFS="$sp$tab
-"
-
-        # Split into positional params (words)
-        # shellcheck disable=SC2086 # intentional word splitting
-        set -- $_s4
-
-        # Join with single spaces
-        sc_cmd=$1
-        shift
-        for word; do
-            sc_cmd="$sc_cmd $word"
-        done
-
-        # Restore IFS
-        IFS=$old_ifs
-        ;;
     esac
 
     [ -z "$sc_cmd" ] && error_msg "show_cmd() - no command could be extracted"
@@ -245,21 +220,8 @@ show_cmd() {
     case "$TMUX_MENUS_SHOW_CMDS" in
     1)
         # prevent tmux variables from being expanded by dobeling # into ##
-
-        if false; then
-            log_it_minimal "slow way of making tmux variables displayable"
-            _s1="$(echo "$sc_cmd" | sed 's/#/##/g')"
-        else
-            old_ifs=$IFS
-            IFS="#"
-            set -- "$sc_cmd"
-            _s1=$1
-            shift
-            for p; do
-                out=${out}"##"$p
-            done
-            IFS=$old_ifs
-        fi
+        #_s1="$(echo "$sc_cmd" | sed 's/#/##/g')"
+        _s1=$(printf '%s' "$sc_cmd" | sed 's/#/##/g')
 
         # Replaces initial tmux-cmd with [TMUX] for clarity and to avoid risking
         # starting with a long path
@@ -283,7 +245,7 @@ show_cmd() {
             *) sc_processed=$_s2 ;;
             esac
         fi
-        profiling_display "Prepared sc_processed TMUX_BIN[$TMUX_BIN]"
+        profiling_display "Prepared sc_processed"
         ;;
     2)
         # Strip $TMUX_BIN from beginning if present
