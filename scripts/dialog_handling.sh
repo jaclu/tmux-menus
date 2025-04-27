@@ -890,7 +890,8 @@ display_menu() {
     "1" | "2") clear_prep_disp_status ;;
     *) ;;
     esac
-    profiling_display "will display menu"
+    display_command_label
+    profiling_display "$_lbl"
 
     [ -n "$cfg_log_file" ] && {
         # If logging is disabled - no point in generating this log msg
