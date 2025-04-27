@@ -958,6 +958,8 @@ display_commands_toggle() {
     # log_it "display_commands_toggle($menu_part)"
     [ -z "$menu_part" ] && error_msg "add_display_commands() - called with no param"
 
+    profiling_display "display_commands_toggle()"
+
     # In case we got here via dynamic_content()
     $all_helpers_sourced || source_all_helpers "display_commands_toggle()"
 
@@ -966,6 +968,7 @@ display_commands_toggle() {
         0.0 E ! "$_lbl_next" "TMUX_MENUS_SHOW_CMDS='$_idx_next' $0"
 
     menu_generate_part "$menu_part" "$@"
+    profiling_display "display_commands_toggle() - done"
 }
 
 #===============================================================
