@@ -11,23 +11,9 @@
 #  if the command is available using a prefix bind, display this instead of the cmd
 #
 
-extract_key_bind() {
-    ekb_key_type="$1"
-    ekb_cmd="$2"
-    ekb_output_var="$3"
-
-    # log_it "extract_key_bind($ekb_key_type, $ekb_cmd, $ekb_output_var)"
-
-    [ -z "$ekb_cmd" ] && {
-        error_msg "extract_key_bind($ekb_key_type, $ekb_cmd) - command empty"
-    }
-
-    [ ! -f "$f_cached_tmux_key_binds" ] && {
-        error_msg "extract_key_bind() not found: $f_cached_tmux_key_binds"
-    }
-
-    keys=$(
-        awk -v target="$ekb_key_type" -v cmd="$ekb_cmd" '
+# Helper: run awk to extract matching key
+extract_key_bind_run_awk() {
+    awk -v target="$1" -v cmd="$2" '
     {
         found_target = 0
         key_field = 0
@@ -39,7 +25,6 @@ extract_key_bind() {
         }
 
         if (found_target) {
-            # Rebuild command string from the fields after the key
             cmd_start = key_field + 1
             actual_cmd = ""
             for (j = cmd_start; j <= NF; j++) {
@@ -57,7 +42,40 @@ extract_key_bind() {
         }
     }
     ' "$f_cached_tmux_key_binds"
-    )
+}
+
+# Helper: invert quotes in a string
+invert_quotes() {
+    printf %s "$1" | sed "s/'/@#@SQUOTE@#@/g; s/\"/'/g; s/@#@SQUOTE@#@/\"/g"
+}
+
+# Main: extract key bind
+extract_key_bind() {
+    ekb_key_type="$1"
+    ekb_cmd="$2"
+    ekb_output_var="$3"
+
+    [ -z "$ekb_cmd" ] && {
+        error_msg "extract_key_bind($ekb_key_type, $ekb_cmd) - command empty"
+        return 1
+    }
+
+    [ ! -f "$f_cached_tmux_key_binds" ] && {
+        error_msg "extract_key_bind() not found: $f_cached_tmux_key_binds"
+        return 1
+    }
+
+    # log_it "extract_key_bind($ekb_key_type, $ekb_cmd, $ekb_output_var)"
+    keys=$(extract_key_bind_run_awk "$ekb_key_type" "$ekb_cmd")
+
+    if [ -z "$keys" ]; then
+        ekb_cmd_inverted=$(invert_quotes "$ekb_cmd")
+        keys=$(extract_key_bind_run_awk "$ekb_key_type" "$ekb_cmd_inverted")
+        [ -n "$keys" ] && {
+            log_it "><>   found: $keys"
+            log_it "><> after inverting quotes: [$ekb_cmd_inverted]"
+        }
+    fi
 
     if [ -n "$ekb_output_var" ]; then
         eval "$ekb_output_var=\"\$keys\""
@@ -114,10 +132,7 @@ check_key_binds() {
     ckb_rslt=""
     # log_it "check_key_binds($ckb_cmd)"
 
-    # Strip $TMUX_BIN from beginning if present
-    ckb_no_tmux_bin=${ckb_cmd#"$TMUX_BIN "}
-
-    extract_key_bind prefix "$ckb_no_tmux_bin" ckb_prefix_raw
+    extract_key_bind prefix "$ckb_cmd" ckb_prefix_raw
     ckb_prefix_bind=""
     for key in $ckb_prefix_raw; do
         filter_bind_escapes_single "$key" ckb_escaped
@@ -125,7 +140,7 @@ check_key_binds() {
     done
     # log_it "><> ckb_prefix_raw [$ckb_prefix_raw] - ckb_prefix_bind [$ckb_prefix_bind]"
 
-    extract_key_bind root "$ckb_no_tmux_bin" ckb_root_raw
+    extract_key_bind root "$ckb_cmd" ckb_root_raw
     ckb_root_bind=""
     for key in $ckb_root_raw; do
         filter_bind_escapes_single "$key" ckb_escaped
@@ -168,27 +183,35 @@ show_cmd() {
     _s2="${_s1%" $reload_in_runshell"}"    # skip reload_in_runshell suffix if found
     _s3="${_s2%"; $0"}"                    # Remove trailing reload of menu
     _s4="$(echo "$_s3" | sed 's/\\&.*//')" # skip hint overlays, ie part after \&
-    _s5="$(echo "$_s4" | sed 's/#/##/g')"  # prevent tmux variables from being expanded
 
     # reduce excessive white space
-    sc_cmd=$(printf '%s\n' "$_s5" | awk '{$1=$1; print}')
+    sc_cmd=$(printf '%s\n' "$_s4" | awk '{$1=$1; print}')
 
     [ -z "$sc_cmd" ] && error_msg "show_cmd() - no command could be extracted"
     # log_it
-    # log_it "show_cmd($sc_cmd) $TMUX_MENUS_SHOW_CMDS"
+    # log_it "show_cmd($sc_cmd"
 
-    [ "$TMUX_MENUS_SHOW_CMDS" = "2" ] && {
-        check_key_binds "$sc_cmd" sc_cmd
-        # log_it " binds [$sc_cmd]"
-    }
+    case "$TMUX_MENUS_SHOW_CMDS" in
+    1)
+        _s1="$(echo "$sc_cmd" | sed 's/#/##/g')" # prevent tmux variables from being expanded
 
-    # Replaces initial tmux-cmd with [TMUX] for clarity and to avoid risking
-    # starting with a long path
-    sc_cmd="$(echo "$sc_cmd" | sed "s#^$TMUX_BIN #[TMUX] #")"
+        # Replaces initial tmux-cmd with [TMUX] for clarity and to avoid risking
+        # starting with a long path
+        _s2="$(echo "$_s1" | sed "s#^$TMUX_BIN #[TMUX] #")"
 
-    # Replaces script path starting with plugin location with (tmux-menus)
-    # to avoid ling absolute paths that are redundant
-    sc_cmd="$(echo "$sc_cmd" | sed "s#^$D_TM_BASE_PATH/#[tmux-menus] #")"
+        # Replaces script path starting with plugin location with (tmux-menus)
+        # to avoid ling absolute paths that are redundant
+        sc_cmd="$(echo "$_s2" | sed "s#^$D_TM_BASE_PATH/#[tmux-menus] #")"
+        ;;
+    2)
+        # Strip $TMUX_BIN from beginning if present
+        cmd_no_tmux_bin=${sc_cmd#"$TMUX_BIN "}
+
+        check_key_binds "$cmd_no_tmux_bin" sc_cmd
+        [ -z "$sc_cmd" ] && return
+        ;;
+    *) ;;
+    esac
 
     # Line break cmd if needed, to fit inside the menu width
     # then calls mnu_text_line() for each line of the command to be displayed.
