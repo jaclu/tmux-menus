@@ -184,58 +184,72 @@ show_cmd() {
     _s2="${_s1%" $reload_in_runshell"}" # skip reload_in_runshell suffix if found
     _s3="${_s2%"; $0"}"                 # Remove trailing reload of menu
 
-    # _s4="$(echo "$_s3" | sed 's/\\&.*//')" # skip hint overlays, ie part after \&
-    _s4=${_s3%%\\&*}
+    if false; then
+        log_it_minimal "slow hint overlays skip"
+        _s4="$(echo "$_s3" | sed 's/\\&.*//')" # skip hint overlays, ie part after \&
+    else
+        _s4=${_s3%%\\&*}
+    fi
 
     # reduce excessive white space
-    # sc_cmd=$(printf '%s\n' "$_s4" | awk '{$1=$1; print}')
-    # Remove leading/trailing whitespace
-    sc_cmd=${_s4#"${_s4%%[![:space:]]*}"}       # remove leading
-    sc_cmd=${sc_cmd%"${sc_cmd##*[![:space:]]}"} # remove trailing
-
-    # Collapse inner whitespace to single spaces
-    # shellcheck disable=SC2086 # intentional in this case
-    set -- $sc_cmd
-    sc_cmd=$*
+    if true; then
+        log_it_minimal "slow excessive white space reduction"
+        sc_cmd=$(printf '%s\n' "$_s4" | awk '{$1=$1; print}')
+    else
+        # Remove leading/trailing whitespace
+        sc_cmd=${_s4#"${_s4%%[![:space:]]*}"}       # remove leading
+        sc_cmd=${sc_cmd%"${sc_cmd##*[![:space:]]}"} # remove trailing
+        # Collapse inner whitespace to single spaces
+        # shellcheck disable=SC2086 # intentional in this case
+        set -- $sc_cmd
+        sc_cmd=$*
+    fi
 
     [ -z "$sc_cmd" ] && error_msg "show_cmd() - no command could be extracted"
     # log_it
-    # log_it "show_cmd($sc_cmd"
+    # log_it "show_cmd($sc_cmd)"
 
     case "$TMUX_MENUS_SHOW_CMDS" in
     1)
         # prevent tmux variables from being expanded by dobeling # into ##
 
-        # old_ifs=$IFS; IFS="#" set -- "$sc_cmd"; _s1=$1; shift; for p; do _s1=${_s1}##$p; done; IFS=$old_ifs
-
-        # _s1="$(echo "$sc_cmd" | sed 's/#/##/g')"
-        old_ifs=$IFS
-        IFS="#"
-        set -- "$sc_cmd"
-        _s1=$1
-        shift
-        for p; do
-            out=${out}"##"$p
-        done
-        IFS=$old_ifs
+        if false; then
+            log_it_minimal "slow way of making tmux variables displayable"
+            _s1="$(echo "$sc_cmd" | sed 's/#/##/g')"
+        else
+            old_ifs=$IFS
+            IFS="#"
+            set -- "$sc_cmd"
+            _s1=$1
+            shift
+            for p; do
+                out=${out}"##"$p
+            done
+            IFS=$old_ifs
+        fi
 
         # Replaces initial tmux-cmd with [TMUX] for clarity and to avoid risking
         # starting with a long path
-        # _s2="$(echo "$_s1" | sed "s#^$TMUX_BIN #[TMUX] #")"
-        case $_s1 in
-        "$TMUX_BIN "*) _s2='[TMUX] '"${_s1#"$TMUX_BIN "}" ;;
-        *) _s2=$_s1 ;;
-        esac
+        if false; then
+            log_it_minimal "slow way to change \$TMUX_BIN -> [TMUX]"
+            _s2="$(echo "$_s1" | sed "s#^$TMUX_BIN #[TMUX] #")"
+        else
+            case $_s1 in
+            "$TMUX_BIN "*) _s2='[TMUX] '"${_s1#"$TMUX_BIN "}" ;;
+            *) _s2=$_s1 ;;
+            esac
+        fi
 
         # Replaces script path starting with plugin location with (tmux-menus)
         # to avoid ling absolute paths that are redundant
-        # sc_processed="$(echo "$_s2" | sed "s#^$D_TM_BASE_PATH/#[tmux-menus] #")"
-
-        case $_s2 in
-        "$D_TM_BASE_PATH/"*) sc_processed='[tmux-menus] '"${_s2#"$D_TM_BASE_PATH/"}" ;;
-        *) sc_processed=$_s2 ;;
-        esac
-
+        if false; then
+            sc_processed="$(echo "$_s2" | sed "s#^$D_TM_BASE_PATH/#[tmux-menus] #")"
+        else
+            case $_s2 in
+            "$D_TM_BASE_PATH/"*) sc_processed='[tmux-menus] '"${_s2#"$D_TM_BASE_PATH/"}" ;;
+            *) sc_processed=$_s2 ;;
+            esac
+        fi
         profiling_display "Prepared sc_processed TMUX_BIN[$TMUX_BIN]"
         ;;
     2)
