@@ -209,12 +209,8 @@ sc_clean_up_cmd() {
     _s2="${_s1%" $reload_in_runshell"}" # skip reload_in_runshell suffix if found
     _s3="${_s2%"; $0"}"                 # Remove trailing reload of menu
 
-    if false; then
-        log_it_minimal "slow hint overlays skip"
-        _s4="$(echo "$_s3" | sed 's/\\&.*//')"
-    else
-        _s4=${_s3%%\\&*} # skip hint overlays, ie part after \&
-    fi
+    # _s4="$(echo "$_s3" | sed 's/\\&.*//')"
+    _s4=${_s3%%\\&*} # skip hint overlays, ie part after \&
 
     sc_filter_ws "$_s4" sc_cmd
 }

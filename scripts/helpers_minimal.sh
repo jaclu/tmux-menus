@@ -57,7 +57,7 @@ error_msg_safe() {
 }
 
 source_all_helpers() {
-    log_it_minimal "[$$] source_all_helpers() - $1"
+    # log_it_minimal "[$$] source_all_helpers() - $1"
     $all_helpers_sourced && {
         error_msg_safe "source_all_helpers() called when it was already done - $1"
     }
@@ -434,8 +434,8 @@ env_initialized=0
 #  been processed. Should normally be commented out!
 #  If this is set, cfg_log_file must also be defined since it won't be read from tmux.
 #
-log_file_forced="1"
-cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
+# log_file_forced="1"
+# cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
 
 #
 #  If set to "1" log will happen to stderr if script is run in an interactive
