@@ -14,6 +14,7 @@ All notable changes to this project will be documented here.
 
 - Removed a relative path expander, no longer needed and caused some external menu
   actions to fail
+- Changed titles of some menus to better reflect current placement
 
 ---
 
