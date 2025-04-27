@@ -437,8 +437,6 @@ env_initialized=0
 log_file_forced="1"
 cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
 
-log_it "><> TMUX_BIN [$TMUX_BIN]"
-
 #
 #  If set to "1" log will happen to stderr if script is run in an interactive
 #  shell, so this will not mess it up if the plugin is initiated or run by tmux
