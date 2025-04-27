@@ -931,6 +931,7 @@ prepare_show_commands() {
     $all_helpers_sourced || source_all_helpers "prepare_show_commands"
     [ ! -f "$f_cached_tmux_key_binds" ] && {
         log_it "Creating: $f_cached_tmux_key_binds"
+        # Filtering out all key binds displaying a menu, since they won't be relevant
         $TMUX_BIN list-keys | grep -iv display-menu >"$f_cached_tmux_key_binds"
     }
 
