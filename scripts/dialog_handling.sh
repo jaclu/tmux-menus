@@ -890,6 +890,7 @@ display_menu() {
     "1" | "2") clear_prep_disp_status ;;
     *) ;;
     esac
+    profiling_display "will display menu"
 
     [ -n "$cfg_log_file" ] && {
         # If logging is disabled - no point in generating this log msg
@@ -930,6 +931,8 @@ prepare_show_commands() {
     # log_it "prepare_show_commands()"
 
     $all_helpers_sourced || source_all_helpers "prepare_show_commands()"
+
+    define_profiling_env
 
     # Do this before the timer is started, otherwise the first usage of show commands
     # will always be slower

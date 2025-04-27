@@ -201,21 +201,20 @@ show_cmd() {
 
         # Replaces script path starting with plugin location with (tmux-menus)
         # to avoid ling absolute paths that are redundant
-        sc_cmd="$(echo "$_s2" | sed "s#^$D_TM_BASE_PATH/#[tmux-menus] #")"
+        sc_processed="$(echo "$_s2" | sed "s#^$D_TM_BASE_PATH/#[tmux-menus] #")"
         ;;
     2)
         # Strip $TMUX_BIN from beginning if present
         cmd_no_tmux_bin=${sc_cmd#"$TMUX_BIN "}
 
-        check_key_binds "$cmd_no_tmux_bin" sc_cmd
-        [ -z "$sc_cmd" ] && return
+        check_key_binds "$cmd_no_tmux_bin" sc_processed
         ;;
     *) ;;
     esac
 
     # Line break cmd if needed, to fit inside the menu width
     # then calls mnu_text_line() for each line of the command to be displayed.
-    sc_remainder="$sc_cmd"
+    sc_remainder="$sc_processed"
     while [ -n "$sc_remainder" ]; do
         chunk=$(printf '%s\n' "$sc_remainder" | awk -v max="$cfg_display_cmds_cols" '
         {
@@ -241,4 +240,5 @@ show_cmd() {
     # refresh it for each cmd processed in case the display timeout is shortish
     display_command_label
     tmux_error_handler display-message "Preparing $_lbl ..."
+    profiling_display "show_cmd()"
 }
