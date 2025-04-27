@@ -180,13 +180,23 @@ show_cmd() {
     #  Feeding the menu creation via calls to mnu_text_line()
     #
     profiling_update_time_stamps
-    _s1="${1%" $menu_reload"}"             # skip menu_reload suffix if found
-    _s2="${_s1%" $reload_in_runshell"}"    # skip reload_in_runshell suffix if found
-    _s3="${_s2%"; $0"}"                    # Remove trailing reload of menu
-    _s4="$(echo "$_s3" | sed 's/\\&.*//')" # skip hint overlays, ie part after \&
+    _s1="${1%" $menu_reload"}"          # skip menu_reload suffix if found
+    _s2="${_s1%" $reload_in_runshell"}" # skip reload_in_runshell suffix if found
+    _s3="${_s2%"; $0"}"                 # Remove trailing reload of menu
+
+    # _s4="$(echo "$_s3" | sed 's/\\&.*//')" # skip hint overlays, ie part after \&
+    _s4=${_s3%%\\&*}
 
     # reduce excessive white space
-    sc_cmd=$(printf '%s\n' "$_s4" | awk '{$1=$1; print}')
+    # sc_cmd=$(printf '%s\n' "$_s4" | awk '{$1=$1; print}')
+    # Remove leading/trailing whitespace
+    sc_cmd=${_s4#"${_s4%%[![:space:]]*}"}       # remove leading
+    sc_cmd=${sc_cmd%"${sc_cmd##*[![:space:]]}"} # remove trailing
+
+    # Collapse inner whitespace to single spaces
+    # shellcheck disable=SC2086 # intentional in this case
+    set -- $sc_cmd
+    sc_cmd=$*
 
     [ -z "$sc_cmd" ] && error_msg "show_cmd() - no command could be extracted"
     # log_it
@@ -194,16 +204,39 @@ show_cmd() {
 
     case "$TMUX_MENUS_SHOW_CMDS" in
     1)
-        _s1="$(echo "$sc_cmd" | sed 's/#/##/g')" # prevent tmux variables from being expanded
+        # prevent tmux variables from being expanded by dobeling # into ##
+
+        # old_ifs=$IFS; IFS="#" set -- "$sc_cmd"; _s1=$1; shift; for p; do _s1=${_s1}##$p; done; IFS=$old_ifs
+
+        # _s1="$(echo "$sc_cmd" | sed 's/#/##/g')"
+        old_ifs=$IFS
+        IFS="#"
+        set -- "$sc_cmd"
+        _s1=$1
+        shift
+        for p; do
+            out=${out}"##"$p
+        done
+        IFS=$old_ifs
 
         # Replaces initial tmux-cmd with [TMUX] for clarity and to avoid risking
         # starting with a long path
-        _s2="$(echo "$_s1" | sed "s#^$TMUX_BIN #[TMUX] #")"
+        # _s2="$(echo "$_s1" | sed "s#^$TMUX_BIN #[TMUX] #")"
+        case $_s1 in
+        "$TMUX_BIN "*) _s2='[TMUX] '"${_s1#"$TMUX_BIN "}" ;;
+        *) _s2=$_s1 ;;
+        esac
 
         # Replaces script path starting with plugin location with (tmux-menus)
         # to avoid ling absolute paths that are redundant
-        sc_processed="$(echo "$_s2" | sed "s#^$D_TM_BASE_PATH/#[tmux-menus] #")"
-        profiling_display "Prepared sc_processed"
+        # sc_processed="$(echo "$_s2" | sed "s#^$D_TM_BASE_PATH/#[tmux-menus] #")"
+
+        case $_s2 in
+        "$D_TM_BASE_PATH/"*) sc_processed='[tmux-menus] '"${_s2#"$D_TM_BASE_PATH/"}" ;;
+        *) sc_processed=$_s2 ;;
+        esac
+
+        profiling_display "Prepared sc_processed TMUX_BIN[$TMUX_BIN]"
         ;;
     2)
         # Strip $TMUX_BIN from beginning if present
