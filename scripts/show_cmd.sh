@@ -179,6 +179,7 @@ show_cmd() {
     #
     #  Feeding the menu creation via calls to mnu_text_line()
     #
+    profiling_update_time_stamps
     _s1="${1%" $menu_reload"}"             # skip menu_reload suffix if found
     _s2="${_s1%" $reload_in_runshell"}"    # skip reload_in_runshell suffix if found
     _s3="${_s2%"; $0"}"                    # Remove trailing reload of menu
