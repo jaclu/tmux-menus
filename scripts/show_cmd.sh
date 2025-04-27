@@ -192,19 +192,51 @@ show_cmd() {
     fi
 
     # reduce excessive white space
-    if true; then
+    _i=2
+    case "$_i" in
+    1)
+        # old method
         log_it_minimal "slow excessive white space reduction"
         sc_cmd=$(printf '%s\n' "$_s4" | awk '{$1=$1; print}')
-    else
-        # Remove leading/trailing whitespace
-        sc_cmd=${_s4#"${_s4%%[![:space:]]*}"}       # remove leading
+        ;;
+    2)
+        # Remove leading spaces (spaces only)
+        sc_cmd=${_s4#"${_s4%%[! ]*}"}
 
-        sc_cmd=${sc_cmd%"${sc_cmd##*[![:space:]]}"} # remove trailing
+        # Remove trailing spaces (spaces only)
+        sc_cmd=${sc_cmd%"${sc_cmd##*[! ]}"}
+
         # Collapse inner whitespace to single spaces
-        # shellcheck disable=SC2086 # intentional in this case
+        # shellcheck disable=SC2086 # intentional word splitting
         set -- $sc_cmd
         sc_cmd=$*
-    fi
+        ;;
+    *)
+        # Should work every where
+
+        # Save IFS
+        old_ifs=$IFS
+
+        sp=' '
+        tab='	' # a literal tab inside quotes
+        IFS="$sp$tab
+"
+
+        # Split into positional params (words)
+        # shellcheck disable=SC2086 # intentional word splitting
+        set -- $_s4
+
+        # Join with single spaces
+        sc_cmd=$1
+        shift
+        for word; do
+            sc_cmd="$sc_cmd $word"
+        done
+
+        # Restore IFS
+        IFS=$old_ifs
+        ;;
+    esac
 
     [ -z "$sc_cmd" ] && error_msg "show_cmd() - no command could be extracted"
     # log_it
