@@ -868,7 +868,10 @@ ensure_menu_fits_on_screen() {
 
 clear_prep_disp_status() {
     safe_now
-    log_it "Preparing Display Commands took: $(echo "$t_now - $t_show_cmds" | bc)s"
+    display_command_label
+    log_it "$(relative_path "$0") - Preparing $_lbl took: $(
+        echo "$t_now - $t_show_cmds" | bc
+    )s"
 
     if tmux_vers_check 3.2; then
         tmux_error_handler display-message -d 1 ""
@@ -926,6 +929,8 @@ prepare_show_commands() {
     # action item
     # log_it "prepare_show_commands()"
 
+    $all_helpers_sourced || source_all_helpers "prepare_show_commands()"
+
     # Do this before the timer is started, otherwise the first usage of show commands
     # will always be slower
     $all_helpers_sourced || source_all_helpers "prepare_show_commands"
@@ -938,7 +943,8 @@ prepare_show_commands() {
     safe_now t_show_cmds
     cfg_use_cache=false
     b_do_show_cmds=true
-    tmux_error_handler display-message "Preparing Display Commands ..."
+    display_command_label
+    tmux_error_handler display-message "Preparing $_lbl ..."
 
     # shellcheck source=scripts/show_cmd.sh
     . "$D_TM_BASE_PATH"/scripts/show_cmd.sh
@@ -949,23 +955,12 @@ display_commands_toggle() {
     # log_it "display_commands_toggle($menu_part)"
     [ -z "$menu_part" ] && error_msg "add_display_commands() - called with no param"
 
-    case "$TMUX_MENUS_SHOW_CMDS" in
-    "1")
-        _lbl="Display key binds"
-        _i=2
-        ;;
-    "2")
-        _lbl="Hide key binds"
-        _i=0
-        ;;
-    *)
-        _lbl="Display Commands"
-        _i=1
-        ;;
-    esac
+    # In case we got here via dynamic_content()
+    $all_helpers_sourced || source_all_helpers "display_commands_toggle()"
 
+    display_command_label
     set -- \
-        0.0 E ! "$_lbl" "TMUX_MENUS_SHOW_CMDS=$_i $0"
+        0.0 E ! "$_lbl_next" "TMUX_MENUS_SHOW_CMDS='$_idx_next' $0"
 
     menu_generate_part "$menu_part" "$@"
 }
