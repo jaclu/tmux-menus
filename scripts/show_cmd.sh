@@ -149,8 +149,6 @@ check_key_binds() {
     }
     set +f # re-enable globbing0
 
-    # [ -z "$ckb_rslt" ] && ckb_rslt="$ckb_cmd" # if no binds were found display command
-
     if [ -n "$ckb_output_var" ]; then
         eval "$ckb_output_var=\"\$ckb_rslt\""
     else
@@ -176,7 +174,8 @@ show_cmd() {
     sc_cmd=$(printf '%s\n' "$_s5" | awk '{$1=$1; print}')
 
     [ -z "$sc_cmd" ] && error_msg "show_cmd() - no command could be extracted"
-    log_it "show_cmd($sc_cmd) orig [$1] $TMUX_MENUS_SHOW_CMDS"
+    # log_it
+    # log_it "show_cmd($sc_cmd) $TMUX_MENUS_SHOW_CMDS"
 
     [ "$TMUX_MENUS_SHOW_CMDS" = "2" ] && {
         check_key_binds "$sc_cmd" sc_cmd

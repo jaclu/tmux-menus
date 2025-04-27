@@ -375,6 +375,7 @@ helpers_full_additional_files_sourced() {
 }
 
 display_command_label() {
+    # shellcheck disable=SC2154
     case "$TMUX_MENUS_SHOW_CMDS" in
     1)
         _lbl="Display Commands"
