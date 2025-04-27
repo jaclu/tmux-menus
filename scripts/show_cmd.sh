@@ -170,8 +170,10 @@ show_cmd() {
     _s2="${_s1%" $reload_in_runshell"}"    # skip reload_in_runshell suffix if found
     _s3="${_s2%"; $0"}"                    # Remove trailing reload of menu
     _s4="$(echo "$_s3" | sed 's/\\&.*//')" # skip hint overlays, ie part after \&
+    _s5="$(echo "$_s4" | sed 's/#/##/g')"  # prevent tmux variables from being expanded
+
     # reduce excessive white space
-    sc_cmd=$(printf '%s\n' "$_s4" | awk '{$1=$1; print}')
+    sc_cmd=$(printf '%s\n' "$_s5" | awk '{$1=$1; print}')
 
     [ -z "$sc_cmd" ] && error_msg "show_cmd() - no command could be extracted"
     # log_it "show_cmd($sc_cmd) $TMUX_MENUS_SHOW_CMDS"

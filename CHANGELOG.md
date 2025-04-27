@@ -4,6 +4,14 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [Unreleased]
+
+### Added
+
+- Prevent tmux variables from being expanded in `Display Menu Commands`
+
+---
+
 ## [2.2.2] - 2025-04-26
 
 ### Changed
