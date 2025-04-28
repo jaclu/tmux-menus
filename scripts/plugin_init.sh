@@ -42,7 +42,7 @@ bind_plugin_key() {
         error_msg_safe "Failed to bind trigger: $trigger_sequence"
     }
 
-    log_it "$trigger_sequence"
+    log_it_minimal "$trigger_sequence"
 }
 
 #===============================================================

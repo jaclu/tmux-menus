@@ -20,13 +20,13 @@ experienced users, then add more for newbies.
 
 ## Recent Changes
 
-- Moved Laayouts and Split window into Windows menu
+- Prevent tmux variables from being expanded in `Display Menu Commands`
+- Moved Layouts and Split window into Windows menu
 - Main menu help displays kind of an about box info, about what version of the
   plugin is used
 - `Display menu commands` Rotates between displaying commands and all matching
   prefix and root binds.
 - Added parameter `@menus_border_type` for Styling
-- Re-factored plugin init
 
 </details>
 <details>

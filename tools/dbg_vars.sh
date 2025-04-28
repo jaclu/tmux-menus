@@ -9,13 +9,17 @@
 #  Available debug variables
 #
 
-[ "$1" = "clear" ] && {
+if [ "$1" = "clear" ]; then
     unset TMUX_MENUS_SHOW_CMDS
     unset TMUX_MENUS_LOGGING_MINIMAL
     unset TMUX_MENUS_NO_DISPLAY
     unset TMUX_MENUS_PROFILING
     unset TMUX_MENUS_HANDLER
-}
+elif [ "$1" = "set" ]; then
+    # Set current default dbg env
+    export TMUX_MENUS_PROFILING=1
+    export TMUX_MENUS_LOGGING_MINIMAL=1
+fi
 
 echo "TMUX_MENUS_SHOW_CMDS $TMUX_MENUS_SHOW_CMDS"
 echo "  1 Display cmd used for an action, if a prefix sequence show it"

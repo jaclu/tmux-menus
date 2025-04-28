@@ -11,23 +11,9 @@
 #  if the command is available using a prefix bind, display this instead of the cmd
 #
 
-extract_key_bind() {
-    ekb_key_type="$1"
-    ekb_cmd="$2"
-    ekb_output_var="$3"
-
-    # log_it "extract_key_bind($ekb_key_type, $ekb_cmd, $ekb_output_var)"
-
-    [ -z "$ekb_cmd" ] && {
-        error_msg "extract_key_bind($ekb_key_type, $ekb_cmd) - command empty"
-    }
-
-    [ ! -f "$f_cached_tmux_key_binds" ] && {
-        error_msg "extract_key_bind() not found: $f_cached_tmux_key_binds"
-    }
-
-    keys=$(
-        awk -v target="$ekb_key_type" -v cmd="$ekb_cmd" '
+# Helper: run awk to extract matching key
+sc_extract_key_bind_run_awk() {
+    awk -v target="$1" -v cmd="$2" '
     {
         found_target = 0
         key_field = 0
@@ -39,7 +25,6 @@ extract_key_bind() {
         }
 
         if (found_target) {
-            # Rebuild command string from the fields after the key
             cmd_start = key_field + 1
             actual_cmd = ""
             for (j = cmd_start; j <= NF; j++) {
@@ -57,143 +42,231 @@ extract_key_bind() {
         }
     }
     ' "$f_cached_tmux_key_binds"
-    )
+}
 
-    if [ -n "$ekb_output_var" ]; then
-        eval "$ekb_output_var=\"\$keys\""
+# Helper: invert quotes in a string
+sc_invert_quotes() {
+    printf %s "$1" | sed "s/'/@#@SQUOTE@#@/g; s/\"/'/g; s/@#@SQUOTE@#@/\"/g"
+}
+
+# Main: extract key bind
+sc_extract_key_bind() {
+    sc_ekb_key_type="$1"
+    sc_ekb_cmd="$2"
+    sc_ekb_output_var="$3"
+
+    [ -z "$sc_ekb_cmd" ] && {
+        error_msg "sc_extract_key_bind($sc_ekb_key_type, $sc_ekb_cmd) - command empty"
+        return 1
+    }
+
+    [ ! -f "$f_cached_tmux_key_binds" ] && {
+        error_msg "sc_extract_key_bind() not found: $f_cached_tmux_key_binds"
+        return 1
+    }
+
+    # log_it "sc_extract_key_bind($sc_ekb_key_type, $sc_ekb_cmd, $sc_ekb_output_var)"
+    sc_ekb_keys=$(sc_extract_key_bind_run_awk "$sc_ekb_key_type" "$sc_ekb_cmd")
+
+    if [ -z "$sc_ekb_keys" ]; then
+        ekb_cmd_inverted=$(sc_invert_quotes "$sc_ekb_cmd")
+        sc_ekb_keys=$(sc_extract_key_bind_run_awk "$sc_ekb_key_type" "$ekb_cmd_inverted")
+        # [ -n "$sc_ekb_keys" ] && {
+        #     _m="><> after inverting quotes: [$ekb_cmd_inverted]"
+        #     _m="$_m - found: $sc_ekb_keys"
+        #     log_it "$_m"
+        # }
+    fi
+
+    if [ -n "$sc_ekb_output_var" ]; then
+        eval "$sc_ekb_output_var=\"\$sc_ekb_keys\""
     else
-        echo "$keys"
+        echo "$sc_ekb_keys"
     fi
 }
 
-filter_bind_escapes_single() {
+sc_filter_bind_escapes_single() {
     # some bind chars are prefixed with \
     # this func removed them, except for a few special cases that must be escaped
     # in order to be displayed with display-menu.
     # For those chars, display-menu will unescape them.
-    key=$1
-    fbes_output_var="$2"
-    last_char=$(printf '%s' "$key" | awk '{print substr($0,length,1)}')
+    sc_fbes_key=$1
+    sc_fbes_output_var="$2"
+    sc_fbes_last_char=$(printf '%s' "$sc_fbes_key" | awk '{print substr($0,length,1)}')
 
-    # log_it "filter_bind_escapes_single($key, $fbes_output_var) [$last_char]"
-    [ -z "$fbes_output_var" ] && {
-        error_msg "filter_bind_escapes_single() - missing param 2"
+    # log_it "sc_filter_bind_escapes_single($sc_fbes_key, $sc_fbes_output_var) [$sc_fbes_last_char]"
+    [ -z "$sc_fbes_output_var" ] && {
+        error_msg "sc_filter_bind_escapes_single() - missing param 2"
     }
 
-    case "$last_char" in
+    case "$sc_fbes_last_char" in
     ';' | '"')
-        # printf '%s\n' "$key"
-        eval "$fbes_output_var=\"$key\""
+        # printf '%s\n' "$sc_fbes_key"
+        eval "$sc_fbes_output_var=\"$sc_fbes_key\""
         ;;
     *)
         # shellcheck disable=SC1003 # in this case it is actually POSIX-compliant
-        clean_key=$(printf '%s' "$key" | tr -d '\\')
+        clean_key=$(printf '%s' "$sc_fbes_key" | tr -d '\\')
         # printf '%s\n' "$clean_key"
-        eval "$fbes_output_var=\"$clean_key\""
+        eval "$sc_fbes_output_var=\"$clean_key\""
         ;;
     esac
 }
 
 add_result() {
+    #
+    #  Manipulates sc_ckb_rslt
+    #
     # If multiple results are found, join them with '  or  '
 
     # log_it "add_rslt($1)"
-    if [ -z "$ckb_rslt" ]; then
-        ckb_rslt="$1"
+    if [ -z "$sc_ckb_rslt" ]; then
+        sc_ckb_rslt="$1"
     else
-        ckb_rslt="$ckb_rslt  or  $1"
+        sc_ckb_rslt="$sc_ckb_rslt  or  $1"
     fi
 }
 
-check_key_binds() {
+sc_check_key_binds() {
     # Check if command is bound to a tmux shortcut.
     # If so list the shortcut(-s), otherwise display the command
 
-    ckb_cmd="$1"
-    ckb_output_var="$2"
-    ckb_rslt=""
-    # log_it "check_key_binds($ckb_cmd)"
+    sc_ckb_cmd="$1"
+    sc_ckb_output_var="$2"
+    sc_ckb_rslt=""
+    # log_it "sc_check_key_binds($sc_ckb_cmd)"
 
-    # Strip $TMUX_BIN from beginning if present
-    ckb_no_tmux_bin=${ckb_cmd#"$TMUX_BIN "}
-
-    extract_key_bind prefix "$ckb_no_tmux_bin" ckb_prefix_raw
-    ckb_prefix_bind=""
-    for key in $ckb_prefix_raw; do
-        filter_bind_escapes_single "$key" ckb_escaped
-        ckb_prefix_bind="${ckb_prefix_bind}${ckb_prefix_bind:+ }$ckb_escaped"
+    sc_extract_key_bind prefix "$sc_ckb_cmd" sc_ckb_prefix_raw
+    sc_ckb_prefix_bind=""
+    for _key in $sc_ckb_prefix_raw; do
+        sc_filter_bind_escapes_single "$_key" sc_ckb_escaped
+        sc_ckb_prefix_bind="${sc_ckb_prefix_bind}${sc_ckb_prefix_bind:+ }$sc_ckb_escaped"
     done
-    # log_it "><> ckb_prefix_raw [$ckb_prefix_raw] - ckb_prefix_bind [$ckb_prefix_bind]"
+    # log_it "><> sc_ckb_prefix_raw [$sc_ckb_prefix_raw] - sc_ckb_prefix_bind [$sc_ckb_prefix_bind]"
 
-    extract_key_bind root "$ckb_no_tmux_bin" ckb_root_raw
-    ckb_root_bind=""
-    for key in $ckb_root_raw; do
-        filter_bind_escapes_single "$key" ckb_escaped
-        ckb_root_bind="${ckb_root_bind}${ckb_root_bind:+ }$ckb_escaped"
+    sc_extract_key_bind root "$sc_ckb_cmd" sc_ckb_root_raw
+    sc_ckb_root_bind=""
+    for _key in $sc_ckb_root_raw; do
+        sc_filter_bind_escapes_single "$_key" sc_ckb_escaped
+        sc_ckb_root_bind="${sc_ckb_root_bind}${sc_ckb_root_bind:+ }$sc_ckb_escaped"
     done
 
     set -f # disable globbing - needed in case a bind is *
-    [ -n "$ckb_root_bind" ] && {
+    [ -n "$sc_ckb_root_bind" ] && {
         # shellcheck disable=SC2086 # intentional in this case
-        set -- $ckb_root_bind
+        set -- $sc_ckb_root_bind
         for _l; do
             add_result "$_l" # "[NO-Prefix] $_l"
         done
     }
-    [ -n "$ckb_prefix_bind" ] && {
+    [ -n "$sc_ckb_prefix_bind" ] && {
         # shellcheck disable=SC2086 # intentional in this case
-        set -- $ckb_prefix_bind
+        set -- $sc_ckb_prefix_bind
         for _l; do
             add_result "<prefix> $_l"
         done
     }
     set +f # re-enable globbing0
 
-    # [ -z "$ckb_rslt" ] && ckb_rslt="$ckb_cmd" # if no binds were found display command
-
-    if [ -n "$ckb_output_var" ]; then
-        eval "$ckb_output_var=\"\$ckb_rslt\""
+    if [ -n "$sc_ckb_output_var" ]; then
+        eval "$sc_ckb_output_var=\"\$sc_ckb_rslt\""
     else
-        echo "$ckb_rslt"
+        echo "$sc_ckb_rslt"
     fi
 }
 
-show_cmd() {
+sc_filter_ws() {
     #
-    # First filter out menu_reload components if present
-    # then try to match command to a prefix key-bind. If a match is foond
-    # display the prefix sequence matching the cmd, otherwise display the command uses
+    # Reduce excessive white space
     #
-    #  Feeding the menu creation via calls to mnu_text_line()
+    sc_fw_in="$1"
+    sc_fw_output_var="$2"
+
+    # # old method
+    # sc_fw_cmd=$(printf '%s\n' "$sc_fw_in" | awk '{$1=$1; print}')
+
+    # Remove leading spaces (spaces only)
+    sc_fw_cmd=${sc_fw_in#"${sc_fw_in%%[! ]*}"}
+    # Remove trailing spaces (spaces only)
+    sc_fw_cmd=${sc_fw_cmd%"${sc_fw_cmd##*[! ]}"}
+
+    # Collapse inner whitespace to single spaces
+    # shellcheck disable=SC2086 # intentional word splitting
+    set -- $sc_fw_cmd
+    sc_fw_cmd=$*
+
+    if [ -n "$sc_fw_output_var" ]; then
+        eval "$sc_fw_output_var=\"\$sc_fw_cmd\""
+    else
+        echo "$sc_fw_cmd"
+    fi
+}
+
+sc_clean_up_cmd() {
+    # Defines
+    #   sc_cmd - filtered input
+
+    _s1="${1%" $menu_reload"}"          # skip menu_reload suffix if found
+    _s2="${_s1%" $reload_in_runshell"}" # skip reload_in_runshell suffix if found
+    _s3="${_s2%"; $0"}"                 # Remove trailing reload of menu
+
+    # _s4="$(echo "$_s3" | sed 's/\\&.*//')"
+    _s4=${_s3%%\\&*} # skip hint overlays, ie part after \&
+
+    sc_filter_ws "$_s4" sc_cmd
+}
+
+sc_clean_up_result() {
+    # Expects:
+    #   sc_cmd - input
+    # Defines
+    #   sc_processed - processed output
     #
-    _s1="${1%" $menu_reload"}"             # skip menu_reload suffix if found
-    _s2="${_s1%" $reload_in_runshell"}"    # skip reload_in_runshell suffix if found
-    _s3="${_s2%"; $0"}"                    # Remove trailing reload of menu
-    _s4="$(echo "$_s3" | sed 's/\\&.*//')" # skip hint overlays, ie part after \&
-    # reduce excessive white space
-    sc_cmd=$(printf '%s\n' "$_s4" | awk '{$1=$1; print}')
+    sc_cur_input="$1"
+    sc_cur_output_var="$2"
 
-    [ -z "$sc_cmd" ] && error_msg "show_cmd() - no command could be extracted"
-    # log_it "show_cmd($sc_cmd) $TMUX_MENUS_SHOW_CMDS"
+    #
+    # prevent tmux variables from being expanded by dobeling # into ##
+    #
+    sc_cur_s1=$(printf '%s' "$sc_cur_input" | sed 's/#/##/g')
 
-    [ "$TMUX_MENUS_SHOW_CMDS" = "2" ] && {
-        check_key_binds "$sc_cmd" sc_cmd
-        # log_it " binds [$sc_cmd]"
-    }
-
+    #
     # Replaces initial tmux-cmd with [TMUX] for clarity and to avoid risking
     # starting with a long path
-    sc_cmd="$(echo "$sc_cmd" | sed "s#^$TMUX_BIN #[TMUX] #")"
+    #
 
-    # Replaces script path starting with plugin location with (tmux-menus)
-    # to avoid ling absolute paths that are redundant
-    sc_cmd="$(echo "$sc_cmd" | sed "s#^$D_TM_BASE_PATH/#[tmux-menus] #")"
+    # _s2="$(echo "$sc_cur_s1" | sed "s#^$TMUX_BIN #[TMUX] #")"
+    case $sc_cur_s1 in
+    "$TMUX_BIN "*) sc_cur_s2='[TMUX] '"${sc_cur_s1#"$TMUX_BIN "}" ;;
+    *) sc_cur_s2=$sc_cur_s1 ;;
+    esac
 
+    #
+    # Replaces script path starting with plugin location with [tmux-menus]
+    # to avoid long absolute paths that are redundant
+    #
+
+    # sc_processed="$(echo "$_s2" | sed "s#^$D_TM_BASE_PATH/#[tmux-menus] #")"
+    case $sc_cur_s2 in
+    "$D_TM_BASE_PATH/"*) sc_cur_rslt='[tmux-menus] '"${sc_cur_s2#"$D_TM_BASE_PATH/"}" ;;
+    *) sc_cur_rslt=$sc_cur_s2 ;;
+    esac
+
+    if [ -n "$sc_cur_output_var" ]; then
+        eval "$sc_cur_output_var=\"\$sc_cur_rslt\""
+    else
+        echo "$sc_cur_rslt"
+    fi
+
+}
+
+sc_display_cmd() {
     # Line break cmd if needed, to fit inside the menu width
     # then calls mnu_text_line() for each line of the command to be displayed.
-    sc_remainder="$sc_cmd"
-    while [ -n "$sc_remainder" ]; do
-        chunk=$(printf '%s\n' "$sc_remainder" | awk -v max="$cfg_display_cmds_cols" '
+    sc_dc_remainder="$1"
+
+    while [ -n "$sc_dc_remainder" ]; do
+        sc_dc_chunk=$(printf '%s\n' "$sc_dc_remainder" | awk -v max="$cfg_display_cmds_cols" '
         {
             if (length($0) <= max) {
                 print $0
@@ -208,12 +281,44 @@ show_cmd() {
                 print substr($0, 1, max)
             }
         }')
-        mnu_text_line "-#[nodim]  $chunk"
+        mnu_text_line "-#[nodim]  $sc_dc_chunk"
 
-        sc_remainder=${sc_remainder#"$chunk"}
-        sc_remainder=${sc_remainder#" "}
+        sc_dc_remainder=${sc_dc_remainder#"$sc_dc_chunk"}
+        sc_dc_remainder=${sc_dc_remainder#" "}
     done
+}
+
+sc_show_cmd() {
+    #
+    # First filter out menu_reload components if present
+    # then try to match command to a prefix key-bind. If a match is foond
+    # display the prefix sequence matching the cmd, otherwise display the command uses
+    #
+    #  Feeding the menu creation via calls to mnu_text_line()
+    #
+
+    sc_clean_up_cmd "$1"
+
+    [ -z "$sc_cmd" ] && error_msg "sc_show_cmd() - no command could be extracted"
+    # log_it
+    # log_it "sc_show_cmd($sc_cmd)"
+
+    case "$TMUX_MENUS_SHOW_CMDS" in
+    1)
+        sc_clean_up_result "$sc_cmd" sc_processed
+        ;;
+    2)
+        # Strip $TMUX_BIN from beginning if present
+        cmd_no_tmux_bin=${sc_cmd#"$TMUX_BIN "}
+
+        sc_check_key_binds "$cmd_no_tmux_bin" sc_processed
+        ;;
+    *) ;;
+    esac
+
+    sc_display_cmd "$sc_processed"
 
     # refresh it for each cmd processed in case the display timeout is shortish
-    tmux_error_handler display-message "Preparing Display Commands ..."
+    display_command_label
+    tmux_error_handler display-message "Preparing $_lbl ..."
 }

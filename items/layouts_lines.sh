@@ -33,7 +33,7 @@ static_content() {
 #
 #===============================================================
 
-menu_name="Layouts - Lines"
+menu_name="Layouts - Border Lines"
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"

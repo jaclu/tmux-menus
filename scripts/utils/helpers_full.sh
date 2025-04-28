@@ -374,6 +374,29 @@ helpers_full_additional_files_sourced() {
     . "$d_scripts"/utils/tmux.sh
 }
 
+display_command_label() {
+    # log_it "display_command_label() - $TMUX_MENUS_SHOW_CMDS"
+
+    # shellcheck disable=SC2154
+    case "$TMUX_MENUS_SHOW_CMDS" in
+    1)
+        _lbl="Display Commands"
+        _lbl_next="Display key binds"
+        _idx_next=2
+        ;;
+    2)
+        _lbl="Display key binds"
+        _lbl_next="Hide key binds"
+        _idx_next=0
+        ;;
+    *)
+        _lbl="Hide key binds"
+        _lbl_next="Display Commands"
+        _idx_next=1
+        ;;
+    esac
+}
+
 #===============================================================
 #
 #   Main
