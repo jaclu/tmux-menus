@@ -21,7 +21,7 @@ experienced users, then add more for newbies.
 ## Recent Changes
 
 - Prevent tmux variables from being expanded in `Display Menu Commands`
-- Moved Laayouts and Split window into Windows menu
+- Moved Layouts and Split window into Windows menu
 - Main menu help displays kind of an about box info, about what version of the
   plugin is used
 - `Display menu commands` Rotates between displaying commands and all matching
