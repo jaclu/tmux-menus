@@ -14,7 +14,8 @@ All notable changes to this project will be documented here.
 ### Changed
 
 - 'Move pane' & 'Move Window' - Corrected check when pane is marked in another context
-- Fixed a bug forgetting to check if cache is active in dialog_handling.sh:handle_dynamic()
+- Bug fix: forgetting to check if cache is active in dialog_handling.sh:handle_dynamic()
+- Bug fix: verify_menu_runable() - escape ' in order to display errors in menu code
 - tmux_error_handler_assign() - streamlined for performance and added inline comments
 - menu_generate_part() - abort early for empty parts
 

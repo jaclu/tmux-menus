@@ -667,20 +667,36 @@ verify_menu_runable() {
         _mnu_first="${TMUX_BIN%% *}"
     fi
     [ "$_actual_first" = "$_mnu_first" ] || {
-        msg="The processed menu should start with a menu handler."
-        msg="$msg\nIn the current environment this was expected:"
-        msg="$msg\n\n  $_mnu_first"
-        msg="$msg\n\nThis was found:"
-        msg="$msg\n\n  $_actual_first"
-        msg="$msg\n\nWas no part 1 created?\n"
-        msg="$msg\nThe menu handler and other menu definitions like title"
-        msg="$msg and styling\nare prepended to the part defined by:"
-        msg="$msg\n\n  menu_generate_part 1 \""'$@'"\"\n"
-        msg="$msg\nGenerated menu:\n"
+        escaped_menu_items="$(echo "$menu_items" | sed "s/\'/[\"]/g")"
 
-        # filter ; ini order not to execute when displaying the error msg
-        escaped="$(printf '%s' "$menu_items" | sed 's/;//g')"
-        error_msg_safe "$msg\n$escaped"
+        #region tmux error msg
+        error_msg_safe "$(
+            cat <<EOF
+The processed menu should start with a menu handler.
+In the current environment this was expected:
+
+  $_mnu_first
+
+This was found:
+
+  $_actual_first
+
+Was no part 1 created?
+
+The menu handler and other menu definitions like title and styling
+are prepended to the part created by:
+
+menu_generate_part 1 "\$@"
+
+Generated menu below - single quotes have been changed to: [\"],
+otherwise the commands can not be displayed here
+
+-----   menu start   -----
+$escaped_menu_items
+-----    menu end    -----
+EOF
+        )"
+        #endregion
     }
 }
 
