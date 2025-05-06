@@ -191,6 +191,8 @@ fix_home_path() {
     #  Assigning the supplied variable name instead of printing output in a subshell,
     #  for better performance
     #
+    #  Currently this is just used during plugin init, so performance is not crucial
+    #
     fhp_varname="$1"
     fhp_path="$2"
     # log_it "fix_home_path($fhp_varname,$fhp_path)"
@@ -390,30 +392,44 @@ use_whiptail_env() {
 }
 
 tmux_error_handler() {
+    teh_store_result=false
     # fake assigning a variable in order to use the same func
-    tmux_error_handler_assign _dont_store_result_ "$@"
+    tmux_error_handler_assign _ "$@"
 }
 
 tmux_error_handler_assign() { # cache references
     #
-    #  Detects any errors reported by tmux commands and gives notification
-    #
+    #  Detects any errors reported by tmux commands and aborts displaying the error
     #
     #  Assigning the supplied variable name instead of printing output in a subshell,
     #  for better performance
     #
+    #  If teh_debug is set to true, extensive debug logging will happen
+    #  this will be set back to false at the end of this, so it needs to be
+    #  enabled for each call specifically
+    #
     varname="$1"
     shift
-    the_cmd="$*"
+    #
+    #  This will loose quotes etc, but since is doesn't cost any overhead to generate
+    #  it is "good enough" for logging and error displays
+    #
+    cmd_simplified="$*"
 
-    validate_varname "$varname" "tmux_error_handler_assign()"
     $teh_debug && {
-        if [ "$varname" = "_dont_store_result_" ]; then
-            log_it "tmux_error_handler($the_cmd)"
+        # in principle this should be done every time, but limitted to when
+        # logging, to minimize overhead
+        validate_varname "$varname" "tmux_error_handler_assign()"
+
+        if $teh_store_result; then
+            log_it "tmux_error_handler_assign($cmd_simplified) -> $varname"
         else
-            log_it "tmux_error_handler_assign($the_cmd) -> $varname"
+            log_it "tmux_error_handler($cmd_simplified)"
         fi
     }
+
+    # Define a location where to store the potentiall error output
+    # and create a file name based on this location
     if $cfg_use_cache; then
         d_errors="$d_cache"
     else
@@ -423,70 +439,77 @@ tmux_error_handler_assign() { # cache references
     # ensure it exists
     [ ! -d "$d_errors" ] && mkdir -p "$d_errors"
     f_tmux_err="$d_errors"/tmux-err
-    $teh_debug && {
-        log_it "teh: $TMUX_BIN $the_cmd"
-    }
-    # shellcheck disable=SC2068  # intentional to keep params seeparate here
-    value=$($TMUX_BIN "$@" 2>"$f_tmux_err") && safe_remove "$f_tmux_err" skip-path-check
-    $teh_debug && log_it "teh: cmd done [$?] >>$value<<"
+
+    #
+    # Run the actual command and save any error output. If the command succeeded
+    # just ignore the empty error output file
+    #
+    if $teh_store_result; then
+        value=$($TMUX_BIN "$@" 2>"$f_tmux_err")
+    else
+        $TMUX_BIN "$@" 2>"$f_tmux_err" >/dev/null
+    fi
+    ex_code="$?"
+    $teh_debug && log_it "teh: cmd done - excode:$ex_code - output: >>$value<<"
+
+    #
+    # Parse any error output
+    #
     [ -s "$f_tmux_err" ] && {
+        # Reset result-capture state for safety (should not reach this after error)
+        teh_store_result=true
+
         #
         #  First save the error to a named file
         #
-        _f_name="$(tr -cs '[:alnum:]._' '_' <"$f_tmux_err")"
-        [ -z "$_f_name" ] && _f_name="tmux-error"
-        f_error_log="$d_errors/error-$_f_name"
+        f_error_base="$d_errors/error-"
+        [ "$d_errors" != "$d_cache" ] && f_error_base="${f_error_base}tmux-menus-"
+        f_error_base="${f_error_base}$(tr -cs '[:alnum:]._' '_' <"$f_tmux_err")"
 
-        [ -f "$f_error_log" ] && {
-            _idx=1
-            f_error_log="${f_error_log}-$_idx"
-            while [ -f "$f_error_log" ]; do
-                _idx=$((_idx + 1))
-                f_error_log="${f_tmux_err}-$_idx"
-                [ "$_idx" -gt 1000 ] && {
-                    error_msg "Aborting runaway loop - _idx=$_idx"
-                }
-            done
-        }
+        _idx=0
+        f_error_log="$f_error_base"
+        while [ -f "$f_error_log" ]; do
+            _idx=$((_idx + 1))
+            f_error_log="${f_error_base}-$_idx"
+            [ "$_idx" -gt 1000 ] && error_msg "Aborting runaway loop - _idx=$_idx"
+        done
+
         (
-            echo "\$TMUX_BIN $the_cmd"
+            echo "\$TMUX_BIN $cmd_simplified"
             echo
             cat "$f_tmux_err"
-        ) >"$f_error_log"
+        ) >"$f_error_log" && rm "$f_tmux_err"
 
         if $teh_debug; then
-            log_it "$(
-                printf "tmux cmd failed:\n\n%s\n" "$(cat "$f_error_log")"
-            )"
+            log_it "tmux cmd failed:\n\n$(cat "$f_error_log")\n"
+            exit 1
         else
             log_it "saved error to: $f_error_log"
-            _err_frame_line="--------------------\n"
+            #region tmux error msg
             error_msg "$(
-                printf 'tmux cmd failed:\n\n%s%s\n%s\n%s: %s\n\nFull path: %s' \
-                    "$_err_frame_line" \
-                    "$(cat "$f_error_log")" \
-                    "$_err_frame_line" \
-                    "The error message has been saved in" \
-                    "$(relative_path "$f_error_log")" \
-                    "$f_error_log"
+                cat <<EOF
+tmux cmd failed:
+
+--------------------
+$(cat "$f_error_log")
+--------------------
+The error message has been saved in: $(relative_path "$f_error_log")
+
+Full path: $f_error_log
+EOF
             )"
+            #endregion
         fi
-        return 1
+        return 1 # shouldn't get here, but at least return an error
     }
 
-    $teh_debug && {
-        if [ "$varname" = "_dont_store_result_" ]; then
-            [ -n "$value" ] && {
-                # since it's not an assignment, just output it
-                echo "$value"
-                log_it "  <--  tmux_error_handler() got: >>$value<<"
-            }
-        else
-            log_it "  <--  tmux_error_handler_assign() got: >>$value<<"
-        fi
-    }
-    teh_debug=false
-    eval "$varname=\"\$value\""
+    #
+    # Depending on call type, potentially save output in caller supplied variable name
+    #
+    $teh_store_result && eval "$varname=\"\$value\""
+
+    teh_store_result=true # reset this for the next call
+    teh_debug=false       # This needs to be enabled on a per call basis
     return 0
 }
 
@@ -496,9 +519,17 @@ tmux_error_handler_assign() { # cache references
 #
 #===============================================================
 
+# The default for tmux_error_handler_assign() is to store result in a provided
+# variable. When no output is needed call tmux_error_handler() this sets this
+# to false then call tmux_error_handler_assign() with a dummy variable name
+# that will be ignored. At the end of tmux_error_handler_assign() this will be set
+# to true again. This is needed to initialize the variable so that a first call
+# to tmux_error_handler_assign() will behave as expected
+teh_store_result=true
+
 #
-# tmux_error_handler & tmux_error_handler_assign neve log normally
-# if a specific call should be logged set this to true, it will be disabled again
+# tmux_error_handler & tmux_error_handler_assign never log normally.
+# If a specific call should be logged set this to true, it will be disabled again
 # at the end of the call
 #
 teh_debug=false
