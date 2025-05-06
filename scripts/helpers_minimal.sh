@@ -324,6 +324,9 @@ tmux_vers_check() {
         esac
     }
 
+    # Once a menu has been processed once, all version references should already be
+    # cached, so in the normal cached state this point will not be reached
+
     # If helpers aren't sourced yet, source them before continuing the version check
     $all_helpers_sourced || {
         # tmux_vers_check might be called as the other helpers are sourced, so
@@ -333,7 +336,7 @@ tmux_vers_check() {
         _v_comp="$_preserve_check_version"
     }
 
-    # Perform the actual version comparison check
+    # Perform the actual version comparison check, and then store it as a good/bad version
     tmux_vers_check_do_compare "$_v_comp"
 }
 
@@ -341,6 +344,8 @@ tpt_retrieve_running_tmux_vers() {
     #
     # If the variables defining the currently used tmux version needs to
     # be accessed before the first call to tmux_vers_ok this can be called.
+    # This will by nececity be called as config_setup() is processing, so unless
+    # caching is disabled, this won't be called by menus directly.
     #
     # log_it "tpt_retrieve_running_tmux_vers()"
     current_tmux_vers="$($TMUX_BIN -V | cut -d' ' -f2)"
