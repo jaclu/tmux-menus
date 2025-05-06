@@ -9,17 +9,24 @@
 #
 
 dynamic_content() {
-    # Things that change dependent on various states
+    # marking a pane is an ancient feature, but pane_marked came at 3.0
+    tmux_vers_check 3.0 || return
 
-    $all_helpers_sourced || source_all_helpers "window_move:dynamic_content()()"
-    tmux_error_handler_assign other_pane_is_marked display -p '#{?pane_marked_set,yes,}'
+    $all_helpers_sourced || source_all_helpers "window_move:dynamic_content()"
 
-    if [ -n "$other_pane_is_marked" ]; then
+    tmux_error_handler_assign this_win_id display-message -p '#{window_id}'
+    tmux_error_handler_assign pane_marked_status list-panes -a \
+        -F '#{pane_marked} #{window_id}'
+
+    # shellcheck disable=SC2154
+    s_found="$(echo "$pane_marked_status" | grep '1 ' | grep -v "$this_win_id")"
+    if [ -n "$s_found" ]; then
         set -- \
-            0.0 T "-#[nodim]Swap current window with window" \
-            0.0 C s " containing marked pane" swap-window
+            3.0 T "-#[nodim]Swap current window with window" \
+            3.0 C s " containing marked pane" swap-window
+    else
+        set --
     fi
-
     menu_generate_part 4 "$@"
 }
 

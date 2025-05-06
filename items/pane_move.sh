@@ -9,17 +9,21 @@
 #
 
 dynamic_content() {
-    # clear params content
-    set --
-    tmux_vers_check 3.0 && {
-        # marking a pane is an ancient feature, but pane_marked came at 3.0
-        $TMUX_BIN display-message -p \
-            '#{&&:#{pane_marked_set},#{!=:#{pane_marked},1}}' | grep -q 1 && {
-            set -- \
-                3.0 C m "Swap current pane with marked" "swap-pane $menu_reload"
-        }
-    }
-    menu_generate_part 4 "$@" # needs to be generated even if empty, to keep an item 2
+    # marking a pane is an ancient feature, but pane_marked came at 3.0
+    tmux_vers_check 3.0 || return
+
+    $all_helpers_sourced || source_all_helpers "pane_move:dynamic_content()"
+    tmux_error_handler_assign other_pane_marked display-message \
+        -p '#{&&:#{pane_marked_set},#{!=:#{pane_marked},1}}'
+
+    # shellcheck disable=SC2154
+    if [ "$other_pane_marked" = 1 ]; then
+        set -- \
+            3.0 C m "Swap current pane with marked" "swap-pane $menu_reload"
+    else
+        set -- # clear params
+    fi
+    menu_generate_part 4 "$@" # needs to be generated even if empty, to clear this item
 }
 
 static_content() {
