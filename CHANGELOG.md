@@ -6,6 +6,10 @@ All notable changes to this project will be documented here.
 
 ## [Unreleased]
 
+### Added
+
+- Created a list in TODO over the cached process, in order to see what can be optimized
+
 ### Changed
 
 - Fixed a bug forgetting to check if cache is active in dialog_handling.sh:handle_dynamic()
