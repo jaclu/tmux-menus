@@ -22,9 +22,9 @@ These should be as performant as possible!
     - generate_menu_items_in_sorted_order
   - verify_menu_runable
 
-- display_menu
-  - safe_now
-  - ensure_menu_fits_on_screen
+- display_menu - checked
+  - safe_now - checked
+  - ensure_menu_fits_on_screen - checked
 
 ## tmux 3.4
 

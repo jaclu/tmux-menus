@@ -916,7 +916,6 @@ display_menu() {
     else
         safe_now dh_t_start
         eval "$menu_items"
-
         ensure_menu_fits_on_screen
     fi
 }

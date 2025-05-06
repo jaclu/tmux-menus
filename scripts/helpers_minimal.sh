@@ -232,21 +232,25 @@ get_config() {
 #---------------------------------------------------------------
 
 select_safe_now_method() {
+    #
     # Select and save the time method for future use.
-    [ -n "$selected_get_time_mthd" ] && {
+    #
+    # Exports: selected_safe_now_mthd
+    #
+    [ -n "$selected_safe_now_mthd" ] && {
         error_msg_safe "Recursive call to: select_safe_now_method"
     }
 
     if [ -d /proc ] && [ -f /proc/version ]; then
-        selected_get_time_mthd="date" # Linux with sub-second precision
+        selected_safe_now_mthd="date" # Linux with sub-second precision
     elif [ "$(uname)" = "Linux" ]; then
-        selected_get_time_mthd="date" # Termux or other Linux variations
+        selected_safe_now_mthd="date" # Termux or other Linux variations
     elif command -v gdate >/dev/null; then
-        selected_get_time_mthd="gdate" # macOS, using GNU date if available
+        selected_safe_now_mthd="gdate" # macOS, using GNU date if available
     elif command -v perl >/dev/null; then
-        selected_get_time_mthd="perl" # Use Perl if date is not available
+        selected_safe_now_mthd="perl" # Use Perl if date is not available
     else
-        selected_get_time_mthd="date" # Fallback
+        selected_safe_now_mthd="date" # Fallback
     fi
 }
 
@@ -262,8 +266,8 @@ safe_now() {
     varname="$1"
     # validate_varname "$varname" "safe_now()()" # disabled for performance
 
-    # log_it "safe_now($varname) mthd: [$selected_get_time_mthd]"
-    case "$selected_get_time_mthd" in
+    # log_it "safe_now($varname) mthd: [$selected_safe_now_mthd]"
+    case "$selected_safe_now_mthd" in
     date) t_now="$(date +%s.%N)" ;;
     gdate) t_now="$(gdate +%s.%N)" ;;
     perl) t_now="$(perl -MTime::HiRes=time -E '$t = time; printf "%.9f\n", $t')" ;;
@@ -271,7 +275,7 @@ safe_now() {
         select_safe_now_method
 
         # to prevent infinite recursion, eunsure a valid timing method is now selected
-        case "$selected_get_time_mthd" in
+        case "$selected_safe_now_mthd" in
         date | gdate | perl) ;;
         *) error_msg_safe "safe_now($varname) - failed to select a timing method" ;;
         esac
