@@ -8,7 +8,9 @@ All notable changes to this project will be documented here.
 
 ### Changed
 
+- Fixed a bug forgetting to check if cache is active in dialog_handling.sh:handle_dynamic()
 - tmux_error_handler_assign() - streamlined for performance and added inline comments
+- menu_generate_part() - abort early for empty parts
 
 ---
 

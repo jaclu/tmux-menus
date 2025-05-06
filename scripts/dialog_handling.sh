@@ -97,16 +97,24 @@ menu_generate_part() {
     # Generate one menu segment
     # log_it "menu_generate_part($1)"
 
+    menu_idx="$1"
+    $cfg_use_cache && f_cache_file="$d_menu_cache/$menu_idx"
+
+    # needs to be set even if this is an empty dynamic menu to prevent
+    # static_files_reduction() from running
     $is_dynamic_content && dynamic_content_found=true
+
+    [ -z "$2" ] && {
+        # no params clear cache file if any
+        # log_it "><> menu_generate_part() idx:$menu_idx - empty"
+        $cfg_use_cache && rm -f "$f_cache_file"
+        return
+    }
+
+    shift # get rid of the idx param
     $all_helpers_sourced || source_all_helpers "menu_generate_part()"
 
-    menu_idx="$1"
-    shift # get rid of the idx
-
-    $cfg_use_cache && f_cache_file="$d_menu_cache/$menu_idx"
-    # log_it "><> menu_generate_part($menu_idx) using cache: $f_cache_file"
     menu_parse "$@"
-
     $cfg_use_whiptail && update_wt_actions
 }
 
