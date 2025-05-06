@@ -9,6 +9,7 @@ All notable changes to this project will be documented here.
 ### Added
 
 - Created a list in TODO over the cached process, in order to see what can be optimized
+- time_span(org_time) - sets t_time_span to time since org_time
 
 ### Changed
 

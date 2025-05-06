@@ -844,11 +844,10 @@ ensure_menu_fits_on_screen() {
     #  would do.
     #
     # Display time menu was shown
-    safe_now
-    disp_time="$(echo "$t_now - $dh_t_start" | bc)"
+    time_span "$dh_t_start"
 
     # log_it "ensure_menu_fits_on_screen() Menu $bn_current_script - Display time:  $disp_time ($t_minimal_display_time)"
-    [ "$(echo "$disp_time < $t_minimal_display_time" | bc)" -eq 1 ] && {
+    [ "$(echo "$t_time_span < $t_minimal_display_time" | bc)" -eq 1 ] && {
         $all_helpers_sourced || {
             source_all_helpers "ensure_menu_fits_on_screen()  short display, give warning"
         }
@@ -867,19 +866,17 @@ ensure_menu_fits_on_screen() {
         elif [ -n "$menu_width" ]; then
             _s="$f_menu_rel: Width required: $menu_width"
         else
-            # log_it "display time was: $disp_time"
-            _s="$f_menu_rel: Screen might be too small - menu closed after $disp_time"
+            # log_it "display time was: $t_time_span"
+            _s="$f_menu_rel: Screen might be too small - menu closed after $t_time_span"
         fi
         error_msg_safe "$_s"
     }
 }
 
 clear_prep_disp_status() {
-    safe_now
+    time_span "$t_show_cmds"
     display_command_label
-    log_it "$(relative_path "$0") - Preparing $_lbl took: $(
-        echo "$t_now - $t_show_cmds" | bc
-    )s"
+    log_it "$(relative_path "$0") - Preparing $_lbl took: ${t_time_span}s"
 
     if tmux_vers_check 3.2; then
         tmux_error_handler display-message -d 1 ""
@@ -902,11 +899,10 @@ display_menu() {
     [ -n "$cfg_log_file" ] && {
         # If logging is disabled - no point in generating this log msg
 
-        safe_now
-        _t="$(echo "$t_now - $t_script_start" | bc)"
+        time_span "$t_script_start"
 
         _m="Menu $(relative_path "$0")"
-        _m="$_m - processing time:  $_t"
+        _m="$_m - processing time:  $t_time_span"
         log_it_minimal "$_m"
     }
 

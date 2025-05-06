@@ -260,13 +260,13 @@ check_speed_cutoff() {
     cut_off="$1"
 
     # log_it "-T- check_speed_cutoff($cut_off)"
-    safe_now
     # shellcheck disable=SC2154
-    t_init="$(echo "$t_now - $t_script_start" | bc)"
-    if [ "$(echo "$t_init < $cut_off" | bc)" -eq 1 ]; then
+    time_span "$t_script_start"
+    # shellcheck disable=SC2154
+    if [ "$(echo "$t_time_span < $cut_off" | bc)" -eq 1 ]; then
         t_minimal_display_time=0.1
     else
-        log_it "  Failed cutoff time, considered a slow system: $t_init >= $cut_off"
+        log_it "  Failed cutoff time, considered a slow system: $t_time_span >= $cut_off"
         # for slower systems
         t_minimal_display_time=0.5
     fi

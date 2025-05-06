@@ -257,6 +257,8 @@ safe_now() {
     #  Assigning the supplied variable name instead of printing output in a subshell,
     #  for better performance
     #
+    # Exports: t_time_span
+    #
     varname="$1"
     # validate_varname "$varname" "safe_now()()" # disabled for performance
 
@@ -282,6 +284,18 @@ safe_now() {
         # if variable name provided set it to t_now
         eval "$varname=\"\$t_now\""
     }
+}
+
+time_span() {
+    #
+    # Calculates a time span compared to param 1
+    #
+    # Exports: t_time_span
+    #
+    _t_start="$1"
+
+    safe_now
+    t_time_span="$(echo "$t_now - $_t_start" | bc)"
 }
 
 #---------------------------------------------------------------
