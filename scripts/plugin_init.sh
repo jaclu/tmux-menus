@@ -68,6 +68,8 @@ if [[ -d "$d_cache" ]]; then
     safe_remove "$f_cache_known_tmux_vers"
     safe_remove "$f_cached_tmux_options"
     safe_remove "$f_cached_tmux_key_binds"
+    # Clear any errors from previous runs
+    safe_remove "$d_cache"/error-*
 
     #
     # If these are removed, it can't be detected if config changed, so
