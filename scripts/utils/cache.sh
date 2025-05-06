@@ -241,7 +241,7 @@ cfg_simple_style_border=\"$(cache_escape_special_chars "$cfg_simple_style_border
     fi
 
     # shellcheck disable=SC2154
-    printf '\n%s\n' "\
+    printf '\n%s' "\
 cfg_nav_next=\"$(cache_escape_special_chars "$cfg_nav_next")\"
 cfg_nav_prev=\"$(cache_escape_special_chars "$cfg_nav_prev")\"
 cfg_nav_home=\"$(cache_escape_special_chars "$cfg_nav_home")\"

@@ -92,7 +92,7 @@ sc_filter_bind_escapes_single() {
     # For those chars, display-menu will unescape them.
     sc_fbes_key=$1
     sc_fbes_output_var="$2"
-    sc_fbes_last_char=$(printf '%s' "$sc_fbes_key" | awk '{print substr($0,length,1)}')
+    sc_fbes_last_char=$(printf '%s\n' "$sc_fbes_key" | awk '{print substr($0,length,1)}')
 
     # log_it "sc_filter_bind_escapes_single($sc_fbes_key, $sc_fbes_output_var) [$sc_fbes_last_char]"
     [ -z "$sc_fbes_output_var" ] && {
@@ -106,7 +106,7 @@ sc_filter_bind_escapes_single() {
         ;;
     *)
         # shellcheck disable=SC1003 # in this case it is actually POSIX-compliant
-        clean_key=$(printf '%s' "$sc_fbes_key" | tr -d '\\')
+        clean_key=$(printf '%s\n' "$sc_fbes_key" | tr -d '\\')
         # printf '%s\n' "$clean_key"
         eval "$sc_fbes_output_var=\"$clean_key\""
         ;;
@@ -228,7 +228,7 @@ sc_clean_up_result() {
     #
     # prevent tmux variables from being expanded by dobeling # into ##
     #
-    sc_cur_s1=$(printf '%s' "$sc_cur_input" | sed 's/#/##/g')
+    sc_cur_s1=$(printf '%s\n' "$sc_cur_input" | sed 's/#/##/g')
 
     #
     # Replaces initial tmux-cmd with [TMUX] for clarity and to avoid risking
