@@ -579,7 +579,7 @@ The best way to send feedback is to file an
 ## Thanks to
 
 - [cmon1701](https://github.com/cmon1701) For notifying me that the plugin listing
-  used hardcoded path assumptions - Addressed i release 2.1.3
+  used hardcoded path assumptions - Addressed in release 2.1.3
 - [sumskyi](https://github.com/sumskyi) for notifying me that the boolean check
   error message for invalid values lacked the significant info about what variable
   contained the incorrect value. Addressed in release 2.0.2

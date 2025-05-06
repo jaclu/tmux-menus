@@ -417,7 +417,7 @@ tmux_error_handler_assign() { # cache references
     cmd_simplified="$*"
 
     $teh_debug && {
-        # in principle this should be done every time, but limitted to when
+        # in principle this should be done every time, but limited to when
         # logging, to minimize overhead
         validate_varname "$varname" "tmux_error_handler_assign()"
 
