@@ -18,6 +18,7 @@ All notable changes to this project will be documented here.
 - Bug fix: verify_menu_runable() - escape ' in order to display errors in menu code
 - tmux_error_handler_assign() - streamlined for performance and added inline comments
 - menu_generate_part() - abort early for empty parts
+- static_files_reduction() - simplified
 
 ---
 

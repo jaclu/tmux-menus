@@ -531,22 +531,22 @@ set_menu_env_variables() {
 }
 
 static_files_reduction() {
+    #
     # if only static content was generated, compact all parts into one
     # for quicker cache loading
+    #
+    # this is not performance critical
+    #
     $dynamic_content_found && {
         error_msg "static_files_reduction() called when dynamic content was generated"
     }
     # log_it "static_files_reduction()"
-    _items="$(find "$d_menu_cache" -maxdepth 1 -type f | wc -l)"
-
-    [ "$_items" -gt 1 ] && {
-        sort_menu_items
-        find "$d_menu_cache" -maxdepth 1 -type f | while IFS= read -r f_name; do
-            safe_remove "$f_name"
-            echo "$menu_items" >"$d_menu_cache/1"
-        done
-        unset menu_items # clear it
-    }
+    cache_read_menu_items
+    for f_name in "$d_menu_cache"/*; do
+        [ -d "$f_name" ] && continue
+        rm "$f_name" || error_msg "static_files_reduction() - failed to remove: $f_name"
+    done
+    echo "$menu_items" >"$d_menu_cache/1"
 }
 
 cache_static_content() {
