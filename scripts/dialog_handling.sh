@@ -332,10 +332,10 @@ menu_parse() {
                 keep_cmd=false
             fi
 
-            verify_menu_key "$key" "tmux command: $cmd"
-
             # first extract the variables, then  if it shouldn't be used move on
             ! tmux_vers_check "$min_vers" && continue
+
+            verify_menu_key "$key" "tmux command: $cmd"
 
             [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
 
@@ -367,10 +367,10 @@ menu_parse() {
             cmd="$1"
             shift
 
-            verify_menu_key "$key" "external command: $cmd"
-
             # first extract the variables, then  if it shouldn't be used move on
             ! tmux_vers_check "$min_vers" && continue
+
+            verify_menu_key "$key" "external command: $cmd"
 
             [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
 
@@ -391,16 +391,19 @@ menu_parse() {
             menu="$1"
             shift
 
-            verify_menu_key "$key" "$menu"
-
             # first extract the variables, then  if it shouldn't be used move on
             ! tmux_vers_check "$min_vers" && continue
+
+            verify_menu_key "$key" "$menu"
 
             #
             #  If menu is not full PATH, assume it to be a tmux-menus
             #  item
             #
-            echo "$menu" | grep -vq / && menu="$d_items/$menu"
+            case $menu in
+            */*) ;;
+            *) menu="$d_items/$menu" ;;
+            esac
 
             [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] menu[$menu]"
 
@@ -692,7 +695,7 @@ cache_static_content() {
         # Cache is missing or obsolete, regenerate it
         # log_it "  regenerate cache for: $d_menu_cache"
         $all_helpers_sourced || {
-            source_all_helpers "cache_static_content() - cache error"
+            source_all_helpers "cache_static_content() - cache regeneration"
         }
         safe_remove "$d_menu_cache"
         mkdir -p "$d_menu_cache" || error_msg_safe "Failed to create: $d_menu_cache"
