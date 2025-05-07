@@ -106,7 +106,6 @@ menu_generate_part() {
 
     [ -z "$2" ] && {
         # no params clear cache file if any
-        # log_it "><> menu_generate_part() idx:$menu_idx - empty"
         $cfg_use_cache && rm -f "$f_cache_file"
         return
     }
@@ -295,7 +294,7 @@ menu_parse() {
     #  we first identify all the params used by the different options,
     #  only then can we continue if the min_vers does not match running tmux
     #
-    # log_it "><> mennu_parse()"
+    # log_it "mennu_parse()"
 
     [ "$menu_idx" -eq 1 ] && {
         # set prefix for item 1
@@ -1157,6 +1156,13 @@ esac
 #  cache handling.
 #
 menu_debug="" # Set to 1 to use echo 2 to use log_it
+
+# Useful when debugging to keep each menu generation process separate
+# log_it
+# log_it
+# log_it
+# log_it
+# log_it
 
 prepare_menu
 display_menu

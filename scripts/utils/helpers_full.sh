@@ -35,6 +35,10 @@ error_msg() {
     exit_code="${2:-0}"
     log_it_minimal "error_msg($em_msg, $exit_code)"
 
+    # Disable logging for the remainder of error_msg processing, to avoid getting
+    # log-flooded, unless exit is not requested
+    [ "$exit_code" -gt -1 ] && cfg_log_file=""
+
     [ -z "$TMUX" ] && {
         # with no tmux env, dumping it to stderr & log-file is the only output options
         log_it_minimal "***  This does not seem to be running in a tmux env  ***"
@@ -281,7 +285,7 @@ check_speed_cutoff() {
 config_setup() {
     # Examins tmux env, and depending on caching config either plainly read
     # tmux.conf, or prepare a f_cache_params
-    # log_it "config_setup()"
+    log_it "config_setup()"
 
     # only need default_use_cache at this point but might as well get them all
     tmux_get_defaults

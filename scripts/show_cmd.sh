@@ -71,11 +71,6 @@ sc_extract_key_bind() {
     if [ -z "$sc_ekb_keys" ]; then
         ekb_cmd_inverted=$(sc_invert_quotes "$sc_ekb_cmd")
         sc_ekb_keys=$(sc_extract_key_bind_run_awk "$sc_ekb_key_type" "$ekb_cmd_inverted")
-        # [ -n "$sc_ekb_keys" ] && {
-        #     _m="><> after inverting quotes: [$ekb_cmd_inverted]"
-        #     _m="$_m - found: $sc_ekb_keys"
-        #     log_it "$_m"
-        # }
     fi
 
     if [ -n "$sc_ekb_output_var" ]; then
@@ -142,7 +137,6 @@ sc_check_key_binds() {
         sc_filter_bind_escapes_single "$_key" sc_ckb_escaped
         sc_ckb_prefix_bind="${sc_ckb_prefix_bind}${sc_ckb_prefix_bind:+ }$sc_ckb_escaped"
     done
-    # log_it "><> sc_ckb_prefix_raw [$sc_ckb_prefix_raw] - sc_ckb_prefix_bind [$sc_ckb_prefix_bind]"
 
     sc_extract_key_bind root "$sc_ckb_cmd" sc_ckb_root_raw
     sc_ckb_root_bind=""

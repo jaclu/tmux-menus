@@ -237,7 +237,6 @@ fix_home_path() {
     echo "$fhp_path" | grep -q \$HOME && {
         error_msg "fix_home_path() - Failed to expand \$HOME in: $fhp_path"
     }
-    # log_it "><> fix_home_path() result:[$fhp_path]"
     eval "$fhp_varname=\"\$fhp_path\""
 }
 
@@ -369,10 +368,8 @@ tmux_get_plugin_options() { # new init
     #
     if tmux_vers_check 3.1 &&
         normalize_bool_param "@use_bind_key_notes_in_plugins" No; then
-        # log_it "><> using notes"
         cfg_use_notes=true
     else
-        # log_it "><> ignoring notes"
         # shellcheck disable=SC2034
         cfg_use_notes=false
     fi

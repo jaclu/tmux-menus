@@ -28,7 +28,6 @@ static_content() {
 
     [ -z "$(command -v dropbox)" ] && error_msg_safe "dropbox bin not found!"
 
-    log_it "><> dropbox.sh menu_reload [$menu_reload]"
     set -- \
         0.0 M Left "Back to Extras     $nav_prev" extras.sh \
         0.0 M Home "Back to Main menu  $nav_home" main.sh

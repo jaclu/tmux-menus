@@ -70,14 +70,11 @@ custom_items_changed_check() {
     # log_it "UCI:custom_items_changed_check()"
 
     previous_content_chksum="$(checksum_content_read)"
-    # log_it "UCI:><> custom_items_changed_check() - previous  chksum: $previous_content_chksum"
-
     checksum_content_write
     current_content_chksum="$(checksum_content_read)"
     [ -z "$current_content_chksum" ] && {
         error_msg_safe "Failed to scan content in: $d_custom_items"
     }
-    # log_it "UCI:><> custom_items_changed_check() - current  chksum:  $current_content_chksum"
 
     [ "$previous_content_chksum" != "$current_content_chksum" ]
 }

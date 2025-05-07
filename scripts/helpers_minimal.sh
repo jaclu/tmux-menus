@@ -71,7 +71,7 @@ source_all_helpers() {
 
 relative_path() {
     # remove D_TM_BASE_PATH prefix
-    # log_it "relative_path($1)"
+    # log_it "relative_path($1) - removing prefix: $D_TM_BASE_PATH"
     printf '%s\n' "${1#"$D_TM_BASE_PATH"/}"
 }
 
@@ -428,9 +428,7 @@ use_tmux_bin_socket() {
         # used to avoid picking up states from the outer tmux
         #
         f_name_socket="$(echo "$TMUX" | cut -d, -f 1)"
-        # log_it "><> f_name_socket [$f_name_socket]"
         socket="${f_name_socket##*/}"
-        # log_it "><> socket [$socket]"
         TMUX_BIN="$TMUX_BIN -L $socket"
         ;;
     esac
