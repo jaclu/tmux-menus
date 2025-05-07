@@ -66,7 +66,17 @@ starting_with_dash() {
 }
 
 is_function_defined() {
-    [ "$(command -v "$1")" = "$1" ]
+    command -v "$1" >/dev/null 2>&1
+}
+
+run_if_found() {
+    # this checks if function is present and runs it
+    # returning 0 if it was found (and thus executed)
+    is_function_defined "$1" && {
+        $1
+        return 0
+    }
+    return 1
 }
 
 update_wt_actions() {
@@ -487,11 +497,6 @@ verify_menu_runable() {
     # will be displayable...
     # log_it "verify_menu_runable()"
 
-    # # Remove leading spaces
-    # while [ "${menu_items# }" != "$menu_items" ]; do
-    #     menu_items=${menu_items# }
-    # done
-
     # extract first word
     _actual_first="${menu_items%% *}"
 
@@ -700,24 +705,21 @@ cache_static_content() {
         safe_remove "$d_menu_cache"
         mkdir -p "$d_menu_cache" || error_msg_safe "Failed to create: $d_menu_cache"
 
-        is_function_defined "static_content" && {
-            static_content
-            static_cache_updated=true
-        }
+        run_if_found static_content && static_cache_updated=true
     fi
 }
 
 handle_dynamic() {
     # log_it "handle_dynamic()"
-    is_function_defined "dynamic_content" && {
-        wt_actions_static="$wt_actions"
-        wt_actions=""
-        is_dynamic_content=true
-        $cfg_use_cache && mkdir -p "$d_menu_cache" # needed if menu is purely dynamic
-        dynamic_content
-        is_dynamic_content=false
-        wt_actions="$wt_actions_static"
-    }
+    is_function_defined dynamic_content || return
+
+    wt_actions_static="$wt_actions"
+    wt_actions=""
+    is_dynamic_content=true
+    $cfg_use_cache && mkdir -p "$d_menu_cache" # needed if menu is purely dynamic
+    dynamic_content
+    is_dynamic_content=false
+    wt_actions="$wt_actions_static"
 }
 
 cache_read_menu_items() {
@@ -805,7 +807,7 @@ prepare_menu() {
     if $cfg_use_cache; then
         cache_static_content
     else
-        is_function_defined "static_content" && static_content
+        run_if_found static_content
     fi
 
     # 2 - Handle dynamic parts (if any)

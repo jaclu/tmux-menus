@@ -23,6 +23,7 @@ All notable changes to this project will be documented here.
 - sort_menu_items() -> get_menu_items_sorted()
 - get_menu_items_sorted() & cache_read_menu_items() - simplified code, slight performance boost
 - menu_parse() - optimized processing
+- Added run_if_found() - makes code cleaner
 
 ---
 
