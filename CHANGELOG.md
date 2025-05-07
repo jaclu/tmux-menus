@@ -19,6 +19,7 @@ All notable changes to this project will be documented here.
 - tmux_error_handler_assign() - streamlined for performance and added inline comments
 - menu_generate_part() - abort early for empty parts
 - static_files_reduction() - simplified
+- Improved error detection when parsing and displaying menus
 
 ---
 

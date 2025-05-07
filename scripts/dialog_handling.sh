@@ -443,13 +443,7 @@ menu_parse() {
             fi
             ;;
 
-        *)
-            # Error
-            log_it "  menu_parse()  ---  Menu created so far  ---"
-            log_it "$menu_items"
-            error_msg_safe "ERROR: [$1]"
-            ;;
-
+        *) mnu_parse_error "$action" "$@" ;;
         esac
     done
 
@@ -462,6 +456,145 @@ menu_parse() {
         add_uncached_item
     fi
     unset menu_items
+}
+
+#---------------------------------------------------------------
+#
+#   Errors
+#
+#---------------------------------------------------------------
+
+escape_for_err_msg() {
+    # echo "$@" | sed "s/\'/[\"]/g"
+    echo "$@" | sed "s/\'/\`/g"
+}
+
+show_params() {
+    # This will log the exact arguments passed to the script
+    for param in "$@"; do
+        # Print each argument enclosed in quotes
+        printf '%s ' "$param"
+    done
+    echo
+}
+
+verify_menu_runable() {
+    # Check that menu starts with a menu handling cmd, if not most likely due to
+    # menu idx 1 not generated, but could be other causes. eithe way this menu
+    # will be displayable...
+    # log_it "verify_menu_runable()"
+
+    # # Remove leading spaces
+    # while [ "${menu_items# }" != "$menu_items" ]; do
+    #     menu_items=${menu_items# }
+    # done
+
+    # extract first word
+    _actual_first="${menu_items%% *}"
+
+    if [ -n "$cfg_alt_menu_handler" ]; then
+        _mnu_first="$cfg_alt_menu_handler"
+    else
+        _mnu_first="${TMUX_BIN%% *}"
+    fi
+    [ "$_actual_first" = "$_mnu_first" ]
+}
+
+mnu_parse_error() {
+    log_it "mnu_parse_error($1)"
+    failed_action="$1"
+    shift
+
+    s_remainders=$(show_params "$@")
+
+    #region error_msg_safe explaining parsing error
+    error_msg_safe "$(
+        cat <<EOF
+Parsing error when processing menu.
+
+Due to limits in what can be displayed in this error, all usages of single-quote
+have been replaced by backticks, in the "Menu created so far" in order to give as
+close a reppresentation as possible
+
+-----   Menu created so far   -----
+$(escape_for_err_msg "$menu_items")
+-----------------------------------
+
+
+Failed to Parse this action: $(escape_for_err_msg "$failed_action")
+
+
+In the next section all quotes have been eliminated due to how parsing remaining
+arguments is limited, hopefully it will at least give a hint on where parsing failed.
+
+-----   Remainder of menu   -----
+$(escape_for_err_msg "$s_remainders")
+---------------------------------
+
+EOF
+    )"
+    #endregion
+}
+
+display_invalid_menu_error() {
+    e_msg="$1"
+    log_it "display_invalid_menu_error($e_msg)"
+
+    [ -n "$e_msg" ] && {
+        #region e_msg = Error message
+        e_msg="$(
+            cat <<EOF
+-----   Error message   -----
+$(escape_for_err_msg "$e_msg")
+-----------------------------
+EOF
+        )"
+        #endregion
+    }
+    if verify_menu_runable; then
+        log_it "  - was runable"
+    else
+        log_it "  - NOT runable!"
+        #region e_first = first word in rendered menu wrong
+        e_first="$(
+            cat <<EOF
+
+
+The processed menu should start with a menu handler.
+In the current environment this was expected:
+
+    $_mnu_first
+
+This was found:
+
+    $_actual_first
+
+Was no part 1 created?
+
+The menu handler and other menu definitions like title and styling
+are prepended to the part created by:
+
+    menu_generate_part 1 "\$@"
+EOF
+        )"
+        #endregion
+    fi
+    #region m_menu_code = Display the generated menu code
+    m_menu_code="$(
+        cat <<EOF
+
+
+Generated menu below - single quotes have been changed into backticks
+otherwise the commands can not be displayed here
+
+-----   menu start   -----
+$(escape_for_err_msg "$menu_items")
+-----    menu end    -----
+EOF
+    )"
+    #endregion
+
+    error_msg_safe "$e_msg\n$e_first\n$m_menu_code"
 }
 
 #---------------------------------------------------------------
@@ -647,59 +780,6 @@ sort_menu_items() {
     fi
 }
 
-verify_menu_runable() {
-    # Check that menu starts with a menu handling cmd, if not most likely due to
-    # menu idx 1 not generated, but could be other causes. eithe way this menu
-    # will be displayable...
-    # log_it "verify_menu_runable()"
-
-    # Remove leading spaces
-    while [ "${menu_items# }" != "$menu_items" ]; do
-        menu_items=${menu_items# }
-    done
-
-    # extract first word
-    _actual_first="${menu_items%% *}"
-
-    if [ -n "$cfg_alt_menu_handler" ]; then
-        _mnu_first="$cfg_alt_menu_handler"
-    else
-        _mnu_first="${TMUX_BIN%% *}"
-    fi
-    [ "$_actual_first" = "$_mnu_first" ] || {
-        escaped_menu_items="$(echo "$menu_items" | sed "s/\'/[\"]/g")"
-
-        #region tmux error msg
-        error_msg_safe "$(
-            cat <<EOF
-The processed menu should start with a menu handler.
-In the current environment this was expected:
-
-  $_mnu_first
-
-This was found:
-
-  $_actual_first
-
-Was no part 1 created?
-
-The menu handler and other menu definitions like title and styling
-are prepended to the part created by:
-
-menu_generate_part 1 "\$@"
-
-Generated menu below - single quotes have been changed to: [\"],
-otherwise the commands can not be displayed here
-
------   menu start   -----
-$escaped_menu_items
------    menu end    -----
-EOF
-        )"
-        #endregion
-    }
-}
-
 prepare_menu() {
     #
     #  If a menu needs to handle a param, save it before sourcing this using:
@@ -724,7 +804,6 @@ prepare_menu() {
 
     # 3 - Gather each item in correct order
     sort_menu_items
-    verify_menu_runable
 }
 
 #---------------------------------------------------------------
@@ -927,11 +1006,25 @@ display_menu() {
     if $cfg_use_whiptail; then
         # display whiptail menu
         menu_selection=$(eval "$menu_items" 3>&2 2>&1 1>&3)
+        case "$?" in
+        0) ;;
+        1)
+            [ -n "$menu_selection" ] && {
+                # no selection = menu canceled
+                display_invalid_menu_error "$menu_selection"
+            }
+            ;;
+        *) display_invalid_menu_error ;;
+        esac
+
         [ -n "$menu_selection" ] && handle_wt_selecion
         true #  hides none true exit if whiptail menu was cancelled
     else
         safe_now dh_t_start
-        eval "$menu_items"
+        f_cmd_err="$d_tmp/tmux-menu-cmd-error"
+        eval "$menu_items" 2>"$f_cmd_err" || {
+            display_invalid_menu_error "$(cat "$f_cmd_err")"
+        }
         ensure_menu_fits_on_screen
     fi
 }
