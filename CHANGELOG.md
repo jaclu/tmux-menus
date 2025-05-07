@@ -20,7 +20,8 @@ All notable changes to this project will be documented here.
 - menu_generate_part() - abort early for empty parts
 - static_files_reduction() - simplified
 - Improved error detection when parsing and displaying menus
-- sort_menu_items() & cache_read_menu_items() - simplified code, slight performance boost
+- sort_menu_items() -> get_menu_items_sorted()
+- get_menu_items_sorted() & cache_read_menu_items() - simplified code, slight performance boost
 
 ---
 

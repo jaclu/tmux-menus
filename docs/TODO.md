@@ -18,7 +18,7 @@ These should be as performant as possible!
         - validate_varname - checked
       - display_commands_toggle - only used to display commands, so not a priority
       - tmux_vers_check - checked
-  - sort_menu_items
+  - get_menu_items_sorted
     - cache_read_menu_items
 
 - display_menu - checked

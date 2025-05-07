@@ -779,13 +779,11 @@ $idx	$gmi_body"
     )"
 }
 
-sort_menu_items() {
-    # log_it "sort_menu_items()"
+get_menu_items_sorted() {
+    # log_it "get_menu_items_sorted()"
     if $cfg_use_cache; then
         cache_read_menu_items
     else
-        # _s="[dialog_handling] sort_menu_items()"
-        # _s="$_s - calling: sort_uncached_menu_items"
         sort_uncached_menu_items
     fi
 }
@@ -813,7 +811,7 @@ prepare_menu() {
     $static_cache_updated && ! $dynamic_content_found && static_files_reduction
 
     # 3 - Gather each item in correct order
-    sort_menu_items
+    get_menu_items_sorted
 }
 
 #---------------------------------------------------------------
