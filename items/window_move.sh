@@ -35,7 +35,7 @@ static_content() {
         0.0 M Left "Back to Handling Window  $nav_prev" windows.sh \
         0.0 M Home "Back to Main menu        $nav_home" main.sh
     menu_generate_part 1 "$@"
-    $cfg_display_cmds && display_commands_toggle 2
+    $cfg_display_cmds && display_commands_toggle 2 # give this its own menu part idx
 
     set -- \
         0.0 S
