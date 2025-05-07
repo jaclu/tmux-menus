@@ -23,7 +23,10 @@ dynamic_content() {
     else
         set -- # clear params
     fi
-    menu_generate_part 4 "$@" # needs to be generated even if empty, to clear this item
+
+    # Needs to be generated even if empty, in order to clear this item if it had
+    # content last time this menu was displayed
+    menu_generate_part 4 "$@"
 }
 
 static_content() {
@@ -33,9 +36,16 @@ static_content() {
     menu_generate_part 1 "$@"
     $cfg_display_cmds && display_commands_toggle 2
 
+    #
+    # In principle, if this was moved into segment 1 there would be one less
+    # cache part to handle, so would be more efficient. However this minuscule speed
+    # gain would cause the command toggle to be displayed outside the first menu segment
+    # and thus create an inconsistent look. So in practical terms its just not
+    # worth it. But I do agree that it looks pretty silly to have a separate
+    # cache file that only contains: ""
+    #
     set -- \
         1.7 S
-
     menu_generate_part 3 "$@"
 
     set -- \
@@ -50,12 +60,10 @@ static_content() {
             1.7 M K "Key hints - Move to other $nav_next" \
             "$d_hints/choose-tree.sh $0"
     }
-
     set -- "$@" \
         0.0 S \
         1.7 M H "Help, Move to other    $nav_next" \
         "$d_help/help_pane_move.sh $0"
-
     menu_generate_part 5 "$@"
 }
 
