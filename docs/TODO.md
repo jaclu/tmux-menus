@@ -19,8 +19,7 @@ These should be as performant as possible!
       - display_commands_toggle - only used to display commands, so not a priority
       - tmux_vers_check - checked
   - sort_menu_items
-    - generate_menu_items_in_sorted_order
-  - verify_menu_runable
+    - cache_read_menu_items
 
 - display_menu - checked
   - safe_now - checked

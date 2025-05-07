@@ -70,6 +70,7 @@ is_function_defined() {
 }
 
 update_wt_actions() {
+    # log_it "update_wt_actions()"
     if $cfg_use_cache; then
         [ "$menu_idx" -eq 1 ] && {
             # clear menu actions
@@ -716,7 +717,24 @@ handle_dynamic() {
     }
 }
 
-generate_menu_items_in_sorted_order() {
+cache_read_menu_items() {
+    #
+    # Exports: menu_items
+    #
+    menu_items=""
+    for f_name in "$d_menu_cache"/*; do
+        [ -d "$f_name" ] && continue # most likely a wt_actions/
+
+        # Read the content of the file and append it to the menu_items variable
+        if [ -z "$menu_items" ]; then
+            menu_items="$(cat "$f_name")"
+        else
+            menu_items="$menu_items $(cat "$f_name")"
+        fi
+    done
+}
+
+sort_uncached_menu_items() {
     #
     # Since dynamic_content is generated after static_content, it can't be assumed
     # that the menu fragments were generated in proper order, in addition the
@@ -727,6 +745,8 @@ generate_menu_items_in_sorted_order() {
     # together, leads to this rather hackish in-memory implementation of sorting
     # the uncached_menu clearly lots of room for improvement...
     #
+    # log_it "sort_uncached_menu_items()"
+
     gmi_entries=""
 
     gmi_rest="$uncached_menu"
@@ -762,20 +782,11 @@ $idx	$gmi_body"
 sort_menu_items() {
     # log_it "sort_menu_items()"
     if $cfg_use_cache; then
-        for f_name in "$d_menu_cache"/*; do
-            # log_it "><> sort_menu_items() - processing: $f_name"
-
-            # skip special files
-            b_name=${f_name##*/} # basename equiv
-            [ "${#b_name}" -gt "2" ] && continue
-
-            # Read the content of the file and append it to the menu_items variable
-            menu_items="$menu_items $(cat "$f_name")"
-        done
+        cache_read_menu_items
     else
         # _s="[dialog_handling] sort_menu_items()"
-        # _s="$_s - calling: generate_menu_items_in_sorted_order"
-        generate_menu_items_in_sorted_order
+        # _s="$_s - calling: sort_uncached_menu_items"
+        sort_uncached_menu_items
     fi
 }
 
