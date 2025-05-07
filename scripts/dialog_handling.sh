@@ -307,6 +307,7 @@ menu_parse() {
     #
     # log_it "mennu_parse()"
 
+    menu_items=""
     [ "$menu_idx" -eq 1 ] && {
         # set prefix for item 1
         if $cfg_use_whiptail; then
