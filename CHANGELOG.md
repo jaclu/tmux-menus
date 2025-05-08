@@ -13,6 +13,8 @@ All notable changes to this project will be documented here.
 - moved definition of TMUX_BIN to scripts/utils/define_tmux_bin.sh in order to ensure
   sockets will always be used to minimize risk for collisions if an inner tmux uses
   this plugin
+- scripts/utils/std_alone_log.sh - Tries to pick up current log_file if defined
+  otherwise logs to /dev/stderr
 
 ### Changed
 

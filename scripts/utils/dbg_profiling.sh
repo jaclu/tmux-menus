@@ -139,13 +139,14 @@ profiling_display() {
 #
 #===============================================================
 
+[ "$profiling_sourced" = 1 ] && {
+    profiling_error_msg "scripts/utils/dbg_profiling.sh already sourced"
+}
+
 # shellcheck disable=SC2154
 case "$TMUX_MENUS_PROFILING" in
 1)
     # profiling will be used
-    [ "$profiling_sourced" = 1 ] && {
-        profiling_error_msg "scripts/utils/dbg_profiling.sh already sourced"
-    }
     profiling_select_timing_method
     _m="Starting profiling for: $0 - using time method: $profiling_selected_get_time"
     profiling_display_it "$_m"
