@@ -31,6 +31,8 @@ All notable changes to this project will be documented here.
 - Added run_if_found() - makes code cleaner
 - Bug fix: fix_home_path() - Now correctly handles the odd behaviour of tmux 3.4
 - moved all profiling init to dbg_profiling.sh
+- Bug fix: scripts/update_custom_inventory.sh - ensure main menu is cleared if
+  custom items are removed, to ensure main menu stops offering custom menus
 
 ## [2.2.3] - 2025-04-28
 

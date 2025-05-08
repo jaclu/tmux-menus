@@ -20,10 +20,9 @@
 #  is present. If it is, then a menu pointer to this menu is included.
 #
 
-clear_cache_main() {
-    # log_it "UCI:clear_cache_main()"
-
-    safe_remove "$d_cache"/items/main
+clear_cache_main_index() {
+    # log_it "UCI:clear_cache_main_index()"
+    safe_remove "$d_cache_main_menu"
 }
 
 clear_cache_custom_items() {
@@ -45,7 +44,7 @@ clear_custom_content_template() {
 
 remove_custom_item_content() {
     # Remove custom item index page and all related caches
-    # log_it "UCI:remove_custom_item_content()"
+    # log_it "UCI:remove_custom_item_content() - $f_custom_items_index"
     safe_remove "$f_custom_items_index"
     clear_cache_custom_items # just to be sure its not pointing this file
 }
@@ -122,7 +121,7 @@ create_custom_index() {
         error_msg_safe "variable f_custom_items_content undefined"
     }
     safe_remove "$f_custom_items_content" # make sure its nothing there
-    clear_cache_main
+    clear_cache_main_index
 
     for custom_menu in $1; do
 
@@ -225,8 +224,8 @@ custom_items_prepare() {
     # log_it "UCI:custom_items_prepare()"
     if [ ! -d "$d_custom_items" ]; then
         [ -f "$f_chksum_custom" ] && {
-            log_it "UCI: Clearing main menu cache since custom items are gone"
-            safe_remove "$d_cache"/items/main # clear main menu cache
+            # log_it "UCI: Clearing main menu cache since custom items are gone"
+            clear_cache_main_index
         }
         # Folder missing, clear custom items cache and exit
         remove_custom_item_content
