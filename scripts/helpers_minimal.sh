@@ -93,37 +93,6 @@ validate_varname() { # local usage tpt_digits_from_string() tpt_tmux_vers_suffix
     esac
 }
 
-define_profiling_env() {
-    # shellcheck disable=SC2154
-    case "$TMUX_MENUS_PROFILING" in
-    "1")
-        case "$profiling_sourced" in
-        "1") ;;
-        *)
-            # Here it is sourced  after D_TM_BASE_PATH is verified
-            # if the intent is to start timing the earliest stages of other scripts
-            # copy the below code using absolute paths
-            # shellcheck source=scripts/utils/dbg_profiling.sh
-            [ "$profiling_sourced" != 1 ] && . "$D_TM_BASE_PATH"/scripts/utils/dbg_profiling.sh
-            ;;
-        esac
-        ;;
-    *)
-        # profiling calls should not be left in the code base long term, this
-        # is primarily intended to capture them when profiling is temporarily disabled
-
-        # shellcheck disable=SC2317
-        profiling_update_time_stamps() {
-            :
-        }
-        # shellcheck disable=SC2317
-        profiling_display() {
-            :
-        }
-        ;;
-    esac
-}
-
 #---------------------------------------------------------------
 #
 #   get configuration
