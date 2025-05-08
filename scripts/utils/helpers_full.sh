@@ -17,24 +17,28 @@
 
 error_msg() {
     #
-    #  Display an error message in log and as a tmux display-message
+    #  Logs an error and displays it via tmux, adapting to message length.
     #
-    #  Using do_display_message is only practical for short one liners,
-    #  for longer error msgs, needing formatting, use error_msg_formated()
-    #  instead.
+    #  Handles both short messages and multi-line or long-form errors,
+    #  automatically choosing between display-message and formatted output.
     #
-    #  exit_code defaults to 0, which might seem odd for an error exit,
-    #  but in combination with display-message it makes sense.
-    #  If the script exits with something else than 0, the current pane
-    #  will be temporary replaced by an error message mentioning the exit
-    #  code. Which is both redundant and much less informative than the
-    #  display-message that is shown.
-    #  If exit_code is set to -1, process is not exited
+    #  Defaults to exit code 0 to suppress tmux's less informative
+    #  "pane replaced" error overlay. Use -1 to avoid exiting entirely.
+    #
+    #  If dont_display is non-empty, the message is only logged
+    #  (useful during debugging).
     #
     em_msg="$1"
     exit_code="${2:-0}"
+    dont_display="$3"
+
     log_it_minimal "error_msg($em_msg, $exit_code)"
 
+    [ -z "$dont_display" ] && error_msg_actual
+    [ "$exit_code" -gt -1 ] && exit "$exit_code"
+}
+
+error_msg_actual() {
     # Disable logging for the remainder of error_msg processing, to avoid getting
     # log-flooded, unless exit is not requested
     [ "$exit_code" -gt -1 ] && cfg_log_file=""
@@ -44,16 +48,20 @@ error_msg() {
         log_it_minimal "***  This does not seem to be running in a tmux env  ***"
     }
 
-    log_it_minimal
-    log_it_minimal "ERROR: $em_msg"
-    log_it_minimal
-
     [ -n "$TMUX" ] && {
         # shellcheck disable=SC2154
         msg_hold="$plugin_name ERR: $em_msg"
         # shellcheck disable=SC2154
         if [ "$env_initialized" -eq 2 ] && (
+            #
+            # Slightly complex condition, has_lf_not_at_end() can only be called
+            # if env_initialized is 2
+            # so therefore actual_win_width is retrieved here in the middle of the
+            # condition...
+            #
             actual_win_width="$($TMUX_BIN display-message -p "#{client_width}")"
+
+            # The actual condition part of this code block
             [ "${#msg_hold}" -ge "$actual_win_width" ] || has_lf_not_at_end "$em_msg"
         ); then
             error_msg_formated "$em_msg"
@@ -61,8 +69,6 @@ error_msg() {
             display_message_hold "$msg_hold"
         fi
     }
-
-    [ "$exit_code" -gt -1 ] && exit "$exit_code"
 }
 
 error_msg_formated() {
