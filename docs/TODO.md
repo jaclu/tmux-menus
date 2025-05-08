@@ -1,9 +1,5 @@
 # Plan
 
-## tmux 3.4
-
-- @menus_config_file - when HOME is expanded in some cases there are glitches
-
 ## Styling
 
 - quotes are not handled correctly for `@menus_format_title`
