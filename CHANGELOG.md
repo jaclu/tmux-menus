@@ -24,6 +24,7 @@ All notable changes to this project will be documented here.
 - get_menu_items_sorted() & cache_read_menu_items() - simplified code, slight performance boost
 - menu_parse() - optimized processing
 - Added run_if_found() - makes code cleaner
+- Bug fix: fix_home_path() - Now correctly handles the odd behaviour of tmux 3.4
 
 ---
 

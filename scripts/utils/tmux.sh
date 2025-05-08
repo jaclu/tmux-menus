@@ -184,34 +184,57 @@ tmux_get_option() {
 
 fix_home_path() {
     #
-    #  If a variable with ~ or $HOME is wrapped in single quotes in tmux.conf,
-    #  those will be prefixed with \ and thus unusable, this removes such backslashes
-    #  and expands $HOME
+    #  Normalizes plugin variables containing $HOME or ~, which may be passed
+    #  as single-quoted strings in tmux.conf due to outdated HOWTOs and habits.
     #
-    #  Assigning the supplied variable name instead of printing output in a subshell,
-    #  for better performance
+    #  Tmux versions prior to 3.0 expanded $HOME and ~ even when quoted oddly,
+    #  but from 3.0 onward, such values are treated literally. Version 3.4
+    #  adds further inconsistency by escaping $HOME differently.
     #
-    #  Currently this is just used during plugin init, so performance is not crucial
+    #  This function detects the tmux version and expands $HOME or ~ paths
+    #  to full absolute paths. A sanity check ensures the result looks valid,
+    #  guarding against future behavioral changes in tmux.
     #
-    fhp_varname="$1"
-    fhp_path="$2"
-    # log_it "fix_home_path($fhp_varname,$fhp_path)"
+    #  Usage:
+    #    fix_home_path "$org_log_file" log_file    # Sets fixed path directly (faster)
+    #    log_file=$(fix_home_path "$org_log_file") # Prints fixed path forking a sub-shell
+    #
+    fhp_path="$1"
+    fhp_varname="$2"
 
-    validate_varname "$fhp_varname" "fix_home_path()"
-    # [ -z "$fhp_varname" ] && error_msg "fix_home_path() param 1 empty!"
+    log_it "fix_home_path($fhp_varname,$fhp_path)"
+
+    if false; then
+        # For performance reasons full variable name assessment when is disabled by default
+        validate_varname "$fhp_varname" "fix_home_path()"
+    else
+        [ -z "$fhp_varname" ] && error_msg "fix_home_path() param 1 empty!"
+    fi
+    [ -z "$fhp_path" ] && error_msg "fix_home_path() param 2 empty!"
 
     # But of course tmux changed how they escpe options starting with ~ or $HOME...
-    if tmux_vers_check 3.0; then
+    if tmux_vers_check 3.4 && ! tmux_vers_check 3.5; then
+        # Special case for tmux 3.4
         case "$fhp_path" in
         \\~/*)
             fhp_path="${fhp_path#\\}"        # Remove leading backslash
             fhp_path="${HOME}${fhp_path#\~}" # Expand ~ to $HOME
-            # log_it " - found \\~ - changed into: $fhp_path"
+            ;;
+        \\\\\$HOME/*)
+            fhp_path="${fhp_path#\\\\}"          # Remove leading backslash
+            fhp_path="${HOME}${fhp_path#\$HOME}" # Expand $HOME
+            ;;
+        *) ;;
+        esac
+    elif tmux_vers_check 3.0; then
+        case "$fhp_path" in
+        \\~/*)
+            fhp_path="${fhp_path#\\}"        # Remove leading backslash
+            fhp_path="${HOME}${fhp_path#\~}" # Expand ~ to $HOME
             ;;
         \\\$HOME/*)
             fhp_path="${fhp_path#\\}"            # Remove leading backslash
             fhp_path="${HOME}${fhp_path#\$HOME}" # Expand ~ to $HOME
-            # log_it " - found \\\$HOME - changed into: $fhp_path"
             ;;
         *) ;;
         esac
@@ -220,12 +243,10 @@ fix_home_path() {
         \~/*)
             fhp_path="${fhp_path#\\}"        # Remove leading backslash
             fhp_path="${HOME}${fhp_path#\~}" # Expand ~ to $HOME
-            # log_it " - found \\~ - changed into: $fhp_path"
             ;;
         \$HOME/*)
             fhp_path="${fhp_path#\\}"            # Remove leading backslash
             fhp_path="${HOME}${fhp_path#\$HOME}" # Expand ~ to $HOME
-            # log_it " - found \\\$HOME - changed into: $fhp_path"
             ;;
         *) ;;
         esac
@@ -237,7 +258,12 @@ fix_home_path() {
     echo "$fhp_path" | grep -q \$HOME && {
         error_msg "fix_home_path() - Failed to expand \$HOME in: $fhp_path"
     }
-    eval "$fhp_varname=\"\$fhp_path\""
+
+    if [ -n "$fhp_varname" ]; then
+        eval "$fhp_varname=\"\$fhp_path\""
+    else
+        echo "$fhp_path"
+    fi
 }
 
 tmux_get_plugin_options() { # new init
@@ -349,7 +375,7 @@ tmux_get_plugin_options() { # new init
     tmux_get_option _tmux_conf "@menus_config_file" "$default_tmux_conf"
     # Handle the case of ~ or $HOME being wrapped in single quotes in tmux.conf
     # shellcheck disable=SC2154
-    fix_home_path cfg_tmux_conf "$_tmux_conf"
+    fix_home_path "$_tmux_conf" cfg_tmux_conf
 
     # shellcheck disable=SC2154
     [ "$log_file_forced" != 1 ] && {
@@ -357,7 +383,7 @@ tmux_get_plugin_options() { # new init
         # log_it "tmux will read cfg_log_file"
         tmux_get_option _log_file "@menus_log_file" "$default_log_file"
         # Handle the case of ~ or $HOME being wrapped in single quotes in tmux.conf
-        fix_home_path cfg_log_file "$_log_file"
+        fix_home_path "$_log_file" cfg_log_file
     }
     #
     #  Generic plugin setting I use to add Notes to keys that are bound
