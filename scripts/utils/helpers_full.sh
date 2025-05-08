@@ -159,32 +159,23 @@ get_digits_from_string() {
     echo "$_i"
 }
 
+
+
 normalize_bool_param() {
     #
-    # Take a boolean style text param and convert it into an actual boolean
-    # that can be used in your code. If the param starts with @ it is first read
-    # from tmux
+    #  Normalizes a string into a boolean value usable in conditionals.
     #
-    # For performance reasons all @menus... params are cached once when cache is
-    # initialized. In case some other tmux variable needs to be checked,
-    # ignore this cache and do a read by providing a third param, "no_cache" or similar,
-    # it's content doesn't matter, if a 3rd param is provided, the cache will be ignored.
+    #  If the param starts with @, it's treated as a tmux option and read
+    #  from cache (intended for @menus* vars) unless a third argument is provided,
+    #  in which case the cache is bypassed.
     #
-    #    Examples of usage:
+    #  Supports both direct values (e.g. "yes", "no", "true", "false") and
+    #  tmux option lookups with a fallback default.
     #
-    # if normalize_bool_param "@menus_without_prefix" "$default_no_prefix"; then
-    #     cfg_no_prefix=true
-    # else
-    #     cfg_no_prefix=false
-    # fi
-    #
-    #  if normalize_bool_param "$wt_pasting" false no_cache; then
-    #
-    #  # boolean check on regular variable - no default is needed
-    #  a="YES"
-    #  if normalize_bool_param "$a"; then
-    #      do thing is it was true
-    #  fi
+    #  Examples:
+    #    if normalize_bool_param "@menus_enabled" true; then ...
+    #    if normalize_bool_param "$some_flag"; then ...
+    #    if normalize_bool_param "@var" false no_cache; then ...
     #
     nbp_param="$1"
     nbp_default="$2"  # only needed for tmux options
@@ -301,12 +292,20 @@ config_setup() {
         safe_remove "$f_no_cache_hint" config_setup
         create_param_cache
     else
+        cfg_use_cache=false
         touch "$f_no_cache_hint"
         tmux_get_plugin_options
     fi
 }
 
 safe_remove() {
+    #
+    # Ensures what is to be removed is not a "dangerous" path that would
+    # cause a mess of the file system
+    # If param 2 is empty, an extra check will be made that the pattern is prefixed
+    # by the location of this plugin, only use param 2 if something outside
+    # the plugin location needs to be removed
+    #
     pattern="$1"
     skip_plugin_name_in_path_check="$2"
 

@@ -725,7 +725,7 @@ handle_dynamic() {
 
 cache_read_menu_items() {
     #
-    # Exports: menu_items
+    # Provides: menu_items
     #
     menu_items=""
     for f_name in "$d_menu_cache"/*; do

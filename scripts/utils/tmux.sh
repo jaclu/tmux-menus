@@ -148,7 +148,7 @@ tmux_get_option() {
         _line=""
     elif ! tmux_vers_check 1.8; then
         # before 1.8 no support for user options
-        log_it "tmux_get_option() - tmux < 1.8 - using default"
+        log_it "tmux_get_option() - tmux < 1.8 - User options not available, using default"
         _line=""
     elif $tgo_use_cache; then
         cache_save_options_defined_in_tmux
@@ -202,7 +202,7 @@ fix_home_path() {
     fhp_path="$1"
     fhp_varname="$2"
 
-    log_it "fix_home_path($fhp_varname,$fhp_path)"
+    # log_it "fix_home_path($fhp_varname,$fhp_path)"
 
     if false; then
         # For performance reasons full variable name assessment when is disabled by default

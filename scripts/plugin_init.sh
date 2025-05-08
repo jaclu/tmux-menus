@@ -10,11 +10,10 @@
 #
 
 bind_plugin_key() {
+    bind_cmd="$f_main_menu"
     if $cfg_use_whiptail; then
         bind_cmd="$d_scripts/external_dialog_trigger.sh"
         log_it "Will use alternate menu handler: $cfg_alt_menu_handler"
-    else
-        bind_cmd="$d_items/main.sh"
     fi
     cmd="bind-key"
     $cfg_use_notes && {
@@ -100,7 +99,9 @@ log_it
 #
 #  If custom inventory is used, update link to its main index
 #
-"$d_scripts"/update_custom_inventory.sh
+"$d_scripts"/update_custom_inventory.sh || {
+    error_msg "update_custom_inventory.sh reported error: $?"
+}
 
 #
 # Key is not bound until cache (if allowed) has been prepared, so normally
