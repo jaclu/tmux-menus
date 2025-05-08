@@ -218,6 +218,7 @@ select_safe_now_method() { # local usage by safe_now()
     [ -n "$selected_safe_now_mthd" ] && {
         error_msg_safe "Recursive call to: select_safe_now_method"
     }
+    # log_it "select_safe_now_method()"
 
     if [ -d /proc ] && [ -f /proc/version ]; then
         selected_safe_now_mthd="date" # Linux with sub-second precision
@@ -242,7 +243,12 @@ safe_now() {
     varname="$1"
     # validate_varname "$varname" "safe_now()()" # disabled for performance
 
-    # log_it "safe_now($varname) mthd: [$selected_safe_now_mthd]"
+    # [ -n "$selected_safe_now_mthd" ] && {
+    #     # first call will have no method defined, so this will recurse once it is
+    #     # set
+    #     log_it "safe_now($varname) mthd: [$selected_safe_now_mthd]"
+    # }
+
     case "$selected_safe_now_mthd" in
     date) t_now="$(date +%s.%N)" ;;
     gdate) t_now="$(gdate +%s.%N)" ;;
