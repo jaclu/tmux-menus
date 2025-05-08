@@ -461,7 +461,7 @@ tmux_error_handler_assign() { # cache references
     fi
     # ensure it exists
     [ ! -d "$d_errors" ] && mkdir -p "$d_errors"
-    f_tmux_err="$d_errors"/tmux-err
+    f_tmux_err="$d_errors"/tmux-errror-in-last-command-if-not-empty
 
     #
     # Run the actual command and save any error output. If the command succeeded
