@@ -389,35 +389,20 @@ tpt_tmux_vers_suffix() { # local usage by tpt_retrieve_running_tmux_vers()
     eval "$varname=\"\$_s\""
 }
 
-not_use_tmux_bin_socket() { # local usage during sourcing
-    # if multiple instances of the same tmux bin are used, errors can spill over
-    # and cause issues in the other instance
-    # this ensures that everything is run in the current environment
-
-    case "$TMUX_BIN" in
-    *-L*)
-        # log_it "==== already using socket ===="
-        ;;
-    *)
-        #
-        # in case an inner tmux is using this plugin, make sure the current socket is
-        # used to avoid picking up states from the outer tmux
-        #
-        f_name_socket="$(echo "$TMUX" | cut -d, -f 1)"
-        socket="${f_name_socket##*/}"
-        TMUX_BIN="$TMUX_BIN -L $socket"
-        ;;
-    esac
-}
-
 #===============================================================
 #
 #   Main
 #
 #===============================================================
 
-[ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
-use_tmux_bin_socket
+[ -z "$D_TM_BASE_PATH" ] && {
+    # helpers not yet sourced, so TMUX_BIN & error_msg() not yet available
+    [ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
+    msg="$plugin_name ERROR: $0 - D_TM_BASE_PATH must be set!"
+    print_stderr "$msg"
+    $TMUX_BIN display-message "$msg"
+    exit 1
+}
 
 plugin_name="tmux-menus"
 
@@ -440,14 +425,6 @@ env_initialized=0
 #  If log can't happen to stderr, it will go to cfg_log_file if it is defined
 #
 log_interactive_to_stderr=0
-
-[ -z "$D_TM_BASE_PATH" ] && {
-    # helpers not yet sourced, so error_msg() not yet available
-    msg="$plugin_name ERROR: $0 - D_TM_BASE_PATH must be set!"
-    print_stderr "$msg"
-    $TMUX_BIN display-message "$msg"
-    exit 1
-}
 
 # Set this as early as possible to be able to calculate the entire menu processing time
 safe_now t_script_start
@@ -490,6 +467,8 @@ else
     # be used
     cfg_use_cache=false
 fi
+
+. "$D_TM_BASE_PATH"/scripts/utils/define_tmux_bin.sh
 
 # --->  Only enable this if profiling is being used  <---
 # shellcheck source=scripts/utils/dbg_profiling.sh
