@@ -395,20 +395,46 @@ tpt_tmux_vers_suffix() { # local usage by tpt_retrieve_running_tmux_vers()
     eval "$varname=\"\$_s\""
 }
 
-#===============================================================
-#
-#   Main
-#
-#===============================================================
-
-[ -z "$D_TM_BASE_PATH" ] && {
-    # helpers not yet sourced, so TMUX_BIN & error_msg() not yet available
+define_tmux_bin() {
     [ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
+
+    log_it "define_tmux_bin()"
+
+    #
+    # if multiple instances of the same tmux bin are used, errors can spill over
+    # and cause issues in the other instance
+    # this ensures that everything is run in the current environment
+    #
+    case "$TMUX_BIN" in
+    *-L*) ;; # already using socket
+    *)
+        #
+        # in case an inner tmux is using this plugin, make sure the current socket is
+        # used to avoid picking up states from the outer tmux
+        #
+        # shellcheck disable=SC2154
+        f_name_socket="$(echo "$TMUX" | cut -d, -f 1)"
+        socket="${f_name_socket##*/}"
+        TMUX_BIN="$TMUX_BIN -L $socket"
+        ;;
+    esac
+}
+
+base_path_not_defined() {
+    # Show error msg if D_TM_BASE_PATH is not defined
+    # helpers not yet sourced, so TMUX_BIN & error_msg() not yet available
+    define_tmux_bin
     msg="$plugin_name ERROR: $0 - D_TM_BASE_PATH must be set!"
     print_stderr "$msg"
     $TMUX_BIN display-message "$msg"
     exit 1
 }
+
+#===============================================================
+#
+#   Main
+#
+#===============================================================
 
 plugin_name="tmux-menus"
 
@@ -416,24 +442,24 @@ plugin_name="tmux-menus"
 env_initialized=0
 
 #
-#  Setting log_file_forced here will ignore
-#  the tmux setting @menus_log_file
-#  This is mostly for debugging early stuff before the settings have
-#  been processed. Should normally be commented out!
-#  If this is set, cfg_log_file must also be defined since it won't be read from tmux.
+# Defining a cfg_log_file here, allows tracing early startup, before the plugin
+# defined log_file variable @menus_log_file have been read.
 #
-# log_file_forced="1"
+# At that point @menus_log_file will override this setting, unless log_file_forced
+# is also used. If 1 it means that @menus_log_file will be ignored and whatever
+# cfg_log_file is defined here remains. Be it a file or empty.
+#
+#  This should normally be commented out!
+#
 # cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
+# log_file_forced="1"
 
 #
-#  If set to "1" log will happen to stderr if script is run in an interactive
+#  If set to 1 log will happen to stderr if script is run in an interactive
 #  shell, so this will not mess it up if the plugin is initiated or run by tmux
-#  If log can't happen to stderr, it will go to cfg_log_file if it is defined
+#  If log can't happen to stderr, it will go to @menus_log_file if it is defined
 #
 log_interactive_to_stderr=0
-
-# Set this as early as possible to be able to calculate the entire menu processing time
-safe_now t_script_start
 
 min_tmux_vers="1.8"
 # for performance only a minimum of support features are in this file
@@ -441,17 +467,20 @@ min_tmux_vers="1.8"
 # a call to source_all_helpers will be done, this ensures it only happens once
 all_helpers_sourced=false
 
-# minimal support variables
-
 d_tmp="${TMPDIR:-/tmp}"
 d_tmp="${d_tmp%/}" # Removes a trailing slash if present - sometimes set in TMPDIR...
 f_no_cache_hint="$d_tmp"/tmux-menus-no-cache-hint
+
+[ -z "$D_TM_BASE_PATH" ] && base_path_not_defined
 
 d_scripts="$D_TM_BASE_PATH"/scripts
 d_items="$D_TM_BASE_PATH"/items
 d_cache="$D_TM_BASE_PATH"/cache
 f_cache_known_tmux_vers="$d_cache"/known_tmux_versions
 f_cache_params="$d_cache"/plugin_params
+
+# Set this as early as possible to be able to calculate the entire menu processing time
+safe_now t_script_start
 
 # shellcheck disable=SC2034
 {
@@ -473,8 +502,6 @@ else
     # be used
     cfg_use_cache=false
 fi
-
-. "$D_TM_BASE_PATH"/scripts/utils/define_tmux_bin.sh
 
 # --->  Only enable this if profiling is being used  <---
 # shellcheck source=scripts/utils/dbg_profiling.sh
