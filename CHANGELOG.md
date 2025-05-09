@@ -4,35 +4,38 @@ All notable changes to this project will be documented here.
 
 ---
 
-## [Unreleased]
+## [2.2.4] - 2025-05-09
 
 ### Added
 
-- Created a list in TODO over the cached process, in order to see what can be optimized
 - time_span(org_time) - sets t_time_span to time since org_time
 - copied definition of TMUX*BIN to scripts/utils/define_tmux_bin.sh in order to ensure
   sockets will always be used to minimize risk for collisions if an inner tmux uses
-  this plugin in stdalone tools, like external_dialog*\*
-- scripts/utils/std_alone_log.sh - Tries to pick up current log_file if defined
-  otherwise logs to /dev/stderr
+  this plugin in stdalone tools, like `external_dialog*\*`
+- scripts/utils/std*alone_log.sh - Tries to pick up current log_file if defined
+  otherwise logs to /dev/stderr, used by external tools that don't load the entire
+  environment like `external_dialog*\*`
 
 ### Changed
 
-- 'Move pane' & 'Move Window' - Corrected check when pane is marked in another context
+- Bug fix: fix_home_path() - Now correctly handles the odd behaviour of tmux 3.4
 - Bug fix: forgetting to check if cache is active in dialog_handling.sh:handle_dynamic()
 - Bug fix: verify_menu_runable() - escape ' in order to display errors in menu code
-- tmux_error_handler_assign() - streamlined for performance and added inline comments
-- menu_generate_part() - abort early for empty parts
-- static_files_reduction() - simplified
-- Improved error detection when parsing and displaying menus
-- sort_menu_items() -> get_menu_items_sorted()
-- get_menu_items_sorted() & cache_read_menu_items() - simplified code, slight performance boost
-- menu_parse() - optimized processing
-- Added run_if_found() - makes code cleaner
-- Bug fix: fix_home_path() - Now correctly handles the odd behaviour of tmux 3.4
-- moved all profiling init to dbg_profiling.sh
 - Bug fix: scripts/update_custom_inventory.sh - ensure main menu is cleared if
   custom items are removed, to ensure main menu stops offering custom menus
+
+- menu_parse() - optimized processing
+- menu_generate_part() - abort early for empty parts
+- tmux_error_handler_assign() - streamlined for performance and added inline comments
+- get_menu_items_sorted() & cache_read_menu_items() - simplified code, slight performance boost
+- Added run_if_found() - makes code cleaner
+- Improved error detection when parsing and displaying menus
+- 'Move pane' & 'Move Window' - Corrected check when pane is marked in another context
+- static_files_reduction() - simplified
+- sort_menu_items() -> get_menu_items_sorted()
+- moved all profiling init to dbg_profiling.sh
+
+---
 
 ## [2.2.3] - 2025-04-28
 
