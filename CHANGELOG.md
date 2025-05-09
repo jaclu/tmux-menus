@@ -4,6 +4,18 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [Unreleased]
+
+### Added
+
+- Main help mentions that `j` & `k` can be used for scrolling
+
+### Changed
+
+- Fix: Main help had an empty text line that could be selected
+
+---
+
 ## [2.2.5] - 2025-05-09
 
 ### Added

@@ -68,7 +68,10 @@ static_content() {
         0.0 S \
         0.0 T "-#[nodim]Shortcut keys are usually upper case" \
         0.0 T "-#[nodim]for menus, and lower case for actions." \
-        0.0 T " " \
+        0.0 T "-" \
+        0.0 T "-#[nodim]j & k can be used for menu scrolling" \
+        0.0 T "-#[nodim]no items use either as shortcuts." \
+        0.0 T "-" \
         0.0 T "-#[align=centre,nodim]--------  About this plugin  -------"
     menu_generate_part 2 "$@"
 
