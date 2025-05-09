@@ -374,8 +374,12 @@ tmux_get_plugin_options() { # new init
 
     tmux_get_option _tmux_conf "@menus_config_file" "$default_tmux_conf"
     # Handle the case of ~ or $HOME being wrapped in single quotes in tmux.conf
-    # shellcheck disable=SC2154
-    fix_home_path "$_tmux_conf" cfg_tmux_conf
+    if [ -n "$_tmux_conf" ]; then
+        fix_home_path "$_tmux_conf" cfg_tmux_conf
+    else
+        # shellcheck disable=SC2034
+        cfg_tmux_conf=""
+    fi
 
     # shellcheck disable=SC2154
     [ "$log_file_forced" != 1 ] && {
@@ -383,7 +387,12 @@ tmux_get_plugin_options() { # new init
         # log_it "tmux will read cfg_log_file"
         tmux_get_option _log_file "@menus_log_file" "$default_log_file"
         # Handle the case of ~ or $HOME being wrapped in single quotes in tmux.conf
-        fix_home_path "$_log_file" cfg_log_file
+        if [ -n "$_log_file" ]; then
+            fix_home_path "$_log_file" cfg_log_file
+        else
+            # shellcheck disable=SC2034
+            cfg_log_file=""
+        fi
     }
     #
     #  Generic plugin setting I use to add Notes to keys that are bound
