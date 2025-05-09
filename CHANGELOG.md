@@ -4,6 +4,18 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [2.2.5] - 2025-05-09
+
+### Added
+
+- New documentation: docs/SingleQuotes.md
+
+### Changed
+
+- Updated README.md to refer to docs/SingleQuotes.md when relevant
+
+---
+
 ## [2.2.4] - 2025-05-09
 
 ### Added

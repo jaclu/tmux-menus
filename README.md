@@ -20,13 +20,12 @@ experienced users, then add more for newbies.
 
 ## Recent Changes
 
+- Added `docs/SingleQuotes.md` to explain some pitfalls of single quoted variables.
+- Now handles tmux 3.4 odd interpretation of `$HOME` inside single quotes
 - Prevent tmux variables from being expanded in `Display Menu Commands`
 - Moved Layouts and Split window into Windows menu
 - Main menu help displays kind of an about box info, about what version of the
   plugin is used
-- `Display menu commands` Rotates between displaying commands and all matching
-  prefix and root binds.
-- Added parameter `@menus_border_type` for Styling
 
 </details>
 <details>
@@ -172,17 +171,8 @@ The default trigger is `<prefix> \` The trigger is configured like this:
 set -g @menus_trigger 'Space'
 ```
 
-Note: Non-standard keys, such as the default backslash (`\`), must be prefixed with `\`
-(e.g., `\\`) to prevent confusion in tmux.
-
-Handling special keys becomes more complex when using quotes:
-
-- Inside single quotes, both `'\'` and `'\\'` work.
-- Inside double quotes, only `"\\"` is valid.
-
-To avoid unexpected errors when switching between quoting styles, it's recommended
-to always prefix special keys with `\` inside both single and double quotes,
-as well as when not using quotes.
+See [SingleQuotes](docs/SingleQuotes.md) for how to handle special chars like `\`
+in tmux variables.
 
 ### Display without using prefix
 
@@ -197,8 +187,11 @@ Use this in order to trigger menus without first hitting `<prefix>`
 ### Pointer to the config file
 
 ```tmux
-set -g @menus_config_file '~/.configs/tmux.conf'
+set -g @menus_config_file "~/.configs/tmux.conf"
 ```
+
+See [SingleQuotes](docs/SingleQuotes.md) for how to handle `$HOME` and `~`
+in tmux variables.
 
 In the main menu, the tmux config file to be reloaded.
 The default location for this is:
@@ -306,8 +299,11 @@ Per default logging is disabled. If this is desired, provide a log file name
 like this:
 
 ```tmux
-set -g @menus_log_file '~/tmp/tmux-menus.log'
+set -g @menus_log_file "~/tmp/tmux-menus.log"
 ```
+
+See [SingleQuotes](docs/SingleQuotes.md) for how to handle `$HOME` and `~`
+in tmux variables.
 
 ### Display menu commands
 
