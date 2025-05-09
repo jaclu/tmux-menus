@@ -260,5 +260,5 @@ f_custom_items_content="$d_cache"/custom_items_content
 if $cfg_use_cache; then
     custom_items_prepare
 else
-    error_msg "$0 - should not be run if caching is disabled!"
+    error_msg "$(relative_path "$0") - should not be run if caching is disabled!"
 fi
