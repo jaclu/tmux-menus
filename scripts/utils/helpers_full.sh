@@ -17,39 +17,51 @@
 
 error_msg() {
     #
-    #  Display an error message in log and as a tmux display-message
+    #  Logs an error and displays it via tmux, adapting to message length.
     #
-    #  Using do_display_message is only practical for short one liners,
-    #  for longer error msgs, needing formatting, use error_msg_formated()
-    #  instead.
+    #  Handles both short messages and multi-line or long-form errors,
+    #  automatically choosing between display-message and formatted output.
     #
-    #  exit_code defaults to 0, which might seem odd for an error exit,
-    #  but in combination with display-message it makes sense.
-    #  If the script exits with something else than 0, the current pane
-    #  will be temporary replaced by an error message mentioning the exit
-    #  code. Which is both redundant and much less informative than the
-    #  display-message that is shown.
-    #  If exit_code is set to -1, process is not exited
+    #  Defaults to exit code 0 to suppress tmux's less informative
+    #  "pane replaced" error overlay. Use -1 to avoid exiting entirely.
+    #
+    #  If dont_display is non-empty, the message is only logged
+    #  (useful during debugging).
     #
     em_msg="$1"
     exit_code="${2:-0}"
+    dont_display="$3"
+
     log_it_minimal "error_msg($em_msg, $exit_code)"
+
+    [ -z "$dont_display" ] && error_msg_actual
+    [ "$exit_code" -gt -1 ] && exit "$exit_code"
+}
+
+error_msg_actual() {
+    # Disable logging for the remainder of error_msg processing, to avoid getting
+    # log-flooded, unless exit is not requested
+    [ "$exit_code" -gt -1 ] && cfg_log_file=""
 
     [ -z "$TMUX" ] && {
         # with no tmux env, dumping it to stderr & log-file is the only output options
         log_it_minimal "***  This does not seem to be running in a tmux env  ***"
     }
 
-    log_it_minimal
-    log_it_minimal "ERROR: $em_msg"
-    log_it_minimal
-
     [ -n "$TMUX" ] && {
         # shellcheck disable=SC2154
         msg_hold="$plugin_name ERR: $em_msg"
         # shellcheck disable=SC2154
         if [ "$env_initialized" -eq 2 ] && (
+            #
+            # Slightly complex condition, has_lf_not_at_end() can only be called
+            # if env_initialized is 2
+            # so therefore actual_win_width is retrieved here in the middle of the
+            # condition...
+            #
             actual_win_width="$($TMUX_BIN display-message -p "#{client_width}")"
+
+            # The actual condition part of this code block
             [ "${#msg_hold}" -ge "$actual_win_width" ] || has_lf_not_at_end "$em_msg"
         ); then
             error_msg_formated "$em_msg"
@@ -57,8 +69,6 @@ error_msg() {
             display_message_hold "$msg_hold"
         fi
     }
-
-    [ "$exit_code" -gt -1 ] && exit "$exit_code"
 }
 
 error_msg_formated() {
@@ -151,30 +161,19 @@ get_digits_from_string() {
 
 normalize_bool_param() {
     #
-    # Take a boolean style text param and convert it into an actual boolean
-    # that can be used in your code. If the param starts with @ it is first read
-    # from tmux
+    #  Normalizes a string into a boolean value usable in conditionals.
     #
-    # For performance reasons all @menus... params are cached once when cache is
-    # initialized. In case some other tmux variable needs to be checked,
-    # ignore this cache and do a read by providing a third param, "no_cache" or similar,
-    # it's content doesn't matter, if a 3rd param is provided, the cache will be ignored.
+    #  If the param starts with @, it's treated as a tmux option and read
+    #  from cache (intended for @menus* vars) unless a third argument is provided,
+    #  in which case the cache is bypassed.
     #
-    #    Examples of usage:
+    #  Supports both direct values (e.g. "yes", "no", "true", "false") and
+    #  tmux option lookups with a fallback default.
     #
-    # if normalize_bool_param "@menus_without_prefix" "$default_no_prefix"; then
-    #     cfg_no_prefix=true
-    # else
-    #     cfg_no_prefix=false
-    # fi
-    #
-    #  if normalize_bool_param "$wt_pasting" false no_cache; then
-    #
-    #  # boolean check on regular variable - no default is needed
-    #  a="YES"
-    #  if normalize_bool_param "$a"; then
-    #      do thing is it was true
-    #  fi
+    #  Examples:
+    #    if normalize_bool_param "@menus_enabled" true; then ...
+    #    if normalize_bool_param "$some_flag"; then ...
+    #    if normalize_bool_param "@var" false no_cache; then ...
     #
     nbp_param="$1"
     nbp_default="$2"  # only needed for tmux options
@@ -260,13 +259,13 @@ check_speed_cutoff() {
     cut_off="$1"
 
     # log_it "-T- check_speed_cutoff($cut_off)"
-    safe_now
     # shellcheck disable=SC2154
-    t_init="$(echo "$t_now - $t_script_start" | bc)"
-    if [ "$(echo "$t_init < $cut_off" | bc)" -eq 1 ]; then
+    time_span "$t_script_start"
+    # shellcheck disable=SC2154
+    if [ "$(echo "$t_time_span < $cut_off" | bc)" -eq 1 ]; then
         t_minimal_display_time=0.1
     else
-        log_it "  Failed cutoff time, considered a slow system: $t_init >= $cut_off"
+        # log_it "  Failed cutoff time, considered a slow system: $t_time_span >= $cut_off"
         # for slower systems
         t_minimal_display_time=0.5
     fi
@@ -281,7 +280,7 @@ check_speed_cutoff() {
 config_setup() {
     # Examins tmux env, and depending on caching config either plainly read
     # tmux.conf, or prepare a f_cache_params
-    # log_it "config_setup()"
+    log_it "config_setup()"
 
     # only need default_use_cache at this point but might as well get them all
     tmux_get_defaults
@@ -291,12 +290,20 @@ config_setup() {
         safe_remove "$f_no_cache_hint" config_setup
         create_param_cache
     else
+        cfg_use_cache=false
         touch "$f_no_cache_hint"
         tmux_get_plugin_options
     fi
 }
 
 safe_remove() {
+    #
+    # Ensures what is to be removed is not a "dangerous" path that would
+    # cause a mess of the file system
+    # If param 2 is empty, an extra check will be made that the pattern is prefixed
+    # by the location of this plugin, only use param 2 if something outside
+    # the plugin location needs to be removed
+    #
     pattern="$1"
     skip_plugin_name_in_path_check="$2"
 

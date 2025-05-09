@@ -148,7 +148,7 @@ tmux_get_option() {
         _line=""
     elif ! tmux_vers_check 1.8; then
         # before 1.8 no support for user options
-        log_it "tmux_get_option() - tmux < 1.8 - using default"
+        log_it "tmux_get_option() - tmux < 1.8 - User options not available, using default"
         _line=""
     elif $tgo_use_cache; then
         cache_save_options_defined_in_tmux
@@ -184,32 +184,57 @@ tmux_get_option() {
 
 fix_home_path() {
     #
-    #  If a variable with ~ or $HOME is wrapped in single quotes in tmux.conf,
-    #  those will be prefixed with \ and thus unusable, this removes such backslashes
-    #  and expands $HOME
+    #  Normalizes plugin variables containing $HOME or ~, which may be passed
+    #  as single-quoted strings in tmux.conf due to outdated HOWTOs and habits.
     #
-    #  Assigning the supplied variable name instead of printing output in a subshell,
-    #  for better performance
+    #  Tmux versions prior to 3.0 expanded $HOME and ~ even when quoted oddly,
+    #  but from 3.0 onward, such values are treated literally. Version 3.4
+    #  adds further inconsistency by escaping $HOME differently.
     #
-    fhp_varname="$1"
-    fhp_path="$2"
+    #  This function detects the tmux version and expands $HOME or ~ paths
+    #  to full absolute paths. A sanity check ensures the result looks valid,
+    #  guarding against future behavioral changes in tmux.
+    #
+    #  Usage:
+    #    fix_home_path "$org_log_file" log_file    # Sets fixed path directly (faster)
+    #    log_file=$(fix_home_path "$org_log_file") # Prints fixed path forking a sub-shell
+    #
+    fhp_path="$1"
+    fhp_varname="$2"
+
     # log_it "fix_home_path($fhp_varname,$fhp_path)"
 
-    validate_varname "$fhp_varname" "fix_home_path()"
-    # [ -z "$fhp_varname" ] && error_msg "fix_home_path() param 1 empty!"
+    if false; then
+        # For performance reasons full variable name assessment when is disabled by default
+        validate_varname "$fhp_varname" "fix_home_path()"
+    else
+        [ -z "$fhp_varname" ] && error_msg "fix_home_path() param 1 empty!"
+    fi
+    [ -z "$fhp_path" ] && error_msg "fix_home_path() param 2 empty!"
 
     # But of course tmux changed how they escpe options starting with ~ or $HOME...
-    if tmux_vers_check 3.0; then
+    if tmux_vers_check 3.4 && ! tmux_vers_check 3.5; then
+        # Special case for tmux 3.4
         case "$fhp_path" in
         \\~/*)
             fhp_path="${fhp_path#\\}"        # Remove leading backslash
             fhp_path="${HOME}${fhp_path#\~}" # Expand ~ to $HOME
-            # log_it " - found \\~ - changed into: $fhp_path"
+            ;;
+        \\\\\$HOME/*)
+            fhp_path="${fhp_path#\\\\}"          # Remove leading backslash
+            fhp_path="${HOME}${fhp_path#\$HOME}" # Expand $HOME
+            ;;
+        *) ;;
+        esac
+    elif tmux_vers_check 3.0; then
+        case "$fhp_path" in
+        \\~/*)
+            fhp_path="${fhp_path#\\}"        # Remove leading backslash
+            fhp_path="${HOME}${fhp_path#\~}" # Expand ~ to $HOME
             ;;
         \\\$HOME/*)
             fhp_path="${fhp_path#\\}"            # Remove leading backslash
             fhp_path="${HOME}${fhp_path#\$HOME}" # Expand ~ to $HOME
-            # log_it " - found \\\$HOME - changed into: $fhp_path"
             ;;
         *) ;;
         esac
@@ -218,12 +243,10 @@ fix_home_path() {
         \~/*)
             fhp_path="${fhp_path#\\}"        # Remove leading backslash
             fhp_path="${HOME}${fhp_path#\~}" # Expand ~ to $HOME
-            # log_it " - found \\~ - changed into: $fhp_path"
             ;;
         \$HOME/*)
             fhp_path="${fhp_path#\\}"            # Remove leading backslash
             fhp_path="${HOME}${fhp_path#\$HOME}" # Expand ~ to $HOME
-            # log_it " - found \\\$HOME - changed into: $fhp_path"
             ;;
         *) ;;
         esac
@@ -235,8 +258,12 @@ fix_home_path() {
     echo "$fhp_path" | grep -q \$HOME && {
         error_msg "fix_home_path() - Failed to expand \$HOME in: $fhp_path"
     }
-    # log_it "><> fix_home_path() result:[$fhp_path]"
-    eval "$fhp_varname=\"\$fhp_path\""
+
+    if [ -n "$fhp_varname" ]; then
+        eval "$fhp_varname=\"\$fhp_path\""
+    else
+        echo "$fhp_path"
+    fi
 }
 
 tmux_get_plugin_options() { # new init
@@ -347,8 +374,12 @@ tmux_get_plugin_options() { # new init
 
     tmux_get_option _tmux_conf "@menus_config_file" "$default_tmux_conf"
     # Handle the case of ~ or $HOME being wrapped in single quotes in tmux.conf
-    # shellcheck disable=SC2154
-    fix_home_path cfg_tmux_conf "$_tmux_conf"
+    if [ -n "$_tmux_conf" ]; then
+        fix_home_path "$_tmux_conf" cfg_tmux_conf
+    else
+        # shellcheck disable=SC2034
+        cfg_tmux_conf=""
+    fi
 
     # shellcheck disable=SC2154
     [ "$log_file_forced" != 1 ] && {
@@ -356,7 +387,12 @@ tmux_get_plugin_options() { # new init
         # log_it "tmux will read cfg_log_file"
         tmux_get_option _log_file "@menus_log_file" "$default_log_file"
         # Handle the case of ~ or $HOME being wrapped in single quotes in tmux.conf
-        fix_home_path cfg_log_file "$_log_file"
+        if [ -n "$_log_file" ]; then
+            fix_home_path "$_log_file" cfg_log_file
+        else
+            # shellcheck disable=SC2034
+            cfg_log_file=""
+        fi
     }
     #
     #  Generic plugin setting I use to add Notes to keys that are bound
@@ -367,10 +403,8 @@ tmux_get_plugin_options() { # new init
     #
     if tmux_vers_check 3.1 &&
         normalize_bool_param "@use_bind_key_notes_in_plugins" No; then
-        # log_it "><> using notes"
         cfg_use_notes=true
     else
-        # log_it "><> ignoring notes"
         # shellcheck disable=SC2034
         cfg_use_notes=false
     fi
@@ -390,30 +424,44 @@ use_whiptail_env() {
 }
 
 tmux_error_handler() {
+    teh_store_result=false
     # fake assigning a variable in order to use the same func
-    tmux_error_handler_assign _dont_store_result_ "$@"
+    tmux_error_handler_assign _ "$@"
 }
 
 tmux_error_handler_assign() { # cache references
     #
-    #  Detects any errors reported by tmux commands and gives notification
-    #
+    #  Detects any errors reported by tmux commands and aborts displaying the error
     #
     #  Assigning the supplied variable name instead of printing output in a subshell,
     #  for better performance
     #
+    #  If teh_debug is set to true, extensive debug logging will happen
+    #  this will be set back to false at the end of this, so it needs to be
+    #  enabled for each call specifically
+    #
     varname="$1"
     shift
-    the_cmd="$*"
+    #
+    #  This will loose quotes etc, but since is doesn't cost any overhead to generate
+    #  it is "good enough" for logging and error displays
+    #
+    cmd_simplified="$*"
 
-    validate_varname "$varname" "tmux_error_handler_assign()"
     $teh_debug && {
-        if [ "$varname" = "_dont_store_result_" ]; then
-            log_it "tmux_error_handler($the_cmd)"
+        # in principle this should be done every time, but limited to when
+        # logging, to minimize overhead
+        validate_varname "$varname" "tmux_error_handler_assign()"
+
+        if $teh_store_result; then
+            log_it "tmux_error_handler_assign($cmd_simplified) -> $varname"
         else
-            log_it "tmux_error_handler_assign($the_cmd) -> $varname"
+            log_it "tmux_error_handler($cmd_simplified)"
         fi
     }
+
+    # Define a location where to store the potentiall error output
+    # and create a file name based on this location
     if $cfg_use_cache; then
         d_errors="$d_cache"
     else
@@ -422,71 +470,78 @@ tmux_error_handler_assign() { # cache references
     fi
     # ensure it exists
     [ ! -d "$d_errors" ] && mkdir -p "$d_errors"
-    f_tmux_err="$d_errors"/tmux-err
-    $teh_debug && {
-        log_it "teh: $TMUX_BIN $the_cmd"
-    }
-    # shellcheck disable=SC2068  # intentional to keep params seeparate here
-    value=$($TMUX_BIN "$@" 2>"$f_tmux_err") && safe_remove "$f_tmux_err" skip-path-check
-    $teh_debug && log_it "teh: cmd done [$?] >>$value<<"
+    f_tmux_err="$d_errors"/tmux-errror-in-last-command-if-not-empty
+
+    #
+    # Run the actual command and save any error output. If the command succeeded
+    # just ignore the empty error output file
+    #
+    if $teh_store_result; then
+        value=$($TMUX_BIN "$@" 2>"$f_tmux_err")
+    else
+        $TMUX_BIN "$@" 2>"$f_tmux_err" >/dev/null
+    fi
+    ex_code="$?"
+    $teh_debug && log_it "teh: cmd done - excode:$ex_code - output: >>$value<<"
+
+    #
+    # Parse any error output
+    #
     [ -s "$f_tmux_err" ] && {
+        # Reset result-capture state for safety (should not reach this after error)
+        teh_store_result=true
+
         #
         #  First save the error to a named file
         #
-        _f_name="$(tr -cs '[:alnum:]._' '_' <"$f_tmux_err")"
-        [ -z "$_f_name" ] && _f_name="tmux-error"
-        f_error_log="$d_errors/error-$_f_name"
+        f_error_base="$d_errors/error-"
+        [ "$d_errors" != "$d_cache" ] && f_error_base="${f_error_base}tmux-menus-"
+        f_error_base="${f_error_base}$(tr -cs '[:alnum:]._' '_' <"$f_tmux_err")"
 
-        [ -f "$f_error_log" ] && {
-            _idx=1
-            f_error_log="${f_error_log}-$_idx"
-            while [ -f "$f_error_log" ]; do
-                _idx=$((_idx + 1))
-                f_error_log="${f_tmux_err}-$_idx"
-                [ "$_idx" -gt 1000 ] && {
-                    error_msg "Aborting runaway loop - _idx=$_idx"
-                }
-            done
-        }
+        _idx=0
+        f_error_log="$f_error_base"
+        while [ -f "$f_error_log" ]; do
+            _idx=$((_idx + 1))
+            f_error_log="${f_error_base}-$_idx"
+            [ "$_idx" -gt 1000 ] && error_msg "Aborting runaway loop - _idx=$_idx"
+        done
+
         (
-            echo "\$TMUX_BIN $the_cmd"
+            echo "\$TMUX_BIN $cmd_simplified"
             echo
             cat "$f_tmux_err"
-        ) >"$f_error_log"
+        ) >"$f_error_log" && rm "$f_tmux_err"
 
         if $teh_debug; then
-            log_it "$(
-                printf "tmux cmd failed:\n\n%s\n" "$(cat "$f_error_log")"
-            )"
+            log_it "tmux cmd failed:\n\n$(cat "$f_error_log")\n"
+            exit 1
         else
             log_it "saved error to: $f_error_log"
-            _err_frame_line="--------------------\n"
+            #region tmux error msg
             error_msg "$(
-                printf 'tmux cmd failed:\n\n%s%s\n%s\n%s: %s\n\nFull path: %s' \
-                    "$_err_frame_line" \
-                    "$(cat "$f_error_log")" \
-                    "$_err_frame_line" \
-                    "The error message has been saved in" \
-                    "$(relative_path "$f_error_log")" \
-                    "$f_error_log"
+                cat <<EOF
+tmux cmd failed:
+
+--------------------
+$(cat "$f_error_log")
+--------------------
+The error message has been saved in: $(relative_path "$f_error_log")
+
+Full path: $f_error_log
+EOF
             )"
+            #endregion
         fi
-        return 1
+        return 1 # shouldn't get here, but at least return an error
     }
 
-    $teh_debug && {
-        if [ "$varname" = "_dont_store_result_" ]; then
-            [ -n "$value" ] && {
-                # since it's not an assignment, just output it
-                echo "$value"
-                log_it "  <--  tmux_error_handler() got: >>$value<<"
-            }
-        else
-            log_it "  <--  tmux_error_handler_assign() got: >>$value<<"
-        fi
-    }
-    teh_debug=false
-    eval "$varname=\"\$value\""
+    #
+    # Depending on call type, potentially save output in caller supplied variable name
+    #
+    $teh_store_result && eval "$varname=\"\$value\""
+
+    teh_store_result=true # reset this for the next call
+    teh_debug=false       # This needs to be enabled on a per call basis
     return 0
 }
 
@@ -496,9 +551,17 @@ tmux_error_handler_assign() { # cache references
 #
 #===============================================================
 
+# The default for tmux_error_handler_assign() is to store result in a provided
+# variable. When no output is needed call tmux_error_handler() this sets this
+# to false then call tmux_error_handler_assign() with a dummy variable name
+# that will be ignored. At the end of tmux_error_handler_assign() this will be set
+# to true again. This is needed to initialize the variable so that a first call
+# to tmux_error_handler_assign() will behave as expected
+teh_store_result=true
+
 #
-# tmux_error_handler & tmux_error_handler_assign neve log normally
-# if a specific call should be logged set this to true, it will be disabled again
+# tmux_error_handler & tmux_error_handler_assign never log normally.
+# If a specific call should be logged set this to true, it will be disabled again
 # at the end of the call
 #
 teh_debug=false

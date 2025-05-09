@@ -71,11 +71,6 @@ sc_extract_key_bind() {
     if [ -z "$sc_ekb_keys" ]; then
         ekb_cmd_inverted=$(sc_invert_quotes "$sc_ekb_cmd")
         sc_ekb_keys=$(sc_extract_key_bind_run_awk "$sc_ekb_key_type" "$ekb_cmd_inverted")
-        # [ -n "$sc_ekb_keys" ] && {
-        #     _m="><> after inverting quotes: [$ekb_cmd_inverted]"
-        #     _m="$_m - found: $sc_ekb_keys"
-        #     log_it "$_m"
-        # }
     fi
 
     if [ -n "$sc_ekb_output_var" ]; then
@@ -92,7 +87,7 @@ sc_filter_bind_escapes_single() {
     # For those chars, display-menu will unescape them.
     sc_fbes_key=$1
     sc_fbes_output_var="$2"
-    sc_fbes_last_char=$(printf '%s' "$sc_fbes_key" | awk '{print substr($0,length,1)}')
+    sc_fbes_last_char=$(printf '%s\n' "$sc_fbes_key" | awk '{print substr($0,length,1)}')
 
     # log_it "sc_filter_bind_escapes_single($sc_fbes_key, $sc_fbes_output_var) [$sc_fbes_last_char]"
     [ -z "$sc_fbes_output_var" ] && {
@@ -106,7 +101,7 @@ sc_filter_bind_escapes_single() {
         ;;
     *)
         # shellcheck disable=SC1003 # in this case it is actually POSIX-compliant
-        clean_key=$(printf '%s' "$sc_fbes_key" | tr -d '\\')
+        clean_key=$(printf '%s\n' "$sc_fbes_key" | tr -d '\\')
         # printf '%s\n' "$clean_key"
         eval "$sc_fbes_output_var=\"$clean_key\""
         ;;
@@ -142,7 +137,6 @@ sc_check_key_binds() {
         sc_filter_bind_escapes_single "$_key" sc_ckb_escaped
         sc_ckb_prefix_bind="${sc_ckb_prefix_bind}${sc_ckb_prefix_bind:+ }$sc_ckb_escaped"
     done
-    # log_it "><> sc_ckb_prefix_raw [$sc_ckb_prefix_raw] - sc_ckb_prefix_bind [$sc_ckb_prefix_bind]"
 
     sc_extract_key_bind root "$sc_ckb_cmd" sc_ckb_root_raw
     sc_ckb_root_bind=""
@@ -228,7 +222,7 @@ sc_clean_up_result() {
     #
     # prevent tmux variables from being expanded by dobeling # into ##
     #
-    sc_cur_s1=$(printf '%s' "$sc_cur_input" | sed 's/#/##/g')
+    sc_cur_s1=$(printf '%s\n' "$sc_cur_input" | sed 's/#/##/g')
 
     #
     # Replaces initial tmux-cmd with [TMUX] for clarity and to avoid risking

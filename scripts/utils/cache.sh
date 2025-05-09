@@ -196,7 +196,6 @@ cache_write_plugin_params() {
     _f_params_tmp=$(mktemp) || {
         error_msg "cache_write_plugin_params() - Failed to create tmp config file"
     }
-    # fi
 
     #region param cache file
     # shellcheck disable=SC2154
@@ -241,7 +240,7 @@ cfg_simple_style_border=\"$(cache_escape_special_chars "$cfg_simple_style_border
     fi
 
     # shellcheck disable=SC2154
-    printf '\n%s\n' "\
+    printf '\n%s' "\
 cfg_nav_next=\"$(cache_escape_special_chars "$cfg_nav_next")\"
 cfg_nav_prev=\"$(cache_escape_special_chars "$cfg_nav_prev")\"
 cfg_nav_home=\"$(cache_escape_special_chars "$cfg_nav_home")\"
@@ -283,17 +282,26 @@ t_minimal_display_time=\"$t_minimal_display_time\"
         if ! diff -q "$_f_params_tmp" "$f_cache_params" >/dev/null 2>&1; then
             # diff reports success if files don't differ, hence the !
             # If any params have changed, invalidate cache
+
+            # error_msg "><> verify existence of: $f_cached_tmux_options" 1 dont_display
+
             cache_clear "=======   Environment changed:  $(
                 diff "$_f_params_tmp" "$f_cache_params"
             )"
-            mv "$_f_params_tmp" "$f_cache_params" # replace even if unchanged
+            mv "$_f_params_tmp" "$f_cache_params"
+            [ -n "$cfg_log_file" ] && [ -f "$cfg_log_file" ] && {
+                # not strictly needed, the cache files will be created
+                # when needed, doing it here is mostly to ensure they are always
+                # available for debug checks
+                cache_save_options_defined_in_tmux
+            }
         else
             # log_it " config unchanged - param cache not cleared"
             rm "$_f_params_tmp"
         fi
     else
         log_it " param cache created"
-        mv "$_f_params_tmp" "$f_cache_params" # replace even if unchanged
+        mv "$_f_params_tmp" "$f_cache_params"
     fi
 }
 

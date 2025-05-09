@@ -10,11 +10,10 @@
 #
 
 bind_plugin_key() {
+    bind_cmd="$f_main_menu"
     if $cfg_use_whiptail; then
         bind_cmd="$d_scripts/external_dialog_trigger.sh"
         log_it "Will use alternate menu handler: $cfg_alt_menu_handler"
-    else
-        bind_cmd="$d_items/main.sh"
     fi
     cmd="bind-key"
     $cfg_use_notes && {
@@ -68,6 +67,8 @@ if [[ -d "$d_cache" ]]; then
     safe_remove "$f_cache_known_tmux_vers"
     safe_remove "$f_cached_tmux_options"
     safe_remove "$f_cached_tmux_key_binds"
+    # Clear any errors from previous runs
+    safe_remove "$d_cache"/error-*
 
     #
     # If these are removed, it can't be detected if config changed, so
@@ -98,7 +99,11 @@ log_it
 #
 #  If custom inventory is used, update link to its main index
 #
-"$d_scripts"/update_custom_inventory.sh
+$cfg_use_cache && {
+    "$d_scripts"/update_custom_inventory.sh || {
+        error_msg "update_custom_inventory.sh reported error: $?"
+    }
+}
 
 #
 # Key is not bound until cache (if allowed) has been prepared, so normally

@@ -9,17 +9,24 @@
 #
 
 dynamic_content() {
-    # clear params content
-    set --
-    tmux_vers_check 3.0 && {
-        # marking a pane is an ancient feature, but pane_marked came at 3.0
-        $TMUX_BIN display-message -p \
-            '#{&&:#{pane_marked_set},#{!=:#{pane_marked},1}}' | grep -q 1 && {
-            set -- \
-                3.0 C m "Swap current pane with marked" "swap-pane $menu_reload"
-        }
-    }
-    menu_generate_part 4 "$@" # needs to be generated even if empty, to keep an item 2
+    # marking a pane is an ancient feature, but pane_marked came at 3.0
+    tmux_vers_check 3.0 || return
+
+    $all_helpers_sourced || source_all_helpers "pane_move:dynamic_content()"
+    tmux_error_handler_assign other_pane_marked display-message \
+        -p '#{&&:#{pane_marked_set},#{!=:#{pane_marked},1}}'
+
+    # shellcheck disable=SC2154
+    if [ "$other_pane_marked" = 1 ]; then
+        set -- \
+            3.0 C m "Swap current pane with marked" "swap-pane $menu_reload"
+    else
+        set -- # clear params
+    fi
+
+    # Needs to be generated even if empty, in order to clear this item if it had
+    # content last time this menu was displayed
+    menu_generate_part 4 "$@"
 }
 
 static_content() {
@@ -29,9 +36,16 @@ static_content() {
     menu_generate_part 1 "$@"
     $cfg_display_cmds && display_commands_toggle 2
 
+    #
+    # In principle, if this was moved into segment 1 there would be one less
+    # cache part to handle, so would be more efficient. However this minuscule speed
+    # gain would cause the command toggle to be displayed outside the first menu segment
+    # and thus create an inconsistent look. So in practical terms its just not
+    # worth it. But I do agree that it looks pretty silly to have a separate
+    # cache file that only contains: ""
+    #
     set -- \
         1.7 S
-
     menu_generate_part 3 "$@"
 
     set -- \
@@ -46,12 +60,10 @@ static_content() {
             1.7 M K "Key hints - Move to other $nav_next" \
             "$d_hints/choose-tree.sh $0"
     }
-
     set -- "$@" \
         0.0 S \
         1.7 M H "Help, Move to other    $nav_next" \
         "$d_help/help_pane_move.sh $0"
-
     menu_generate_part 5 "$@"
 }
 

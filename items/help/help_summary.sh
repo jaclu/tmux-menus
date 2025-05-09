@@ -8,7 +8,7 @@
 #   General Help
 #
 
-calculate_about_box_content() {
+gather_about_box_variables() {
     cd "$D_TM_BASE_PATH" || error_msg "Failed to cd into $D_TM_BASE_PATH"
 
     td_pull="$(git log -1 --format=%cd --date=iso)"
@@ -50,7 +50,7 @@ dynamic_content() {
         0.0 M Home "Back to Main menu      $nav_home" main.sh
     menu_generate_part 1 "$@"
 
-    calculate_about_box_content
+    gather_about_box_variables
     set -- # since it is unclear what item is first, do a init here and then just add
     [ -n "$vers_no" ] && set -- "$@" 0.0 T "-#[nodim]      Version: $vers_no"
     [ -n "$td_vers" ] && set -- "$@" 0.0 T "-#[nodim] Vers release: $td_vers"

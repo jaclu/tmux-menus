@@ -9,7 +9,6 @@
 #
 
 static_content() {
-    # shellcheck disable=SC2154
     rld_cmd="command-prompt -I '$cfg_tmux_conf' -p 'Source file:' \
         'run-shell \"$d_scripts/reload_conf.sh %% $reload_in_runshell\"'"
 
@@ -39,7 +38,7 @@ static_content() {
         0.0 M A "Advanced options   $nav_next" advanced.sh \
         0.0 M E "Extras             $nav_next" extras.sh
     menu_generate_part 1 "$@"
-    $cfg_display_cmds && display_commands_toggle 2
+    $cfg_display_cmds && display_commands_toggle 2 # give this its own menu part idx
 
     set -- \
         0.0 S \
@@ -61,7 +60,6 @@ static_content() {
         "$d_help/help_summary.sh $0"
 
     menu_generate_part 3 "$@"
-
 }
 
 #===============================================================

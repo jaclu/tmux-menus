@@ -66,10 +66,21 @@ starting_with_dash() {
 }
 
 is_function_defined() {
-    [ "$(command -v "$1")" = "$1" ]
+    command -v "$1" >/dev/null 2>&1
+}
+
+run_if_found() {
+    # this checks if function is present and runs it
+    # returning 0 if it was found (and thus executed)
+    is_function_defined "$1" && {
+        $1
+        return 0
+    }
+    return 1
 }
 
 update_wt_actions() {
+    # log_it "update_wt_actions()"
     if $cfg_use_cache; then
         [ "$menu_idx" -eq 1 ] && {
             # clear menu actions
@@ -97,16 +108,23 @@ menu_generate_part() {
     # Generate one menu segment
     # log_it "menu_generate_part($1)"
 
+    menu_idx="$1"
+    $cfg_use_cache && f_cache_file="$d_menu_cache/$menu_idx"
+
+    # needs to be set even if this is an empty dynamic menu to prevent
+    # static_files_reduction() from running
     $is_dynamic_content && dynamic_content_found=true
+
+    [ -z "$2" ] && {
+        # no params clear cache file if any
+        $cfg_use_cache && rm -f "$f_cache_file"
+        return
+    }
+
+    shift # get rid of the idx param
     $all_helpers_sourced || source_all_helpers "menu_generate_part()"
 
-    menu_idx="$1"
-    shift # get rid of the idx
-
-    $cfg_use_cache && f_cache_file="$d_menu_cache/$menu_idx"
-    # log_it "><> menu_generate_part($menu_idx) using cache: $f_cache_file"
     menu_parse "$@"
-
     $cfg_use_whiptail && update_wt_actions
 }
 
@@ -287,8 +305,9 @@ menu_parse() {
     #  we first identify all the params used by the different options,
     #  only then can we continue if the min_vers does not match running tmux
     #
-    # log_it "><> mennu_parse()"
+    # log_it "mennu_parse()"
 
+    menu_items=""
     [ "$menu_idx" -eq 1 ] && {
         # set prefix for item 1
         if $cfg_use_whiptail; then
@@ -324,10 +343,10 @@ menu_parse() {
                 keep_cmd=false
             fi
 
-            verify_menu_key "$key" "tmux command: $cmd"
-
             # first extract the variables, then  if it shouldn't be used move on
             ! tmux_vers_check "$min_vers" && continue
+
+            verify_menu_key "$key" "tmux command: $cmd"
 
             [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
 
@@ -359,10 +378,10 @@ menu_parse() {
             cmd="$1"
             shift
 
-            verify_menu_key "$key" "external command: $cmd"
-
             # first extract the variables, then  if it shouldn't be used move on
             ! tmux_vers_check "$min_vers" && continue
+
+            verify_menu_key "$key" "external command: $cmd"
 
             [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
 
@@ -383,16 +402,19 @@ menu_parse() {
             menu="$1"
             shift
 
-            verify_menu_key "$key" "$menu"
-
             # first extract the variables, then  if it shouldn't be used move on
             ! tmux_vers_check "$min_vers" && continue
+
+            verify_menu_key "$key" "$menu"
 
             #
             #  If menu is not full PATH, assume it to be a tmux-menus
             #  item
             #
-            echo "$menu" | grep -vq / && menu="$d_items/$menu"
+            case $menu in
+            */*) ;;
+            *) menu="$d_items/$menu" ;;
+            esac
 
             [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] menu[$menu]"
 
@@ -435,13 +457,7 @@ menu_parse() {
             fi
             ;;
 
-        *)
-            # Error
-            log_it "  menu_parse()  ---  Menu created so far  ---"
-            log_it "$menu_items"
-            error_msg_safe "ERROR: [$1]"
-            ;;
-
+        *) mnu_parse_error "$action" "$@" ;;
         esac
     done
 
@@ -454,6 +470,140 @@ menu_parse() {
         add_uncached_item
     fi
     unset menu_items
+}
+
+#---------------------------------------------------------------
+#
+#   Errors
+#
+#---------------------------------------------------------------
+
+escape_for_err_msg() {
+    # echo "$@" | sed "s/\'/[\"]/g"
+    echo "$@" | sed "s/\'/\`/g"
+}
+
+show_params() {
+    # This will log the exact arguments passed to the script
+    for param in "$@"; do
+        # Print each argument enclosed in quotes
+        printf '%s ' "$param"
+    done
+    echo
+}
+
+verify_menu_runable() {
+    # Check that menu starts with a menu handling cmd, if not most likely due to
+    # menu idx 1 not generated, but could be other causes. eithe way this menu
+    # will be displayable...
+    # log_it "verify_menu_runable()"
+
+    # extract first word
+    _actual_first="${menu_items%% *}"
+
+    if [ -n "$cfg_alt_menu_handler" ]; then
+        _mnu_first="$cfg_alt_menu_handler"
+    else
+        _mnu_first="${TMUX_BIN%% *}"
+    fi
+    [ "$_actual_first" = "$_mnu_first" ]
+}
+
+mnu_parse_error() {
+    log_it "mnu_parse_error($1)"
+    failed_action="$1"
+    shift
+
+    s_remainders=$(show_params "$@")
+
+    #region error_msg_safe explaining parsing error
+    error_msg_safe "$(
+        cat <<EOF
+Parsing error when processing menu.
+
+Due to limits in what can be displayed in this error, all usages of single-quote
+have been replaced by backticks, in the "Menu created so far" in order to give as
+close a reppresentation as possible
+
+-----   Menu created so far   -----
+$(escape_for_err_msg "$menu_items")
+-----------------------------------
+
+
+Failed to Parse this action: $(escape_for_err_msg "$failed_action")
+
+
+In the next section all quotes have been eliminated due to how parsing remaining
+arguments is limited, hopefully it will at least give a hint on where parsing failed.
+
+-----   Remainder of menu   -----
+$(escape_for_err_msg "$s_remainders")
+---------------------------------
+
+EOF
+    )"
+    #endregion
+}
+
+display_invalid_menu_error() {
+    e_msg="$1"
+    log_it "display_invalid_menu_error($e_msg)"
+
+    [ -n "$e_msg" ] && {
+        #region e_msg = Error message
+        e_msg="$(
+            cat <<EOF
+-----   Error message   -----
+$(escape_for_err_msg "$e_msg")
+-----------------------------
+EOF
+        )"
+        #endregion
+    }
+    if verify_menu_runable; then
+        log_it "  - was runable"
+    else
+        log_it "  - NOT runable!"
+        #region e_first = first word in rendered menu wrong
+        e_first="$(
+            cat <<EOF
+
+
+The processed menu should start with a menu handler.
+In the current environment this was expected:
+
+    $_mnu_first
+
+This was found:
+
+    $_actual_first
+
+Was no part 1 created?
+
+The menu handler and other menu definitions like title and styling
+are prepended to the part created by:
+
+    menu_generate_part 1 "\$@"
+EOF
+        )"
+        #endregion
+    fi
+    #region m_menu_code = Display the generated menu code
+    m_menu_code="$(
+        cat <<EOF
+
+
+Generated menu below - single quotes have been changed into backticks
+otherwise the commands can not be displayed here
+
+-----   menu start   -----
+$(escape_for_err_msg "$menu_items")
+-----    menu end    -----
+EOF
+    )"
+    #endregion
+
+    error_msg_safe "$e_msg\n$e_first\n$m_menu_code"
 }
 
 #---------------------------------------------------------------
@@ -523,22 +673,22 @@ set_menu_env_variables() {
 }
 
 static_files_reduction() {
+    #
     # if only static content was generated, compact all parts into one
     # for quicker cache loading
+    #
+    # this is not performance critical
+    #
     $dynamic_content_found && {
         error_msg "static_files_reduction() called when dynamic content was generated"
     }
     # log_it "static_files_reduction()"
-    _items="$(find "$d_menu_cache" -maxdepth 1 -type f | wc -l)"
-
-    [ "$_items" -gt 1 ] && {
-        sort_menu_items
-        find "$d_menu_cache" -maxdepth 1 -type f | while IFS= read -r f_name; do
-            safe_remove "$f_name"
-            echo "$menu_items" >"$d_menu_cache/1"
-        done
-        unset menu_items # clear it
-    }
+    cache_read_menu_items
+    for f_name in "$d_menu_cache"/*; do
+        [ -d "$f_name" ] && continue
+        rm "$f_name" || error_msg "static_files_reduction() - failed to remove: $f_name"
+    done
+    echo "$menu_items" >"$d_menu_cache/1"
 }
 
 cache_static_content() {
@@ -551,32 +701,46 @@ cache_static_content() {
         # Cache is missing or obsolete, regenerate it
         # log_it "  regenerate cache for: $d_menu_cache"
         $all_helpers_sourced || {
-            source_all_helpers "cache_static_content() - cache error"
+            source_all_helpers "cache_static_content() - cache regeneration"
         }
         safe_remove "$d_menu_cache"
         mkdir -p "$d_menu_cache" || error_msg_safe "Failed to create: $d_menu_cache"
 
-        is_function_defined "static_content" && {
-            static_content
-            static_cache_updated=true
-        }
+        run_if_found static_content && static_cache_updated=true
     fi
 }
 
 handle_dynamic() {
     # log_it "handle_dynamic()"
-    is_function_defined "dynamic_content" && {
-        wt_actions_static="$wt_actions"
-        wt_actions=""
-        is_dynamic_content=true
-        mkdir -p "$d_menu_cache" # needed if menu is purely dynamic
-        dynamic_content
-        is_dynamic_content=false
-        wt_actions="$wt_actions_static"
-    }
+    is_function_defined dynamic_content || return
+
+    wt_actions_static="$wt_actions"
+    wt_actions=""
+    is_dynamic_content=true
+    $cfg_use_cache && mkdir -p "$d_menu_cache" # needed if menu is purely dynamic
+    dynamic_content
+    is_dynamic_content=false
+    wt_actions="$wt_actions_static"
 }
 
-generate_menu_items_in_sorted_order() {
+cache_read_menu_items() {
+    #
+    # Provides: menu_items
+    #
+    menu_items=""
+    for f_name in "$d_menu_cache"/*; do
+        [ -d "$f_name" ] && continue # most likely a wt_actions/
+
+        # Read the content of the file and append it to the menu_items variable
+        if [ -z "$menu_items" ]; then
+            menu_items="$(cat "$f_name")"
+        else
+            menu_items="$menu_items $(cat "$f_name")"
+        fi
+    done
+}
+
+sort_uncached_menu_items() {
     #
     # Since dynamic_content is generated after static_content, it can't be assumed
     # that the menu fragments were generated in proper order, in addition the
@@ -587,6 +751,8 @@ generate_menu_items_in_sorted_order() {
     # together, leads to this rather hackish in-memory implementation of sorting
     # the uncached_menu clearly lots of room for improvement...
     #
+    # log_it "sort_uncached_menu_items()"
+
     gmi_entries=""
 
     gmi_rest="$uncached_menu"
@@ -619,61 +785,13 @@ $idx	$gmi_body"
     )"
 }
 
-sort_menu_items() {
-    # log_it "sort_menu_items()"
+get_menu_items_sorted() {
+    # log_it "get_menu_items_sorted()"
     if $cfg_use_cache; then
-        for f_name in "$d_menu_cache"/*; do
-            # log_it "><> sort_menu_items() - processing: $f_name"
-
-            # skip special files
-            b_name=${f_name##*/} # basename equiv
-            [ "${#b_name}" -gt "2" ] && continue
-
-            # Read the content of the file and append it to the menu_items variable
-            menu_items="$menu_items $(cat "$f_name")"
-        done
+        cache_read_menu_items
     else
-        # _s="[dialog_handling] sort_menu_items()"
-        # _s="$_s - calling: generate_menu_items_in_sorted_order"
-        generate_menu_items_in_sorted_order
+        sort_uncached_menu_items
     fi
-}
-
-verify_menu_runable() {
-    # Check that menu starts with a menu handling cmd, if not most likely due to
-    # menu idx 1 not generated, but could be other causes. eithe way this menu
-    # will be displayable...
-    # log_it "verify_menu_runable()"
-
-    # Remove leading spaces
-    while [ "${menu_items# }" != "$menu_items" ]; do
-        menu_items=${menu_items# }
-    done
-
-    # extract first word
-    _actual_first="${menu_items%% *}"
-
-    if [ -n "$cfg_alt_menu_handler" ]; then
-        _mnu_first="$cfg_alt_menu_handler"
-    else
-        _mnu_first="${TMUX_BIN%% *}"
-    fi
-    [ "$_actual_first" = "$_mnu_first" ] || {
-        msg="The processed menu should start with a menu handler."
-        msg="$msg\nIn the current environment this was expected:"
-        msg="$msg\n\n  $_mnu_first"
-        msg="$msg\n\nThis was found:"
-        msg="$msg\n\n  $_actual_first"
-        msg="$msg\n\nWas no part 1 created?\n"
-        msg="$msg\nThe menu handler and other menu definitions like title"
-        msg="$msg and styling\nare prepended to the part defined by:"
-        msg="$msg\n\n  menu_generate_part 1 \""'$@'"\"\n"
-        msg="$msg\nGenerated menu:\n"
-
-        # filter ; ini order not to execute when displaying the error msg
-        escaped="$(printf '%s' "$menu_items" | sed 's/;//g')"
-        error_msg_safe "$msg\n$escaped"
-    }
 }
 
 prepare_menu() {
@@ -690,7 +808,7 @@ prepare_menu() {
     if $cfg_use_cache; then
         cache_static_content
     else
-        is_function_defined "static_content" && static_content
+        run_if_found static_content
     fi
 
     # 2 - Handle dynamic parts (if any)
@@ -699,8 +817,7 @@ prepare_menu() {
     $static_cache_updated && ! $dynamic_content_found && static_files_reduction
 
     # 3 - Gather each item in correct order
-    sort_menu_items
-    verify_menu_runable
+    get_menu_items_sorted
 }
 
 #---------------------------------------------------------------
@@ -836,11 +953,10 @@ ensure_menu_fits_on_screen() {
     #  would do.
     #
     # Display time menu was shown
-    safe_now
-    disp_time="$(echo "$t_now - $dh_t_start" | bc)"
+    time_span "$dh_t_start"
 
     # log_it "ensure_menu_fits_on_screen() Menu $bn_current_script - Display time:  $disp_time ($t_minimal_display_time)"
-    [ "$(echo "$disp_time < $t_minimal_display_time" | bc)" -eq 1 ] && {
+    [ "$(echo "$t_time_span < $t_minimal_display_time" | bc)" -eq 1 ] && {
         $all_helpers_sourced || {
             source_all_helpers "ensure_menu_fits_on_screen()  short display, give warning"
         }
@@ -859,19 +975,17 @@ ensure_menu_fits_on_screen() {
         elif [ -n "$menu_width" ]; then
             _s="$f_menu_rel: Width required: $menu_width"
         else
-            # log_it "display time was: $disp_time"
-            _s="$f_menu_rel: Screen might be too small - menu closed after $disp_time"
+            # log_it "display time was: $t_time_span"
+            _s="$f_menu_rel: Screen might be too small - menu closed after $t_time_span"
         fi
         error_msg_safe "$_s"
     }
 }
 
 clear_prep_disp_status() {
-    safe_now
+    time_span "$t_show_cmds"
     display_command_label
-    log_it "$(relative_path "$0") - Preparing $_lbl took: $(
-        echo "$t_now - $t_show_cmds" | bc
-    )s"
+    log_it "$(relative_path "$0") - Preparing $_lbl took: ${t_time_span}s"
 
     if tmux_vers_check 3.2; then
         tmux_error_handler display-message -d 1 ""
@@ -894,11 +1008,10 @@ display_menu() {
     [ -n "$cfg_log_file" ] && {
         # If logging is disabled - no point in generating this log msg
 
-        safe_now
-        _t="$(echo "$t_now - $t_script_start" | bc)"
+        time_span "$t_script_start"
 
         _m="Menu $(relative_path "$0")"
-        _m="$_m - processing time:  $_t"
+        _m="$_m - processing time:  $t_time_span"
         log_it_minimal "$_m"
     }
 
@@ -907,12 +1020,25 @@ display_menu() {
     if $cfg_use_whiptail; then
         # display whiptail menu
         menu_selection=$(eval "$menu_items" 3>&2 2>&1 1>&3)
+        case "$?" in
+        0) ;;
+        1)
+            [ -n "$menu_selection" ] && {
+                # no selection = menu canceled
+                display_invalid_menu_error "$menu_selection"
+            }
+            ;;
+        *) display_invalid_menu_error ;;
+        esac
+
         [ -n "$menu_selection" ] && handle_wt_selecion
         true #  hides none true exit if whiptail menu was cancelled
     else
         safe_now dh_t_start
-        eval "$menu_items"
-
+        f_cmd_err="$d_tmp/tmux-menu-cmd-error"
+        eval "$menu_items" 2>"$f_cmd_err" || {
+            display_invalid_menu_error "$(cat "$f_cmd_err")"
+        }
         ensure_menu_fits_on_screen
     fi
 }
@@ -977,7 +1103,7 @@ display_commands_toggle() {
         echo
         echo "$msg"
         echo
-    )
+    ) >/dev/stderr
     exit 1
 }
 
@@ -1045,6 +1171,13 @@ esac
 #  cache handling.
 #
 menu_debug="" # Set to 1 to use echo 2 to use log_it
+
+# Useful when debugging to keep each menu generation process separate
+# log_it
+# log_it
+# log_it
+# log_it
+# log_it
 
 prepare_menu
 display_menu

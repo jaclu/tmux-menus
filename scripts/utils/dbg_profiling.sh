@@ -28,13 +28,6 @@
 #       profiling_display "get_config done"
 #
 
-# shellcheck disable=SC2154
-[ "$TMUX_MENUS_PROFILING" != "1" ] && {
-    echo
-    echo "ERROR: sourcing dbg_pofiling.sh without TMUX_MENUS_PROFILING being 1 [$0]"
-    exit 1
-}
-
 profiling_is_function_defined() {
     [ "$(command -v "$1")" = "$1" ]
 }
@@ -98,11 +91,11 @@ profiling_get_time() {
         date)
             _t="$(date +%s%N)"
             profiling_t_now="${_t%??????}" # Strip last 6 digits → milliseconds
-             ;;
+            ;;
         gdate)
             _t="$(gdate +%s%N)"
             profiling_t_now="${_t%??????}" # Strip last 6 digits → milliseconds
-             ;;
+            ;;
         perl)
             profiling_t_now="$(perl -MTime::HiRes=time -E 'say int(time * 1e3)')"
             ;;
@@ -150,12 +143,32 @@ profiling_display() {
     profiling_error_msg "scripts/utils/dbg_profiling.sh already sourced"
 }
 
+# shellcheck disable=SC2154
+case "$TMUX_MENUS_PROFILING" in
+1)
+    # profiling will be used
+    profiling_select_timing_method
+    _m="Starting profiling for: $0 - using time method: $profiling_selected_get_time"
+    profiling_display_it "$_m"
+    profiling_get_time # start timer as early as possible
+    ;;
+*)
+    #
+    # This file should not be sourced normally and profiling calls should not be
+    # left in the code base long term, the below function overrides are primarily
+    # intended to disable them when profiling is temporarily disabled
+    #
+
+    # shellcheck disable=SC2317
+    profiling_update_time_stamps() {
+        :
+    }
+    # shellcheck disable=SC2317
+    profiling_display() {
+        :
+    }
+    ;;
+esac
+
 profiling_use_default_timer=0
 profiling_sourced=1 # Indicate this has been sourced
-
-_m="Starting profiling for: $0 - using time method: $profiling_selected_get_time"
-profiling_display_it "$_m"
-
-profiling_select_timing_method
-profiling_get_time # start timer as early as possible
-
