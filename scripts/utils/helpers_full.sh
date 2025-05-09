@@ -159,8 +159,6 @@ get_digits_from_string() {
     echo "$_i"
 }
 
-
-
 normalize_bool_param() {
     #
     #  Normalizes a string into a boolean value usable in conditionals.
@@ -267,7 +265,7 @@ check_speed_cutoff() {
     if [ "$(echo "$t_time_span < $cut_off" | bc)" -eq 1 ]; then
         t_minimal_display_time=0.1
     else
-        log_it "  Failed cutoff time, considered a slow system: $t_time_span >= $cut_off"
+        # log_it "  Failed cutoff time, considered a slow system: $t_time_span >= $cut_off"
         # for slower systems
         t_minimal_display_time=0.5
     fi
