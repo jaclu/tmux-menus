@@ -257,4 +257,8 @@ f_custom_items_template="$D_TM_BASE_PATH"/templates/custom_index_template.sh
 # then inserted into the custom index and removed
 f_custom_items_content="$d_cache"/custom_items_content
 
-$cfg_use_cache && custom_items_prepare
+if $cfg_use_cache; then
+    custom_items_prepare
+else
+    error_msg "$0 - should not be run if caching is disabled!"
+fi
