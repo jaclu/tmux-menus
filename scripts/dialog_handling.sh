@@ -1103,7 +1103,7 @@ display_commands_toggle() {
         echo
         echo "$msg"
         echo
-    )
+    ) >/dev/stderr
     exit 1
 }
 

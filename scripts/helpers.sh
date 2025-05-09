@@ -22,7 +22,7 @@
         echo
         echo "$msg"
         echo
-    )
+    ) >/dev/stderr
     $TMUX_BIN display-message "$msg"
     exit 1
 }
