@@ -530,6 +530,7 @@ d_tmp="${TMPDIR:-/tmp}"
 d_tmp="${d_tmp%/}" # Removes a trailing slash if present - sometimes set in TMPDIR...
 f_no_cache_hint="$d_tmp"/tmux-menus-no-cache-hint
 
+define_tmux_bin
 [ -z "$D_TM_BASE_PATH" ] && base_path_not_defined
 
 d_scripts="$D_TM_BASE_PATH"/scripts

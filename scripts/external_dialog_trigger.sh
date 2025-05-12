@@ -25,9 +25,13 @@ dlg_handler="$d_scripts/external_dialog_handle.sh"
 # log_it "><> $r_triggger faking user-input: $r_menu"
 
 # suspend potential fg app
-$TMUX_BIN send-keys C-z
+$TMUX_BIN send-keys C-z || {
+    error_msg_safe "Send C-z - exited with error: $?"
+}
 
 sleep 0.2 # give time for task to be suspended, and shell ready for input
 
 # start menu in active pane
-eval "$TMUX_BIN" send-keys "$dlg_handler" Space "$menu_name" Enter
+eval "$TMUX_BIN" send-keys "$dlg_handler" Space "$menu_name" Enter || {
+    error_msg_safe "$dlg_handler - exited with error: $?"
+}

@@ -51,22 +51,26 @@ error_msg_actual() {
     [ -n "$TMUX" ] && {
         # shellcheck disable=SC2154
         msg_hold="$plugin_name ERR: $em_msg"
-        # shellcheck disable=SC2154
-        if [ "$env_initialized" -eq 2 ] && (
-            #
-            # Slightly complex condition, has_lf_not_at_end() can only be called
-            # if env_initialized is 2
-            # so therefore actual_win_width is retrieved here in the middle of the
-            # condition...
-            #
-            actual_win_width="$($TMUX_BIN display-message -p "#{client_width}")"
-
-            # The actual condition part of this code block
-            [ "${#msg_hold}" -ge "$actual_win_width" ] || has_lf_not_at_end "$em_msg"
-        ); then
-            error_msg_formated "$em_msg"
+        if tmux_vers_check 1.7; then
+            # "#{client_width}" - not available before tmux 1.7
+            # shellcheck disable=SC2154
+            if [ "$env_initialized" -eq 2 ] && (
+                #
+                # Slightly complex condition, has_lf_not_at_end() can only be called
+                # if env_initialized is 2
+                # so therefore actual_win_width is retrieved here in the middle of the
+                # condition...
+                #
+                actual_win_width="$($TMUX_BIN display-message -p "#{client_width}")"
+                # The actual condition part of this code block
+                [ "${#msg_hold}" -ge "$actual_win_width" ] || has_lf_not_at_end "$em_msg"
+            ); then
+                error_msg_formated "$em_msg"
+            else
+                display_message_hold "$msg_hold"
+            fi
         else
-            display_message_hold "$msg_hold"
+            error_msg_formated "$em_msg"
         fi
     }
 }

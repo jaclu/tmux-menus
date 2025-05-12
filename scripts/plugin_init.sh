@@ -38,7 +38,7 @@ bind_plugin_key() {
 
     # shellcheck disable=SC2086 # in this case we want the variable to unpack
     $TMUX_BIN $cmd || {
-        error_msg_safe "Failed to bind trigger: $trigger_sequence"
+        error_msg_safe "Failed to bind trigger: $cfg_trigger_key"
     }
 
     log_it_minimal "$trigger_sequence"
