@@ -461,7 +461,7 @@ env_initialized=0
 #
 log_interactive_to_stderr=0
 
-min_tmux_vers="1.8"
+min_tmux_vers="1.0"
 # for performance only a minimum of support features are in this file
 # as long as cache is used, it is sufficient, if extra features are needed
 # a call to source_all_helpers will be done, this ensures it only happens once
