@@ -280,7 +280,7 @@ check_speed_cutoff() {
 config_setup() {
     # Examins tmux env, and depending on caching config either plainly read
     # tmux.conf, or prepare a f_cache_params
-    log_it "config_setup()"
+    # log_it "config_setup()"
 
     # only need default_use_cache at this point but might as well get them all
     tmux_get_defaults
