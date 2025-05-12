@@ -13,6 +13,8 @@ All notable changes to this project will be documented here.
 ### Changed
 
 - Fix: Main help had an empty text line that could be selected
+- Removed min vers for Pane History - View scrollback, since it's been around since
+  at least version 0.8
 
 ---
 

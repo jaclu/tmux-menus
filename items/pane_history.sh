@@ -30,7 +30,7 @@ static_content() {
         2.0 C e "Save pane history with escapes" "command-prompt -p \
             'Save to (with escapes):' -I '$d_history/tmux-history-escapes' \
             'capture-pane -S - -E - -e ; save-buffer %1 ; delete-buffer'  $menu_reload" \
-        1.8 C h 'View scrollback (enter \"copy mode\")' "copy-mode" \
+        0.0 C h 'View scrollback (enter \"copy mode\")' "copy-mode" \
         0.0 S \
         0.0 M H "Help                   $nav_next" "$d_help/help_pane_history.sh $0"
 
