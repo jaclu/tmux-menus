@@ -9,6 +9,7 @@ All notable changes to this project will be documented here.
 ### Added
 
 - Main help mentions that `j` & `k` can be used for scrolling
+- re-enabled menu reloads when using whiptail/dialog
 
 ### Changed
 

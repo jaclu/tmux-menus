@@ -10,7 +10,7 @@
 
 static_content() {
     rld_cmd="command-prompt -I '$cfg_tmux_conf' -p 'Source file:' \
-        'run-shell \"$d_scripts/reload_conf.sh %% $reload_in_runshell\"'"
+        'run-shell \"$d_scripts/reload_conf.sh %%\"'"
 
     set --
 

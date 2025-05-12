@@ -52,7 +52,7 @@ static_content() {
         1.7 C p "Swap pane with prev" "swap-pane -U $menu_reload" \
         1.7 C n "Swap pane with next" "swap-pane -D $menu_reload" \
         1.7 S \
-        2.4 E w "Break pane off to a new window" "$d_scripts/break_pane.sh $reload_in_runshell" \
+        2.4 E w "Break pane off to a new window" "$d_scripts/break_pane.sh ; $0" \
         1.7 E o "Move to other win/ses" "$d_scripts/act_choose_tree.sh P M"
 
     $cfg_use_hint_overlays && $cfg_show_key_hints && {

@@ -19,7 +19,7 @@ dynamic_content() {
     fi
 
     set -- \
-        0.0 E t "$tgl_lbl" "$(dirname "$0")/_dropbox_toggle.sh $reload_in_runshell"
+        0.0 E t "$tgl_lbl" "$(dirname "$0")/_dropbox_toggle.sh ; $0"
 
     menu_generate_part 4 "$@"
 }
