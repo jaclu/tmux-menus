@@ -33,11 +33,11 @@ static_content() {
         1.7 C p "Previous pane [in order]" "select-pane -t :.- $menu_reload" \
         1.7 C n "Next     pane [in order]" "select-pane -t :.+ $menu_reload" \
         0.0 S \
-        2.0 C r "Respawn current pane" "confirm-before -p \
+        1.8 C r "Respawn current pane" "confirm-before -p \
             'respawn-pane #P? (y/n)' 'respawn-pane -k' $menu_reload" \
-        2.0 C x "Kill current pane" "confirm-before -p \
+        1.8 C x "Kill current pane" "confirm-before -p \
             'kill-pane #T (#P)? (y/n)' kill-pane  $menu_reload" \
-        2.0 C o "Kill all other panes" "confirm-before -p \
+        1.8 C o "Kill all other panes" "confirm-before -p \
             'Are you sure you want to kill all other panes? (y/n)' \
             'kill-pane -a'  $menu_reload"
 
