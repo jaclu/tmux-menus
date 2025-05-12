@@ -12,7 +12,7 @@
 bind_plugin_key() {
     bind_cmd="$f_main_menu"
     if $cfg_use_whiptail; then
-        bind_cmd="$d_scripts/external_dialog_trigger.sh"
+        bind_cmd="$f_ext_dlg_trigger"
         log_it "Will use alternate menu handler: $cfg_alt_menu_handler"
     fi
     cmd="bind-key"
@@ -58,9 +58,9 @@ initialize_plugin=1
 # shellcheck disable=SC2154,SC2001,SC2292 source=scripts/helpers_minimal.sh
 source "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
 
-$all_helpers_sourced || source_all_helpers "always done by plugin_init.sh"
-
 # log_it "=====   plugin_init.sh starting   ====="
+
+$all_helpers_sourced || source_all_helpers "always done by plugin_init.sh"
 
 if [[ -d "$d_cache" ]]; then
     # clear out potentially obsolete cache items

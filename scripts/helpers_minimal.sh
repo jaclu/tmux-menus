@@ -31,7 +31,7 @@ log_it_minimal() {
     # TMUX_MENUS_LOGGING_MINIMAL is 1
     # if TMUX_MENUS_LOGGING_MINIMAL=2 logging is completely disabled
     [ "$TMUX_MENUS_LOGGING_MINIMAL" = "2" ] && return
-    _msg="$1"
+    _msg="[$$] $1"
 
     [ "$log_interactive_to_stderr" = "1" ] && {
         # log to stderr if in interactive mode
@@ -129,39 +129,6 @@ source_cached_params() { # local usage by get_config()
     return 0
 }
 
-handle_env_variables() { # local usage by get_config()
-    # Check env variables and apply relevant config overrides
-    # log_it "handle_env_variables()"
-
-    # TMUX_MENUS_SHOW_CMDS - is handled directly by dialog_handling.sh - no config needed
-    # TMUX_MENUS_LOGGING_MINIMAL - is handled directly by log_it() - no config needed
-    # TMUX_MENUS_PROFILING - is handled directly - no config needed
-    # TMUX_MENUS_NO_DISPLAY -  is handled directly - no config needed
-    b_whiptail_forced=false
-    # shellcheck disable=SC2154
-    if [ "$TMUX_MENUS_HANDLER" = 1 ]; then
-        _cmd=whiptail
-        if command -v "$_cmd" >/dev/null; then
-            cfg_alt_menu_handler="$_cmd"
-        else
-            error_msg_safe "$_cmd not available, plugin aborted"
-        fi
-        cfg_use_whiptail=true
-        log_it "NOTICE: $_cmd is selected due to TMUX_MENUS_HANDLER=1"
-        b_whiptail_forced=true
-    elif [ "$TMUX_MENUS_HANDLER" = 2 ]; then
-        _cmd=dialog
-        if command -v "$_cmd" >/dev/null; then
-            cfg_alt_menu_handler="$_cmd"
-        else
-            error_msg_safe "$_cmd not available, plugin aborted"
-        fi
-        cfg_use_whiptail=true
-        log_it "NOTICE: $_cmd is selected due to TMUX_MENUS_HANDLER=2"
-        b_whiptail_forced=true
-    fi
-}
-
 get_config() { # local usage during sourcing
     #
     #  The plugin init .tmux script should NOT depend on this!
@@ -201,6 +168,98 @@ get_config() { # local usage during sourcing
             use_whiptail_env
         }
     fi
+}
+
+#---------------------------------------------------------------
+#
+#   env variables
+#
+#---------------------------------------------------------------
+
+menu_handler_cache_missmatch() {
+    # Report a mismatch between TMUX_MENUS_HANDLER and current cache
+
+    # shellcheck disable=SC2154
+    msg="TMUX_MENUS_HANDLER=$TMUX_MENUS_HANDLER"
+    [ -n "$1" ] && msg="$msg ($1)"
+    msg="$msg does not match current cache:\n\n"
+    msg="$msg    cfg_use_whiptail=$cfg_use_whiptail\n"
+    msg="$msg    cfg_alt_menu_handler=$cfg_alt_menu_handler"
+    error_msg_safe "$msg"
+}
+
+verify_menu_handler_override_valid() {
+    # Ensure manual override of menu handler is not a mismatch vs current cache
+
+    # shellcheck disable=SC2154
+    [ "$initialize_plugin" = "1" ] && return # not relevant during plugin init
+    # log_it "verify_menu_handler_override_valid($requested_handler)"
+    requested_handler="$1"
+    ! $cfg_use_cache && return # irrelevant check when not using cache
+
+    if ! $cfg_use_whiptail || [ "$cfg_alt_menu_handler" != "$requested_handler" ]; then
+        menu_handler_cache_missmatch "$requested_handler"
+    fi
+}
+
+env_variable_menus_handler() {
+    # handles TMUX_MENUS_HANDLER
+    #
+    # Provides: b_whiptail_forced
+    #
+    # log_it "env_variable_menus_handler()"
+
+    case "$TMUX_MENUS_HANDLER" in
+    0) $cfg_use_whiptail && verify_menu_handler_override_valid "tmux display-menu" ;;
+    1)
+        _cmd=whiptail
+        # shellcheck disable=SC2154
+        verify_menu_handler_override_valid "$_cmd"
+        if command -v "$_cmd" >/dev/null; then
+            cfg_alt_menu_handler="$_cmd"
+        else
+            error_msg_safe "$_cmd not available, plugin aborted"
+        fi
+        cfg_use_whiptail=true
+        [ "$initialize_plugin" = "1" ] && {
+            log_it "NOTICE: $_cmd is selected due to TMUX_MENUS_HANDLER=1"
+        }
+        b_whiptail_forced=true
+        ;;
+    2)
+        _cmd=dialog
+        verify_menu_handler_override_valid "$_cmd"
+        if command -v "$_cmd" >/dev/null; then
+            cfg_alt_menu_handler="$_cmd"
+        else
+            error_msg_safe "$_cmd not available, plugin aborted"
+        fi
+        cfg_use_whiptail=true
+        [ "$initialize_plugin" = "1" ] && {
+            log_it "NOTICE: $_cmd is selected due to TMUX_MENUS_HANDLER=2"
+        }
+        b_whiptail_forced=true
+        ;;
+    *)
+        msg="TMUX_MENUS_HANDLER=$TMUX_MENUS_HANDLER - valid options: 0 1 2"
+        error_msg_safe "$msg"
+        ;;
+    esac
+}
+
+handle_env_variables() { # local usage by get_config()
+    # Check env variables and apply relevant env checks & config overrides
+    #
+    # Provides: b_whiptail_forced
+    #
+    # log_it "handle_env_variables()"
+
+    # TMUX_MENUS_SHOW_CMDS - is handled directly by dialog_handling.sh - no config needed
+    # TMUX_MENUS_LOGGING_MINIMAL - is handled directly by log_it() - no config needed
+    # TMUX_MENUS_NO_DISPLAY -  is handled directly - no config needed
+    # TMUX_MENUS_PROFILING - is handled directly - no config needed
+    [ -n "$TMUX_MENUS_HANDLER" ] && env_variable_menus_handler
+
 }
 
 #---------------------------------------------------------------
@@ -451,8 +510,8 @@ env_initialized=0
 #
 #  This should normally be commented out!
 #
-# cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
-# log_file_forced="1"
+cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
+log_file_forced="1"
 
 #
 #  If set to 1 log will happen to stderr if script is run in an interactive
@@ -484,12 +543,15 @@ safe_now t_script_start
 
 # shellcheck disable=SC2034
 {
+    # in order to only eneed one SC2034 group all variables under one shellcheck
     # Used if main menu cache should be purged, like if custom_items are detected
     # or found to be gone
     d_cache_main_menu="$d_cache"/items/main.sh
 
     # Used if main menu should be run
     f_main_menu="$d_items"/main.sh
+
+    f_ext_dlg_trigger="$d_scripts/external_dialog_trigger.sh"
 
     bn_current_script=${0##*/} # same but faster than "$(basename "$0")"
     # bn_current_script_no_ext=${bn_current_script%.*}

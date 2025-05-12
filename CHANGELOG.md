@@ -17,6 +17,7 @@ All notable changes to this project will be documented here.
 - Removed min vers for Pane History - View scrollback, since it's been around since
   at least version 0.8
 - Lowered min tmux vers for plugin to 1.0
+- Better sanity checks when checking for TMUX_MENUS_HANDLER
 
 ---
 

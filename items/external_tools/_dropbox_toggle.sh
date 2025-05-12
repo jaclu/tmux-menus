@@ -10,7 +10,7 @@
 
 dropbox_status_check() {
     is_dropbox_running && run_stat=0 || run_stat=1
-    if [ "$run_stat" -ne "$1" ]; then
+    if [ "$run_stat" != "$1" ]; then
         return 0
     else
         return 1
