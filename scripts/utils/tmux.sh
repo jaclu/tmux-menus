@@ -535,7 +535,10 @@ have been replaced by backticks, in the "Failed tmux command" in order to give a
 close a reppresentation as possible. The error file contains the unmodified command.
 
 -----   Failed tmux command   -----
-$(tmux_err_escape_for_display $(cat "$f_error_log"))
+$(
+                    # shellcheck disable=SC2046
+                    tmux_err_escape_for_display $(cat "$f_error_log")
+                )
 -----------------------------------
 The error message has been saved in: $(relative_path "$f_error_log")
 
