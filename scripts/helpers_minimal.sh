@@ -135,7 +135,7 @@ get_config() { # local usage during sourcing
     #  This is used by everything else sourcing helpers_minimal.sh, then trusting
     #  that the param cache is valid if found
     #
-    log_it "get_config() - $rn_current_script"
+    # log_it "get_config() - $rn_current_script"
     replace_config=false
     if [ -f "$f_no_cache_hint" ]; then
         $all_helpers_sourced || {
