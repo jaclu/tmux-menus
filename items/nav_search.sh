@@ -56,19 +56,6 @@ static_content() {
         1.8 T "-#[nodim]Search in all $fw_span" \
         1.8 C s "$fw_lbl_line2" "$fw_cmd"
     menu_generate_part 3 "$@"
-
-    # set -- \
-    #     0.0 C 1 "doing: split-window" "split-window -h" \
-    #     0.0 C 2 "doing: list-buffers" list-buffers \
-    #     0.0 C 3 "doing: split-window" split-window \
-    #     0.0 C 3 "doing: command-prompt -I " 'command-prompt -I "#S" { rename-session "%%" }' \
-    #     0.0 C 4 "doing: split-window -h" "split-window -h" \
-    #     0.0 C 5 "doing: command-prompt -T window-target" "command-prompt -T window-target" \
-    #     0.0 C 6 "doing: last-pane" last-pane \
-    #     0.0 C 7 "doing: swap-pane -U" "swap-pane -U" \
-    #     0.0 C 8 "doing: swap-pane -D" "swap-pane -D" \
-    #     0.0 C 9 "doing: show-messages" show-messages
-    # menu_generate_part 4 "$@"
 }
 
 #===============================================================
@@ -78,7 +65,7 @@ static_content() {
 #===============================================================
 
 menu_name="Navigate - Search"
-menu_min_vers=1.8
+menu_min_vers=1.7
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"

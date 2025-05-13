@@ -22,7 +22,7 @@ static_content() {
     #
     set -- \
         0.0 M Left "Back to Main menu  $nav_home" main.sh \
-        0.0 M C "Currencies         $nav_next" currencies.sh
+        2.0 M C "Currencies         $nav_next" currencies.sh
     menu_generate_part 1 "$@"
     $cfg_display_cmds && display_commands_toggle 2
 
