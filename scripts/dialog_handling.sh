@@ -641,7 +641,7 @@ set_menu_env_variables() {
         # Include relative script path in cache folder name to avoid name collisions
         #  items/main.sh -> cache/items/main.sh/
         # [ "$env_initialized" -lt 2 ] && error_msg_safe "env not fully initialized"
-        d_menu_cache="$d_cache/$(relative_path "$0")"
+        d_menu_cache="$d_cache/$rn_current_script"
 
         $cfg_use_whiptail && d_wt_actions="$d_menu_cache/wt_actions"
     else
@@ -1179,5 +1179,5 @@ menu_debug="" # Set to 1 to use echo 2 to use log_it
 prepare_menu
 display_menu
 
-# log_it "[$$]   COMPLETED: scripts/dialog_handling.sh"
+log_it "[$$]   COMPLETED: scripts/dialog_handling.sh - $rn_current_script"
 return 0 # ensuring this exits true

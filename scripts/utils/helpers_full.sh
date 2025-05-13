@@ -89,7 +89,7 @@ error_msg_formated() {
 
     emf_msg="$(
         # shellcheck disable=SC2154
-        echo "ERROR in plugin $plugin_name: $(relative_path "$0") [$$]"
+        echo "ERROR in plugin $plugin_name: $rn_current_script [$$]"
         echo
         echo "$emf_err"
     )"
