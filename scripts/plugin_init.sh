@@ -96,11 +96,6 @@ config_setup
 #
 log_it
 
-$cfg_use_whiptail && {
-    # is used both with and without cache
-    safe_remove "$f_is_suspended"
-}
-
 $cfg_use_cache && {
     #
     #  If custom inventory is used, update link to its main index

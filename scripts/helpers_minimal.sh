@@ -580,16 +580,6 @@ fi
         # @variables are not usable prior to 1.8
         error_msg "need at least tmux $min_tmux_vers to work!"
     fi
-    $cfg_use_whiptail && {
-        # f_is_suspended is only used with whiptail/dialog
-        if $cfg_use_cache; then
-            _prfx="$d_cache"
-        else
-            _prfx="$d_tmp"
-        fi
-        # shellcheck disable=SC2034
-        f_is_suspended="$_prfx/$plugin_name"-fg_app_suspended
-    }
 }
 
 [ "$env_initialized" -eq 0 ] && env_initialized=1 # basic init done
