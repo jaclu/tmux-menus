@@ -20,26 +20,26 @@ static_content() {
 
     set -- \
         0.0 S \
-        1.8 C z "Toggle pane zoom" "resize-pane -Z $menu_reload" \
-        2.1 C m "Toggle mark current pane" "select-pane -m $menu_reload" \
-        1.9 C s "Toggle synchronized panes" "set-option -w synchronize-panes $menu_reload" \
+        1.8 C z "Toggle pane zoom" "resize-pane -Z $menu_reload_b" \
+        2.1 C m "Toggle mark current pane" "select-pane -m $menu_reload_b" \
+        1.9 C s "Toggle synchronized panes" "set-option -w synchronize-panes $menu_reload_b" \
         2.6 C t "Set Pane Title" "command-prompt -I '#T'  -p 'Title: '  \
-            'select-pane -T \"%%\"' $menu_reload" \
-        1.7 C '\#' "Display pane numbers" "display-panes $menu_reload" \
+            'select-pane -T \"%%\"' $menu_reload_b" \
+        1.7 C '\#' "Display pane numbers" "display-panes $menu_reload_b" \
         1.7 C d "Display pane size" "display-message \
-            'Pane: #P size: #{pane_width}x#{pane_height}' $menu_reload" \
+            'Pane: #P size: #{pane_width}x#{pane_height}' $menu_reload_b" \
         0.0 S \
-        1.7 C l "Last selected pane" "last-pane $menu_reload" \
-        1.7 C p "Previous pane [in order]" "select-pane -t :.- $menu_reload" \
-        1.7 C n "Next     pane [in order]" "select-pane -t :.+ $menu_reload" \
+        1.7 C l "Last selected pane" "last-pane $menu_reload_b" \
+        1.7 C p "Previous pane [in order]" "select-pane -t :.- $menu_reload_b" \
+        1.7 C n "Next     pane [in order]" "select-pane -t :.+ $menu_reload_b" \
         0.0 S \
         1.8 C r "Respawn current pane" "confirm-before -p \
-            'respawn-pane #P? (y/n)' 'respawn-pane -k $menu_reload'" \
+            'respawn-pane #P? (y/n)' \"respawn-pane -k $menu_reload\"" \
         1.8 C x "Kill current pane" "confirm-before -p \
-            'kill-pane #T (#P)? (y/n)' \"kill-pane $menu_reload\" $menu_reload" \
+            'kill-pane #T (#P)? (y/n)' kill-pane $menu_reload_b" \
         1.8 C o "Kill all other panes" "confirm-before -p \
             'Are you sure you want to kill all other panes? (y/n)' \
-            \"kill-pane -a $menu_reload\" $menu_reload"
+            \"kill-pane -a\" $menu_reload_b"
 
     menu_generate_part 3 "$@"
 }
