@@ -710,6 +710,13 @@ cache_static_content() {
 }
 
 handle_dynamic() {
+    #
+    # For performance reasons, source_all_helpers() are not called here
+    # it is only called if menu_generate_part is called with men definition data
+    # So if the full env is needed in a dynamic_content function, it needs
+    # to be called there
+    #
+
     # log_it "handle_dynamic()"
     is_function_defined dynamic_content || return
 
@@ -817,6 +824,23 @@ prepare_menu() {
 
     # 3 - Gather each item in correct order
     get_menu_items_sorted
+
+    case "$TMUX_MENUS_SHOW_CMDS" in
+    "1" | "2") clear_prep_disp_status ;;
+    *) ;;
+    esac
+
+    [ -n "$cfg_log_file" ] && {
+        # If logging is disabled - no point in generating this log msg
+        #
+        # Instead of displaying processing time at end of prepare_menu
+
+        time_span "$t_script_start"
+
+        _m="Menu $rn_current_script"
+        _m="$_m - processing time:  $t_time_span"
+        log_it_minimal "$_m"
+    }
 }
 
 #---------------------------------------------------------------
@@ -844,7 +868,7 @@ check_screen_size() {
     [ -n "$menu_height" ] && {
         [ -z "$current_screen_rows" ] && get_screen_size_variables # only get if not defined
         [ "$menu_height" -gt "$current_screen_rows" ] && {
-            _warn="$(relative_path "$0") aborted, win height > actual: "
+            _warn="$rn_current_script - aborted, win height > actual: "
             _warn="$_warn $menu_height > $current_screen_rows"
             log_it "$_warn"
             return 1
@@ -860,6 +884,53 @@ check_screen_size() {
         }
     }
     return 0
+}
+
+ensure_menu_fits_on_screen() {
+    #
+    #  Since tmux display-menu returns 0 even if it failed to display the
+    #  menu due to not fitting on the screen, the display time is checked.
+    #  If it seems to have closed right away, display a message that there
+    #  might be a screen size issue.
+    #
+    #  This is not ideal, since a very slow computer might take some time
+    #  for this, and if the user hits q right away, this message will also
+    #  be displayed.
+    #
+    #  This gets slightly more complicated with tmux 3.3, since now tmux
+    #  shrinks menus that don't fit due to width, so tmux might decide it
+    #  can show a menu, but due to shrinkage, the labels might be so
+    #  shortened that they are off little help explaining what the option
+    #  would do.
+    #
+    # Display time menu was shown
+    time_span "$dh_t_start"
+
+    # log_it "ensure_menu_fits_on_screen() Menu $bn_current_script - Display time:  $disp_time ($t_minimal_display_time)"
+    [ "$(echo "$t_time_span < $t_minimal_display_time" | bc)" -eq 1 ] && {
+        $all_helpers_sourced || {
+            _m="ensure_menu_fits_on_screen() - short display time, give warning"
+            source_all_helpers "$_m"
+        }
+        #
+        # Save menu that failed to show, helpful to try to figure out why it failed
+        #
+        # _f_mnu="$d_tmp"/tmux-menus-failed-to-show.cmd
+        # echo "$menu_items" >"$_f_mnu"
+        # log_it "Failed menu saved to: $_f_mnu"
+
+        if [ -n "$menu_width" ] && [ -n "$menu_height" ]; then
+            _s="$rn_current_script: screen mins: ${menu_width}x$menu_height"
+        elif [ -n "$menu_height" ]; then
+            _s="$rn_current_script: Height required: $menu_height"
+        elif [ -n "$menu_width" ]; then
+            _s="$rn_current_script: Width required: $menu_width"
+        else
+            # log_it "display time was: $t_time_span"
+            _s="$rn_current_script: Screen might be too small - menu closed after $t_time_span"
+        fi
+        error_msg "$_s"
+    }
 }
 
 wt_cached_selection() {
@@ -934,57 +1005,10 @@ handle_wt_selecion() {
     unset all_wt_actions
 }
 
-ensure_menu_fits_on_screen() {
-    #
-    #  Since tmux display-menu returns 0 even if it failed to display the
-    #  menu due to not fitting on the screen, the display time is checked.
-    #  If it seems to have closed right away, display a message that there
-    #  might be a screen size issue.
-    #
-    #  This is not ideal, since a very slow computer might take some time
-    #  for this, and if the user hits q right away, this message will also
-    #  be displayed.
-    #
-    #  This gets slightly more complicated with tmux 3.3, since now tmux
-    #  shrinks menus that don't fit due to width, so tmux might decide it
-    #  can show a menu, but due to shrinkage, the labels might be so
-    #  shortened that they are off little help explaining what the option
-    #  would do.
-    #
-    # Display time menu was shown
-    time_span "$dh_t_start"
-
-    # log_it "ensure_menu_fits_on_screen() Menu $bn_current_script - Display time:  $disp_time ($t_minimal_display_time)"
-    [ "$(echo "$t_time_span < $t_minimal_display_time" | bc)" -eq 1 ] && {
-        $all_helpers_sourced || {
-            source_all_helpers "ensure_menu_fits_on_screen()  short display, give warning"
-        }
-        #
-        # Save menu that failed to show, helpful to try to figure out why it failed
-        #
-        # _f_mnu="$d_tmp"/tmux-menus-failed-to-show.cmd
-        # echo "$menu_items" >"$_f_mnu"
-        # log_it "Failed menu saved to: $_f_mnu"
-
-        f_menu_rel="$(relative_path "$0")"
-        if [ -n "$menu_width" ] && [ -n "$menu_height" ]; then
-            _s="$f_menu_rel: screen mins: ${menu_width}x$menu_height"
-        elif [ -n "$menu_height" ]; then
-            _s="$f_menu_rel: Height required: $menu_height"
-        elif [ -n "$menu_width" ]; then
-            _s="$f_menu_rel: Width required: $menu_width"
-        else
-            # log_it "display time was: $t_time_span"
-            _s="$f_menu_rel: Screen might be too small - menu closed after $t_time_span"
-        fi
-        error_msg_safe "$_s"
-    }
-}
-
 clear_prep_disp_status() {
     time_span "$t_show_cmds"
     display_command_label
-    log_it "$(relative_path "$0") - Preparing $_lbl took: ${t_time_span}s"
+    log_it "$rn_current_script - Preparing $_lbl took: ${t_time_span}s"
 
     if tmux_vers_check 3.2; then
         tmux_error_handler display-message -d 1 ""
@@ -998,23 +1022,6 @@ clear_prep_disp_status() {
 display_menu() {
     # log_it "display_menu()"
     # Display time to generate menu
-
-    case "$TMUX_MENUS_SHOW_CMDS" in
-    "1" | "2") clear_prep_disp_status ;;
-    *) ;;
-    esac
-
-    [ -n "$cfg_log_file" ] && {
-        # If logging is disabled - no point in generating this log msg
-
-        time_span "$t_script_start"
-
-        _m="Menu $(relative_path "$0")"
-        _m="$_m - processing time:  $t_time_span"
-        log_it_minimal "$_m"
-    }
-
-    [ "$TMUX_MENUS_NO_DISPLAY" = "1" ] && return
 
     if $cfg_use_whiptail; then
         # display whiptail menu
@@ -1042,19 +1049,10 @@ display_menu() {
     fi
 }
 
-exit_if_menu_doesnt_fit_screen() {
-    # Useful for hints, if it doesn't fit on screen, just silently skip this menu
-    # log_it "exit_if_menu_doesnt_fit_screen()"
-    check_screen_size && return
-    exit 0 # menu won't fit on screen, exit nicely without any warnings/errors
-}
-
 prepare_show_commands() {
     # Do not use normal caching, build custom menu including cmds under each
     # action item
     # log_it "prepare_show_commands()"
-
-    $all_helpers_sourced || source_all_helpers "prepare_show_commands()"
 
     # Do this before the timer is started, otherwise the first usage of show commands
     # will always be slower
@@ -1089,11 +1087,76 @@ display_commands_toggle() {
     menu_generate_part "$menu_part" "$@"
 }
 
+menu_check_show_env() {
+    # TODO: This can be greatly simplified...
+
+    [ -z "$TMUX_MENUS_SHOW_CMDS" ] && ! $cfg_use_cache && {
+        # always disabled if cache is not used
+        cfg_display_cmds=false
+        # unset TMUX_MENUS_SHOW_CMDS
+    }
+
+    # in case this was set when whiptail is used
+    $cfg_use_whiptail && unset TMUX_MENUS_SHOW_CMDS
+
+    [ -n "$TMUX_MENUS_SHOW_CMDS" ] && {
+        # override @menus_display_commands setting, if cache is enabled
+        cfg_display_cmds=true
+    }
+
+    case "$TMUX_MENUS_SHOW_CMDS" in
+    "1" | "2") prepare_show_commands ;;
+    *) ;;
+    esac
+
+}
+
+men_env_check() {
+    [ -z "$TMUX" ] && error_msg_safe "$plugin_name can only be used inside tmux!"
+    menu_check_show_env
+}
+
+check_menu_min_vers() {
+    # Abort with error if tmux version is insufficient for this menu
+    # Shouldn't happen in normal menu navigation.
+    # The menu above should have used the same ves number as minima to display
+    # a link to this sub-menu.
+    # The typical case for this error would be if the menu was run directly from
+    # the cmd-line
+    tmux_vers_check "$menu_min_vers" || {
+        error_msg_safe "$rn_current_script needs tmux: $menu_min_vers"
+    }
+}
+
+oversized_check() {
+    # To minimize overhead, the normal case is to rely on oversized menus instantly
+    # closing and the displayal of the warning: Screen might be too small
+    #
+    # only do this check if it is requested, this assumes at least one of
+    # menu_height or menu_width must have been set
+    #
+    [ -z "$menu_height" ] && [ -z "$menu_width" ] && {
+        _m="With neither menu_height or menu_width defined"
+        _m="$_m\n It is not possible to check if menu fits on screen"
+        error_msg_safe "$_m"
+    }
+
+    # Useful for hints, if it doesn't fit on screen, just silently skip this menu
+    check_screen_size || exit 0
+}
+
 #===============================================================
 #
 #   Main
 #
 #===============================================================
+
+#
+#  If @menus_use_cache is not disabled, any cached items will not be
+#  fully processed, so either disable caching, or clear the cache for
+#  the itam before each run, unless of course your focus is to debug
+#  cache handling.
+#
 
 [ -z "$D_TM_BASE_PATH" ] && {
     # helpers not yet sourced, so error_msg_safe() not yet available
@@ -1112,74 +1175,27 @@ display_commands_toggle() {
     . "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
 }
 
+# Useful when debugging to keep each menu generation process separate
+log_it
+log_it
+log_it
+log_it
+log_it
+
 is_dynamic_content=false    # indicates if a dynamic content segment is being processed
 dynamic_content_found=false # indicate dynamic content was generated
 static_cache_updated=false  # used to decide if static cache file reduction should happen
 b_do_show_cmds=false
 
-[ -z "$TMUX_MENUS_SHOW_CMDS" ] && ! $cfg_use_cache && {
-    # always disabled if cache is not used
-    cfg_display_cmds=false
-    # unset TMUX_MENUS_SHOW_CMDS
-}
-
-# in case this was set when whiptail is used
-$cfg_use_whiptail && unset TMUX_MENUS_SHOW_CMDS
-
-[ -n "$TMUX_MENUS_SHOW_CMDS" ] && {
-    # override @menus_display_commands setting, if cache is enabled
-    cfg_display_cmds=true
-}
-
-case "$TMUX_MENUS_SHOW_CMDS" in
-"1" | "2") prepare_show_commands ;;
-*) ;;
-esac
-
-# Some sanity checks
-[ "$TMUX_MENUS_NO_DISPLAY" != "1" ] && {
-    [ -z "$TMUX" ] && error_msg_safe "$plugin_name can only be used inside tmux!"
-}
+men_env_check
 [ -z "$menu_name" ] && error_msg_safe "menu_name not defined"
-[ -n "$menu_min_vers" ] && {
-    # Abort with error if tmux version is insufficient for this menu
-    tmux_vers_check "$menu_min_vers" || {
-        error_msg_safe "$(relative_path "$0") needs tmux: $menu_min_vers"
-    }
-}
+[ -n "$menu_min_vers" ] && check_menu_min_vers
+[ "$skip_oversized" = "1" ] && oversized_check
 
-[ "$skip_oversized" = "1" ] && {
-    # To minimize overhead, the normal case is to rely on oversized menus instantly
-    # closing and the displayal of the warning: Screen might be too small
-    #
-    # only do this check if it is requested, this assumes at least one of
-    # menu_height or menu_width must have been set
-    #
-    [ -z "$menu_height" ] && [ -z "$menu_width" ] && {
-        _m="With neither menu_height or menu_width defined"
-        _m="$_m\n It is not possible to check if menu fits on screen"
-        error_msg "$_m"
-    }
-    exit_if_menu_doesnt_fit_screen
-}
-
-#
-#  If @menus_use_cache is not disabled, any cached items will not be
-#  fully processed, so either disable caching, or clear the cache for
-#  the itam before each run, unless of course your focus is to debug
-#  cache handling.
-#
 menu_debug="" # Set to 1 to use echo 2 to use log_it
 
-# Useful when debugging to keep each menu generation process separate
-# log_it
-# log_it
-# log_it
-# log_it
-# log_it
-
 prepare_menu
-display_menu
+[ "$TMUX_MENUS_NO_DISPLAY" != "1" ] && display_menu
 
 log_it "[$$]   COMPLETED: scripts/dialog_handling.sh - $rn_current_script"
 return 0 # ensuring this exits true
