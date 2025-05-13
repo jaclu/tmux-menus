@@ -24,6 +24,8 @@ dynamic_content() {
         else
             new_mouse_status="on"
         fi
+    else
+        return # no item in this menu part is < 2.1
     fi
 
     # shellcheck disable=SC2154
