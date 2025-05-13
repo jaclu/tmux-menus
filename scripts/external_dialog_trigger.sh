@@ -9,6 +9,14 @@
 #  is simulated to be run in the active pane by using send-keys
 #
 
+do_suspend() {
+    # suspend potential fg app
+    $TMUX_BIN send-keys C-z || {
+        error_msg_safe "Send C-z - exited with error: $?"
+    }
+    [ -d "$d_cache" ] && echo 1 >"$f_is_suspended"
+}
+
 #  Full path to tmux-menus plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 
@@ -21,13 +29,16 @@ dlg_handler="$d_scripts/external_dialog_handle.sh"
 [ ! -f "$dlg_handler" ] && error_msg_safe "File not found: $dlg_handler"
 
 # r_triggger=$(relative_path "$f_ext_dlg_trigger")
-# r_menu=$(relative_path "$menu_name")
-# log_it "><> $r_triggger faking user-input: $r_menu"
+# log_it "><> $r_triggger faking user-input: $rn_current_script"
 
-# suspend potential fg app
-$TMUX_BIN send-keys C-z || {
-    error_msg_safe "Send C-z - exited with error: $?"
-}
+if [ -f "$f_is_suspended" ]; then
+    mnu_depth=$(echo "$(cat "$f_is_suspended") + 1" | bc)
+    echo "$mnu_depth" >"$f_is_suspended"
+    # log_it "$rn_current_script $f_is_suspended - increased count: $mnu_depth"
+else
+    do_suspend
+    # log_it "$rn_current_script $f_is_suspended - created"
+fi
 
 sleep 0.2 # give time for task to be suspended, and shell ready for input
 

@@ -10,6 +10,8 @@ All notable changes to this project will be documented here.
 
 - Main help mentions that `j` & `k` can be used for scrolling
 - re-enabled menu reloads when using whiptail/dialog
+- Keeps track of menu depth and only resumes backgrounded process (if any) as last
+  menu closes
 
 ### Changed
 

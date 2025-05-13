@@ -135,7 +135,7 @@ get_config() { # local usage during sourcing
     #  This is used by everything else sourcing helpers_minimal.sh, then trusting
     #  that the param cache is valid if found
     #
-    # log_it "get_config()"
+    log_it "get_config() - $rn_current_script"
     replace_config=false
     if [ -f "$f_no_cache_hint" ]; then
         $all_helpers_sourced || {
@@ -456,8 +456,7 @@ tpt_tmux_vers_suffix() { # local usage by tpt_retrieve_running_tmux_vers()
 
 define_tmux_bin() {
     [ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
-
-    log_it "define_tmux_bin()"
+    # log_it "define_tmux_bin()"
 
     #
     # if multiple instances of the same tmux bin are used, errors can spill over
@@ -544,7 +543,8 @@ safe_now t_script_start
 
 # shellcheck disable=SC2034
 {
-    # in order to only eneed one SC2034 group all variables under one shellcheck
+    # in order to only need one SC2034 group all variables under one shellcheck
+
     # Used if main menu cache should be purged, like if custom_items are detected
     # or found to be gone
     d_cache_main_menu="$d_cache"/items/main.sh
@@ -555,6 +555,7 @@ safe_now t_script_start
     f_ext_dlg_trigger="$d_scripts/external_dialog_trigger.sh"
 
     bn_current_script=${0##*/} # same but faster than "$(basename "$0")"
+    rn_current_script=$(relative_path "$0")
     # bn_current_script_no_ext=${bn_current_script%.*}
 }
 
@@ -579,6 +580,16 @@ fi
         # @variables are not usable prior to 1.8
         error_msg "need at least tmux $min_tmux_vers to work!"
     fi
+    $cfg_use_whiptail && {
+        # f_is_suspended is only used with whiptail/dialog
+        if $cfg_use_cache; then
+            _prfx="$d_cache"
+        else
+            _prfx="$d_tmp"
+        fi
+        # shellcheck disable=SC2034
+        f_is_suspended="$_prfx/$plugin_name"-fg_app_suspended
+    }
 }
 
 [ "$env_initialized" -eq 0 ] && env_initialized=1 # basic init done

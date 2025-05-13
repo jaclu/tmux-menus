@@ -96,10 +96,15 @@ config_setup
 #
 log_it
 
-#
-#  If custom inventory is used, update link to its main index
-#
+$cfg_use_whiptail && {
+    # is used both with and without cache
+    safe_remove "$f_is_suspended"
+}
+
 $cfg_use_cache && {
+    #
+    #  If custom inventory is used, update link to its main index
+    #
     "$d_scripts"/update_custom_inventory.sh || {
         error_msg "update_custom_inventory.sh reported error: $?"
     }
