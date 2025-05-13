@@ -656,16 +656,18 @@ set_menu_env_variables() {
         #  so disabled for now
         #
         _cmd="$f_ext_dlg_trigger $(realpath "$0")"
-        # menu_reload='\\; run-shell "'"$_cmd"'"'
-        menu_reload="\\; run-shell '$_cmd'"
-        reload_in_runshell="\\; $_cmd"
+        # menu_reload=" \\; run-shell '$_cmd'"
+        menu_reload=" ; run-shell '$_cmd'"
+        menu_reload_b=" \; run-shell '$_cmd'"
+        reload_in_runshell=" \\; $_cmd"
     else
         # shellcheck disable=SC2034
-        menu_reload="; run-shell $0"
-
-        # Use this for reloads already embedded in a run-shell command
-        # shellcheck disable=SC2034
-        reload_in_runshell=" ; $0"
+        {
+            menu_reload=" ; run-shell $0"
+            menu_reload_b=" ; run-shell $0"
+            # Use this for reloads already embedded in a run-shell command
+            reload_in_runshell=" ; $0"
+        }
     fi
 }
 
