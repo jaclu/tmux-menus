@@ -423,6 +423,12 @@ use_whiptail_env() {
     fi
 }
 
+tmux_err_escape_for_display() {
+    # echo "$@" | sed "s/\'/[\"]/g"
+    echo "$@" | sed "s/\'/\`/g"
+    # | sed "s/;/[semi-colon]/g" | sed 's/\"/[double-quote]/g'
+}
+
 tmux_error_handler() {
     teh_store_result=false
     # fake assigning a variable in order to use the same func
@@ -479,7 +485,8 @@ tmux_error_handler_assign() { # cache references
     if $teh_store_result; then
         value=$($TMUX_BIN "$@" 2>"$f_tmux_err")
     else
-        $TMUX_BIN "$@" 2>"$f_tmux_err" >/dev/null
+        # shellcheck disable=SC2068,SC2086,SC2294
+        eval $TMUX_BIN $@ 2>"$f_tmux_err" >/dev/null
     fi
     ex_code="$?"
     $teh_debug && log_it "teh: cmd done - excode:$ex_code - output: >>$value<<"
@@ -506,6 +513,7 @@ tmux_error_handler_assign() { # cache references
             [ "$_idx" -gt 1000 ] && error_msg "Aborting runaway loop - _idx=$_idx"
         done
 
+        log_it "Failed cmd: $*"
         (
             echo "\$TMUX_BIN $cmd_simplified"
             echo
@@ -522,9 +530,13 @@ tmux_error_handler_assign() { # cache references
                 cat <<EOF
 tmux cmd failed:
 
---------------------
-$(cat "$f_error_log")
---------------------
+Due to limits in what can be displayed in this error, all usages of single-quote
+have been replaced by backticks, in the "Failed tmux command" in order to give as
+close a reppresentation as possible. The error file contains the unmodified command.
+
+-----   Failed tmux command   -----
+$(tmux_err_escape_for_display $(cat "$f_error_log"))
+-----------------------------------
 The error message has been saved in: $(relative_path "$f_error_log")
 
 Full path: $f_error_log

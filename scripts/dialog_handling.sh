@@ -481,6 +481,7 @@ menu_parse() {
 escape_for_err_msg() {
     # echo "$@" | sed "s/\'/[\"]/g"
     echo "$@" | sed "s/\'/\`/g"
+    # | sed "s/;/[semi-colon]/g" | sed 's/\"/[double-quote]/g'
 }
 
 show_params() {
@@ -659,12 +660,19 @@ set_menu_env_variables() {
         # menu_reload=" \\; run-shell '$_cmd'"
         menu_reload=" ; run-shell '$_cmd'"
         menu_reload_b=" \; run-shell '$_cmd'"
+        # # shell check disable=SC2034
+        # {
+        #     menu_reload_sleep=" ; run-shell 'sleep 1 ; $_cmd'"
+        #     menu_reload_sleep_b=" \; run-shell 'sleep 1 \; $_cmd'"
+        #     menu_reload_and=" && run-shell '$_cmd'"
+        # }
         reload_in_runshell=" \\; $_cmd"
     else
         # shellcheck disable=SC2034
         {
             menu_reload=" ; run-shell $0"
-            menu_reload_b=" ; run-shell $0"
+            # menu_reload_sleep=" ; run-shell 'sleep 0.2 ; $0'"
+            menu_reload_b="$menu_reload"
             # Use this for reloads already embedded in a run-shell command
             reload_in_runshell=" ; $0"
         }
@@ -987,7 +995,8 @@ alt_parse_selection() {
 
         [ "$key" = "$menu_selection" ] && [ -n "$action" ] && {
             $all_helpers_sourced || source_all_helpers "alt_parse_selection()"
-            eval "$action"
+            # log_it "><>action: >>$action<<"
+            $action
             break
         }
         [ -z "$lst" ] && break # we have processed last group
