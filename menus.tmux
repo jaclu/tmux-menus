@@ -32,7 +32,14 @@
 
 D_TM_BASE_PATH="$(dirname -- "$(realpath "$0")")"
 
-#
 #  Run the plugin setup in the background to not slow down tpm on startup
-#
-"$D_TM_BASE_PATH"/scripts/plugin_init.sh &
+#  On systems with "normal" performance init takes perhaps 0.5 seconds
+#  On slower things like iSH or termux it might take 2-3 seconds, then the
+#  long wait for tpm to complete becomes more apparent.
+(
+    "$D_TM_BASE_PATH"/scripts/plugin_init.sh || {
+        # Report if init failed
+        tmux display-message "tmux-menus - Failed to initialize"
+        sleep 3
+        }
+) &

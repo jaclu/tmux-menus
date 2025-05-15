@@ -4,6 +4,14 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [Unreleased]
+
+### Added
+
+- Display error if plugin init failed
+
+---
+
 ## [2.2.5] - 2025-05-15
 
 ### Changed
