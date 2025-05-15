@@ -19,12 +19,12 @@ static_content() {
 
     set -- \
         0.0 S \
-        1.0 C 1 "Even horizontal" "select-layout  even-horizontal  $menu_reload" \
-        1.0 C 2 "Even vertical" "select-layout    even-vertical    $menu_reload" \
-        1.0 C 3 "Main horizontal" "select-layout  main-horizontal  $menu_reload" \
-        1.0 C 4 "Main vertical" "select-layout    main-vertical    $menu_reload" \
-        1.4 C 5 "Tiled" "select-layout            tiled            $menu_reload" \
-        2.7 C e "Spread evenly" "select-layout    -E               $menu_reload"
+        1.0 C 1 "Even horizontal" "select-layout  even-horizontal  $menu_reload_b" \
+        1.0 C 2 "Even vertical" "select-layout    even-vertical    $menu_reload_b" \
+        1.0 C 3 "Main horizontal" "select-layout  main-horizontal  $menu_reload_b" \
+        1.0 C 4 "Main vertical" "select-layout    main-vertical    $menu_reload_b" \
+        1.4 C 5 "Tiled" "select-layout            tiled            $menu_reload_b" \
+        2.7 C e "Spread evenly" "select-layout    -E               $menu_reload_b"
 
     menu_generate_part 3 "$@"
 }

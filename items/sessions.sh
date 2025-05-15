@@ -26,25 +26,30 @@ static_content() {
     set -- \
         0.0 S \
         0.0 C r "Rename this session" "command-prompt -I '#{session_name}' \
-            'rename-session -- \"%%\"' $menu_reload" \
+            'rename-session -- \"%%\"' $menu_reload_b" \
         0.0 C \+ "New session" "command-prompt -p \
             'Name of new session: ' \
-            'new-session -d -s \"%1\" ; switch-client -t \"%1\"' $menu_reload" \
+            'new-session -d -s \"%1\" ; switch-client -t \"%1\"' $menu_reload_b" \
         0.0 S \
-        0.0 C l "Last selected session" "switch-client -l $menu_reload" \
-        0.0 C p "Previous session [in order]" "switch-client -p $menu_reload" \
-        0.0 C n "Next     session [in order]" "switch-client -n $menu_reload" \
+        0.0 C l "Last selected session" "switch-client -l $menu_reload_b" \
+        0.0 C p "Previous session [in order]" "switch-client -p $menu_reload_b" \
+        0.0 C n "Next     session [in order]" "switch-client -n $menu_reload_b" \
         0.0 S \
         1.8 C x "Kill current session" \
         "confirm-before -p \
         'Are you sure you want to kill this session: [#S] (y/n)' \
-        '$cli_dtch_mode ; kill-session'" \
+        \"$cli_dtch_mode ; kill-session\" $menu_reload_b" \
         1.8 C o "Kill all other sessions" "confirm-before -p \
         'Are you sure you want to kill all other sessions? (y/n)' \
-        'kill-session -a'"
+        \"kill-session -a\" $menu_reload_b"
 
     menu_generate_part 3 "$@"
 }
+
+
+# menus: "switch-client -n  ; run-shell /Users/jaclu/git_repos/mine/tmux-menus/items/sessions.sh"
+# whiptail:
+# tmux_error_handler switch-client -n  \; run-shell '/Users/jaclu/git_repos/mine/tmux-menus/scripts/external_dialog_trigger.sh /Users/jaclu/git_repos/mine/tmux-menus/items/sessions.sh'
 
 #===============================================================
 #
