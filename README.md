@@ -20,12 +20,13 @@ experienced users, then add more for newbies.
 
 ## Recent Changes
 
+- Mega oops, moved TMUX_BIN assignment to a function, but failed to call it...
+  now corrected, so things should work as normal. Have added this to my test cycle
+  to avoid this happening again
 - Added `docs/SingleQuotes.md` to explain some pitfalls of single quoted variables.
 - Now handles tmux 3.4 odd interpretation of `$HOME` inside single quotes
 - Prevent tmux variables from being expanded in `Display Menu Commands`
 - Moved Layouts and Split window into Windows menu
-- Main menu help displays kind of an about box info, about what version of the
-  plugin is used
 
 </details>
 <details>
@@ -413,10 +414,6 @@ If neither is available, this plugin will abort displaying an error message.
 
 Since these are full-screen apps, when either is used, the current (if any)
 task is suspended, dialogs are run, and when done the suspended task is reactivated.
-
-Be aware that if the tmux-menus actions causes pane focus to change, `fg` - restoring
-the suspended full-screen app once the last menu is exited will not be done in
-the initial pane, must be done manually.
 
 The menu system works the same using external menu handlers, however the menu
 shortcuts are not as convenient, since they do not differentiate between upper

@@ -481,7 +481,6 @@ define_tmux_bin() {
 base_path_not_defined() {
     # Show error msg if D_TM_BASE_PATH is not defined
     # helpers not yet sourced, so TMUX_BIN & error_msg() not yet available
-    define_tmux_bin
     msg="$plugin_name ERROR: $0 - D_TM_BASE_PATH must be set!"
     print_stderr "$msg"
     $TMUX_BIN display-message "$msg"
