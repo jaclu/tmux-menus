@@ -20,12 +20,13 @@ experienced users, then add more for newbies.
 
 ## Recent Changes
 
+- Mega oops, moved TMUX_BIN assignment to a function, but failed to call it...
+  now corrected, so things should work as normal. Have added this to my test cycle
+  to avoid this happening again
 - Added `docs/SingleQuotes.md` to explain some pitfalls of single quoted variables.
 - Now handles tmux 3.4 odd interpretation of `$HOME` inside single quotes
 - Prevent tmux variables from being expanded in `Display Menu Commands`
 - Moved Layouts and Split window into Windows menu
-- Main menu help displays kind of an about box info, about what version of the
-  plugin is used
 
 </details>
 <details>

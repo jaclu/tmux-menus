@@ -4,6 +4,14 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [2.2.5] - 2025-05-15
+
+### Changed
+
+- Bug fix: Fixed failure to define TMUX_BIN issue - now it is always defined
+
+---
+
 ## [2.2.5] - 2025-05-09
 
 ### Added
