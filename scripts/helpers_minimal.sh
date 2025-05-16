@@ -138,6 +138,7 @@ get_config() { # local usage during sourcing
     # log_it "get_config() - $rn_current_script"
     replace_config=false
     if [ -f "$f_no_cache_hint" ]; then
+        cfg_use_cache=false
         $all_helpers_sourced || {
             source_all_helpers "get_config() - no cache hint found"
         }
@@ -558,14 +559,6 @@ safe_now t_script_start
     # bn_current_script_no_ext=${bn_current_script%.*}
 }
 
-if [ -d "$d_cache" ]; then
-    cfg_use_cache=true
-else
-    # Assume cache is disabled, until env has been inspected, if allowed it will
-    # be used
-    cfg_use_cache=false
-fi
-
 # --->  Only enable this if profiling is being used  <---
 # shellcheck source=scripts/utils/dbg_profiling.sh
 # [ "$profiling_sourced" != 1 ] && . "$D_TM_BASE_PATH"/scripts/utils/dbg_profiling.sh
@@ -580,6 +573,16 @@ fi
         error_msg "need at least tmux $min_tmux_vers to work!"
     fi
 }
+
+if [ -d "$d_cache" ]; then
+    # For temp files etc that needs to be created even when caching is disabled
+    # use d_safe_tmp_folder. This will prioritize the cach-folder, and use tmp
+    # as fallback
+    d_safe_tmp="$d_cache"
+else
+    # shellcheck disable=SC2034
+    d_safe_tmp="$d_tmp"
+fi
 
 [ "$env_initialized" -eq 0 ] && env_initialized=1 # basic init done
 

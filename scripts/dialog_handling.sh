@@ -992,19 +992,19 @@ Output of command above  -  To scroll back in this message:
 Press Ctrl-C to close this message
 EOF
     )"
-    echo "$msg" >"$d_cache"/cmd_output
-
     #endregion
-    s_time="$(echo "$t_minimal_display_time * 8" | bc 2>/dev/null || echo 1)"
-    log_it "><> sleep time: $s_time"
+    f_output="$d_safe_tmp"/cmd_output
+    echo "$msg" >"$f_output"
     (
         # run this in the background so that the potentially backgrounded app
-        # can be resumed, if sleep calculation fails, revert to 1 second
-        sleep "$s_time"
+        # can be resumed before this tmp window is created, otherwisw 'fg'
+        # would be sent to this temp window.
+        # If sleep calculation fails, revert to 1 second
+        sleep "${t_minimal_display_time:-1}"
 
-        # tail -f /dev/null keeps the shell running for ever in a very
-        # simple and platform neutral way...
-        tmux_error_handler new-window -n "output" "cat $d_cache/cmd_output ; tail -f /dev/null"
+        tmux_error_handler new-window -n "output" "cat $f_output ; sleep 7200"
+        sleep 1 # argh the remove happens before the above cat without this sleep...
+        safe_remove "$f_output"
     ) &
 }
 

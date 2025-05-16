@@ -69,14 +69,13 @@ if [[ -d "$d_cache" ]]; then
     safe_remove "$f_cached_tmux_key_binds"
     # Clear any errors from previous runs
     safe_remove "$d_cache"/error-*
+    safe_remove "$d_cache"/cmd_output
 
     #
     # If these are removed, it can't be detected if config changed, so
     # there is no hint if cached items should be dropped or not
     #
-    # safe_remove "$f_cache_params"
-    # safe_remove "$f_chksum_custom"
-    # safe_remove "$f_min_display_time"
+    # "$f_cache_params"  "$f_chksum_custom"  "$f_min_display_time"
 fi
 
 #
