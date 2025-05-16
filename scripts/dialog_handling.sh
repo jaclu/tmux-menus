@@ -995,10 +995,12 @@ EOF
     echo "$msg" >"$d_cache"/cmd_output
 
     #endregion
+    s_time="$(echo "$t_minimal_display_time * 8" | bc 2>/dev/null || echo 1)"
+    log_it "><> sleep time: $s_time"
     (
         # run this in the background so that the potentially backgrounded app
         # can be resumed, if sleep calculation fails, revert to 1 second
-        sleep "$(echo "$t_minimal_display_time * 4" | bc 2>/dev/null || echo 1)"
+        sleep "$s_time"
 
         # tail -f /dev/null keeps the shell running for ever in a very
         # simple and platform neutral way...
