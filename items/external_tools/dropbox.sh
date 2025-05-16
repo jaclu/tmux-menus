@@ -36,7 +36,7 @@ static_content() {
 
     set -- \
         0.0 S \
-        0.0 C s "Status" "display \"$(dropbox status)\" $menu_reload"
+        0.0 C s "Status" "display \"$(dropbox status)\" $mnu_runshell_reload"
     # display \"hepp\" \; run-shell /home/jaclu/git_repos/mine/tmux-menus/items/external_tools/dropbox.sh
     menu_generate_part 3 "$@"
 }

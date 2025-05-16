@@ -200,8 +200,8 @@ sc_clean_up_cmd() {
     # Defines
     #   sc_cmd - filtered input
 
-    _s1="${1%" $menu_reload"}"          # skip menu_reload suffix if found
-    _s2="${_s1%" $reload_in_runshell"}" # skip reload_in_runshell suffix if found
+    _s1="${1%" $mnu_runshell_reload"}"          # skip mnu_runshell_reload suffix if found
+    _s2="${_s1%" $mnu_reload_direct"}" # skip mnu_reload_direct suffix if found
     _s3="${_s2%"; $0"}"                 # Remove trailing reload of menu
 
     # _s4="$(echo "$_s3" | sed 's/\\&.*//')"
@@ -284,7 +284,7 @@ sc_display_cmd() {
 
 sc_show_cmd() {
     #
-    # First filter out menu_reload components if present
+    # First filter out mnu_runshell_reload components if present
     # then try to match command to a prefix key-bind. If a match is foond
     # display the prefix sequence matching the cmd, otherwise display the command uses
     #

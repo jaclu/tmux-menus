@@ -30,11 +30,14 @@ dynamic_content() {
 
     # shellcheck disable=SC2154
     set -- \
-        2.1 C M "Toggle mouse to: $new_mouse_status" "set-option -g mouse \
-        $new_mouse_status $menu_reload" \
-        2.4 C p "Change prefix (Current: $current_prefix)" "command-prompt -1 -p \
-            'Prefix key without C- (will take effect imeditally)' \
-            'run-shell \"$d_scripts/change_prefix.sh %1 $reload_in_runshell\"'"
+        2.1 C o "Toggle mouse to: $new_mouse_status" \
+        "set-option -g mouse $new_mouse_status $mnu_runshell_reload_b" \
+        2.4 E p "Change prefix (Current: $current_prefix)" \
+        "$d_scripts/change_prefix.sh $0"
+
+    # works today
+    # 2.4 E p "Change prefix (Current: $current_prefix)" \
+    # "$d_scripts/change_prefix.sh $0"
 
     menu_generate_part 4 "$@"
 }
@@ -53,20 +56,20 @@ static_content() {
     set -- \
         0.0 S
 
-    if $cfg_use_whiptail; then
-        #
-        #  The tmux output down to Customize options will be displayed
-        #  then disappear instantly since whiptail restarts the foreground
-        #  app. Avoid this by not switching away to the fg app
-        #
-        set -- "$@" \
-            0.0 T "Most outputs for this menu will disappear if this is run" \
-            0.0 T "with another app put into the background, since it will" \
-            0.0 T "reapear as soon as this menu is closed." \
-            0.0 T "Recommended workaround is to run this from a pane" \
-            0.0 T "with a prompt." \
-            0.0 S
-    fi
+    # if $cfg_use_whiptail; then
+    #     #
+    #     #  The tmux output down to Customize options will be displayed
+    #     #  then disappear instantly since whiptail restarts the foreground
+    #     #  app. Avoid this by not switching away to the fg app
+    #     #
+    #     set -- "$@" \
+    #         0.0 T "Most outputs for this menu will disappear if this is run" \
+    #         0.0 T "with another app put into the background, since it will" \
+    #         0.0 T "reapear as soon as this menu is closed." \
+    #         0.0 T "Recommended workaround is to run this from a pane" \
+    #         0.0 T "with a prompt." \
+    #         0.0 S
+    # fi
 
     set -- "$@" \
         3.1 C n "Key bindings with notes" "list-keys -N" \
@@ -76,7 +79,7 @@ static_content() {
         0.0 C m "Tmux messages" 'show-messages' \
         1.9 C t "Tmux terminal bindings" 'show-messages -T' \
         0.0 C : "Enter a tmux command" command-prompt \
-        0.0 C s "Toggle status line" "set-option -g status $menu_reload" \
+        0.0 C s "Toggle status line" "set-option -g status $mnu_runshell_reload_b" \
         1.8 S
 
     $cfg_use_hint_overlays && $cfg_show_key_hints && tmux_vers_check 2.7 && {

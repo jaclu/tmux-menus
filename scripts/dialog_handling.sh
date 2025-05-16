@@ -656,25 +656,34 @@ set_menu_env_variables() {
         #  I haven't been able do to menu reload with whiptail/dialog yet,
         #  so disabled for now
         #
-        _cmd="$f_ext_dlg_trigger $(realpath "$0")"
-        # menu_reload=" \\; run-shell '$_cmd'"
-        menu_reload=" ; run-shell '$_cmd'"
-        menu_reload_b=" \; run-shell '$_cmd'" # b as in \;
+        menu_run="$f_ext_dlg_trigger $(realpath "$0")"
+        mnu_runshell_reload=" ; run-shell \"$menu_run\""
+        mnu_runshell_reload_b=" \; run-shell \"$menu_run\"" # b as in bacslash prefix
         # # shell check disable=SC2034
         # {
-            # menu_reload_sleep=" ; run-shell 'sleep 1 ; $_cmd'"
-            # menu_reload_sleep_b=" \; run-shell 'sleep 1 \; $_cmd'"
-        #     menu_reload_and=" && run-shell '$_cmd'"
+        # menu_reload_sleep=" ; run-shell 'sleep 1 ; $menu_run'"
+        # menu_reload_sleep_b=" \; run-shell 'sleep 1 \; $menu_run'"
+        #     menu_reload_and=" && run-shell '$menu_run'"
         # }
-        reload_in_runshell=" \\; $_cmd"
+        mnu_reload_direct=" ; \"$menu_run\""
+        mnu_reload_direct_b=" \; \"$menu_run\""
+        # || exit 0 prevents tmux display of failed script if previous action
+        #           reports error
+        # mnu_reload_direct_and=" && $menu_run || exit 0"
+
     else
+        menu_run="$0"
         # shellcheck disable=SC2034
         {
-            menu_reload=" ; run-shell $0"
-            # menu_reload_sleep=" ; run-shell 'sleep 0.2 ; $0'"
-            menu_reload_b="$menu_reload"
+            mnu_runshell_reload=" ; run-shell $menu_run"
+            # built in menu handler doesn't ever seem to need \;
+            mnu_runshell_reload_b="$mnu_runshell_reload"
+
+            # menu_reload_sleep=" ; run-shell 'sleep 0.2 ; $menu_run'"
             # Use this for reloads already embedded in a run-shell command
-            reload_in_runshell=" ; $0"
+            mnu_reload_direct=" ; $menu_run"
+            mnu_reload_direct_b="$mnu_reload_direct"
+            # mnu_reload_direct_and=" && $menu_run || exit 0"
         }
     fi
 }
@@ -969,6 +978,7 @@ wt_cached_selection() {
 
 alt_parse_output() {
     log_it "alt_parse_output()"
+    #  $(tmux_escape_for_display "$1")
 
     #region display whiptail output
     msg="$(
@@ -982,13 +992,17 @@ Output of command above  -  To scroll back in this message:
 Press Ctrl-C to close this message
 EOF
     )"
+    echo "$msg" >"$d_cache"/cmd_output
+
     #endregion
-    log_it "><> alt_parse_output() -  formatted output: [$msg]"
-    log_it
-    log_it
-    $TMUX_BIN new-window -n "output" "echo '$msg' ; tail -f /dev/null"
-    sleep 0.5
-    $0
+    (
+        # run this in the background so that the potentially backgrounded app
+        # can be resumed
+        sleep 0.1
+        # tail -f /dev/null keeps the shell running for ever in a very
+        # simple and platform neutral way...
+        tmux_error_handler new-window -n "output" "cat $d_cache/cmd_output ; tail -f /dev/null"
+    ) &
 }
 
 alt_parse_selection() {
@@ -1019,10 +1033,9 @@ alt_parse_selection() {
 
         [ "$key" = "$menu_selection" ] && [ -n "$action" ] && {
             $all_helpers_sourced || source_all_helpers "alt_parse_selection()"
-            log_it "><>action: >>$action<<"
+            # log_it "><>action: >>$action<<"
             # teh_debug=true
             $action
-
             [ -n "$wt_output" ] && alt_parse_output "$wt_output"
             break
         }

@@ -428,7 +428,7 @@ use_whiptail_env() {
 
 tmux_escape_for_display() {
     # echo "$@" | sed "s/\'/[\"]/g"
-    echo "$@" | sed "s/\'/\`/g"
+    echo "$@" | sed "s/\'/\`/g" | sed 's/#/##/g' | sed "s/;/[semi-colon]/g" | sed 's/\"/[double-quote]/g'
     # | sed "s/;/[semi-colon]/g" | sed 's/\"/[double-quote]/g'
 }
 
@@ -485,14 +485,15 @@ tmux_error_handler_assign() { # cache references
     # Run the actual command and save any error output. If the command succeeded
     # just ignore the empty error output file
     #
+    # too many arguments (need at most 2) - fixed by eval
     if $teh_store_result; then
-        value=$($TMUX_BIN "$@" 2>"$f_tmux_err")
+        # shellcheck disable=SC2034
+        value=$(eval "$TMUX_BIN" "$*" 2>"$f_tmux_err")
     else
-        # shellcheck disable=SC2068,SC2086,SC2294
-        eval $TMUX_BIN $@ 2>"$f_tmux_err" >/dev/null
+        $TMUX_BIN "$@" 2>"$f_tmux_err" >/dev/null
     fi
     ex_code="$?"
-    $teh_debug && log_it "teh: cmd done - excode:$ex_code - output: >>$value<<"
+    $teh_debug && log_it "teh: cmd done - excode:$ex_code"
 
     #
     # Parse any error output

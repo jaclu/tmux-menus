@@ -27,7 +27,7 @@ static_content() {
 
     if ! $cfg_use_whiptail; then
         set -- "$@" \
-            0.0 C v "Paste the most recent paste buffer" "paste-buffer -p  $menu_reload_b"
+            0.0 C v "Paste the most recent paste buffer" "paste-buffer -p  $mnu_runshell_reload_b"
     fi
     set -- "$@" \
         1.8 E s "Select a paste buffer from a list" "$select_cmd" \

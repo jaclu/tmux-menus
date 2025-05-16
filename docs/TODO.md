@@ -6,7 +6,7 @@
 
 ## WhipTail
 
-- menu_reload is not working, so disabled
+- mnu_runshell_reload is not working, so disabled
 
 ## external_tools/dropbox.sh
 

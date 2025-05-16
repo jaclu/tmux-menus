@@ -23,13 +23,13 @@ static_content() {
     set -- \
         0.0 S \
         2.6 C c "Clear screen & history" \
-        "send-keys C-l ; run 'sleep 0.3' ; clear-history $menu_reload" \
+        "send-keys C-l ; run 'sleep 0.3' ; clear-history $mnu_runshell_reload" \
         2.0 C s "Save pane history no escapes" "command-prompt -p \
             'Save to (no escapes):' -I '$d_history/tmux-history' \
-            'capture-pane -S - -E - ; save-buffer %1 ; delete-buffer'  $menu_reload" \
+            'capture-pane -S - -E - ; save-buffer %1 ; delete-buffer'  $mnu_runshell_reload" \
         2.0 C e "Save pane history with escapes" "command-prompt -p \
             'Save to (with escapes):' -I '$d_history/tmux-history-escapes' \
-            'capture-pane -S - -E - -e ; save-buffer %1 ; delete-buffer'  $menu_reload" \
+            'capture-pane -S - -E - -e ; save-buffer %1 ; delete-buffer'  $mnu_runshell_reload" \
         0.0 C h 'View scrollback (enter \"copy mode\")' "copy-mode" \
         0.0 S \
         0.0 M H "Help                   $nav_next" "$d_help/help_pane_history.sh $0"
