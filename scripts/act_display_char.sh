@@ -53,9 +53,8 @@ display_char() {
 #
 handle_char() {
     s_in="$1"
-    [ -z "$s_in" ] && error_msg_safe "handle_char() - no param"
+    [ -z "$s_in" ] && error_msg "handle_char() - no param"
     # log_it "handle_char($s_in)"
-    $all_helpers_sourced || source_all_helpers "act_display_char:handle_char()"
 
     case "$s_in" in
     0x*)
@@ -78,10 +77,10 @@ handle_char() {
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 
 # shellcheck source=scripts/helpers_minimal.sh
-. "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
+. "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 if [ -n "$1" ]; then
     handle_char "$1"
 else
-    error_msg_safe "$0 - no param"
+    error_msg "$0 - no param"
 fi

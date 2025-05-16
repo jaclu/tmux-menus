@@ -257,9 +257,9 @@ alt_command() {
 
     menu_items="$menu_items $key \"$label\""
     if $keep_cmd; then
-        wt_actions="$wt_actions $key_action | tmux_error_handler $cmd $external_action_separator"
+        wt_actions="$wt_actions $key_action | tmux_error_handler_assign wt_output $cmd $external_action_separator"
     else
-        wt_actions="$wt_actions $key_action | tmux_error_handler $cmd $external_action_separator"
+        wt_actions="$wt_actions $key_action | tmux_error_handler_assign wt_output $cmd $external_action_separator"
     fi
 }
 
@@ -659,11 +659,11 @@ set_menu_env_variables() {
         _cmd="$f_ext_dlg_trigger $(realpath "$0")"
         # menu_reload=" \\; run-shell '$_cmd'"
         menu_reload=" ; run-shell '$_cmd'"
-        menu_reload_b=" \; run-shell '$_cmd'"
+        menu_reload_b=" \; run-shell '$_cmd'" # b as in \;
         # # shell check disable=SC2034
         # {
-        #     menu_reload_sleep=" ; run-shell 'sleep 1 ; $_cmd'"
-        #     menu_reload_sleep_b=" \; run-shell 'sleep 1 \; $_cmd'"
+            # menu_reload_sleep=" ; run-shell 'sleep 1 ; $_cmd'"
+            # menu_reload_sleep_b=" \; run-shell 'sleep 1 \; $_cmd'"
         #     menu_reload_and=" && run-shell '$_cmd'"
         # }
         reload_in_runshell=" \\; $_cmd"
@@ -967,6 +967,30 @@ wt_cached_selection() {
     done
 }
 
+alt_parse_output() {
+    log_it "alt_parse_output()"
+
+    #region display whiptail output
+    msg="$(
+        cat <<EOF
+$1
+
+--------------------------------
+Output of command above  -  To scroll back in this message:
+ <prefix>-[ then up/down arrows
+
+Press Ctrl-C to close this message
+EOF
+    )"
+    #endregion
+    log_it "><> alt_parse_output() -  formatted output: [$msg]"
+    log_it
+    log_it
+    $TMUX_BIN new-window -n "output" "echo '$msg' ; tail -f /dev/null"
+    sleep 0.5
+    $0
+}
+
 alt_parse_selection() {
     #
     #  Whiptail/dialog can only display selected keyword,
@@ -995,8 +1019,11 @@ alt_parse_selection() {
 
         [ "$key" = "$menu_selection" ] && [ -n "$action" ] && {
             $all_helpers_sourced || source_all_helpers "alt_parse_selection()"
-            # log_it "><>action: >>$action<<"
+            log_it "><>action: >>$action<<"
+            # teh_debug=true
             $action
+
+            [ -n "$wt_output" ] && alt_parse_output "$wt_output"
             break
         }
         [ -z "$lst" ] && break # we have processed last group

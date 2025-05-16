@@ -32,7 +32,7 @@ static_content() {
     set -- "$@" \
         1.8 E s "Select a paste buffer from a list" "$select_cmd" \
         0.0 C l "List all paste buffers" "list-buffers" \
-        0.0 C d "Delete the most recent paste buffer" "delete-buffer  $menu_reload_b" \
+        0.0 C d "Delete the most recent paste buffer" "delete-buffer ; list-buffers" \
         0.0 S
 
     $cfg_use_hint_overlays && $cfg_show_key_hints && {

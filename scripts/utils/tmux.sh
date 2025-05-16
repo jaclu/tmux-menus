@@ -312,13 +312,16 @@ tmux_get_plugin_options() { # new init
         # variables only used by whiptail
         # shellcheck disable=SC2034
         {
-            wt_pasting="@tmp_menus_wt_paste_in_progress"
             cfg_display_cmds=false
             cfg_use_hint_overlays=false
             cfg_show_key_hints=false
             cfg_nav_next="$default_nav_next"
             cfg_nav_prev="$default_nav_prev"
             cfg_nav_home="$default_nav_home"
+
+            # not a config variable as such, just used as paste bufferr for
+            # missing keys and currencies
+            wt_pasting="@tmp_menus_wt_paste_in_progress"
         }
     else
         tmux_get_option cfg_mnu_loc_x "@menus_location_x" "$default_location_x"
@@ -423,7 +426,7 @@ use_whiptail_env() {
     fi
 }
 
-tmux_err_escape_for_display() {
+tmux_escape_for_display() {
     # echo "$@" | sed "s/\'/[\"]/g"
     echo "$@" | sed "s/\'/\`/g"
     # | sed "s/;/[semi-colon]/g" | sed 's/\"/[double-quote]/g'
@@ -432,7 +435,7 @@ tmux_err_escape_for_display() {
 tmux_error_handler() {
     teh_store_result=false
     # fake assigning a variable in order to use the same func
-    tmux_error_handler_assign _ "$@"
+    tmux_error_handler_assign _foo "$@"
 }
 
 tmux_error_handler_assign() { # cache references
@@ -446,7 +449,7 @@ tmux_error_handler_assign() { # cache references
     #  this will be set back to false at the end of this, so it needs to be
     #  enabled for each call specifically
     #
-    varname="$1"
+    var_name="$1"
     shift
     #
     #  This will loose quotes etc, but since is doesn't cost any overhead to generate
@@ -457,12 +460,12 @@ tmux_error_handler_assign() { # cache references
     $teh_debug && {
         # in principle this should be done every time, but limited to when
         # logging, to minimize overhead
-        validate_varname "$varname" "tmux_error_handler_assign()"
+        validate_varname "$var_name" "tmux_error_handler_assign()"
 
         if $teh_store_result; then
-            log_it "tmux_error_handler_assign($cmd_simplified) -> $varname"
+            log_it "tmux_error_handler_assign($cmd_simplified) -> $var_name"
         else
-            log_it "tmux_error_handler($cmd_simplified)"
+            log_it "tmux_error_handler($cmd_simplified) - TMUX_BIN: $TMUX_BIN"
         fi
     }
 
@@ -494,9 +497,8 @@ tmux_error_handler_assign() { # cache references
     #
     # Parse any error output
     #
-    [ -s "$f_tmux_err" ] && {
-        # Reset result-capture state for safety (should not reach this after error)
-        teh_store_result=true
+    if [ "$ex_code" != 0 ] || [ -s "$f_tmux_err" ]; then
+        _err_output=$(cat "$f_tmux_err")
 
         #
         #  First save the error to a named file
@@ -513,12 +515,8 @@ tmux_error_handler_assign() { # cache references
             [ "$_idx" -gt 1000 ] && error_msg "Aborting runaway loop - _idx=$_idx"
         done
 
-        log_it "Failed cmd: $*"
-        (
-            echo "\$TMUX_BIN $cmd_simplified"
-            echo
-            cat "$f_tmux_err"
-        ) >"$f_error_log" && rm "$f_tmux_err"
+        echo "\$TMUX_BIN $cmd_simplified" >"$f_error_log"
+        rm "$f_tmux_err"
 
         if $teh_debug; then
             log_it "tmux cmd failed:\n\n$(cat "$f_error_log")\n"
@@ -528,7 +526,11 @@ tmux_error_handler_assign() { # cache references
             #region tmux error msg
             error_msg "$(
                 cat <<EOF
-tmux cmd failed:
+tmux cmd failed ($ex_code):
+
+-----  Error msg:   -----
+$(tmux_escape_for_display "$_err_output")
+-------------------------
 
 Due to limits in what can be displayed in this error, all usages of single-quote
 have been replaced by backticks, in the "Failed tmux command" in order to give as
@@ -537,7 +539,7 @@ close a reppresentation as possible. The error file contains the unmodified comm
 -----   Failed tmux command   -----
 $(
                     # shellcheck disable=SC2046
-                    tmux_err_escape_for_display $(cat "$f_error_log")
+                    tmux_escape_for_display $(cat "$f_error_log")
                 )
 -----------------------------------
 The error message has been saved in: $(relative_path "$f_error_log")
@@ -548,12 +550,12 @@ EOF
             #endregion
         fi
         return 1 # shouldn't get here, but at least return an error
-    }
+    fi
 
     #
     # Depending on call type, potentially save output in caller supplied variable name
     #
-    $teh_store_result && eval "$varname=\"\$value\""
+    $teh_store_result && eval "$var_name=\"\$value\""
 
     teh_store_result=true # reset this for the next call
     teh_debug=false       # This needs to be enabled on a per call basis
