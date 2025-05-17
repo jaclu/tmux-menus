@@ -63,8 +63,8 @@ tmux_get_defaults() { # new init
     default_trigger_key=\\
     default_no_prefix=No
 
-    # shellcheck disable=SC2034
-    default_use_cache=Yes
+    # Since default_use_cache is needed early on, before this function can be
+    # called, it is defined in the main segment of this script
 
     if tmux_vers_check 3.2; then
         default_location_x=C
@@ -583,5 +583,13 @@ teh_store_result=true
 # at the end of the call
 #
 teh_debug=false
+
+#
+# Since default_use_cache is needed early on, before tmux_get_defaults() can be
+# called, it is defined here
+#
+
+# shell check disable=SC2034
+default_use_cache=Yes
 
 # log_it "===  Completed: scripts/utils/tmux.sh  =="

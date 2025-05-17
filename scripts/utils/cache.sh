@@ -109,6 +109,11 @@ cache_save_known_tmux_versions() { # tmux stuff
         error_msg "cache_save_known_tmux_versions() - called when not using cache"
     }
     [ -d "$d_cache" ] || {
+        #
+        # Not an error, the script still remembers the good/bad version. This is just
+        # reminder that d_cache does not exist yet.
+        # It is perfectly normal to happen once during plugin init
+        #
         log_it "WARNING: cache_save_known_tmux_versions() aborting, no cache folder: $d_cache"
         return 1
     }

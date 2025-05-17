@@ -286,8 +286,6 @@ config_setup() {
     # tmux.conf, or prepare a f_cache_params
     # log_it "config_setup()"
 
-    # only need default_use_cache at this point but might as well get them all
-    tmux_get_defaults
     if normalize_bool_param "@menus_use_cache" "$default_use_cache"; then
         cfg_use_cache=true
         # shellcheck disable=SC2154
