@@ -18,11 +18,11 @@ static_content() {
     set -- \
         3.2 S \
         3.2 T "-#[align=centre,nodim]pane-border-lines" \
-        3.2 C "s" "single" "set-option pane-border-lines  single  $mnu_runshell_reload" \
-        3.2 C "d" "double" "set-option pane-border-lines  double  $mnu_runshell_reload" \
-        3.2 C "h" "heavy" "set-option  pane-border-lines  heavy   $mnu_runshell_reload" \
-        3.2 C "S" "simple" "set-option pane-border-lines  simple  $mnu_runshell_reload" \
-        3.2 C "n" "number" "set-option pane-border-lines  number  $mnu_runshell_reload"
+        3.2 C "s" "Single" "set-option pane-border-lines  single  $mnu_runshell_reload_b" \
+        3.2 C "d" "Double" "set-option pane-border-lines  double  $mnu_runshell_reload_b" \
+        3.2 C "h" "Heavy" "set-option  pane-border-lines  heavy   $mnu_runshell_reload_b" \
+        3.2 C "i" "sImple" "set-option pane-border-lines  simple  $mnu_runshell_reload_b" \
+        3.2 C "n" "Number" "set-option pane-border-lines  number  $mnu_runshell_reload_b"
 
     menu_generate_part 3 "$@"
 }

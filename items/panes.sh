@@ -33,8 +33,8 @@ static_content() {
         1.7 C p "Previous pane [in order]" "select-pane -t :.- $mnu_runshell_reload_b" \
         1.7 C n "Next     pane [in order]" "select-pane -t :.+ $mnu_runshell_reload_b" \
         0.0 S \
-        1.8 C r "Respawn current pane" "confirm-before -p \
-            'respawn-pane #P? (y/n)' \"respawn-pane -k $mnu_runshell_reload\"" \
+        1.8 C r "Respawn current pane" "confirm-before -p 'respawn-pane #P? (y/n)' \
+             'respawn-pane -k $mnu_runshell_reload'" \
         1.8 C x "Kill current pane" "confirm-before -p \
             'kill-pane #T (#P)? (y/n)' kill-pane $mnu_runshell_reload_b" \
         1.8 C o "Kill all other panes" "confirm-before -p \

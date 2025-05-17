@@ -19,7 +19,7 @@ dynamic_content() {
     # shellcheck disable=SC2154
     if [ "$other_pane_marked" = 1 ]; then
         set -- \
-            3.0 C m "Swap current pane with marked" "swap-pane $mnu_runshell_reload"
+            3.0 C m "Swap current pane with marked" "swap-pane $mnu_runshell_reload_b"
     else
         set -- # clear params
     fi
@@ -49,8 +49,8 @@ static_content() {
     menu_generate_part 3 "$@"
 
     set -- \
-        1.7 C p "Swap pane with prev" "swap-pane -U $mnu_runshell_reload" \
-        1.7 C n "Swap pane with next" "swap-pane -D $mnu_runshell_reload" \
+        1.7 C p "Swap pane with prev" "swap-pane -U $mnu_runshell_reload_b" \
+        1.7 C n "Swap pane with next" "swap-pane -D $mnu_runshell_reload_b" \
         1.7 S \
         2.4 E w "Break pane off to a new window" "$d_scripts/break_pane.sh ; $0" \
         1.7 E o "Move to other win/ses" "$d_scripts/act_choose_tree.sh P M"

@@ -657,16 +657,16 @@ set_menu_env_variables() {
         #  so disabled for now
         #
         menu_run="$f_ext_dlg_trigger $(realpath "$0")"
-        mnu_runshell_reload=" ; run-shell \"$menu_run\""
-        mnu_runshell_reload_b=" \; run-shell \"$menu_run\"" # b as in bacslash prefix
+        mnu_runshell_reload="; run-shell \"$menu_run\""
+        mnu_runshell_reload_b="\; run-shell \"$menu_run\"" # b as in bacslash prefix
         # # shell check disable=SC2034
         # {
         # menu_reload_sleep=" ; run-shell 'sleep 1 ; $menu_run'"
         # menu_reload_sleep_b=" \; run-shell 'sleep 1 \; $menu_run'"
         #     menu_reload_and=" && run-shell '$menu_run'"
         # }
-        mnu_reload_direct=" ; \"$menu_run\""
-        mnu_reload_direct_b=" \; \"$menu_run\""
+        mnu_reload_direct="; \"$menu_run\""
+        mnu_reload_direct_b="\; \"$menu_run\""
         # || exit 0 prevents tmux display of failed script if previous action
         #           reports error
         # mnu_reload_direct_and=" && $menu_run || exit 0"
@@ -1233,6 +1233,7 @@ log_it
 log_it
 log_it
 log_it
+log_it "><> $0 - dialog_handling starts"
 
 is_dynamic_content=false    # indicates if a dynamic content segment is being processed
 dynamic_content_found=false # indicate dynamic content was generated
@@ -1249,5 +1250,5 @@ menu_debug="" # Set to 1 to use echo 2 to use log_it
 prepare_menu
 [ "$TMUX_MENUS_NO_DISPLAY" != "1" ] && display_menu
 
-# log_it "[$$]   COMPLETED: scripts/dialog_handling.sh - $rn_current_script"
+log_it "[$$]   COMPLETED: scripts/dialog_handling.sh - $rn_current_script"
 return 0 # ensuring this exits true

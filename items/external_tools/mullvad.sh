@@ -49,7 +49,7 @@ static_content() {
 
     set -- \
         0.0 S \
-        0.0 C s Status "display '$mulv_status_chk' $mnu_runshell_reload"
+        0.0 C s Status "display '$mulv_status_chk' $mnu_runshell_reload_b"
 
     menu_generate_part 3 "$@"
 }
