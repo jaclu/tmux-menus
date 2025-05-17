@@ -666,7 +666,7 @@ set_menu_env_variables() {
         #     menu_reload_and=" && run-shell '$menu_run'"
         # }
         mnu_reload_direct="; \"$menu_run\""
-        mnu_reload_direct_b="\; \"$menu_run\""
+        # mnu_reload_direct_b="\; \"$menu_run\""
         # || exit 0 prevents tmux display of failed script if previous action
         #           reports error
         # mnu_reload_direct_and=" && $menu_run || exit 0"
@@ -682,7 +682,7 @@ set_menu_env_variables() {
             # menu_reload_sleep=" ; run-shell 'sleep 0.2 ; $menu_run'"
             # Use this for reloads already embedded in a run-shell command
             mnu_reload_direct=" ; $menu_run"
-            mnu_reload_direct_b="$mnu_reload_direct"
+            # mnu_reload_direct_b="$mnu_reload_direct"
             # mnu_reload_direct_and=" && $menu_run || exit 0"
         }
     fi
