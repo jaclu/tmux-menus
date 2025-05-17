@@ -12,6 +12,7 @@ All notable changes to this project will be documented here.
 - re-enabled menu reloads when using whiptail/dialog
 - Keeps track of menu depth and only resumes backgrounded process (if any) as last
   menu closes
+- Layouts available both from Panes and Windows menus
 
 ### Changed
 

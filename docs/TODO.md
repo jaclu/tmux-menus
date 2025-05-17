@@ -4,10 +4,6 @@
 
 - quotes are not handled correctly for `@menus_format_title`
 
-## WhipTail
-
-- mnu_runshell_reload is not working, so disabled
-
 ## external_tools/dropbox.sh
 
 toggle not working
