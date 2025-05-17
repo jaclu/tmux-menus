@@ -23,6 +23,7 @@ menu_name="$1"
 dlg_handler="$d_scripts/external_dialog_handle.sh"
 [ ! -f "$dlg_handler" ] && error_msg_safe "File not found: $dlg_handler"
 
+log_it "><> TMUX_BIN [$TMUX_BIN]"
 # suspend potential fg app
 $TMUX_BIN send-keys C-z || {
     error_msg_safe "Send C-z - exited with error: $?"
