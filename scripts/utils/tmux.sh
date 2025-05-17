@@ -589,7 +589,7 @@ teh_debug=false
 # called, it is defined here
 #
 
-# shell check disable=SC2034
+# shellcheck disable=SC2034
 default_use_cache=Yes
 
 # log_it "===  Completed: scripts/utils/tmux.sh  =="

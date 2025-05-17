@@ -1249,5 +1249,5 @@ menu_debug="" # Set to 1 to use echo 2 to use log_it
 prepare_menu
 [ "$TMUX_MENUS_NO_DISPLAY" != "1" ] && display_menu
 
-log_it "[$$]   COMPLETED: scripts/dialog_handling.sh - $rn_current_script"
+# log_it "[$$]   COMPLETED: scripts/dialog_handling.sh - $rn_current_script"
 return 0 # ensuring this exits true

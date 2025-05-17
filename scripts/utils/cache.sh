@@ -220,7 +220,10 @@ cfg_use_cache=$cfg_use_cache
 
     # shellcheck disable=SC2154
     if $cfg_use_whiptail; then
-        printf '%s\n' "cfg_display_cmds=$cfg_display_cmds" >>"$_f_params_tmp"
+        printf '%s\n' "\
+cfg_display_cmds=$cfg_display_cmds
+wt_pasting=\"$wt_pasting\"
+" >>"$_f_params_tmp"
     else
         # Only use these settings if not using whiptail/dialog
         printf '%s\n' "\

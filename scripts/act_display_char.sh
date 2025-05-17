@@ -16,31 +16,25 @@
 
 #  Function to display a character, considering Whiptail limitations
 display_char() {
-    #
-    #  Normally the char is just sent into the current buffer
-    #  If whiptail is used, this can't be done, since whatever was
-    #  running was suspended. Instead selected chars are saved into a
-    #  buffer, that can later be pasted.
-    #
     c="$1"
     # log_it "display_char($c)"
     [ -z "$c" ] && error_msg_safe "display_char() - no param"
-    if $cfg_use_whiptail; then
-        if normalize_bool_param "$wt_pasting" false no_cache; then
-            #     pending_paste=true
-            # else
-            #     pending_paste=false
-            # fi
 
-            # if $pending_paste; then
-            #  prefix with pending paste buffer
+    if $cfg_use_whiptail; then
+        #
+        #  Normally the char is just sent into the current pane
+        #  If whiptail is used, this can't be done, since whatever was
+        #  running might have been suspended. Instead selected chars are saved
+        #  into a buffer, that can later be pasted.
+        #
+        if normalize_bool_param "$wt_pasting" false no_cache; then
             tmux_error_handler_assign b show-buffer
             # shellcheck disable=SC2154
             c="$b$c"
         else
+            # hint that the current selection should be appended to
             tmux_error_handler set-option -g "$wt_pasting" 'yes'
         fi
-
         tmux_error_handler set-buffer "$c"
     else
         tmux_error_handler send-keys "$c"
