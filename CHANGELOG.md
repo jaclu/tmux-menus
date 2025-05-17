@@ -23,6 +23,7 @@ All notable changes to this project will be documented here.
 - Better sanity checks when checking for TMUX_MENUS_HANDLER
 - Adjusted min version for some menus
 - whiptail adjustments for menu reload
+- Simplified handling of actions for whiptail
 
 ---
 

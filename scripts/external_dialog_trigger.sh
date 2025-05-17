@@ -17,8 +17,8 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 menu_name="$1"
 [ -z "$menu_name" ] && menu_name="$f_main_menu"
 
-rel_scr_name=$(relative_path "$0")
-log_it "><> $rel_scr_name menu to be loaded: $(relative_path "$menu_name")"
+# rel_scr_name=$(relative_path "$0")
+# log_it "><> $rel_scr_name menu to be loaded: $(relative_path "$menu_name")"
 
 dlg_handler="$d_scripts/external_dialog_handle.sh"
 [ ! -f "$dlg_handler" ] && error_msg_safe "File not found: $dlg_handler"

@@ -95,14 +95,16 @@ config_setup
 #
 log_it
 
-$cfg_use_cache && {
+if $cfg_use_cache; then
     #
     #  If custom inventory is used, update link to its main index
     #
     "$d_scripts"/update_custom_inventory.sh || {
         error_msg "update_custom_inventory.sh reported error: $?"
     }
-}
+else
+    log_it "Will NOT use cache!"
+fi
 
 #
 # Key is not bound until cache (if allowed) has been prepared, so normally

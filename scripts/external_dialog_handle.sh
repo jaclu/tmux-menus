@@ -13,6 +13,9 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 
 . "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
 
+# rel_scr_name=$(relative_path "$0")
+# log_it "><> $rel_scr_name menu to be loaded: $(relative_path "$menu_name")"
+
 menu_name="$1"
 [ -z "$menu_name" ] && menu_name="$f_main_menu"
 
@@ -27,4 +30,4 @@ else
     log_it "nothing suspended"
 fi
 
-# log_it "><> $msg_prefix $0 $r_menu - done"
+# log_it "><> $rel_scr_name $0 $r_menu - done"

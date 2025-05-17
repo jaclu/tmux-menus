@@ -82,20 +82,11 @@ run_if_found() {
 update_wt_actions() {
     # log_it "update_wt_actions()"
     if $cfg_use_cache; then
-        [ "$menu_idx" -eq 1 ] && {
-            # clear menu actions
-            safe_remove "$d_wt_actions"
-        }
         mkdir -p "$d_wt_actions"
-        if $is_dynamic_content; then
-            echo "$wt_actions" >"$d_wt_actions/dynamic-$menu_idx"
-        else
-            echo "$wt_actions" >>"$d_wt_actions/static"
-        fi
+        echo "$wt_actions" >"$d_wt_actions/$menu_idx"
     else
         uncached_wt_actions="$uncached_wt_actions $wt_actions"
     fi
-
 }
 
 #---------------------------------------------------------------
@@ -117,6 +108,7 @@ menu_generate_part() {
 
     [ -z "$2" ] && {
         # no params clear cache file if any
+        log_it "><> menu_generate_part() - clear: $f_cache_file"
         $cfg_use_cache && rm -f "$f_cache_file"
         return
     }
@@ -124,6 +116,7 @@ menu_generate_part() {
     shift # get rid of the idx param
     $all_helpers_sourced || source_all_helpers "menu_generate_part()"
 
+    wt_actions=""
     menu_parse "$@"
     $cfg_use_whiptail && update_wt_actions
 }
@@ -956,13 +949,8 @@ wt_cached_selection() {
     #   all_wt_actions - lists all actions
     #
     # log_it "wt_cached_selection()"
-    # gathering action files from cache
     all_wt_actions=""
     for file in "$d_wt_actions"/*; do
-        # skip special files
-        fn="$(basename "$file")"
-        # [ "$n" = "all" ] && continue # for debugging
-        [ "${#fn}" -le "2" ] && continue # skip . & ..
 
         # Check if the file is a regular file
         [ -f "$file" ] && {
@@ -1227,13 +1215,14 @@ oversized_check() {
     . "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
 }
 
-# Useful when debugging to keep each menu generation process separate
-log_it
-log_it
-log_it
-log_it
-log_it
-log_it "><> $0 - dialog_handling starts"
+[ "$log_file_forced" = 1 ] && {
+    # Useful when debugging to keep each menu generation process separate
+    log_it
+    log_it
+    log_it
+    log_it
+    log_it
+}
 
 is_dynamic_content=false    # indicates if a dynamic content segment is being processed
 dynamic_content_found=false # indicate dynamic content was generated
@@ -1250,5 +1239,5 @@ menu_debug="" # Set to 1 to use echo 2 to use log_it
 prepare_menu
 [ "$TMUX_MENUS_NO_DISPLAY" != "1" ] && display_menu
 
-log_it "[$$]   COMPLETED: scripts/dialog_handling.sh - $rn_current_script"
+# log_it "[$$]   COMPLETED: scripts/dialog_handling.sh - $rn_current_script"
 return 0 # ensuring this exits true
