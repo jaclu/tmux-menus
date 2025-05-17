@@ -23,15 +23,16 @@ menu_name="$1"
 dlg_handler="$d_scripts/external_dialog_handle.sh"
 [ ! -f "$dlg_handler" ] && error_msg_safe "File not found: $dlg_handler"
 
-log_it "><> TMUX_BIN [$TMUX_BIN]"
 # suspend potential fg app
-$TMUX_BIN send-keys C-z || {
-    error_msg_safe "Send C-z - exited with error: $?"
-}
+$TMUX_BIN send-keys C-z
+# [ "$?" = 0 ] || {
+#     error_msg_safe "Send C-z - exited with error: $?"
+# }
 
 sleep 0.2 # give time for task to be suspended, and shell ready for input
 
 # start menu in active pane
-eval "$TMUX_BIN" send-keys "$dlg_handler" Space "$menu_name" Enter || {
-    error_msg_safe "$dlg_handler - exited with error: $?"
-}
+$TMUX_BIN send-keys "$dlg_handler" Space "$menu_name" Enter
+# [ "$?" = 0 ] || {
+#     error_msg_safe "$dlg_handler - exited with error: $?"
+# }

@@ -32,6 +32,7 @@ static_content() {
 #===============================================================
 
 menu_name="Split pane"
+menu_min_vers=1.7
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"

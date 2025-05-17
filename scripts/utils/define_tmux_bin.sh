@@ -28,7 +28,7 @@ case "$TMUX_BIN" in
     #
     # shellcheck disable=SC2154
     f_name_socket="$(echo "$TMUX" | cut -d, -f 1)"
-    socket="${f_name_socket##*/}"
-    TMUX_BIN="$TMUX_BIN -L $socket"
+    tmux_socket="${f_name_socket##*/}"
+    TMUX_BIN="$TMUX_BIN -L $tmux_socket"
     ;;
 esac
