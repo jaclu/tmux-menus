@@ -46,7 +46,7 @@ dynamic_content() {
     [ -n "$td_vers" ] && set -- "$@" 0.0 T "-#[nodim] Vers release: $td_vers"
     [ -n "$branch" ] && set -- "$@" 0.0 T "-#[nodim]       Branch: $branch"
     [ -n "$td_pull" ] && set -- "$@" 0.0 T "-#[nodim]Latest update: $td_pull"
-    menu_generate_part 2 "$@"
+    menu_generate_part 4 "$@"
 }
 
 static_content() {
@@ -58,13 +58,21 @@ static_content() {
         0.0 T "-#[nodim] $nav_home#[default]  #[nodim]Back to start menu." \
         0.0 S \
         0.0 T "-#[nodim]Shortcut keys are usually upper case" \
-        0.0 T "-#[nodim]for menus, and lower case for actions." \
-        0.0 T "-" \
-        0.0 T "-#[nodim]j & k can be used for menu scrolling" \
-        0.0 T "-#[nodim]      no items use either as shortcuts." \
+        0.0 T "-#[nodim]for menus, and lower case for actions."
+    menu_generate_part 1 "$@"
+
+    $cfg_use_whiptail || {
+        set -- \
+            0.0 T "-" \
+            0.0 T "-#[nodim]j & k can be used for menu scrolling" \
+            0.0 T "-#[nodim]      no items use either as shortcuts."
+        menu_generate_part 2 "$@"
+    }
+
+    set -- \
         0.0 T "-" \
         0.0 T "-#[align=centre,nodim]--------  About this plugin  -------"
-    menu_generate_part 1 "$@"
+    menu_generate_part 3 "$@"
 
     git_repo="$(git config --get remote.origin.url)"
     set --
@@ -74,7 +82,7 @@ static_content() {
             0.0 S \
             0.0 T "-#[nodim]Exit menus with ESC or Ctrl-C"
     }
-    menu_generate_part 3 "$@"
+    menu_generate_part 5 "$@"
 }
 
 #===============================================================
