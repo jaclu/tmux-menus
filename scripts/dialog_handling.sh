@@ -345,7 +345,6 @@ alt_command() {
     label="$(echo "$1" | sed 's/#{[^}]*}//g' | sed 's/#\[[^}]*\]//g')"
     key="$2"
     cmd="$3"
-    keep_cmd="${4:-false}"
 
     #
     #  labels starting with - indicates disabled feature in tmux notation,
@@ -358,11 +357,7 @@ alt_command() {
     key_action="$(echo "$key" | sed 's/\\//')"
 
     menu_items="$menu_items $key \"$label\""
-    if $keep_cmd; then
-        wt_actions="$wt_actions $key_action | tmux_error_handler_assign wt_output $cmd $external_action_separator"
-    else
-        wt_actions="$wt_actions $key_action | tmux_error_handler_assign wt_output $cmd $external_action_separator"
-    fi
+    wt_actions="$wt_actions $key_action | tmux_error_handler_assign wt_output $cmd $external_action_separator"
 }
 
 alt_text_line() {
@@ -430,20 +425,13 @@ menu_parse() {
         case "$action" in
 
         "C")
-            #  direct tmux command - params: key label task [keep] [reload]
+            #  direct tmux command - params: key label task
             key="$1"
             shift
             label="$1"
             shift
             cmd="$1"
             shift
-            if [ "$1" = "keep" ]; then
-                #  keep cmd as is
-                keep_cmd=true
-                shift # get rid of the keep cmd
-            else
-                keep_cmd=false
-            fi
 
             # first extract the variables, then  if it shouldn't be used move on
             ! tmux_vers_check "$min_vers" && continue
@@ -453,9 +441,9 @@ menu_parse() {
             [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
 
             if $cfg_use_whiptail; then
-                alt_command "$label" "$key" "$cmd" "$keep_cmd"
+                alt_command "$label" "$key" "$cmd"
             else
-                mnu_command "$label" "$key" "$cmd" "$keep_cmd"
+                mnu_command "$label" "$key" "$cmd"
                 $b_do_show_cmds && sc_show_cmd "$TMUX_BIN $cmd"
             fi
             ;;
