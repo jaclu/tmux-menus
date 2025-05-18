@@ -449,7 +449,7 @@ tmux_error_handler_assign() { # cache references
     #  this will be set back to false at the end of this, so it needs to be
     #  enabled for each call specifically
     #
-    var_name="$1"
+    varname="$1"
     shift
     #
     #  This will loose quotes etc, but since is doesn't cost any overhead to generate
@@ -460,10 +460,10 @@ tmux_error_handler_assign() { # cache references
     $teh_debug && {
         # in principle this should be done every time, but limited to when
         # logging, to minimize overhead
-        validate_varname "$var_name" "tmux_error_handler_assign()"
+        validate_varname "$varname" "tmux_error_handler_assign()"
 
         if $teh_store_result; then
-            log_it "tmux_error_handler_assign(\$TMUX_BIN $cmd_simplified) -> $var_name"
+            log_it "tmux_error_handler_assign(\$TMUX_BIN $cmd_simplified) -> $varname"
         else
             log_it "tmux_error_handler(\$TMUX_BIN $cmd_simplified)"
         fi
@@ -561,7 +561,7 @@ EOF
     #
     # Depending on call type, potentially save output in caller supplied variable name
     #
-    $teh_store_result && eval "$var_name=\"\$value\""
+    $teh_store_result && eval "$varname=\"\$value\""
 
     teh_store_result=true # reset this for the next call
     teh_debug=false       # This needs to be enabled on a per call basis
