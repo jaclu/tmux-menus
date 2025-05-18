@@ -1025,8 +1025,9 @@ alt_parse_selection() {
         [ "$key" = "$menu_selection" ] && [ -n "$action" ] && {
             $all_helpers_sourced || source_all_helpers "alt_parse_selection()"
             # log_it "><>action: >>$action<<"
+            # too many arguments (need at most 2) - fixed by eval
             # teh_debug=true
-            $action
+            eval "$action"
             [ -n "$wt_output" ] && alt_parse_output "$wt_output"
             break
         }
