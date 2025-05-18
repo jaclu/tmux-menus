@@ -28,7 +28,7 @@ bind_plugin_key() {
     else
         trigger_sequence="Menus will be bound to: <prefix> $cfg_trigger_key"
     fi
-    cmd+=" $cfg_trigger_key run-shell $bind_cmd"
+    cmd+=" '$cfg_trigger_key' run-shell $bind_cmd"
 
     # shellcheck disable=SC2154
     [[ "$TMUX_MENUS_NO_DISPLAY" = "1" ]] && {
@@ -40,7 +40,7 @@ bind_plugin_key() {
     teh_debug=true
     # tmux_error_handler bind-key -N "plugin menus" Space run-shell /Users/jaclu/git_repos/mine/tmux-menus/items/main.sh
 
-    eval $TMUX_BIN $cmd || {
+    eval "$TMUX_BIN" "$cmd" || {
         error_msg "Failed to bind trigger: $cfg_trigger_key"
     }
 

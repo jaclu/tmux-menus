@@ -36,4 +36,4 @@ else
     error_msg_safe "$0: param 1 must be P or W"
 fi
 
-tmux_error_handler choose-tree $flags "run-shell '$template %%'"
+tmux_error_handler choose-tree "$flags" "run-shell '$template %%'"
