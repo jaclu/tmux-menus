@@ -25,7 +25,7 @@ _this="relocate_param_check.sh" # error prone if script name is changed :(
 item_type="$1"
 
 case "$item_type" in
-"W" | "P") : ;; # Valid parameters
+"w" | "p") : ;; # Valid parameters
 *)
     # NEEDS TESTING
     error_msg_safe "param_check($1) First param must be W or P!"
@@ -35,16 +35,16 @@ esac
 action="$2"
 
 case "$action" in
-"M") : ;; # Valid parameters
-"L")
-    if [ "$item_type" = "P" ]; then
+"m") : ;; # Valid parameters
+"l")
+    if [ "$item_type" = "p" ]; then
         # NEEDS TESTING
         error_msg_safe "param_check() Panes can not be linked!"
     fi
     ;;
 *)
     # NEEDS TESTING
-    set -- "param_check($1,$2) 2nd param must be L or M" \
+    set -- "param_check($1,$2) 2nd param must be l or m" \
         "Indicating move or link action"
     error_msg_safe "$*"
     ;;

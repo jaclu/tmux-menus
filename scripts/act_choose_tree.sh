@@ -28,12 +28,12 @@ if tmux_vers_check 2.7; then
 else
     flags=""
 fi
-if [ "$1" = "P" ]; then
-    template="$d_scripts/relocate_pane.sh P $2"
-elif [ "$1" = "W" ]; then
-    template="$d_scripts/relocate_window.sh W $2"
+if [ "$1" = "p" ]; then
+    template="$d_scripts/relocate_pane.sh p $2"
+elif [ "$1" = "w" ]; then
+    template="$d_scripts/relocate_window.sh w $2"
 else
-    error_msg_safe "$0: param 1 must be P or W"
+    error_msg "$0: param 1 must be p or w"
 fi
 
 tmux_error_handler choose-tree "$flags" "run-shell '$template %%'"

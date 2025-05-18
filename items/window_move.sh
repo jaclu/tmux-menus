@@ -45,8 +45,8 @@ static_content() {
         0.0 C "\<" "Swap window Left" "swap-window -d -t :-1 $runshell_reload_mnu" \
         0.0 C "\>" "Swap window Right" "swap-window -d -t :+1 $runshell_reload_mnu" \
         0.0 S \
-        1.7 E m "Move window to other location" "$d_scripts/act_choose_tree.sh W M" \
-        1.7 E l "Link window to other session" "$d_scripts/act_choose_tree.sh W L"
+        1.7 E m "Move window to other location" "$d_scripts/act_choose_tree.sh w m" \
+        1.7 E l "Link window to other session" "$d_scripts/act_choose_tree.sh w l"
 
     $cfg_use_hint_overlays && $cfg_show_key_hints && {
         set -- "$@" \
