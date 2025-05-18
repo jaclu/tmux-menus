@@ -9,12 +9,15 @@
 #
 
 display_currently_playing_track() {
-    # shellcheck source=scripts/helpers_minimal.sh
-    . "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
+    # shellcheck source=scripts/helpers.sh
+    . "$D_TM_BASE_PATH"/scripts/helpers.sh
+
+    spotify status >/dev/null 2>&1
 
     track="$(spotify status track)"
     artist="$(spotify status artist)"
     album="$(spotify status album)"
+
     tmux_error_handler display-message "$track - Artist: $artist - Album: $album"
     exit 0
 }
@@ -33,19 +36,18 @@ static_content() {
 
     set -- \
         0.0 S \
-        0.0 E t "Title - currently playing track" \
-        "$0 -t $reload_no_output" \
+        0.0 E t "Title - currently playing track" "$0 -t ; $0" \
         0.0 S \
-        0.0 E Space "Pause/Resume" "spotify pause    $reload_no_output" \
-        0.0 E n "Next" "spotify             next     $reload_no_output" \
-        0.0 E p "Prev" "spotify             prev     $reload_no_output" \
-        0.0 E r "Replay" "spotify           replay   $reload_no_output" \
-        0.0 E s "Shuffle - toggle" "spotify toggle shuffle $reload_no_output" \
-        0.0 E R "Repeat  - toggle" "spotify toggle repeat  $reload_no_output" \
-        0.0 E u "vol Up" "spotify           vol up   $reload_no_output" \
-        0.0 E d "vol Down" "spotify         vol down $reload_no_output" \
-        0.0 E i "Copy URI to clipboard" "spotify share uri $reload_no_output" \
-        0.0 E l "Copy URL to clipboard" "spotify share url $reload_no_output"
+        0.0 E Space "Pause/Resume" "spotify pause   ; $0" \
+        0.0 E n "Next" "spotify             next  ; $0" \
+        0.0 E p "Prev" "spotify             prev  ; $0" \
+        0.0 E r "Replay" "spotify           replay  ; $0" \
+        0.0 E s "Shuffle - toggle" "spotify toggle shuffle  ; $0" \
+        0.0 E R "Repeat  - toggle" "spotify toggle repeat  ; $0" \
+        0.0 E u "vol Up" "spotify           vol up  ; $0" \
+        0.0 E d "vol Down" "spotify         vol down  ; $0" \
+        0.0 E i "Copy URI to clipboard" "spotify share uri  ; $0" \
+        0.0 E l "Copy URL to clipboard" "spotify share url  ; $0"
 
     menu_generate_part 3 "$@"
 }
