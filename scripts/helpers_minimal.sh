@@ -52,8 +52,10 @@ log_it_minimal() {
 
 error_msg_safe() {
     #  Used when potentially called without having sourced everything
+    msg="$1"
+    exit_code="$2"
     $all_helpers_sourced || source_all_helpers "error_msg_safe()"
-    error_msg "$1" "$2"
+    error_msg "$msg" "$exit_code"
 }
 
 source_all_helpers() {
