@@ -156,7 +156,7 @@ tmux_get_option() {
         _line=
         while IFS= read -r _cache_line; do
             case $_cache_line in
-            "$tgo_option"*)
+            "$tgo_option "*)
                 _line=$_cache_line
                 break
                 ;;
@@ -165,7 +165,7 @@ tmux_get_option() {
         done <"$f_cached_tmux_options"
     else
         # log_it "tmux_get_option($tgo_option) - not using cache"
-        _line="$($TMUX_BIN show-options -g "$tgo_option" 2>/dev/null)"
+        _line="$($TMUX_BIN show-options -g "$tgo_option " 2>/dev/null)"
     fi
 
     if [ -z "$_line" ]; then
