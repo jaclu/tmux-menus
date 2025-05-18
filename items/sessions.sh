@@ -26,22 +26,22 @@ static_content() {
     set -- \
         0.0 S \
         0.0 C r "Rename this session" "command-prompt -I '#{session_name}' \
-            'rename-session -- \"%%\"' $mnu_runshell_reload_b" \
+            'rename-session -- \"%%\"' $runshell_reload_mnu" \
         0.0 C \+ "New session" "command-prompt -p \
             'Name of new session: ' \
-            'new-session -d -s \"%1\" ; switch-client -t \"%1\"' $mnu_runshell_reload_b" \
+            'new-session -d -s \"%1\" ; switch-client -t \"%1\"' $runshell_reload_mnu" \
         0.0 S \
-        0.0 C l "Last selected session" "switch-client -l $mnu_runshell_reload_b" \
-        0.0 C p "Previous session [in order]" "switch-client -p $mnu_runshell_reload_b" \
-        0.0 C n "Next     session [in order]" "switch-client -n $mnu_runshell_reload_b" \
+        0.0 C l "Last selected session" "switch-client -l $runshell_reload_mnu" \
+        0.0 C p "Previous session [in order]" "switch-client -p $runshell_reload_mnu" \
+        0.0 C n "Next     session [in order]" "switch-client -n $runshell_reload_mnu" \
         0.0 S \
         1.8 C x "Kill current session" \
         "confirm-before -p \
         'Are you sure you want to kill this session: [#S] (y/n)' \
-        \"$cli_dtch_mode ; kill-session\" $mnu_runshell_reload_b" \
+        \"$cli_dtch_mode ; kill-session\" $runshell_reload_mnu" \
         1.8 C o "Kill all other sessions" "confirm-before -p \
         'Are you sure you want to kill all other sessions? (y/n)' \
-        \"kill-session -a\" $mnu_runshell_reload_b"
+        \"kill-session -a\" $runshell_reload_mnu"
 
     menu_generate_part 3 "$@"
 }

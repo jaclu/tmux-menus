@@ -17,10 +17,10 @@ static_content() {
 
     set -- \
         0.0 S \
-        2.0 C l "Left" "split-window  -bh -c '#{pane_current_path}' $mnu_runshell_reload_b" \
-        1.7 C r "Right" "split-window -h  -c '#{pane_current_path}' $mnu_runshell_reload_b" \
-        2.0 C a "Above" "split-window -bv -c '#{pane_current_path}' $mnu_runshell_reload_b" \
-        1.7 C b "Below" "split-window     -c '#{pane_current_path}' $mnu_runshell_reload_b"
+        2.0 C l "Left" "split-window  -bh -c '#{pane_current_path}' $runshell_reload_mnu" \
+        1.7 C r "Right" "split-window -h  -c '#{pane_current_path}' $runshell_reload_mnu" \
+        2.0 C a "Above" "split-window -bv -c '#{pane_current_path}' $runshell_reload_mnu" \
+        1.7 C b "Below" "split-window     -c '#{pane_current_path}' $runshell_reload_mnu"
 
     menu_generate_part 3 "$@"
 }

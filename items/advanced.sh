@@ -31,7 +31,7 @@ dynamic_content() {
     # shellcheck disable=SC2154
     set -- \
         2.1 C o "Toggle mouse to: $new_mouse_status" \
-        "set-option -g mouse $new_mouse_status $mnu_runshell_reload_b" \
+        "set-option -g mouse $new_mouse_status $runshell_reload_mnu" \
         2.4 E p "Change prefix (Current: $current_prefix)" \
         "$d_scripts/change_prefix.sh $0"
 
@@ -79,7 +79,7 @@ static_content() {
         0.0 C m "Tmux messages" 'show-messages' \
         1.9 C t "Tmux terminal bindings" 'show-messages -T' \
         0.0 C : "Enter a tmux command" command-prompt \
-        0.0 C s "Toggle status line" "set-option -g status $mnu_runshell_reload_b" \
+        0.0 C s "Toggle status line" "set-option -g status $runshell_reload_mnu" \
         1.8 S
 
     $cfg_use_hint_overlays && $cfg_show_key_hints && tmux_vers_check 2.7 && {

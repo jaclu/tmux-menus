@@ -23,14 +23,14 @@ static_content() {
     #
     set -- \
         0.0 S \
-        0.0 E c "Clear screen & history" "$d_scripts/act_clear_screen.sh $0" \
+        0.0 E c "Clear screen & history" "$d_scripts/act_clear_screen.sh $(relative_path "$0")" \
         0.0 C h 'Pane history (enter \"copy mode\")' "copy-mode" \
         2.0 C s "Save pane history no escapes" "command-prompt -p \
             'Save to (no escapes):' -I '$d_history/tmux-history' \
-            'capture-pane -S - -E - ; save-buffer %1 ; delete-buffer'  $mnu_runshell_reload_b" \
+            'capture-pane -S - -E - ; save-buffer %1 ; delete-buffer'  $runshell_reload_mnu" \
         2.0 C e "Save pane history with escapes" "command-prompt -p \
             'Save to (with escapes):' -I '$d_history/tmux-history-escapes' \
-            'capture-pane -S - -E - -e ; save-buffer %1 ; delete-buffer' $mnu_runshell_reload_b" \
+            'capture-pane -S - -E - -e ; save-buffer %1 ; delete-buffer' $runshell_reload_mnu" \
         0.0 S \
         0.0 M H "Help                   $nav_next" "$d_help/help_pane_history.sh $0"
 

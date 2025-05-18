@@ -649,35 +649,14 @@ set_menu_env_variables() {
         #  I haven't been able do to menu reload with whiptail/dialog yet,
         #  so disabled for now
         #
-        menu_run="$f_ext_dlg_trigger $(realpath "$0")"
-        mnu_runshell_reload="; run-shell \"$menu_run\""
-        mnu_runshell_reload_b="\; run-shell \"$menu_run\"" # b as in bacslash prefix
-        # # shell check disable=SC2034
-        # {
-        # menu_reload_sleep=" ; run-shell 'sleep 1 ; $menu_run'"
-        # menu_reload_sleep_b=" \; run-shell 'sleep 1 \; $menu_run'"
-        #     menu_reload_and=" && run-shell '$menu_run'"
-        # }
-        mnu_reload_direct="; \"$menu_run\""
-        # mnu_reload_direct_b="\; \"$menu_run\""
-        # || exit 0 prevents tmux display of failed script if previous action
-        #           reports error
-        # mnu_reload_direct_and=" && $menu_run || exit 0"
+        runshell_reload_mnu="\; run-shell \"$f_ext_dlg_trigger $(realpath "$0")\""
+        mnu_reload_direct=""
 
     else
-        menu_run="$0"
-        # shellcheck disable=SC2034
-        {
-            mnu_runshell_reload=" ; run-shell $menu_run"
-            # built in menu handler doesn't ever seem to need \;
-            mnu_runshell_reload_b="$mnu_runshell_reload"
-
-            # menu_reload_sleep=" ; run-shell 'sleep 0.2 ; $menu_run'"
-            # Use this for reloads already embedded in a run-shell command
-            mnu_reload_direct=" ; $menu_run"
-            # mnu_reload_direct_b="$mnu_reload_direct"
-            # mnu_reload_direct_and=" && $menu_run || exit 0"
-        }
+        # shell check disable=SC2034
+        # built in menu handler doesn't ever seem to need \;
+        runshell_reload_mnu=" ; run-shell $0"
+        mnu_reload_direct=" ; $0"
     fi
 }
 
