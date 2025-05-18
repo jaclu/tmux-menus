@@ -383,11 +383,11 @@ helpers_full_additional_files_sourced() {
     . "$d_scripts"/utils/tmux.sh
 }
 
-display_command_label() {
-    # log_it "display_command_label() - $TMUX_MENUS_SHOW_CMDS"
+set_display_command_labels() {
+    # log_it "set_display_command_labels() - $show_cmds_state"
 
     # shellcheck disable=SC2154
-    case "$TMUX_MENUS_SHOW_CMDS" in
+    case "$show_cmds_state" in
     1)
         _lbl="Display Commands"
         _lbl_next="Display key binds"

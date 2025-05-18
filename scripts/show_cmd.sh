@@ -297,7 +297,7 @@ sc_show_cmd() {
     # log_it
     # log_it "sc_show_cmd($sc_cmd)"
 
-    case "$TMUX_MENUS_SHOW_CMDS" in
+    case "$show_cmds_state" in
     1)
         sc_clean_up_result "$sc_cmd" sc_processed
         ;;
@@ -313,6 +313,6 @@ sc_show_cmd() {
     sc_display_cmd "$sc_processed"
 
     # refresh it for each cmd processed in case the display timeout is shortish
-    display_command_label
+    set_display_command_labels
     tmux_error_handler display-message "Preparing $_lbl ..."
 }

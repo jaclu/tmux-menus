@@ -27,6 +27,7 @@ All notable changes to this project will be documented here.
 - skipped using sockets in TMUX_BIN ended up causing param confusion when using
   whiptail on some complex menu actions
 - Fixed: Extras - Dropbox - toggle
+- Removed usage of env variable: TMUX_MENUS_SHOW_CMDS
 
 ---
 

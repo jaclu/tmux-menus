@@ -255,7 +255,6 @@ handle_env_variables() { # local usage by get_config()
     #
     # log_it "handle_env_variables()"
 
-    # TMUX_MENUS_SHOW_CMDS - is handled directly by dialog_handling.sh - no config needed
     # TMUX_MENUS_LOGGING_MINIMAL - is handled directly by log_it() - no config needed
     # TMUX_MENUS_NO_DISPLAY -  is handled directly - no config needed
     # TMUX_MENUS_PROFILING - is handled directly - no config needed

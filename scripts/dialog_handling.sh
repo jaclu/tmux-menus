@@ -91,34 +91,137 @@ update_wt_actions() {
 
 #---------------------------------------------------------------
 #
-#   Called from menu items
+#   Error handling
 #
 #---------------------------------------------------------------
 
-menu_generate_part() {
-    # Generate one menu segment
-    # log_it "menu_generate_part($1)"
+escape_for_err_msg() {
+    # echo "$@" | sed "s/\'/[\"]/g"
+    echo "$@" | sed "s/\'/\`/g"
+    # | sed "s/;/[semi-colon]/g" | sed 's/\"/[double-quote]/g'
+}
 
-    menu_idx="$1"
-    $cfg_use_cache && f_cache_file="$d_menu_cache/$menu_idx"
+show_params() {
+    # This will log the exact arguments passed to the script
+    for param in "$@"; do
+        # Print each argument enclosed in quotes
+        printf '%s ' "$param"
+    done
+    echo
+}
 
-    # needs to be set even if this is an empty dynamic menu to prevent
-    # static_files_reduction() from running
-    $is_dynamic_content && dynamic_content_found=true
+verify_menu_runable() {
+    # Check that menu starts with a menu handling cmd, if not most likely due to
+    # menu idx 1 not generated, but could be other causes. eithe way this menu
+    # will be displayable...
+    # log_it "verify_menu_runable()"
 
-    [ -z "$2" ] && {
-        # no params clear cache file if any
-        log_it "><> menu_generate_part() - clear: $f_cache_file"
-        $cfg_use_cache && rm -f "$f_cache_file"
-        return
+    # extract first word
+    _actual_first="${menu_items%% *}"
+
+    if [ -n "$cfg_alt_menu_handler" ]; then
+        _mnu_first="$cfg_alt_menu_handler"
+    else
+        _mnu_first="${TMUX_BIN%% *}"
+    fi
+    [ "$_actual_first" = "$_mnu_first" ]
+}
+
+mnu_parse_error() {
+    log_it "mnu_parse_error($1)"
+    failed_action="$1"
+    shift
+
+    s_remainders=$(show_params "$@")
+
+    #region error_msg_safe explaining parsing error
+    error_msg_safe "$(
+        cat <<EOF
+Parsing error when processing menu.
+
+Due to limits in what can be displayed in this error, all usages of single-quote
+have been replaced by backticks, in the "Menu created so far" in order to give as
+close a reppresentation as possible
+
+-----   Menu created so far   -----
+$(escape_for_err_msg "$menu_items")
+-----------------------------------
+
+
+Failed to Parse this action: $(escape_for_err_msg "$failed_action")
+
+
+In the next section all quotes have been eliminated due to how parsing remaining
+arguments is limited, hopefully it will at least give a hint on where parsing failed.
+
+-----   Remainder of menu   -----
+$(escape_for_err_msg "$s_remainders")
+---------------------------------
+
+EOF
+    )"
+    #endregion
+}
+
+display_invalid_menu_error() {
+    e_msg="$1"
+    log_it "display_invalid_menu_error($e_msg)"
+
+    [ -n "$e_msg" ] && {
+        #region e_msg = Error message
+        e_msg="$(
+            cat <<EOF
+-----   Error message   -----
+$(escape_for_err_msg "$e_msg")
+-----------------------------
+EOF
+        )"
+        #endregion
     }
+    if verify_menu_runable; then
+        log_it "  - was runable"
+    else
+        log_it "  - NOT runable!"
+        #region e_first = first word in rendered menu wrong
+        e_first="$(
+            cat <<EOF
 
-    shift # get rid of the idx param
-    $all_helpers_sourced || source_all_helpers "menu_generate_part()"
 
-    wt_actions=""
-    menu_parse "$@"
-    $cfg_use_whiptail && update_wt_actions
+The processed menu should start with a menu handler.
+In the current environment this was expected:
+
+    $_mnu_first
+
+This was found:
+
+    $_actual_first
+
+Was no part 1 created?
+
+The menu handler and other menu definitions like title and styling
+are prepended to the part created by:
+
+    menu_generate_part 1 "\$@"
+EOF
+        )"
+        #endregion
+    fi
+    #region m_menu_code = Display the generated menu code
+    m_menu_code="$(
+        cat <<EOF
+
+
+Generated menu below - single quotes have been changed into backticks
+otherwise the commands can not be displayed here
+
+-----   menu start   -----
+$(escape_for_err_msg "$menu_items")
+-----    menu end    -----
+EOF
+    )"
+    #endregion
+
+    error_msg_safe "$e_msg\n$e_first\n$m_menu_code"
 }
 
 #---------------------------------------------------------------
@@ -310,7 +413,7 @@ menu_parse() {
         fi
     }
 
-    [ -n "$menu_debug" ] && debug_print ">> menu_parse()"
+    [ -n "$menu_debug" ] && debug_print ">> menu_parse($menu_idx)"
     while [ -n "$1" ]; do
         min_vers="$1"
         shift
@@ -467,137 +570,113 @@ menu_parse() {
 
 #---------------------------------------------------------------
 #
-#   Errors
+#   Called from menu items
 #
 #---------------------------------------------------------------
 
-escape_for_err_msg() {
-    # echo "$@" | sed "s/\'/[\"]/g"
-    echo "$@" | sed "s/\'/\`/g"
-    # | sed "s/;/[semi-colon]/g" | sed 's/\"/[double-quote]/g'
-}
+menu_generate_part() {
+    # Generate one menu segment
+    # log_it "menu_generate_part($1)"
 
-show_params() {
-    # This will log the exact arguments passed to the script
-    for param in "$@"; do
-        # Print each argument enclosed in quotes
-        printf '%s ' "$param"
-    done
-    echo
-}
+    menu_idx="$1"
+    $cfg_use_cache && f_cache_file="$d_menu_cache/$menu_idx"
 
-verify_menu_runable() {
-    # Check that menu starts with a menu handling cmd, if not most likely due to
-    # menu idx 1 not generated, but could be other causes. eithe way this menu
-    # will be displayable...
-    # log_it "verify_menu_runable()"
+    # needs to be set even if this is an empty dynamic menu to prevent
+    # static_files_reduction() from running
+    $is_dynamic_content && dynamic_content_found=true
 
-    # extract first word
-    _actual_first="${menu_items%% *}"
-
-    if [ -n "$cfg_alt_menu_handler" ]; then
-        _mnu_first="$cfg_alt_menu_handler"
-    else
-        _mnu_first="${TMUX_BIN%% *}"
-    fi
-    [ "$_actual_first" = "$_mnu_first" ]
-}
-
-mnu_parse_error() {
-    log_it "mnu_parse_error($1)"
-    failed_action="$1"
-    shift
-
-    s_remainders=$(show_params "$@")
-
-    #region error_msg_safe explaining parsing error
-    error_msg_safe "$(
-        cat <<EOF
-Parsing error when processing menu.
-
-Due to limits in what can be displayed in this error, all usages of single-quote
-have been replaced by backticks, in the "Menu created so far" in order to give as
-close a reppresentation as possible
-
------   Menu created so far   -----
-$(escape_for_err_msg "$menu_items")
------------------------------------
-
-
-Failed to Parse this action: $(escape_for_err_msg "$failed_action")
-
-
-In the next section all quotes have been eliminated due to how parsing remaining
-arguments is limited, hopefully it will at least give a hint on where parsing failed.
-
------   Remainder of menu   -----
-$(escape_for_err_msg "$s_remainders")
----------------------------------
-
-EOF
-    )"
-    #endregion
-}
-
-display_invalid_menu_error() {
-    e_msg="$1"
-    log_it "display_invalid_menu_error($e_msg)"
-
-    [ -n "$e_msg" ] && {
-        #region e_msg = Error message
-        e_msg="$(
-            cat <<EOF
------   Error message   -----
-$(escape_for_err_msg "$e_msg")
------------------------------
-EOF
-        )"
-        #endregion
+    [ -z "$2" ] && {
+        # no params clear cache file if any
+        log_it "><> menu_generate_part() - clear: $f_cache_file"
+        $cfg_use_cache && rm -f "$f_cache_file"
+        return
     }
-    if verify_menu_runable; then
-        log_it "  - was runable"
-    else
-        log_it "  - NOT runable!"
-        #region e_first = first word in rendered menu wrong
-        e_first="$(
-            cat <<EOF
 
+    shift # get rid of the idx param
+    $all_helpers_sourced || source_all_helpers "menu_generate_part()"
 
-The processed menu should start with a menu handler.
-In the current environment this was expected:
+    wt_actions=""
+    menu_parse "$@"
+    $cfg_use_whiptail && update_wt_actions
+}
 
-    $_mnu_first
+#---------------------------------------------------------------
+#
+#   Display Commands related
+#
+#---------------------------------------------------------------
 
-This was found:
+display_commands_toggle() {
+    menu_part="$1"
+    # log_it "display_commands_toggle($menu_part)"
+    [ -z "$menu_part" ] && error_msg "add_display_commands() - called with no param"
 
-    $_actual_first
+    # In case we got here via dynamic_content()
+    $all_helpers_sourced || source_all_helpers "display_commands_toggle()"
 
-Was no part 1 created?
+    set_display_command_labels
+    set -- \
+        0.0 E ! "$_lbl_next" "show_cmds_state='$_idx_next' $0"
 
-The menu handler and other menu definitions like title and styling
-are prepended to the part created by:
+    menu_generate_part "$menu_part" "$@"
+}
 
-    menu_generate_part 1 "\$@"
-EOF
-        )"
-        #endregion
-    fi
-    #region m_menu_code = Display the generated menu code
-    m_menu_code="$(
-        cat <<EOF
+prepare_show_commands() {
+    # Do not use normal caching, build custom menu including cmds under each
+    # action item
+    # log_it "prepare_show_commands()"
 
+    # Do this before the timer is started, otherwise the first usage of show commands
+    # will always be slower
+    $all_helpers_sourced || source_all_helpers "prepare_show_commands"
+    [ ! -f "$f_cached_tmux_key_binds" ] && {
+        log_it "Creating: $f_cached_tmux_key_binds"
+        # Filtering out all key binds displaying a menu, since they won't be relevant
+        $TMUX_BIN list-keys | grep -iv display-menu >"$f_cached_tmux_key_binds"
+    }
 
-Generated menu below - single quotes have been changed into backticks
-otherwise the commands can not be displayed here
+    safe_now t_show_cmds
+    cfg_use_cache=false
+    b_do_show_cmds=true
+    set_display_command_labels
+    tmux_error_handler display-message "Preparing $_lbl ..."
+    # shellcheck source=scripts/show_cmd.sh
+    . "$D_TM_BASE_PATH"/scripts/show_cmd.sh
+}
 
------   menu start   -----
-$(escape_for_err_msg "$menu_items")
------    menu end    -----
-EOF
-    )"
-    #endregion
+#---------------------------------------------------------------
+#
+#   Environment checks
+#
+#---------------------------------------------------------------
 
-    error_msg_safe "$e_msg\n$e_first\n$m_menu_code"
+check_menu_min_vers() {
+    # Abort with error if tmux version is insufficient for this menu
+    # Shouldn't happen in normal menu navigation.
+    # The menu above should have used the same ves number as minima to display
+    # a link to this sub-menu.
+    # The typical case for this error would be if the menu was run directly from
+    # the cmd-line
+    tmux_vers_check "$menu_min_vers" || {
+        error_msg_safe "$rn_current_script needs tmux: $menu_min_vers"
+    }
+}
+
+oversized_check() {
+    # To minimize overhead, the normal case is to rely on oversized menus instantly
+    # closing and the displayal of the warning: Screen might be too small
+    #
+    # only do this check if it is requested, this assumes at least one of
+    # menu_height or menu_width must have been set
+    #
+    [ -z "$menu_height" ] && [ -z "$menu_width" ] && {
+        _m="With neither menu_height or menu_width defined"
+        _m="$_m\n It is not possible to check if menu fits on screen"
+        error_msg_safe "$_m"
+    }
+
+    # Useful for hints, if it doesn't fit on screen, just silently skip this menu
+    check_screen_size || exit 0
 }
 
 #---------------------------------------------------------------
@@ -611,8 +690,28 @@ set_menu_env_variables() {
     #
     #  Needs to be done for every menu even if caching is done,
     #  since the cache might refer to tmux variables like menu_name
+
     #
-    #  Per menu overrides of configuration
+    # State of menu generating process
+    #
+    is_dynamic_content=false    # indicates if a dynamic content segment is being processed
+    dynamic_content_found=false # indicate dynamic content was generated
+    static_cache_updated=false  # used to decide if static cache file reduction should happen
+    b_do_show_cmds=false
+
+    if [ "$cfg_use_whiptail" = true ] || [ "$cfg_use_cache" != true ]; then
+        # Display Commands can only be used with tmux menus and caching
+        cfg_display_cmds=false
+        unset show_cmds_state
+    fi
+
+    case "$show_cmds_state" in
+    "1" | "2") prepare_show_commands ;;
+    *) ;;
+    esac
+
+    #
+    #  Per menu overrides of Styling
     #
     [ -n "$override_title" ] && cfg_format_title="$override_title"
     [ -n "$override_selected" ] && cfg_simple_style_selected="$override_selected"
@@ -621,16 +720,16 @@ set_menu_env_variables() {
     [ -n "$override_next" ] && cfg_nav_next="$override_next"
     [ -n "$override_prev" ] && cfg_nav_prev="$override_prev"
     [ -n "$override_home" ] && cfg_nav_home="$override_home"
-
+    #
     # allow for having shorter variable names in menus
+    #
     # shellcheck disable=SC2034
-    nav_next="$cfg_nav_next"
-    # shellcheck disable=SC2034
-    nav_prev="$cfg_nav_prev"
-    # shellcheck disable=SC2034
-    nav_home="$cfg_nav_home"
+    {
+        nav_next="$cfg_nav_next"
+        nav_prev="$cfg_nav_prev"
+        nav_home="$cfg_nav_home"
+    }
 
-    external_action_separator=":/:/:/:"
     if $cfg_use_cache; then
         # Include relative script path in cache folder name to avoid name collisions
         #  items/main.sh -> cache/items/main.sh/
@@ -645,19 +744,20 @@ set_menu_env_variables() {
     fi
 
     if $cfg_use_whiptail; then
+        external_action_separator=":/:/:/:"
         #
         #  I haven't been able do to menu reload with whiptail/dialog yet,
         #  so disabled for now
         #
         runshell_reload_mnu="\; run-shell \"$f_ext_dlg_trigger $(realpath "$0")\""
         mnu_reload_direct=""
-
     else
         # shell check disable=SC2034
         # built in menu handler doesn't ever seem to need \;
         runshell_reload_mnu=" ; run-shell $0"
         mnu_reload_direct=" ; $0"
     fi
+
 }
 
 static_files_reduction() {
@@ -766,8 +866,10 @@ sort_uncached_menu_items() {
         idx=$(printf "%s" "$gmi_part" | cut -d' ' -f1)
         gmi_body=$(printf "%s" "$gmi_part" | cut -d' ' -f2-)
         # Save as index<TAB>content
+        #region  gmi item separation
         gmi_entries="$gmi_entries
 $idx	$gmi_body"
+        #endregion
 
         [ -z "$gmi_rest" ] && break
     done
@@ -814,7 +916,7 @@ prepare_menu() {
     # 3 - Gather each item in correct order
     get_menu_items_sorted
 
-    case "$TMUX_MENUS_SHOW_CMDS" in
+    case "$show_cmds_state" in
     "1" | "2") clear_prep_disp_status ;;
     *) ;;
     esac
@@ -1027,7 +1129,7 @@ handle_wt_selecion() {
 
 clear_prep_disp_status() {
     time_span "$t_show_cmds"
-    display_command_label
+    set_display_command_labels
     log_it "$rn_current_script - Preparing $_lbl took: ${t_time_span}s"
 
     if tmux_vers_check 3.2; then
@@ -1069,102 +1171,6 @@ display_menu() {
     fi
 }
 
-prepare_show_commands() {
-    # Do not use normal caching, build custom menu including cmds under each
-    # action item
-    # log_it "prepare_show_commands()"
-
-    # Do this before the timer is started, otherwise the first usage of show commands
-    # will always be slower
-    $all_helpers_sourced || source_all_helpers "prepare_show_commands"
-    [ ! -f "$f_cached_tmux_key_binds" ] && {
-        log_it "Creating: $f_cached_tmux_key_binds"
-        # Filtering out all key binds displaying a menu, since they won't be relevant
-        $TMUX_BIN list-keys | grep -iv display-menu >"$f_cached_tmux_key_binds"
-    }
-
-    safe_now t_show_cmds
-    cfg_use_cache=false
-    b_do_show_cmds=true
-    display_command_label
-    tmux_error_handler display-message "Preparing $_lbl ..."
-    # shellcheck source=scripts/show_cmd.sh
-    . "$D_TM_BASE_PATH"/scripts/show_cmd.sh
-}
-
-display_commands_toggle() {
-    menu_part="$1"
-    # log_it "display_commands_toggle($menu_part)"
-    [ -z "$menu_part" ] && error_msg "add_display_commands() - called with no param"
-
-    # In case we got here via dynamic_content()
-    $all_helpers_sourced || source_all_helpers "display_commands_toggle()"
-
-    display_command_label
-    set -- \
-        0.0 E ! "$_lbl_next" "TMUX_MENUS_SHOW_CMDS='$_idx_next' $0"
-
-    menu_generate_part "$menu_part" "$@"
-}
-
-menu_check_show_env() {
-    # TODO: This can be greatly simplified...
-
-    [ -z "$TMUX_MENUS_SHOW_CMDS" ] && ! $cfg_use_cache && {
-        # always disabled if cache is not used
-        cfg_display_cmds=false
-        # unset TMUX_MENUS_SHOW_CMDS
-    }
-
-    # in case this was set when whiptail is used
-    $cfg_use_whiptail && unset TMUX_MENUS_SHOW_CMDS
-
-    [ -n "$TMUX_MENUS_SHOW_CMDS" ] && {
-        # override @menus_display_commands setting, if cache is enabled
-        cfg_display_cmds=true
-    }
-
-    case "$TMUX_MENUS_SHOW_CMDS" in
-    "1" | "2") prepare_show_commands ;;
-    *) ;;
-    esac
-
-}
-
-men_env_check() {
-    [ -z "$TMUX" ] && error_msg_safe "$plugin_name can only be used inside tmux!"
-    menu_check_show_env
-}
-
-check_menu_min_vers() {
-    # Abort with error if tmux version is insufficient for this menu
-    # Shouldn't happen in normal menu navigation.
-    # The menu above should have used the same ves number as minima to display
-    # a link to this sub-menu.
-    # The typical case for this error would be if the menu was run directly from
-    # the cmd-line
-    tmux_vers_check "$menu_min_vers" || {
-        error_msg_safe "$rn_current_script needs tmux: $menu_min_vers"
-    }
-}
-
-oversized_check() {
-    # To minimize overhead, the normal case is to rely on oversized menus instantly
-    # closing and the displayal of the warning: Screen might be too small
-    #
-    # only do this check if it is requested, this assumes at least one of
-    # menu_height or menu_width must have been set
-    #
-    [ -z "$menu_height" ] && [ -z "$menu_width" ] && {
-        _m="With neither menu_height or menu_width defined"
-        _m="$_m\n It is not possible to check if menu fits on screen"
-        error_msg_safe "$_m"
-    }
-
-    # Useful for hints, if it doesn't fit on screen, just silently skip this menu
-    check_screen_size || exit 0
-}
-
 #===============================================================
 #
 #   Main
@@ -1204,12 +1210,9 @@ oversized_check() {
     log_it
 }
 
-is_dynamic_content=false    # indicates if a dynamic content segment is being processed
-dynamic_content_found=false # indicate dynamic content was generated
-static_cache_updated=false  # used to decide if static cache file reduction should happen
-b_do_show_cmds=false
-
-men_env_check
+#
+# Some env checks
+#
 [ -z "$menu_name" ] && error_msg_safe "menu_name not defined"
 [ -n "$menu_min_vers" ] && check_menu_min_vers
 [ "$skip_oversized" = "1" ] && oversized_check
