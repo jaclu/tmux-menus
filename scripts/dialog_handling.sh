@@ -1,26 +1,32 @@
 #!/bin/sh
-# This is sourced. Fake bang-path to help editors and linters
+# This script is sourced. Fake shebang to assist editors and linters.
 # shellcheck disable=SC2154
 #
-#   Copyright (c) 2023-2025: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2023–2025: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#  Parses params and generates tmux or whiptail menus
-#  One variable is expected to have been set by the caller
+#   Parses menu definitions and generates tmux or whiptail menus.
 #
-#  Optional params:
-#    1 min screen width required for menu
-#    2 min screen height required for menu
-#  If provided, screen size is chcecked and
-
-#  Menus are expected to define the following:
-#   D_TM_BASE_PATH  - base location for tmux-menus plugin
-#   menu_name       - Name of menu
-#   menu_min_vers   - If set, min version of tmux menu supports
-#   static_content()    - all static menu fragments, that can be cached
-#   dynamic_content()   - all dynamic fragments, will be regenerated each time
+#   Expected definitions for each menu:
+#     D_TM_BASE_PATH     – Base directory of the tmux-menus plugin
+#     menu_name          – Name of the menu
+#     static_content()   – Defines static menu content; can be cached
+#     dynamic_content()  – Defines dynamic content; regenerated each time
+#
+#   Optional variables:
+#     menu_min_vers      – Minimum tmux version required
+#     menu_height        – Number of rows required to display the menu
+#     menu_width         – Number of columns required to display the menu
+#     skip_oversized     – If set to 1, the menu will be silently skipped
+#                          if it's too large to fit on the current display.
+#                          Requires both menu_height and menu_width to be set.
+#
+# When debugging menu generation, ensure @menus_use_cache is disabled,
+# or manually clear the relevant cache entry before each run.
+# Otherwise, cached items won't be fully processed,
+# unless you're debugging how the cache works.
 #
 
 #---------------------------------------------------------------
@@ -662,6 +668,43 @@ check_menu_min_vers() {
     }
 }
 
+check_screen_size() {
+    #
+    #  Only consider checking win size if not whiptail/dialog, since they
+    #  can scroll menus that don't fit the screen
+    #
+    #  Only checks if menu_width and or menu_height has been set
+    #
+    #  Examining client_height instead of menu_height, includes the entire terminal
+    #  including lines covered by a status bar. Since Menus can cover the status bar
+    #  This gives the actual screen limits for menus
+    #
+    $cfg_use_whiptail && return 0
+    # log_it "check_screen_size()"
+
+    $all_helpers_sourced || source_all_helpers "check_screen_size()"
+
+    [ -n "$menu_height" ] && {
+        [ -z "$current_screen_rows" ] && get_screen_size_variables # only get if not defined
+        [ "$menu_height" -gt "$current_screen_rows" ] && {
+            _warn="$rn_current_script - aborted, win height > actual: "
+            _warn="$_warn $menu_height > $current_screen_rows"
+            log_it "$_warn"
+            return 1
+        }
+    }
+    [ -n "$menu_width" ] && {
+        [ -z "$current_screen_cols" ] && get_screen_size_variables # only get if not defined
+        [ "$menu_width" -gt "$current_screen_cols" ] && {
+            _warn="menu display aborted, win width > actual: "
+            _warn="$_warn $menu_width > $current_screen_cols"
+            log_it "$_warn"
+            return 1
+        }
+    }
+    return 0
+}
+
 oversized_check() {
     # To minimize overhead, the normal case is to rely on oversized menus instantly
     # closing and the displayal of the warning: Screen might be too small
@@ -940,43 +983,6 @@ prepare_menu() {
 #
 #---------------------------------------------------------------
 
-check_screen_size() {
-    #
-    #  Only consider checking win size if not whiptail/dialog, since they
-    #  can scroll menus that don't fit the screen
-    #
-    #  Only checks if menu_width and or menu_height has been set
-    #
-    #  Examining client_height instead of menu_height, includes the entire terminal
-    #  including lines covered by a status bar. Since Menus can cover the status bar
-    #  This gives the actual screen limits for menus
-    #
-    $cfg_use_whiptail && return 0
-    # log_it "check_screen_size()"
-
-    $all_helpers_sourced || source_all_helpers "check_screen_size()"
-
-    [ -n "$menu_height" ] && {
-        [ -z "$current_screen_rows" ] && get_screen_size_variables # only get if not defined
-        [ "$menu_height" -gt "$current_screen_rows" ] && {
-            _warn="$rn_current_script - aborted, win height > actual: "
-            _warn="$_warn $menu_height > $current_screen_rows"
-            log_it "$_warn"
-            return 1
-        }
-    }
-    [ -n "$menu_width" ] && {
-        [ -z "$current_screen_cols" ] && get_screen_size_variables # only get if not defined
-        [ "$menu_width" -gt "$current_screen_cols" ] && {
-            _warn="menu display aborted, win width > actual: "
-            _warn="$_warn $menu_width > $current_screen_cols"
-            log_it "$_warn"
-            return 1
-        }
-    }
-    return 0
-}
-
 ensure_menu_fits_on_screen() {
     #
     #  Since tmux display-menu returns 0 even if it failed to display the
@@ -1176,13 +1182,6 @@ display_menu() {
 #   Main
 #
 #===============================================================
-
-#
-#  If @menus_use_cache is not disabled, any cached items will not be
-#  fully processed, so either disable caching, or clear the cache for
-#  the itam before each run, unless of course your focus is to debug
-#  cache handling.
-#
 
 [ -z "$D_TM_BASE_PATH" ] && {
     # helpers not yet sourced, so error_msg_safe() not yet available
