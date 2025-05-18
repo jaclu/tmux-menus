@@ -463,9 +463,9 @@ tmux_error_handler_assign() { # cache references
         validate_varname "$var_name" "tmux_error_handler_assign()"
 
         if $teh_store_result; then
-            log_it "tmux_error_handler_assign($cmd_simplified) -> $var_name"
+            log_it "tmux_error_handler_assign(\$TMUX_BIN $cmd_simplified) -> $var_name"
         else
-            log_it "tmux_error_handler($cmd_simplified) - TMUX_BIN: $TMUX_BIN"
+            log_it "tmux_error_handler(\$TMUX_BIN $cmd_simplified)"
         fi
     }
 
