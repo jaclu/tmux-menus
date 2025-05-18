@@ -8,22 +8,6 @@
 #   Directly control DropBox
 #
 
-dynamic_content() {
-    # shellcheck source=scripts/dropbox_tools.sh
-    . "$d_scripts"/dropbox_tools.sh
-
-    if is_dropbox_running; then
-        tgl_lbl="sTop"
-    else
-        tgl_lbl="sTart"
-    fi
-
-    set -- \
-        0.0 E t "$tgl_lbl" "$(dirname "$0")/_dropbox_toggle.sh ; $0"
-
-    menu_generate_part 4 "$@"
-}
-
 static_content() {
 
     [ -z "$(command -v dropbox)" ] && error_msg_safe "dropbox bin not found!"
@@ -32,12 +16,13 @@ static_content() {
         0.0 M Left "Back to Extras     $nav_prev" extras.sh \
         0.0 M Home "Back to Main menu  $nav_home" main.sh
     menu_generate_part 1 "$@"
+
     $cfg_display_cmds && display_commands_toggle 2
 
     set -- \
         0.0 S \
-        0.0 C s "Status" "display \"$(dropbox status)\" $runshell_reload_mnu"
-    # display \"hepp\" \; run-shell /home/jaclu/git_repos/mine/tmux-menus/items/external_tools/dropbox.sh
+        0.0 E s "Status" "$(dirname "$0")/dropbox_check.sh status ; $0" \
+        0.0 E t "toggle running status" "$(dirname "$0")/dropbox_check.sh toggle ; $0"
     menu_generate_part 3 "$@"
 }
 

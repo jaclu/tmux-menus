@@ -26,6 +26,7 @@ All notable changes to this project will be documented here.
 - Simplified handling of actions for whiptail
 - skipped using sockets in TMUX_BIN ended up causing param confusion when using
   whiptail on some complex menu actions
+- Fixed: Extras - Dropbox - toggle
 
 ---
 
