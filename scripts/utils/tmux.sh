@@ -485,15 +485,20 @@ tmux_error_handler_assign() { # cache references
     # Run the actual command and save any error output. If the command succeeded
     # just ignore the empty error output file
     #
-    # too many arguments (need at most 2) - fixed by eval
     if $teh_store_result; then
-        # shellcheck disable=SC2034
-        value=$(eval "$TMUX_BIN" "$*" 2>"$f_tmux_err")
+        # shell check disable=SC2034
+        value=$("$TMUX_BIN" "$@" 2>"$f_tmux_err")
     else
         $TMUX_BIN "$@" 2>"$f_tmux_err" >/dev/null
     fi
     ex_code="$?"
-    $teh_debug && log_it "teh: cmd done - excode:$ex_code"
+    $teh_debug && {
+        if $teh_store_result; then
+            log_it "teh: cmd done - excode:$ex_code - output: >>$value<<"
+        else
+            log_it "teh: cmd done - excode:$ex_code"
+        fi
+    }
 
     #
     # Parse any error output

@@ -15,6 +15,8 @@
 #
 #===============================================================
 
+[ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
+
 [ -z "$D_TM_BASE_PATH" ] && {
     # helpers not yet sourced, so error_msg_safe() not yet available
     msg="$plugin_name ERROR: $0 - D_TM_BASE_PATH must be set!"

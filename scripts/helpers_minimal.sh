@@ -455,30 +455,6 @@ tpt_tmux_vers_suffix() { # local usage by tpt_retrieve_running_tmux_vers()
     eval "$varname=\"\$_s\""
 }
 
-define_tmux_bin() {
-    [ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
-    # log_it "define_tmux_bin()"
-
-    #
-    # if multiple instances of the same tmux bin are used, errors can spill over
-    # and cause issues in the other instance
-    # this ensures that everything is run in the current environment
-    #
-    case "$TMUX_BIN" in
-    *-L*) ;; # already using socket
-    *)
-        #
-        # in case an inner tmux is using this plugin, make sure the current socket is
-        # used to avoid picking up states from the outer tmux
-        #
-        # shellcheck disable=SC2154
-        f_name_socket="$(echo "$TMUX" | cut -d, -f 1)"
-        tmux_socket="${f_name_socket##*/}"
-        TMUX_BIN="$TMUX_BIN -L $tmux_socket"
-        ;;
-    esac
-}
-
 base_path_not_defined() {
     # Show error msg if D_TM_BASE_PATH is not defined
     # helpers not yet sourced, so TMUX_BIN & error_msg() not yet available
@@ -493,6 +469,8 @@ base_path_not_defined() {
 #   Main
 #
 #===============================================================
+
+[ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
 
 plugin_name="tmux-menus"
 
@@ -529,7 +507,6 @@ d_tmp="${TMPDIR:-/tmp}"
 d_tmp="${d_tmp%/}" # Removes a trailing slash if present - sometimes set in TMPDIR...
 f_no_cache_hint="$d_tmp"/tmux-menus-no-cache-hint
 
-define_tmux_bin
 [ -z "$D_TM_BASE_PATH" ] && base_path_not_defined
 
 d_scripts="$D_TM_BASE_PATH"/scripts
