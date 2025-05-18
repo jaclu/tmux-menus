@@ -18,7 +18,8 @@ bind_plugin_key() {
     cmd="bind-key"
     $cfg_use_notes && {
         # And why can't space be used in this note?
-        cmd+=" -N plugin_${plugin_name}_trigger"
+        # cmd+=" -N \"plugin ${plugin_name} trigger\""
+        cmd+=" -N 'plugin ${plugin_name} trigger'"
     }
     if $cfg_no_prefix; then
         cmd+=" -n"
@@ -27,7 +28,7 @@ bind_plugin_key() {
     else
         trigger_sequence="Menus will be bound to: <prefix> $cfg_trigger_key"
     fi
-    cmd+=" $cfg_trigger_key  run-shell $bind_cmd"
+    cmd+=" $cfg_trigger_key run-shell $bind_cmd"
 
     # shellcheck disable=SC2154
     [[ "$TMUX_MENUS_NO_DISPLAY" = "1" ]] && {
@@ -36,9 +37,11 @@ bind_plugin_key() {
         exit 0
     }
 
-    # shellcheck disable=SC2086 # in this case we want the variable to unpack
-    $TMUX_BIN $cmd || {
-        error_msg_safe "Failed to bind trigger: $cfg_trigger_key"
+    teh_debug=true
+    # tmux_error_handler bind-key -N "plugin menus" Space run-shell /Users/jaclu/git_repos/mine/tmux-menus/items/main.sh
+
+    eval $TMUX_BIN $cmd || {
+        error_msg "Failed to bind trigger: $cfg_trigger_key"
     }
 
     log_it_minimal "$trigger_sequence"
@@ -56,11 +59,9 @@ initialize_plugin=1
 
 # can't read source when mixing bah & posix
 # shellcheck disable=SC2154,SC2001,SC2292 source=scripts/helpers_minimal.sh
-source "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
+source "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 # log_it "=====   plugin_init.sh starting   ====="
-
-$all_helpers_sourced || source_all_helpers "always done by plugin_init.sh"
 
 if [[ -d "$d_cache" ]]; then
     # clear out potentially obsolete cache items
