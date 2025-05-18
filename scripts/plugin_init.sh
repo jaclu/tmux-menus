@@ -67,7 +67,7 @@ if [[ -d "$d_cache" ]]; then
     # clear out potentially obsolete cache items
     safe_remove "$f_cache_known_tmux_vers"
     safe_remove "$f_cached_tmux_options"
-    safe_remove "$f_cached_tmux_key_binds"
+    safe_remove "$f_cached_tmux_key_binds" external_path_ok
     # Clear any errors from previous runs
     safe_remove "$d_cache"/error-*
     safe_remove "$d_cache"/cmd_output

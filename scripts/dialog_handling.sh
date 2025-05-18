@@ -730,7 +730,7 @@ set_menu_env_variables() {
     static_cache_updated=false  # used to decide if static cache file reduction should happen
     b_do_show_cmds=false
 
-    if [ "$cfg_use_whiptail" = true ] || [ "$cfg_use_cache" != true ]; then
+    if [ "$cfg_use_whiptail" = true ]; then
         # Display Commands can only be used with tmux menus and caching
         cfg_display_cmds=false
         unset show_cmds_state
@@ -1056,7 +1056,7 @@ Press Ctrl-C to close this message
 EOF
     )"
     #endregion
-    f_output="$d_safe_tmp"/cmd_output
+    f_output="$d_safe_tmp_folder"/cmd_output
     echo "$msg" >"$f_output"
     (
         # run this in the background so that the potentially backgrounded app

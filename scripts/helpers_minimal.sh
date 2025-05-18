@@ -554,13 +554,17 @@ safe_now t_script_start
 
 if [ -d "$d_cache" ]; then
     # For temp files etc that needs to be created even when caching is disabled
-    # use d_safe_tmp_folder. This will prioritize the cach-folder, and use tmp
+    # use d_safe_tmp_folder folder. This will prioritize the cach-folder, and use tmp
     # as fallback
-    d_safe_tmp="$d_cache"
+    d_safe_tmp_folder="$d_cache"
 else
     # shellcheck disable=SC2034
-    d_safe_tmp="$d_tmp"
+    d_safe_tmp_folder="$d_tmp"
 fi
+
+# This allows 'Display Commands' even when cache is disabled
+# shellcheck disable=SC2034
+f_cached_tmux_key_binds="$d_safe_tmp_folder"/tmux_key_binds
 
 [ "$env_initialized" -eq 0 ] && env_initialized=1 # basic init done
 
