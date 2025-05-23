@@ -164,12 +164,6 @@ get_config() { # local usage during sourcing
         config_setup
     else
         handle_env_variables
-        $b_whiptail_forced && {
-            $all_helpers_sourced || {
-                source_all_helpers "get_config() needs use_whiptail_env"
-            }
-            use_whiptail_env
-        }
     fi
 }
 
@@ -247,6 +241,13 @@ env_variable_menus_handler() {
         error_msg_safe "$msg"
         ;;
     esac
+
+    $b_whiptail_forced && {
+        $all_helpers_sourced || {
+            source_all_helpers "get_config() needs use_whiptail_env"
+        }
+        use_whiptail_env
+    }
 }
 
 handle_env_variables() { # local usage by get_config()
