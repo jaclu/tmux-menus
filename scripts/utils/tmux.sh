@@ -178,7 +178,7 @@ tmux_get_option() {
         fi
     else
         # log_it "tmux_get_option($tgo_option) - not using cache"
-        _line="$($TMUX_BIN show-options -g "$tgo_option " 2>/dev/null)"
+        _line="$($TMUX_BIN show-options -g "$tgo_option" 2>/dev/null)"
     fi
 
     if [ -z "$_line" ]; then
