@@ -24,6 +24,7 @@ extract_defined_plugins() {
         defined_plugins=()
         while IFS= read -r line; do
             plugin=$(echo "$line" | awk '{ print $4 }' | sed 's/^["'\'']//;s/["'\'']$//')
+            log_it "><> extract_defined_plugins() - found: $plugin"
             defined_plugins+=("$plugin")
         done < <(grep "set -g @plugin" "$cfg_tmux_conf")
 
