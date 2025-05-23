@@ -155,17 +155,26 @@ tmux_get_option() {
         _line=""
     elif $tgo_use_cache; then
         cache_save_options_defined_in_tmux
-        # more code, but noticeably faster than doing a grep on the file on slow systems
-        _line=
-        while IFS= read -r _cache_line; do
-            case $_cache_line in
-            "$tgo_option "*)
-                _line=$_cache_line
-                break
-                ;;
-            *) ;;
-            esac
-        done <"$f_cached_tmux_options"
+
+        if [ -d /proc/ish ]; then
+            # much slower due to subshell, but iSH lacks /dev so the quick method
+            # below can't be used
+            _line=$(grep "$tgo_option " "$f_cached_tmux_options")
+        else
+            # more code, but noticeably faster than doing a grep on the file on slow systems
+            _line=
+            while IFS= read -r _cache_line; do
+                # space after tgo_option needed in order to not find
+                # @menus_simple_style_border when looking for @menus_simple_style
+                case $_cache_line in
+                "$tgo_option "*)
+                    _line=$_cache_line
+                    break
+                    ;;
+                *) ;;
+                esac
+            done <"$f_cached_tmux_options"
+        fi
     else
         # log_it "tmux_get_option($tgo_option) - not using cache"
         _line="$($TMUX_BIN show-options -g "$tgo_option " 2>/dev/null)"
