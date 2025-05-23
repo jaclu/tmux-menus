@@ -127,7 +127,7 @@ tmux_get_option() {
 
     # log_it "tmux_get_option($tgo_varname, $tgo_option, $tgo_default, $tgo_no_cache)"
     # usually disabled for performance
-    # validate_varname "$tgo_varname" "tmux_get_option()"
+    validate_varname "$tgo_varname" "tmux_get_option()"
 
     # [ -z "$tgo_varname" ] && error_msg "tmux_get_option() param 1 empty!"
     [ -z "$tgo_option" ] && error_msg "tmux_get_option() param 2 empty!"
@@ -468,11 +468,11 @@ tmux_error_handler_assign() { # cache references
     #
     cmd_simplified="$*"
 
-    # debug check that teh_debug is always set
-    case "$teh_debug" in
-    true | false) ;;
-    *) error_msg "tmux_error_handler_assign() = teh_debug invalid: [$teh_debug]" ;;
-    esac
+    # # debug check that teh_debug is always set
+    # case "$teh_debug" in
+    # true | false) ;;
+    # *) error_msg "tmux_error_handler_assign() = teh_debug invalid: [$teh_debug]" ;;
+    # esac
 
     $teh_debug && {
         # in principle this should be done every time, but limited to when
