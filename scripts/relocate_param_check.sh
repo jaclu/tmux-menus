@@ -1,6 +1,4 @@
 #!/bin/sh
-#  Directives for shellcheck directly after bang path are global
-# shellcheck disable=SC2034
 #
 #   Copyright (c) 2022-2025: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -65,20 +63,11 @@ fi
 
 tmux_error_handler_assign cur_ses display-message -p '#S'
 
-dest="${raw_dest#*=}"  # skipping initial =
-dest_ses="${dest%%:*}" # up to first colon excluding it
-
-win_pane="${dest#*:}"          # after first colon
-dest_win_idx="${win_pane%%.*}" # up to first dot excluding it
-dest_pane_idx="${win_pane#*.}"
-
-#  Used by
-#    relocate_window.sh  $dest_ses $dest_win_idx
-#    relocate_pane.sh   $dest_ses $dest_win_idx.${dest_pane_idx}"
-
-# # shellcheck disable=SC2154
-# set -- "param_check($*) - item_type [$item_type] action [$action]" \
-#     "cur_ses [$cur_ses] dest [$dest] win_pane [$win_pane]" \
-#     "dest_ses [$dest_ses] dest_win_idx [$dest_win_idx]" \
-#     "dest_pane_idx [$dest_pane_idx]"
-# log_it "$*"
+dest="${raw_dest#*=}" # skipping initial =
+win_pane="${dest#*:}" # after first colon
+# shellcheck disable=SC2034 # used in relocate_pane.sh & relocate_window.sh
+{
+    dest_ses="${dest%%:*}"         # up to first colon excluding it
+    dest_win_idx="${win_pane%%.*}" # up to first dot excluding it
+    dest_pane_idx="${win_pane#*.}"
+}

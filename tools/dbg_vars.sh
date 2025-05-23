@@ -1,5 +1,5 @@
 #!/bin/sh
-# shellcheck disable=SC2154
+# shellcheck disable=SC2154  # these variables would be defined in env
 #
 #   Copyright (c) 2025: Jacob.Lundqvist@gmail.com
 #   License: MIT

@@ -21,7 +21,7 @@ print_stderr() {
 }
 
 log_it() {
-    # shellcheck disable=SC2154
+    # shellcheck disable=SC2154 # TMUX_MENUS_LOGGING_MINIMAL is an env variable
     [ "$TMUX_MENUS_LOGGING_MINIMAL" = "1" ] && return
     log_it_minimal "$1"
 }
@@ -110,7 +110,7 @@ source_cached_params() { # local usage by get_config()
             orig_log_file="$cfg_log_file"
         }
 
-        # shellcheck disable=SC1090
+        # shellcheck source=/dev/null # not always present
         . "$f_cache_params" || {
             [ "$log_file_forced" = 1 ] && cfg_log_file="$orig_log_file"
             log_it "source_cached_params() - Failed to source: $f_cache_params"
@@ -182,7 +182,7 @@ get_config() { # local usage during sourcing
 menu_handler_cache_missmatch() {
     # Report a mismatch between TMUX_MENUS_HANDLER and current cache
 
-    # shellcheck disable=SC2154
+    # shellcheck disable=SC2154 # TMUX_MENUS_HANDLER is an env variable
     msg="TMUX_MENUS_HANDLER=$TMUX_MENUS_HANDLER"
     [ -n "$1" ] && msg="$msg ($1)"
     msg="$msg does not match current cache:\n\n"
@@ -194,7 +194,7 @@ menu_handler_cache_missmatch() {
 verify_menu_handler_override_valid() {
     # Ensure manual override of menu handler is not a mismatch vs current cache
 
-    # shellcheck disable=SC2154
+    # shellcheck disable=SC2154 # defined in plugin_init.sh
     [ "$initialize_plugin" = "1" ] && return # not relevant during plugin init
     # log_it "verify_menu_handler_override_valid($requested_handler)"
     requested_handler="$1"
@@ -216,7 +216,6 @@ env_variable_menus_handler() {
     0) $cfg_use_whiptail && verify_menu_handler_override_valid "tmux display-menu" ;;
     1)
         _cmd=whiptail
-        # shellcheck disable=SC2154
         verify_menu_handler_override_valid "$_cmd"
         if command -v "$_cmd" >/dev/null; then
             cfg_alt_menu_handler="$_cmd"
@@ -488,8 +487,8 @@ env_initialized=0
 #
 #  This should normally be commented out!
 #
-# cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
-# log_file_forced="1"
+cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
+log_file_forced="1"
 
 #
 #  If set to 1 log will happen to stderr if script is run in an interactive
@@ -519,7 +518,7 @@ f_cache_params="$d_cache"/plugin_params
 # Set this as early as possible to be able to calculate the entire menu processing time
 safe_now t_script_start
 
-# shellcheck disable=SC2034
+# shellcheck disable=SC2034 # provided as env for other scripts
 {
     # in order to only need one SC2034 group all variables under one shellcheck
 
@@ -541,7 +540,6 @@ safe_now t_script_start
 # shellcheck source=scripts/utils/dbg_profiling.sh
 # [ "$profiling_sourced" != 1 ] && . "$D_TM_BASE_PATH"/scripts/utils/dbg_profiling.sh
 
-# shellcheck disable=SC2154
 [ "$initialize_plugin" != "1" ] && {
     # plugin_init will call config_setup directly, so should not call get_config
 
@@ -558,12 +556,11 @@ if [ -d "$d_cache" ]; then
     # as fallback
     d_safe_tmp_folder="$d_cache"
 else
-    # shellcheck disable=SC2034
     d_safe_tmp_folder="$d_tmp"
 fi
 
 # This allows 'Display Commands' even when cache is disabled
-# shellcheck disable=SC2034
+# shellcheck disable=SC2034 # provided as env for other scripts
 f_cached_tmux_key_binds="$d_safe_tmp_folder"/tmux_key_binds
 
 [ "$env_initialized" -eq 0 ] && env_initialized=1 # basic init done

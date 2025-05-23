@@ -10,36 +10,41 @@
 #
 
 bind_plugin_key() {
+    # shellcheck disable=SC2154 # defined in helpers_minimal.sh
     bind_cmd="$f_main_menu"
+    # shellcheck disable=SC2154 # defined in cache/plugin_params
     if $cfg_use_whiptail; then
         bind_cmd="$f_ext_dlg_trigger"
         log_it "Will use alternate menu handler: $cfg_alt_menu_handler"
     fi
     cmd="bind-key"
+    # shellcheck disable=SC2154 # defined in cache/plugin_params
     $cfg_use_notes && {
         # And why can't space be used in this note?
         # cmd+=" -N \"plugin ${plugin_name} trigger\""
         cmd+=" -N 'plugin ${plugin_name} trigger'"
     }
+    # shellcheck disable=SC2154 # defined in cache/plugin_params
     if $cfg_no_prefix; then
         cmd+=" -n"
-        # shellcheck disable=SC2154
         trigger_sequence="Menus will be bound to: $cfg_trigger_key"
     else
         trigger_sequence="Menus will be bound to: <prefix> $cfg_trigger_key"
     fi
     cmd+=" '$cfg_trigger_key' run-shell $bind_cmd"
 
-    # shellcheck disable=SC2154
+    # shellcheck disable=SC2154 # TMUX_MENUS_NO_DISPLAY is an env variable
     [[ "$TMUX_MENUS_NO_DISPLAY" = "1" ]] && {
         # used for debugging menu builds
         log_it "Due to TMUX_MENUS_NO_DISPLAY terminating before binding trigger key"
         exit 0
     }
 
+    # shellcheck disable=SC2034 # used in tmux.sh
     teh_debug=true
     # tmux_error_handler bind-key -N "plugin menus" Space run-shell /Users/jaclu/git_repos/mine/tmux-menus/items/main.sh
 
+    # shellcheck disable=SC2154 # defined in helpers_minimal.sh
     eval "$TMUX_BIN" "$cmd" || {
         error_msg "Failed to bind trigger: $cfg_trigger_key"
     }
@@ -55,14 +60,18 @@ bind_plugin_key() {
 
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 
+# shellcheck disable=SC2034 # used in helpers_minimal.sh
 initialize_plugin=1
 
 # can't read source when mixing bah & posix
-# shellcheck disable=SC2154,SC2001,SC2292 source=scripts/helpers_minimal.sh
+
+# disable=SC2154,SC2001,SC2292
+# shellcheck source=/dev/null
 source "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 # log_it "=====   plugin_init.sh starting   ====="
 
+# shellcheck disable=SC2154 # defined in helpers_minimal.sh
 if [[ -d "$d_cache" ]]; then
     # clear out potentially obsolete cache items
     safe_remove "$f_cache_known_tmux_vers"
@@ -96,6 +105,7 @@ config_setup
 #
 log_it
 
+# shellcheck disable=SC2154 # defined in cache/plugin_params
 if $cfg_use_cache; then
     #
     #  If custom inventory is used, update link to its main index

@@ -25,20 +25,17 @@ extract_defined_plugins() {
         defined_plugins=()
 
         tmpfile=$(mktemp)
-        grep "set -g @plugin" "$cfg_tmux_conf" > "$tmpfile"
+        grep "set -g @plugin" "$cfg_tmux_conf" >"$tmpfile"
 
         while IFS= read -r line; do
             plugin=$(echo "$line" | awk '{ print $4 }' | sed 's/^["'\'']//;s/["'\'']$//')
             log_it "line: [$line] plugin: [$plugin]"
             defined_plugins+=("$plugin")
-        done < "$tmpfile"
+        done <"$tmpfile"
 
         rm -f "$tmpfile"
 
         log_it " found: ${defined_plugins[*]}"
-
-        # defined_plugins=($(grep "set -g @plugin" "$cfg_tmux_conf" |
-        #     awk '{ print $4 }' | sed 's/"//g' | sed "s/'//g"))
     else
         mapfile -t defined_plugins < <(grep "set -g @plugin" "$cfg_tmux_conf" |
             awk '{ print $4 }' | sed 's/"//g' | sed "s/'//g")
@@ -119,8 +116,6 @@ D_TM_BASE_PATH=$(dirname "$(dirname -- "$(realpath "$0")")")
 defined_plugins=() #  plugins mentioned in config file
 valid_items=(tpm)  # additional folders expected to be in plugins folders
 
-# SC2154: variable defined by tmux
-# shell check disable=SC2154
 [[ -n "$TMUX" ]] || {
     echo "ERROR: This expects to run inside a tmux session!"
     exit 1

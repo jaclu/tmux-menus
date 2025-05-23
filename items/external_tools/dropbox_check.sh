@@ -83,7 +83,6 @@ start_stop() {
     tmux_error_handler display-message "" # clear status message
     # Restore org value
     [ -n "$org_disp_time" ] && {
-        # shellcheck disable=SC2154
         tmux_error_handler set-option -g display-time "$org_disp_time"
     }
     return 0

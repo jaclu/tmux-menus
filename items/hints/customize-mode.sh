@@ -66,7 +66,6 @@ menu_name="Keys for customize-mode"
 menu_min_vers=3.2
 
 if [ "$1" = "skip-oversized" ]; then
-    # shellcheck disable=SC2034
     skip_oversized=1
 elif [ -n "$1" ]; then
     prev_menu="$(realpath "$1")"

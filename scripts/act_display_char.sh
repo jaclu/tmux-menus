@@ -29,6 +29,8 @@ display_char() {
         #
         if normalize_bool_param "$wt_pasting" false no_cache; then
             tmux_error_handler_assign b show-buffer
+            # SC2154: variable assigned dynamically by tmux_error_handler_assign
+            #         using eval in display_menu()
             # shellcheck disable=SC2154
             c="$b$c"
         else
@@ -53,8 +55,17 @@ handle_char() {
     case "$s_in" in
     0x*)
         # handle it as a hex code
-        # shellcheck disable=SC2059
-        s="$(printf "\\$(printf "%o" "0x${s_in#0x}")")"
+
+        s_in="0xC3"
+
+        # Strip the '0x' and convert hex to raw byte using `printf`
+        hex="${s_in#0x}"
+
+        # Safely print the byte without using variable in format string
+        # SC2059-safe, since format is a literal and argument is a variable
+        s=$(printf "%b" "$(printf '\\%03o' "0x$hex")")
+
+        # s="$(printf "\\$(printf "%o" "0x${s_in#0x}")")"
         ;;
     *) s="$s_in" ;;
     esac
@@ -70,7 +81,6 @@ handle_char() {
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 
-# shellcheck source=scripts/helpers_minimal.sh
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 if [ -n "$1" ]; then

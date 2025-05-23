@@ -1,5 +1,4 @@
 #!/bin/sh
-#  Directives for shellcheck directly after bang path are global
 #
 #   Copyright (c) 2025: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -146,7 +145,6 @@ create_custom_index() {
             printf ' \\\n' >>"$f_custom_items_content"
         }
         # this generates an item that will be added to custom items index
-        # shellcheck disable=SC2154
         printf '        %s \\\n        %s' \
             "0.0 M \"$_menu_key\" \"$_menu_name  $cfg_nav_next\"" \
             "$custom_menu" >>"$f_custom_items_content"
@@ -196,7 +194,6 @@ process_custom_items() {
     # create list of runnable scripts in this folder
     # the name filter is intended to filter out foo.sh~ and foo.bash~ names
     runables="$(find "$d_custom_items" -maxdepth 1 -type f -name '*sh' -perm -u=x)"
-    # shellcheck disable=SC2068 # in this case we want to split the param
     valid_menus=""
     for custom_menu in $runables; do
         #

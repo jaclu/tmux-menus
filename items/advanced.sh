@@ -14,20 +14,21 @@ dynamic_content() {
     #
     #  Gather some info in order to be able to show states
     #
-    if tmux_vers_check 2.1; then
-        $all_helpers_sourced || source_all_helpers "advanced:dynamic_content()"
-        tmux_error_handler_assign current_prefix show-options -gv prefix
-        tmux_error_handler_assign current_mouse_status show-options -gv mouse
-        # shellcheck disable=SC2154
-        if [ "$current_mouse_status" = "on" ]; then
-            new_mouse_status="off"
-        else
-            new_mouse_status="on"
-        fi
+    tmux_vers_check 2.1 || return # no dynamic item is tmux < 2.1
+
+    $all_helpers_sourced || source_all_helpers "advanced:dynamic_content()"
+
+    tmux_error_handler_assign current_mouse_status show-options -gv mouse
+    # SC2154: variable assigned dynamically by tmux_error_handler_assign using eval
+    # shellcheck disable=SC2154
+    if [ "$current_mouse_status" = "on" ]; then
+        new_mouse_status="off"
     else
-        return # no item in this menu part is < 2.1
+        new_mouse_status="on"
     fi
 
+    tmux_error_handler_assign current_prefix show-options -gv prefix
+    # SC2154: current_prefix assigned dynamically by tmux_error_handler_assign using eval
     # shellcheck disable=SC2154
     set -- \
         2.1 C o "Toggle mouse to: $new_mouse_status" \
@@ -92,13 +93,12 @@ static_content() {
     }
     menu_generate_part 3 "$@"
 
-    # shellcheck disable=SC2154
     set -- \
         0.0 S \
         2.7 E c "Disconnect clients" \
         "$TMUX_BIN choose-client -Z $hint" \
         1.8 C x "Kill server" "confirm-before -p \
-            'kill tmux server defined in($TMUX_SOURCE) ? (y/n)' kill-server"
+            'kill tmux server defined in($cfg_tmux_conf) ? (y/n)' kill-server"
 
     menu_generate_part 5 "$@"
 }

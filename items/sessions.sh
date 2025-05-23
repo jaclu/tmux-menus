@@ -17,7 +17,6 @@ static_content() {
     fi
     cli_dtch_mode="set-option -s detach-on-destroy $_s"
 
-    # shellcheck disable=SC2154
     set -- \
         0.0 M Left "Back to Main menu  $nav_home" main.sh
     menu_generate_part 1 "$@"

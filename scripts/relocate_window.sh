@@ -32,7 +32,7 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 
 param_check "$@"
 
-# shellcheck disable=SC2154
+# shellcheck disable=SC2154 # cur_ses defined in relocate_param_check.sh
 if [ "$cur_ses" = "$dest_ses" ]; then
     #
     #  to same session

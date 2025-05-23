@@ -1,6 +1,5 @@
 #!/bin/sh
 # This script is sourced. Fake shebang to assist editors and linters.
-# shellcheck disable=SC2154
 #
 #   Copyright (c) 2023–2025: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -239,6 +238,7 @@ EOF
 mnu_prefix() {
 
     _title="$(echo "$cfg_format_title" | sed "s/#{@menu_name}/$menu_name/g")"
+    # shellcheck disable=SC2154 # cfg_mnu_loc_x & cfg_mnu_loc_y are defined in settings
     menu_items="$TMUX_BIN display-menu -T $_title -x '$cfg_mnu_loc_x' -y '$cfg_mnu_loc_y'"
 
     tmux_vers_check 3.4 && {
@@ -783,7 +783,6 @@ set_menu_env_variables() {
         runshell_reload_mnu="\; run-shell \"$f_ext_dlg_trigger $(realpath "$0")\""
         mnu_reload_direct=""
     else
-        # shell check disable=SC2034
         # built in menu handler doesn't ever seem to need \;
         runshell_reload_mnu=" ; run-shell $0"
         mnu_reload_direct=" ; $0"
@@ -957,6 +956,7 @@ prepare_menu() {
         #
         # Instead of displaying processing time at end of prepare_menu
 
+        # shellcheck disable=SC2154 # defined in helpers_minimal.sh
         time_span "$t_script_start"
 
         _m="Menu $rn_current_script"
@@ -989,6 +989,8 @@ ensure_menu_fits_on_screen() {
     #  would do.
     #
     # Display time menu was shown
+    # SC2154: variable assigned dynamically by safe_now using eval in display_menu()
+    # shellcheck disable=SC2154
     time_span "$dh_t_start"
 
     # log_it "ensure_menu_fits_on_screen() Menu $bn_current_script - Display time:  $disp_time ($t_minimal_display_time)"
@@ -1122,6 +1124,8 @@ handle_wt_selecion() {
 }
 
 clear_prep_disp_status() {
+    # SC2154: variable assigned dynamically by safe_now using eval in prepare_show_commands()
+    # shellcheck disable=SC2154
     time_span "$t_show_cmds"
     set_display_command_labels
     log_it "$rn_current_script - Preparing $_lbl took: ${t_time_span}s"
@@ -1202,11 +1206,13 @@ display_menu() {
 #
 [ -z "$menu_name" ] && error_msg_safe "menu_name not defined"
 [ -n "$menu_min_vers" ] && check_menu_min_vers
+# shellcheck disable=SC2154 # might be defined in calling menu
 [ "$skip_oversized" = "1" ] && oversized_check
 
 menu_debug="" # Set to 1 to use echo 2 to use log_it
 
 prepare_menu
+# shellcheck disable=SC2154 # TMUX_MENUS_NO_DISPLAY is an env variable
 [ "$TMUX_MENUS_NO_DISPLAY" != "1" ] && display_menu
 
 # log_it "[$$]   COMPLETED: scripts/dialog_handling.sh - $rn_current_script"

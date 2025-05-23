@@ -16,6 +16,7 @@ dynamic_content() {
     tmux_error_handler_assign other_pane_marked display-message \
         -p '#{&&:#{pane_marked_set},#{!=:#{pane_marked},1}}'
 
+    # SC2154: variable assigned dynamically by tmux_error_handler_assign using eval
     # shellcheck disable=SC2154
     if [ "$other_pane_marked" = 1 ]; then
         set -- \
