@@ -339,8 +339,7 @@ tmux_get_plugin_options() { # new init
     else
         tmux_get_option cfg_mnu_loc_x "@menus_location_x" "$default_location_x"
         tmux_get_option cfg_mnu_loc_y "@menus_location_y" "$default_location_y"
-        tmux_get_option cfg_format_title "@menus_format_title" \
-            "$default_format_title"
+        tmux_get_option cfg_format_title "@menus_format_title" "$default_format_title"
 
         tmux_vers_check 3.4 && {
             tmux_get_option cfg_border_type "@menus_border_type" "$default_border_type"
@@ -491,7 +490,7 @@ tmux_error_handler_assign() { # cache references
     # just ignore the empty error output file
     #
     if $teh_store_result; then
-        value=$("$TMUX_BIN" "$@" 2>"$f_tmux_err")
+        value=$($TMUX_BIN "$@" 2>"$f_tmux_err")
     else
         $TMUX_BIN "$@" 2>"$f_tmux_err" >/dev/null
     fi
@@ -547,10 +546,7 @@ have been replaced by backticks, in the "Failed tmux command" in order to give a
 close a reppresentation as possible. The error file contains the unmodified command.
 
 -----   Failed tmux command   -----
-$(
-                    # shellcheck disable=SC2046 # can't quote it here
-                    tmux_escape_for_display $(cat "$f_error_log")
-                )
+$(tmux_escape_for_display "$(cat "$f_error_log")")
 -----------------------------------
 The error message has been saved in: $(relative_path "$f_error_log")
 
