@@ -468,6 +468,12 @@ tmux_error_handler_assign() { # cache references
     #
     cmd_simplified="$*"
 
+    # debug check that teh_debug is always set
+    case "$teh_debug" in
+    true | false) ;;
+    *) error_msg "tmux_error_handler_assign() = teh_debug invalid: [$teh_debug]" ;;
+    esac
+
     $teh_debug && {
         # in principle this should be done every time, but limited to when
         # logging, to minimize overhead
