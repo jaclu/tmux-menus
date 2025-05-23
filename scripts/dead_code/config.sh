@@ -36,7 +36,7 @@ static_content() {
     set -- "$@" \
         0.0 M Left "Back to Previous menu $nav_prev" advanced.sh \
         0.0 S \
-        0.0 C c "Center" "$change_location  C  $mnu_reload_direct'"
+        0.0 C c "Center" "$change_location  C  $mnu_reload_direct"
     # 0.0 E r "win Right edge" "$change_location  R  $mnu_reload_direct'" \
     # 0.0 E p "Pane bottom left" "$change_location  P  $mnu_reload_direct'" \
     # 0.0 E w "Win pos status line" "$change_location  W  $mnu_reload_direct'" \
