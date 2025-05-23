@@ -186,10 +186,17 @@ tmux_get_option() {
     else
         # shell built-in string splitting and unqoting avoids spawning external processes
 
-        # shellcheck disable=SC2086 # needed in order keep any quotes
-        set -- $_line
-        tgo_value=${2#\"}         # get rid of pottential ""
-        tgo_value=${tgo_value%\"} # wrapping
+        # Extract value (skip key)
+        tgo_value=${_line#* }
+
+        case $tgo_value in
+        \"*\")
+            # Remove outer double quotes, if present
+            tgo_value=${tgo_value#\"}
+            tgo_value=${tgo_value%\"}
+            ;;
+        *) ;;
+        esac
     fi
     # log_it "tmux_get_option() - using [$tgo_value]"
     eval "$tgo_varname=\"\$tgo_value\""
