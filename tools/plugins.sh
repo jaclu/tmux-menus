@@ -21,7 +21,7 @@ extract_defined_plugins() {
     if [[ -z "$(command -v mapfile)" ]] || [[ -d /proc/ish ]]; then
         # iSH has very limited /dev impl, doesn't support mapfile
 
-        log_it "><> starting plugin scan"
+        log_it "><> starting plugin scan of: $cfg_tmux_conf"
         defined_plugins=()
         while IFS= read -r line; do
             log_it "line: [$line]"
