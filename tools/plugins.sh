@@ -21,13 +21,14 @@ extract_defined_plugins() {
     if [[ -z "$(command -v mapfile)" ]] || [[ -d /proc/ish ]]; then
         # iSH has very limited /dev impl, doesn't support mapfile
 
+        log_it "><> starting plugin scan"
         defined_plugins=()
         while IFS= read -r line; do
             plugin=$(echo "$line" | awk '{ print $4 }' | sed 's/^["'\'']//;s/["'\'']$//')
             log_it "><> extract_defined_plugins() - found: $plugin"
             defined_plugins+=("$plugin")
         done < <(grep "set -g @plugin" "$cfg_tmux_conf")
-
+        log_it " found: $defined_plugins"
         # defined_plugins=($(grep "set -g @plugin" "$cfg_tmux_conf" |
         #     awk '{ print $4 }' | sed 's/"//g' | sed "s/'//g"))
     else
