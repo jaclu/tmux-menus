@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Directly control DropBox
+#   Handle DropBox CLI tool
 #
 
 is_dropbox_running() {
@@ -36,7 +36,7 @@ dropbox_status_check() {
 }
 
 prepare_env() {
-    # shellcheck source=scripts/dialog_handling.sh
+    # shellcheck source=/dev/null
     . "$D_TM_BASE_PATH"/scripts/helpers.sh
 }
 
@@ -113,8 +113,6 @@ display_status() {
 
 static_content() {
 
-    [ -z "$(command -v dropbox)" ] && error_msg_safe "dropbox bin not found!"
-
     set -- \
         0.0 M Left "Back to Extras     $nav_prev" extras.sh \
         0.0 M Home "Back to Main menu  $nav_home" main.sh
@@ -135,10 +133,13 @@ static_content() {
 #
 #===============================================================
 
-menu_name="Dropbox"
-
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(dirname -- "$(realpath "$0")")")")"
+
+command -v dropbox >/dev/null || {
+    prepare_env
+    error_msg "Command not found: dropbox"
+}
 
 case "$1" in
 toggle)
