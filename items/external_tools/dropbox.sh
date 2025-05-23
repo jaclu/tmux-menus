@@ -133,6 +133,8 @@ static_content() {
 #
 #===============================================================
 
+menu_name="Dropbox"
+
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(dirname -- "$(realpath "$0")")")")"
 
