@@ -35,6 +35,11 @@ dropbox_status_check() {
     fi
 }
 
+prepare_env() {
+    # shellcheck source=scripts/dialog_handling.sh
+    . "$D_TM_BASE_PATH"/scripts/helpers.sh
+}
+
 #---------------------------------------------------------------
 #
 #   with cmdline options
@@ -42,7 +47,7 @@ dropbox_status_check() {
 #---------------------------------------------------------------
 
 start_stop() {
-    $all_helpers_sourced || source_all_helpers "dropbox:start_stop()"
+    prepare_env
 
     if is_dropbox_running; then
         action="stop"
@@ -96,7 +101,7 @@ start_stop() {
 }
 
 display_status() {
-    $all_helpers_sourced || source_all_helpers "dropbox:display_status()"
+    prepare_env
     tmux_error_handler display "$(dropbox status)"
 }
 
