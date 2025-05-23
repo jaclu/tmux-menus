@@ -125,9 +125,10 @@ tmux_get_option() {
     #  @menux_ needs to be read
     tgo_no_cache="$4"
 
-    log_it "tmux_get_option($tgo_varname, $tgo_option, $tgo_default, $tgo_no_cache)"
+    # log_it "tmux_get_option($tgo_varname, $tgo_option, $tgo_default, $tgo_no_cache)"
+    # usually disabled for performance
+    # validate_varname "$tgo_varname" "tmux_get_option()"
 
-    validate_varname "$tgo_varname" "tmux_get_option()"
     # [ -z "$tgo_varname" ] && error_msg "tmux_get_option() param 1 empty!"
     [ -z "$tgo_option" ] && error_msg "tmux_get_option() param 2 empty!"
     [ -z "$tgo_default" ] && log_it "tmux_get_option($tgo_option) - No default supplied"
