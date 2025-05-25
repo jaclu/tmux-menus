@@ -4,6 +4,15 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [Unreleased] -
+
+### Changed
+
+- Added min vers 1.7 for 'Move Pane' & 'Split Window', since no items in those
+  menus are available before tmux 1.7
+
+---
+
 ## [2.2.7] - 2025-05-25
 
 ### Added
