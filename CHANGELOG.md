@@ -10,6 +10,7 @@ All notable changes to this project will be documented here.
 
 - Added min vers 1.7 for 'Move Pane' & 'Split Window', since no items in those
   menus are available before tmux 1.7
+- tmux_escape_for_display() - corrected handling of backticks
 
 ---
 

@@ -439,7 +439,7 @@ use_whiptail_env() {
 
 tmux_escape_for_display() {
     # echo "$@" | sed "s/\'/[\"]/g"
-    echo "$@" | sed "s/\'/\`/g" | sed 's/#/##/g'
+    echo "$@" | sed "s/'/\`/g" | sed 's/#/##/g'
     # | sed "s/;/[semi-colon]/g" | sed 's/\"/[double-quote]/g'
 }
 
