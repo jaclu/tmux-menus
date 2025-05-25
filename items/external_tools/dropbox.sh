@@ -7,6 +7,10 @@
 #
 #   Handle DropBox CLI tool
 #
+#  TODO: toggle fails on tmux 1.7 or lower
+#   $TMUX_BIN show-options -gv display-time
+#   tmux: unknown option -- v
+#
 
 is_dropbox_running() {
     #
