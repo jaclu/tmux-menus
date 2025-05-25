@@ -70,7 +70,7 @@ source_all_helpers() {
     #    $all_helpers_sourced || source_all_helpers "caller description"
     #
 
-    # log_it_minimal "[$$] source_all_helpers() - $1"
+    log_it_minimal "[$$] source_all_helpers() - $1"
     $all_helpers_sourced && {
         error_msg_safe "source_all_helpers() called when it was already done - $1"
     }
@@ -488,8 +488,8 @@ env_initialized=0
 #
 #  This should normally be commented out!
 #
-# cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
-# log_file_forced="1"
+cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
+log_file_forced="1"
 
 #
 #  If set to 1 log will happen to stderr if script is run in an interactive
