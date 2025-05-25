@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Handle DropBox CLI tool
+#   toggle dropbox on/off
 #
 
 is_dropbox_running() {
@@ -26,6 +26,7 @@ is_dropbox_running() {
     fi
 }
 
+
 dropbox_status_check() {
     is_dropbox_running && run_stat=0 || run_stat=1
     if [ "$run_stat" != "$1" ]; then
@@ -35,20 +36,7 @@ dropbox_status_check() {
     fi
 }
 
-prepare_env() {
-    # shellcheck source=/dev/null
-    . "$D_TM_BASE_PATH"/scripts/helpers.sh
-}
-
-#---------------------------------------------------------------
-#
-#   with cmdline options
-#
-#---------------------------------------------------------------
-
 start_stop() {
-    prepare_env
-
     if is_dropbox_running; then
         action="stop"
         new_run_stat=1
@@ -101,30 +89,7 @@ start_stop() {
 }
 
 display_status() {
-    prepare_env
     tmux_error_handler display "$(dropbox status)"
-}
-
-#---------------------------------------------------------------
-#
-#   menu definition
-#
-#---------------------------------------------------------------
-
-static_content() {
-
-    set -- \
-        0.0 M Left "Back to Extras     $nav_prev" extras.sh \
-        0.0 M Home "Back to Main menu  $nav_home" main.sh
-    menu_generate_part 1 "$@"
-
-    $cfg_display_cmds && display_commands_toggle 2
-
-    set -- \
-        0.0 S \
-        0.0 E s "Status" "$0 status ; $0 " \
-        0.0 E t "toggle running status" "$0 toggle ; $0"
-    menu_generate_part 3 "$@"
 }
 
 #===============================================================
@@ -133,31 +98,26 @@ static_content() {
 #
 #===============================================================
 
-menu_name="Dropbox"
-
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(dirname -- "$(realpath "$0")")")")"
 
-command -v dropbox >/dev/null || {
-    prepare_env
-    error_msg "Command not found: dropbox"
-}
+# shellcheck source=scripts/helpers.sh
+. "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 case "$1" in
-toggle)
-    start_stop
-    exit 0
+toggle) start_stop ;;
+status) display_status ;;
+*)
+    msg="$0 - valid options: status / toggle"
+    if [ -n "$TMUX" ]; then
+        error_msg "$msg" 1
+    else
+        (
+            echo
+            echo "ERROR: $msg"
+            echo
+        ) >/dev/stderr
+        exit 1
+    fi
     ;;
-status)
-    display_status
-    exit 0
-    ;;
--h)
-    echo "valid options: status / toggle (or none to run the menu)" >/dev/stderr
-    exit 1
-    ;;
-*) ;;
 esac
-
-# shellcheck source=scripts/dialog_handling.sh
-. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh

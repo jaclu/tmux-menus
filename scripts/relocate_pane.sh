@@ -1,5 +1,4 @@
 #!/bin/sh
-#  Directives for shellcheck directly after bang path are global
 #
 #   Copyright (c) 2022-2025: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -12,7 +11,6 @@
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 
-# shellcheck source=scripts/helpers.sh
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 # shellcheck source=scripts/relocate_param_check.sh
@@ -23,7 +21,7 @@ _this="relocate_pane.sh" # error prone if script name is changed :(
 
 tmux_error_handler move-pane -t "${dest_ses}:${dest_win_idx}.${dest_pane_idx}"
 
-# shellcheck disable=SC2154
+# shellcheck disable=SC2154 # cur_ses defined in relocate_param_check.sh
 if [ "$cur_ses" != "$dest_ses" ]; then
     #
     #  When Window / Pane is moved to another session, focus does not

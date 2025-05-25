@@ -16,18 +16,6 @@ teh_debug to false.
 It will also limit the error_display in case of errors to a one-liner in the log_file
 In order not to flood the log with an elaborate error report.
 
-## TMUX_MENUS_SHOW_CMDS
-
-If this is defined `Display commands` will be available, regardless of what
-`@menus_display_commands` is set to.
-
-Be aware, if this feature is used, it is in most cases recommended to set
-it to `0` this will make `Display commands` available but not enabled by default.
-
-- `0` - `Display commands` forced to be available, menus defaults to not show commands
-- `1` - `Display commands` forced to be available, menus defaults to show commands
-- Any other value will be treated as a `0`
-
 ## TMUX_MENUS_LOGGING_MINIMAL
 
 Convenient if a lot of debugging is enabled to temporarily minimize/disable it

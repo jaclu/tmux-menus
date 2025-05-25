@@ -12,7 +12,7 @@ static_content() {
     set -- \
         0.0 M Left "Back to Main menu  $nav_home" main.sh \
         0.0 M S "Split window       $nav_next" window_split.sh \
-        0.0 M L "Layouts            $nav_next" layouts.sh \
+        0.0 M L "Layouts            $nav_next" "$d_items/layouts.sh $0 $menu_name" \
         0.0 M M "Move window        $nav_next" window_move.sh
     menu_generate_part 1 "$@"
     $cfg_display_cmds && display_commands_toggle 2
@@ -20,25 +20,25 @@ static_content() {
     set -- \
         0.0 S \
         1.7 C r "Rename window" "command-prompt -I '#W'  \
-            -p 'New window name: ' 'rename-window %%' $menu_reload" \
+            -p 'New window name: ' 'rename-window %%' $runshell_reload_mnu" \
         1.7 C + "New window after current" "command-prompt -p \
-            'Name of new window: ' 'new-window -a -n \"%%\"' $menu_reload" \
+            'Name of new window: ' 'new-window -a -n \"%%\"' $runshell_reload_mnu" \
         1.7 C "\>" "New window at the end" "command-prompt -p \
-            'Name of new window: ' 'new-window -n \"%%\"' $menu_reload" \
+            'Name of new window: ' 'new-window -n \"%%\"' $runshell_reload_mnu" \
         1.7 C s "Display Window size" "display-message \
-            'Window size: #{window_width}x#{window_height}' $menu_reload" \
+            'Window size: #{window_width}x#{window_height}' $runshell_reload_mnu" \
         0.0 S \
-        1.7 C l "Last selected window" "last-window $menu_reload" \
-        1.7 C p "Previous window [in order]" "previous-window $menu_reload" \
-        1.7 C n "Next     window [in order]" "next-window $menu_reload" \
-        1.7 C P "Previous window with an alert" "previous-window -a $menu_reload" \
-        1.7 C N "Next window with an alert" "next-window -a $menu_reload" \
+        1.7 C l "Last selected window" "last-window $runshell_reload_mnu" \
+        1.7 C p "Previous window [in order]" "previous-window $runshell_reload_mnu" \
+        1.7 C n "Next     window [in order]" "next-window $runshell_reload_mnu" \
+        1.7 C P "Previous window with an alert" "previous-window -a $runshell_reload_mnu" \
+        1.7 C N "Next window with an alert" "next-window -a $runshell_reload_mnu" \
         0.0 S \
         1.7 C x "Kill current window" "confirm-before -p \
-            'kill-window #W? (y/n)' kill-window  $menu_reload" \
+            'kill-window #W? (y/n)' kill-window  $runshell_reload_mnu" \
         1.7 C o "Kill all other windows" "confirm-before -p \
             'Are you sure you want to kill all other windows? (y/n)' \
-            'run-shell \"${d_scripts}/kill_other_windows.sh\"' $menu_reload"
+            'run-shell \"${d_scripts}/kill_other_windows.sh\"' $runshell_reload_mnu"
 
     menu_generate_part 3 "$@"
 }

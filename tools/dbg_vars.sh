@@ -1,5 +1,5 @@
 #!/bin/sh
-# shellcheck disable=SC2154
+# shellcheck disable=SC2154  # these variables would be defined in env
 #
 #   Copyright (c) 2025: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -10,7 +10,6 @@
 #
 
 if [ "$1" = "clear" ]; then
-    unset TMUX_MENUS_SHOW_CMDS
     unset TMUX_MENUS_LOGGING_MINIMAL
     unset TMUX_MENUS_NO_DISPLAY
     unset TMUX_MENUS_PROFILING
@@ -21,9 +20,6 @@ elif [ "$1" = "set" ]; then
     export TMUX_MENUS_LOGGING_MINIMAL=1
 fi
 
-echo "TMUX_MENUS_SHOW_CMDS $TMUX_MENUS_SHOW_CMDS"
-echo "  1 Display cmd used for an action, if a prefix sequence show it"
-echo
 echo "TMUX_MENUS_LOGGING_MINIMAL $TMUX_MENUS_LOGGING_MINIMAL"
 echo "  1 Only log errors & render times"
 echo "  2 no logging at all"

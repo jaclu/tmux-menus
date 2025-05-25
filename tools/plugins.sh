@@ -20,9 +20,14 @@ extract_defined_plugins() {
     }
     if [[ -z "$(command -v mapfile)" ]] || [[ -d /proc/ish ]]; then
         # iSH has very limited /dev impl, doesn't support mapfile
-        #  shellcheck disable=SC2207
-        defined_plugins=($(grep "set -g @plugin" "$cfg_tmux_conf" |
-            awk '{ print $4 }' | sed 's/"//g' | sed "s/'//g"))
+        defined_plugins=()
+        tmpfile=$(mktemp)
+        grep "set -g @plugin" "$cfg_tmux_conf" >"$tmpfile"
+        while IFS= read -r line; do
+            plugin=$(echo "$line" | awk '{ print $4 }' | sed 's/^["'\'']//;s/["'\'']$//')
+            defined_plugins+=("$plugin")
+        done <"$tmpfile"
+        rm -f "$tmpfile"
     else
         mapfile -t defined_plugins < <(grep "set -g @plugin" "$cfg_tmux_conf" |
             awk '{ print $4 }' | sed 's/"//g' | sed "s/'//g")
@@ -103,7 +108,6 @@ D_TM_BASE_PATH=$(dirname "$(dirname -- "$(realpath "$0")")")
 defined_plugins=() #  plugins mentioned in config file
 valid_items=(tpm)  # additional folders expected to be in plugins folders
 
-# shellcheck disable=SC2154
 [[ -n "$TMUX" ]] || {
     echo "ERROR: This expects to run inside a tmux session!"
     exit 1

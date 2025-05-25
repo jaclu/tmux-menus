@@ -22,7 +22,7 @@ static_content() {
     #
     set -- \
         0.0 M Left "Back to Main menu  $nav_home" main.sh \
-        0.0 M C "Currencies         $nav_next" currencies.sh
+        2.0 M C "Currencies         $nav_next" currencies.sh
     menu_generate_part 1 "$@"
     $cfg_display_cmds && display_commands_toggle 2
 
@@ -57,14 +57,12 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 
 if [ -n "$1" ]; then
     "$d_scripts"/act_display_char.sh "$1"
-    # handle_char "$1"
 elif $cfg_use_whiptail; then
     #
-    #  As long as this menu is restarted with a char param
-    #  it is added to the paste buffer if whiptail is used,
-    #  as soon as it is called without a param this buffer is reset
+    #  wt_pasting is a hint that the current paste buffer is used to store
+    #  one or more keys for late pasting
     #
-    $TMUX_BIN set-option -gqu "$wt_pasting" 2>/dev/null # ignore error if not set
+    tmux_error_handler set-option -gqu "$wt_pasting"
 fi
 
 # shellcheck source=scripts/dialog_handling.sh

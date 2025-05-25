@@ -58,7 +58,8 @@ set -g @menus_format_title "'#[align=centre] #[fg=colour34]#{@menu_name} '"
 | prev menu | @menus_nav_prev | '<--'   | '#[fg=colour71]<--'  |
 | home      | @menus_nav_home | '<=='   | '#[fg=colour84]<=='  |
 
-The navigation variables support full normal styling
+The navigation variables support full normal styling, and can be used already
+by `tmux 3.0`
 
 ## Menu overrides
 

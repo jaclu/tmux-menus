@@ -1,6 +1,5 @@
 #!/bin/sh
 # This is sourced. Fake bang-path to help editors and linters
-# shellcheck disable=SC2154
 #
 #   Copyright (c) 2025: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -13,6 +12,7 @@
 
 # Helper: run awk to extract matching key
 sc_extract_key_bind_run_awk() {
+    # shellcheck disable=SC2154 # f_cached_tmux_key_binds defined in helpers_minimal.sh
     awk -v target="$1" -v cmd="$2" '
     {
         found_target = 0
@@ -100,8 +100,7 @@ sc_filter_bind_escapes_single() {
         eval "$sc_fbes_output_var=\"$sc_fbes_key\""
         ;;
     *)
-        # shellcheck disable=SC1003 # in this case it is actually POSIX-compliant
-        clean_key=$(printf '%s\n' "$sc_fbes_key" | tr -d '\\')
+        clean_key=$(printf '%s\n' "$sc_fbes_key" | tr -d "\\")
         # printf '%s\n' "$clean_key"
         eval "$sc_fbes_output_var=\"$clean_key\""
         ;;
@@ -133,6 +132,8 @@ sc_check_key_binds() {
 
     sc_extract_key_bind prefix "$sc_ckb_cmd" sc_ckb_prefix_raw
     sc_ckb_prefix_bind=""
+    # SC2154: sc_ckb_prefix_raw assigned dynamically by sc_extract_key_bind using eval
+    # shellcheck disable=SC2154
     for _key in $sc_ckb_prefix_raw; do
         sc_filter_bind_escapes_single "$_key" sc_ckb_escaped
         sc_ckb_prefix_bind="${sc_ckb_prefix_bind}${sc_ckb_prefix_bind:+ }$sc_ckb_escaped"
@@ -140,6 +141,8 @@ sc_check_key_binds() {
 
     sc_extract_key_bind root "$sc_ckb_cmd" sc_ckb_root_raw
     sc_ckb_root_bind=""
+    # SC2154: sc_ckb_root_raw assigned dynamically by sc_extract_key_bind using eval
+    # shellcheck disable=SC2154
     for _key in $sc_ckb_root_raw; do
         sc_filter_bind_escapes_single "$_key" sc_ckb_escaped
         sc_ckb_root_bind="${sc_ckb_root_bind}${sc_ckb_root_bind:+ }$sc_ckb_escaped"
@@ -147,14 +150,14 @@ sc_check_key_binds() {
 
     set -f # disable globbing - needed in case a bind is *
     [ -n "$sc_ckb_root_bind" ] && {
-        # shellcheck disable=SC2086 # intentional in this case
+        # shellcheck disable=SC2086 # intentionally not using quotes in this case
         set -- $sc_ckb_root_bind
         for _l; do
             add_result "$_l" # "[NO-Prefix] $_l"
         done
     }
     [ -n "$sc_ckb_prefix_bind" ] && {
-        # shellcheck disable=SC2086 # intentional in this case
+        # shellcheck disable=SC2086 # intentional not using quotes in this case
         set -- $sc_ckb_prefix_bind
         for _l; do
             add_result "<prefix> $_l"
@@ -200,9 +203,9 @@ sc_clean_up_cmd() {
     # Defines
     #   sc_cmd - filtered input
 
-    _s1="${1%" $menu_reload"}"          # skip menu_reload suffix if found
-    _s2="${_s1%" $reload_in_runshell"}" # skip reload_in_runshell suffix if found
-    _s3="${_s2%"; $0"}"                 # Remove trailing reload of menu
+    _s1="${1%" $runshell_reload_mnu"}" # skip runshell_reload_mnu suffix if found
+    _s2="${_s1%" $mnu_reload_direct"}" # skip mnu_reload_direct suffix if found
+    _s3="${_s2%"; $0"}"                # Remove trailing reload of menu
 
     # _s4="$(echo "$_s3" | sed 's/\\&.*//')"
     _s4=${_s3%%\\&*} # skip hint overlays, ie part after \&
@@ -230,6 +233,8 @@ sc_clean_up_result() {
     #
 
     # _s2="$(echo "$sc_cur_s1" | sed "s#^$TMUX_BIN #[TMUX] #")"
+
+    # shellcheck disable=SC2154 # TMUX_BIN defined in helpers_minimal.sh
     case $sc_cur_s1 in
     "$TMUX_BIN "*) sc_cur_s2='[TMUX] '"${sc_cur_s1#"$TMUX_BIN "}" ;;
     *) sc_cur_s2=$sc_cur_s1 ;;
@@ -240,7 +245,7 @@ sc_clean_up_result() {
     # to avoid long absolute paths that are redundant
     #
 
-    # sc_processed="$(echo "$_s2" | sed "s#^$D_TM_BASE_PATH/#[tmux-menus] #")"
+    # shellcheck disable=SC2154 # TMUX_BIN defined in $0 calling script
     case $sc_cur_s2 in
     "$D_TM_BASE_PATH/"*) sc_cur_rslt='[tmux-menus] '"${sc_cur_s2#"$D_TM_BASE_PATH/"}" ;;
     *) sc_cur_rslt=$sc_cur_s2 ;;
@@ -260,6 +265,7 @@ sc_display_cmd() {
     sc_dc_remainder="$1"
 
     while [ -n "$sc_dc_remainder" ]; do
+        # shellcheck disable=SC2154 # cfg_display_cmds_cols defined in cache/plugin_params
         sc_dc_chunk=$(printf '%s\n' "$sc_dc_remainder" | awk -v max="$cfg_display_cmds_cols" '
         {
             if (length($0) <= max) {
@@ -284,7 +290,7 @@ sc_display_cmd() {
 
 sc_show_cmd() {
     #
-    # First filter out menu_reload components if present
+    # First filter out runshell_reload_mnu components if present
     # then try to match command to a prefix key-bind. If a match is foond
     # display the prefix sequence matching the cmd, otherwise display the command uses
     #
@@ -297,7 +303,8 @@ sc_show_cmd() {
     # log_it
     # log_it "sc_show_cmd($sc_cmd)"
 
-    case "$TMUX_MENUS_SHOW_CMDS" in
+    # shellcheck disable=SC2154 # show_cmds_state defined in display_commands_toggle()
+    case "$show_cmds_state" in
     1)
         sc_clean_up_result "$sc_cmd" sc_processed
         ;;
@@ -310,9 +317,12 @@ sc_show_cmd() {
     *) ;;
     esac
 
+    # SC2154: sc_processed assigned dynamically by above using eval
+    # shellcheck disable=SC2154
     sc_display_cmd "$sc_processed"
 
     # refresh it for each cmd processed in case the display timeout is shortish
-    display_command_label
+    set_display_command_labels
+    # shellcheck disable=SC2154 # _lbl definef in set_display_command_labels()
     tmux_error_handler display-message "Preparing $_lbl ..."
 }

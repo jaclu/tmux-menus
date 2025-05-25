@@ -21,15 +21,18 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 # shellcheck source=scripts/helpers.sh
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
-_this="relocate_window.sh" # error prone if script name is changed :(
-[ "$bn_current_script" != "$_this" ] && error_msg_safe "$_this should NOT be sourced"
+# rel_scr_name=$(relative_path "$0")
+# log_it "><> $rel_scr_name params: $* - whiptail: $cfg_use_whiptail"
+
+# _this="relocate_window.sh" # error prone if script name is changed :(
+# [ "$bn_current_script" != "$_this" ] && error_msg_safe "$_this should NOT be sourced"
 
 # shellcheck source=scripts/relocate_param_check.sh
 . "$d_scripts"/relocate_param_check.sh
 
 param_check "$@"
 
-# shellcheck disable=SC2154
+# shellcheck disable=SC2154 # cur_ses defined in relocate_param_check.sh
 if [ "$cur_ses" = "$dest_ses" ]; then
     #
     #  to same session

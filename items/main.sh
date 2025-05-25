@@ -10,7 +10,7 @@
 
 static_content() {
     rld_cmd="command-prompt -I '$cfg_tmux_conf' -p 'Source file:' \
-        'run-shell \"$d_scripts/reload_conf.sh %% $reload_in_runshell\"'"
+        'run-shell \"$d_scripts/reload_conf.sh %%\"'"
 
     set --
 
@@ -29,11 +29,11 @@ static_content() {
     }
 
     set -- "$@" \
-        1.8 M N "Navigate & Search  $nav_next" nav_search.sh \
+        1.7 M N "Navigate & Search  $nav_next" nav_search.sh \
         0.0 M P "handling Pane      $nav_next" panes.sh \
         0.0 M W "handling Window    $nav_next" windows.sh \
         0.0 M S "handling Sessions  $nav_next" sessions.sh \
-        1.8 M B "paste Buffers      $nav_next" paste_buffers.sh \
+        0.0 M B "paste Buffers      $nav_next" paste_buffers.sh \
         2.0 M M "Missing keys       $nav_next" missing_keys.sh \
         0.0 M A "Advanced options   $nav_next" advanced.sh \
         0.0 M E "Extras             $nav_next" extras.sh

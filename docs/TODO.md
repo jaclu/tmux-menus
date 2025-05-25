@@ -1,16 +1,12 @@
 # Plan
 
+## advanced - dynamic
+
+more testing needed
+
 ## Styling
 
 - quotes are not handled correctly for `@menus_format_title`
-
-## WhipTail
-
-- menu_reload is not working, so disabled
-
-## external_tools/dropbox.sh
-
-toggle not working
 
 ## Pane titles
 

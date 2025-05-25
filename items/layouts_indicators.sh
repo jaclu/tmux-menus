@@ -18,10 +18,10 @@ static_content() {
     set -- \
         3.3 S \
         3.3 T "-#[align=centre,nodim]pane-border-indicators" \
-        3.3 C "o" "off" "set-option    pane-border-indicators  off     $menu_reload" \
-        3.3 C "c" "colour" "set-option pane-border-indicators  colour  $menu_reload" \
-        3.3 C "a" "arrows" "set-option pane-border-indicators  arrows  $menu_reload" \
-        3.3 C "b" "both" "set-option   pane-border-indicators  both    $menu_reload"
+        3.3 C "o" "off" "set-option    pane-border-indicators  off     $runshell_reload_mnu" \
+        3.3 C "c" "colour" "set-option pane-border-indicators  colour  $runshell_reload_mnu" \
+        3.3 C "a" "arrows" "set-option pane-border-indicators  arrows  $runshell_reload_mnu" \
+        3.3 C "b" "both" "set-option   pane-border-indicators  both    $runshell_reload_mnu"
 
     menu_generate_part 3 "$@"
 }

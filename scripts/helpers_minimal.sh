@@ -21,7 +21,7 @@ print_stderr() {
 }
 
 log_it() {
-    # shellcheck disable=SC2154
+    # shellcheck disable=SC2154 # TMUX_MENUS_LOGGING_MINIMAL is an env variable
     [ "$TMUX_MENUS_LOGGING_MINIMAL" = "1" ] && return
     log_it_minimal "$1"
 }
@@ -31,7 +31,7 @@ log_it_minimal() {
     # TMUX_MENUS_LOGGING_MINIMAL is 1
     # if TMUX_MENUS_LOGGING_MINIMAL=2 logging is completely disabled
     [ "$TMUX_MENUS_LOGGING_MINIMAL" = "2" ] && return
-    _msg="$1"
+    _msg="[$$] $1"
 
     [ "$log_interactive_to_stderr" = "1" ] && {
         # log to stderr if in interactive mode
@@ -52,8 +52,10 @@ log_it_minimal() {
 
 error_msg_safe() {
     #  Used when potentially called without having sourced everything
+    msg="$1"
+    exit_code="$2"
     $all_helpers_sourced || source_all_helpers "error_msg_safe()"
-    error_msg "$1" "$2"
+    error_msg "$msg" "$exit_code"
 }
 
 source_all_helpers() {
@@ -108,7 +110,7 @@ source_cached_params() { # local usage by get_config()
             orig_log_file="$cfg_log_file"
         }
 
-        # shellcheck disable=SC1090
+        # shellcheck source=/dev/null # not always present
         . "$f_cache_params" || {
             [ "$log_file_forced" = 1 ] && cfg_log_file="$orig_log_file"
             log_it "source_cached_params() - Failed to source: $f_cache_params"
@@ -129,48 +131,16 @@ source_cached_params() { # local usage by get_config()
     return 0
 }
 
-handle_env_variables() { # local usage by get_config()
-    # Check env variables and apply relevant config overrides
-    # log_it "handle_env_variables()"
-
-    # TMUX_MENUS_SHOW_CMDS - is handled directly by dialog_handling.sh - no config needed
-    # TMUX_MENUS_LOGGING_MINIMAL - is handled directly by log_it() - no config needed
-    # TMUX_MENUS_PROFILING - is handled directly - no config needed
-    # TMUX_MENUS_NO_DISPLAY -  is handled directly - no config needed
-    b_whiptail_forced=false
-    # shellcheck disable=SC2154
-    if [ "$TMUX_MENUS_HANDLER" = 1 ]; then
-        _cmd=whiptail
-        if command -v "$_cmd" >/dev/null; then
-            cfg_alt_menu_handler="$_cmd"
-        else
-            error_msg_safe "$_cmd not available, plugin aborted"
-        fi
-        cfg_use_whiptail=true
-        log_it "NOTICE: $_cmd is selected due to TMUX_MENUS_HANDLER=1"
-        b_whiptail_forced=true
-    elif [ "$TMUX_MENUS_HANDLER" = 2 ]; then
-        _cmd=dialog
-        if command -v "$_cmd" >/dev/null; then
-            cfg_alt_menu_handler="$_cmd"
-        else
-            error_msg_safe "$_cmd not available, plugin aborted"
-        fi
-        cfg_use_whiptail=true
-        log_it "NOTICE: $_cmd is selected due to TMUX_MENUS_HANDLER=2"
-        b_whiptail_forced=true
-    fi
-}
-
 get_config() { # local usage during sourcing
     #
     #  The plugin init .tmux script should NOT depend on this!
     #  This is used by everything else sourcing helpers_minimal.sh, then trusting
     #  that the param cache is valid if found
     #
-    # log_it "get_config()"
+    # log_it "get_config() - $rn_current_script"
     replace_config=false
     if [ -f "$f_no_cache_hint" ]; then
+        cfg_use_cache=false
         $all_helpers_sourced || {
             source_all_helpers "get_config() - no cache hint found"
         }
@@ -194,13 +164,104 @@ get_config() { # local usage during sourcing
         config_setup
     else
         handle_env_variables
-        $b_whiptail_forced && {
-            $all_helpers_sourced || {
-                source_all_helpers "get_config() needs use_whiptail_env"
-            }
-            use_whiptail_env
-        }
     fi
+}
+
+#---------------------------------------------------------------
+#
+#   env variables
+#
+#---------------------------------------------------------------
+
+menu_handler_cache_missmatch() {
+    # Report a mismatch between TMUX_MENUS_HANDLER and current cache
+
+    # shellcheck disable=SC2154 # TMUX_MENUS_HANDLER is an env variable
+    msg="TMUX_MENUS_HANDLER=$TMUX_MENUS_HANDLER"
+    [ -n "$1" ] && msg="$msg ($1)"
+    msg="$msg does not match current cache:\n\n"
+    msg="$msg    cfg_use_whiptail=$cfg_use_whiptail\n"
+    msg="$msg    cfg_alt_menu_handler=$cfg_alt_menu_handler"
+    error_msg_safe "$msg"
+}
+
+verify_menu_handler_override_valid() {
+    # Ensure manual override of menu handler is not a mismatch vs current cache
+
+    # shellcheck disable=SC2154 # defined in plugin_init.sh
+    [ "$initialize_plugin" = "1" ] && return # not relevant during plugin init
+    # log_it "verify_menu_handler_override_valid($requested_handler)"
+    requested_handler="$1"
+    ! $cfg_use_cache && return # irrelevant check when not using cache
+
+    if ! $cfg_use_whiptail || [ "$cfg_alt_menu_handler" != "$requested_handler" ]; then
+        menu_handler_cache_missmatch "$requested_handler"
+    fi
+}
+
+env_variable_menus_handler() {
+    # handles TMUX_MENUS_HANDLER
+    #
+    # Provides: b_whiptail_forced
+    #
+    # log_it "env_variable_menus_handler()"
+
+    case "$TMUX_MENUS_HANDLER" in
+    0) $cfg_use_whiptail && verify_menu_handler_override_valid "tmux display-menu" ;;
+    1)
+        _cmd=whiptail
+        verify_menu_handler_override_valid "$_cmd"
+        if command -v "$_cmd" >/dev/null; then
+            cfg_alt_menu_handler="$_cmd"
+        else
+            error_msg_safe "$_cmd not available, plugin aborted"
+        fi
+        cfg_use_whiptail=true
+        [ "$initialize_plugin" = "1" ] && {
+            log_it "NOTICE: $_cmd is selected due to TMUX_MENUS_HANDLER=1"
+        }
+        b_whiptail_forced=true
+        ;;
+    2)
+        _cmd=dialog
+        verify_menu_handler_override_valid "$_cmd"
+        if command -v "$_cmd" >/dev/null; then
+            cfg_alt_menu_handler="$_cmd"
+        else
+            error_msg_safe "$_cmd not available, plugin aborted"
+        fi
+        cfg_use_whiptail=true
+        [ "$initialize_plugin" = "1" ] && {
+            log_it "NOTICE: $_cmd is selected due to TMUX_MENUS_HANDLER=2"
+        }
+        b_whiptail_forced=true
+        ;;
+    *)
+        msg="TMUX_MENUS_HANDLER=$TMUX_MENUS_HANDLER - valid options: 0 1 2"
+        error_msg_safe "$msg"
+        ;;
+    esac
+
+    $b_whiptail_forced && {
+        $all_helpers_sourced || {
+            source_all_helpers "get_config() needs use_whiptail_env"
+        }
+        use_whiptail_env
+    }
+}
+
+handle_env_variables() { # local usage by get_config()
+    # Check env variables and apply relevant env checks & config overrides
+    #
+    # Provides: b_whiptail_forced
+    #
+    # log_it "handle_env_variables()"
+
+    # TMUX_MENUS_LOGGING_MINIMAL - is handled directly by log_it() - no config needed
+    # TMUX_MENUS_NO_DISPLAY -  is handled directly - no config needed
+    # TMUX_MENUS_PROFILING - is handled directly - no config needed
+    [ -n "$TMUX_MENUS_HANDLER" ] && env_variable_menus_handler
+
 }
 
 #---------------------------------------------------------------
@@ -395,31 +456,6 @@ tpt_tmux_vers_suffix() { # local usage by tpt_retrieve_running_tmux_vers()
     eval "$varname=\"\$_s\""
 }
 
-define_tmux_bin() {
-    [ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
-
-    log_it "define_tmux_bin()"
-
-    #
-    # if multiple instances of the same tmux bin are used, errors can spill over
-    # and cause issues in the other instance
-    # this ensures that everything is run in the current environment
-    #
-    case "$TMUX_BIN" in
-    *-L*) ;; # already using socket
-    *)
-        #
-        # in case an inner tmux is using this plugin, make sure the current socket is
-        # used to avoid picking up states from the outer tmux
-        #
-        # shellcheck disable=SC2154
-        f_name_socket="$(echo "$TMUX" | cut -d, -f 1)"
-        socket="${f_name_socket##*/}"
-        TMUX_BIN="$TMUX_BIN -L $socket"
-        ;;
-    esac
-}
-
 base_path_not_defined() {
     # Show error msg if D_TM_BASE_PATH is not defined
     # helpers not yet sourced, so TMUX_BIN & error_msg() not yet available
@@ -434,6 +470,8 @@ base_path_not_defined() {
 #   Main
 #
 #===============================================================
+
+[ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
 
 plugin_name="tmux-menus"
 
@@ -460,7 +498,7 @@ env_initialized=0
 #
 log_interactive_to_stderr=0
 
-min_tmux_vers="1.8"
+min_tmux_vers="1.0"
 # for performance only a minimum of support features are in this file
 # as long as cache is used, it is sufficient, if extra features are needed
 # a call to source_all_helpers will be done, this ensures it only happens once
@@ -469,8 +507,6 @@ all_helpers_sourced=false
 d_tmp="${TMPDIR:-/tmp}"
 d_tmp="${d_tmp%/}" # Removes a trailing slash if present - sometimes set in TMPDIR...
 f_no_cache_hint="$d_tmp"/tmux-menus-no-cache-hint
-
-define_tmux_bin
 
 [ -z "$D_TM_BASE_PATH" ] && base_path_not_defined
 
@@ -483,8 +519,10 @@ f_cache_params="$d_cache"/plugin_params
 # Set this as early as possible to be able to calculate the entire menu processing time
 safe_now t_script_start
 
-# shellcheck disable=SC2034
+# shellcheck disable=SC2034 # provided as env for other scripts
 {
+    # in order to only need one SC2034 group all variables under one shellcheck
+
     # Used if main menu cache should be purged, like if custom_items are detected
     # or found to be gone
     d_cache_main_menu="$d_cache"/items/main.sh
@@ -492,23 +530,17 @@ safe_now t_script_start
     # Used if main menu should be run
     f_main_menu="$d_items"/main.sh
 
+    f_ext_dlg_trigger="$d_scripts/external_dialog_trigger.sh"
+
     bn_current_script=${0##*/} # same but faster than "$(basename "$0")"
+    rn_current_script=$(relative_path "$0")
     # bn_current_script_no_ext=${bn_current_script%.*}
 }
-
-if [ -d "$d_cache" ]; then
-    cfg_use_cache=true
-else
-    # Assume cache is disabled, until env has been inspected, if allowed it will
-    # be used
-    cfg_use_cache=false
-fi
 
 # --->  Only enable this if profiling is being used  <---
 # shellcheck source=scripts/utils/dbg_profiling.sh
 # [ "$profiling_sourced" != 1 ] && . "$D_TM_BASE_PATH"/scripts/utils/dbg_profiling.sh
 
-# shellcheck disable=SC2154
 [ "$initialize_plugin" != "1" ] && {
     # plugin_init will call config_setup directly, so should not call get_config
 
@@ -518,6 +550,19 @@ fi
         error_msg "need at least tmux $min_tmux_vers to work!"
     fi
 }
+
+if [ -d "$d_cache" ]; then
+    # For temp files etc that needs to be created even when caching is disabled
+    # use d_safe_tmp_folder folder. This will prioritize the cach-folder, and use tmp
+    # as fallback
+    d_safe_tmp_folder="$d_cache"
+else
+    d_safe_tmp_folder="$d_tmp"
+fi
+
+# This allows 'Display Commands' even when cache is disabled
+# shellcheck disable=SC2034 # provided as env for other scripts
+f_cached_tmux_key_binds="$d_safe_tmp_folder"/tmux_key_binds
 
 [ "$env_initialized" -eq 0 ] && env_initialized=1 # basic init done
 

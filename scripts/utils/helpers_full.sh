@@ -41,6 +41,7 @@ error_msg() {
 error_msg_actual() {
     # Disable logging for the remainder of error_msg processing, to avoid getting
     # log-flooded, unless exit is not requested
+    # shellcheck disable=SC2034 # cfg_log_file used to define cache/plugin_params
     [ "$exit_code" -gt -1 ] && cfg_log_file=""
 
     [ -z "$TMUX" ] && {
@@ -49,24 +50,28 @@ error_msg_actual() {
     }
 
     [ -n "$TMUX" ] && {
-        # shellcheck disable=SC2154
+        # shellcheck disable=SC2154 # plugin_name defined in helpers_minimal.sh
         msg_hold="$plugin_name ERR: $em_msg"
-        # shellcheck disable=SC2154
-        if [ "$env_initialized" -eq 2 ] && (
-            #
-            # Slightly complex condition, has_lf_not_at_end() can only be called
-            # if env_initialized is 2
-            # so therefore actual_win_width is retrieved here in the middle of the
-            # condition...
-            #
-            actual_win_width="$($TMUX_BIN display-message -p "#{client_width}")"
-
-            # The actual condition part of this code block
-            [ "${#msg_hold}" -ge "$actual_win_width" ] || has_lf_not_at_end "$em_msg"
-        ); then
-            error_msg_formated "$em_msg"
+        if tmux_vers_check 1.7; then
+            # "#{client_width}" - not available before tmux 1.7
+            if [ "$env_initialized" -eq 2 ] && (
+                #
+                # Slightly complex condition, has_lf_not_at_end() can only be called
+                # if env_initialized is 2
+                # so therefore actual_win_width is retrieved here in the middle of the
+                # condition...
+                #
+                # shellcheck disable=SC2154 # defined in helpers_minimal.sh
+                actual_win_width="$($TMUX_BIN display-message -p "#{client_width}")"
+                # The actual condition part of this code block
+                [ "${#msg_hold}" -ge "$actual_win_width" ] || has_lf_not_at_end "$em_msg"
+            ); then
+                error_msg_formated "$em_msg"
+            else
+                display_message_hold "$msg_hold"
+            fi
         else
-            display_message_hold "$msg_hold"
+            error_msg_formated "$em_msg"
         fi
     }
 }
@@ -84,8 +89,8 @@ error_msg_formated() {
     # log_it "error_msg_formated($emf_err)"
 
     emf_msg="$(
-        # shellcheck disable=SC2154
-        echo "ERROR in plugin $plugin_name: $(relative_path "$0") [$$]"
+        # shellcheck disable=SC2154 # rn_current_script defined in helpers_minimal.sh
+        echo "ERROR in plugin $plugin_name: $rn_current_script [$$]"
         echo
         echo "$emf_err"
     )"
@@ -207,7 +212,7 @@ normalize_bool_param() {
     0 | no | false) return 1 ;;
     *)
         if $_tmux_param; then
-            error_msg "$nbp_param = [$nbp_value_lc] - should be yes/true/1 or no/false/0"
+            error_msg "$nbp_param = [$nbp_value_lc] ($_v) - should be yes/true/1 or no/false/0"
         else
             error_msg "[$nbp_param] - should be yes/true/1 or no/false/0"
         fi
@@ -223,8 +228,7 @@ has_lf_not_at_end() {
     #  somewhere within, since I could not figure out how to to substring
     #  search for LF in this env
     #
-    # shellcheck disable=SC2059
-    [ "$1" != "$(printf "$1" | tr '\n' 'X')" ]
+    [ "$1" != "$(printf '%s' "$1" | tr '\n' 'X')" ]
 }
 
 is_int() {
@@ -257,16 +261,19 @@ check_speed_cutoff() {
     # if processing was slower than the supplied param, set a higher minimal
     # display time before triggering "SCREEN might be too small" warning
     cut_off="$1"
-
     # log_it "-T- check_speed_cutoff($cut_off)"
+
+    # SC2154: t_script_start assigned dynamically by safe_now using eval in helpers_minimal.sh
     # shellcheck disable=SC2154
     time_span "$t_script_start"
+    # SC2154: t_time_span assigned dynamically by time_span using eval
     # shellcheck disable=SC2154
     if [ "$(echo "$t_time_span < $cut_off" | bc)" -eq 1 ]; then
         t_minimal_display_time=0.1
     else
         # log_it "  Failed cutoff time, considered a slow system: $t_time_span >= $cut_off"
         # for slower systems
+        # shellc heck disable=SC2034
         t_minimal_display_time=0.5
     fi
 }
@@ -280,16 +287,15 @@ check_speed_cutoff() {
 config_setup() {
     # Examins tmux env, and depending on caching config either plainly read
     # tmux.conf, or prepare a f_cache_params
-    log_it "config_setup()"
+    # log_it "config_setup()"
 
-    # only need default_use_cache at this point but might as well get them all
-    tmux_get_defaults
+    # shellcheck disable=SC2154 # default_use_cache defined in tmux.sh
     if normalize_bool_param "@menus_use_cache" "$default_use_cache"; then
         cfg_use_cache=true
-        # shellcheck disable=SC2154
         safe_remove "$f_no_cache_hint" config_setup
         create_param_cache
     else
+        # shellcheck disable=SC2034 # cfg_use_cache used to define cache/plugin_params
         cfg_use_cache=false
         touch "$f_no_cache_hint"
         tmux_get_plugin_options
@@ -352,8 +358,16 @@ wait_to_close_display() {
     #
     #  Busybox ps has no -x and will throw error, so send to /dev/null
     #  pgrep does not provide the command line, so ignore SC2009
-    #  shellcheck disable=SC2009
-    if ps -x "$PPID" 2>/dev/null | grep -q tmux-menus && $cfg_use_whiptail; then
+    # if ps -x "$PPID" 2>/dev/null | grep -q tmux-menus && $cfg_use_whiptail; then
+    _b_is_whiptail=false
+    case $(ps -o command= -p "$PPID" 2>/dev/null) in
+    *tmux-menus*)
+        # shellcheck disable=SC2154 # cfg_use_whiptail defined in settings
+        [ "$cfg_use_whiptail" = true ] && _b_is_whiptail=true
+        ;;
+    *) ;;
+    esac
+    if [ "$_b_is_whiptail" = true ]; then
         #
         # called using whiptail menus, since a pause is needed, before what
         # might be a backgrounded process is resumed
@@ -374,6 +388,7 @@ wait_to_close_display() {
 }
 
 helpers_full_additional_files_sourced() {
+    # SC2154: d_scripts  defined in helpers_minimal.sh
     # shellcheck disable=SC2154 source=scripts/utils/cache.sh
     . "$d_scripts"/utils/cache.sh
 
@@ -381,11 +396,11 @@ helpers_full_additional_files_sourced() {
     . "$d_scripts"/utils/tmux.sh
 }
 
-display_command_label() {
-    # log_it "display_command_label() - $TMUX_MENUS_SHOW_CMDS"
+set_display_command_labels() {
+    # log_it "set_display_command_labels() - $show_cmds_state"
 
-    # shellcheck disable=SC2154
-    case "$TMUX_MENUS_SHOW_CMDS" in
+    # shellcheck disable=SC2154 # show_cmds_state defined in display_commands_toggle()
+    case "$show_cmds_state" in
     1)
         _lbl="Display Commands"
         _lbl_next="Display key binds"
@@ -416,16 +431,15 @@ display_command_label() {
 #  Convenience shortcuts
 #
 
-# shellcheck disable=SC2034
+# shellcheck disable=SC2034 # defined as full env for other scripts
 {
-    # shellcheck disable=SC2154
+    # shellcheck disable=SC2154 # defined in helpers_minimal.sh
     d_help="$d_items"/help
 
     d_hints="$d_items"/hints
     d_custom_items="$D_TM_BASE_PATH"/custom_items
     f_custom_items_index="$d_custom_items"/_index.sh
     f_chksum_custom="$d_cache"/chksum_custom_content
-    f_cached_tmux_key_binds="$d_cache"/tmux_key_binds
     f_min_display_time="$d_cache"/min_display_time
 }
 

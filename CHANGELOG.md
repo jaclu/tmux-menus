@@ -4,19 +4,44 @@ All notable changes to this project will be documented here.
 
 ---
 
-## [Unreleased]
+## [2.2.7] - 2025-05-25
+
+### Added
+
+- Main help mentions that `j` & `k` can be used for scrolling
+- re-enabled menu reloads when using whiptail/dialog
+- when using whiptail/dialog, this keeps track of menu recursion depth and only resumes
+  the backgrounded process (if any) as last menu closes
+- Layouts available both from Panes and Windows menus
+
+### Changed
+
+- Fix: Main help had an empty text line that could be selected
+- Removed min vers for Pane History - View scrollback, since it's been around since
+  at least version 0.8
+- Lowered min tmux vers for plugin to 1.0, since there isn't really any tmux limit
+  on using this. Each feature not available for the running tmux is skipped
+- Better sanity checks when checking for TMUX_MENUS_HANDLER
+- Adjusted min version for some menus
+- whiptail adjustments for menu reload
+- Simplified handling of actions for whiptail
+- skipped using sockets in TMUX_BIN ended up causing param confusion when using
+  whiptail on some complex menu actions
+- Removed usage of env variable: TMUX_MENUS_SHOW_CMDS
+- Simplified: Extras - dropbox & mullvad
+- Moved Dropbox handling into a single file
+- Fixed broken handling of multiword params
+- Linting, made notices about why each shellcheck disable is being used
+- Better plugin scan for iSH compatibility
+- Removed usage of env variable: TMUX_MENUS_SHOW_CMDS
+
+---
+
+## [2.2.6] - 2025-05-09
 
 ### Added
 
 - Display error if plugin init failed
-
----
-
-## [2.2.5] - 2025-05-15
-
-### Changed
-
-- Bug fix: Fixed failure to define TMUX_BIN issue - now it is always defined
 
 ---
 

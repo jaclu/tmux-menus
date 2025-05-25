@@ -17,6 +17,9 @@ tmux_vers_check_do_compare() {
 
     # Compare numeric parts first for quick decisions.
     tpt_digits_from_string _i_comp "$_v_comp"
+
+    # SC2154: _i_comp assigned dynamically by tpt_digits_from_string using eval
+    #         current_tmux_vers_i defined in cache.sh
     # shellcheck disable=SC2154
     [ "$_i_comp" -lt "$current_tmux_vers_i" ] && {
         cache_add_ok_vers "$_v_comp"
@@ -63,8 +66,8 @@ tmux_get_defaults() { # new init
     default_trigger_key=\\
     default_no_prefix=No
 
-    # shellcheck disable=SC2034
-    default_use_cache=Yes
+    # Since default_use_cache is needed early on, before this function can be
+    # called, it is defined in the main segment of this script
 
     if tmux_vers_check 3.2; then
         default_location_x=C
@@ -104,10 +107,10 @@ cache_save_options_defined_in_tmux() {
     #  On slow systems, doing individual show-options takes a ridiculous amount of
     #  time. Here we read all relevant options in one go and store them in a cache file
     #
-    # shellcheck disable=SC2154
+    # shellcheck disable=SC2154 # defined in helpers_full.sh
     [ -f "$f_cached_tmux_options" ] && return
     # log_it "cache_save_options_defined_in_tmux()"
-    # shellcheck disable=SC2154
+    # shellcheck disable=SC2154 # TMUX_BIN defined in helpers_minimal.sh
     $TMUX_BIN show-options -g | grep ^@menus_ >"$f_cached_tmux_options"
     $TMUX_BIN show-options -g | grep @use_bind_key_notes_in_plugins \
         >>"$f_cached_tmux_options"
@@ -123,8 +126,9 @@ tmux_get_option() {
     tgo_no_cache="$4"
 
     # log_it "tmux_get_option($tgo_varname, $tgo_option, $tgo_default, $tgo_no_cache)"
-
+    # usually disabled for performance
     validate_varname "$tgo_varname" "tmux_get_option()"
+
     # [ -z "$tgo_varname" ] && error_msg "tmux_get_option() param 1 empty!"
     [ -z "$tgo_option" ] && error_msg "tmux_get_option() param 2 empty!"
     [ -z "$tgo_default" ] && log_it "tmux_get_option($tgo_option) - No default supplied"
@@ -135,7 +139,7 @@ tmux_get_option() {
         tgo_default=""
     }
 
-    # shellcheck disable=SC2154
+    # shellcheck disable=SC2154 # cfg_use_cache sourced or defined in other support scripts
     if [ -z "$tgo_no_cache" ] && $cfg_use_cache && [ -d "$d_cache" ]; then
         tgo_use_cache=true
     else
@@ -152,17 +156,26 @@ tmux_get_option() {
         _line=""
     elif $tgo_use_cache; then
         cache_save_options_defined_in_tmux
-        # more code, but noticeably faster than doing a grep on the file on slow systems
-        _line=
-        while IFS= read -r _cache_line; do
-            case $_cache_line in
-            "$tgo_option"*)
-                _line=$_cache_line
-                break
-                ;;
-            *) ;;
-            esac
-        done <"$f_cached_tmux_options"
+
+        if [ -d /proc/ish ]; then
+            # much slower due to subshell, but iSH lacks /dev so the quick method
+            # below can't be used
+            _line=$(grep "$tgo_option " "$f_cached_tmux_options")
+        else
+            # more code, but noticeably faster than doing a grep on the file on slow systems
+            _line=
+            while IFS= read -r _cache_line; do
+                # space after tgo_option needed in order to not find
+                # @menus_simple_style_border when looking for @menus_simple_style
+                case $_cache_line in
+                "$tgo_option "*)
+                    _line=$_cache_line
+                    break
+                    ;;
+                *) ;;
+                esac
+            done <"$f_cached_tmux_options"
+        fi
     else
         # log_it "tmux_get_option($tgo_option) - not using cache"
         _line="$($TMUX_BIN show-options -g "$tgo_option" 2>/dev/null)"
@@ -173,10 +186,17 @@ tmux_get_option() {
     else
         # shell built-in string splitting and unqoting avoids spawning external processes
 
-        # shellcheck disable=SC2086
-        set -- $_line
-        tgo_value=${2#\"}         # get rid of pottential ""
-        tgo_value=${tgo_value%\"} # wrapping
+        # Extract value (skip key)
+        tgo_value=${_line#* }
+
+        case $tgo_value in
+        \"*\")
+            # Remove outer double quotes, if present
+            tgo_value=${tgo_value#\"}
+            tgo_value=${tgo_value%\"}
+            ;;
+        *) ;;
+        esac
     fi
     # log_it "tmux_get_option() - using [$tgo_value]"
     eval "$tgo_varname=\"\$tgo_value\""
@@ -282,7 +302,7 @@ tmux_get_plugin_options() { # new init
     if normalize_bool_param "@menus_without_prefix" "$default_no_prefix"; then
         cfg_no_prefix=true
     else
-        # shellcheck disable=SC2034
+        # shellcheck disable=SC2034 # variable used to define cache/plugin_params
         cfg_no_prefix=false
     fi
 
@@ -302,7 +322,7 @@ tmux_get_plugin_options() { # new init
         cfg_use_whiptail=true
     else
         cfg_use_whiptail=false
-        # shellcheck disable=SC2034
+        # shellcheck disable=SC2034 # variable used to define cache/plugin_params
         cfg_alt_menu_handler=""
     fi
 
@@ -310,21 +330,23 @@ tmux_get_plugin_options() { # new init
 
     if $cfg_use_whiptail; then
         # variables only used by whiptail
-        # shellcheck disable=SC2034
+        # shellcheck disable=SC2034 # cfg_ variables used to define cache/plugin_params
         {
-            wt_pasting="@tmp_menus_wt_paste_in_progress"
             cfg_display_cmds=false
             cfg_use_hint_overlays=false
             cfg_show_key_hints=false
             cfg_nav_next="$default_nav_next"
             cfg_nav_prev="$default_nav_prev"
             cfg_nav_home="$default_nav_home"
+
+            # not a config variable as such, just used as paste bufferr for
+            # missing keys and currencies
+            wt_pasting="@tmp_menus_wt_paste_in_progress"
         }
     else
         tmux_get_option cfg_mnu_loc_x "@menus_location_x" "$default_location_x"
         tmux_get_option cfg_mnu_loc_y "@menus_location_y" "$default_location_y"
-        tmux_get_option cfg_format_title "@menus_format_title" \
-            "$default_format_title"
+        tmux_get_option cfg_format_title "@menus_format_title" "$default_format_title"
 
         tmux_vers_check 3.4 && {
             tmux_get_option cfg_border_type "@menus_border_type" "$default_border_type"
@@ -342,46 +364,38 @@ tmux_get_plugin_options() { # new init
             cfg_display_cmds=true
             tmux_get_option cfg_display_cmds_cols "@menus_display_cmds_cols" \
                 "$default_display_cmds_cols"
+
+            # SC2154: variable assigned dynamically by tmux_get_option using eval
             # shellcheck disable=SC2154
             is_int "$cfg_display_cmds_cols" || {
                 error_msg "@menus_display_cmds_cols is not int: $cfg_display_cmds_cols"
             }
         else
-            # shellcheck disable=SC2034
             cfg_display_cmds=false
         fi
         if normalize_bool_param "@menus_use_hint_overlays" "$default_use_hint_overlays"; then
             cfg_use_hint_overlays=true
         else
-            # shellcheck disable=SC2034
+            # shellcheck disable=SC2034 # variable used to define cache/plugin_params
             cfg_use_hint_overlays=false
         fi
         if normalize_bool_param "@menus_show_key_hints" "$default_show_key_hints"; then
             cfg_show_key_hints=true
         else
-            # shellcheck disable=SC2034
             cfg_show_key_hints=false
         fi
     fi
-
-    # if ! $cfg_use_whiptail &&
-    # else
-    #     # shellcheck disable=SC2034
-    #     cfg_display_cmds=false
-    #     # No point reading tmux for this if it isn't going to be used anyhow
-    #     cfg_display_cmds_cols="$default_display_cmds_cols"
-    # fi
 
     tmux_get_option _tmux_conf "@menus_config_file" "$default_tmux_conf"
     # Handle the case of ~ or $HOME being wrapped in single quotes in tmux.conf
     if [ -n "$_tmux_conf" ]; then
         fix_home_path "$_tmux_conf" cfg_tmux_conf
     else
-        # shellcheck disable=SC2034
+        # shellcheck disable=SC2034 # variable used to define cache/plugin_params
         cfg_tmux_conf=""
     fi
 
-    # shellcheck disable=SC2154
+    # shellcheck disable=SC2154 # defined in helpers_minimal.sh
     [ "$log_file_forced" != 1 ] && {
         #  If a debug logfile has been set, the tmux setting will be ignored.
         # log_it "tmux will read cfg_log_file"
@@ -390,7 +404,7 @@ tmux_get_plugin_options() { # new init
         if [ -n "$_log_file" ]; then
             fix_home_path "$_log_file" cfg_log_file
         else
-            # shellcheck disable=SC2034
+            # shellcheck disable=SC2034 # variable used to define cache/plugin_params
             cfg_log_file=""
         fi
     }
@@ -405,7 +419,7 @@ tmux_get_plugin_options() { # new init
         normalize_bool_param "@use_bind_key_notes_in_plugins" No; then
         cfg_use_notes=true
     else
-        # shellcheck disable=SC2034
+        # shellcheck disable=SC2034 # variable used to define cache/plugin_params
         cfg_use_notes=false
     fi
 }
@@ -415,7 +429,7 @@ use_whiptail_env() {
     # move the required defaults to that file
     # log_it "use_whiptail_env()"
     if $cfg_use_whiptail; then
-        # shellcheck disable=SC2034
+        # shellcheck disable=SC2034 # variables used to define cache/plugin_params
         {
             cfg_display_cmds=false
             cfg_show_key_hints=false
@@ -423,10 +437,16 @@ use_whiptail_env() {
     fi
 }
 
+tmux_escape_for_display() {
+    # echo "$@" | sed "s/\'/[\"]/g"
+    echo "$@" | sed "s/\'/\`/g" | sed 's/#/##/g'
+    # | sed "s/;/[semi-colon]/g" | sed 's/\"/[double-quote]/g'
+}
+
 tmux_error_handler() {
     teh_store_result=false
     # fake assigning a variable in order to use the same func
-    tmux_error_handler_assign _ "$@"
+    tmux_error_handler_assign _foo "$@"
 }
 
 tmux_error_handler_assign() { # cache references
@@ -448,15 +468,21 @@ tmux_error_handler_assign() { # cache references
     #
     cmd_simplified="$*"
 
+    # # debug check that teh_debug is always set
+    # case "$teh_debug" in
+    # true | false) ;;
+    # *) error_msg "tmux_error_handler_assign() = teh_debug invalid: [$teh_debug]" ;;
+    # esac
+
     $teh_debug && {
         # in principle this should be done every time, but limited to when
         # logging, to minimize overhead
         validate_varname "$varname" "tmux_error_handler_assign()"
 
         if $teh_store_result; then
-            log_it "tmux_error_handler_assign($cmd_simplified) -> $varname"
+            log_it "tmux_error_handler_assign(\$TMUX_BIN $cmd_simplified) -> $varname"
         else
-            log_it "tmux_error_handler($cmd_simplified)"
+            log_it "tmux_error_handler(\$TMUX_BIN $cmd_simplified)"
         fi
     }
 
@@ -465,7 +491,7 @@ tmux_error_handler_assign() { # cache references
     if $cfg_use_cache; then
         d_errors="$d_cache"
     else
-        # shellcheck disable=SC2154
+        # shellcheck disable=SC2154 # defined in helpers_minimal.sh
         d_errors="$d_tmp"
     fi
     # ensure it exists
@@ -482,14 +508,19 @@ tmux_error_handler_assign() { # cache references
         $TMUX_BIN "$@" 2>"$f_tmux_err" >/dev/null
     fi
     ex_code="$?"
-    $teh_debug && log_it "teh: cmd done - excode:$ex_code - output: >>$value<<"
+    $teh_debug && {
+        if $teh_store_result; then
+            log_it "teh: cmd done - excode:$ex_code - output: >>$value<<"
+        else
+            log_it "teh: cmd done - excode:$ex_code"
+        fi
+    }
 
     #
     # Parse any error output
     #
-    [ -s "$f_tmux_err" ] && {
-        # Reset result-capture state for safety (should not reach this after error)
-        teh_store_result=true
+    if [ "$ex_code" != 0 ] || [ -s "$f_tmux_err" ]; then
+        _err_output=$(cat "$f_tmux_err")
 
         #
         #  First save the error to a named file
@@ -506,11 +537,8 @@ tmux_error_handler_assign() { # cache references
             [ "$_idx" -gt 1000 ] && error_msg "Aborting runaway loop - _idx=$_idx"
         done
 
-        (
-            echo "\$TMUX_BIN $cmd_simplified"
-            echo
-            cat "$f_tmux_err"
-        ) >"$f_error_log" && rm "$f_tmux_err"
+        echo "\$TMUX_BIN $cmd_simplified" >"$f_error_log"
+        rm "$f_tmux_err"
 
         if $teh_debug; then
             log_it "tmux cmd failed:\n\n$(cat "$f_error_log")\n"
@@ -520,11 +548,19 @@ tmux_error_handler_assign() { # cache references
             #region tmux error msg
             error_msg "$(
                 cat <<EOF
-tmux cmd failed:
+tmux cmd failed ($ex_code):
 
---------------------
-$(cat "$f_error_log")
---------------------
+-----  Error msg:   -----
+$(tmux_escape_for_display "$_err_output")
+-------------------------
+
+Due to limits in what can be displayed in this error, all usages of single-quote
+have been replaced by backticks, in the "Failed tmux command" in order to give as
+close a reppresentation as possible. The error file contains the unmodified command.
+
+-----   Failed tmux command   -----
+$(tmux_escape_for_display "$(cat "$f_error_log")")
+-----------------------------------
 The error message has been saved in: $(relative_path "$f_error_log")
 
 Full path: $f_error_log
@@ -533,7 +569,7 @@ EOF
             #endregion
         fi
         return 1 # shouldn't get here, but at least return an error
-    }
+    fi
 
     #
     # Depending on call type, potentially save output in caller supplied variable name
@@ -565,5 +601,13 @@ teh_store_result=true
 # at the end of the call
 #
 teh_debug=false
+
+#
+# Since default_use_cache is needed early on, before tmux_get_defaults() can be
+# called, it is defined here
+#
+
+# shellcheck disable=SC2034 # used in helpers_full.sh
+default_use_cache=Yes
 
 # log_it "===  Completed: scripts/utils/tmux.sh  =="

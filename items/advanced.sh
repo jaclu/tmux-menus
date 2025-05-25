@@ -14,25 +14,31 @@ dynamic_content() {
     #
     #  Gather some info in order to be able to show states
     #
-    if tmux_vers_check 2.1; then
-        $all_helpers_sourced || source_all_helpers "advanced:dynamic_content()"
-        tmux_error_handler_assign current_prefix show-options -gv prefix
-        tmux_error_handler_assign current_mouse_status show-options -gv mouse
-        # shellcheck disable=SC2154
-        if [ "$current_mouse_status" = "on" ]; then
-            new_mouse_status="off"
-        else
-            new_mouse_status="on"
-        fi
+    tmux_vers_check 2.1 || return # no dynamic item is tmux < 2.1
+
+    $all_helpers_sourced || source_all_helpers "advanced:dynamic_content()"
+
+    tmux_error_handler_assign current_mouse_status show-options -gv mouse
+    # SC2154: variable assigned dynamically by tmux_error_handler_assign using eval
+    # shellcheck disable=SC2154
+    if [ "$current_mouse_status" = "on" ]; then
+        new_mouse_status="off"
+    else
+        new_mouse_status="on"
     fi
 
+    tmux_error_handler_assign current_prefix show-options -gv prefix
+    # SC2154: current_prefix assigned dynamically by tmux_error_handler_assign using eval
     # shellcheck disable=SC2154
     set -- \
-        2.1 C M "Toggle mouse to: $new_mouse_status" "set-option -g mouse \
-        $new_mouse_status $menu_reload" \
-        2.4 C p "Change prefix (Current: $current_prefix)" "command-prompt -1 -p \
-            'Prefix key without C- (will take effect imeditally)' \
-            'run-shell \"$d_scripts/change_prefix.sh %1 $reload_in_runshell\"'"
+        2.1 C o "Toggle mouse to: $new_mouse_status" \
+        "set-option -g mouse $new_mouse_status $runshell_reload_mnu" \
+        2.4 E p "Change prefix (Current: $current_prefix)" \
+        "$d_scripts/change_prefix.sh $0"
+
+    # works today
+    # 2.4 E p "Change prefix (Current: $current_prefix)" \
+    # "$d_scripts/change_prefix.sh $0"
 
     menu_generate_part 4 "$@"
 }
@@ -51,20 +57,20 @@ static_content() {
     set -- \
         0.0 S
 
-    if $cfg_use_whiptail; then
-        #
-        #  The tmux output down to Customize options will be displayed
-        #  then disappear instantly since whiptail restarts the foreground
-        #  app. Avoid this by not switching away to the fg app
-        #
-        set -- "$@" \
-            0.0 T "Most outputs for this menu will disappear if this is run" \
-            0.0 T "with another app put into the background, since it will" \
-            0.0 T "reapear as soon as this menu is closed." \
-            0.0 T "Recommended workaround is to run this from a pane" \
-            0.0 T "with a prompt." \
-            0.0 S
-    fi
+    # if $cfg_use_whiptail; then
+    #     #
+    #     #  The tmux output down to Customize options will be displayed
+    #     #  then disappear instantly since whiptail restarts the foreground
+    #     #  app. Avoid this by not switching away to the fg app
+    #     #
+    #     set -- "$@" \
+    #         0.0 T "Most outputs for this menu will disappear if this is run" \
+    #         0.0 T "with another app put into the background, since it will" \
+    #         0.0 T "reapear as soon as this menu is closed." \
+    #         0.0 T "Recommended workaround is to run this from a pane" \
+    #         0.0 T "with a prompt." \
+    #         0.0 S
+    # fi
 
     set -- "$@" \
         3.1 C n "Key bindings with notes" "list-keys -N" \
@@ -74,7 +80,7 @@ static_content() {
         0.0 C m "Tmux messages" 'show-messages' \
         1.9 C t "Tmux terminal bindings" 'show-messages -T' \
         0.0 C : "Enter a tmux command" command-prompt \
-        0.0 C s "Toggle status line" "set-option -g status $menu_reload" \
+        0.0 C s "Toggle status line" "set-option -g status $runshell_reload_mnu" \
         1.8 S
 
     $cfg_use_hint_overlays && $cfg_show_key_hints && tmux_vers_check 2.7 && {
@@ -87,13 +93,12 @@ static_content() {
     }
     menu_generate_part 3 "$@"
 
-    # shellcheck disable=SC2154
     set -- \
         0.0 S \
         2.7 E c "Disconnect clients" \
         "$TMUX_BIN choose-client -Z $hint" \
         1.8 C x "Kill server" "confirm-before -p \
-            'kill tmux server defined in($TMUX_SOURCE) ? (y/n)' kill-server"
+            'kill tmux server defined in($cfg_tmux_conf) ? (y/n)' kill-server"
 
     menu_generate_part 5 "$@"
 }

@@ -27,12 +27,12 @@ static_content() {
 
     if ! $cfg_use_whiptail; then
         set -- "$@" \
-            0.0 C v "Paste the most recent paste buffer" "paste-buffer -p  $menu_reload"
+            0.0 C v "Paste the most recent paste buffer" "paste-buffer -p  $runshell_reload_mnu"
     fi
     set -- "$@" \
         1.8 E s "Select a paste buffer from a list" "$select_cmd" \
         0.0 C l "List all paste buffers" "list-buffers" \
-        0.0 C d "Delete the most recent paste buffer" "delete-buffer  $menu_reload" \
+        0.0 C d "Delete the most recent paste buffer" "delete-buffer ; list-buffers" \
         0.0 S
 
     $cfg_use_hint_overlays && $cfg_show_key_hints && {
@@ -54,7 +54,6 @@ static_content() {
 #===============================================================
 
 menu_name="Paste buffers"
-menu_min_vers=1.8
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"

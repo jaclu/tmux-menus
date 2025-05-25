@@ -27,17 +27,17 @@ static_content() {
 
 menu_name="My Custom Menu"
 
-#  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
-
-# shellcheck source=scripts/dialog_handling.sh
-. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
-
 # A custom items menu must define a menu_key, that will be its shortcut in the
 # index listing custom items.
 # Since this will be used to point to this menu from the index,
 # it is recommended to use uppercase in order to follow the conventions
 # in this plugin, but anything goes!
 # If a "special" char is used it might need to be prefixed with \
-# shellcheck disable=SC2034,SC2317
+# shellcheck disable=SC2034 # used in update_custom_inventory.sh
 menu_key="?"
+
+#  Full path to tmux-menux plugin
+D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
+
+# shellcheck source=scripts/dialog_handling.sh
+. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh

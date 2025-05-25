@@ -143,7 +143,7 @@ profiling_display() {
     profiling_error_msg "scripts/utils/dbg_profiling.sh already sourced"
 }
 
-# shellcheck disable=SC2154
+# shellcheck disable=SC2154 # TMUX_MENUS_PROFILING is an env variable
 case "$TMUX_MENUS_PROFILING" in
 1)
     # profiling will be used
@@ -159,11 +159,9 @@ case "$TMUX_MENUS_PROFILING" in
     # intended to disable them when profiling is temporarily disabled
     #
 
-    # shellcheck disable=SC2317
     profiling_update_time_stamps() {
         :
     }
-    # shellcheck disable=SC2317
     profiling_display() {
         :
     }

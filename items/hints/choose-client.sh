@@ -65,7 +65,6 @@ static_content() {
 menu_name="Keys for choose-client"
 
 if [ "$1" = "skip-oversized" ]; then
-    # shellcheck disable=SC2034
     skip_oversized=1
 elif [ -n "$1" ]; then
     prev_menu="$(realpath "$1")"

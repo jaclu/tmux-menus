@@ -14,7 +14,6 @@ is_avalable() {
         error_msg_safe "extras.is_available - no param!"
     fi
     if [ -z "$(command -v "$cmd")" ]; then
-	# shellcheck disable=SC2039
         echo "-"
         # echo "$(tput setaf 7)"
     fi
