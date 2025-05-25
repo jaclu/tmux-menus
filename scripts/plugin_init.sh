@@ -40,13 +40,22 @@ bind_plugin_key() {
         exit 0
     }
 
-    # shellcheck disable=SC2034 # used in tmux.sh
-    teh_debug=true
-    # tmux_error_handler bind-key -N "plugin menus" Space run-shell /Users/jaclu/git_repos/mine/tmux-menus/items/main.sh
+    [[ ! -f "$f_skip_low_tmux_version_warning" ]] && ! tmux_vers_check 1.8 && {
+        # shell check disable=SC2034 # used in tmux.sh
+        # teh_debug=true
+        # shellcheck disable=SC2154 # current_tmux_vers is an env variable
+        msg="Due to tmux($current_tmux_vers) < 1.8 user options can not be processed.\n\n"
+        msg+="The tmux-menus plugin will be bound to its default key: $cfg_trigger_key \n\n"
+        msg+='All other options will also use their defaults.\n\n'
+        msg+="  tools/show_config.sh will display current settings.\n\n"
+        msg+="To avoid seeing this message again - do:\n"
+        msg+="  touch $f_skip_low_tmux_version_warning"
+        display_formated_message "$msg"
+    }
 
     # shellcheck disable=SC2154 # defined in helpers_minimal.sh
     eval "$TMUX_BIN" "$cmd" || {
-        error_msg "Failed to bind trigger: $cfg_trigger_key"
+        error_msg "cmd: $cmd \n\nFailed to bind trigger: $cfg_trigger_key"
     }
 
     log_it_minimal "$trigger_sequence"
@@ -63,10 +72,10 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 # shellcheck disable=SC2034 # used in helpers_minimal.sh
 initialize_plugin=1
 
-# can't read source when mixing bah & posix
+f_skip_low_tmux_version_warning="$D_TM_BASE_PATH"/.skip_old_tmux_warning
 
 # disable=SC2154,SC2001,SC2292
-# shellcheck source=/dev/null
+# shellcheck source=/dev/null # can't read source when mixing bah & posix
 source "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 # log_it "=====   plugin_init.sh starting   ====="
