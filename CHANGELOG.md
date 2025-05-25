@@ -6,6 +6,10 @@ All notable changes to this project will be documented here.
 
 ## [Unreleased] -
 
+### Added
+
+- new function display_formated_message() - shows multi line messages in a temp window
+
 ### Changed
 
 - Added min vers 1.7 for 'Move Pane' & 'Split Window', since no items in those

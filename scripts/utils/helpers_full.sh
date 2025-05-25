@@ -15,6 +15,80 @@
 #
 #---------------------------------------------------------------
 
+display_message_hold() {
+    #
+    #  Display a message and hold until key-press
+    #  Can't use tmux_error_handler() in this func, since that could trigger recursion
+    #
+    dmh_msg="$1"
+    # log_it "display_message_hold($dmh_msg)"
+
+    if tmux_vers_check 3.2; then
+        # message will remain until key-press
+        # shellcheck disable=SC2154 # $TMUX_BIN defined in helpers_minimal.sh
+
+        $TMUX_BIN display-message -d 0 "$dmh_msg"
+    else
+        # Manually make the error msg stay on screen a long time
+        org_display_time="$($TMUX_BIN show-options -gv display-time)"
+        $TMUX_BIN set -g display-time 120000 >/dev/null
+        $TMUX_BIN display-message "$dmh_msg"
+
+        posix_get_char >/dev/null # wait for keypress
+        $TMUX_BIN set -g display-time "$org_display_time" >/dev/null
+    fi
+}
+
+display_formated_message() {
+    #
+    # Display a long (typically multi line) message in a temp window
+    #
+    # if _msg_type is specified, it is left to the caller to add a header if such
+    # is wanted
+    #
+    #  This is called from error_msg_formated(), this means
+    #  tmux_error_handler(), tmux_error_handler_assign() or error_msg()
+    #  Can not be used here - it could lead to infinite recursion...
+    #
+    _msg="$1"
+    _default_msg_type="notification message"
+    _msg_type="${2:-$_default_msg_type}"
+    # log_it "display_formated_message()"
+    [ -z "$_msg" ] && {
+        # Can't use error_msg here, so _msg is used to display the error
+        _msg="display_formated_message() - Param error: no message provided"
+    }
+    _msg_escaped="$(tmux_escape_for_display "$_msg")"
+    # _msg_escaped="$_msg"
+
+    _display_msg="$(
+        [ "$_msg_type" = "$_default_msg_type" ] && {
+            # shellcheck disable=SC2154 # plugin_name defined in cache/plugin_params
+            echo "Notification from plugin $plugin_name - running: $rn_current_script"
+            echo
+        }
+        echo "$_msg_escaped"
+        echo
+        echo "-----  About this full page notification   -----"
+        echo "To scroll back in this ${_msg_type}:"
+        echo " <prefix>-[ then up/down arrows"
+        echo
+
+        case "$_msg_escaped" in
+        *\`*)
+            echo "Due to limits in what can be displayed via tmux this way,
+all usages of single-quote have been replaced by backtick"
+            echo
+            ;;
+        *) ;;
+        esac
+
+        echo "Press Ctrl-C to close this message"
+    )"
+
+    $TMUX_BIN new-window -n "tmux-menus notification" "echo '$_display_msg' ; tail -f /dev/null "
+}
+
 error_msg() {
     #
     #  Logs an error and displays it via tmux, adapting to message length.
@@ -50,7 +124,6 @@ error_msg_actual() {
     }
 
     [ -n "$TMUX" ] && {
-        # shellcheck disable=SC2154 # plugin_name defined in helpers_minimal.sh
         msg_hold="$plugin_name ERR: $em_msg"
         if tmux_vers_check 1.7; then
             # "#{client_width}" - not available before tmux 1.7
@@ -61,7 +134,6 @@ error_msg_actual() {
                 # so therefore actual_win_width is retrieved here in the middle of the
                 # condition...
                 #
-                # shellcheck disable=SC2154 # defined in helpers_minimal.sh
                 actual_win_width="$($TMUX_BIN display-message -p "#{client_width}")"
                 # The actual condition part of this code block
                 [ "${#msg_hold}" -ge "$actual_win_width" ] || has_lf_not_at_end "$em_msg"
@@ -90,42 +162,12 @@ error_msg_formated() {
 
     emf_msg="$(
         # shellcheck disable=SC2154 # rn_current_script defined in helpers_minimal.sh
-        echo "ERROR in plugin $plugin_name: $rn_current_script [$$]"
+        echo "ERROR in plugin $plugin_name - running: $rn_current_script"
         echo
         echo "$emf_err"
     )"
 
-    emf_msg="$(
-        echo "$emf_msg"
-        echo
-        echo "To scroll back in this error message:"
-        echo " <prefix>-[ then up/down arrows"
-        echo
-        echo "Press Ctrl-C to close this message"
-    )"
-    $TMUX_BIN new-window -n "tmux-error" "echo '$emf_msg' ; tail -f /dev/null "
-}
-
-display_message_hold() {
-    #
-    #  Display a message and hold until key-press
-    #  Can't use tmux_error_handler() in this func, since that could trigger recursion
-    #
-    dmh_msg="$1"
-    # log_it "display_message_hold($dmh_msg)"
-
-    if tmux_vers_check 3.2; then
-        # message will remain until key-press
-        $TMUX_BIN display-message -d 0 "$dmh_msg"
-    else
-        # Manually make the error msg stay on screen a long time
-        org_display_time="$($TMUX_BIN show-options -gv display-time)"
-        $TMUX_BIN set -g display-time 120000 >/dev/null
-        $TMUX_BIN display-message "$dmh_msg"
-
-        posix_get_char >/dev/null # wait for keypress
-        $TMUX_BIN set -g display-time "$org_display_time" >/dev/null
-    fi
+    display_formated_message "$emf_msg" "error message"
 }
 
 #---------------------------------------------------------------

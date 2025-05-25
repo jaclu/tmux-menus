@@ -551,16 +551,14 @@ tmux_error_handler_assign() { # cache references
 tmux cmd failed ($ex_code):
 
 -----  Error msg:   -----
-$(tmux_escape_for_display "$_err_output")
+$_err_output
 -------------------------
 
-Due to limits in what can be displayed in this error, all usages of single-quote
-have been replaced by backticks, in the "Failed tmux command" in order to give as
-close a reppresentation as possible. The error file contains the unmodified command.
-
 -----   Failed tmux command   -----
-$(tmux_escape_for_display "$(cat "$f_error_log")")
+$(cat "$f_error_log")
 -----------------------------------
+The error file always contains the unmodified command.
+
 The error message has been saved in: $(relative_path "$f_error_log")
 
 Full path: $f_error_log
