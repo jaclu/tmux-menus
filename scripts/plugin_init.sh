@@ -55,7 +55,7 @@ bind_plugin_key() {
 
     # shellcheck disable=SC2154 # defined in helpers_minimal.sh
     eval "$TMUX_BIN" "$cmd" || {
-        error_msg "cmd: $cmd \n\nFailed to bind trigger: $cfg_trigger_key"
+        error_msg "Failed to bind trigger: $cfg_trigger_key"
     }
 
     log_it_minimal "$trigger_sequence"
