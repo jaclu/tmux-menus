@@ -8,13 +8,17 @@
 #   Since there is a limitation of only two levels of quoting when
 #   using scripts/dialog_handling.sh this intermittent script is used to avoid
 #   this limit
-#
+# ok 1.8
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 
 # shellcheck source=scripts/helpers.sh
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
+
+tmux_vers_check 1.8 || {
+    error_msg "$rn_current_script - needs tmux 1.8"
+}
 
 # rel_scr_name=$(relative_path "$0")
 # log_it "><> $rel_scr_name params: $* - whiptail: $cfg_use_whiptail"
@@ -26,7 +30,7 @@ fi
 if tmux_vers_check 2.7; then
     flags="-GwZ"
 else
-    flags=""
+    flags="-sw"
 fi
 if [ "$1" = "p" ]; then
     template="$d_scripts/relocate_pane.sh p $2"

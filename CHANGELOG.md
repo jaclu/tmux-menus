@@ -9,13 +9,12 @@ All notable changes to this project will be documented here.
 ### Added
 
 - new function display_formated_message() - shows multi line messages in a temp window
+  used both for long error messages and notifications
 - plugin_init.sh Warns if tmux is < 1.8 and notifies that all options will use defaults
 
 ### Changed
 
 - Ensure everything works on tmux 1.5
-- Added min vers 1.7 for 'Move Pane' & 'Split Window', since no items in those
-  menus are available before tmux 1.7
 - tmux_escape_for_display() - corrected handling of backticks
 
 ---
