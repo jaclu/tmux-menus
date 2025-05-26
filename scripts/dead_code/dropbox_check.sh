@@ -49,7 +49,8 @@ start_stop() {
     #  Temp set a very high disp time, org value
     #  will be restored when script is done
     #
-    tmux_error_handler_assign org_disp_time show-options -gv display-time
+    # save time in a pre tmux 1.7 safe way, not relying on show-options -v
+    org_display_time="$($TMUX_BIN show-options -g display-time | cut -d' ' -f2)"
     tmux_error_handler set-option -g display-time 30000
     tmux_error_handler display-message "Doing dropbox $action ..."
 
@@ -82,8 +83,8 @@ start_stop() {
     tmux_error_handler set-option -g display-time 1
     tmux_error_handler display-message "" # clear status message
     # Restore org value
-    [ -n "$org_disp_time" ] && {
-        tmux_error_handler set-option -g display-time "$org_disp_time"
+    [ -n "$org_display_time" ] && {
+        tmux_error_handler set-option -g display-time "$org_display_time"
     }
     return 0
 }

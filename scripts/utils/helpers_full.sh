@@ -30,7 +30,9 @@ display_message_hold() {
         $TMUX_BIN display-message -d 0 "$dmh_msg"
     else
         # Manually make the error msg stay on screen a long time
-        org_display_time="$($TMUX_BIN show-options -gv display-time)"
+
+        # save value in a pre tmux 1.7 safe way, not relying on show-options -v
+        org_display_time="$($TMUX_BIN show-options -g display-time | cut -d' ' -f2)"
         $TMUX_BIN set -g display-time 120000 >/dev/null
         $TMUX_BIN display-message "$dmh_msg"
 

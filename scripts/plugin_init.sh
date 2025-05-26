@@ -100,7 +100,7 @@ fi
 #
 # These will only do something during debugging, if cfg_log_file was hardcoded
 # in helpers_minimal.sh or similar...
-# So harmless normally really convenient when working on the code
+# So normally silent, and really convenient when working on the code
 #
 log_it
 log_it
