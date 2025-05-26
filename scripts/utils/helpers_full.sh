@@ -52,16 +52,16 @@ display_formated_message() {
     #  tmux_error_handler(), tmux_error_handler_assign() or error_msg()
     #  Can not be used here - it could lead to infinite recursion...
     #
-    _msg="$1"
+    _dfm_msg="$1"
     _default_msg_type="notification message"
     _msg_type="${2:-$_default_msg_type}"
-    # log_it "display_formated_message()"
-    [ -z "$_msg" ] && {
+    log_it "display_formated_message($_dfm_msg)"
+
+    [ -z "$_dfm_msg" ] && {
         # Can't use error_msg here, so _msg is used to display the error
-        _msg="display_formated_message() - Param error: no message provided"
+        _dfm_msg="display_formated_message() - Param error: no message provided"
     }
-    _msg_escaped="$(tmux_escape_for_display "$_msg")"
-    # _msg_escaped="$_msg"
+    _msg_escaped="$(tmux_escape_for_display "$_dfm_msg")"
 
     _display_msg="$(
         [ "$_msg_type" = "$_default_msg_type" ] && {
@@ -88,7 +88,8 @@ all usages of single-quote have been replaced by backtick"
         echo "Press Ctrl-C to close this message"
     )"
 
-    $TMUX_BIN new-window -n "tmux-menus notification" "echo '$_display_msg' ; tail -f /dev/null "
+    $TMUX_BIN new-window -n \
+        "tmux-menus notification" "echo '$_display_msg' ; tail -f /dev/null "
 }
 
 error_msg() {
@@ -111,43 +112,57 @@ error_msg() {
     log_it_minimal "error_msg($em_msg, $exit_code)"
 
     [ -z "$dont_display" ] && error_msg_actual
+    log_it
     [ "$exit_code" -gt -1 ] && exit "$exit_code"
 }
 
 error_msg_actual() {
     # Disable logging for the remainder of error_msg processing, to avoid getting
     # log-flooded, unless exit is not requested
-    # shellcheck disable=SC2034 # cfg_log_file used to define cache/plugin_params
-    [ "$exit_code" -gt -1 ] && cfg_log_file=""
 
-    [ -z "$TMUX" ] && {
+    # shell check disable=SC2034 # cfg_log_file used to define cache/plugin_params
+    # [ "$exit_code" -gt -1 ] && cfg_log_file=""
+
+    if [ -z "$TMUX" ]; then
         # with no tmux env, dumping it to stderr & log-file is the only output options
         log_it_minimal "***  This does not seem to be running in a tmux env  ***"
-    }
+        print_stderr "$em_msg"
+        return
+    elif ! tmux_vers_check "1.4"; then
+        # not able to generate a formatted error msg...
+        (
+            echo
+            # shellcheck disable=SC2154 # defined in helpers_minimal.sh
+            echo "error_msg() can't proceed on tmux < 1.4 - Dumping it to stderr:"
+            echo "-----   start   -----"
+            echo "$em_msg"
+            echo "-----    end    -----"
+            echo
+        ) >/dev/stderr
+        return
+    fi
 
-    [ -n "$TMUX" ] && {
-        msg_hold="$plugin_name ERR: $em_msg"
-        if tmux_vers_check 1.7; then
-            # "#{client_width}" - not available before tmux 1.7
-            if [ "$env_initialized" -eq 2 ] && (
-                #
-                # Slightly complex condition, has_lf_not_at_end() can only be called
-                # if env_initialized is 2
-                # so therefore actual_win_width is retrieved here in the middle of the
-                # condition...
-                #
-                actual_win_width="$($TMUX_BIN display-message -p "#{client_width}")"
-                # The actual condition part of this code block
-                [ "${#msg_hold}" -ge "$actual_win_width" ] || has_lf_not_at_end "$em_msg"
-            ); then
-                error_msg_formated "$em_msg"
-            else
-                display_message_hold "$msg_hold"
-            fi
-        else
+    msg_hold="$plugin_name ERR: $em_msg"
+    if tmux_vers_check 1.7; then
+        # "#{client_width}" - not usable before tmux 1.7
+        if [ "$env_initialized" -eq 2 ] && (
+            #
+            # Slightly complex condition, has_lf_not_at_end() can only be called
+            # if env_initialized is 2
+            # so therefore actual_win_width is retrieved here in the middle of the
+            # condition...
+            #
+            actual_win_width="$($TMUX_BIN display-message -p '#{client_width}')"
+            # The actual condition part of this code block
+            [ "${#msg_hold}" -ge "$actual_win_width" ] || has_lf_not_at_end "$em_msg"
+        ); then
             error_msg_formated "$em_msg"
+        else
+            display_message_hold "$msg_hold"
         fi
-    }
+    else
+        error_msg_formated "$em_msg"
+    fi
 }
 
 error_msg_formated() {
@@ -160,7 +175,7 @@ error_msg_formated() {
     #
     emf_err="$1"
 
-    # log_it "error_msg_formated($emf_err)"
+    # log_it "error_msg_formated()"
 
     emf_msg="$(
         # shellcheck disable=SC2154 # rn_current_script defined in helpers_minimal.sh

@@ -182,6 +182,9 @@ tmux_get_option() {
     fi
 
     if [ -z "$_line" ]; then
+        # correctly captures undefined options, not getting confused if
+        # option was empty ie "", which confuses tmux 3.0–3.2a returning success
+        # if using show-options  on undefined options
         tgo_value="$tgo_default"
     else
         # shell built-in string splitting and unqoting avoids spawning external processes

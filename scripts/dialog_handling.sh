@@ -672,6 +672,11 @@ check_screen_size() {
 
     $all_helpers_sourced || source_all_helpers "check_screen_size()"
 
+    tmux_vers_check 1.7 || {
+        # Prior to 1.7 #{client_height} and #{client_width} are not available
+        return 0
+    }
+
     [ -n "$menu_height" ] && {
         [ -z "$current_screen_rows" ] && get_screen_size_variables # only get if not defined
         [ "$menu_height" -gt "$current_screen_rows" ] && {

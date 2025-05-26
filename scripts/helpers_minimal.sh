@@ -498,7 +498,7 @@ log_file_forced="1"
 #
 log_interactive_to_stderr=0
 
-min_tmux_vers="1.0"
+min_tmux_vers="1.5"
 # for performance only a minimum of support features are in this file
 # as long as cache is used, it is sufficient, if extra features are needed
 # a call to source_all_helpers will be done, this ensures it only happens once
@@ -543,13 +543,13 @@ safe_now t_script_start
 
 [ "$initialize_plugin" != "1" ] && {
     # plugin_init will call config_setup directly, so should not call get_config
-
     get_config
-    if ! tmux_vers_check "$min_tmux_vers"; then
-        # @variables are not usable prior to 1.8
-        error_msg "need at least tmux $min_tmux_vers to work!"
-    fi
 }
+
+if ! tmux_vers_check "$min_tmux_vers"; then
+    # @variables are not usable prior to 1.8
+    error_msg_safe "$plugin_name needs at least tmux $min_tmux_vers to work!"
+fi
 
 if [ -d "$d_cache" ]; then
     # For temp files etc that needs to be created even when caching is disabled
