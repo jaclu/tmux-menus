@@ -52,7 +52,7 @@ static_content() {
     set -- \
         0.0 C p "Swap pane with prev" "swap-pane -U $runshell_reload_mnu" \
         0.0 C n "Swap pane with next" "swap-pane -D $runshell_reload_mnu" \
-        1.7 S \
+        1.8 S \
         2.4 E b "Break pane off to a new window" "$d_scripts/break_pane.sh ; $0" \
         1.8 E m "Move to other win/ses" "$d_scripts/act_choose_tree.sh p m"
 
