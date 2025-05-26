@@ -120,7 +120,6 @@ error_msg_actual() {
     # Disable logging for the remainder of error_msg processing, to avoid getting
     # log-flooded, unless exit is not requested
 
-    # shell check disable=SC2034 # cfg_log_file used to define cache/plugin_params
     # [ "$exit_code" -gt -1 ] && cfg_log_file=""
 
     if [ -z "$TMUX" ]; then
@@ -145,17 +144,8 @@ error_msg_actual() {
     msg_hold="$plugin_name ERR: $em_msg"
     if tmux_vers_check 1.7; then
         # "#{client_width}" - not usable before tmux 1.7
-        if [ "$env_initialized" -eq 2 ] && (
-            #
-            # Slightly complex condition, has_lf_not_at_end() can only be called
-            # if env_initialized is 2
-            # so therefore actual_win_width is retrieved here in the middle of the
-            # condition...
-            #
-            actual_win_width="$($TMUX_BIN display-message -p '#{client_width}')"
-            # The actual condition part of this code block
-            [ "${#msg_hold}" -ge "$actual_win_width" ] || has_lf_not_at_end "$em_msg"
-        ); then
+        actual_win_width="$($TMUX_BIN display-message -p '#{client_width}')"
+        if [ "${#msg_hold}" -ge "$actual_win_width" ] || has_lf_not_at_end "$em_msg"; then
             error_msg_formated "$em_msg"
         else
             display_message_hold "$msg_hold"
@@ -332,7 +322,6 @@ check_speed_cutoff() {
     else
         # log_it "  Failed cutoff time, considered a slow system: $t_time_span >= $cut_off"
         # for slower systems
-        # shellc heck disable=SC2034
         t_minimal_display_time=0.5
     fi
 }
@@ -506,5 +495,7 @@ f_cached_tmux_options="$d_cache"/tmux_options
 
 helpers_full_additional_files_sourced
 
+# shellcheck disable=SC2034 # defined as full env for other scripts
 env_initialized=2 # indicates that env is fully configured
+
 # log_it "><> [$$] scripts/utils/helpers_full.sh - completed [$0]"

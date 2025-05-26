@@ -473,10 +473,9 @@ base_path_not_defined() {
 
 [ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
 
-plugin_name="tmux-menus"
+env_initialized=0 # will be 1 when limited env is ready, 2 when full env is ready
 
-# will be 1 when limited env is ready, 2 when full env is ready
-env_initialized=0
+plugin_name="tmux-menus"
 
 #
 # Defining a cfg_log_file here, allows tracing early startup, before the plugin
@@ -498,7 +497,8 @@ log_file_forced="1"
 #
 log_interactive_to_stderr=0
 
-min_tmux_vers="1.5"
+min_tmux_vers=1.5 # oldest accepted tmux version
+
 # for performance only a minimum of support features are in this file
 # as long as cache is used, it is sufficient, if extra features are needed
 # a call to source_all_helpers will be done, this ensures it only happens once

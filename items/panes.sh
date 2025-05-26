@@ -25,18 +25,18 @@ static_content() {
         0.0 S \
         1.8 C z "Toggle pane zoom" "resize-pane -Z $runshell_reload_mnu" \
         2.1 C m "Toggle mark current pane" "select-pane -m $runshell_reload_mnu" \
-        1.9 C s "Toggle synchronized panes" "set-option -w synchronize-panes $runshell_reload_mnu" \
+        1.5 C s "Toggle synchronized panes" "set-option -w synchronize-panes $runshell_reload_mnu" \
         2.6 C t "Set Pane Title" "command-prompt -I '#T'  -p 'Title: '  \
             'select-pane -T \"%%\"' $runshell_reload_mnu" \
-        1.7 C '\#' "Display pane numbers" "display-panes $runshell_reload_mnu" \
+        1.1 C '\#' "Display pane numbers" "display-panes $runshell_reload_mnu" \
         1.7 C d "Display pane size" "display-message \
             'Pane: #P size: #{pane_width}x#{pane_height}' $runshell_reload_mnu" \
         0.0 S \
-        1.7 C l "Last selected pane" "last-pane $runshell_reload_mnu" \
-        1.7 C p "Previous pane [in order]" "select-pane -t :.- $runshell_reload_mnu" \
-        1.7 C n "Next     pane [in order]" "select-pane -t :.+ $runshell_reload_mnu" \
+        1.4 C l "Last selected pane" "last-pane $runshell_reload_mnu" \
+        1.4 C p "Previous pane [in order]" "select-pane -t :.- $runshell_reload_mnu" \
+        1.4 C n "Next     pane [in order]" "select-pane -t :.+ $runshell_reload_mnu" \
         0.0 S \
-        1.8 C r "Respawn current pane" "$respawn_action" \
+        1.5 C r "Respawn current pane" "$respawn_action" \
         1.8 C x "Kill current pane" "confirm-before -p \
             'kill-pane #T (#P)? (y/n)' kill-pane $runshell_reload_mnu" \
         1.8 C o "Kill all other panes" "confirm-before -p \
