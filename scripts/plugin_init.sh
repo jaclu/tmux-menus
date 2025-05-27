@@ -88,9 +88,7 @@ fi
 
 # shellcheck disable=SC2154 # d_cache defined in helpers_minimal.sh
 if [[ "$cfg_use_cache" = true ]] && [[ -d "$d_cache" ]]; then
-    log_it "><> plugin_init.sh clearing some cache files"
     # clear out potentially obsolete cache items
-    safe_remove "$f_cache_known_tmux_vers" "plugin_init.sh"
     safe_remove "$f_cached_tmux_options" "plugin_init.sh"
     safe_remove "$f_cached_tmux_key_binds" "plugin_init.sh" external_path_ok
     # Clear any errors from previous runs

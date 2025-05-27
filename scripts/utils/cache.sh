@@ -313,7 +313,7 @@ t_minimal_display_time=\"$t_minimal_display_time\"
             rm "$_f_params_tmp"
         fi
     else
-        log_it " param cache created"
+        log_it "><> param cache created"
         mv "$_f_params_tmp" "$f_cache_params"
     fi
 }
@@ -344,7 +344,6 @@ verify_tmux_vers_unchanged() {
         source_cached_params
         echo "$current_tmux_vers"
     )"
-    log_it "><>previous_current_tmux_vers: [$previous_current_tmux_vers]"
     current_tmux_vers="$actual_current_tmux_vers"
     [ "$actual_current_tmux_vers" != "$previous_current_tmux_vers" ] && {
         # If tmux version has changed, the entire cache should be dropped

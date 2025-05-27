@@ -314,14 +314,12 @@ tmux_get_plugin_options() { # new init
         # additional settings will be cached
         if command -v whiptail >/dev/null; then
             cfg_alt_menu_handler=whiptail
-            log_it "NOTICE: tmux below 3.0 - using: whiptail"
         elif command -v dialog >/dev/null; then
             cfg_alt_menu_handler=dialog
-            log_it "NOTICE: tmux below 3.0 - using: dialog"
         else
             error_msg_safe "Neither whiptail or dialog found, plugin aborted"
         fi
-        log_it "--- Activating cfg_use_whiptail due to tmux < 3.0"
+        log_it "--- Activating cfg_use_whiptail [$cfg_alt_menu_handler] due to tmux < 3.0"
         cfg_use_whiptail=true
     else
         cfg_use_whiptail=false
