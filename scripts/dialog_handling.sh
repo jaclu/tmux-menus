@@ -573,6 +573,7 @@ menu_generate_part() {
     # log_it "menu_generate_part($1)"
 
     menu_idx="$1"
+    shift # get rid of the idx param
     $cfg_use_cache && f_cache_file="$d_menu_cache/$menu_idx"
 
     # needs to be set even if this is an empty dynamic menu to prevent
@@ -586,8 +587,12 @@ menu_generate_part() {
         return
     }
 
-    shift # get rid of the idx param
-    $all_helpers_sourced || source_all_helpers "menu_generate_part()"
+    if $is_dynamic_content; then
+        _mgp_prefix="Dynnamic"
+    else
+        _mgp_prefix=""
+    fi
+    $all_helpers_sourced || source_all_helpers "$_mgp_prefix menu_generate_part($menu_idx)"
 
     wt_actions=""
     menu_parse "$@"
@@ -821,9 +826,10 @@ cache_static_content() {
     # log_it "cache_static_content() - [$0] d_menu_cache [$d_menu_cache]"
     if [ ! -d "$d_menu_cache" ] || [ "$(get_mtime "$0")" -gt "$(get_mtime "$d_menu_cache")" ]; then
         # Cache is missing or obsolete, regenerate it
+        [ -d "$d_menu_cache" ] && log_it_minimal "$rn_current_script changed - dropping cache"
         # log_it "  regenerate cache for: $d_menu_cache"
         $all_helpers_sourced || {
-            source_all_helpers "cache_static_content() - cache regeneration"
+            source_all_helpers "cache_static_content() - cache generation"
         }
         safe_remove "$d_menu_cache" "cache_static_content()"
         mkdir -p "$d_menu_cache" || error_msg_safe "Failed to create: $d_menu_cache"
