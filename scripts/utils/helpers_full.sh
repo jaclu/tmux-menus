@@ -313,9 +313,9 @@ check_speed_cutoff() {
     # shellcheck disable=SC2154
     time_span "$t_script_start"
 
-    # # SC2154: t_time_span assigned dynamically by time_span
-    # # shellcheck disable=SC2154
-    # log_it "-T- check_speed_cutoff($cut_off) - $t_time_span"
+    # SC2154: t_time_span assigned dynamically by time_span
+    # shellcheck disable=SC2154
+    log_it "-T- check_speed_cutoff($cut_off) - $t_time_span"
     # SC2154: t_time_span assigned dynamically by time_span using eval
     # shellcheck disable=SC2154
     if [ "$(echo "$t_time_span < $cut_off" | bc)" -eq 1 ]; then
