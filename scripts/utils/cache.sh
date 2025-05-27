@@ -193,6 +193,7 @@ cache_write_plugin_params() {
 
     $cfg_use_cache || error_msg "cache_write_plugin_params() - called when not using cache"
 
+    # cloud node .22 jacmac .25 jacpad 2.5 jacdoid 1
     check_speed_cutoff 0.5
     examine_code_base
 

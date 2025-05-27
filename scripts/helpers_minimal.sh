@@ -146,6 +146,7 @@ get_config() { # local usage during sourcing
             source_all_helpers "get_config() - no cache hint found"
         }
         tmux_get_plugin_options
+        # ckoud node .16 jacmacm 0.32 jacpad 1.5  jacdroid 1.2
         check_speed_cutoff 0.6
     elif [ -f "$f_cache_params" ]; then
         source_cached_params || {
