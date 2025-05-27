@@ -340,7 +340,7 @@ config_setup() {
     # shellcheck disable=SC2154 # default_use_cache defined in tmux.sh
     if normalize_bool_param "@menus_use_cache" "$default_use_cache"; then
         cfg_use_cache=true
-        safe_remove "$f_no_cache_hint" config_setup
+        safe_remove "$f_no_cache_hint" "config_setup()" config_setup
         create_param_cache
     else
         # shellcheck disable=SC2034 # cfg_use_cache used to define cache/plugin_params
@@ -359,10 +359,12 @@ safe_remove() {
     # the plugin location needs to be removed
     #
     pattern="$1"
-    skip_plugin_name_in_path_check="$2"
+    reason="$2"
+    skip_plugin_name_in_path_check="$3"
 
-    # log_it "--->>  safe_remove($pattern)"
-    [ -z "$pattern" ] && error_msg "safe_remove() - no param supplied!"
+    # log_it "safe_remove($pattern) - $reason"
+    [ -z "$pattern" ] && error_msg "safe_remove() - no path supplied!"
+    [ -z "$reason" ] && error_msg "safe_remove() - no reason given!"
 
     tmpdir_noslash="${TMPDIR%/}" # Remove trailing slash if present
 

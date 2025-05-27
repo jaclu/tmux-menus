@@ -74,27 +74,28 @@ initialize_plugin=1
 
 f_skip_low_tmux_version_warning="$D_TM_BASE_PATH"/.skip_old_tmux_warning
 
-# disable=SC2154,SC2001,SC2292
 # shellcheck source=/dev/null # can't read source when mixing bah & posix
 source "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 # log_it "=====   plugin_init.sh starting   ====="
 
-# shellcheck disable=SC2154 # defined in helpers_minimal.sh
+# shellcheck disable=SC2154 # d_cache defined in helpers_minimal.sh
 if [[ -d "$d_cache" ]]; then
     # clear out potentially obsolete cache items
-    safe_remove "$f_cache_known_tmux_vers"
-    safe_remove "$f_cached_tmux_options"
-    safe_remove "$f_cached_tmux_key_binds" external_path_ok
+    safe_remove "$f_cache_known_tmux_vers" "plugin_init.sh"
+    safe_remove "$f_cached_tmux_options" "plugin_init.sh"
+    safe_remove "$f_cached_tmux_key_binds" "plugin_init.sh" external_path_ok
     # Clear any errors from previous runs
-    safe_remove "$d_cache"/error-*
-    safe_remove "$d_cache"/cmd_output
+    safe_remove "$d_cache"/error-* "plugin_init.sh"
+    safe_remove "$d_cache"/cmd_output "plugin_init.sh"
 
     #
     # If these are removed, it can't be detected if config changed, so
     # there is no hint if cached items should be dropped or not
     #
     # "$f_cache_params"  "$f_chksum_custom"  "$f_min_display_time"
+else
+    log_it "><> $d_cache not found, couldn't clear it"
 fi
 
 #

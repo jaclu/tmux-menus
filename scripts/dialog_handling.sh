@@ -825,7 +825,7 @@ cache_static_content() {
         $all_helpers_sourced || {
             source_all_helpers "cache_static_content() - cache regeneration"
         }
-        safe_remove "$d_menu_cache"
+        safe_remove "$d_menu_cache" "cache_static_content()"
         mkdir -p "$d_menu_cache" || error_msg_safe "Failed to create: $d_menu_cache"
 
         run_if_found static_content && static_cache_updated=true
@@ -1073,7 +1073,7 @@ EOF
 
         tmux_error_handler new-window -n "output" "cat $f_output ; sleep 7200"
         sleep 1 # argh the remove happens before the above cat without this sleep...
-        safe_remove "$f_output"
+        safe_remove "$f_output" "alt_parse_output()"
     ) &
 }
 

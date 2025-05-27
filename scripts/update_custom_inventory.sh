@@ -21,15 +21,15 @@
 
 clear_cache_main_index() {
     # log_it "UCI:clear_cache_main_index()"
-    safe_remove "$d_cache_main_menu"
+    safe_remove "$d_cache_main_menu" "clear_cache_main_index()"
 }
 
 clear_cache_custom_items() {
     # log_it "UCI:clear_cache_custom_items()"
     [ -z "$d_cache" ] && error_msg_safe "variable d_cache was unexpectedly undefined!"
 
-    safe_remove "$d_cache"/custom_items # remove all cached custom items
-    safe_remove "$f_chksum_custom"
+    safe_remove "$d_cache"/custom_items "clear_cache_custom_items()"
+    safe_remove "$f_chksum_custom" "clear_cache_custom_items()"
 
     # only time this should not be done is when cache...
     [ "$1" != "keep_content_template" ] && clear_custom_content_template
@@ -38,13 +38,13 @@ clear_cache_custom_items() {
 clear_custom_content_template() {
     # remove temp file - items being added to custom menu
     # log_it "UCI:clear_custom_content_template()"
-    safe_remove "$f_custom_items_content"
+    safe_remove "$f_custom_items_content" "clear_custom_content_template()"
 }
 
 remove_custom_item_content() {
     # Remove custom item index page and all related caches
     # log_it "UCI:remove_custom_item_content() - $f_custom_items_index"
-    safe_remove "$f_custom_items_index"
+    safe_remove "$f_custom_items_index" "remove_custom_item_content()"
     clear_cache_custom_items # just to be sure its not pointing this file
 }
 
@@ -119,7 +119,10 @@ create_custom_index() {
     [ -z "$f_custom_items_content" ] && {
         error_msg_safe "variable f_custom_items_content undefined"
     }
-    safe_remove "$f_custom_items_content" # make sure its nothing there
+
+    # make sure its nothing there
+    safe_remove "$f_custom_items_content" "create_custom_index()"
+
     clear_cache_main_index
 
     for custom_menu in $1; do
@@ -189,7 +192,7 @@ process_custom_items() {
     # of menus to be listed within it :)
     # log_it "UCI:process_custom_items()"
 
-    safe_remove "$f_custom_items_index"
+    safe_remove "$f_custom_items_index" "process_custom_items()"
 
     # create list of runnable scripts in this folder
     # the name filter is intended to filter out foo.sh~ and foo.bash~ names
