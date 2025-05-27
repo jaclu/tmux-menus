@@ -29,7 +29,7 @@ dynamic_content() {
     fi
 
     set -- 0.0 M Left "Back to $prev_name   $nav_prev" "$prev_menu"
-    [ -n "$prev_menu" ] || error_msg "$(relative_path "$0") - no previous menu param!"
+    [ -n "$prev_menu" ] || error_msg "$rn_current_script - no previous menu param!"
     menu_generate_part 1 "$@"
 }
 
