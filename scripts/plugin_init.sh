@@ -41,8 +41,6 @@ bind_plugin_key() {
     }
 
     [[ ! -f "$f_skip_low_tmux_version_warning" ]] && ! tmux_vers_check 1.8 && {
-        # shell check disable=SC2034 # used in tmux.sh
-        # teh_debug=true
         # shellcheck disable=SC2154 # current_tmux_vers is an env variable
         msg="Due to tmux($current_tmux_vers) < 1.8 user options can not be processed.\n\n"
         msg+="The tmux-menus plugin will be bound to its default key: $cfg_trigger_key \n\n"

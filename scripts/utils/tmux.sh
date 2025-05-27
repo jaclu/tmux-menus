@@ -441,9 +441,7 @@ use_whiptail_env() {
 }
 
 tmux_escape_for_display() {
-    # echo "$@" | sed "s/\'/[\"]/g"
-    echo "$@" | sed "s/'/\`/g" | sed 's/#/##/g'
-    # | sed "s/;/[semi-colon]/g" | sed 's/\"/[double-quote]/g'
+    echo "$@" | sed "s/\'/\`/g" | sed 's/#/##/g'
 }
 
 tmux_error_handler() {
@@ -548,8 +546,8 @@ tmux_error_handler_assign() { # cache references
             exit 1
         else
             log_it "saved error to: $f_error_log"
-            #region tmux error msg
-            error_msg "$(
+            #region tmux _e_msg
+            _e_msg="$(
                 cat <<EOF
 tmux cmd failed ($ex_code):
 
@@ -560,14 +558,20 @@ $_err_output
 -----   Failed tmux command   -----
 $(cat "$f_error_log")
 -----------------------------------
-The error file always contains the unmodified command.
 
-The error message has been saved in: $(relative_path "$f_error_log")
+The error message has been saved in:
+  $(relative_path "$f_error_log")
 
 Full path: $f_error_log
 EOF
             )"
             #endregion
+            [ "$_e_msg" != "$(tmux_escape_for_display "$_e_msg")" ] && {
+                # Something was escaped, emphasize that the error file is unmodified
+                _s="The error file always contains the unmodified command"
+                _e_msg="$_e_msg \n\n==>  $_s  <=="
+            }
+            error_msg "$_e_msg"
         fi
         return 1 # shouldn't get here, but at least return an error
     fi

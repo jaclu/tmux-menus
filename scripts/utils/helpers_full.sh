@@ -55,14 +55,13 @@ display_formated_message() {
     _dfm_msg="$1"
     _default_msg_type="notification message"
     _msg_type="${2:-$_default_msg_type}"
-    log_it "display_formated_message($_dfm_msg)"
+    # log_it "display_formated_message()"
 
     [ -z "$_dfm_msg" ] && {
-        # Can't use error_msg here, so _msg is used to display the error
+        # Can't use error_msg here, so _dfm_msg is used to display this error
         _dfm_msg="display_formated_message() - Param error: no message provided"
     }
     _msg_escaped="$(tmux_escape_for_display "$_dfm_msg")"
-
     _display_msg="$(
         [ "$_msg_type" = "$_default_msg_type" ] && {
             # shellcheck disable=SC2154 # plugin_name defined in cache/plugin_params
@@ -75,21 +74,21 @@ display_formated_message() {
         echo "To scroll back in this ${_msg_type}:"
         echo " <prefix>-[ then up/down arrows"
         echo
-
-        case "$_msg_escaped" in
-        *\`*)
-            echo "Due to limits in what can be displayed via tmux this way,
-all usages of single-quote have been replaced by backtick"
-            echo
-            ;;
-        *) ;;
-        esac
-
         echo "Press Ctrl-C to close this message"
     )"
+    [ "$_dfm_msg" != "$_msg_escaped" ] && {
+        #region tmux _display_msg
+        _display_msg="$_display_msg\n
+Due to limits in what can be displayed via tmux this way,
+all usages of single-quote have been replaced by backtick\n"
+        #endregion
+    }
 
-    $TMUX_BIN new-window -n \
-        "tmux-menus notification" "echo '$_display_msg' ; tail -f /dev/null "
+    $TMUX_BIN new-window -n "tmux-menus notification" "echo '$_display_msg' ; tail -f /dev/null " || {
+
+        log_it "><> display_formated_message() - triggered error: $?"
+        exit 1
+    }
 }
 
 error_msg() {
@@ -112,15 +111,15 @@ error_msg() {
     log_it_minimal "error_msg($em_msg, $exit_code)"
 
     [ -z "$dont_display" ] && error_msg_actual
-    log_it
     [ "$exit_code" -gt -1 ] && exit "$exit_code"
 }
 
 error_msg_actual() {
     # Disable logging for the remainder of error_msg processing, to avoid getting
     # log-flooded, unless exit is not requested
-
     # [ "$exit_code" -gt -1 ] && cfg_log_file=""
+
+    # log_it "error_msg_actual()"
 
     if [ -z "$TMUX" ]; then
         # with no tmux env, dumping it to stderr & log-file is the only output options
@@ -295,7 +294,6 @@ is_int() {
 
 get_screen_size_variables() {
     # Sets variables current_screen_rows & current_screen_cols - indicating screen-size
-    log_it "get_screen_size_variables()"
     tmux_error_handler_assign current_screen_rows display-message -p "#{client_height}"
     tmux_error_handler_assign current_screen_cols display-message -p "#{client_width}"
 }
