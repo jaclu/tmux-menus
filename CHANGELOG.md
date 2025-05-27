@@ -16,6 +16,7 @@ All notable changes to this project will be documented here.
 
 - Ensure everything works on tmux 1.5
 - tmux_escape_for_display() - corrected handling of backticks
+- Cleaned up Pane move and Window move/link
 
 ---
 

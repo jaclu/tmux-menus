@@ -467,6 +467,40 @@ set_display_command_labels() {
     esac
 }
 
+parse_move_link_dest() {
+    #
+    # Used by relocate_pane.sh & relocate_window.sh to parse the destination
+    # parameter, to check for validity and split it into its components
+    #
+    #  inputs:
+    #    with pane idx:      =main:1.%13
+    #    with window idx:    =main:3.
+    #    without window idx: =main:
+    #
+    #  Defines:
+    #   cur_ses
+    #   dest_ses
+    #   dest_win_idx
+    #   dest_pane_idx
+    #
+    _raw_dest="$1"
+
+    if [ -z "$_raw_dest" ]; then
+        error_msg "parse_move_link_dest() - no destination param given!"
+    fi
+
+    tmux_error_handler_assign cur_ses display-message -p '#S'
+
+    _dest="${_raw_dest#*=}" # skipping initial =
+    _win_pane="${_dest#*:}" # after first colon
+    # shellcheck disable=SC2034 # used in relocate_pane.sh & relocate_window.sh
+    {
+        dest_ses="${_dest%%:*}"         # up to first colon excluding it
+        dest_win_idx="${_win_pane%%.*}" # up to first dot excluding it
+        dest_pane_idx="${_win_pane#*.}"
+    }
+}
+
 #===============================================================
 #
 #   Main
