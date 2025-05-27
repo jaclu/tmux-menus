@@ -16,8 +16,6 @@ dynamic_content() {
     #
     tmux_vers_check 2.1 || return # no dynamic item is tmux < 2.1
 
-    $all_helpers_sourced || source_all_helpers "advanced:dynamic_content()"
-
     # save value in a pre tmux 1.7 safe way, not relying on show-options -v
     current_mouse_status="$($TMUX_BIN show-options -g mouse | cut -d' ' -f2)"
 
