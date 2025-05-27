@@ -588,7 +588,7 @@ menu_generate_part() {
     }
 
     if $is_dynamic_content; then
-        _mgp_prefix="Dynnamic"
+        _mgp_prefix="is_dynamic_content - "
     else
         _mgp_prefix=""
     fi
