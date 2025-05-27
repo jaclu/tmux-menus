@@ -70,7 +70,7 @@ source_all_helpers() {
     #    $all_helpers_sourced || source_all_helpers "caller description"
     #
 
-    log_it_minimal "source_all_helpers() - $1"
+    log_it "source_all_helpers() - $1"
     $all_helpers_sourced && {
         error_msg_safe "source_all_helpers() called when it was already done - $1"
     }
