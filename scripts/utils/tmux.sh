@@ -269,7 +269,7 @@ fix_home_path() {
             ;;
         \$HOME/*)
             fhp_path="${fhp_path#\\}"            # Remove leading backslash
-            fhp_path="${HOME}${fhp_path#\$HOME}" # Expand ~ to $HOME
+            fhp_path="${HOME}${fhp_path#\$HOME}" # Expand $HOME
             ;;
         *) ;;
         esac

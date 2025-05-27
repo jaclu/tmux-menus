@@ -1028,6 +1028,7 @@ ensure_menu_fits_on_screen() {
         fi
         error_msg "$_s"
     }
+    log_it "display time: $t_time_span"
 }
 
 wt_cached_selection() {

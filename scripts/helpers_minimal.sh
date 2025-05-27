@@ -70,7 +70,7 @@ source_all_helpers() {
     #    $all_helpers_sourced || source_all_helpers "caller description"
     #
 
-    log_it_minimal "[$$] source_all_helpers() - $1"
+    log_it_minimal "source_all_helpers() - $1"
     $all_helpers_sourced && {
         error_msg_safe "source_all_helpers() called when it was already done - $1"
     }
@@ -101,7 +101,8 @@ validate_varname() { # local usage tpt_digits_from_string() tpt_tmux_vers_suffix
 #
 #---------------------------------------------------------------
 
-source_cached_params() { # local usage by get_config()
+source_cached_params() {
+    # This is just reading, so ok to do even if cache is disabled
     # log_it "source_cached_params()"
 
     if [ -f "$f_cache_params" ]; then
