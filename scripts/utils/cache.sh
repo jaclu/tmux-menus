@@ -193,7 +193,7 @@ cache_write_plugin_params() {
 
     $cfg_use_cache || error_msg "cache_write_plugin_params() - called when not using cache"
 
-    check_speed_cutoff 0.3
+    check_speed_cutoff 0.5
     examine_code_base
 
     _f_params_tmp=$(mktemp) || {
