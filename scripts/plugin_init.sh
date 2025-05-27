@@ -77,8 +77,18 @@ source "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 # log_it "=====   plugin_init.sh starting   ====="
 
+# Define cfg_use_cache as soon as possible
+# shellcheck disable=SC2154 # default_use_cache defined in tmux.sh
+if normalize_bool_param "@menus_use_cache" "$default_use_cache"; then
+    cfg_use_cache=true
+else
+    # shellcheck disable=SC2034 # cfg_use_cache used to define cache/plugin_params
+    cfg_use_cache=false
+fi
+
 # shellcheck disable=SC2154 # d_cache defined in helpers_minimal.sh
-if [[ -d "$d_cache" ]]; then
+if [[ "$cfg_use_cache" = true ]] && [[ -d "$d_cache" ]]; then
+    log_it "><> plugin_init.sh clearing some cache files"
     # clear out potentially obsolete cache items
     safe_remove "$f_cache_known_tmux_vers" "plugin_init.sh"
     safe_remove "$f_cached_tmux_options" "plugin_init.sh"
@@ -86,14 +96,11 @@ if [[ -d "$d_cache" ]]; then
     # Clear any errors from previous runs
     safe_remove "$d_cache"/error-* "plugin_init.sh"
     safe_remove "$d_cache"/cmd_output "plugin_init.sh"
-
     #
     # If these are removed, it can't be detected if config changed, so
     # there is no hint if cached items should be dropped or not
     #
     # "$f_cache_params"  "$f_chksum_custom"  "$f_min_display_time"
-else
-    log_it "><> $d_cache not found, couldn't clear it"
 fi
 
 #

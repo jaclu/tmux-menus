@@ -362,28 +362,27 @@ tmux_vers_check() { # local usage when checking $min_tmux_vers
         tpt_retrieve_running_tmux_vers
     fi
 
-    # Use cache if available and enabled
-    $cfg_use_cache && {
-        if [ -z "$cached_ok_tmux_versions" ] && [ -f "$f_cache_known_tmux_vers" ]; then
-            # Source known versions only if not already cached
-            # shellcheck source=/dev/null
-            . "$f_cache_known_tmux_vers" || {
-                log_it "WARNING: Failed to source: f_cache_known_tmux_vers"
-                cached_ok_tmux_versions=" " # Mark as failure to avoid further attempts
-                cached_bad_tmux_versions=" "
-            }
-        fi
+    if [ -z "$cached_ok_tmux_versions" ] && [ -f "$f_cache_known_tmux_vers" ]; then
+        # Reading it if existing is harmless even if cache is disabled
+        # shellcheck source=/dev/null
+        . "$f_cache_known_tmux_vers" || {
+            log_it "WARNING: Failed to source: f_cache_known_tmux_vers"
+            # Since the source failed, clear these in orde to ensure no bad
+            # state was retrieved
+            cached_ok_tmux_versions=""
+            cached_bad_tmux_versions=""
+        }
+    fi
 
-        # Check if the version is in the cached good or bad lists using case statements
-        case " $cached_ok_tmux_versions " in
-        *"$_v_comp "*) return 0 ;; # Version found in good list
-        *) ;;
-        esac
-        case "$cached_bad_tmux_versions" in
-        *"$_v_comp "*) return 1 ;; # Version found in bad list
-        *) ;;
-        esac
-    }
+    # Check if the version is in the cached good or bad lists using case statements
+    case " $cached_ok_tmux_versions " in
+    *"$_v_comp "*) return 0 ;; # Version found in good list
+    *) ;;
+    esac
+    case "$cached_bad_tmux_versions" in
+    *"$_v_comp "*) return 1 ;; # Version found in bad list
+    *) ;;
+    esac
 
     # Once a menu has been processed once, all version references should already be
     # cached, so in the normal cached state this point will not be reached

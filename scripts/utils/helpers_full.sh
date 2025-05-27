@@ -335,6 +335,12 @@ config_setup() {
     # tmux.conf, or prepare a f_cache_params
     # log_it "config_setup()"
 
+    #
+    # If called from plugin_init.sh cfg_use_cache has already been checked, but since
+    # config_setup will also be called if other things fail to read the cached
+    # params, it should be re-checked here.
+    # Since this will not happen regularly this overhead will not ruin general performance
+    #
     # shellcheck disable=SC2154 # default_use_cache defined in tmux.sh
     if normalize_bool_param "@menus_use_cache" "$default_use_cache"; then
         cfg_use_cache=true

@@ -11,6 +11,7 @@ All notable changes to this project will be documented here.
 - new function display_formated_message() - shows multi line messages in a temp window
   used both for long error messages and notifications
 - plugin_init.sh Warns if tmux is < 1.8 and notifies that all options will use defaults
+- Fully clear cache if tmux version has changed
 
 ### Changed
 
