@@ -47,8 +47,8 @@ static_content() {
     #
     set -- \
         0.0 S \
-        0.0 C p "Swap pane with prev" "swap-pane -U $runshell_reload_mnu" \
-        0.0 C n "Swap pane with next" "swap-pane -D $runshell_reload_mnu"
+        0.0 C p "swap pane with Prev" "swap-pane -U $runshell_reload_mnu" \
+        0.0 C n "swap pane with Next" "swap-pane -D $runshell_reload_mnu"
     menu_generate_part 3 "$@"
     
     set -- \
