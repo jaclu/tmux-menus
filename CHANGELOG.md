@@ -12,6 +12,7 @@ All notable changes to this project will be documented here.
   used both for long error messages and notifications
 - plugin_init.sh Warns if tmux is < 1.8 and notifies that all options will use defaults
 - Fully clear cache if tmux version has changed
+- Added mirrored layouts for tmux >= 3.5
 
 ### Changed
 
