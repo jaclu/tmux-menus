@@ -100,12 +100,6 @@ update_wt_actions() {
 #
 #---------------------------------------------------------------
 
-escape_for_err_msg() {
-    # echo "$@" | sed "s/\'/[\"]/g"
-    echo "$@" | sed "s/\'/\`/g"
-    # | sed "s/;/[semi-colon]/g" | sed 's/\"/[double-quote]/g'
-}
-
 show_params() {
     # This will log the exact arguments passed to the script
     for param in "$@"; do
@@ -133,7 +127,7 @@ verify_menu_runable() {
 }
 
 mnu_parse_error() {
-    log_it "mnu_parse_error($1)"
+    log_it "mnu_parse_error()"
     failed_action="$1"
     shift
 
@@ -149,18 +143,18 @@ have been replaced by backticks, in the "Menu created so far" in order to give a
 close a reppresentation as possible
 
 -----   Menu created so far   -----
-$(escape_for_err_msg "$menu_items")
+$menu_items
 -----------------------------------
 
 
-Failed to Parse this action: $(escape_for_err_msg "$failed_action")
+Failed to Parse this action: $failed_action
 
 
 In the next section all quotes have been eliminated due to how parsing remaining
 arguments is limited, hopefully it will at least give a hint on where parsing failed.
 
 -----   Remainder of menu   -----
-$(escape_for_err_msg "$s_remainders")
+$s_remainders
 ---------------------------------
 
 EOF
@@ -170,15 +164,16 @@ EOF
 
 display_invalid_menu_error() {
     e_msg="$1"
-    log_it "display_invalid_menu_error($e_msg)"
+    log_it "display_invalid_menu_error()"
 
     [ -n "$e_msg" ] && {
         #region e_msg = Error message
         e_msg="$(
             cat <<EOF
 -----   Error message   -----
-$(escape_for_err_msg "$e_msg")
+$e_msg
 -----------------------------
+
 EOF
         )"
         #endregion
@@ -215,13 +210,19 @@ EOF
     m_menu_code="$(
         cat <<EOF
 
+Menu Exit code: $menu_exit_code
 
-Generated menu below - single quotes have been changed into backticks
-otherwise the commands can not be displayed here
+Generated menu below
 
 -----   menu start   -----
-$(escape_for_err_msg "$menu_items")
+$menu_items
 -----    menu end    -----
+$(
+            [ -n "$d_menu_cache" ] && {
+                printf '\nThe original cached snippets that generated the above,'
+                printf ' can be found here:\n  %s/\n\n' "$d_menu_cache"
+            }
+        )
 EOF
     )"
     #endregion
@@ -573,6 +574,7 @@ menu_generate_part() {
     # log_it "menu_generate_part($1)"
 
     menu_idx="$1"
+    shift # get rid of the idx param
     $cfg_use_cache && f_cache_file="$d_menu_cache/$menu_idx"
 
     # needs to be set even if this is an empty dynamic menu to prevent
@@ -586,8 +588,12 @@ menu_generate_part() {
         return
     }
 
-    shift # get rid of the idx param
-    $all_helpers_sourced || source_all_helpers "menu_generate_part()"
+    if $is_dynamic_content; then
+        _mgp_prefix="is_dynamic_content - "
+    else
+        _mgp_prefix=""
+    fi
+    $all_helpers_sourced || source_all_helpers "$_mgp_prefix menu_generate_part($menu_idx)"
 
     wt_actions=""
     menu_parse "$@"
@@ -671,6 +677,11 @@ check_screen_size() {
     # log_it "check_screen_size()"
 
     $all_helpers_sourced || source_all_helpers "check_screen_size()"
+
+    tmux_vers_check 1.7 || {
+        # Prior to 1.7 #{client_height} and #{client_width} are not available
+        return 0
+    }
 
     [ -n "$menu_height" ] && {
         [ -z "$current_screen_rows" ] && get_screen_size_variables # only get if not defined
@@ -764,7 +775,6 @@ set_menu_env_variables() {
     if $cfg_use_cache; then
         # Include relative script path in cache folder name to avoid name collisions
         #  items/main.sh -> cache/items/main.sh/
-        # [ "$env_initialized" -lt 2 ] && error_msg_safe "env not fully initialized"
         d_menu_cache="$d_cache/$rn_current_script"
 
         $cfg_use_whiptail && d_wt_actions="$d_menu_cache/wt_actions"
@@ -817,12 +827,13 @@ cache_static_content() {
     # log_it "cache_static_content() - [$0] d_menu_cache [$d_menu_cache]"
     if [ ! -d "$d_menu_cache" ] || [ "$(get_mtime "$0")" -gt "$(get_mtime "$d_menu_cache")" ]; then
         # Cache is missing or obsolete, regenerate it
+        [ -d "$d_menu_cache" ] && log_it_minimal "$rn_current_script changed - dropping cache"
         # log_it "  regenerate cache for: $d_menu_cache"
         $all_helpers_sourced || {
-            source_all_helpers "cache_static_content() - cache regeneration"
+            source_all_helpers "cache_static_content() - cache generation"
         }
-        safe_remove "$d_menu_cache"
-        mkdir -p "$d_menu_cache" || error_msg_safe "Failed to create: $d_menu_cache"
+        safe_remove "$d_menu_cache" "cache_static_content()"
+        mkdir -p "$d_menu_cache" || error_msg "Failed to create: $d_menu_cache"
 
         run_if_found static_content && static_cache_updated=true
     fi
@@ -1018,6 +1029,7 @@ ensure_menu_fits_on_screen() {
         fi
         error_msg "$_s"
     }
+    # log_it "><> display time: $t_time_span"
 }
 
 wt_cached_selection() {
@@ -1069,7 +1081,7 @@ EOF
 
         tmux_error_handler new-window -n "output" "cat $f_output ; sleep 7200"
         sleep 1 # argh the remove happens before the above cat without this sleep...
-        safe_remove "$f_output"
+        safe_remove "$f_output" "alt_parse_output()"
     ) &
 }
 
@@ -1146,7 +1158,8 @@ display_menu() {
     if $cfg_use_whiptail; then
         # display whiptail menu
         menu_selection=$(eval "$menu_items" 3>&2 2>&1 1>&3)
-        case "$?" in
+        menu_exit_code="$?"
+        case "$menu_exit_code" in
         0) ;;
         1)
             [ -n "$menu_selection" ] && {
@@ -1154,7 +1167,9 @@ display_menu() {
                 display_invalid_menu_error "$menu_selection"
             }
             ;;
-        *) display_invalid_menu_error ;;
+        *)
+            display_invalid_menu_error "$menu_selection"
+            ;;
         esac
 
         [ -n "$menu_selection" ] && handle_wt_selecion

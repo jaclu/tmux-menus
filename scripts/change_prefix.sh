@@ -14,9 +14,8 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 # shellcheck source=scripts/helpers.sh
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
-rel_scr_name=$(relative_path "$0")
 next_menu="$*"
-log_it "><> $rel_scr_name next_menu: [$next_menu]"
+log_it "><> $rn_current_script next_menu: [$next_menu]"
 
 tmux_error_handler_assign prefix_char command-prompt -1 -p \
     "Prefix key without C- (will take effect imeditally)" "display -p %%"
@@ -26,9 +25,9 @@ log_it "><> prefix: [$prefix_char]"
 #  Since this is a critical param, make extra sure we have valid input
 #
 if [ -z "$prefix_char" ]; then
-    error_msg "$rel_scr_name - No prefix given!"
+    error_msg "$rn_current_script - No prefix given!"
 elif [ "$(printf '%s' "$prefix_char" | wc -m)" -ne 1 ]; then
-    error_msg "$rel_scr_name - Must be exactly one char! Was:[$prefix_char]"
+    error_msg "$rn_current_script - Must be exactly one char! Was:[$prefix_char]"
 fi
 
 prefix="C-$(lowercase_it "$prefix_char")"
@@ -40,5 +39,5 @@ tmux_error_handler display-message "Be aware <prefix> is now: $prefix"
 if [ -n "$next_menu" ]; then
     $next_menu
 else
-    log_it "$rel_scr_name - no next menu param given"
+    log_it "$rn_current_script - no next menu param given"
 fi

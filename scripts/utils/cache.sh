@@ -64,16 +64,15 @@ cache_add_ok_vers() {
     #  Add param to list of good versions (<=running tmux vers),
     #  if it wasn't cached already
     #
-    $cfg_use_cache || return 0
     # log_it "cache_add_ok_vers($1)"
     [ -z "$1" ] && error_msg "cache_add_ok_vers() - no param"
 
     case "$cached_ok_tmux_versions" in
     *"$1 "*) ;;
     *)
-        cached_ok_tmux_versions="${cached_ok_tmux_versions}$1 "
         # log_it "Adding ok tmux vers: $1"
-        cache_save_known_tmux_versions
+        cached_ok_tmux_versions="${cached_ok_tmux_versions}$1 "
+        [ "$cfg_use_cache" = true ] && cache_save_known_tmux_versions
         ;;
     esac
     return 0
@@ -84,16 +83,15 @@ cache_add_bad_vers() {
     #  Add param to list of bad versions (>running tmux vers),
     #  if it wasn't cached already
     #
-    $cfg_use_cache || return 1
     # log_it "cache_add_bad_vers($1)"
     [ -z "$1" ] && error_msg "cache_add_bad_vers() - no param"
 
     case "$cached_bad_tmux_versions" in
     *"$1"*) ;;
     *)
-        cached_bad_tmux_versions="${cached_bad_tmux_versions}$1 "
         # log_it "Adding bad tmux vers: $1"
-        cache_save_known_tmux_versions
+        cached_bad_tmux_versions="${cached_bad_tmux_versions}$1 "
+        [ "$cfg_use_cache" = true ] && cache_save_known_tmux_versions
         ;;
     esac
     return 1
@@ -105,7 +103,7 @@ cache_save_known_tmux_versions() { # tmux stuff
     #  since they are checked with a case to speed things up
     #
     # log_it "cache_save_known_tmux_versions()"
-    $cfg_use_cache || {
+    [ "$cfg_use_cache" = true ] || {
         error_msg "cache_save_known_tmux_versions() - called when not using cache"
     }
     [ -d "$d_cache" ] || {
@@ -114,7 +112,7 @@ cache_save_known_tmux_versions() { # tmux stuff
         # reminder that d_cache does not exist yet.
         # It is perfectly normal to happen once during plugin init
         #
-        log_it "WARNING: cache_save_known_tmux_versions() aborting, no cache folder: $d_cache"
+        # log_it "WARNING: cache_save_known_tmux_versions() aborting, no cache folder: $d_cache"
         return 1
     }
 
@@ -195,7 +193,8 @@ cache_write_plugin_params() {
 
     $cfg_use_cache || error_msg "cache_write_plugin_params() - called when not using cache"
 
-    check_speed_cutoff 0.3
+    # cloud node .22 jacmac .25 jacpad 2.5 jacdoid 1
+    check_speed_cutoff 0.5
     examine_code_base
 
     _f_params_tmp=$(mktemp) || {
@@ -311,21 +310,69 @@ t_minimal_display_time=\"$t_minimal_display_time\"
             }
         else
             # log_it " config unchanged - param cache not cleared"
+            log_it "><> config unchanged"
             rm "$_f_params_tmp"
         fi
     else
-        log_it " param cache created"
+        log_it "><> param cache created"
         mv "$_f_params_tmp" "$f_cache_params"
     fi
+}
+
+verify_tmux_vers_unchanged() {
+    # Compare current tmux vers with param cache, dropping param cache fully
+    # if they differ
+
+    actual_current_tmux_vers="$current_tmux_vers"
+    #
+
+    # Source the param cache in a subshell, and only keep current_tmux_vers,
+    # in order to make sure no other variables gets leaked into the env
+    previous_current_tmux_vers="$(
+        # source the cached params in a subshell, in order to only extract
+        # current_tmux_vers for comparison
+
+        # SC2030: Disable logging in this subshell, in order to avoid getting
+        #         redundant logging about sourcing cached params
+        # shellcheck disable=SC2030
+        cfg_log_file=""
+
+        # SC2030: If the subshell can't source this, make sure it doesn't inherit
+        #         the current state
+        shellcheck disable=SC2030
+        current_tmux_vers="unknown"
+
+        source_cached_params
+        echo "$current_tmux_vers"
+    )"
+    current_tmux_vers="$actual_current_tmux_vers"
+    [ "$actual_current_tmux_vers" != "$previous_current_tmux_vers" ] && {
+        # If tmux version has changed, the entire cache should be dropped
+        _s2="tmux version change: $previous_current_tmux_vers -> $actual_current_tmux_vers"
+        log_it "$_s2 - dropping entire cache"
+
+        safe_remove "$d_cache" "verify_tmux_vers_unchanged()"
+
+        # Clear in memory cache of good/bad tmux versions, that might have been
+        # read from invalid cache
+        cached_ok_tmux_versions=""
+        cached_bad_tmux_versions=""
+    }
 }
 
 create_param_cache() {
     # via config_setup() it is already established that @menus_use_cache was true
     # log_it "create_param_cache()"
 
+    # most likely already called by the check for min version, but it is quick
+    # enough to call again here to ensure tmux version is known
+    tpt_retrieve_running_tmux_vers
+
+    # shellcheck disable=SC2154 # initialize_plugin defined in plugin_init.sh
+    [ "$initialize_plugin" = 1 ] && [ -d "$d_cache" ] && verify_tmux_vers_unchanged
+
     cache_prepare
-    source_cached_params           # get additional env config if available
-    tpt_retrieve_running_tmux_vers # ensure we refer to current tmux version
+    source_cached_params # get additional env config if available
     # cfg_use_whiptail=false
     tmux_get_plugin_options
     cache_write_plugin_params

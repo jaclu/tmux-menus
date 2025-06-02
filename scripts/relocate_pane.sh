@@ -13,11 +13,9 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
-# shellcheck source=scripts/relocate_param_check.sh
-. "$d_scripts"/relocate_param_check.sh
+log_it "><> ==> $rn_current_script params: $*"
 
-_this="relocate_pane.sh" # error prone if script name is changed :(
-[ "$bn_current_script" != "$_this" ] && error_msg_safe "$_this should NOT be sourced"
+parse_move_link_dest "$1"
 
 tmux_error_handler move-pane -t "${dest_ses}:${dest_win_idx}.${dest_pane_idx}"
 

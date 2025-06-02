@@ -21,24 +21,17 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 # shellcheck source=scripts/helpers.sh
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
-# rel_scr_name=$(relative_path "$0")
-# log_it "><> $rel_scr_name params: $* - whiptail: $cfg_use_whiptail"
+log_it "><> ==> $rn_current_script params: $*"
 
-# _this="relocate_window.sh" # error prone if script name is changed :(
-# [ "$bn_current_script" != "$_this" ] && error_msg_safe "$_this should NOT be sourced"
-
-# shellcheck source=scripts/relocate_param_check.sh
-. "$d_scripts"/relocate_param_check.sh
-
-param_check "$@"
+action="$1"
+parse_move_link_dest "$2"
 
 # shellcheck disable=SC2154 # cur_ses defined in relocate_param_check.sh
 if [ "$cur_ses" = "$dest_ses" ]; then
     #
     #  to same session
     #
-    # NEEDS TESTING
-    [ "$action" = "L" ] && error_msg_safe "Linking to same session is pointless!"
+    [ "$action" = "l" ] && error_msg "Linking to same session is pointless!"
 
     #
     #  Move within the current session
@@ -52,16 +45,16 @@ else
 
     # Create a link to this at destination
     tmux_error_handler link-window -b -t "$dest_ses:$dest_win_idx"
-    if [ "$action" != "L" ]; then
+    if [ "$action" != "l" ]; then
         #
-        # Unlink window at current location, ie get rid of original instance
-        # And re-indix previous session
+        # Unlink window at current location, ie treat the action as a move and
+        # get rid of original instance
         #
         tmux_error_handler unlink-window
     fi
     #
-    #  When Window / Pane is moved to another session, focus does not
-    #  auto-switch, so this manually sets focus.
+    #  When Window is moved to another session, focus does not
+    #  auto-switch, so this manually sets focus to the destination.
     #
     tmux_error_handler switch-client -t "$dest_ses" # switch focus to new location
 fi

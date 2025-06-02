@@ -26,7 +26,7 @@ static_content() {
 
     reload_no_output=" >/dev/null ; $0"
 
-    [ -z "$(command -v spotify)" ] && error_msg_safe "spotify bin not found!"
+    [ -z "$(command -v spotify)" ] && error_msg "spotify bin not found!"
 
     set -- \
         0.0 M Left "Back to Extras     $nav_prev" extras.sh \
@@ -48,7 +48,6 @@ static_content() {
         0.0 E d "vol Down" "spotify         vol down  ; $0" \
         0.0 E i "Copy URI to clipboard" "spotify share uri  ; $0" \
         0.0 E l "Copy URL to clipboard" "spotify share url  ; $0"
-
     menu_generate_part 3 "$@"
 }
 

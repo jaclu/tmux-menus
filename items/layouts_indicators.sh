@@ -22,7 +22,6 @@ static_content() {
         3.3 C "c" "colour" "set-option pane-border-indicators  colour  $runshell_reload_mnu" \
         3.3 C "a" "arrows" "set-option pane-border-indicators  arrows  $runshell_reload_mnu" \
         3.3 C "b" "both" "set-option   pane-border-indicators  both    $runshell_reload_mnu"
-
     menu_generate_part 3 "$@"
 }
 

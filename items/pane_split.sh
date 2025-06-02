@@ -15,13 +15,18 @@ static_content() {
     menu_generate_part 1 "$@"
     $cfg_display_cmds && display_commands_toggle 2
 
+    if tmux_vers_check 1.7; then
+        same_folder="-c '#{pane_current_path}'"
+    else
+        same_folder=""
+    fi
+
     set -- \
         0.0 S \
-        2.0 C l "Left" "split-window  -bh -c '#{pane_current_path}' $runshell_reload_mnu" \
-        1.7 C r "Right" "split-window -h  -c '#{pane_current_path}' $runshell_reload_mnu" \
-        2.0 C a "Above" "split-window -bv -c '#{pane_current_path}' $runshell_reload_mnu" \
-        1.7 C b "Below" "split-window     -c '#{pane_current_path}' $runshell_reload_mnu"
-
+        2.0 C l "Left" "split-window  -bh  $same_folder  $runshell_reload_mnu" \
+        0.0 C r "Right" "split-window -h   $same_folder  $runshell_reload_mnu" \
+        2.0 C a "Above" "split-window -bv  $same_folder  $runshell_reload_mnu" \
+        0.0 C b "Below" "split-window      $same_folder  $runshell_reload_mnu"
     menu_generate_part 3 "$@"
 }
 
@@ -32,7 +37,6 @@ static_content() {
 #===============================================================
 
 menu_name="Split pane"
-menu_min_vers=1.7
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"

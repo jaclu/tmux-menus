@@ -4,6 +4,26 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [2.2.8] - 2025-06-02
+
+### Added
+
+- new function display_formated_message() - shows multi line messages in a temp window
+  used both for long error messages and notifications
+- plugin_init.sh Warns if tmux is < 1.8 and notifies that all options will use defaults
+- Fully clear cache if tmux version has changed
+- Added mirrored layouts for tmux >= 3.5
+
+### Changed
+
+- Ensure everything works on tmux 1.5
+- tmux_escape_for_display() - corrected handling of backticks
+- Cleaned up Pane move and Window move/link
+- Changes to speed cutoff
+- Better menu display error handling
+
+---
+
 ## [2.2.7] - 2025-05-25
 
 ### Added

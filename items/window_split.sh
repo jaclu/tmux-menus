@@ -15,13 +15,18 @@ static_content() {
     menu_generate_part 1 "$@"
     $cfg_display_cmds && display_commands_toggle 2
 
+    if tmux_vers_check 1.7; then
+        same_folder="-c '#{pane_current_path}'"
+    else
+        same_folder=""
+    fi
+
     set -- \
         0.0 S \
-        2.0 C l "Left" "split-window   -bfh  -c '#{pane_current_path}' $runshell_reload_mnu" \
-        1.7 C r "Right" "split-window  -fh   -c '#{pane_current_path}' $runshell_reload_mnu" \
-        2.0 C a "Above" "split-window  -bfv  -c '#{pane_current_path}' $runshell_reload_mnu" \
-        1.7 C b "Below" "split-window  -fv   -c '#{pane_current_path}' $runshell_reload_mnu"
-
+        2.0 C l "Left" "split-window   -bfh  $same_folder  $runshell_reload_mnu" \
+        0.0 C r "Right" "split-window  -fh   $same_folder  $runshell_reload_mnu" \
+        2.0 C a "Above" "split-window  -bfv  $same_folder  $runshell_reload_mnu" \
+        0.0 C b "Below" "split-window  -fv   $same_folder  $runshell_reload_mnu"
     menu_generate_part 3 "$@"
 }
 

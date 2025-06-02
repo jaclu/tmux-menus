@@ -16,9 +16,9 @@ dynamic_content() {
     #
     tmux_vers_check 2.1 || return # no dynamic item is tmux < 2.1
 
-    $all_helpers_sourced || source_all_helpers "advanced:dynamic_content()"
+    # save value in a pre tmux 1.7 safe way, not relying on show-options -v
+    current_mouse_status="$($TMUX_BIN show-options -g mouse | cut -d' ' -f2)"
 
-    tmux_error_handler_assign current_mouse_status show-options -gv mouse
     # SC2154: variable assigned dynamically by tmux_error_handler_assign using eval
     # shellcheck disable=SC2154
     if [ "$current_mouse_status" = "on" ]; then
@@ -27,19 +27,13 @@ dynamic_content() {
         new_mouse_status="on"
     fi
 
-    tmux_error_handler_assign current_prefix show-options -gv prefix
-    # SC2154: current_prefix assigned dynamically by tmux_error_handler_assign using eval
-    # shellcheck disable=SC2154
+    # save value in a pre tmux 1.7 safe way, not relying on show-options -v
+    current_prefix="$($TMUX_BIN show-options -g prefix | cut -d' ' -f2)"
     set -- \
         2.1 C o "Toggle mouse to: $new_mouse_status" \
         "set-option -g mouse $new_mouse_status $runshell_reload_mnu" \
         2.4 E p "Change prefix (Current: $current_prefix)" \
         "$d_scripts/change_prefix.sh $0"
-
-    # works today
-    # 2.4 E p "Change prefix (Current: $current_prefix)" \
-    # "$d_scripts/change_prefix.sh $0"
-
     menu_generate_part 4 "$@"
 }
 
@@ -99,7 +93,6 @@ static_content() {
         "$TMUX_BIN choose-client -Z $hint" \
         1.8 C x "Kill server" "confirm-before -p \
             'kill tmux server defined in($cfg_tmux_conf) ? (y/n)' kill-server"
-
     menu_generate_part 5 "$@"
 }
 

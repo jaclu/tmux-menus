@@ -43,7 +43,6 @@ static_content() {
     set -- "$@" \
         0.0 M H "Help               $nav_next" \
         "$d_help/help_paste_buffers.sh $0"
-
     menu_generate_part 3 "$@"
 }
 

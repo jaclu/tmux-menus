@@ -27,7 +27,7 @@ show_label() {
 
 static_content() {
 
-    tmux_vers_check 2.0 || error_msg_safe "needs tmux 2.0"
+    tmux_vers_check 2.0 || error_msg "needs tmux 2.0"
 
     set -- \
         0.0 M Left "Back to Missing Keys  $nav_prev" missing_keys.sh \
@@ -57,7 +57,6 @@ static_content() {
         0.0 E z "$(show_label zł zloty)" "$0 zł" \
         0.0 S \
         0.0 M H "Help                  $nav_next" "$d_help/help_currencies.sh $0"
-
     menu_generate_part 3 "$@"
 }
 

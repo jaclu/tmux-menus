@@ -58,7 +58,6 @@ static_content() {
         0.0 S \
         0.0 M H "Help               $nav_next" \
         "$d_help/help_summary.sh $0"
-
     menu_generate_part 3 "$@"
 }
 

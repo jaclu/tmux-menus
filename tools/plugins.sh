@@ -105,6 +105,11 @@ D_TM_BASE_PATH=$(dirname "$(dirname -- "$(realpath "$0")")")
 #  shellcheck source=/dev/null
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
+tmux_vers_check 1.8 || {
+    # shellcheck disable=SC2154 # defined in helpers_minimal.sh
+    error_msg "$rn_current_script can't be used before tmux 1.8" 1
+}
+
 defined_plugins=() #  plugins mentioned in config file
 valid_items=(tpm)  # additional folders expected to be in plugins folders
 

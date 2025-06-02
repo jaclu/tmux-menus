@@ -8,23 +8,13 @@
 #   Help regarding panes menu
 #
 
-dynamic_content() {
-    # Things that change dependent on various states
-
+static_content() {
     if [ -z "$prev_menu" ]; then
-        error_msg_safe "$bn_current_script was called without notice of what called it"
+        error_msg "$bn_current_script was called without notice of what called it"
     fi
-
     set -- \
         0.0 M Left "Back to Previous menu  $nav_prev" "$prev_menu" \
-        0.0 M Home "Back to Main menu      $nav_home" main.sh
-
-    menu_generate_part 1 "$@"
-}
-
-static_content() {
-
-    set -- \
+        0.0 M Home "Back to Main menu      $nav_home" main.sh \
         0.0 S \
         0.0 T "-#[nodim]When viewing history with escapes," \
         0.0 T "-#[nodim]use: less -R" \
@@ -32,8 +22,7 @@ static_content() {
         0.0 T "-#[nodim]Or a color handling pager, like:" \
         0.0 T "-#[nodim] w3m/bat/most" \
         0.0 T "-#[nodim]In order to not get garbled output"
-
-    menu_generate_part 2 "$@"
+    menu_generate_part 1 "$@"
 }
 
 #===============================================================

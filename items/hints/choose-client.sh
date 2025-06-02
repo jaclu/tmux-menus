@@ -52,7 +52,6 @@ static_content() {
         3.1 T "-#[nodim]r      Reverse sort order" \
         0.0 T "-#[nodim]v      Toggle preview" \
         0.0 T "-#[nodim]Esc/q  Exit mode"
-
     menu_generate_part 2 "$@"
 }
 

@@ -41,7 +41,6 @@ static_content() {
         1.8 C o "Kill all other sessions" "confirm-before -p \
         'Are you sure you want to kill all other sessions? (y/n)' \
         \"kill-session -a\" $runshell_reload_mnu"
-
     menu_generate_part 3 "$@"
 }
 

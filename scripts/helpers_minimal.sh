@@ -70,7 +70,7 @@ source_all_helpers() {
     #    $all_helpers_sourced || source_all_helpers "caller description"
     #
 
-    # log_it_minimal "[$$] source_all_helpers() - $1"
+    # log_it "source_all_helpers() - $1"
     $all_helpers_sourced && {
         error_msg_safe "source_all_helpers() called when it was already done - $1"
     }
@@ -101,7 +101,8 @@ validate_varname() { # local usage tpt_digits_from_string() tpt_tmux_vers_suffix
 #
 #---------------------------------------------------------------
 
-source_cached_params() { # local usage by get_config()
+source_cached_params() {
+    # This is just reading, so ok to do even if cache is disabled
     # log_it "source_cached_params()"
 
     if [ -f "$f_cache_params" ]; then
@@ -145,7 +146,8 @@ get_config() { # local usage during sourcing
             source_all_helpers "get_config() - no cache hint found"
         }
         tmux_get_plugin_options
-        check_speed_cutoff 0.5
+        # ckoud node .16 jacmacm 0.32 jacpad 1.5  jacdroid 1.2
+        check_speed_cutoff 0.6
     elif [ -f "$f_cache_params" ]; then
         source_cached_params || {
             replace_config=true
@@ -362,28 +364,27 @@ tmux_vers_check() { # local usage when checking $min_tmux_vers
         tpt_retrieve_running_tmux_vers
     fi
 
-    # Use cache if available and enabled
-    $cfg_use_cache && {
-        if [ -z "$cached_ok_tmux_versions" ] && [ -f "$f_cache_known_tmux_vers" ]; then
-            # Source known versions only if not already cached
-            # shellcheck source=/dev/null
-            . "$f_cache_known_tmux_vers" || {
-                log_it "WARNING: Failed to source: f_cache_known_tmux_vers"
-                cached_ok_tmux_versions=" " # Mark as failure to avoid further attempts
-                cached_bad_tmux_versions=" "
-            }
-        fi
+    if [ -z "$cached_ok_tmux_versions" ] && [ -f "$f_cache_known_tmux_vers" ]; then
+        # Reading it if existing is harmless even if cache is disabled
+        # shellcheck source=/dev/null
+        . "$f_cache_known_tmux_vers" || {
+            log_it "WARNING: Failed to source: f_cache_known_tmux_vers"
+            # Since the source failed, clear these in orde to ensure no bad
+            # state was retrieved
+            cached_ok_tmux_versions=""
+            cached_bad_tmux_versions=""
+        }
+    fi
 
-        # Check if the version is in the cached good or bad lists using case statements
-        case " $cached_ok_tmux_versions " in
-        *"$_v_comp "*) return 0 ;; # Version found in good list
-        *) ;;
-        esac
-        case "$cached_bad_tmux_versions" in
-        *"$_v_comp "*) return 1 ;; # Version found in bad list
-        *) ;;
-        esac
-    }
+    # Check if the version is in the cached good or bad lists using case statements
+    case " $cached_ok_tmux_versions " in
+    *"$_v_comp "*) return 0 ;; # Version found in good list
+    *) ;;
+    esac
+    case "$cached_bad_tmux_versions" in
+    *"$_v_comp "*) return 1 ;; # Version found in bad list
+    *) ;;
+    esac
 
     # Once a menu has been processed once, all version references should already be
     # cached, so in the normal cached state this point will not be reached
@@ -473,10 +474,9 @@ base_path_not_defined() {
 
 [ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
 
-plugin_name="tmux-menus"
+env_initialized=0 # will be 1 when limited env is ready, 2 when full env is ready
 
-# will be 1 when limited env is ready, 2 when full env is ready
-env_initialized=0
+plugin_name="tmux-menus"
 
 #
 # Defining a cfg_log_file here, allows tracing early startup, before the plugin
@@ -498,7 +498,8 @@ env_initialized=0
 #
 log_interactive_to_stderr=0
 
-min_tmux_vers="1.0"
+min_tmux_vers=1.5 # oldest accepted tmux version
+
 # for performance only a minimum of support features are in this file
 # as long as cache is used, it is sufficient, if extra features are needed
 # a call to source_all_helpers will be done, this ensures it only happens once
@@ -543,13 +544,13 @@ safe_now t_script_start
 
 [ "$initialize_plugin" != "1" ] && {
     # plugin_init will call config_setup directly, so should not call get_config
-
     get_config
-    if ! tmux_vers_check "$min_tmux_vers"; then
-        # @variables are not usable prior to 1.8
-        error_msg "need at least tmux $min_tmux_vers to work!"
-    fi
 }
+
+if ! tmux_vers_check "$min_tmux_vers"; then
+    # @variables are not usable prior to 1.8
+    error_msg_safe "$plugin_name needs at least tmux $min_tmux_vers to work!"
+fi
 
 if [ -d "$d_cache" ]; then
     # For temp files etc that needs to be created even when caching is disabled

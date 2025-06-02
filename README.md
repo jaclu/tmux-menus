@@ -8,7 +8,7 @@ src="https://github.com/user-attachments/assets/8361f74a-3eee-4053-9f87-f044a830
 ## Summary
 
 Popup menus to help with managing the tmux environment. If so desired,
-[styling](docs/Styling.md) can be used.
+[styling](docs/Styling.md) can be used, as can be seen above to the right.
 
 Not too hard to adapt to fit your needs. Items that some
 might find slightly redundant are included, easier to remove excess for more
@@ -20,11 +20,11 @@ experienced users, then add more for newbies.
 
 ## Recent Changes
 
+- Added mirrored layouts for tmux >= 3.5
+- Fully clear cache if tmux version has changed
 - Fixed broken handling of multiword params
 - Layouts available both from Panes and Windows menus
 - Added `docs/SingleQuotes.md` to explain some pitfalls of single quoted variables.
-- Now handles tmux 3.4 odd interpretation of `$HOME` inside single quotes
-- Prevent tmux variables from being expanded in `Display Menu Commands`
 
 </details>
 <details>
@@ -98,7 +98,8 @@ src="https://github.com/user-attachments/assets/a657ca58-61d7-45ad-8521-3a234131
 | 3.2        | Menu location fully available.                                                                                                     |
 | 3.0 - 3.1c | Menu centering is not supported, it's displayed top left if C is selected.                                                         |
 | < 3.0      | Needs `whiptail` or `dialog` (see below). Menu location and styling settings are ignored.                                          |
-| 1.8        | tpm is not available, so the plugin needs to be initialized by running [path to tmux-menus]/menus.tmux directly from the conf file |
+| < 1.8      | tpm is not available, so the plugin needs to be initialized by running [path to tmux-menus]/menus.tmux directly from the conf file |
+| 1.5        | Minimal tmux version required                                                                                                      |
 
 The above table covers compatibility for the general tool. Some menu items
 has a min tmux version set, if the running tmux doesn't match this,
@@ -452,7 +453,7 @@ line to check for syntax errors:
 This will immediately execute the menu and display any errors in the terminal.
 
 If `@menus_log_file` is set—either in the tmux configuration or hardcoded in
-`scripts/helpers_minimal.sh` (around line 355, look for assignment of cfg_log_file)
+`scripts/helpers_minimal.sh` (around line 491, look for assignment of cfg_log_file)
 logging can be used within menus:
 
 ```bash

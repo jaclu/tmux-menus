@@ -45,19 +45,23 @@ static_content() {
         0.0 C "\<" "Swap window Left" "swap-window -d -t :-1 $runshell_reload_mnu" \
         0.0 C "\>" "Swap window Right" "swap-window -d -t :+1 $runshell_reload_mnu" \
         0.0 S \
-        1.7 E m "Move window to other location" "$d_scripts/act_choose_tree.sh w m" \
-        1.7 E l "Link window to other session" "$d_scripts/act_choose_tree.sh w l"
+        1.8 E m "Move window to other location" "$d_scripts/act_choose_tree.sh w m" \
+        1.8 E l "Link window to other session" "$d_scripts/act_choose_tree.sh w l"
 
-    $cfg_use_hint_overlays && $cfg_show_key_hints && {
+    tmux_vers_check 1.8 && {
+        # Limit to same vers as act_choose-tree.sh, even if this is not vers dependent.
+        # Showing help about a disabled feature would be confusing
+
+        $cfg_use_hint_overlays && $cfg_show_key_hints && {
+            set -- "$@" \
+                0.0 M K "Key hints - Move/Link      $nav_next" "$d_hints/choose-tree.sh $0"
+        }
+
         set -- "$@" \
-            1.7 M K "Key hints - Move/Link      $nav_next" "$d_hints/choose-tree.sh $0"
+            0.0 C u "Unlink window from this session" "unlink-window" \
+            0.0 S \
+            0.0 M H "Help, explaining Move/Link $nav_next" "$d_help/help_window_move.sh $0"
     }
-
-    set -- "$@" \
-        0.0 C u "Unlink window from this session" "unlink-window" \
-        1.7 S \
-        1.7 M H "Help, explaining Move/Link $nav_next" "$d_help/help_window_move.sh $0"
-
     menu_generate_part 5 "$@"
 }
 

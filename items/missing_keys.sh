@@ -36,7 +36,6 @@ static_content() {
         0.0 E h "Send # (hash)" "$0 0x23" \
         0.0 S \
         0.0 M H "Help               $nav_next" "$d_help/help_missing_keys.sh $0"
-
     menu_generate_part 3 "$@"
 }
 

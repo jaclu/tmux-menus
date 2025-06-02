@@ -77,7 +77,7 @@ tmux_get_defaults() { # new init
         default_location_y=P
     fi
 
-    default_format_title="'#[align=centre]  #{@menu_name} '"
+    default_format_title="'#[align=centre] #{@menu_name} '"
     default_border_type="EMPTY"
     default_simple_style_selected="EMPTY"
     default_simple_style="EMPTY"
@@ -182,6 +182,9 @@ tmux_get_option() {
     fi
 
     if [ -z "$_line" ]; then
+        # correctly captures undefined options, not getting confused if
+        # option was empty ie "", which confuses tmux 3.0–3.2a returning success
+        # if using show-options  on undefined options
         tgo_value="$tgo_default"
     else
         # shell built-in string splitting and unqoting avoids spawning external processes
@@ -266,7 +269,7 @@ fix_home_path() {
             ;;
         \$HOME/*)
             fhp_path="${fhp_path#\\}"            # Remove leading backslash
-            fhp_path="${HOME}${fhp_path#\$HOME}" # Expand ~ to $HOME
+            fhp_path="${HOME}${fhp_path#\$HOME}" # Expand $HOME
             ;;
         *) ;;
         esac
@@ -311,14 +314,12 @@ tmux_get_plugin_options() { # new init
         # additional settings will be cached
         if command -v whiptail >/dev/null; then
             cfg_alt_menu_handler=whiptail
-            log_it "NOTICE: tmux below 3.0 - using: whiptail"
         elif command -v dialog >/dev/null; then
             cfg_alt_menu_handler=dialog
-            log_it "NOTICE: tmux below 3.0 - using: dialog"
         else
-            error_msg_safe "Neither whiptail or dialog found, plugin aborted"
+            error_msg "Neither whiptail or dialog found, plugin aborted"
         fi
-        log_it "--- Activating cfg_use_whiptail due to tmux < 3.0"
+        log_it "--- Activating cfg_use_whiptail [$cfg_alt_menu_handler] due to tmux < 3.0"
         cfg_use_whiptail=true
     else
         cfg_use_whiptail=false
@@ -438,9 +439,7 @@ use_whiptail_env() {
 }
 
 tmux_escape_for_display() {
-    # echo "$@" | sed "s/\'/[\"]/g"
-    echo "$@" | sed "s/\'/\`/g" | sed 's/#/##/g'
-    # | sed "s/;/[semi-colon]/g" | sed 's/\"/[double-quote]/g'
+    echo "$@" | sed "s/'/\`/g" | sed 's/#/##/g'
 }
 
 tmux_error_handler() {
@@ -545,28 +544,32 @@ tmux_error_handler_assign() { # cache references
             exit 1
         else
             log_it "saved error to: $f_error_log"
-            #region tmux error msg
-            error_msg "$(
+            #region tmux _e_msg
+            _e_msg="$(
                 cat <<EOF
 tmux cmd failed ($ex_code):
 
 -----  Error msg:   -----
-$(tmux_escape_for_display "$_err_output")
+$_err_output
 -------------------------
 
-Due to limits in what can be displayed in this error, all usages of single-quote
-have been replaced by backticks, in the "Failed tmux command" in order to give as
-close a reppresentation as possible. The error file contains the unmodified command.
-
 -----   Failed tmux command   -----
-$(tmux_escape_for_display "$(cat "$f_error_log")")
+$(cat "$f_error_log")
 -----------------------------------
-The error message has been saved in: $(relative_path "$f_error_log")
+
+The error message has been saved in:
+  $(relative_path "$f_error_log")
 
 Full path: $f_error_log
 EOF
             )"
             #endregion
+            [ "$_e_msg" != "$(tmux_escape_for_display "$_e_msg")" ] && {
+                # Something was escaped, emphasize that the error file is unmodified
+                _s="The error file always contains the unmodified command"
+                _e_msg="$_e_msg \n\n==>  $_s  <=="
+            }
+            error_msg "$_e_msg"
         fi
         return 1 # shouldn't get here, but at least return an error
     fi

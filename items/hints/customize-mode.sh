@@ -52,7 +52,6 @@ static_content() {
         3.2 T "-#[nodim]f      Enter a format to filter items" \
         3.2 T "-#[nodim]v      Toggle option information" \
         3.2 T "-#[nodim]Esc/q  Exit mode"
-
     menu_generate_part 2 "$@"
 }
 

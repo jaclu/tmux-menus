@@ -18,7 +18,7 @@
 display_char() {
     c="$1"
     # log_it "display_char($c)"
-    [ -z "$c" ] && error_msg_safe "display_char() - no param"
+    [ -z "$c" ] && error_msg "display_char() - no param"
 
     if $cfg_use_whiptail; then
         #

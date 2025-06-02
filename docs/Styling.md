@@ -39,7 +39,9 @@ Since tmux scripting has limitations that quickly exhaust available quotes and t
 maximize styling freedom, these variables are not wrapped in quotes in the
 generated menu code.
 
-All quoting of spaces in the menu name etc. is up to the style creator.
+All quoting of spaces in the menu name etc. is up to the style creator. Since many
+menus have spaces in their name, this essentially means that if `#{@menu_name}`
+is used, it needs to be in an inner quote
 
 This could be more trouble than it's worth, so let me know if this method isn’t practical.
 On the upside, it should allow for maximum styling flexibility.
