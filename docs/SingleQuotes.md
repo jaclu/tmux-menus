@@ -60,7 +60,7 @@ set -g @my_key '\'  # unreliable in some quoting contexts
 
 ```tmux
 set -g @plugin_path "$HOME/.tmux/plugins"
-set -g @plugin_path "$HOME/plugins"
+set -g @plugin_path "~/plugins"
 set -g @my_key "\\" # explicit and unambiguous
 ```
 
