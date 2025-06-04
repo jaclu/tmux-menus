@@ -23,7 +23,7 @@ static_content() {
     respawn_action="$respawn_action $runshell_reload_mnu"
     set -- \
         0.0 S \
-        1.8 C z "Toggle pane zoom" "resize-pane -Z $runshell_reload_mnu" \
+        1.8 C z "Toggle zoom pane" "resize-pane -Z $runshell_reload_mnu" \
         2.1 C m "Toggle mark current pane" "select-pane -m $runshell_reload_mnu" \
         1.5 C s "Toggle synchronized panes" "set-option -w synchronize-panes $runshell_reload_mnu" \
         2.6 C t "Set Pane Title" "command-prompt -I '#T'  -p 'Title: '  \

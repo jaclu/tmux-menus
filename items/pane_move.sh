@@ -13,6 +13,7 @@ dynamic_content() {
     tmux_vers_check 3.0 || return
 
     $all_helpers_sourced || source_all_helpers "pane_move:dynamic_content()"
+
     tmux_error_handler_assign other_pane_marked display-message \
         -p '#{&&:#{pane_marked_set},#{!=:#{pane_marked},1}}'
 
@@ -50,7 +51,7 @@ static_content() {
         0.0 C p "swap pane with Prev" "swap-pane -U $runshell_reload_mnu" \
         0.0 C n "swap pane with Next" "swap-pane -D $runshell_reload_mnu"
     menu_generate_part 3 "$@"
-    
+
     set -- \
         0.0 S \
         2.4 E b "Break pane off to a new window" "$d_scripts/break_pane.sh ; $0" \

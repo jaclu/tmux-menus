@@ -4,6 +4,19 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [2.2.9] - 2025-06-04
+
+### Added
+
+- moved Modifications to separate document
+
+### Changed
+
+- Simplified README.md
+- Better alignment Window - Pane & Move Window - Move Pane, both shortcuts and item order
+
+---
+
 ## [2.2.8] - 2025-06-02
 
 ### Added

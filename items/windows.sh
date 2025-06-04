@@ -17,13 +17,16 @@ static_content() {
     menu_generate_part 1 "$@"
     $cfg_display_cmds && display_commands_toggle 2
 
+    # def bindings
+    #  Previous window with an alert    <p> M-p
+    #  Next window with an alert        <p> M-n
     set -- \
         0.0 S \
         1.5 C r "Rename window" "command-prompt -I '#W'  \
             -p 'New window name: ' 'rename-window %%' $runshell_reload_mnu" \
-        1.3 C + "New window after current" "command-prompt -p \
+        1.3 C a "New window after current" "command-prompt -p \
             'Name of new window: ' 'new-window -a -n \"%%\"' $runshell_reload_mnu" \
-        1.3 C "\>" "New window at the end" "command-prompt -p \
+        1.3 C e "New window at the end" "command-prompt -p \
             'Name of new window: ' 'new-window -n \"%%\"' $runshell_reload_mnu" \
         1.7 C s "Display Window size" "display-message \
             'Window size: #{window_width}x#{window_height}' $runshell_reload_mnu" \
@@ -31,8 +34,8 @@ static_content() {
         0.0 C l "Last selected window" "last-window $runshell_reload_mnu" \
         0.0 C p "Previous window [in order]" "previous-window $runshell_reload_mnu" \
         0.0 C n "Next     window [in order]" "next-window $runshell_reload_mnu" \
-        0.0 C P "Previous window with an alert" "previous-window -a $runshell_reload_mnu" \
-        0.0 C N "Next window with an alert" "next-window -a $runshell_reload_mnu" \
+        0.0 C M-p "Previous window with an alert" "previous-window -a $runshell_reload_mnu" \
+        0.0 C M-n "Next     window with an alert" "next-window -a $runshell_reload_mnu" \
         0.0 S \
         1.8 C x "Kill current window" "confirm-before -p \
             'kill-window #W? (y/n)' kill-window  $runshell_reload_mnu" \

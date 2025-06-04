@@ -17,6 +17,7 @@ dynamic_content() {
     tmux_error_handler_assign this_win_id display-message -p '#{window_id}'
     tmux_error_handler_assign pane_marked_status list-panes -a \
         -F '#{pane_marked} #{window_id}'
+
     # SC2154: variables assigned dynamically by tmux_error_handler_assign using eval
     # shellcheck disable=SC2154
     s_found="$(echo "$pane_marked_status" | grep '1 ' | grep -v "$this_win_id")"
@@ -38,12 +39,12 @@ static_content() {
     $cfg_display_cmds && display_commands_toggle 2 # give this its own menu part idx
 
     set -- \
-        0.0 S
+        0.0 S \
+        0.0 C p "Swap window Left" "swap-window -d -t :-1 $runshell_reload_mnu" \
+        0.0 C n "Swap window Right" "swap-window -d -t :+1 $runshell_reload_mnu"
     menu_generate_part 3 "$@"
 
     set -- \
-        0.0 C "\<" "Swap window Left" "swap-window -d -t :-1 $runshell_reload_mnu" \
-        0.0 C "\>" "Swap window Right" "swap-window -d -t :+1 $runshell_reload_mnu" \
         0.0 S \
         1.8 E m "Move window to other location" "$d_scripts/act_choose_tree.sh w m" \
         1.8 E l "Link window to other session" "$d_scripts/act_choose_tree.sh w l"
