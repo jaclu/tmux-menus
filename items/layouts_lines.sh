@@ -17,14 +17,14 @@ static_content() {
 
     _c="set-option -w pane-border-status"
     set -- \
-        3.2 S \
-        3.2 T "-#[align=centre,nodim]pane title" \
-        0.0 C o "Off" "$_c  off     $runshell_reload_mnu" \
-        0.0 C t "Top" "$_c      top     $runshell_reload_mnu" \
-        0.0 C b "Bottom" "$_c   bottom  $runshell_reload_mnu" \
-        0.0 C c "Change" "command-prompt -I '#T' -p 'Pane title: ' \
+        0.0 S \
+        0.0 T "-#[align=centre,nodim]pane title" \
+        2.5 C o "Off" "$_c  off     $runshell_reload_mnu" \
+        2.5 C t "Top" "$_c      top     $runshell_reload_mnu" \
+        2.5 C b "Bottom" "$_c   bottom  $runshell_reload_mnu" \
+        2.5 C c "Change" "command-prompt -I '#T' -p 'Pane title: ' \
             'select-pane -T \"%%\"' $runshell_reload_mnu" \
-        0.0 T "-" \
+        3.2 T "-" \
         3.2 T "-#[align=centre,nodim]pane-border-lines" \
         3.2 C s "Single" "set-option pane-border-lines  single  $runshell_reload_mnu" \
         3.2 C d "Double" "set-option pane-border-lines  double  $runshell_reload_mnu" \
@@ -41,6 +41,7 @@ static_content() {
 #===============================================================
 
 menu_name="Layouts - Border Lines"
+menu_min_vers=2.5
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"

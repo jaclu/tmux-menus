@@ -4,6 +4,14 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [unreleased]
+
+### Changed
+
+- Set min version to 2.5 for "Layouts - Border Lines"
+
+---
+
 ## [2.2.11] - 2025-06-06
 
 ### Added
