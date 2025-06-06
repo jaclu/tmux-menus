@@ -19,11 +19,11 @@ experienced users, then add more for newbies.
 
 ## Recent Changes
 
+- Layouts - Border Lines: Added controls for pane title
 - Added mirrored layouts for tmux >= 3.5
 - Fully clear cache if tmux version has changed
 - Fixed broken handling of multiword params
 - Layouts available both from Panes and Windows menus
-- Added `docs/SingleQuotes.md` to explain some pitfalls of single quoted variables.
 
 ## Purpose
 

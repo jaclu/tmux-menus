@@ -4,6 +4,14 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [2.2.11] - 2025-06-06
+
+### Added
+
+- Layouts - Border Lines: Added controls for pane title
+
+---
+
 ## [2.2.10] - 2025-06-04
 
 ### Changed
