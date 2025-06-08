@@ -19,11 +19,11 @@ experienced users, then add more for newbies.
 
 ## Recent Changes
 
+- Missing Keys - Currencies; Added bitcoin glyph
+- Missing Keys - Diacritics; Added entry of common diacritics
 - Layouts - Border Lines: Added controls for pane title
 - Added mirrored layouts for tmux >= 3.5
 - Fully clear cache if tmux version has changed
-- Fixed broken handling of multiword params
-- Layouts available both from Panes and Windows menus
 
 ## Purpose
 

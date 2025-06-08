@@ -13,7 +13,7 @@ show_label() {
     # Some Currency symbols can't be printed in whiptail
     if $cfg_use_whiptail; then
         case "$1" in
-        ₺ | ₴ | ₽ | ₹)
+        ₺ | ₴ | ₽ | ₹ | ₿)
             echo "Send   ($2) - not printable in whiptail"
             ;;
         *)
@@ -30,19 +30,15 @@ static_content() {
     tmux_vers_check 2.0 || error_msg "needs tmux 2.0"
 
     set -- \
-        0.0 M Left "Back to Missing Keys  $nav_prev" missing_keys.sh \
+        0.0 M Left "Back to Missing Keys  $nav_prev" "$d_odd_chars"/missing_keys.sh \
         0.0 M Home "Back to Main menu     $nav_home" main.sh
     menu_generate_part 1 "$@"
     $cfg_display_cmds && display_commands_toggle 2
 
     set -- \
-        0.0 S
-
-    # how to print?
-    # ₿ (bitcoin)
-
-    set -- "$@" \
+        0.0 S \
         0.0 E b "$(show_label ฿ baht)" "$0 ฿" \
+        0.0 E B "$(show_label ₿ bitcoin)" "$0 \u20BF" \
         0.0 E c "$(show_label ¢ Cent)" "$0 ¢" \
         0.0 E e "$(show_label € euro)" "$0 €" \
         0.0 E h "$(show_label ₴ hryvnia)" "$0 ₴" \
@@ -70,10 +66,10 @@ menu_name="Currency symbols"
 menu_min_vers=2.0
 
 #  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
+D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(dirname -- "$(realpath "$0")")")")"
 
-# shellcheck source=scripts/helpers_minimal.sh
-. "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
+# shellcheck source=scripts/helpers.sh
+. "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 if [ -n "$1" ]; then
     "$d_scripts"/act_display_char.sh "$1"

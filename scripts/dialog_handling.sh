@@ -741,6 +741,9 @@ set_menu_env_variables() {
     static_cache_updated=false  # used to decide if static cache file reduction should happen
     b_do_show_cmds=false
 
+    # shellcheck disable=SC2034 # Used by currencies and diacritics menus
+    d_odd_chars="$d_items/odd_chars"
+
     if [ "$cfg_use_whiptail" = true ]; then
         # Display Commands can only be used with tmux menus and caching
         cfg_display_cmds=false

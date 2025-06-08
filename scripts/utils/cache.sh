@@ -339,7 +339,7 @@ verify_tmux_vers_unchanged() {
 
         # SC2030: If the subshell can't source this, make sure it doesn't inherit
         #         the current state
-        shellcheck disable=SC2030
+        # shellcheck disable=SC2030
         current_tmux_vers="unknown"
 
         source_cached_params

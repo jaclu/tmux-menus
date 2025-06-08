@@ -4,6 +4,20 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [2.2.13] - 2025-06-08
+
+### Added
+
+- Currencies; Added bitcoin glyph
+- Missing Keys - Diacritics; Added entry of common diacritics
+
+### Changed
+
+- removed exec flag from a source only script show_cmd.sh
+- Fixed bug in cache.sh - forgotten # before a shellcheck directive
+
+---
+
 ## [2.2.12] - 2025-06-08
 
 ### Changed

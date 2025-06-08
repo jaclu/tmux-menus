@@ -22,7 +22,8 @@ static_content() {
     #
     set -- \
         0.0 M Left "Back to Main menu  $nav_home" main.sh \
-        2.0 M C "Currencies         $nav_next" currencies.sh
+        2.0 M C "Currencies         $nav_next" "$d_odd_chars"/currencies.sh \
+        0.0 M D "Diacritics         $nav_next" "$d_odd_chars"/diacritics.sh
     menu_generate_part 1 "$@"
     $cfg_display_cmds && display_commands_toggle 2
 
@@ -49,10 +50,10 @@ menu_name="Missing Keys"
 menu_min_vers=2.0
 
 #  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
+D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(dirname -- "$(realpath "$0")")")")"
 
-# shellcheck source=scripts/helpers_minimal.sh
-. "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
+# shellcheck source=scripts/helpers.sh
+. "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 if [ -n "$1" ]; then
     "$d_scripts"/act_display_char.sh "$1"
