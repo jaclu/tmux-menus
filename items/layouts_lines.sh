@@ -31,7 +31,7 @@ static_content() {
         3.2 C h "Heavy" "set-option  pane-border-lines  heavy   $runshell_reload_mnu" \
         3.2 C i "sImple" "set-option pane-border-lines  simple  $runshell_reload_mnu" \
         3.2 C n "Number" "set-option pane-border-lines  number  $runshell_reload_mnu"
-    menu_generate_part 5 "$@"
+    menu_generate_part 3 "$@"
 }
 
 #===============================================================

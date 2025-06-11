@@ -4,6 +4,16 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [2.2.14] - 2025-06-11
+
+### Changed
+
+- Bug: extras.sh - incorrect line continuation hiding external tools
+- `Layouts - Border Indicators` - menu_min_vers=3.3
+- Cleanup of TODO - removed completed tasks
+
+---
+
 ## [2.2.13] - 2025-06-08
 
 ### Added
