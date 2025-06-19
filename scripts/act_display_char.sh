@@ -56,8 +56,6 @@ handle_char() {
     0x*)
         # handle it as a hex code
 
-        s_in="0xC3"
-
         # Strip the '0x' and convert hex to raw byte using `printf`
         hex="${s_in#0x}"
 

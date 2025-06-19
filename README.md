@@ -19,11 +19,11 @@ experienced users, then add more for newbies.
 
 ## Recent Changes
 
+- Fixed bug in Missing Keys, prevented some keys from being used
 - Fixed bug in Extras - hiding external tools
 - Missing Keys - Currencies; Added bitcoin glyph
 - Missing Keys - Diacritics; Added entry of common diacritics
 - Layouts - Border Lines: Added controls for pane title
-- Added mirrored layouts for tmux >= 3.5
 
 ## Purpose
 

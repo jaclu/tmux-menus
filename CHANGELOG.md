@@ -4,6 +4,15 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [2.2.15] - 2025-06-19
+
+### Changed
+
+- Bug fix: Removed leftover debug code that prevented some missing keys from being
+  displayed
+
+---
+
 ## [2.2.14] - 2025-06-11
 
 ### Changed
