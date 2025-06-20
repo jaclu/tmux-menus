@@ -4,6 +4,15 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [2.2.16] - 2025-06-20
+
+### Changed
+
+- Bug fix: Made conversion of hex char -> printable be more POSIX compliant
+  in order to get it to run on iSH
+
+---
+
 ## [2.2.15] - 2025-06-19
 
 ### Changed

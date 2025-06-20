@@ -43,27 +43,16 @@ display_char() {
     fi
 }
 
-#
-#  Function to handle a character, mainly used when script has a command
-#  line parameter
-#
 handle_char() {
+    #  If needed convert hex chars into printable format
     s_in="$1"
     [ -z "$s_in" ] && error_msg "handle_char() - no param"
     # log_it "handle_char($s_in)"
 
     case "$s_in" in
     0x*)
-        # handle it as a hex code
-
-        # Strip the '0x' and convert hex to raw byte using `printf`
-        hex="${s_in#0x}"
-
-        # Safely print the byte without using variable in format string
-        # SC2059-safe, since format is a literal and argument is a variable
-        s=$(printf "%b" "$(printf '\\%03o' "0x$hex")")
-
-        # s="$(printf "\\$(printf "%o" "0x${s_in#0x}")")"
+        # Convert hex → decimal → octal escape → character (POSIX-compliant)
+        s=$(printf '%b' "$(printf '\\%03o' "$(printf '%d' "$s_in")")")
         ;;
     *) s="$s_in" ;;
     esac
