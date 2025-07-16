@@ -1187,6 +1187,35 @@ display_menu() {
     fi
 }
 
+do_dialog_handling() {
+    # shellcheck disable=SC2154 # log_file_forced usually not set
+    [ "$log_file_forced" = 1 ] && {
+        # Useful when debugging to keep each menu generation process separate
+        log_it
+        log_it
+        log_it
+        log_it
+        log_it
+    }
+
+    #
+    # Some env checks
+    #
+    [ -z "$menu_name" ] && error_msg_safe "menu_name not defined"
+    [ -n "$menu_min_vers" ] && check_menu_min_vers
+    # shellcheck disable=SC2154 # might be defined in calling menu
+    [ "$skip_oversized" = "1" ] && oversized_check
+
+    menu_debug="" # Set to 1 to use echo 2 to use log_it
+
+    prepare_menu
+    # shellcheck disable=SC2154 # TMUX_MENUS_NO_DISPLAY is an env variable
+    [ "$TMUX_MENUS_NO_DISPLAY" != "1" ] && display_menu
+
+    # log_it "[$$]   COMPLETED: scripts/dialog_handling.sh - $rn_current_script"
+    return 0 # ensuring this exits true
+}
+
 #===============================================================
 #
 #   Main
@@ -1210,28 +1239,5 @@ display_menu() {
     . "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
 }
 
-[ "$log_file_forced" = 1 ] && {
-    # Useful when debugging to keep each menu generation process separate
-    log_it
-    log_it
-    log_it
-    log_it
-    log_it
-}
-
-#
-# Some env checks
-#
-[ -z "$menu_name" ] && error_msg_safe "menu_name not defined"
-[ -n "$menu_min_vers" ] && check_menu_min_vers
-# shellcheck disable=SC2154 # might be defined in calling menu
-[ "$skip_oversized" = "1" ] && oversized_check
-
-menu_debug="" # Set to 1 to use echo 2 to use log_it
-
-prepare_menu
-# shellcheck disable=SC2154 # TMUX_MENUS_NO_DISPLAY is an env variable
-[ "$TMUX_MENUS_NO_DISPLAY" != "1" ] && display_menu
-
-# log_it "[$$]   COMPLETED: scripts/dialog_handling.sh - $rn_current_script"
-return 0 # ensuring this exits true
+# shellcheck disable=SC2154 # no_auto_dialog_handling usually not set
+[ "$no_auto_dialog_handling" != 1 ] && do_dialog_handling

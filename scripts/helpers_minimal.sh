@@ -63,8 +63,10 @@ source_all_helpers() {
     #  Sources the full helper environment, if not already loaded.
     #
     #  Initially, only helpers_minimal.sh is loaded for performance. It includes:
-    #    - log_it / log_it_minimal
-    #    - error_msg_safe (safe to call before full sourcing)
+    #   - log_it / log_it_minimal
+    #   - tmux_vers_check
+    #   - safe_now & time_span (used by dialog_handling to log render speed)
+    #   - error_msg_safe (safe to call before full sourcing)
     #
     #  Use this to load all helpers when needed, ensuring it's only done once:
     #    $all_helpers_sourced || source_all_helpers "caller description"

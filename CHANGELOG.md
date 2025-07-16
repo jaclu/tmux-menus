@@ -4,6 +4,22 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [2.2.17] - 2025-07-16
+
+### Added
+
+- display_message() - if tmux > 1.7 messages longer than status bar will be displayed
+  in full screen.
+
+### Changed
+
+- Removed remaining Bash dependencies
+- Made it possible to import dialog_handling without running it right away,
+  solving linting issues with items/hints & Missing chars menus
+- Code cleanup to avoid repeated sourcing that confused linters
+
+---
+
 ## [2.2.16] - 2025-06-20
 
 ### Changed

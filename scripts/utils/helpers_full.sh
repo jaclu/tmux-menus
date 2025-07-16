@@ -15,18 +15,45 @@
 #
 #---------------------------------------------------------------
 
+display_message() {
+    dm_msg="$1"
+    dm_no_hold="$2"
+    # shellcheck disable=SC2154 # plugin_name defined in cache/plugin_params
+    dm_msg_hold="$plugin_name: $dm_msg"
+
+    if tmux_vers_check 1.7; then
+        # "#{client_width}" - not usable before tmux 1.7
+        # shellcheck disable=SC2154 # $TMUX_BIN defined in helpers_minimal.sh
+        actual_win_width="$($TMUX_BIN display-message -p '#{client_width}')"
+        if [ "${#dm_msg_hold}" -ge "$actual_win_width" ] || has_lf_not_at_end "$dm_msg"; then
+	        display_formatted_message "$dm_msg"
+        else
+            display_message_hold "$dm_msg_hold" "$dm_no_hold"
+        fi
+    else
+        # Pre tmux 1.7 screen with not accessible, always display as formatted msg
+        display_formatted_message "$dm_msg" "$dm_no_hold"
+    fi
+}
+
 display_message_hold() {
     #
     #  Display a message and hold until key-press
     #  Can't use tmux_error_handler() in this func, since that could trigger recursion
     #
     dmh_msg="$1"
-    # log_it "display_message_hold($dmh_msg)"
+    dmh_no_hold="$2"
+
+    # log_it "display_message_hold($dmh_msg) no_hold: $dmh_no_hold"
+
+    [ "$dmh_no_hold" = "no_hold" ] && {
+	# request to not hold the msg
+        $TMUX_BIN display-message "$dmh_msg"
+	return
+    }
 
     if tmux_vers_check 3.2; then
         # message will remain until key-press
-        # shellcheck disable=SC2154 # $TMUX_BIN defined in helpers_minimal.sh
-
         $TMUX_BIN display-message -d 0 "$dmh_msg"
     else
         # Manually make the error msg stay on screen a long time
@@ -41,30 +68,30 @@ display_message_hold() {
     fi
 }
 
-display_formated_message() {
+display_formatted_message() {
     #
     # Display a long (typically multi line) message in a temp window
     #
     # if _msg_type is specified, it is left to the caller to add a header if such
     # is wanted
     #
-    #  This is called from error_msg_formated(), this means
+    #  This is called from error_msg_formatted(), this means
     #  tmux_error_handler(), tmux_error_handler_assign() or error_msg()
     #  Can not be used here - it could lead to infinite recursion...
     #
     _dfm_msg="$1"
     _default_msg_type="notification message"
     _msg_type="${2:-$_default_msg_type}"
-    # log_it "display_formated_message()"
+    # log_it "display_formatted_message()"
 
     [ -z "$_dfm_msg" ] && {
         # Can't use error_msg here, so _dfm_msg is used to display this error
-        _dfm_msg="display_formated_message() - Param error: no message provided"
+        _dfm_msg="display_formatted_message() - Param error: no message provided"
     }
     _msg_escaped="$(tmux_escape_for_display "$_dfm_msg")"
     _display_msg="$(
         [ "$_msg_type" = "$_default_msg_type" ] && {
-            # shellcheck disable=SC2154 # plugin_name defined in cache/plugin_params
+	    # shellcheck disable=SC2154 # rn_current_script defined in helpers_minimal.sh
             echo "Notification from plugin $plugin_name - running: $rn_current_script"
             echo
         }
@@ -88,7 +115,7 @@ Press Ctrl-C to close this message
 
     $TMUX_BIN new-window -n "tmux-menus notification" "echo '$_display_msg' ; tail -f /dev/null " || {
 
-        log_it "><> display_formated_message() - triggered error: $?"
+        log_it "><> display_formatted_message() - triggered error: $?"
         exit 1
     }
 }
@@ -147,16 +174,16 @@ error_msg_actual() {
         # "#{client_width}" - not usable before tmux 1.7
         actual_win_width="$($TMUX_BIN display-message -p '#{client_width}')"
         if [ "${#msg_hold}" -ge "$actual_win_width" ] || has_lf_not_at_end "$em_msg"; then
-            error_msg_formated "$em_msg"
+            error_msg_formatted "$em_msg"
         else
             display_message_hold "$msg_hold"
         fi
     else
-        error_msg_formated "$em_msg"
+        error_msg_formatted "$em_msg"
     fi
 }
 
-error_msg_formated() {
+error_msg_formatted() {
     #
     #  Display an error in its own frame, supporting longer messages
     #  and also those formatted with LFs
@@ -166,16 +193,15 @@ error_msg_formated() {
     #
     emf_err="$1"
 
-    # log_it "error_msg_formated()"
+    # log_it "error_msg_formatted()"
 
     emf_msg="$(
-        # shellcheck disable=SC2154 # rn_current_script defined in helpers_minimal.sh
         echo "ERROR in plugin $plugin_name - running: $rn_current_script"
         echo
         echo "$emf_err"
     )"
 
-    display_formated_message "$emf_msg" "error message"
+    display_formatted_message "$emf_msg" "error message"
 }
 
 #---------------------------------------------------------------
