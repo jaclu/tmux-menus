@@ -509,9 +509,9 @@ tmux_error_handler_assign() { # cache references
     ex_code="$?"
     $teh_debug && {
         if $teh_store_result; then
-            log_it "teh: cmd done - excode:$ex_code - output: >>$value<<"
+            log_it "tmux handler: cmd done - excode:$ex_code - output: >>$value<<"
         else
-            log_it "teh: cmd done - excode:$ex_code"
+            log_it "tmux handler: cmd done - excode:$ex_code"
         fi
     }
 
