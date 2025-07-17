@@ -49,18 +49,16 @@ menu_name="Diacritics - u U"
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(dirname -- "$(realpath "$0")")")")"
 
-# shellcheck source=scripts/helpers.sh
-. "$D_TM_BASE_PATH"/scripts/helpers.sh
+no_auto_dialog_handling=1 # delay processing of dialog, only source it for now
+# shellcheck source=scripts/dialog_handling.sh
+. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 
 if [ -n "$1" ]; then
-    "$d_scripts"/act_display_char.sh "$1"
+    "$D_TM_BASE_PATH"/scripts/act_display_char.sh "$1"
 elif $cfg_use_whiptail; then
-    #
-    #  wt_pasting is a hint that the current paste buffer is used to store
-    #  one or more keys for late pasting
-    #
+    source_all_helpers "Clear missing_keys buffer: $wt_pasting"
     tmux_error_handler set-option -gqu "$wt_pasting"
 fi
 
-# shellcheck source=scripts/dialog_handling.sh
-. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
+# manually trigger dialog handling
+do_dialog_handling

@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 # Always sourced file - Fake bang path to help editors
 #
 #   Copyright (c) 2022-2025: Jacob.Lundqvist@gmail.com
@@ -22,33 +22,33 @@ bind_plugin_key() {
     $cfg_use_notes && {
         # And why can't space be used in this note?
         # cmd+=" -N \"plugin ${plugin_name} trigger\""
-        cmd+=" -N 'plugin ${plugin_name} trigger'"
+        cmd="$cmd -N 'plugin ${plugin_name} trigger'"
     }
     # shellcheck disable=SC2154 # defined in cache/plugin_params
     if $cfg_no_prefix; then
-        cmd+=" -n"
+        cmd="$cmd -n"
         trigger_sequence="Menus will be bound to: $cfg_trigger_key"
     else
         trigger_sequence="Menus will be bound to: <prefix> $cfg_trigger_key"
     fi
-    cmd+=" '$cfg_trigger_key' run-shell $bind_cmd"
+    cmd="$cmd '$cfg_trigger_key' run-shell $bind_cmd"
 
     # shellcheck disable=SC2154 # TMUX_MENUS_NO_DISPLAY is an env variable
-    [[ "$TMUX_MENUS_NO_DISPLAY" = "1" ]] && {
+    [ "$TMUX_MENUS_NO_DISPLAY" = "1" ] && {
         # used for debugging menu builds
         log_it "Due to TMUX_MENUS_NO_DISPLAY terminating before binding trigger key"
         exit 0
     }
 
-    [[ ! -f "$f_skip_low_tmux_version_warning" ]] && ! tmux_vers_check 1.8 && {
+    [ ! -f "$f_skip_low_tmux_version_warning" ] && ! tmux_vers_check 1.8 && {
         # shellcheck disable=SC2154 # current_tmux_vers is an env variable
         msg="Due to tmux($current_tmux_vers) < 1.8 user options can not be processed.\n\n"
-        msg+="The tmux-menus plugin will be bound to its default key: $cfg_trigger_key \n\n"
-        msg+='All other options will also use their defaults.\n\n'
-        msg+="  tools/show_config.sh will display current settings.\n\n"
-        msg+="To avoid seeing this message again - do:\n"
-        msg+="  touch $f_skip_low_tmux_version_warning"
-        display_formated_message "$msg"
+        msg="{$msg}The tmux-menus plugin will be bound to its default key: $cfg_trigger_key"
+        msg="{$msg} \n\n'All other options will also use their defaults.\n\n'"
+        msg="{$msg}  tools/show_config.sh will display current settings.\n\n"
+        msg="{$msg}To avoid seeing this message again - do:\n"
+        msg="{$msg}  touch $f_skip_low_tmux_version_warning"
+        display_formatted_message "$msg"
     }
 
     # shellcheck disable=SC2154 # defined in helpers_minimal.sh
@@ -73,7 +73,7 @@ initialize_plugin=1
 f_skip_low_tmux_version_warning="$D_TM_BASE_PATH"/.skip_old_tmux_warning
 
 # shellcheck source=/dev/null # can't read source when mixing bah & posix
-source "$D_TM_BASE_PATH"/scripts/helpers.sh
+. "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 # log_it "=====   plugin_init.sh starting   ====="
 
@@ -87,7 +87,7 @@ else
 fi
 
 # shellcheck disable=SC2154 # d_cache defined in helpers_minimal.sh
-if [[ "$cfg_use_cache" = true ]] && [[ -d "$d_cache" ]]; then
+if [ "$cfg_use_cache" = true ] && [ -d "$d_cache" ]; then
     # clear out potentially obsolete cache items
     safe_remove "$f_cached_tmux_options" "plugin_init.sh"
     safe_remove "$f_cached_tmux_key_binds" "plugin_init.sh" external_path_ok

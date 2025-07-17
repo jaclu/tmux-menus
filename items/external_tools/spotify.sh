@@ -24,7 +24,7 @@ display_currently_playing_track() {
 
 static_content() {
 
-    reload_no_output=" >/dev/null ; $0"
+    # reload_no_output=" >/dev/null ; $0"
 
     [ -z "$(command -v spotify)" ] && error_msg "spotify bin not found!"
 
