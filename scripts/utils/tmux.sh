@@ -92,14 +92,13 @@ tmux_get_defaults() { # new init
     default_use_hint_overlays=Yes
     default_show_key_hints=No
 
-    # if [ -n "$TMUX_CONF" ]; then
-    #     default_tmux_conf="$TMUX_CONF"
-    # elif [ -n "$XDG_CONFIG_HOME" ]; then
-    #     default_tmux_conf="$XDG_CONFIG_HOME/tmux/tmux.conf"
-    # else
-    #     default_tmux_conf="$HOME/.tmux.conf"
-    # fi
-    default_tmux_conf="$Z4H/zsh4humans/tmux.conf"
+    if [ -n "$TMUX_CONF" ]; then
+        default_tmux_conf="$TMUX_CONF"
+    elif [ -n "$XDG_CONFIG_HOME" ]; then
+        default_tmux_conf="$XDG_CONFIG_HOME/tmux/tmux.conf"
+    else
+        default_tmux_conf="$HOME/.tmux.conf"
+    fi
 
     default_log_file="EMPTY"
 }
