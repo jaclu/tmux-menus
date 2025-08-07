@@ -215,6 +215,7 @@ cache_write_plugin_params() {
 
 cfg_trigger_key=\"$(cache_escape_special_chars "$cfg_trigger_key")\"
 cfg_no_prefix=$cfg_no_prefix
+cfg_main_menu=\"$cfg_main_menu\"
 
 cfg_use_cache=$cfg_use_cache
 " >"$_f_params_tmp"

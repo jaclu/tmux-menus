@@ -4,6 +4,15 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [2.2.18] - 2025-08-07
+
+### Added
+
+- New featue `Alternate menus`. By defining `@menus_main_menu` the entire menu set
+  can be replaced by alternates.
+
+---
+
 ## [2.2.17] - 2025-07-16
 
 ### Added

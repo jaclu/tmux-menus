@@ -13,6 +13,10 @@ adds a "Custom items" entry at the top of the Main menu.
 If caching is disabled, custom menus are not supported, since using them would
 require updating their index.
 
+A new feature Alternate menus is available. Using this approach the entirety of the
+menus are replaced. Custom menus still have merrit depending on usage case in that
+it allows for integrating some additional menus to the default ones.
+
 ---
 
 ## How It Works

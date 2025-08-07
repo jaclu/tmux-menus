@@ -19,11 +19,11 @@ experienced users, then add more for newbies.
 
 ## Recent Changes
 
+- Added alternate menus support - see [Alternate menus](#alternate-menus) below
 - Fixed bug in Missing Keys, prevented some keys from being used
 - Fixed bug in Extras - hiding external tools
 - Missing Keys - Currencies; Added bitcoin glyph
 - Missing Keys - Diacritics; Added entry of common diacritics
-- Layouts - Border Lines: Added controls for pane title
 
 ## Purpose
 
@@ -61,9 +61,9 @@ src="https://github.com/user-attachments/assets/d97d4e13-67a0-4207-9bc0-b875bc80
 <img width="337" alt="Help summary"
 src="https://github.com/user-attachments/assets/fadeb163-5513-4e60-b847-8fb74d93fc59" />
 <img width="264" alt="Missing Keys"
-src="https://github.com/user-attachments/assets/e7eeefb5-7339-46e1-8c2d-727cd39ee884" />
+src="https://github.com/user-attachments/assets/6a537dae-3530-4e5e-8402-d3c272faf6c8" />
 <img width="270" alt="Missing Keys-whiptail"
-src="https://github.com/user-attachments/assets/a657ca58-61d7-45ad-8521-3a2341313497" />
+src="https://github.com/user-attachments/assets/4da2a426-2299-4234-8d84-89ae52e9761a" />
 
 ## Dependencies & Compatibility
 
@@ -314,6 +314,35 @@ Such lines are truncated. And the entire command was not displayed.
 If commands end with `>` it is recommended to use a narrower setting for
 `@menus_display_cmds_cols`
 
+### Alternate menus
+
+```tmux
+set -g @menus_main_menu "~/my_tmux_menus/main.sh"
+```
+
+This option has no default. If unset, the built-in menus are used.
+It can be set to override the default menus with a custom set.
+
+Note: If a custom menu links to any of the built-in menus, the “main menu” in those
+remains the default one.
+There is no built-in mechanism to return to the custom main menu from there.
+You’ll need to close the menu and trigger your custom main menu again.
+
+Also, all custom menus must define D_TM_BASE_PATH to point to the tmux-menus
+installation directory. This is required for support scripts to be located correctly.
+
+## Custom Menus
+
+While the initial assumption was that users wanting to modify the menus would fork
+the repository and make changes directly, a feature was added to allow menus to
+be added dynamically based on user requests.
+
+The primary difference between alternate and custom menus is that custom menus
+integrate into the official menus, and alternate menus are completely separate.
+
+For details on how to use this feature, see the documentation:
+[docs/CustomMenus.md](docs/CustomMenus.md)
+
 ## Screen might be too small
 
 tmux does not give any error if a menu doesn't fit the available screen,
@@ -335,15 +364,6 @@ tmux-menus ERROR: Screen might be too small
 It will also be displayed if the menu is closed right away intentionally
 or unintentionally, so there will no doubt sometimes be false positives.
 If it doesn't happen the next time the menu is attempted, it can be ignored.
-
-## Custom Menus
-
-While the initial assumption was that users wanting to modify the menus would fork
-the repository and make changes directly, a feature was added to allow menus to
-be added dynamically based on user requests.
-
-For details on how to use this feature, see the documentation:
-[docs/CustomMenus.md](docs/CustomMenus.md)
 
 ## whiptail / dialog - alternate tools for displaying menus
 

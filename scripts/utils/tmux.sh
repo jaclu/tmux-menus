@@ -92,6 +92,9 @@ tmux_get_defaults() { # new init
     default_use_hint_overlays=Yes
     default_show_key_hints=No
 
+    # shellcheck disable=SC2154 # this is available at runtime
+    default_main_menu="$f_main_menu"
+
     if [ -n "$TMUX_CONF" ]; then
         default_tmux_conf="$TMUX_CONF"
     elif [ -n "$XDG_CONFIG_HOME" ]; then
@@ -127,8 +130,9 @@ tmux_get_option() {
     tgo_no_cache="$4"
 
     # log_it "tmux_get_option($tgo_varname, $tgo_option, $tgo_default, $tgo_no_cache)"
+
     # usually disabled for performance
-    validate_varname "$tgo_varname" "tmux_get_option()"
+    # validate_varname "$tgo_varname" "tmux_get_option()"
 
     # [ -z "$tgo_varname" ] && error_msg "tmux_get_option() param 1 empty!"
     [ -z "$tgo_option" ] && error_msg "tmux_get_option() param 2 empty!"
@@ -159,7 +163,7 @@ tmux_get_option() {
         cache_save_options_defined_in_tmux
 
         if [ -d /proc/ish ]; then
-            # much slower due to subshell, but iSH lacks /dev so the quick method
+            # much slower due to subshell, but iSH lacks a full /dev so the quick method
             # below can't be used
             _line=$(grep "$tgo_option " "$f_cached_tmux_options")
         else
@@ -309,6 +313,12 @@ tmux_get_plugin_options() { # new init
         # shellcheck disable=SC2034 # variable used to define cache/plugin_params
         cfg_no_prefix=false
     fi
+
+    # Define main menu
+    tmux_get_option cfg_main_menu "@menus_main_menu" "$default_main_menu"
+    # shellcheck disable=SC2154
+    # SC2154: variable assigned dynamically by tmux_get_option using eval
+    [ ! -f "$cfg_main_menu" ] && error_msg "Alternate main menu not found: $cfg_main_menu"
 
     if ! tmux_vers_check 3.0; then
         # if on next plugin_setup a menus able tmux is detected the relevant

@@ -11,7 +11,7 @@
 
 bind_plugin_key() {
     # shellcheck disable=SC2154 # defined in helpers_minimal.sh
-    bind_cmd="$f_main_menu"
+    bind_cmd="$cfg_main_menu"
     # shellcheck disable=SC2154 # defined in cache/plugin_params
     if $cfg_use_whiptail; then
         bind_cmd="$f_ext_dlg_trigger"
@@ -32,6 +32,13 @@ bind_plugin_key() {
         trigger_sequence="Menus will be bound to: <prefix> $cfg_trigger_key"
     fi
     cmd="$cmd '$cfg_trigger_key' run-shell $bind_cmd"
+
+    tmux_get_option f_main_menu_override "@menus_main_menu" "-"
+    # shellcheck disable=SC2154
+    # SC2154: variable assigned dynamically by tmux_get_option using eval
+    [ "$f_main_menu_override" != "-" ] && {
+        log_it "Using alternate main menu: $f_main_menu_override"
+    }
 
     # shellcheck disable=SC2154 # TMUX_MENUS_NO_DISPLAY is an env variable
     [ "$TMUX_MENUS_NO_DISPLAY" = "1" ] && {
