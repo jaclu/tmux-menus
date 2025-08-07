@@ -8,7 +8,7 @@ All notable changes to this project will be documented here.
 
 ### Added
 
-- New featue `Alternate menus`. By defining `@menus_main_menu` the entire menu set
+- New feature `Alternate menus`. By defining `@menus_main_menu` the entire menu set
   can be replaced by alternates.
 
 ---
