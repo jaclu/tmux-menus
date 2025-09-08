@@ -19,11 +19,12 @@ experienced users, then add more for newbies.
 
 ## Recent Changes
 
+- Initial fix for plugin located in a path containing space chars. Be aware
+  `Custom Menus` and `Alternate menus` are not yet supporting space chars in path!
 - Added alternate menus support - see [Alternate menus](#alternate-menus) below
 - Fixed bug in Missing Keys, prevented some keys from being used
 - Fixed bug in Extras - hiding external tools
 - Missing Keys - Currencies; Added bitcoin glyph
-- Missing Keys - Diacritics; Added entry of common diacritics
 
 ## Purpose
 
