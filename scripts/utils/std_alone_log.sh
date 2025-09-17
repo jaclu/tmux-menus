@@ -16,8 +16,8 @@ sal_error() {
 
 log_msg="$1"
 
-#  Full path to tmux-menus plugin
-D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(dirname -- "$(realpath "$0")")")")"
+#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
+D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/../.." && pwd)
 
 f_plugin_params_cache="$D_TM_BASE_PATH"/cache/plugin_params
 

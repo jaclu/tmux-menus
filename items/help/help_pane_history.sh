@@ -34,8 +34,8 @@ static_content() {
 [ -n "$1" ] && prev_menu="$(realpath "$1")"
 menu_name="Help Pane History"
 
-#  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"
+#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
+D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/../.." && pwd)
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh

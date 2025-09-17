@@ -136,8 +136,8 @@ static_content() {
 
 menu_name="Dropbox"
 
-#  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(dirname -- "$(realpath "$0")")")")"
+#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
+D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/../.." && pwd)
 
 command -v dropbox >/dev/null || {
     prepare_env
