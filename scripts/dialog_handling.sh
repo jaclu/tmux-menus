@@ -260,13 +260,9 @@ mnu_prefix() {
 mnu_open_menu() {
     label="$1"
     key="$2"
-    menu="$3"
+    menu=$(esc_path_double "$3")
 
-    # [ -n "$menu_debug" ] && debug_print "mnu_open_menu($label,$key,$menu)"
-    log_it "mnu_open_menu label [$label]"
-    log_it "              key   [$key]"
-    log_it "              menu  [$menu]"
-    menu_items="$menu_items '$label' $key \"run-shell '$menu'\""
+    menu_items="$menu_items '$label' $key \"run-shell $menu\""
 }
 
 mnu_external_cmd() {

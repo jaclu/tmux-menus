@@ -12,11 +12,11 @@
 bind_plugin_key() {
     # shellcheck disable=SC2154 # defined in helpers_minimal.sh
     # bind_cmd="$cfg_main_menu"
-    bind_cmd="$(double_esc_path "$cfg_main_menu")"
+    bind_cmd="$(esc_path_double "$cfg_main_menu")"
     # shellcheck disable=SC2154 # defined in cache/plugin_params
     if $cfg_use_whiptail; then
         # bind_cmd="$f_ext_dlg_trigger"
-        bind_cmd="$(double_esc_path "$f_ext_dlg_trigger")"
+        bind_cmd="$(esc_path_double "$f_ext_dlg_trigger")"
         # bind_cmd="/Users/jaclu/hupp t2/tmux/plugins/tmux-menus/scripts/external_dialog_trigger.sh"
         log_it "Will use alternate menu handler: $cfg_alt_menu_handler"
     fi
@@ -61,8 +61,8 @@ bind_plugin_key() {
         display_formatted_message "$msg"
     }
 
-    # shellcheck disable=SC2154 # defined in helpers_minimal.sh
     log_it "Will bind: $cmd"
+    # shellcheck disable=SC2154 # defined in helpers_minimal.sh
     eval "$TMUX_BIN" "$cmd" || {
         error_msg "Failed to bind trigger: $cfg_trigger_key"
     }

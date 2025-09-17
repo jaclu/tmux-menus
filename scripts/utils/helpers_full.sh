@@ -394,7 +394,7 @@ safe_remove() {
     # by the location of this plugin, only use param 2 if something outside
     # the plugin location needs to be removed
     #
-    pattern="$1"
+    pattern="\"$1\""
     reason="$2"
     skip_plugin_name_in_path_check="$3"
 
