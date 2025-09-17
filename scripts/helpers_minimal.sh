@@ -272,7 +272,8 @@ esc_path_double() {
     # Replace each space with backslash-backslash-space
     # (double escaping: one for tmux, one for the shell)
     # Works even if path contains multiple spaces.
-    printf '%s\n' "$1" | sed 's/ /\\\\\\\\ /g'
+    # printf '%s\n' "$1" | sed 's/ /\\\\\\\\ /g'
+    printf '%s\n' "$1" | sed 's/ /\\ /g'
 }
 
 #---------------------------------------------------------------
