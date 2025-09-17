@@ -9,10 +9,11 @@
 #
 
 static_content() {
+    log_it "d_items [$d_items]"
     set -- \
         0.0 M Left "Back to Main menu  $nav_home" main.sh \
         0.0 M S "Split pane         $nav_next" pane_split.sh \
-        0.0 M L "Layouts            $nav_next" "$d_items/layouts.sh $0 $menu_name" \
+        0.0 M L "Layouts            $nav_next" "\"$d_items/layouts.sh\" \"$0\" $menu_name" \
         0.0 M M "Move pane          $nav_next" pane_move.sh \
         0.0 M R "Resize pane        $nav_next" pane_resize.sh \
         0.0 M I "Pane history       $nav_next" pane_history.sh

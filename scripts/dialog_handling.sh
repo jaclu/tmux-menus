@@ -263,8 +263,10 @@ mnu_open_menu() {
     menu="$3"
 
     # [ -n "$menu_debug" ] && debug_print "mnu_open_menu($label,$key,$menu)"
-    f_safe="$(double_esc_path "$menu")"
-    menu_items="$menu_items '$label' $key \"run-shell '$f_safe'\""
+    log_it "mnu_open_menu label [$label]"
+    log_it "              key   [$key]"
+    log_it "              menu  [$menu]"
+    menu_items="$menu_items '$label' $key \"run-shell '$menu'\""
 }
 
 mnu_external_cmd() {
