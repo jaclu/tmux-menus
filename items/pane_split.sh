@@ -8,6 +8,7 @@
 #   Split display
 #
 
+
 static_content() {
     set -- \
         0.0 M Left "Back to Handling Pane  $nav_prev" panes.sh \
@@ -23,6 +24,9 @@ static_content() {
 
     set -- \
         0.0 S \
+        0.0 T "-#[nodim]Subdivides the current pane" \
+        0.0 T "-#[nodim]in desired direction." \
+        0.0 T "-#[nodim]" \
         2.0 C l "Left" "split-window  -bh  $same_folder  $runshell_reload_mnu" \
         0.0 C r "Right" "split-window -h   $same_folder  $runshell_reload_mnu" \
         2.0 C a "Above" "split-window -bv  $same_folder  $runshell_reload_mnu" \
@@ -36,10 +40,10 @@ static_content() {
 #
 #===============================================================
 
-menu_name="Split pane"
+menu_name="Split Pane"
 
-#  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
+#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
+D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/.." && pwd)
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh

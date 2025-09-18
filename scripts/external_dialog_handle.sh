@@ -8,8 +8,8 @@
 #  This is run in the current pane, so job control is available
 #
 
-#  Full path to tmux-menus plugin
-D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
+#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
+D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/.." && pwd)
 
 . "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
 

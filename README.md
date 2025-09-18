@@ -19,11 +19,11 @@ experienced users, then add more for newbies.
 
 ## Recent Changes
 
+- Added section `Open Issues`
 - Added alternate menus support - see [Alternate menus](#alternate-menus) below
 - Fixed bug in Missing Keys, prevented some keys from being used
 - Fixed bug in Extras - hiding external tools
 - Missing Keys - Currencies; Added bitcoin glyph
-- Missing Keys - Diacritics; Added entry of common diacritics
 
 ## Purpose
 
@@ -64,6 +64,10 @@ src="https://github.com/user-attachments/assets/fadeb163-5513-4e60-b847-8fb74d93
 src="https://github.com/user-attachments/assets/6a537dae-3530-4e5e-8402-d3c272faf6c8" />
 <img width="270" alt="Missing Keys-whiptail"
 src="https://github.com/user-attachments/assets/4da2a426-2299-4234-8d84-89ae52e9761a" />
+
+## Open Issues
+
+This plugin will not work if the path to the tmux env contains spaces.
 
 ## Dependencies & Compatibility
 

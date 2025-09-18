@@ -36,8 +36,8 @@ menu_name="My Custom Menu"
 # shellcheck disable=SC2034 # used in update_custom_inventory.sh
 menu_key="?"
 
-#  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
+#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
+D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/.." && pwd)
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh

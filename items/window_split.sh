@@ -8,6 +8,7 @@
 #   Split display
 #
 
+
 static_content() {
     set -- \
         0.0 M Left "Back to Handling Window  $nav_prev" windows.sh \
@@ -23,6 +24,9 @@ static_content() {
 
     set -- \
         0.0 S \
+        0.0 T "-#[nodim]Divides the entire window/screen" \
+        0.0 T "-#[nodim]in desired direction." \
+        0.0 T "-#[nodim]" \
         2.0 C l "Left" "split-window   -bfh  $same_folder  $runshell_reload_mnu" \
         0.0 C r "Right" "split-window  -fh   $same_folder  $runshell_reload_mnu" \
         2.0 C a "Above" "split-window  -bfv  $same_folder  $runshell_reload_mnu" \
@@ -38,8 +42,8 @@ static_content() {
 
 menu_name="Split Window"
 
-#  Full path to tmux-menux plugin
-D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
+#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
+D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/.." && pwd)
 
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh

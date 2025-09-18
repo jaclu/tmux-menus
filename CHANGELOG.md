@@ -4,6 +4,20 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [2.2.19] - 2025-09-19
+
+### Added
+
+- Added section `Open Issues` to README.md, listing that this plugin can not handle
+  when the path to the tmux env contains spaces.
+
+### Changed
+
+- Updated `Split Pane` & `Split Window` with instructions what the menu will do.
+- Optimized detection of plugin folder.
+
+---
+
 ## [2.2.18] - 2025-08-07
 
 ### Added
