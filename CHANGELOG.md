@@ -4,6 +4,16 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [2.2.20] - 2025-09-22
+
+### Changed
+
+- `@menus_display_commands` now defaults to true. It has no performance impact
+  when unused and is convenient to keep enabled.
+- Fixed bug in `Missing keys` when using `whiptail` - submenus failed to render
+
+---
+
 ## [2.2.19] - 2025-09-19
 
 ### Added

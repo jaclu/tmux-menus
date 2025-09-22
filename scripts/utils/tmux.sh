@@ -86,7 +86,7 @@ tmux_get_defaults() { # new init
     default_nav_prev="<--"
     default_nav_home="<=="
 
-    default_display_commands=No
+    default_display_commands=Yes
     default_display_cmds_cols=75
 
     default_use_hint_overlays=Yes
