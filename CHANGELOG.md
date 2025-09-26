@@ -4,6 +4,15 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [2.2.21] - 2025-09-27
+
+### Changed
+
+- Don't show the `Open a new menu` hint for unavailable items in Extras.
+- Updated one of the samples in docs/Modifications to be more current.
+
+---
+
 ## [2.2.20] - 2025-09-22
 
 ### Changed

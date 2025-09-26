@@ -10,24 +10,28 @@
 
 is_avalable() {
     cmd="$1"
+    label="$2"
+
     if [ -z "$cmd" ]; then
         error_msg "extras.is_available - no param!"
     fi
-    if [ -z "$(command -v "$cmd")" ]; then
-        echo "-"
-        # echo "$(tput setaf 7)"
+    if [ -n "$(command -v "$cmd")" ]; then
+        echo "$label  $nav_next"
+    else
+        echo "-$label"
     fi
 }
 
 dynamic_content() {
-    # Need to check for pesence of the external tools on each update
+    # Need to check for pesence of the external tools on each update, in case
+    # something has been installed / removed
     d_extras="$d_items"/external_tools
 
     set -- \
         0.0 S \
-        0.0 M D "$(is_avalable dropbox)Dropbox      $nav_next" "$d_extras"/dropbox.sh \
-        0.0 M S "$(is_avalable spotify)Spotify      $nav_next" "$d_extras"/spotify.sh \
-        0.0 M M "$(is_avalable mullvad)Mullvad VPN  $nav_next" "$d_extras"/mullvad.sh
+        0.0 M D "$(is_avalable dropbox "Dropbox    ")" "$d_extras"/dropbox.sh \
+        0.0 M S "$(is_avalable spotify "Spotify    ")" "$d_extras"/spotify.sh \
+        0.0 M M "$(is_avalable mullvad "Mullvad VPN")" "$d_extras"/mullvad.sh
     menu_generate_part 3 "$@"
 }
 
