@@ -4,6 +4,19 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [2.2.22] - 2025-09-28
+
+### Added
+
+- Sessions - List sessions
+- Layouts - previous / next (predefined) layout
+
+### Changed
+
+- Updated sample menus at top of README.md
+
+---
+
 ## [2.2.21] - 2025-09-27
 
 ### Changed

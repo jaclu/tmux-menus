@@ -1,9 +1,9 @@
 # Tmux-Menus
 
 <img width="250" alt="main"
-src="https://github.com/user-attachments/assets/6136b5e8-3ac6-4044-9088-f2a22756ce78" />
+src="https://github.com/user-attachments/assets/63b13583-471d-4cfb-89db-3e30bdcd0f58" />
 <img width="250" alt="main-styled"
-src="https://github.com/user-attachments/assets/358c8457-0a0e-4c6b-b2cf-79c2b30670f4" />
+src="https://github.com/user-attachments/assets/0dafa700-529a-4020-b049-93b5cf92358b" />
 
 ## Summary
 

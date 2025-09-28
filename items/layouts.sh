@@ -52,7 +52,10 @@ static_content() {
         3.5 C "\\$" "Main vertical -   mirrored" \
         "select-layout    main-vertical-mirrored  $runshell_reload_mnu" \
         1.4 C 5 "Tiled" "select-layout            tiled            $runshell_reload_mnu" \
-        2.7 C e "Spread evenly" "select-layout    -E               $runshell_reload_mnu"
+        2.7 C e "Spread evenly" "select-layout    -E               $runshell_reload_mnu" \
+        0.0 S \
+        0.0 C p "Previous layout" "previous-layout  $runshell_reload_mnu" \
+        0.0 C n "Next     layout" "next-layout  $runshell_reload_mnu"
     menu_generate_part 4 "$@"
 }
 

@@ -30,9 +30,10 @@ static_content() {
             'Name of new session: ' \
             'new-session -d -s \"%1\" ; switch-client -t \"%1\"' $runshell_reload_mnu" \
         0.0 S \
-        0.0 C l "Last selected session" "switch-client -l $runshell_reload_mnu" \
-        0.0 C p "Previous session [in order]" "switch-client -p $runshell_reload_mnu" \
-        0.0 C n "Next     session [in order]" "switch-client -n $runshell_reload_mnu" \
+        0.0 E s "List sessions" "$d_scripts/list-sessions.sh $0" \
+        0.0 C l "Last selected session" "switch-client -l        $runshell_reload_mnu" \
+        0.0 C p "Previous session [in order]" "switch-client -p  $runshell_reload_mnu" \
+        0.0 C n "Next     session [in order]" "switch-client -n  $runshell_reload_mnu" \
         0.0 S \
         1.8 C x "Kill current session" \
         "confirm-before -p \
