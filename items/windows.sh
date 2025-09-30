@@ -36,6 +36,7 @@ static_content() {
         0.0 C n "Next     window [in order]" "next-window $runshell_reload_mnu" \
         0.0 C M-p "Previous window with an alert" "previous-window -a $runshell_reload_mnu" \
         0.0 C M-n "Next     window with an alert" "next-window -a $runshell_reload_mnu" \
+	0.0 C c "Choose window" "choose-tree -Zw" \
         0.0 S \
         1.8 C x "Kill current window" "confirm-before -p \
             'kill-window #W? (y/n)' kill-window  $runshell_reload_mnu" \

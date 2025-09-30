@@ -4,6 +4,19 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [2.2.23] - 2025-09-30
+
+### Added
+
+- Windows - Choose window
+- Sessions - Choose session
+
+### Changed
+
+- Removed: Sessions - List sessions
+
+---
+
 ## [2.2.22] - 2025-09-28
 
 ### Added
