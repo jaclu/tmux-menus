@@ -434,8 +434,11 @@ tpt_digits_from_string() { # local usage by tpt_retrieve_running_tmux_vers()
     [ -z "$varname" ] && error_msg_safe "tpt_digits_from_string() - no variable name!"
     [ -z "$2" ] && error_msg_safe "tpt_digits_from_string() - no param!"
 
-    # Remove "-rc" suffix and extract digits using parameter expansion
-    _i=$(echo "$2" | cut -d'-' -f1 | tr -cd '0-9') # Keep only digits
+    # Remove "next-" prefix, "-rc" suffix and extract digits using parameter expansion
+    _i=$2
+    _i=${_i##next-}                 # Remove leading "next-" if present
+    _i=${_i%%-rc*}                  # Remove trailing "-rc" and anything after
+    _i=$(echo "$_i" | tr -cd '0-9') # Keep only digits
 
     # Check if result is empty after digit extraction
     [ -z "$_i" ] && error_msg_safe "tpt_digits_from_string() - result empty"
