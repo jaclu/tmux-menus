@@ -57,5 +57,4 @@ menu_name="Handling Window"
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
 D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/.." && pwd)
 
-# shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh

@@ -78,7 +78,6 @@ source_all_helpers() {
     }
     all_helpers_sourced=true # set it early to avoid recursion
 
-    # shellcheck source=scripts/utils/helpers_full.sh
     . "$D_TM_BASE_PATH"/scripts/utils/helpers_full.sh || {
         error_msg_safe "Failed to source: scripts/utils/helpers_full.sh"
     }
@@ -501,7 +500,7 @@ plugin_name="tmux-menus"
 #  shell, so this will not mess it up if the plugin is initiated or run by tmux
 #  If log can't happen to stderr, it will go to @menus_log_file if it is defined
 #
-log_interactive_to_stderr=0
+[ -z "$log_interactive_to_stderr" ] && log_interactive_to_stderr=0
 
 min_tmux_vers=1.5 # oldest accepted tmux version
 
@@ -544,7 +543,6 @@ safe_now t_script_start
 }
 
 # --->  Only enable this if profiling is being used  <---
-# shellcheck source=scripts/utils/dbg_profiling.sh
 # [ "$profiling_sourced" != 1 ] && . "$D_TM_BASE_PATH"/scripts/utils/dbg_profiling.sh
 
 [ "$initialize_plugin" != "1" ] && {

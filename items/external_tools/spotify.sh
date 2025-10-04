@@ -9,8 +9,7 @@
 #
 
 display_currently_playing_track() {
-    # shellcheck source=scripts/helpers.sh
-    . "$D_TM_BASE_PATH"/scripts/helpers.sh
+    $all_helpers_sourced || source_all_helpers "display_currently_playing_track()"
 
     spotify status >/dev/null 2>&1
 
@@ -62,10 +61,13 @@ menu_name="Spotify"
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
 D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/../.." && pwd)
 
+no_auto_dialog_handling=1 # delay processing of dialog, only source it for now
+. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
+
 case "$1" in
 "-t") display_currently_playing_track ;;
 *) ;;
 esac
 
-# shellcheck source=scripts/dialog_handling.sh
-. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
+# manually trigger dialog handling
+do_dialog_handling

@@ -19,12 +19,12 @@ experienced users, then add more for newbies.
 
 ## Recent Changes
 
+- Issue #77 improved key bind handling
 - `@menus_display_commands` now defaults to true. It has no performance impact
   when unused and is convenient to keep enabled.
 - Fixed bug in `Missing keys` when using `whiptail` - submenus failed to render
 - Added section `Open Issues`
 - Added alternate menus support - see [Alternate menus](#alternate-menus) below
-- Fixed bug in `Missing Keys`, prevented some keys from being used
 
 ## Purpose
 

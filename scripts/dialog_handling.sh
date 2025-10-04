@@ -640,7 +640,6 @@ prepare_show_commands() {
     b_do_show_cmds=true
     set_display_command_labels
     tmux_error_handler display-message "Preparing $_lbl ..."
-    # shellcheck source=scripts/show_cmd.sh
     . "$D_TM_BASE_PATH"/scripts/show_cmd.sh
 }
 
@@ -1235,7 +1234,6 @@ do_dialog_handling() {
 
 # Only import if needed, checking a random variable
 [ -z "$d_scripts" ] && {
-    # shellcheck source=scripts/helpers_minimal.sh
     . "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
 }
 

@@ -4,6 +4,16 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [2.2.24] - 2025-10-04
+
+### Changed
+
+- Added scripts path in .shellcheckrc, thus solved tons of manual hardcoded path hints
+- plugin_init.sh - corrected variable expansion
+- Issue #77 improved key bind handling
+
+---
+
 ## [2.2.23] - 2025-09-30
 
 ### Added

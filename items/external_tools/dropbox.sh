@@ -36,8 +36,7 @@ dropbox_status_check() {
 }
 
 prepare_env() {
-    # shellcheck source=/dev/null
-    . "$D_TM_BASE_PATH"/scripts/helpers.sh
+    $all_helpers_sourced || source_all_helpers "external_tools/dropbox.sh"
 }
 
 #---------------------------------------------------------------
@@ -139,8 +138,10 @@ menu_name="Dropbox"
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
 D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/../.." && pwd)
 
+no_auto_dialog_handling=1 # delay processing of dialog, only source it for now
+. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
+
 command -v dropbox >/dev/null || {
-    prepare_env
     error_msg "Command not found: dropbox"
 }
 
@@ -160,5 +161,5 @@ status)
 *) ;;
 esac
 
-# shellcheck source=scripts/dialog_handling.sh
-. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
+# manually trigger dialog handling
+do_dialog_handling

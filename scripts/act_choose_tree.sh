@@ -46,7 +46,6 @@ param_check() {
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
 D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/.." && pwd)
 
-# shellcheck source=scripts/helpers.sh
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 log_it "><> ==> $rn_current_script params: $*"

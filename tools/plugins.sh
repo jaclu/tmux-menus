@@ -116,7 +116,6 @@ check_unknown_items() {
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
 D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/.." && pwd)
 
-#  shellcheck source=/dev/null
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 tmux_vers_check 1.8 || {

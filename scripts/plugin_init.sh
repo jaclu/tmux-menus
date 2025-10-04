@@ -50,11 +50,11 @@ bind_plugin_key() {
     [ ! -f "$f_skip_low_tmux_version_warning" ] && ! tmux_vers_check 1.8 && {
         # shellcheck disable=SC2154 # current_tmux_vers is an env variable
         msg="Due to tmux($current_tmux_vers) < 1.8 user options can not be processed.\n\n"
-        msg="{$msg}The tmux-menus plugin will be bound to its default key: $cfg_trigger_key"
-        msg="{$msg} \n\n'All other options will also use their defaults.\n\n'"
-        msg="{$msg}  tools/show_config.sh will display current settings.\n\n"
-        msg="{$msg}To avoid seeing this message again - do:\n"
-        msg="{$msg}  touch $f_skip_low_tmux_version_warning"
+        msg="${msg}The tmux-menus plugin will be bound to its default key: $cfg_trigger_key"
+        msg="${msg} \n\nAll other options will also use their defaults.\n\n"
+        msg="${msg}  tools/show_config.sh will display current settings.\n\n"
+        msg="${msg}To avoid seeing this message again - do:\n"
+        msg="${msg}  touch $f_skip_low_tmux_version_warning"
         display_formatted_message "$msg"
     }
 
@@ -80,7 +80,6 @@ initialize_plugin=1
 
 f_skip_low_tmux_version_warning="$D_TM_BASE_PATH"/.skip_old_tmux_warning
 
-# shellcheck source=/dev/null # can't read source when mixing bah & posix
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 # log_it "=====   plugin_init.sh starting   ====="

@@ -76,5 +76,4 @@ if [ -n "$1" ]; then
     prev_name="$*"
 fi
 
-# shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh

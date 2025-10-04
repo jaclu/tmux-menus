@@ -53,7 +53,6 @@ menu_min_vers=2.0
 D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/../.." && pwd)
 
 no_auto_dialog_handling=1 # delay processing of dialog, only source it for now
-# shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 
 if [ -n "$1" ]; then

@@ -23,7 +23,6 @@
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
 D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/.." && pwd)
 
-# shellcheck source=scripts/helpers_minimal.sh
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 #

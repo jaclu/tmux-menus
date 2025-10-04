@@ -51,6 +51,7 @@ sc_invert_quotes() {
 
 # Main: extract key bind
 sc_extract_key_bind() {
+    # If param 3 is given, output is saved in a variable using $3 name
     sc_ekb_key_type="$1"
     sc_ekb_cmd="$2"
     sc_ekb_output_var="$3"
@@ -80,29 +81,68 @@ sc_extract_key_bind() {
     fi
 }
 
+ending_in_special_dquote_sequence() {
+    # log_it "ending_in_special_dquote_sequence()"
+    all_but_last_two=${sc_fbes_all_but_last_char%?}
+    snd_last=${sc_fbes_all_but_last_char##"${all_but_last_two}"}
+    case "$snd_last" in
+    "$") snd_last="\\$" ;;
+    *) ;;
+    esac
+    sc_ckb_escaped="\\$all_but_last_two$snd_last\\\""
+}
+
 sc_filter_bind_escapes_single() {
+    #
+    # sets escaped sequence in variable: sc_ckb_escaped
+    #
     # some bind chars are prefixed with \
-    # this func removed them, except for a few special cases that must be escaped
+    # this func removes them, except for a few special cases that must be escaped
     # in order to be displayed with display-menu.
     # For those chars, display-menu will unescape them.
     sc_fbes_key=$1
-    sc_fbes_output_var="$2"
-    sc_fbes_last_char=$(printf '%s\n' "$sc_fbes_key" | awk '{print substr($0,length,1)}')
+    sc_fbes_all_but_last_char=${sc_fbes_key%?}
+    sc_fbes_last_char=${sc_fbes_key##"${sc_fbes_all_but_last_char}"}
 
-    # log_it "sc_filter_bind_escapes_single($sc_fbes_key, $sc_fbes_output_var) [$sc_fbes_last_char]"
-    [ -z "$sc_fbes_output_var" ] && {
-        error_msg "sc_filter_bind_escapes_single() - missing param 2"
-    }
+    # log_it "sc_filter_bind_escapes_single($sc_fbes_key) [$sc_fbes_last_char]"
+
+    case $sc_fbes_key in
+    *'#"' | *'$"' | *';"')
+        ending_in_special_dquote_sequence
+        # all_but_last_two=${sc_fbes_all_but_last_char%?}
+        # snd_last=${sc_fbes_all_but_last_char##"${all_but_last_two}"}
+        # sc_ckb_escaped="\\$all_but_last_two$snd_last\\\""
+        return
+        ;;
+    '"'*) case $sc_fbes_key in
+            *'"')
+                # quoted bind, leave as is
+                sc_ckb_escaped="$sc_fbes_key"
+                return
+                ;;
+            *) ;; # skip
+        esac;;
+    *) ;; # skip
+    esac
 
     case "$sc_fbes_last_char" in
-    ';' | '"')
-        # printf '%s\n' "$sc_fbes_key"
-        eval "$sc_fbes_output_var=\"$sc_fbes_key\""
+    '`')
+        # backtick should be displayed without backslash, but they are needed
+        # for this script
+        sc_ckb_escaped="$sc_fbes_all_but_last_char\\\`"
+        ;;
+    ';' | "'" | '#')
+        # should be displayed with \ prefix in tmux notation
+        sc_ckb_escaped="$sc_fbes_all_but_last_char\\$sc_fbes_last_char"
+        ;;
+    '"' |'$')
+        # should be displayed with \ prefix in tmux notation
+        # For these something eats up the first \ so \\ must be given
+        sc_ckb_escaped="$sc_fbes_all_but_last_char\\\\$sc_fbes_last_char"
         ;;
     *)
         clean_key=$(printf '%s\n' "$sc_fbes_key" | tr -d "\\")
-        # printf '%s\n' "$clean_key"
-        eval "$sc_fbes_output_var=\"$clean_key\""
+        sc_ckb_escaped="$clean_key"
         ;;
     esac
 }
@@ -113,7 +153,7 @@ add_result() {
     #
     # If multiple results are found, join them with '  or  '
 
-    # log_it "add_rslt($1)"
+    # log_it "add_result($1)"
     if [ -z "$sc_ckb_rslt" ]; then
         sc_ckb_rslt="$1"
     else
@@ -122,8 +162,9 @@ add_result() {
 }
 
 sc_check_key_binds() {
-    # Check if command is bound to a tmux shortcut.
-    # If so list the shortcut(-s), otherwise display the command
+    # Check if command is bound to a tmux shortcut, only prefix and root binds
+    # are checked.
+    # If found, list the shortcut(-s), otherwise display the command
 
     sc_ckb_cmd="$1"
     sc_ckb_output_var="$2"
@@ -135,7 +176,7 @@ sc_check_key_binds() {
     # SC2154: sc_ckb_prefix_raw assigned dynamically by sc_extract_key_bind using eval
     # shellcheck disable=SC2154
     for _key in $sc_ckb_prefix_raw; do
-        sc_filter_bind_escapes_single "$_key" sc_ckb_escaped
+        sc_filter_bind_escapes_single "$_key"
         sc_ckb_prefix_bind="${sc_ckb_prefix_bind}${sc_ckb_prefix_bind:+ }$sc_ckb_escaped"
     done
 
@@ -144,23 +185,23 @@ sc_check_key_binds() {
     # SC2154: sc_ckb_root_raw assigned dynamically by sc_extract_key_bind using eval
     # shellcheck disable=SC2154
     for _key in $sc_ckb_root_raw; do
-        sc_filter_bind_escapes_single "$_key" sc_ckb_escaped
+        sc_filter_bind_escapes_single "$_key"
         sc_ckb_root_bind="${sc_ckb_root_bind}${sc_ckb_root_bind:+ }$sc_ckb_escaped"
     done
 
     set -f # disable globbing - needed in case a bind is *
-    [ -n "$sc_ckb_root_bind" ] && {
-        # shellcheck disable=SC2086 # intentionally not using quotes in this case
-        set -- $sc_ckb_root_bind
-        for _l; do
-            add_result "$_l" # "[NO-Prefix] $_l"
-        done
-    }
     [ -n "$sc_ckb_prefix_bind" ] && {
         # shellcheck disable=SC2086 # intentional not using quotes in this case
         set -- $sc_ckb_prefix_bind
         for _l; do
             add_result "<prefix> $_l"
+        done
+    }
+    [ -n "$sc_ckb_root_bind" ] && {
+        # shellcheck disable=SC2086 # intentionally not using quotes in this case
+        set -- $sc_ckb_root_bind
+        for _l; do
+            add_result "$_l" # "[NO-Prefix] $_l"
         done
     }
     set +f # re-enable globbing0
@@ -222,6 +263,7 @@ sc_clean_up_result() {
     sc_cur_input="$1"
     sc_cur_output_var="$2"
 
+    # log_it "sc_clean_up_result($sc_cur_input, $sc_cur_output_var)"
     #
     # prevent tmux variables from being expanded by dobeling # into ##
     #
@@ -264,6 +306,8 @@ sc_display_cmd() {
     # then calls mnu_text_line() for each line of the command to be displayed.
     sc_dc_remainder="$1"
 
+    # log_it "sc_display_cmd($sc_dc_remainder)"
+
     while [ -n "$sc_dc_remainder" ]; do
         # shellcheck disable=SC2154 # cfg_display_cmds_cols defined in cache/plugin_params
         sc_dc_chunk=$(printf '%s\n' "$sc_dc_remainder" | awk -v max="$cfg_display_cmds_cols" '
@@ -301,14 +345,15 @@ sc_show_cmd() {
 
     [ -z "$sc_cmd" ] && error_msg "sc_show_cmd() - no command could be extracted"
     # log_it
-    # log_it "sc_show_cmd($sc_cmd)"
+    # log_it "sc_show_cmd($sc_cmd) - $_lbl"
 
     # shellcheck disable=SC2154 # show_cmds_state defined in display_commands_toggle()
     case "$show_cmds_state" in
-    1)
+    1)  # Display Commands
         sc_clean_up_result "$sc_cmd" sc_processed
         ;;
-    2)
+    2)  # Display key binds
+
         # Strip $TMUX_BIN from beginning if present
         cmd_no_tmux_bin=${sc_cmd#"$TMUX_BIN "}
 

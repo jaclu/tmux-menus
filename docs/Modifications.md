@@ -86,7 +86,6 @@ menu_name="Simple Test"
 #  this repo, if not, D_TM_BASE_PATH needs to bechanged the path of the repo
 D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/.." && pwd)
 
-# shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 
 

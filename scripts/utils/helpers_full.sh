@@ -475,10 +475,8 @@ wait_to_close_display() {
 
 helpers_full_additional_files_sourced() {
     # SC2154: d_scripts  defined in helpers_minimal.sh
-    # shellcheck disable=SC2154 source=scripts/utils/cache.sh
+    # shellcheck disable=SC2154
     . "$d_scripts"/utils/cache.sh
-
-    # shellcheck source=scripts/utils/tmux.sh
     . "$d_scripts"/utils/tmux.sh
 }
 
