@@ -4,6 +4,14 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [2.2.25] - 2025-10-05
+
+### Changed
+
+- updated show_cmd.sh to handle all odd tmux bind sequences
+
+---
+
 ## [2.2.24] - 2025-10-04
 
 ### Changed
