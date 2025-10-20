@@ -10,6 +10,7 @@ __pycache__
 
 # tmux-menus cache
 cache/
+cache
 
 # Custom loocal menus not managed by git
 custom_items/

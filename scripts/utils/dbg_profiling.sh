@@ -41,10 +41,8 @@ profiling_display_it() {
 }
 
 profiling_error_msg() {
-    # If this file was sourced befoe helpers_minimal error_msg_safe is not
-    # yet available...
-    if profiling_is_function_defined "error_msg_safe"; then
-        error_msg_safe "$_m"
+    if profiling_is_function_defined "error_msg"; then
+        error_msg "$_m"
     else
         profiling_display_it
         profiling_display_it "ERROR: $_m"

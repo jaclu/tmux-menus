@@ -50,12 +50,12 @@ log_it_minimal() {
     fi
 }
 
-error_msg_safe() {
+error_msg() {
     #  Used when potentially called without having sourced everything
     msg="$1"
     exit_code="$2"
-    $all_helpers_sourced || source_all_helpers "error_msg_safe()"
-    error_msg "$msg" "$exit_code"
+    $all_helpers_sourced || source_all_helpers "error_msg()"
+    error_msg_real "$msg" "$exit_code"
 }
 
 source_all_helpers() {
@@ -66,7 +66,7 @@ source_all_helpers() {
     #   - log_it / log_it_minimal
     #   - tmux_vers_check
     #   - safe_now & time_span (used by dialog_handling to log render speed)
-    #   - error_msg_safe (safe to call before full sourcing)
+    #   - error_msg (safe to call before full sourcing)
     #
     #  Use this to load all helpers when needed, ensuring it's only done once:
     #    $all_helpers_sourced || source_all_helpers "caller description"
@@ -74,12 +74,12 @@ source_all_helpers() {
 
     # log_it "source_all_helpers() - $1"
     $all_helpers_sourced && {
-        error_msg_safe "source_all_helpers() called when it was already done - $1"
+        error_msg "source_all_helpers() called when it was already done - $1"
     }
     all_helpers_sourced=true # set it early to avoid recursion
 
     . "$D_TM_BASE_PATH"/scripts/utils/helpers_full.sh || {
-        error_msg_safe "Failed to source: scripts/utils/helpers_full.sh"
+        error_msg "Failed to source: scripts/utils/helpers_full.sh"
     }
 }
 
@@ -92,7 +92,7 @@ relative_path() { # Needed here due to: prepare_menu() - set_menu_env_variables(
 validate_varname() { # local usage tpt_digits_from_string() tpt_tmux_vers_suffix()
     case "$1" in
     [a-zA-Z_][a-zA-Z0-9_]*) return 0 ;;
-    *) error_msg_safe "$2 Invalid variable name: $1" ;;
+    *) error_msg "$2 Invalid variable name: $1" ;;
     esac
 }
 
@@ -185,7 +185,7 @@ menu_handler_cache_missmatch() {
     msg="$msg does not match current cache:\n\n"
     msg="$msg    cfg_use_whiptail=$cfg_use_whiptail\n"
     msg="$msg    cfg_alt_menu_handler=$cfg_alt_menu_handler"
-    error_msg_safe "$msg"
+    error_msg "$msg"
 }
 
 verify_menu_handler_override_valid() {
@@ -217,7 +217,7 @@ env_variable_menus_handler() {
         if command -v "$_cmd" >/dev/null; then
             cfg_alt_menu_handler="$_cmd"
         else
-            error_msg_safe "$_cmd not available, plugin aborted"
+            error_msg "$_cmd not available, plugin aborted"
         fi
         cfg_use_whiptail=true
         [ "$initialize_plugin" = "1" ] && {
@@ -231,7 +231,7 @@ env_variable_menus_handler() {
         if command -v "$_cmd" >/dev/null; then
             cfg_alt_menu_handler="$_cmd"
         else
-            error_msg_safe "$_cmd not available, plugin aborted"
+            error_msg "$_cmd not available, plugin aborted"
         fi
         cfg_use_whiptail=true
         [ "$initialize_plugin" = "1" ] && {
@@ -241,7 +241,7 @@ env_variable_menus_handler() {
         ;;
     *)
         msg="TMUX_MENUS_HANDLER=$TMUX_MENUS_HANDLER - valid options: 0 1 2"
-        error_msg_safe "$msg"
+        error_msg "$msg"
         ;;
     esac
 
@@ -280,7 +280,7 @@ select_safe_now_method() { # local usage by safe_now()
     # Provides: selected_safe_now_mthd
     #
     [ -n "$selected_safe_now_mthd" ] && {
-        error_msg_safe "Recursive call to: select_safe_now_method"
+        error_msg "Recursive call to: select_safe_now_method"
     }
     # log_it "select_safe_now_method()"
 
@@ -323,7 +323,7 @@ safe_now() {
         # to prevent infinite recursion, eunsure a valid timing method is now selected
         case "$selected_safe_now_mthd" in
         date | gdate | perl) ;;
-        *) error_msg_safe "safe_now($varname) - failed to select a timing method" ;;
+        *) error_msg "safe_now($varname) - failed to select a timing method" ;;
         esac
 
         safe_now "$varname"
@@ -357,7 +357,7 @@ time_span() { # display_menu() / check_speed_cutoff()
 tmux_vers_check() { # local usage when checking $min_tmux_vers
     _v_comp="$1"    # Desired minimum version to check against
     # log_it "tmux_vers_check($_v_comp)"
-    [ -z "$_v_comp" ] && error_msg_safe "tmux_vers_check() - no param!"
+    [ -z "$_v_comp" ] && error_msg "tmux_vers_check() - no param!"
 
     # Retrieve and cache the current tmux version on the first call,
     # unless it has been read from the param cache
@@ -430,8 +430,8 @@ tpt_digits_from_string() { # local usage by tpt_retrieve_running_tmux_vers()
     validate_varname "$varname" "tpt_digits_from_string()"
 
     # Ensure arguments are present
-    [ -z "$varname" ] && error_msg_safe "tpt_digits_from_string() - no variable name!"
-    [ -z "$2" ] && error_msg_safe "tpt_digits_from_string() - no param!"
+    [ -z "$varname" ] && error_msg "tpt_digits_from_string() - no variable name!"
+    [ -z "$2" ] && error_msg "tpt_digits_from_string() - no param!"
 
     # Remove "next-" prefix, "-rc" suffix and extract digits using parameter expansion
     _i=$2
@@ -440,7 +440,7 @@ tpt_digits_from_string() { # local usage by tpt_retrieve_running_tmux_vers()
     _i=$(echo "$_i" | tr -cd '0-9') # Keep only digits
 
     # Check if result is empty after digit extraction
-    [ -z "$_i" ] && error_msg_safe "tpt_digits_from_string() - result empty"
+    [ -z "$_i" ] && error_msg "tpt_digits_from_string() - result empty"
 
     # Assign result to the variable
     eval "$varname=\"\$_i\""
@@ -552,7 +552,7 @@ safe_now t_script_start
 
 if ! tmux_vers_check "$min_tmux_vers"; then
     # @variables are not usable prior to 1.8
-    error_msg_safe "$plugin_name needs at least tmux $min_tmux_vers to work!"
+    error_msg "$plugin_name needs at least tmux $min_tmux_vers to work!"
 fi
 
 if [ -d "$d_cache" ]; then

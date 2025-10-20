@@ -84,12 +84,14 @@ f_skip_low_tmux_version_warning="$D_TM_BASE_PATH"/.skip_old_tmux_warning
 
 # log_it "=====   plugin_init.sh starting   ====="
 
-# Define cfg_use_cache as soon as possible
+# Define cfg_use_cache as soon as possible, and importantly, don't cache this
+# param since it is as of yet unknown if caching is enabled!
+# Once this has been set, it defines if caching should be used or not
+
 # shellcheck disable=SC2154 # default_use_cache defined in tmux.sh
-if normalize_bool_param "@menus_use_cache" "$default_use_cache"; then
+if normalize_bool_param "@menus_use_cache" "$default_use_cache" "no-cache"; then
     cfg_use_cache=true
 else
-    # shellcheck disable=SC2034 # cfg_use_cache used to define cache/plugin_params
     cfg_use_cache=false
 fi
 

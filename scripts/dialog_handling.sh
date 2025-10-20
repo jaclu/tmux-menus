@@ -51,7 +51,7 @@ debug_print() {
     1) print_stderr "$1" ;;
     2) log_it "$1" ;;
     *)
-        error_msg_safe "$menu_debug state invalid [$menu_debug] should be 1 or 2! p1[$1]"
+        error_msg "$menu_debug state invalid [$menu_debug] should be 1 or 2! p1[$1]"
         ;;
     esac
 }
@@ -133,8 +133,8 @@ mnu_parse_error() {
 
     s_remainders=$(show_params "$@")
 
-    #region error_msg_safe explaining parsing error
-    error_msg_safe "$(
+    #region error_msg explaining parsing error
+    error_msg "$(
         cat <<EOF
 Parsing error when processing menu.
 
@@ -227,7 +227,7 @@ EOF
     )"
     #endregion
 
-    error_msg_safe "$e_msg\n$e_first\n$m_menu_code"
+    error_msg "$e_msg\n$e_first\n$m_menu_code"
 }
 
 #---------------------------------------------------------------
@@ -394,7 +394,7 @@ add_uncached_item() {
 verify_menu_key() {
     _key="$1"
     _item="$2"
-    [ -z "$_key" ] && error_msg_safe "Key was empty for: $_item in: $0"
+    [ -z "$_key" ] && error_msg "Key was empty for: $_item in: $0"
 }
 
 menu_parse() {
@@ -555,7 +555,7 @@ menu_parse() {
     if $cfg_use_cache; then
         log_it_minimal "Caching: $(relative_path "$f_cache_file")"
         echo "$menu_items" >"$f_cache_file" || {
-            error_msg_safe "Failed to write to: $f_cache_file"
+            error_msg "Failed to write to: $f_cache_file"
         }
     else
         add_uncached_item
@@ -657,7 +657,7 @@ check_menu_min_vers() {
     # The typical case for this error would be if the menu was run directly from
     # the cmd-line
     tmux_vers_check "$menu_min_vers" || {
-        error_msg_safe "$rn_current_script needs tmux: $menu_min_vers"
+        error_msg "$rn_current_script needs tmux: $menu_min_vers"
     }
 }
 
@@ -713,7 +713,7 @@ oversized_check() {
     [ -z "$menu_height" ] && [ -z "$menu_width" ] && {
         _m="With neither menu_height or menu_width defined"
         _m="$_m\n It is not possible to check if menu fits on screen"
-        error_msg_safe "$_m"
+        error_msg "$_m"
     }
 
     # Useful for hints, if it doesn't fit on screen, just silently skip this menu
@@ -1096,7 +1096,7 @@ alt_parse_selection() {
     wt_actions="$1"
     # log_it "alt_parse_selection($wt_action)"
     [ -z "$wt_actions" ] && {
-        error_msg_safe "alt_parse_selection() - called without param"
+        error_msg "alt_parse_selection() - called without param"
     }
 
     lst=$wt_actions
@@ -1196,11 +1196,12 @@ do_dialog_handling() {
         log_it
         log_it
     }
+    # log_it "do_dialog_handling()"
 
     #
     # Some env checks
     #
-    [ -z "$menu_name" ] && error_msg_safe "menu_name not defined"
+    [ -z "$menu_name" ] && error_msg "menu_name not defined"
     [ -n "$menu_min_vers" ] && check_menu_min_vers
     # shellcheck disable=SC2154 # might be defined in calling menu
     [ "$skip_oversized" = "1" ] && oversized_check
@@ -1222,7 +1223,7 @@ do_dialog_handling() {
 #===============================================================
 
 [ -z "$D_TM_BASE_PATH" ] && {
-    # helpers not yet sourced, so error_msg_safe() not yet available
+    # helpers not yet sourced, so error_msg() not yet available
     msg="ERROR: dialog_handling.sh - D_TM_BASE_PATH must be set!"
     (
         echo

@@ -16,7 +16,7 @@
 
 static_content() {
 
-    error_msg_safe "THIS IS NOT USED ATM!"
+    error_msg "THIS IS NOT USED ATM!"
 
     change_location="run-shell '$d_scripts/move_menu.sh"
 

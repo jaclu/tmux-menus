@@ -120,7 +120,7 @@ Press Ctrl-C to close this message
     }
 }
 
-error_msg() {
+error_msg_real() {
     #
     #  Logs an error and displays it via tmux, adapting to message length.
     #
@@ -431,7 +431,8 @@ safe_remove() {
         esac
     }
 
-    rm -rf "$pattern" || error_msg "safe_remove() - Failed to delete: $pattern"
+    # shellcheck disable=SC2086 # maintain any wildcards in pattern
+    rm -rf $pattern || error_msg "safe_remove() - Failed to delete: $pattern"
     return 0
 }
 
