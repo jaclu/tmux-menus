@@ -4,13 +4,14 @@ All notable changes to this project will be documented here.
 
 ---
 
-## [2.2.26] - Unreleased
+## [2.2.26] - 2025-10-20
 
 ### Changed
 
-- Removed error_msg_safe() error_msg() can now be called without full sourcing.
 - Clear cache only removes content of cache folder, it doesn't delete the actual
   cache folder. This to support softlinked cache folders.
+- If cache is a soft-link and the target does not exist, it will be created.
+- Removed error_msg_safe() error_msg() can now be called without full sourcing.
 - Added some debugging (disabled per default)
 
 ---
