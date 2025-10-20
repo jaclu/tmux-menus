@@ -120,7 +120,7 @@ Press Ctrl-C to close this message
     }
 }
 
-error_msg() {
+error_msg_real() {
     #
     #  Logs an error and displays it via tmux, adapting to message length.
     #

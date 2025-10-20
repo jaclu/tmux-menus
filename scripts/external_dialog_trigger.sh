@@ -18,7 +18,7 @@ menu_name="$1"
 [ -z "$menu_name" ] && menu_name="$f_main_menu"
 
 dlg_handler="$d_scripts/external_dialog_handle.sh"
-[ ! -f "$dlg_handler" ] && error_msg_safe "File not found: $dlg_handler"
+[ ! -f "$dlg_handler" ] && error_msg "File not found: $dlg_handler"
 
 # suspend potential fg app
 $TMUX_BIN send-keys C-z

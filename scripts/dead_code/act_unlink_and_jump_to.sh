@@ -18,7 +18,7 @@ tmux_select_and_attach() {
     if [ -n "$target_session" ]; then
         $TMUX_BIN switch-client -t "$target_session" && $TMUX_BIN select-window -t "$1"
     else
-        error_msg_safe "No target session found"
+        error_msg "No target session found"
     fi
 }
 
@@ -36,16 +36,16 @@ win_name="$($TMUX_BIN display-message -p '#W')"
 #     grep "$win_name" | wc -l)"
 
 # [ "$instances" -lt 2 ] && {
-#     error_msg_safe "This window is
+#     error_msg "This window is
 # }
 
 $TMUX_BIN unlink-window 2>/dev/null || {
-    error_msg_safe "Failed to unlink a single instance"
+    error_msg "Failed to unlink a single instance"
 }
 
 tmux_select_and_attach "$win_name"
 
 # # jump to a random other instance of the window
 # $TMUX_BIN select-window -t "$win_name" || {
-#     error_msg_safe "Failed to attach to other instance"
+#     error_msg "Failed to attach to other instance"
 # }
