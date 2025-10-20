@@ -25,6 +25,12 @@ cache_create_folder() {
         error_msg "cache_create_folder() - variable d_cache undefined"
     }
     [ -d "$d_cache" ] && return 0 # already created
+
+    _linked_cache="$(readlink cache)" # use actual path if it was a softlink
+    # This only needs to point to the softlink destination for the mkdir,
+    # in all future calls it will not matter if this is a folder or softlink
+    [ -n "$_linked_cache" ] && d_cache="$_linked_cache"
+
     mkdir -p "$d_cache" || {
         error_msg "cache_create_folder() - Failed to create cache folder: $d_cache"
     }
@@ -51,7 +57,7 @@ cache_clear() {
     log_it "cache_clear() $1"
     $cfg_use_cache || error_msg "cache_clear() - called when not using cache"
     [ -z "$d_cache" ] && error_msg "cache_clear() - called when d_cache is undefined"
-    safe_remove "$d_cache" "cache_clear()"
+    safe_remove "$d_cache/*" "cache_clear()"
     cache_prepare "cache_clear()"
 
     # Invalidate what might have already been sourced
@@ -352,7 +358,7 @@ verify_tmux_vers_unchanged() {
         _s2="tmux version change: $previous_current_tmux_vers -> $actual_current_tmux_vers"
         log_it "$_s2 - dropping entire cache"
 
-        safe_remove "$d_cache" "verify_tmux_vers_unchanged()"
+        safe_remove "$d_cache/*" "verify_tmux_vers_unchanged()"
 
         # Clear in memory cache of good/bad tmux versions, that might have been
         # read from invalid cache
