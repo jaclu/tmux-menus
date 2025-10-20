@@ -1196,6 +1196,7 @@ do_dialog_handling() {
         log_it
         log_it
     }
+    # log_it "do_dialog_handling()"
 
     #
     # Some env checks
