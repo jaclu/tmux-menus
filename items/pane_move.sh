@@ -12,7 +12,7 @@ dynamic_content() {
     # marking a pane is an ancient feature, but pane_marked came at 3.0
     tmux_vers_check 3.0 || return
 
-    $all_helpers_sourced || source_all_helpers "pane_move:dynamic_content()"
+    ${all_helpers_sourced:-false} || source_all_helpers "pane_move:dynamic_content()"
 
     tmux_error_handler_assign other_pane_marked display-message \
         -p '#{&&:#{pane_marked_set},#{!=:#{pane_marked},1}}'

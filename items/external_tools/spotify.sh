@@ -9,7 +9,7 @@
 #
 
 display_currently_playing_track() {
-    $all_helpers_sourced || source_all_helpers "display_currently_playing_track()"
+    ${all_helpers_sourced:-false} || source_all_helpers "display_currently_playing_track()"
 
     spotify status >/dev/null 2>&1
 

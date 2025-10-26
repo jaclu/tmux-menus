@@ -9,7 +9,7 @@
 #
 
 prepare_env() {
-    $all_helpers_sourced || source_all_helpers "external_tools/mullvad.sh"
+    ${all_helpers_sourced:-false} || source_all_helpers "external_tools/mullvad.sh"
 }
 
 status_as_word() {

@@ -4,6 +4,14 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [2.2.27] - 2025-10-26
+
+### Changed
+
+- Linting - ensure correct handling even if all_helpers_sourced is not set
+
+---
+
 ## [2.2.26] - 2025-10-20
 
 ### Changed

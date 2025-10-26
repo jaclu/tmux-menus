@@ -593,7 +593,7 @@ menu_generate_part() {
     else
         _mgp_prefix=""
     fi
-    $all_helpers_sourced || source_all_helpers "$_mgp_prefix menu_generate_part($menu_idx)"
+    ${all_helpers_sourced:-false} || source_all_helpers "$_mgp_prefix menu_generate_part($menu_idx)"
 
     wt_actions=""
     menu_parse "$@"
@@ -612,7 +612,7 @@ display_commands_toggle() {
     [ -z "$menu_part" ] && error_msg "add_display_commands() - called with no param"
 
     # In case we got here via dynamic_content()
-    $all_helpers_sourced || source_all_helpers "display_commands_toggle()"
+    ${all_helpers_sourced:-false} || source_all_helpers "display_commands_toggle()"
 
     set_display_command_labels
     set -- \
@@ -628,7 +628,7 @@ prepare_show_commands() {
 
     # Do this before the timer is started, otherwise the first usage of show commands
     # will always be slower
-    $all_helpers_sourced || source_all_helpers "prepare_show_commands"
+    ${all_helpers_sourced:-false} || source_all_helpers "prepare_show_commands"
     [ ! -f "$f_cached_tmux_key_binds" ] && {
         log_it "Creating: $f_cached_tmux_key_binds"
         # Filtering out all key binds displaying a menu, since they won't be relevant
@@ -675,7 +675,7 @@ check_screen_size() {
     $cfg_use_whiptail && return 0
     # log_it "check_screen_size()"
 
-    $all_helpers_sourced || source_all_helpers "check_screen_size()"
+    ${all_helpers_sourced:-false} || source_all_helpers "check_screen_size()"
 
     tmux_vers_check 1.7 || {
         # Prior to 1.7 #{client_height} and #{client_width} are not available
@@ -831,7 +831,7 @@ cache_static_content() {
         # Cache is missing or obsolete, regenerate it
         [ -d "$d_menu_cache" ] && log_it_minimal "$rn_current_script changed - dropping cache"
         # log_it "  regenerate cache for: $d_menu_cache"
-        $all_helpers_sourced || {
+        ${all_helpers_sourced:-false} || {
             source_all_helpers "cache_static_content() - cache generation"
         }
         safe_remove "$d_menu_cache" "cache_static_content()"
@@ -1008,7 +1008,7 @@ ensure_menu_fits_on_screen() {
 
     # log_it "ensure_menu_fits_on_screen() Menu $bn_current_script - Display time:  $disp_time ($t_minimal_display_time)"
     [ "$(echo "$t_time_span < $t_minimal_display_time" | bc)" -eq 1 ] && {
-        $all_helpers_sourced || {
+        ${all_helpers_sourced:-false} || {
             _m="ensure_menu_fits_on_screen() - short display time, give warning"
             source_all_helpers "$_m"
         }
@@ -1114,7 +1114,7 @@ alt_parse_selection() {
         action="$(echo "$section" | cut -d'|' -f 2 | awk '{$1=$1};1')"
 
         [ "$key" = "$menu_selection" ] && [ -n "$action" ] && {
-            $all_helpers_sourced || source_all_helpers "alt_parse_selection()"
+            ${all_helpers_sourced:-false} || source_all_helpers "alt_parse_selection()"
             # log_it "><>action: >>$action<<"
             # too many arguments (need at most 2) - fixed by eval
             # teh_debug=true

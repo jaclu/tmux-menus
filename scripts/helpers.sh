@@ -31,6 +31,6 @@
 
 . "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
 
-$all_helpers_sourced || source_all_helpers "helpers.sh"
+${all_helpers_sourced:-false} || source_all_helpers "helpers.sh"
 
 # log_it "===  Completed: scripts/helpers_full.sh  == [$0]"

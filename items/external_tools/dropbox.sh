@@ -36,7 +36,7 @@ dropbox_status_check() {
 }
 
 prepare_env() {
-    $all_helpers_sourced || source_all_helpers "external_tools/dropbox.sh"
+    ${all_helpers_sourced:-false} || source_all_helpers "external_tools/dropbox.sh"
 }
 
 #---------------------------------------------------------------

@@ -54,7 +54,7 @@ error_msg() {
     #  Used when potentially called without having sourced everything
     msg="$1"
     exit_code="$2"
-    $all_helpers_sourced || source_all_helpers "error_msg()"
+    ${all_helpers_sourced:-false} || source_all_helpers "error_msg()"
     error_msg_real "$msg" "$exit_code"
 }
 
@@ -69,11 +69,11 @@ source_all_helpers() {
     #   - error_msg (safe to call before full sourcing)
     #
     #  Use this to load all helpers when needed, ensuring it's only done once:
-    #    $all_helpers_sourced || source_all_helpers "caller description"
+    #    ${all_helpers_sourced:-false} || source_all_helpers "caller description"
     #
 
     # log_it "source_all_helpers() - $1"
-    $all_helpers_sourced && {
+    ${all_helpers_sourced:-false} && {
         error_msg "source_all_helpers() called when it was already done - $1"
     }
     all_helpers_sourced=true # set it early to avoid recursion
@@ -143,7 +143,7 @@ get_config() { # local usage during sourcing
     replace_config=false
     if [ -f "$f_no_cache_hint" ]; then
         cfg_use_cache=false
-        $all_helpers_sourced || {
+        ${all_helpers_sourced:-false} || {
             source_all_helpers "get_config() - no cache hint found"
         }
         tmux_get_plugin_options
@@ -161,7 +161,7 @@ get_config() { # local usage during sourcing
     fi
 
     if $replace_config; then
-        $all_helpers_sourced || {
+        ${all_helpers_sourced:-false} || {
             source_all_helpers "get_config() - failed to source cached params"
         }
         config_setup
@@ -246,7 +246,7 @@ env_variable_menus_handler() {
     esac
 
     $b_whiptail_forced && {
-        $all_helpers_sourced || {
+        ${all_helpers_sourced:-false} || {
             source_all_helpers "get_config() needs use_whiptail_env"
         }
         use_whiptail_env
@@ -391,7 +391,7 @@ tmux_vers_check() { # local usage when checking $min_tmux_vers
     # cached, so in the normal cached state this point will not be reached
 
     # If helpers aren't sourced yet, source them before continuing the version check
-    $all_helpers_sourced || {
+    ${all_helpers_sourced:-false} || {
         # tmux_vers_check might be called as the other helpers are sourced, so
         # ensure that the original check is retained
         _preserve_check_version="$_v_comp"

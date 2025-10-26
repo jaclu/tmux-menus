@@ -38,7 +38,7 @@ can be used for a template how to load the full environment.
 Look for the line:
 
 ```sh
-$all_helpers_sourced || source_all_helpers "pane_move:dynamic_content()"
+[ "${all_helpers_sourced:-false}" = true ] || source_all_helpers "pane_move:dynamic_content()"
 ```
 
 The initial condition ensures that the call to source all helpers is only done
