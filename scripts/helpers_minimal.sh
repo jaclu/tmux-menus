@@ -438,10 +438,13 @@ tpt_digits_from_string() { # local usage by tpt_retrieve_running_tmux_vers()
     # Remove leading "next-" if present. If found reduce version by one minor
     case $_vers in
     next-*)
-        set -- "$(IFS=-; "echo $_vers")"
+        # shellcheck disable=SC2046,SC2086
+        set -- $(IFS=-; echo $_vers)
         major=${2%.*}
         minor=${2#*.}
-        _vers=$major.$((minor - 1))
+        _vers2=$major.$((minor - 1))
+        log_it "><> filtered next vers: $_vers  -> $_vers2"
+        _vers="$_vers2"
         ;;
     *) ;; # default
     esac
@@ -502,8 +505,8 @@ plugin_name="tmux-menus"
 #
 #  This should normally be commented out!
 #
-# cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
-# log_file_forced="1"
+cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
+log_file_forced="1"
 
 #
 #  If set to 1 log will happen to stderr if script is run in an interactive
