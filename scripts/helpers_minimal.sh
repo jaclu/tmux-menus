@@ -427,17 +427,27 @@ tpt_digits_from_string() { # local usage by tpt_retrieve_running_tmux_vers()
     #  for better performance
     #
     varname="$1"
+    _vers=$2
     validate_varname "$varname" "tpt_digits_from_string()"
 
     # Ensure arguments are present
     [ -z "$varname" ] && error_msg "tpt_digits_from_string() - no variable name!"
     [ -z "$2" ] && error_msg "tpt_digits_from_string() - no param!"
 
-    # Remove "next-" prefix, "-rc" suffix and extract digits using parameter expansion
-    _i=$2
-    _i=${_i##next-}                 # Remove leading "next-" if present
-    _i=${_i%%-rc*}                  # Remove trailing "-rc" and anything after
-    _i=$(echo "$_i" | tr -cd '0-9') # Keep only digits
+
+    # Remove leading "next-" if present. If found reduce version by one minor
+    case $_vers in
+    next-*)
+        set -- "$(IFS=-; "echo $_vers")"
+        major=${2%.*}
+        minor=${2#*.}
+        _vers=$major.$((minor - 1))
+        ;;
+    *) ;; # default
+    esac
+
+    _vers=${_vers%%-rc*}                  # Remove trailing "-rc" and anything after
+    _i=$(echo "$_vers" | tr -cd '0-9') # Keep only digits
 
     # Check if result is empty after digit extraction
     [ -z "$_i" ] && error_msg "tpt_digits_from_string() - result empty"
