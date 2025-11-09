@@ -453,7 +453,7 @@ tpt_tmux_vers_suffix() { # local usage by tpt_retrieve_running_tmux_vers()
     # Assigning the supplied variable name instead of printing output in a subshell,
     # for better performance
     varname="$1"
-    vers="$2"
+    vers="${2##next-}"  # Remove leading "next-" if present
     validate_varname "$varname" "tpt_tmux_vers_suffix()"
     # Remove leading digits, dots, and dashes to isolate suffix
     _s=$(printf "%s" "$vers" | sed 's/^[0-9.-]*//')
