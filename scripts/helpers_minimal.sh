@@ -427,17 +427,29 @@ tpt_digits_from_string() { # local usage by tpt_retrieve_running_tmux_vers()
     #  for better performance
     #
     varname="$1"
+    _vers=$2
     validate_varname "$varname" "tpt_digits_from_string()"
 
     # Ensure arguments are present
     [ -z "$varname" ] && error_msg "tpt_digits_from_string() - no variable name!"
     [ -z "$2" ] && error_msg "tpt_digits_from_string() - no param!"
 
-    # Remove "next-" prefix, "-rc" suffix and extract digits using parameter expansion
-    _i=$2
-    _i=${_i##next-}                 # Remove leading "next-" if present
-    _i=${_i%%-rc*}                  # Remove trailing "-rc" and anything after
-    _i=$(echo "$_i" | tr -cd '0-9') # Keep only digits
+    # Remove leading "next-" if present. If found reduce version by one minor
+    case $_vers in
+    next-*)
+        # shellcheck disable=SC2046,SC2086
+        set -- $(IFS=-; echo $_vers)
+        major=${2%.*}
+        minor=${2#*.}
+        _vers2=$major.$((minor - 1))
+        log_it "><> filtered next vers: $_vers  -> $_vers2"
+        _vers="$_vers2"
+        ;;
+    *) ;; # default
+    esac
+    _vers=${_vers%%-rc*}                  # Remove trailing "-rc" and anything after
+
+    _i=$(echo "$_vers" | tr -cd '0-9') # Keep only digits
 
     # Check if result is empty after digit extraction
     [ -z "$_i" ] && error_msg "tpt_digits_from_string() - result empty"
@@ -453,7 +465,7 @@ tpt_tmux_vers_suffix() { # local usage by tpt_retrieve_running_tmux_vers()
     # Assigning the supplied variable name instead of printing output in a subshell,
     # for better performance
     varname="$1"
-    vers="$2"
+    vers="${2##next-}"  # Remove leading "next-" if present
     validate_varname "$varname" "tpt_tmux_vers_suffix()"
     # Remove leading digits, dots, and dashes to isolate suffix
     _s=$(printf "%s" "$vers" | sed 's/^[0-9.-]*//')

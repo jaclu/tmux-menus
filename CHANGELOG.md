@@ -4,6 +4,17 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [2.2.28] - 2025-11-09
+
+### Changed
+
+- Improved handling of next- prefixes for tmux min, by reducing the recognized
+  subversion by one, to ensure no dependency on incompatible features. Example
+  next-3.4 does not yet support display-menu profiling
+  Now next-3.4 is treated as 3.3 for compatibility reasons
+
+---
+
 ## [2.2.27] - 2025-10-26
 
 ### Changed
