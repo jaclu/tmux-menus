@@ -21,7 +21,7 @@ experienced users, then add more for newbies.
 
 - tmux versions with next- prefix is treated as one rev lower for compatibility
   reasons, like next-3.4 is treated as 3.3 since next-3.4 does not yet support
-  display-menu profiling
+  display-menu profiling, arriving in tmux 3.4.
 - Clear cache only removes content of cache folder, it doesn't delete the actual
   cache folder. This to support softlinked cache folders.
 - If cache is a soft-link and the target does not exist, it will be created.
