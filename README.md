@@ -20,6 +20,7 @@ discover functionality—advanced users can simply remove what they don't need.
 
 ## Recent Changes
 
+- New menu for `tmux 3.6` `Panes - Layouts - Scroll Bars`
 - Documentation improvements for better clarity and readability throughout README
   and docs/ files.
 - tmux versions with `next-` prefix are treated as one version lower for
@@ -28,7 +29,6 @@ discover functionality—advanced users can simply remove what they don't need.
 - Clear cache only removes content of cache folder, it doesn't delete the actual
   cache folder. This to support softlinked cache folders.
 - If cache is a soft-link and the target does not exist, it will be created.
-- Issue #77: Improved key binding handling.
 
 ## Purpose
 

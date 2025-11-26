@@ -102,8 +102,8 @@ set -g @menus_nav_home '#[fg=colour84]<=='
 ```tmux
 set -g @menus_format_title "'#[fg=yellow,align=left] #{@menu_name} '"
 set -g @menus_simple_style_border "fg=green,bg=default"
+set -g @menus_border_type 'rounded'
 set -g @menus_nav_next "#[fg=colour220]-->"
 set -g @menus_nav_prev "#[fg=colour71]<--"
 set -g @menus_nav_home "#[fg=colour84]<=="
-set -g @menus_border_type 'rounded'
 ```

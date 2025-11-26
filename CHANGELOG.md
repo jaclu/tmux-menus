@@ -4,6 +4,20 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [2.2.30] - 2025-11-26
+
+Added some tmux 3.6 features
+
+### Added
+
+- New menu `Panes - Layouts - Scroll Bars`
+
+### Changed
+
+- Changed `Panes - Layouts - Border Lines` Added `pane-border-lines` option `Spaces`
+
+---
+
 ## [2.2.29] - 2025-11-26
 
 ### Added
