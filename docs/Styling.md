@@ -15,13 +15,13 @@ their themed environments.
 The table below lists available style variables. "Param" refers to
 `display-menu` parameters (see the tmux man page).
 
-| Param | Variable                     | Default                               | Example              |
-| ----- | ---------------------------- | ------------------------------------- | -------------------- |
-| -T    | @menus_format_title          | `"'#[align=centre] #{@menu_name} '"`  | `"#{@menu_name}"`    |
-| -b    | @menus_border_type           | (none)                                | `rounded`            |
-| -H    | @menus_simple_style_selected | (none)                                | `fg=blue,bg=yellow`  |
-| -s    | @menus_simple_style          | (none)                                | `bg=red`             |
-| -S    | @menus_simple_style_border   | (none)                                | `fg=green`           |
+| Param | Variable                     | Default                              | Example             |
+| ----- | ---------------------------- | ------------------------------------ | ------------------- |
+| -T    | @menus_format_title          | `"'#[align=centre] #{@menu_name} '"` | `"#{@menu_name}"`   |
+| -b    | @menus_border_type           | (none)                               | `rounded`           |
+| -H    | @menus_simple_style_selected | (none)                               | `fg=blue,bg=yellow` |
+| -s    | @menus_simple_style          | (none)                               | `bg=red`            |
+| -S    | @menus_simple_style_border   | (none)                               | `fg=green`          |
 
 **Notes:**
 
@@ -48,11 +48,11 @@ set -g @menus_format_title "'#[align=centre] #[fg=colour34]#{@menu_name} '"
 
 ## Navigation Indicators
 
-| Action       | Variable        | Default | Example                  |
-| ------------ | --------------- | ------- | ------------------------ |
-| Next menu    | @menus_nav_next | `'-->'` | `'#[fg=colour220]-->'`   |
-| Previous menu| @menus_nav_prev | `'<--'` | `'#[fg=colour71]<--'`    |
-| Home         | @menus_nav_home | `'<=='` | `'#[fg=colour84]<=='`    |
+| Action        | Variable        | Default | Example                |
+| ------------- | --------------- | ------- | ---------------------- |
+| Next menu     | @menus_nav_next | `'-->'` | `'#[fg=colour220]-->'` |
+| Previous menu | @menus_nav_prev | `'<--'` | `'#[fg=colour71]<--'`  |
+| Home          | @menus_nav_home | `'<=='` | `'#[fg=colour84]<=='`  |
 
 Navigation variables support full tmux styling and are available in tmux 3.0+.
 
@@ -79,7 +79,9 @@ regenerate with the new style on next display.
 
 ![sample of dynamic changes using overrides](https://github.com/user-attachments/assets/e4f1c2b6-fb99-40d8-b8df-9174e9d5d3e3)
 
-## Example Configuration: Catppuccin Frappe
+## Example Configurations
+
+### Catppuccin Frappe
 
 ![Catppuccin Frappe inspired](https://github.com/user-attachments/assets/82bd152a-e577-4e1b-abc0-f959c30a87c3)
 
@@ -91,4 +93,17 @@ set -g @menus_simple_style_border 'bg=#414559' # @thm_surface_0
 set -g @menus_nav_next '#[fg=colour220]-->'
 set -g @menus_nav_prev '#[fg=colour71]<--'
 set -g @menus_nav_home '#[fg=colour84]<=='
+```
+
+### The styling I use
+
+![My Styling](https://github.com/user-attachments/assets/0dafa700-529a-4020-b049-93b5cf92358b)
+
+```tmux
+set -g @menus_format_title "'#[fg=yellow,align=left] #{@menu_name} '"
+set -g @menus_simple_style_border "fg=green,bg=default"
+set -g @menus_nav_next "#[fg=colour220]-->"
+set -g @menus_nav_prev "#[fg=colour71]<--"
+set -g @menus_nav_home "#[fg=colour84]<=="
+set -g @menus_border_type 'rounded'
 ```

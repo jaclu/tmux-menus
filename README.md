@@ -8,7 +8,7 @@ src="https://github.com/user-attachments/assets/0dafa700-529a-4020-b049-93b5cf92
 ## Summary
 
 A collection of popup menus for managing your tmux environment. Menus can be
-customized with optional [styling](docs/Styling.md), as shown in the right
+customized with optional [docs/Styling](docs/Styling.md), as shown in the right
 screenshot above.
 
 Once installed, press the trigger key to display the main menu. The default
