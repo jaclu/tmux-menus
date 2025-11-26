@@ -4,6 +4,22 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [2.2.29] - 2025-11-26
+
+### Added
+
+- tools/profiling-test.sh - A script that sets up a profiling environment and
+  demonstrates how to prepare menus for profiling.
+
+### Changed
+
+- Reworked documentation (README and multiple docs/ files)
+- Platform dependent optimization of time_span()
+- Further code cleanup in scripts/dialog_handling.sh
+- Fixed unintended exit 1 from profiling_display()
+
+---
+
 ## [2.2.28] - 2025-11-09
 
 ### Changed

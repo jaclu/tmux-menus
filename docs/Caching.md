@@ -1,62 +1,64 @@
 # Caching
 
-Several approaches are used to render menus quickly.
+Multiple optimization strategies are used to render menus quickly.
 
-Purely static menus that have been cached typically renders in < 0.01 seconds on
-reasonably modern systems. Enabling a log_file will print render times for each menu
-displayed.
+Purely static cached menus typically render in under 0.01 seconds on modern
+systems. Enable `@menus_log_file` to see render times for each menu displayed.
 
-At initialization, if tmux version and/or tmux conf for this plugin has been altered
-cache is cleared.
+The cache is automatically cleared at initialization if the tmux version or
+plugin configuration has changed.
 
-## Scripts environment
+## Script Environment
 
-When a menu script is started only a minimal env is loaded, the full support env
-is only loaded when needed. All to cut down on overhead. This minimal env is enough
-to display cached static content.
+Menu scripts start with a minimal environment loaded, with the full support
+environment loaded only when needed. This reduces overhead. The minimal
+environment is sufficient for displaying cached static content.
 
-Dynamic content will be slightly slower, since it has to be generated each time,
-so it is highly dependent on the complexity of the dynamic tasks.
-On modern systems this should hardly be noticeable
+Dynamic content is slightly slower since it must be generated on each display.
+Performance depends on the complexity of dynamic operations, but on modern
+systems this overhead is barely noticeable.
 
-## Static content
+## Static Content
 
-Defined inside static_content() {} in each menu
+Defined in `static_content() {}` within each menu script.
 
-First time a menu is accessed this cache needs to be rendered, but on all subsequent
-displays it should be instantaneous.
+The first time a menu is accessed, its cache is generated. All subsequent
+displays are instantaneous.
 
-## Dynamic content
+## Dynamic Content
 
-Defined inside dynamic_content() {} in each menu
+Defined in `dynamic_content() {}` within each menu script.
 
-Since this is rendered each time a menu is displayed, the full environment has not
-been loaded to keep it lean, so only what is in `scripts/helpers_minimal.sh` is available.
+Since dynamic content is rendered each display, only the minimal environment
+(from `scripts/helpers_minimal.sh`) is loaded by default to keep it lean.
 
-If the full environment is needed, it has to be loaded. For example `items/pane_move.sh`
-can be used for a template how to load the full environment.
-Look for the line:
+To load the full environment when needed, use this pattern (see
+[items/pane_move.sh](../items/pane_move.sh) for an example):
 
 ```sh
-[ "${all_helpers_sourced:-false}" = true ] || source_all_helpers "pane_move:dynamic_content()"
+${all_helpers_sourced:-false} || source_all_helpers "pane_move:dynamic_content()"
 ```
 
-The initial condition ensures that the call to source all helpers is only done
-if it has not been done previously.
+The conditional ensures the full environment is sourced only once, even if
+called multiple times.
 
-## When plugin-dir is read only
+## Read-Only Plugin Directory
 
-Either disable caching entirely, or create a softlink for the cache folder.
-This way cache can be located elsewhere, where writing is allowed, something like:
+If the plugin directory is read-only, either disable caching entirely or create
+a symlink for the cache folder to a writable location:
 
 ```sh
-ln -sf ~/.cache/tmux-menus <tmux plugin folder>/cache
+ln -sf ~/.cache/tmux-menus <tmux-plugin-folder>/cache
+```
 
-ln -sf /tmp/tmux-menus-cache <tmux plugin folder>/cache
+Or use a temporary directory:
+
+```sh
+ln -sf /tmp/tmux-menus-cache <tmux-plugin-folder>/cache
 ```
 
 ## whiptail / dialog
 
-These also use caching same as tmux built in `display-menu`, but due to displaying
-such menus take a noticeable time, they will not be displayed as quickly despite
-using caching.
+These external menu handlers also use caching like the native `display-menu`.
+However, due to their inherent rendering overhead, they display noticeably
+slower despite caching.

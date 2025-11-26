@@ -344,8 +344,14 @@ time_span() { # display_menu() / check_speed_cutoff()
     #
     _t_start="$1"
 
-    safe_now
-    t_time_span="$(echo "$t_now - $_t_start" | bc)"
+    safe_now # assigns t_now
+
+    if [ -d /proc/ish ]; then
+        # iSH performs better with bc due to emulation characteristics
+        t_time_span="$(echo "$t_now - $_t_start" | bc)"
+    else
+        t_time_span="$(awk "BEGIN {print $t_now - $_t_start}")"
+    fi
 }
 
 #---------------------------------------------------------------

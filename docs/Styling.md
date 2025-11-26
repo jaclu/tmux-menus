@@ -1,50 +1,44 @@
-# Layouts
+# Menu Styling
 
-## Aesthetic Disclaimer
+## About Styling
 
-I have little sense of visual aesthetics, so these features are not driven by a personal
-need for visual appeal. However, it was recently suggested that it would be useful
-to match menus to various themes, which made me curious about how to provide such
-features.
+These styling features were added to allow menus to match various tmux themes.
+The focus is on ease of use and implementation rather than providing preset
+themes.
 
-For me, it’s more about making it easy to use and implement. I’ve included some
-samples to show what’s possible, but please be kind—creating themes isn’t my goal.
-Hopefully, those with an eye for design can put this to good use to better integrate
-the menus with themed environments.
+Sample configurations are included to demonstrate what's possible. Users with
+design expertise can leverage these features to better integrate menus with
+their themed environments.
 
-## Menu style variables
+## Style Variables
 
-In the table below, Param refers to display-menu parameters (see the tmux man page).
+The table below lists available style variables. "Param" refers to
+`display-menu` parameters (see the tmux man page).
 
-| Param | variable                     | Default                              | Sample config     |
-| ----- | ---------------------------- | ------------------------------------ | ----------------- |
-| -T    | @menus_format_title          | `"'#[align=centre] #{@menu_name} '"` | `"#{@menu_name}"` |
-| -b    | @menus_border_type           |                                      | rounded           |
-| -H    | @menus_simple_style_selected |                                      | fg=blue,bg=yellow |
-| -s    | @menus_simple_style          |                                      | bg=red            |
-| -S    | @menus_simple_style_border   |                                      | fg=green          |
+| Param | Variable                     | Default                               | Example              |
+| ----- | ---------------------------- | ------------------------------------- | -------------------- |
+| -T    | @menus_format_title          | `"'#[align=centre] #{@menu_name} '"`  | `"#{@menu_name}"`    |
+| -b    | @menus_border_type           | (none)                                | `rounded`            |
+| -H    | @menus_simple_style_selected | (none)                                | `fg=blue,bg=yellow`  |
+| -s    | @menus_simple_style          | (none)                                | `bg=red`             |
+| -S    | @menus_simple_style_border   | (none)                                | `fg=green`           |
 
-The prefix `simple_style` indicates that it doesn’t support full style notation.
+**Notes:**
 
-The -T parameter (`@menus_format_title`) is a FORMAT field. Use `#{@menu_name}`
-to display the menu name.
+- The `simple_style` prefix indicates limited style notation support.
+- **-T** (`@menus_format_title`): A FORMAT field. Use `#{@menu_name}` to
+  display the menu name.
+- **-b** (`@menus_border_type`): Sets border character style. See
+  `popup-border-lines` in the tmux man page.
+- **-H, -s, -S**: Appear to only support `fg`, `bg`, and `default` attributes.
 
-The -b parameter sets the type of characters used for drawing menu borders.
-See popup-border-lines in the tmux man page for possible values for border-lines.
+### Quoting Considerations
 
-The -H, -s, and -S parameters seem to only support setting fg, bg, and default,
-but I could be mistaken.
+To maximize styling freedom, these variables are **not** wrapped in quotes in
+the generated menu code. This means you're responsible for proper quoting,
+especially for spaces in menu names.
 
-Since tmux scripting has limitations that quickly exhaust available quotes and to
-maximize styling freedom, these variables are not wrapped in quotes in the
-generated menu code.
-
-All quoting of spaces in the menu name etc. is up to the style creator. Since many
-menus have spaces in their name, this essentially means that if `#{@menu_name}`
-is used, it needs to be in an inner quote
-
-This could be more trouble than it's worth, so let me know if this method isn’t practical.
-On the upside, it should allow for maximum styling flexibility.
+If using `#{@menu_name}` and menus contain spaces, wrap it in an inner quote.
 
 Example:
 
@@ -52,20 +46,21 @@ Example:
 set -g @menus_format_title "'#[align=centre] #[fg=colour34]#{@menu_name} '"
 ```
 
-## Menu navigaion hints
+## Navigation Indicators
 
-| action    | variable        | default | Sample config        |
-| --------- | --------------- | ------- | -------------------- |
-| next menu | @menus_nav_next | '-->'   | '#[fg=colour220]-->' |
-| prev menu | @menus_nav_prev | '<--'   | '#[fg=colour71]<--'  |
-| home      | @menus_nav_home | '<=='   | '#[fg=colour84]<=='  |
+| Action       | Variable        | Default | Example                  |
+| ------------ | --------------- | ------- | ------------------------ |
+| Next menu    | @menus_nav_next | `'-->'` | `'#[fg=colour220]-->'`   |
+| Previous menu| @menus_nav_prev | `'<--'` | `'#[fg=colour71]<--'`    |
+| Home         | @menus_nav_home | `'<=='` | `'#[fg=colour84]<=='`    |
 
-The navigation variables support full normal styling, and can be used already
-by `tmux 3.0`
+Navigation variables support full tmux styling and are available in tmux 3.0+.
 
-## Menu overrides
+## Per-Menu Overrides
 
-| override variable | Default                      |
+All styling variables support per-menu overrides for fine-grained control:
+
+| Override Variable | Falls Back To                |
 | ----------------- | ---------------------------- |
 | override_title    | @menus_format_title          |
 | override_selected | @menus_simple_style_selected |
@@ -75,18 +70,16 @@ by `tmux 3.0`
 | override_prev     | @menus_nav_prev              |
 | override_home     | @menus_nav_home              |
 
-All the styling variables support overrides on a per-menu level, for those who want full
-control over dynamic menus.
+When an override is defined in a menu, it takes precedence over the
+configuration variables.
 
-If an override is defined in a menu, it will take precedence over the config variables.
-
-These overrides are also ideal for testing themes and styles. By assigning overrides
-in a menu and saving it, the cache (if used) for that menu is invalidated,
-and the menu will be regenerated with the new style the next time it’s displayed.
+**Testing tip:** Overrides are ideal for testing themes and styles. Modifying
+an override in a menu script invalidates that menu's cache, causing it to
+regenerate with the new style on next display.
 
 ![sample of dynamic changes using overrides](https://github.com/user-attachments/assets/e4f1c2b6-fb99-40d8-b8df-9174e9d5d3e3)
 
-## Sample config - Catppuccin Frappe inspired
+## Example Configuration: Catppuccin Frappe
 
 ![Catppuccin Frappe inspired](https://github.com/user-attachments/assets/82bd152a-e577-4e1b-abc0-f959c30a87c3)
 

@@ -57,17 +57,15 @@ debug_print() {
 }
 
 starting_with_dash() {
-    #
     #  In whiptail/dialog, an initial '-'' in a label causes the menu to
     #  fail, in tmux menus this is used to indicate dimmed (disabled)
     #  entries, for whiptail/dialog entries with such labels are just
     #  ignored
-    #
-    if [ "$(printf '%s' "$1" | cut -c 1)" = "-" ]; then
-        return 0
-    else
-        return 1
-    fi
+
+    case "$1" in
+      -*) return 0 ;;
+      *) return 1 ;;
+    esac
 }
 
 is_function_defined() {
@@ -270,7 +268,6 @@ mnu_open_menu() {
 mnu_external_cmd() {
     label="$1"
     key="$2"
-    # cmd="$3"
     cmd="$(echo "$3" | sed 's/"/\\"/g')" # replace embedded " with \"
     # [ -n "$menu_debug" ] && debug_print "mnu_external_cmd($label,$key,$cmd)"
 
@@ -284,7 +281,6 @@ mnu_external_cmd() {
 mnu_command() {
     label="$1"
     key="$2"
-    # cmd="$3"
     cmd="$(echo "$3" | sed 's/"/\\"/g')" # replace embedded " with \"
 
     # [ -n "$menu_debug" ] && debug_print "mnu_command($label,$key,$cmd)"
@@ -362,16 +358,15 @@ alt_command() {
 }
 
 alt_text_line() {
-    #
-    #  filtering out tmux #{...} sequences and initial -
-    #  labels starting with - indicates disabled feature,
-    #  whiptail can not handle labels starting with -, so remove it
-    #
-    txt="$(echo "$1" | sed 's/^[-]//' | sed 's/#\[[^]]*\]//g')"
+    #  - filtering out tmux #[...] sequences for styling
+    txt="$(printf '%s\n' "$1" | sed 's/#\[[^]]*\]//g')"
 
-    [ "$(printf '%s' "$txt" | cut -c1)" = "-" ] && {
-        txt=" ${txt#?}"
-    }
+    #  - removes initial dash (-) from string, whiptail can not handle labels
+    #     starting with -, so remove it
+    case "$txt" in
+        -*) txt=" ${txt#-}" ;;
+        *) ;; # do nothing default case
+    esac
 
     menu_items="$menu_items '' \"$txt\""
 }
@@ -869,12 +864,14 @@ cache_read_menu_items() {
     for f_name in "$d_menu_cache"/*; do
         [ -d "$f_name" ] && continue # most likely a wt_actions/
 
-        # Read the content of the file and append it to the menu_items variable
-        if [ -z "$menu_items" ]; then
-            menu_items="$(cat "$f_name")"
-        else
-            menu_items="$menu_items $(cat "$f_name")"
-        fi
+        # Read the content of the files line-by-line and append to the menu_items variable
+        while IFS= read -r line || [ -n "$line" ]; do
+            if [ -z "$menu_items" ]; then
+                menu_items="$line"
+            else
+                menu_items="$menu_items $line"
+            fi
+        done < "$f_name"
     done
 }
 
@@ -891,35 +888,35 @@ sort_uncached_menu_items() {
     #
     # log_it "sort_uncached_menu_items()"
 
-    gmi_entries=""
+    _sumi_entries=""
 
-    gmi_rest="$uncached_menu"
+    _sumi_rest="$uncached_menu"
     while :; do
-        case "$gmi_rest" in
+        case "$_sumi_rest" in
         *"$uncached_item_splitter"*)
-            gmi_part=${gmi_rest%%"$uncached_item_splitter"*}
-            gmi_rest=${gmi_rest#*"$uncached_item_splitter"}
+            _sumi_part=${_sumi_rest%%"$uncached_item_splitter"*}
+            _sumi_rest=${_sumi_rest#*"$uncached_item_splitter"}
             ;;
         *)
-            gmi_part=$gmi_rest
-            gmi_rest=''
+            _sumi_part=$_sumi_rest
+            _sumi_rest=''
             ;;
         esac
 
-        idx=$(printf "%s" "$gmi_part" | cut -d' ' -f1)
-        gmi_body=$(printf "%s" "$gmi_part" | cut -d' ' -f2-)
+        idx=${_sumi_part%% *}         # First word
+        _sumi_body=${_sumi_part#* }     # Everything after first space
         # Save as index<TAB>content
         #region  gmi item separation
-        gmi_entries="$gmi_entries
-$idx	$gmi_body"
+        _sumi_entries="$_sumi_entries
+$idx	$_sumi_body"
         #endregion
 
-        [ -z "$gmi_rest" ] && break
+        [ -z "$_sumi_rest" ] && break
     done
 
     # Now sort and print, skipping initial empty line
     menu_items="$(
-        printf "%s\n" "$gmi_entries" | sed 1d | sort -n | while IFS='	' read -r idx this_section; do
+        printf "%s\n" "$_sumi_entries" | sed 1d | sort -n | while IFS='	' read -r idx this_section; do
             printf '%s' "$this_section" # send it back to the script
         done
     )"
@@ -1006,9 +1003,12 @@ ensure_menu_fits_on_screen() {
     # shellcheck disable=SC2154
     time_span "$dh_t_start"
 
-    # log_it "ensure_menu_fits_on_screen() Menu $bn_current_script - Display time:  $disp_time ($t_minimal_display_time)"
+    # _s="ensure_menu_fits_on_screen() Menu $bn_current_script - "
+    # _s="$_s Display time:  $disp_time ($t_minimal_display_time)"
+    # log_it "$_s"
+
     [ "$(echo "$t_time_span < $t_minimal_display_time" | bc)" -eq 1 ] && {
-        ${all_helpers_sourced:-false} || {
+            ${all_helpers_sourced:-false} || {
             _m="ensure_menu_fits_on_screen() - short display time, give warning"
             source_all_helpers "$_m"
         }
@@ -1045,12 +1045,13 @@ wt_cached_selection() {
 
         # Check if the file is a regular file
         [ -f "$file" ] && {
-            all_wt_actions="$all_wt_actions $(cat "$file")"
-            #
-            #  Read the content of the file and append it to
-            #  the dialog variable
-            #
-            menu_items="$menu_items $(cat "$file")"
+            _file_content=""
+            while IFS= read -r line || [ -n "$line" ]; do
+                _file_content="${_file_content:+$_file_content }$line"
+            done < "$file"
+
+            all_wt_actions="$all_wt_actions $_file_content"
+            menu_items="$menu_items $_file_content"
         }
     done
 }
