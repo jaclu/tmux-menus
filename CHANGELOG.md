@@ -8,7 +8,8 @@ All notable changes to this project will be documented here.
 
 ### Changed
 
-- Layouts – The currently active option is dimmed and cannot be selected.
+- Layouts – The currently active option is dimmed and cannot be selected. Also giving a
+  hint about current setting.
 - Pane Scrollbars (tmux 3.6 feature) Shortcut change: Off: 0 -> o On 1 -> n
 
 ---
