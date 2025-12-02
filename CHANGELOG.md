@@ -4,6 +4,15 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [2.2.31] - 2025-12-02
+
+### Changed
+
+- Layouts – The currently active option is dimmed and cannot be selected.
+- Pane Scrollbars (tmux 3.6 feature) Shortcut change: Off: 0 -> o On 1 -> n
+
+---
+
 ## [2.2.30] - 2025-11-26
 
 Added some tmux 3.6 features

@@ -20,6 +20,7 @@ discover functionality—advanced users can simply remove what they don't need.
 
 ## Recent Changes
 
+- Layouts – The currently active option is dimmed and cannot be selected.
 - New menu for `tmux 3.6` `Panes - Layouts - Scroll Bars`
 - Documentation improvements for better clarity and readability throughout README
   and docs/ files.
