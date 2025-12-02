@@ -9,34 +9,35 @@
 #
 
 dynamic_content() {
-    _c="set-option -w pane-scrollbars" # only change on a per window basis
+    t_opt="pane-scrollbars"
+    _cmd="set-option -w $t_opt" # only change on a per window basis
     lbl_off="Off"
     lbl_modal="Modal (only in scrollback)"
     lbl_on="On"
-    win_option="$($TMUX_BIN show-options -wv pane-scrollbars)"
+    win_option="$($TMUX_BIN show-options -wv "$t_opt")"
+
     if [ -n "$win_option" ]; then
         case "$win_option" in
             off) lbl_off="-Off" ;;
             modal) lbl_modal="-Modal (only in scrollback)" ;;
             on) lbl_on="-On" ;;
-            *) error_msg "Unknown -w pane-scrollbars option: $win_option" ;;
+            *) error_msg "Unknown $t_opt -w option: $win_option" ;;
         esac
     else
-        glob_option="$($TMUX_BIN show-options -gv pane-scrollbars)"
+        glob_option="$($TMUX_BIN show-options -gv "$t_opt")"
         case "$glob_option" in
             off) lbl_off="-(glob) Off" ;;
             modal) lbl_modal="-(glob) Modal (only in scrollback)" ;;
             on) lbl_on="-(glob) On" ;;
-            *) error_msg "Unknown -g pane-scrollbars option: $glob_option" ;;
+            *) error_msg "Unknown $t_opt -g option: $glob_option" ;;
         esac
     fi
 
     set -- \
-        0.0 S \
-        3.6 C 0 "$lbl_off" "$_c  off  $runshell_reload_mnu" \
-        3.6 C m "$lbl_modal" "$_c  modal  $runshell_reload_mnu" \
-        3.6 C 1 "$lbl_on" "$_c   on   $runshell_reload_mnu"
-    menu_generate_part 3 "$@"
+        3.6 C 0 "$lbl_off"   "$_cmd  off    $runshell_reload_mnu" \
+        3.6 C m "$lbl_modal" "$_cmd  modal  $runshell_reload_mnu" \
+        3.6 C 1 "$lbl_on"    "$_cmd  on     $runshell_reload_mnu"
+    menu_generate_part 4 "$@"
 }
 
 static_content() {
@@ -45,6 +46,9 @@ static_content() {
         0.0 M Home "Back to Main menu  $nav_home" main.sh
     menu_generate_part 1 "$@"
     $cfg_display_cmds && display_commands_toggle 2
+    set -- \
+        0.0 S
+    menu_generate_part 3 "$@"
 }
 
 #===============================================================

@@ -8,20 +8,50 @@
 #   Choose layout
 #
 
+dynamic_content() {
+    t_opt="pane-border-indicators"
+    _cmd="set-option -w $t_opt" # only change on a per window basis
+    lbl_off="off"
+    lbl_color="colour"
+    lbl_arrows="arrows"
+    lbl_both="both"
+    win_option="$($TMUX_BIN show-options -wv "$t_opt")"
+
+    if [ -n "$win_option" ]; then
+        case "$win_option" in
+            off) lbl_off="-off" ;;
+            colour) lbl_color="-colour" ;;
+            arrows) lbl_arrows="-arrows" ;;
+            both) lbl_both="-both" ;;
+            *) error_msg "Unknown $t_opt -w option: $win_option" ;;
+        esac
+    else
+        glob_option="$($TMUX_BIN show-options -gv "$t_opt")"
+        case "$glob_option" in
+            off) lbl_off="-(glob) off" ;;
+            colour) lbl_color="-(glob) colour" ;;
+            arrows) lbl_arrows="-(glob) arrows" ;;
+            both) lbl_both="-(glob) both" ;;
+            *) error_msg "Unknown $t_opt -g option: $glob_option" ;;
+        esac
+    fi
+
+    set -- \
+        3.3 C "o" "$lbl_off"    "$_cmd  off     $runshell_reload_mnu" \
+        3.3 C "c" "$lbl_color"  "$_cmd  colour  $runshell_reload_mnu" \
+        3.3 C "a" "$lbl_arrows" "$_cmd  arrows  $runshell_reload_mnu" \
+        3.3 C "b" "$lbl_both"   "$_cmd  both    $runshell_reload_mnu"
+    menu_generate_part 4 "$@"
+}
+
 static_content() {
     set -- \
         0.0 M Left "Back to Layouts    $nav_prev" layouts.sh \
         0.0 M Home "Back to Main menu  $nav_home" main.sh
     menu_generate_part 1 "$@"
     $cfg_display_cmds && display_commands_toggle 2
-
     set -- \
-        3.3 S \
-        3.3 T "-#[align=centre,nodim]pane-border-indicators" \
-        3.3 C "o" "off" "set-option    pane-border-indicators  off     $runshell_reload_mnu" \
-        3.3 C "c" "colour" "set-option pane-border-indicators  colour  $runshell_reload_mnu" \
-        3.3 C "a" "arrows" "set-option pane-border-indicators  arrows  $runshell_reload_mnu" \
-        3.3 C "b" "both" "set-option   pane-border-indicators  both    $runshell_reload_mnu"
+        0.0 S
     menu_generate_part 3 "$@"
 }
 
