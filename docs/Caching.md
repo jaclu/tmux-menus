@@ -51,11 +51,10 @@ a symlink for the cache folder to a writable location:
 ln -sf ~/.cache/tmux-menus <tmux-plugin-folder>/cache
 ```
 
-Or use a temporary directory:
-
-```sh
-ln -sf /tmp/tmux-menus-cache <tmux-plugin-folder>/cache
-```
+Supporting a user-configurable cache path is intentionally not implemented.
+Any such setting would require checking the custom location on every script invocation,
+adding overhead and negating the performance benefit the cache is meant to provide.
+A symlink avoids this cost and is therefore the preferred solution.
 
 ## whiptail / dialog
 
