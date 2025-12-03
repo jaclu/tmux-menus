@@ -67,7 +67,7 @@ static_content() {
   #   'set -- "$@" \' should be used when appending parameters
 
   set -- \
-    0.0 M Left "Back to Main menu  $nav_home" "main.sh" \
+    0.0 M Left "Back to Main menu  $nav_home" "$cfg_main_menu" \
     0.0 S \
     0.0 T "Example of a line extending action" \
     2.0 C "r" "Rename this session" "command-prompt -I '#S' \
