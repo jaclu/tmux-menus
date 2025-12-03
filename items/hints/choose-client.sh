@@ -12,9 +12,10 @@ dynamic_content() {
     # Things that change dependent on various states
 
     if [ -n "$prev_menu" ]; then
+        # shellcheck disable=SC2154 # cfg_main_menu is set in helpers_minimal.sh
         set -- \
             0.0 M Left "Back to Previous menu  $nav_prev" "$prev_menu" \
-            0.0 M Home "Back to Main menu      $nav_home" main.sh
+            0.0 M Home "Back to Main menu      $nav_home" "$cfg_main_menu"
     else
         set -- \
             0.0 T "Press Esc or q to close this keyboard hint overlay"

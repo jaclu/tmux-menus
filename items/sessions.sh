@@ -17,8 +17,9 @@ static_content() {
     fi
     cli_dtch_mode="set-option -s detach-on-destroy $_s"
 
+    # shellcheck disable=SC2154 # cfg_main_menu is set in helpers_minimal.sh
     set -- \
-        0.0 M Left "Back to Main menu  $nav_home" main.sh
+        0.0 M Left "Back to Main menu  $nav_home" "$cfg_main_menu"
     menu_generate_part 1 "$@"
     $cfg_display_cmds && display_commands_toggle 2
 

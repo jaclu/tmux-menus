@@ -12,9 +12,10 @@ static_content() {
     if [ -z "$prev_menu" ]; then
         error_msg "$bn_current_script was called without notice of what called it"
     fi
+    # shellcheck disable=SC2154 # cfg_main_menu is set in helpers_minimal.sh
     set -- \
         0.0 M Left "Back to Previous menu  $nav_prev" "$prev_menu" \
-        0.0 M Home "Back to Main menu      $nav_home" main.sh \
+        0.0 M Home "Back to Main menu      $nav_home" "$cfg_main_menu" \
         0.0 S \
         0.0 T "-#[nodim]Use this to send keys that might" \
         0.0 T "-#[nodim]not be available with the current" \
@@ -29,7 +30,7 @@ static_content() {
             0.0 T " " \
             0.0 T "Please note that this buffer might become" \
             0.0 T "invalid if another menu is selected" \
-            0.0 T "before pasting!" \
+            0.0 T "before pasting." \
             0.0 T " " \
             0.0 T "Once one or more characters have been selected," \
             0.0 T "cancel this menu. Then, when back in the pane," \

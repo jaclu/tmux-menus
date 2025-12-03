@@ -13,7 +13,7 @@ is_avalable() {
     label="$2"
 
     if [ -z "$cmd" ]; then
-        error_msg "extras.is_available - no param!"
+        error_msg "extras.is_available() - no parameters given"
     fi
     if [ -n "$(command -v "$cmd")" ]; then
         echo "$label  $nav_next"
@@ -36,8 +36,9 @@ dynamic_content() {
 }
 
 static_content() {
+    # shellcheck disable=SC2154 # cfg_main_menu is set in helpers_minimal.sh
     set -- \
-        0.0 M Left "Back to Main menu  $nav_prev" main.sh
+        0.0 M Left "Back to Main menu  $nav_prev" "$cfg_main_menu"
     menu_generate_part 1 "$@"
     $cfg_display_cmds && display_commands_toggle 2
 

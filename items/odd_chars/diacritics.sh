@@ -9,9 +9,10 @@
 #
 
 static_content() {
+    # shellcheck disable=SC2154 # cfg_main_menu is set in helpers_minimal.sh
     set -- \
         0.0 M Left "Back to Missing Keys  $nav_prev" "$d_odd_chars"/missing_keys.sh \
-        0.0 M Home "Back to Main menu     $nav_home" main.sh \
+        0.0 M Home "Back to Main menu     $nav_home" "$cfg_main_menu" \
         0.0 S \
         0.0 M A "Diacritics - a A      $nav_next" "$d_odd_chars"/diacritics_a.sh \
         0.0 M C "Diacritics - c C      $nav_next" "$d_odd_chars"/diacritics_c.sh \

@@ -550,7 +550,9 @@ safe_now t_script_start
     # or found to be gone
     d_cache_main_menu="$d_cache"/items/main.sh
 
-    # Used if main menu should be run
+    # System-initial default for the main menu.
+    # After options are parsed, always use $cfg_main_menu to refer to the current main menu.
+    # This ensures any user-defined main menu or redirections are respected.
     f_main_menu="$d_items"/main.sh
 
     f_ext_dlg_trigger="$d_scripts/external_dialog_trigger.sh"

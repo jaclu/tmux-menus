@@ -29,13 +29,14 @@ dynamic_content() {
     fi
 
     set -- 0.0 M Left "Back to $prev_name   $nav_prev" "$prev_menu"
-    [ -n "$prev_menu" ] || error_msg "$rn_current_script - no previous menu param!"
+    [ -n "$prev_menu" ] || error_msg "$rn_current_script - no previous menu parameter given"
     menu_generate_part 1 "$@"
 }
 
 static_content() {
+    # shellcheck disable=SC2154 # cfg_main_menu is set in helpers_minimal.sh
     set -- \
-        0.0 M Home "Back to Main menu  $nav_home" main.sh \
+        0.0 M Home "Back to Main menu  $nav_home" "$cfg_main_menu" \
         2.5 M L "Border Lines" layouts_lines.sh \
         3.3 M I "Border Indicators" layouts_indicators.sh \
         3.6 M S "Scroll Bars" layouts_scrollbars.sh
