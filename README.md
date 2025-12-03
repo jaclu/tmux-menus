@@ -213,7 +213,7 @@ Default: `Yes`
 Menu items are cached by default for better performance. Disabling caching also
 disables the Custom Menus feature.
 
-Technically, items defined in `static_content()` are cached, while items that
+Technically, only items defined in `static_content()` are cached, while items that
 need fresh generation each time (like conditional menu entries) are defined in
 `dynamic_content()`. See [scripts/pane_move.sh](items/pane_move.sh) for an
 example—it only shows "Swap current pane with marked" when a marked pane exists.
