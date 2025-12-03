@@ -114,6 +114,7 @@ source_cached_params() {
 
         # shellcheck source=/dev/null # not always present
         . "$f_cache_params" || {
+            # restore forced log file setting if sourcing failed
             [ "$log_file_forced" = 1 ] && cfg_log_file="$orig_log_file"
             log_it "source_cached_params() - Failed to source: $f_cache_params"
             return 1
@@ -141,7 +142,14 @@ get_config() { # local usage during sourcing
     #
     # log_it "get_config() - $rn_current_script"
     replace_config=false
-    if [ -f "$f_no_cache_hint" ]; then
+    if [ -f "$f_cache_params" ]; then
+        source_cached_params || {
+            replace_config=true
+            _m="WARNING: get_config() failed to source: $f_cache_params,"
+            _m="$_m calling config_setup"
+            log_it "$_m"
+        }
+    elif [ -f "$f_no_cache_hint" ]; then
         cfg_use_cache=false
         ${all_helpers_sourced:-false} || {
             source_all_helpers "get_config() - no cache hint found"
@@ -149,13 +157,6 @@ get_config() { # local usage during sourcing
         tmux_get_plugin_options
         # ckoud node .16 jacmacm 0.32 jacpad 1.5  jacdroid 1.2
         check_speed_cutoff 0.6
-    elif [ -f "$f_cache_params" ]; then
-        source_cached_params || {
-            replace_config=true
-            _m="WARNING: get_config() failed to source: $f_cache_params,"
-            _m="$_m calling config_setup"
-            log_it "$_m"
-        }
     else
         replace_config=true
     fi
