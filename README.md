@@ -301,6 +301,17 @@ whitespace is found.
 If lines end with `>`, they've been truncated by tmux because they exceed the
 display width. Reduce `@menus_display_cmds_cols` to prevent truncation.
 
+## Custom Menus
+
+Originally, customization required forking the repository and modifying menus
+directly. However, a dynamic menu system has been added that allows users to
+add custom menus without forking.
+
+The key difference: **custom menus** integrate into the official menu system,
+while **alternate menus** (below) replace it entirely.
+
+For implementation details, see [docs/CustomMenus.md](docs/CustomMenus.md).
+
 ### Alternate Menus
 
 ```tmux
@@ -313,22 +324,8 @@ Override the default menu system with a completely custom set.
 
 **Important notes:**
 
-- If your custom menu links to built-in menus, their "main menu" reference still
-  points to the default main menu, not your custom one. You'll need to close the
-  menu and re-trigger your custom main menu to return.
 - All custom menus must define `D_TM_BASE_PATH` to point to the tmux-menus
   installation directory for support scripts to work correctly.
-
-## Custom Menus
-
-Originally, customization required forking the repository and modifying menus
-directly. However, a dynamic menu system has been added that allows users to
-add custom menus without forking.
-
-The key difference: **custom menus** integrate into the official menu system,
-while **alternate menus** (above) replace it entirely.
-
-For implementation details, see [docs/CustomMenus.md](docs/CustomMenus.md).
 
 ## Screen Size Detection
 
