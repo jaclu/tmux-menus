@@ -19,7 +19,7 @@
 
 [ -z "$D_TM_BASE_PATH" ] && {
     # helpers not yet sourced, so error_msg() not yet available
-    msg="ERROR: $0 - D_TM_BASE_PATH must be set!"
+    msg="ERROR: $0 - D_TM_BASE_PATH must be set before sourcing this file"
     (
         echo
         echo "$msg"

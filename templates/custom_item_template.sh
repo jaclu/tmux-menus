@@ -5,7 +5,7 @@
 #
 #  Part of https://github.com/jaclu/tmux-menus
 #
-#  Template for Custom item, copy this into custom_items and modify it!
+#  Template for Custom item, copy this into custom_items and modify it
 #
 
 static_content() {
@@ -14,7 +14,7 @@ static_content() {
         0.0 M Left "Back to Custom items  $nav_prev" "$f_custom_items_index" \
         0.0 M Home "Back to Main menu     $nav_home" main.sh \
         0.0 S \
-        0.0 T "*** Replace this line with one or more lines of custom contnent! ***"
+        0.0 T "*** Replace this line with one or more lines of custom contnent ***"
 
     menu_generate_part 1 "$@"
 }
@@ -31,7 +31,7 @@ menu_name="My Custom Menu"
 # index listing custom items.
 # Since this will be used to point to this menu from the index,
 # it is recommended to use uppercase in order to follow the conventions
-# in this plugin, but anything goes!
+# in this plugin, but anything goes
 # If a "special" char is used it might need to be prefixed with \
 # shellcheck disable=SC2034 # used in update_custom_inventory.sh
 menu_key="?"

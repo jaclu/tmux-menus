@@ -16,7 +16,7 @@
 
 static_content() {
 
-    error_msg "THIS IS NOT USED ATM!"
+    error_msg "THIS IS NOT USED ATM"
 
     change_location="run-shell '$d_scripts/move_menu.sh"
 
@@ -44,7 +44,7 @@ static_content() {
     # 0.0 C s "set coordinates" "$set_coordinates" \
     # 0.0 S \
     # 0.0 T "-When using coordinates" \
-    # 0.0 T "-lower left corner is set!"
+    # 0.0 T "-lower left corner is set"
 
     menu_generate_part 1 "$@"
 }

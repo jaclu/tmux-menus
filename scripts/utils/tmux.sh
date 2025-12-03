@@ -12,7 +12,7 @@
 tmux_vers_check_do_compare() {
     # Called fomh helpers_minimal.sh:tmux_vers_check() if checked version was not cached
     _v_comp="$1"
-    [ -z "$_v_comp" ] && error_msg "tmux_vers_check_do_compare() - no param!"
+    [ -z "$_v_comp" ] && error_msg "tmux_vers_check_do_compare() - no param supplied"
     # log_it "tmux_vers_check_do_compare($_v_comp)"
 
     # Compare numeric parts first for quick decisions.
@@ -134,8 +134,8 @@ tmux_get_option() {
     # usually disabled for performance
     # validate_varname "$tgo_varname" "tmux_get_option()"
 
-    # [ -z "$tgo_varname" ] && error_msg "tmux_get_option() param 1 empty!"
-    [ -z "$tgo_option" ] && error_msg "tmux_get_option() param 2 empty!"
+    # [ -z "$tgo_varname" ] && error_msg "tmux_get_option() param 1 empty"
+    [ -z "$tgo_option" ] && error_msg "tmux_get_option() param 2 empty"
     [ -z "$tgo_default" ] && log_it "tmux_get_option($tgo_option) - No default supplied"
 
     [ "$tgo_default" = "EMPTY" ] && {
@@ -236,9 +236,9 @@ fix_home_path() {
         # For performance reasons full variable name assessment when is disabled by default
         validate_varname "$fhp_varname" "fix_home_path()"
     else
-        [ -z "$fhp_varname" ] && error_msg "fix_home_path() param 1 empty!"
+        [ -z "$fhp_varname" ] && error_msg "fix_home_path() param 1 empty"
     fi
-    [ -z "$fhp_path" ] && error_msg "fix_home_path() param 2 empty!"
+    [ -z "$fhp_path" ] && error_msg "fix_home_path() param 2 empty"
 
     # But of course tmux changed how they escpe options starting with ~ or $HOME...
     if tmux_vers_check 3.4 && ! tmux_vers_check 3.5; then

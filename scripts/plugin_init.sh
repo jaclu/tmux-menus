@@ -85,7 +85,7 @@ f_skip_low_tmux_version_warning="$D_TM_BASE_PATH"/.skip_old_tmux_warning
 # log_it "=====   plugin_init.sh starting   ====="
 
 # Define cfg_use_cache as soon as possible, and importantly, don't cache this
-# param since it is as of yet unknown if caching is enabled!
+# param since it is as of yet unknown if caching is enabled.
 # Once this has been set, it defines if caching should be used or not
 
 # shellcheck disable=SC2154 # default_use_cache defined in tmux.sh
@@ -136,7 +136,7 @@ if $cfg_use_cache; then
         error_msg "update_custom_inventory.sh reported error: $?"
     }
 else
-    log_it "Will NOT use cache!"
+    log_it "Will NOT use cached params and key bindings"
 fi
 
 #

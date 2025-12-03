@@ -29,7 +29,7 @@ tmux_error_handler_assign current_window display-message -p '#{window_id}' || {
 }
 
 [ "$window_list" = "$current_window" ] && {
-    tmux_error_handler display-message "No other windows to kill!"
+    tmux_error_handler display-message "No other windows to kill"
 }
 
 for w in $window_list; do

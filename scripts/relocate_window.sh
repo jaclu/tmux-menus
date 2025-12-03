@@ -30,7 +30,7 @@ if [ "$cur_ses" = "$dest_ses" ]; then
     #
     #  to same session
     #
-    [ "$action" = "l" ] && error_msg "Linking to same session is pointless!"
+    [ "$action" = "l" ] && error_msg "Linking to same session is pointless"
 
     #
     #  Move within the current session

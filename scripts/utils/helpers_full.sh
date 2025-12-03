@@ -399,8 +399,8 @@ safe_remove() {
     skip_plugin_name_in_path_check="$3"
 
     # log_it "safe_remove($pattern) - $reason"
-    [ -z "$pattern" ] && error_msg "safe_remove() - no path supplied!"
-    [ -z "$reason" ] && error_msg "safe_remove() - no reason given!"
+    [ -z "$pattern" ] && error_msg "safe_remove() - no path supplied to remove"
+    [ -z "$reason" ] && error_msg "safe_remove() - no reason given"
 
     tmpdir_noslash="${TMPDIR%/}" # Remove trailing slash if present
 
@@ -523,7 +523,7 @@ parse_move_link_dest() {
     _raw_dest="$1"
 
     if [ -z "$_raw_dest" ]; then
-        error_msg "parse_move_link_dest() - no destination param given!"
+        error_msg "parse_move_link_dest() - no destination param given"
     fi
 
     tmux_error_handler_assign cur_ses display-message -p '#S'

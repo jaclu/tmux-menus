@@ -127,7 +127,7 @@ tmux_vers_check 1.8 || {
 # valid_items=(tpm)  # additional folders expected to be in plugins folders
 
 [ -n "$TMUX" ] || {
-    echo "ERROR: This expects to run inside a tmux session!"
+    echo "ERROR: This expects to run inside a tmux session"
     exit 1
 }
 

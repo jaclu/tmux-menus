@@ -17,7 +17,7 @@ D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/.." && pwd)
 log_it "running: $0 $1"
 
 if tmux_error_handler source-file "$1"; then
-    _m="Sourced it!"
+    _m="Sourced it successfully: $1"
     log_it "$_m"
     tmux_error_handler display-message "$_m"
 else

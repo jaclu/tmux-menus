@@ -26,7 +26,7 @@ clear_cache_main_index() {
 
 clear_cache_custom_items() {
     # log_it "UCI:clear_cache_custom_items()"
-    [ -z "$d_cache" ] && error_msg "variable d_cache was unexpectedly undefined!"
+    [ -z "$d_cache" ] && error_msg "variable d_cache was unexpectedly undefined"
 
     safe_remove "$d_cache"/custom_items "clear_cache_custom_items()"
     safe_remove "$f_chksum_custom" "clear_cache_custom_items()"
@@ -259,5 +259,5 @@ f_custom_items_content="$d_cache"/custom_items_content
 if $cfg_use_cache; then
     custom_items_prepare
 else
-    error_msg "$rn_current_script - should not be run if caching is disabled!"
+    error_msg "$rn_current_script - should not be run if caching is disabled"
 fi

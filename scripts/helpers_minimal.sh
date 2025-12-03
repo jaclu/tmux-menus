@@ -363,7 +363,7 @@ time_span() { # display_menu() / check_speed_cutoff()
 tmux_vers_check() { # local usage when checking $min_tmux_vers
     _v_comp="$1"    # Desired minimum version to check against
     # log_it "tmux_vers_check($_v_comp)"
-    [ -z "$_v_comp" ] && error_msg "tmux_vers_check() - no param!"
+    [ -z "$_v_comp" ] && error_msg "tmux_vers_check() - no parameter given"
 
     # Retrieve and cache the current tmux version on the first call,
     # unless it has been read from the param cache
@@ -437,8 +437,8 @@ tpt_digits_from_string() { # local usage by tpt_retrieve_running_tmux_vers()
     validate_varname "$varname" "tpt_digits_from_string()"
 
     # Ensure arguments are present
-    [ -z "$varname" ] && error_msg "tpt_digits_from_string() - no variable name!"
-    [ -z "$2" ] && error_msg "tpt_digits_from_string() - no param!"
+    [ -z "$varname" ] && error_msg "tpt_digits_from_string() - no variable name"
+    [ -z "$_vers" ] && error_msg "tpt_digits_from_string() - no param"
 
     # Remove leading "next-" if present. If found reduce version by one minor
     case $_vers in
@@ -482,7 +482,7 @@ tpt_tmux_vers_suffix() { # local usage by tpt_retrieve_running_tmux_vers()
 base_path_not_defined() {
     # Show error msg if D_TM_BASE_PATH is not defined
     # helpers not yet sourced, so TMUX_BIN & error_msg() not yet available
-    msg="$plugin_name ERROR: $0 - D_TM_BASE_PATH must be set!"
+    msg="$plugin_name ERROR: $0 - D_TM_BASE_PATH must be set before sourcing this file"
     print_stderr "$msg"
     $TMUX_BIN display-message "$msg"
     exit 1
@@ -572,7 +572,7 @@ safe_now t_script_start
 
 if ! tmux_vers_check "$min_tmux_vers"; then
     # @variables are not usable prior to 1.8
-    error_msg "$plugin_name needs at least tmux $min_tmux_vers to work!"
+    error_msg "$plugin_name needs at least tmux $min_tmux_vers to work properly."
 fi
 
 if [ -d "$d_cache" ]; then

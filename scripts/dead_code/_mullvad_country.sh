@@ -26,7 +26,7 @@ D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(dirname -- "$(realpath "$0")")")")
 # shellcheck source=scripts/dialog_handling.sh
 . "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
 
-error_msg "THIS IS NOT USED ATM!"
+error_msg "THIS IS NOT USED ATM"
 
 offset="${1:-0}" #  optional param indicating first item to display
 

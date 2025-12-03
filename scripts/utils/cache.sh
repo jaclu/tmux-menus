@@ -157,7 +157,7 @@ examine_code_base() {
 
     command -v git >/dev/null || {
         # this check depends on git being available
-        log_it "examine_code_base() - no git found!"
+        log_it "examine_code_base() - no git found"
         _m="no git installed"
         new_repo_last_changed="$_m"
         new_last_local_edit="$_m"
