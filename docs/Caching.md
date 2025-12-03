@@ -1,63 +1,56 @@
 # Caching
 
-Multiple optimization strategies are used to render menus quickly.
+Menu rendering is optimized by avoiding unnecessary script execution.
+Cached menus skip all processing and return precomputed output.
 
-Purely static cached menus typically render in under 0.01 seconds on modern
-systems. Enable `@menus_log_file` to see render times for each menu displayed.
-
-The cache is automatically cleared at initialization if the tmux version or
-plugin configuration has changed.
-
-## Script Environment
-
-Menu scripts start with a minimal environment loaded, with the full support
-environment loaded only when needed. This reduces overhead. The minimal
-environment is sufficient for displaying cached static content.
-
-Dynamic content is slightly slower since it must be generated on each display.
-Performance depends on the complexity of dynamic operations, but on modern
-systems this overhead is barely noticeable.
+Purely static cached menus typically render in under 0.01 seconds.
+Enable `@menus_log_file` to view render times for each displayed menu.
+The cache is cleared at initialization if the tmux version or plugin
+configuration has changed.
 
 ## Static Content
 
 Defined in `static_content() {}` within each menu script.
 
-The first time a menu is accessed, its cache is generated. All subsequent
-displays are instantaneous.
+On first access, the menu output is generated and stored in `cache/<menu-name>`.
+Subsequent displays read directly from this cache and are effectively instantaneous.
 
 ## Dynamic Content
 
 Defined in `dynamic_content() {}` within each menu script.
 
-Since dynamic content is rendered each display, only the minimal environment
-(from `scripts/helpers_minimal.sh`) is loaded by default to keep it lean.
+Dynamic content is rebuilt for every display.
 
-To load the full environment when needed, use this pattern (see
-[items/pane_move.sh](../items/pane_move.sh) for an example):
+## Script Environment
+
+All scripts start with a minimal environment. Static cached content requires nothing more.
+
+To load the full environment in manually added/modified scripts, use:
 
 ```sh
-${all_helpers_sourced:-false} || source_all_helpers "pane_move:dynamic_content()"
+${all_helpers_sourced:-false} || source_all_helpers "Reason for souring the full env"
 ```
 
-The conditional ensures the full environment is sourced only once, even if
-called multiple times.
+This prevents repeated sourcings if script logic might take multiple paths to a
+piece of code depending on the full env. In essence, when in doubt - source it
+with a notice to what sourced it, this comes with close to zero overhead if
+already sourced.
 
 ## Read-Only Plugin Directory
 
-If the plugin directory is read-only, either disable caching entirely or create
-a symlink for the cache folder to a writable location:
+System-wide or package-managed installations may place the plugin under a read-only path.
+In that case, either disable caching or redirect the cache directory via a symlink:
 
 ```sh
 ln -sf ~/.cache/tmux-menus <tmux-plugin-folder>/cache
 ```
 
-Supporting a user-configurable cache path is intentionally not implemented.
-Any such setting would require checking the custom location on every script invocation,
-adding overhead and negating the performance benefit the cache is meant to provide.
-A symlink avoids this cost and is therefore the preferred solution.
+A configurable cache path is intentionally not supported. Implementing one would
+require checking that location for every script invocation, adding overhead that
+nullifies the cache’s purpose. A symlink avoids this cost.
 
 ## whiptail / dialog
 
-These external menu handlers also use caching like the native `display-menu`.
-However, due to their inherent rendering overhead, they display noticeably
-slower despite caching.
+These external menu handlers use the same caching mechanism, but their terminal
+redraw overhead dominates rendering time. Caching reduces script work but cannot
+eliminate the slower rendering inherent to these tools.
