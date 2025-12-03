@@ -446,8 +446,8 @@ tpt_digits_from_string() { # local usage by tpt_retrieve_running_tmux_vers()
     next-*)
         # shellcheck disable=SC2046,SC2086
         set -- $(IFS=-; echo $_vers)
-        major=${2%.*}
-        minor=${2#*.}
+        major=${_vers%.*}
+        minor=${_vers#*.}
         _vers2=$major.$((minor - 1))
         log_it "><> filtered next vers: $_vers  -> $_vers2"
         _vers="$_vers2"
