@@ -4,13 +4,20 @@ All notable changes to this project will be documented here.
 
 ---
 
-## [2.2.31] - 2025-12-02
+## [2.2.31] - 2025-12-03
 
 ### Changed
 
 - Layouts – The currently active option is dimmed and cannot be selected. Also giving a
   hint about current setting.
 - Pane Scrollbars (tmux 3.6 feature) Shortcut change: Off: 0 -> o On 1 -> n
+- docs/Caching.md - rewrite
+- all menus use $cfg_main_menu instead of $nav_home in order to still be valid if
+  alternate menus are used
+- Cleaned up error messages to not use !
+- changed cache check to first look for $f_cache_params then $f_no_cache_hint in order
+  to speed up the default case
+- Moved 'Custom Menus' above 'Alternate Menus' for better logic
 
 ---
 
