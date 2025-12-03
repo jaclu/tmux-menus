@@ -14,7 +14,7 @@ D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/.." && pwd)
 . "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
 
 menu_name="$1"
-[ -z "$menu_name" ] && menu_name="$f_main_menu"
+[ -z "$menu_name" ] && menu_name="$cfg_main_menu"
 
 $menu_name
 
