@@ -179,7 +179,7 @@ EOF
     if verify_menu_runable; then
         log_it "  - was runable"
     else
-        log_it "  - NOT runable!"
+        log_it "  - NOT runable"
         #region e_first = first word in rendered menu wrong
         e_first="$(
             cat <<EOF
@@ -1225,7 +1225,7 @@ do_dialog_handling() {
 
 [ -z "$D_TM_BASE_PATH" ] && {
     # helpers not yet sourced, so error_msg() not yet available
-    msg="ERROR: dialog_handling.sh - D_TM_BASE_PATH must be set!"
+    msg="ERROR: dialog_handling.sh - D_TM_BASE_PATH must be set before sourcing this file"
     (
         echo
         echo "$msg"

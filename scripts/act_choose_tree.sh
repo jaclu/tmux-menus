@@ -26,7 +26,7 @@ param_check() {
     "m") ;; # No further checking needed
     "l")
         if [ "$item_type" = "p" ]; then
-            error_msg "$rn_current_script - Panes can't be linked!"
+            error_msg "$rn_current_script - Panes can't be linked, only moved"
         fi
         ;;
     *)

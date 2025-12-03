@@ -24,9 +24,9 @@ log_it "><> prefix: [$prefix_char]"
 #  Since this is a critical param, make extra sure we have valid input
 #
 if [ -z "$prefix_char" ]; then
-    error_msg "$rn_current_script - No prefix given!"
+    error_msg "$rn_current_script - No prefix given."
 elif [ "$(printf '%s' "$prefix_char" | wc -m)" -ne 1 ]; then
-    error_msg "$rn_current_script - Must be exactly one char! Was:[$prefix_char]"
+    error_msg "$rn_current_script - Must be exactly one char - Was:[$prefix_char]"
 fi
 
 prefix="C-$(lowercase_it "$prefix_char")"
