@@ -20,6 +20,7 @@ discover functionality—advanced users can simply remove what they don't need.
 
 ## Recent Changes
 
+- Re-ordered main menu to better align with frequently used items.
 - Layouts – The currently active option is dimmed and cannot be selected. Also giving a
   hint about current setting.
 - New menu for `tmux 3.6` `Panes - Layouts - Scroll Bars`
@@ -28,9 +29,6 @@ discover functionality—advanced users can simply remove what they don't need.
 - tmux versions with `next-` prefix are treated as one version lower for
   compatibility. For example, `next-3.4` is treated as `3.3` since `next-3.4`
   doesn't yet support display-menu profiling.
-- Clear cache only removes content of cache folder, it doesn't delete the actual
-  cache folder. This to support softlinked cache folders.
-- If cache is a soft-link and the target does not exist, it will be created.
 
 ## Purpose
 

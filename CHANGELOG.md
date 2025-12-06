@@ -4,6 +4,16 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [2.2.33] - 2025-12-06
+
+### Changed
+
+- Moved "Navigate - Search" to after "Paste Buffers" to better optimize
+order based on frequency of use
+- Removed obsolete bug item from docs/TODO.md
+
+---
+
 ## [2.2.32] - 2025-12-06
 
 ### Changed

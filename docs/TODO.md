@@ -1,11 +1,5 @@
 # todo
 
-## bugs
-
-### layouts - Border Lines
-
-gives error in 3.0
-
 ## Plan
 
 ### Inspect if this works as intended
