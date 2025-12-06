@@ -4,6 +4,17 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [2.2.32] - 2025-12-06
+
+### Changed
+
+- Layouts : Corrected the shortcuts to match tmux defaults for main-horizontal-mirrored [6]
+and main-vertical-mirrored [7]
+- Layouts - Border Lines : Fixed bug for tmux < 3.2, the items would not be displayed
+for these, but pane-border-lines would still be used to check current setting.
+
+---
+
 ## [2.2.31] - 2025-12-03
 
 ### Changed

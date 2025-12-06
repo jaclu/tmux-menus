@@ -48,12 +48,12 @@ static_content() {
         0.8 C 1 "Even horizontal" "select-layout  even-horizontal  $runshell_reload_mnu" \
         0.8 C 2 "Even vertical" "select-layout    even-vertical    $runshell_reload_mnu" \
         0.9 C 3 "Main horizontal" "select-layout  main-horizontal  $runshell_reload_mnu" \
-        3.5 C "\\#" "Main horizontal - mirrored" \
-        "select-layout  main-horizontal-mirrored $runshell_reload_mnu" \
         0.9 C 4 "Main vertical" "select-layout    main-vertical    $runshell_reload_mnu" \
-        3.5 C "\\$" "Main vertical -   mirrored" \
-        "select-layout    main-vertical-mirrored  $runshell_reload_mnu" \
         1.4 C 5 "Tiled" "select-layout            tiled            $runshell_reload_mnu" \
+        3.5 C 6 "Main horizontal - mirrored" \
+        "select-layout  main-horizontal-mirrored $runshell_reload_mnu" \
+        3.5 C 7 "Main vertical -   mirrored" \
+        "select-layout    main-vertical-mirrored  $runshell_reload_mnu" \
         2.7 C e "Spread evenly" "select-layout    -E               $runshell_reload_mnu" \
         0.0 S \
         0.0 C p "Previous layout" "previous-layout  $runshell_reload_mnu" \

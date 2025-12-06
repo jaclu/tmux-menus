@@ -1,5 +1,13 @@
-# Plan
+# todo
 
-## Inspect if this works as intended
+## bugs
+
+### layouts - Border Lines
+
+gives error in 3.0
+
+## Plan
+
+### Inspect if this works as intended
 
 has_lf_not_at_end

@@ -86,7 +86,7 @@ handle_pane_border_lines() {
 
 dynamic_content() {
     handle_pane_title
-    handle_pane_border_lines
+    tmux_vers_check 3.2 && handle_pane_border_lines
 }
 
 static_content() {
