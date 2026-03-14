@@ -58,10 +58,10 @@ space than native tmux menus. However, whiptail menus are scrollable when they
 don't fit the screen, whereas tmux's native `display-menu` simply won't render
 if there's insufficient space. The other screenshots show native tmux menus.
 
-<img alt="Handling Pane"
-src="https://github.com/user-attachments/assets/abcef30d-8488-4e33-90dc-1d3fbed6fbf7" />
-<img alt="Handling Window"
-src="https://github.com/user-attachments/assets/a675e014-4b11-41ba-9c96-300619f629b5" />
+<img width="255" alt="Handling Pane"
+src="https://github.com/user-attachments/assets/4216b5cf-bcac-42c2-bef8-90951f8042c3" />
+<img width="302" alt="Handling Window" 
+src="https://github.com/user-attachments/assets/11f368b0-8c93-4432-a9cb-36589ace819a" />
 <img width="337" alt="Help summary"
 src="https://github.com/user-attachments/assets/efa0e3e5-5d37-4c88-b379-16d5a5264946" />
 <img width="264" alt="Missing Keys"
