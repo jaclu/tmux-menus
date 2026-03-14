@@ -74,12 +74,12 @@ cache_add_ok_vers() {
     [ -z "$1" ] && error_msg "cache_add_ok_vers() - no param"
 
     case "$cached_ok_tmux_versions" in
-    *"$1 "*) ;;
-    *)
-        # log_it "Adding ok tmux vers: $1"
-        cached_ok_tmux_versions="${cached_ok_tmux_versions}$1 "
-        [ "$cfg_use_cache" = true ] && cache_save_known_tmux_versions
-        ;;
+        *"$1 "*) ;;
+        *)
+            # log_it "Adding ok tmux vers: $1"
+            cached_ok_tmux_versions="${cached_ok_tmux_versions}$1 "
+            [ "$cfg_use_cache" = true ] && cache_save_known_tmux_versions
+            ;;
     esac
     return 0
 }
@@ -93,12 +93,12 @@ cache_add_bad_vers() {
     [ -z "$1" ] && error_msg "cache_add_bad_vers() - no param"
 
     case "$cached_bad_tmux_versions" in
-    *"$1"*) ;;
-    *)
-        # log_it "Adding bad tmux vers: $1"
-        cached_bad_tmux_versions="${cached_bad_tmux_versions}$1 "
-        [ "$cfg_use_cache" = true ] && cache_save_known_tmux_versions
-        ;;
+        *"$1"*) ;;
+        *)
+            # log_it "Adding bad tmux vers: $1"
+            cached_bad_tmux_versions="${cached_bad_tmux_versions}$1 "
+            [ "$cfg_use_cache" = true ] && cache_save_known_tmux_versions
+            ;;
     esac
     return 1
 }
@@ -182,11 +182,11 @@ examine_code_base() {
     # will be "" if no local edits have been done
     # the xargs stderr redirect is to avoid errors about removed files
     if [ "$(uname -s)" = "Darwin" ]; then
-        new_last_local_edit="$(git ls-files -m 2>/dev/null |
-            xargs -r stat -f '%m %N' 2>/dev/null | sort -nr | head -1)"
+        new_last_local_edit="$(git ls-files -m 2>/dev/null \
+            | xargs -r stat -f '%m %N' 2>/dev/null | sort -nr | head -1)"
     else
-        new_last_local_edit="$(git ls-files -m 2>/dev/null |
-            xargs -r stat -c '%Y %n' 2>/dev/null | sort -nr | head -1)"
+        new_last_local_edit="$(git ls-files -m 2>/dev/null \
+            | xargs -r stat -c '%Y %n' 2>/dev/null | sort -nr | head -1)"
     fi
 }
 

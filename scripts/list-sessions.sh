@@ -22,4 +22,3 @@ else
     $TMUX_BIN new-window -n "List all sessions" \
         "$TMUX_BIN list-sessions ; printf '\nPress Ctrl-C to close this Window\n' ; sleep 3600"
 fi
-

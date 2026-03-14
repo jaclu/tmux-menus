@@ -86,22 +86,22 @@ profiling_get_time() {
         safe_now profiling_t_now
     else
         case "$profiling_selected_get_time" in
-        date)
-            _t="$(date +%s%N)"
-            profiling_t_now="${_t%??????}" # Strip last 6 digits → milliseconds
-            ;;
-        gdate)
-            _t="$(gdate +%s%N)"
-            profiling_t_now="${_t%??????}" # Strip last 6 digits → milliseconds
-            ;;
-        perl)
-            profiling_t_now="$(perl -MTime::HiRes=time -E 'say int(time * 1e3)')"
-            ;;
-        *)
-            _m="Call to profiling_get_time without first cslling"
-            _m="$_m profiling_select_timing_method"
-            profiling_error_msg "$_m"
-            ;;
+            date)
+                _t="$(date +%s%N)"
+                profiling_t_now="${_t%??????}" # Strip last 6 digits → milliseconds
+                ;;
+            gdate)
+                _t="$(gdate +%s%N)"
+                profiling_t_now="${_t%??????}" # Strip last 6 digits → milliseconds
+                ;;
+            perl)
+                profiling_t_now="$(perl -MTime::HiRes=time -E 'say int(time * 1e3)')"
+                ;;
+            *)
+                _m="Call to profiling_get_time without first cslling"
+                _m="$_m profiling_select_timing_method"
+                profiling_error_msg "$_m"
+                ;;
         esac
     fi
 
@@ -129,7 +129,7 @@ profiling_display() {
     _s="$1 - total: $t_prof_since_start   since last: $t_prof_sine_update"
     profiling_display_it "$_s"
     if [ "$2" = "LF" ]; then
-        profiling_display_it  # Generate blank line
+        profiling_display_it # Generate blank line
     fi
 }
 
@@ -145,27 +145,27 @@ profiling_display() {
 
 # shellcheck disable=SC2154 # TMUX_MENUS_PROFILING is an env variable
 case "$TMUX_MENUS_PROFILING" in
-1)
-    # profiling will be used
-    profiling_select_timing_method
-    _m="Starting profiling for: $0 - using time method: $profiling_selected_get_time"
-    profiling_display_it "$_m"
-    profiling_get_time # start timer as early as possible
-    ;;
-*)
-    #
-    # This file should not be sourced normally and profiling calls should not be
-    # left in the code base long term, the below function overrides are primarily
-    # intended to disable them when profiling is temporarily disabled
-    #
+    1)
+        # profiling will be used
+        profiling_select_timing_method
+        _m="Starting profiling for: $0 - using time method: $profiling_selected_get_time"
+        profiling_display_it "$_m"
+        profiling_get_time # start timer as early as possible
+        ;;
+    *)
+        #
+        # This file should not be sourced normally and profiling calls should not be
+        # left in the code base long term, the below function overrides are primarily
+        # intended to disable them when profiling is temporarily disabled
+        #
 
-    profiling_update_time_stamps() {
-        :
-    }
-    profiling_display() {
-        :
-    }
-    ;;
+        profiling_update_time_stamps() {
+            :
+        }
+        profiling_display() {
+            :
+        }
+        ;;
 esac
 
 profiling_use_default_timer=0

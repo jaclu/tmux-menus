@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-#   Copyright (c) 2022-2025: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2022-2026: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
@@ -60,13 +60,13 @@ menu_name="Spotify"
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
 D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/../.." && pwd)
 
-no_auto_dialog_handling=1 # delay processing of dialog, only source it for now
-. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
+no_auto_menu_handling=1 # delay processing of dialog, only source it for now
+. "$D_TM_BASE_PATH"/scripts/menu_handling.sh
 
 case "$1" in
-"-t") display_currently_playing_track ;;
-*) ;;
+    "-t") display_currently_playing_track ;;
+    *) ;;
 esac
 
 # manually trigger dialog handling
-do_dialog_handling
+do_menu_handling

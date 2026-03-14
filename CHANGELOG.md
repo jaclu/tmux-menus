@@ -4,12 +4,28 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [2.2.34] - 2026-03-14
+
+### Added
+
+- Handling Pane - Pane logging : New menu enable/disable pane logging
+
+### Changed
+
+- Reordered sub-menus in Handling Pane & Handling Window - Hopefully most used
+  features closer to the top
+- renamed dialog_handling and related functions to menu_handling,
+  a name better describing the task
+- Handling Pane - Pane History - Help : Removed w3m from suggestions
+
+---
+
 ## [2.2.33] - 2025-12-06
 
 ### Changed
 
 - Moved "Navigate - Search" to after "Paste Buffers" to better optimize
-order based on frequency of use
+  order based on frequency of use
 - Removed obsolete bug item from docs/TODO.md
 
 ---
@@ -19,9 +35,9 @@ order based on frequency of use
 ### Changed
 
 - Layouts : Corrected the shortcuts to match tmux defaults for main-horizontal-mirrored [6]
-and main-vertical-mirrored [7]
+  and main-vertical-mirrored [7]
 - Layouts - Border Lines : Fixed bug for tmux < 3.2, the items would not be displayed
-for these, but pane-border-lines would still be used to check current setting.
+  for these, but pane-border-lines would still be used to check current setting.
 
 ---
 
@@ -67,7 +83,7 @@ Added some tmux 3.6 features
 
 - Reworked documentation (README and multiple docs/ files)
 - Platform dependent optimization of time_span()
-- Further code cleanup in scripts/dialog_handling.sh
+- Further code cleanup in scripts/menu_handling.sh
 - Fixed unintended exit 1 from profiling_display()
 
 ---
@@ -372,7 +388,7 @@ Added some tmux 3.6 features
 ### Changed
 
 - Bug fix: fix_home_path() - Now correctly handles the odd behaviour of tmux 3.4
-- Bug fix: forgetting to check if cache is active in dialog_handling.sh:handle_dynamic()
+- Bug fix: forgetting to check if cache is active in menu_handling.sh:handle_dynamic()
 - Bug fix: verify_menu_runable() - escape ' in order to display errors in menu code
 - Bug fix: scripts/update_custom_inventory.sh - ensure main menu is cleared if
   custom items are removed, to ensure main menu stops offering custom menus
@@ -421,7 +437,6 @@ Added some tmux 3.6 features
 
 - Updated about box
 - Moved some tasks into `Handling Window`
-
   - Split window
   - Layouts
 

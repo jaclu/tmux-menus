@@ -1,12 +1,12 @@
 #!/bin/sh
 #
-#   Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2025-2026: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
 #   Since there is a limitation of only two levels of quoting when
-#   using scripts/dialog_handling.sh this intermittent script is used to avoid
+#   using scripts/menu_handling.sh this intermittent script is used to avoid
 #   this limit
 # ok 1.8
 
@@ -14,26 +14,26 @@ param_check() {
     item_type="$1"
 
     case "$item_type" in
-    "w" | "p") : ;; # Valid first parameter
-    *)
-        error_msg "$rn_current_script First param must be w or p - was: [$item_type]"
-        ;;
+        "w" | "p") : ;; # Valid first parameter
+        *)
+            error_msg "$rn_current_script First param must be w or p - was: [$item_type]"
+            ;;
     esac
 
     action="$2"
 
     case "$action" in
-    "m") ;; # No further checking needed
-    "l")
-        if [ "$item_type" = "p" ]; then
-            error_msg "$rn_current_script - Panes can't be linked, only moved"
-        fi
-        ;;
-    *)
-        set -- "$rn_current_script 2nd param must be l or m" \
-            "Indicating link or move action - was: $action"
-        error_msg "$*"
-        ;;
+        "m") ;; # No further checking needed
+        "l")
+            if [ "$item_type" = "p" ]; then
+                error_msg "$rn_current_script - Panes can't be linked, only moved"
+            fi
+            ;;
+        *)
+            set -- "$rn_current_script 2nd param must be l or m" \
+                "Indicating link or move action - was: $action"
+            error_msg "$*"
+            ;;
     esac
 }
 
@@ -48,7 +48,7 @@ D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/.." && pwd)
 
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
-log_it "><> ==> $rn_current_script params: $*"
+# log_it "><> ==> $rn_current_script params: $*"
 
 tmux_vers_check 1.8 || {
     error_msg "$rn_current_script - needs tmux 1.8"
@@ -68,13 +68,13 @@ else
     flags="-sw"
 fi
 case "$item_type" in
-p) template="$d_scripts/relocate_pane.sh" ;;
-w) template="$d_scripts/relocate_window.sh $action" ;;
-*)
-    # param_check should have flagged this issue already, but it seems odd
-    # to just let an error pass through without aborting if it ever happened
-    error_msg "$rn_current_script: param 1 must be p or w"
-    ;;
+    p) template="$d_scripts/relocate_pane.sh" ;;
+    w) template="$d_scripts/relocate_window.sh $action" ;;
+    *)
+        # param_check should have flagged this issue already, but it seems odd
+        # to just let an error pass through without aborting if it ever happened
+        error_msg "$rn_current_script: param 1 must be p or w"
+        ;;
 esac
 
 tmux_error_handler choose-tree "$flags" "run-shell '$template %%'"

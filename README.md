@@ -20,15 +20,14 @@ discover functionality—advanced users can simply remove what they don't need.
 
 ## Recent Changes
 
-- Re-ordered main menu to better align with frequently used items.
+- Panes-Pane Logging - Enable/disable logging of pane output to file
+- Re-ordered main menu to better align with frequently used items
 - Layouts – The currently active option is dimmed and cannot be selected. Also giving a
-  hint about current setting.
+  hint about current setting
 - New menu for `tmux 3.6` `Panes - Layouts - Scroll Bars`
-- Documentation improvements for better clarity and readability throughout README
-  and docs/ files.
 - tmux versions with `next-` prefix are treated as one version lower for
   compatibility. For example, `next-3.4` is treated as `3.3` since `next-3.4`
-  doesn't yet support display-menu profiling.
+  doesn't yet support display-menu profiling
 
 ## Purpose
 
@@ -59,10 +58,10 @@ space than native tmux menus. However, whiptail menus are scrollable when they
 don't fit the screen, whereas tmux's native `display-menu` simply won't render
 if there's insufficient space. The other screenshots show native tmux menus.
 
-<img width="265" alt="Handling Pane"
-src="https://github.com/user-attachments/assets/6784be66-b2a0-4c41-b76c-1a3a7a2f99ac" />
-<img width="297" alt="Handling Window"
-src="https://github.com/user-attachments/assets/a407ccd3-d8f0-428d-a0c1-f6a1aca93ab8" />
+<img alt="Handling Pane"
+src="https://github.com/user-attachments/assets/abcef30d-8488-4e33-90dc-1d3fbed6fbf7" />
+<img alt="Handling Window"
+src="https://github.com/user-attachments/assets/a675e014-4b11-41ba-9c96-300619f629b5" />
 <img width="337" alt="Help summary"
 src="https://github.com/user-attachments/assets/efa0e3e5-5d37-4c88-b379-16d5a5264946" />
 <img width="264" alt="Missing Keys"

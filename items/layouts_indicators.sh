@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-#   Copyright (c) 2022-2025: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2022-2026: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
@@ -37,10 +37,10 @@ dynamic_content() {
     fi
 
     set -- \
-        3.3 C "o" "$lbl_off"    "$_cmd  off     $runshell_reload_mnu" \
-        3.3 C "c" "$lbl_color"  "$_cmd  colour  $runshell_reload_mnu" \
+        3.3 C "o" "$lbl_off" "$_cmd  off     $runshell_reload_mnu" \
+        3.3 C "c" "$lbl_color" "$_cmd  colour  $runshell_reload_mnu" \
         3.3 C "a" "$lbl_arrows" "$_cmd  arrows  $runshell_reload_mnu" \
-        3.3 C "b" "$lbl_both"   "$_cmd  both    $runshell_reload_mnu"
+        3.3 C "b" "$lbl_both" "$_cmd  both    $runshell_reload_mnu"
     menu_generate_part 4 "$@"
 }
 
@@ -68,4 +68,4 @@ menu_min_vers=3.3
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
 D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/.." && pwd)
 
-. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
+. "$D_TM_BASE_PATH"/scripts/menu_handling.sh

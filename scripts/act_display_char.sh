@@ -50,11 +50,11 @@ handle_char() {
     # log_it "handle_char($s_in)"
 
     case "$s_in" in
-    0x*)
-        # Convert hex → decimal → octal escape → character (POSIX-compliant)
-        s=$(printf '%b' "$(printf '\\%03o' "$(printf '%d' "$s_in")")")
-        ;;
-    *) s="$s_in" ;;
+        0x*)
+            # Convert hex → decimal → octal escape → character (POSIX-compliant)
+            s=$(printf '%b' "$(printf '\\%03o' "$(printf '%d' "$s_in")")")
+            ;;
+        *) s="$s_in" ;;
     esac
     display_char "$s"
 }

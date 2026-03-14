@@ -98,38 +98,37 @@ sc_filter_bind_escapes_single() {
     # # 1 is first char \ ?
     # first_char=${sc_fbes_key%"${sc_fbes_key#?}"}
     case "$sc_fbes_key" in
-    '\"' | "\\\\" | "\\\$" )
-        sc_ckb_escaped="\\\\$sc_fbes_key"
-        log_it "  special case - needs \ prefix - [$sc_ckb_escaped]"
-        ;;
-    *"\\")
-        sc_ckb_escaped="$sc_fbes_key\\\\"
-        log_it "  special case - ends in \ needs duplication [$sc_ckb_escaped]"
-        ;;
-    '"'*'"')
-        sc_fbes_key=${sc_fbes_key#?}   # remove first char
-        sc_fbes_key=${sc_fbes_key%?}   # remove last char
-        sc_ckb_escaped='\"'"$sc_fbes_key"'\"'
-        log_it "  special case - prefix dquotes [$sc_ckb_escaped]"
-        ;;
-    *'"'"'")
-        all_but_last_two=${all_but_last_char%?}
-        sc_ckb_escaped="$all_but_last_two"'\"'"'"
-        log_it "  special case - ending dquote needs prefix [$sc_ckb_escaped]"
-        unset  all_but_last_two
-        ;;
-    *'`')
-        # backtick should be displayed without backslash, but they are needed
-        # for this script
-        sc_ckb_escaped="$all_but_last_char\\\`"
-        log_it "  special case - ending in backtick [$sc_ckb_escaped]"
-        ;;
-    *) sc_ckb_escaped="$sc_fbes_key" ;;
+        '\"' | "\\\\" | "\\\$")
+            sc_ckb_escaped="\\\\$sc_fbes_key"
+            log_it "  special case - needs \ prefix - [$sc_ckb_escaped]"
+            ;;
+        *"\\")
+            sc_ckb_escaped="$sc_fbes_key\\\\"
+            log_it "  special case - ends in \ needs duplication [$sc_ckb_escaped]"
+            ;;
+        '"'*'"')
+            sc_fbes_key=${sc_fbes_key#?} # remove first char
+            sc_fbes_key=${sc_fbes_key%?} # remove last char
+            sc_ckb_escaped='\"'"$sc_fbes_key"'\"'
+            log_it "  special case - prefix dquotes [$sc_ckb_escaped]"
+            ;;
+        *'"'"'")
+            all_but_last_two=${all_but_last_char%?}
+            sc_ckb_escaped="$all_but_last_two"'\"'"'"
+            log_it "  special case - ending dquote needs prefix [$sc_ckb_escaped]"
+            unset all_but_last_two
+            ;;
+        *'`')
+            # backtick should be displayed without backslash, but they are needed
+            # for this script
+            sc_ckb_escaped="$all_but_last_char\\\`"
+            log_it "  special case - ending in backtick [$sc_ckb_escaped]"
+            ;;
+        *) sc_ckb_escaped="$sc_fbes_key" ;;
     esac
 
     unset sc_fbes_key all_but_last_char
 }
-
 
 # Main: extract key bind
 sc_extract_key_bind() {
@@ -219,7 +218,7 @@ sc_check_key_binds() {
     sc_processed="$sc_ckb_rslt"
 
     unset sc_ckb_cmd sc_ckb_rslt sc_ckb_prefix_bind sc_ckb_root_bind
-    unset sc_ckb_escaped _key  _l
+    unset sc_ckb_escaped _key _l
 }
 
 #---------------------------------------------------------------
@@ -297,8 +296,8 @@ sc_clean_up_result() {
 
     # shellcheck disable=SC2154 # TMUX_BIN defined in helpers_minimal.sh
     case $sc_cur_s1 in
-    "$TMUX_BIN "*) sc_cur_s2='[TMUX] '"${sc_cur_s1#"$TMUX_BIN "}" ;;
-    *) sc_cur_s2=$sc_cur_s1 ;;
+        "$TMUX_BIN "*) sc_cur_s2='[TMUX] '"${sc_cur_s1#"$TMUX_BIN "}" ;;
+        *) sc_cur_s2=$sc_cur_s1 ;;
     esac
 
     #
@@ -308,8 +307,8 @@ sc_clean_up_result() {
 
     # shellcheck disable=SC2154 # TMUX_BIN defined in $0 calling script
     case $sc_cur_s2 in
-    "$D_TM_BASE_PATH/"*) sc_cur_rslt='[tmux-menus] '"${sc_cur_s2#"$D_TM_BASE_PATH/"}" ;;
-    *) sc_cur_rslt=$sc_cur_s2 ;;
+        "$D_TM_BASE_PATH/"*) sc_cur_rslt='[tmux-menus] '"${sc_cur_s2#"$D_TM_BASE_PATH/"}" ;;
+        *) sc_cur_rslt=$sc_cur_s2 ;;
     esac
 
     sc_processed="$sc_cur_rslt"
@@ -373,16 +372,16 @@ sc_show_cmd() {
 
     # shellcheck disable=SC2154 # show_cmds_state defined in display_commands_toggle()
     case "$show_cmds_state" in
-    1)  # Display Commands
-        sc_clean_up_result "$sc_cmd" sc_processed
-        ;;
-    2)  # Display key binds
+        1) # Display Commands
+            sc_clean_up_result "$sc_cmd" sc_processed
+            ;;
+        2) # Display key binds
 
-        # Strip $TMUX_BIN from beginning if present
-        cmd_no_tmux_bin=${sc_cmd#"$TMUX_BIN "}
-        sc_check_key_binds "$cmd_no_tmux_bin"
-        ;;
-    *) ;;
+            # Strip $TMUX_BIN from beginning if present
+            cmd_no_tmux_bin=${sc_cmd#"$TMUX_BIN "}
+            sc_check_key_binds "$cmd_no_tmux_bin"
+            ;;
+        *) ;;
     esac
 
     # SC2154: sc_processed assigned dynamically by above using eval

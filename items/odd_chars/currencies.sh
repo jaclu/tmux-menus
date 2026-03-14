@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-#  Copyright (c) 2025-2025: Jacob.Lundqvist@gmail.com
+#  Copyright (c) 2025-2026: Jacob.Lundqvist@gmail.com
 #  License: MIT
 #
 #  Part of https://github.com/jaclu/tmux-menus
@@ -13,12 +13,12 @@ show_label() {
     # Some Currency symbols can't be printed in whiptail
     if $cfg_use_whiptail; then
         case "$1" in
-        ₺ | ₴ | ₽ | ₹ | ₿)
-            echo "Send   ($2) - not printable in whiptail"
-            ;;
-        *)
-            echo "Send $1 ($2)"
-            ;;
+            ₺ | ₴ | ₽ | ₹ | ₿)
+                echo "Send   ($2) - not printable in whiptail"
+                ;;
+            *)
+                echo "Send $1 ($2)"
+                ;;
         esac
     else
         echo "Send $1 ($2)"
@@ -69,9 +69,9 @@ menu_min_vers=2.0
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
 D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/../.." && pwd)
 
-no_auto_dialog_handling=1 # delay processing of dialog, only source it for now
+no_auto_menu_handling=1 # delay processing of dialog, only source it for now
 
-. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
+. "$D_TM_BASE_PATH"/scripts/menu_handling.sh
 
 if [ -n "$1" ]; then
     "$D_TM_BASE_PATH"/scripts/act_display_char.sh "$1"
@@ -80,4 +80,4 @@ elif $cfg_use_whiptail; then
 fi
 
 # manually trigger dialog handling
-do_dialog_handling
+do_menu_handling

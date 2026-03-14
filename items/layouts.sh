@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-#   Copyright (c) 2022-2025: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2022-2026: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
@@ -22,10 +22,10 @@ dynamic_content() {
         $TMUX_BIN set-environment -g "$e_prev_menu" "$prev_menu"
         $TMUX_BIN set-environment -g "$e_prev_menu_name" "${prev_name:-Previous menu}"
     else
-        prev_menu=$($TMUX_BIN show-environment -g "$e_prev_menu" 2>/dev/null |
-            cut -d= -f2)
-        prev_name=$($TMUX_BIN show-environment -g "$e_prev_menu_name" 2>/dev/null |
-            cut -d= -f2)
+        prev_menu=$($TMUX_BIN show-environment -g "$e_prev_menu" 2>/dev/null \
+            | cut -d= -f2)
+        prev_name=$($TMUX_BIN show-environment -g "$e_prev_menu_name" 2>/dev/null \
+            | cut -d= -f2)
     fi
 
     set -- 0.0 M Left "Back to $prev_name   $nav_prev" "$prev_menu"
@@ -78,4 +78,4 @@ if [ -n "$1" ]; then
     prev_name="$*"
 fi
 
-. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
+. "$D_TM_BASE_PATH"/scripts/menu_handling.sh

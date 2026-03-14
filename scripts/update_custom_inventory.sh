@@ -57,8 +57,8 @@ checksum_content_read() {
 
 checksum_content_write() {
     # log_it "UCI:checksum_content_write()"
-    find "$d_custom_items/" -type f -exec sha256sum {} + | sort |
-        sha256sum >"$f_chksum_custom" || {
+    find "$d_custom_items/" -type f -exec sha256sum {} + | sort \
+        | sha256sum >"$f_chksum_custom" || {
 
         error_msg "Failed to write checksum into: $f_chksum_custom"
     }

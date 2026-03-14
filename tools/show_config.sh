@@ -14,10 +14,10 @@ show_item() {
     default="$3"
 
     case "$(lowercase_it "$default")" in
-    true | yes) default=true ;;
-    false | no) default=false ;;
-    empty) default="" ;;
-    *) ;;
+        true | yes) default=true ;;
+        false | no) default=false ;;
+        empty) default="" ;;
+        *) ;;
     esac
 
     [ "$value" = "$default" ] && is_default="*" || is_default=""

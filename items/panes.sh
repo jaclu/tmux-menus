@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-#   Copyright (c) 2022-2025: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2022-2026: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
@@ -13,10 +13,16 @@ static_content() {
     set -- \
         0.0 M Left "Back to Main menu  $nav_home" "$cfg_main_menu" \
         0.0 M S "Split pane         $nav_next" pane_split.sh \
-        0.0 M L "Layouts            $nav_next" "$d_items/layouts.sh $0 $menu_name" \
-        0.0 M M "Move pane          $nav_next" pane_move.sh \
         0.0 M R "Resize pane        $nav_next" pane_resize.sh \
+        0.0 M M "Move pane          $nav_next" pane_move.sh \
+        0.0 M L "Layouts            $nav_next" "$d_items/layouts.sh $0 $menu_name" \
         0.0 M I "Pane history       $nav_next" pane_history.sh
+
+    if ! $cfg_use_whiptail; then
+        set -- "$@" \
+            1.1 M O "Pane logging       $nav_next" pane_log.sh
+    fi
+
     menu_generate_part 1 "$@"
     $cfg_display_cmds && display_commands_toggle 2
 
@@ -59,4 +65,4 @@ menu_name="Handling Pane"
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
 D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/.." && pwd)
 
-. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
+. "$D_TM_BASE_PATH"/scripts/menu_handling.sh

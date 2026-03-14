@@ -26,7 +26,7 @@ display_message() {
         # shellcheck disable=SC2154 # $TMUX_BIN defined in helpers_minimal.sh
         actual_win_width="$($TMUX_BIN display-message -p '#{client_width}')"
         if [ "${#dm_msg_hold}" -ge "$actual_win_width" ] || has_lf_not_at_end "$dm_msg"; then
-	        display_formatted_message "$dm_msg"
+            display_formatted_message "$dm_msg"
         else
             display_message_hold "$dm_msg_hold" "$dm_no_hold"
         fi
@@ -47,9 +47,9 @@ display_message_hold() {
     # log_it "display_message_hold($dmh_msg) no_hold: $dmh_no_hold"
 
     [ "$dmh_no_hold" = "no_hold" ] && {
-	# request to not hold the msg
+        # request to not hold the msg
         $TMUX_BIN display-message "$dmh_msg"
-	return
+        return
     }
 
     if tmux_vers_check 3.2; then
@@ -91,7 +91,7 @@ display_formatted_message() {
     _msg_escaped="$(tmux_escape_for_display "$_dfm_msg")"
     _display_msg="$(
         [ "$_msg_type" = "$_default_msg_type" ] && {
-	    # shellcheck disable=SC2154 # rn_current_script defined in helpers_minimal.sh
+            # shellcheck disable=SC2154 # rn_current_script defined in helpers_minimal.sh
             echo "Notification from plugin $plugin_name - running: $rn_current_script"
             echo
         }
@@ -278,21 +278,21 @@ normalize_bool_param() {
     fi
     nbp_value_lc="$(lowercase_it "$_v")"
     case "$nbp_value_lc" in
-    #
-    #  Be a nice guy and accept some common positive notations
-    #  Handle the unfortunate tradition in the tmux community to use
-    #  1 to indicate selected / active.
-    #  This means 1 is 0 and 0 is 1, how Orwellian...
-    #
-    1 | yes | true) return 0 ;;
-    0 | no | false) return 1 ;;
-    *)
-        if $_tmux_param; then
-            error_msg "$nbp_param = [$nbp_value_lc] ($_v) - should be yes/true/1 or no/false/0"
-        else
-            error_msg "[$nbp_param] - should be yes/true/1 or no/false/0"
-        fi
-        ;;
+        #
+        #  Be a nice guy and accept some common positive notations
+        #  Handle the unfortunate tradition in the tmux community to use
+        #  1 to indicate selected / active.
+        #  This means 1 is 0 and 0 is 1, how Orwellian...
+        #
+        1 | yes | true) return 0 ;;
+        0 | no | false) return 1 ;;
+        *)
+            if $_tmux_param; then
+                error_msg "$nbp_param = [$nbp_value_lc] ($_v) - should be yes/true/1 or no/false/0"
+            else
+                error_msg "[$nbp_param] - should be yes/true/1 or no/false/0"
+            fi
+            ;;
     esac
 }
 
@@ -309,8 +309,8 @@ has_lf_not_at_end() {
 
 is_int() {
     case $1 in
-    '' | *[!0-9]*) return 1 ;; # Contains non-numeric characters
-    *) return 0 ;;             # Contains only digits
+        '' | *[!0-9]*) return 1 ;; # Contains non-numeric characters
+        *) return 0 ;;             # Contains only digits
     esac
 }
 
@@ -405,29 +405,29 @@ safe_remove() {
     tmpdir_noslash="${TMPDIR%/}" # Remove trailing slash if present
 
     case "$pattern" in
-    "$tmpdir_noslash") # Prevent direct removal of TMPDIR
-        error_msg "safe_remove() - refusing to delete TMPDIR itself: $pattern"
-        return 1
-        ;;
-    "$tmpdir_noslash"/*) ;; # Allow anything inside TMPDIR
-    /etc | /etc/* | /usr | /usr/* | /var | /var/* | "$HOME" | /home | \
-        /Users | /bin | /bin/* | /sbin | /sbin/* | /lib | /lib/* | \
-        /lib64 | /lib64/* | /boot | /boot/* | /mnt | /mnt/* | /media | /media/* | \
-        /run | /run/* | /opt | /opt/* | /root | /root/* | /dev | /dev/* | \
-        /proc | /proc/* | /sys | /sys/* | /lost+found | /lost+found/*)
-        error_msg "safe_remove() - refusing to delete protected directory: $pattern"
-        return 1
-        ;;
-    *) ;;
+        "$tmpdir_noslash") # Prevent direct removal of TMPDIR
+            error_msg "safe_remove() - refusing to delete TMPDIR itself: $pattern"
+            return 1
+            ;;
+        "$tmpdir_noslash"/*) ;; # Allow anything inside TMPDIR
+        /etc | /etc/* | /usr | /usr/* | /var | /var/* | "$HOME" | /home | \
+            /Users | /bin | /bin/* | /sbin | /sbin/* | /lib | /lib/* | \
+            /lib64 | /lib64/* | /boot | /boot/* | /mnt | /mnt/* | /media | /media/* | \
+            /run | /run/* | /opt | /opt/* | /root | /root/* | /dev | /dev/* | \
+            /proc | /proc/* | /sys | /sys/* | /lost+found | /lost+found/*)
+            error_msg "safe_remove() - refusing to delete protected directory: $pattern"
+            return 1
+            ;;
+        *) ;;
     esac
 
     [ -z "$skip_plugin_name_in_path_check" ] && {
         case "$pattern" in
-        *"$plugin_name"*) ;;
-        *)
-            _s="safe_remove($pattern) seems wrong - $plugin_name not in that path"
-            error_msg "$_s"
-            ;;
+            *"$plugin_name"*) ;;
+            *)
+                _s="safe_remove($pattern) seems wrong - $plugin_name not in that path"
+                error_msg "$_s"
+                ;;
         esac
     }
 
@@ -448,11 +448,11 @@ wait_to_close_display() {
     # if ps -x "$PPID" 2>/dev/null | grep -q tmux-menus && $cfg_use_whiptail; then
     _b_is_whiptail=false
     case $(ps -o command= -p "$PPID" 2>/dev/null) in
-    *tmux-menus*)
-        # shellcheck disable=SC2154 # cfg_use_whiptail defined in settings
-        [ "$cfg_use_whiptail" = true ] && _b_is_whiptail=true
-        ;;
-    *) ;;
+        *tmux-menus*)
+            # shellcheck disable=SC2154 # cfg_use_whiptail defined in settings
+            [ "$cfg_use_whiptail" = true ] && _b_is_whiptail=true
+            ;;
+        *) ;;
     esac
     if [ "$_b_is_whiptail" = true ]; then
         #
@@ -486,21 +486,21 @@ set_display_command_labels() {
 
     # shellcheck disable=SC2154 # show_cmds_state defined in display_commands_toggle()
     case "$show_cmds_state" in
-    1)
-        _lbl="Display Commands"
-        _lbl_next="Display key binds"
-        _idx_next=2
-        ;;
-    2)
-        _lbl="Display key binds"
-        _lbl_next="Hide key binds"
-        _idx_next=0
-        ;;
-    *)
-        _lbl="Hide key binds"
-        _lbl_next="Display Commands"
-        _idx_next=1
-        ;;
+        1)
+            _lbl="Display Commands"
+            _lbl_next="Display key binds"
+            _idx_next=2
+            ;;
+        2)
+            _lbl="Display key binds"
+            _lbl_next="Hide key binds"
+            _idx_next=0
+            ;;
+        *)
+            _lbl="Hide key binds"
+            _lbl_next="Display Commands"
+            _idx_next=1
+            ;;
     esac
 }
 

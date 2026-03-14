@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-#  Copyright (c) 2023-2025: Jacob.Lundqvist@gmail.com
+#  Copyright (c) 2023-2026: Jacob.Lundqvist@gmail.com
 #  License: MIT
 #
 #  Part of https://github.com/jaclu/tmux-menus
@@ -44,4 +44,4 @@ tmux_error_handler clear-history
     log_it "><> $0 - will run: $next_menu"
     $next_menu
 }
-log_it "><> $0 - done"
+# log_it "><> $0 - done"

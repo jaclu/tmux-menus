@@ -91,8 +91,8 @@ relative_path() { # Needed here due to: prepare_menu() - set_menu_env_variables(
 
 validate_varname() { # local usage tpt_digits_from_string() tpt_tmux_vers_suffix()
     case "$1" in
-    [a-zA-Z_][a-zA-Z0-9_]*) return 0 ;;
-    *) error_msg "$2 Invalid variable name: $1" ;;
+        [a-zA-Z_][a-zA-Z0-9_]*) return 0 ;;
+        *) error_msg "$2 Invalid variable name: $1" ;;
     esac
 }
 
@@ -211,39 +211,39 @@ env_variable_menus_handler() {
     # log_it "env_variable_menus_handler()"
 
     case "$TMUX_MENUS_HANDLER" in
-    0) $cfg_use_whiptail && verify_menu_handler_override_valid "tmux display-menu" ;;
-    1)
-        _cmd=whiptail
-        verify_menu_handler_override_valid "$_cmd"
-        if command -v "$_cmd" >/dev/null; then
-            cfg_alt_menu_handler="$_cmd"
-        else
-            error_msg "$_cmd not available, plugin aborted"
-        fi
-        cfg_use_whiptail=true
-        [ "$initialize_plugin" = "1" ] && {
-            log_it "NOTICE: $_cmd is selected due to TMUX_MENUS_HANDLER=1"
-        }
-        b_whiptail_forced=true
-        ;;
-    2)
-        _cmd=dialog
-        verify_menu_handler_override_valid "$_cmd"
-        if command -v "$_cmd" >/dev/null; then
-            cfg_alt_menu_handler="$_cmd"
-        else
-            error_msg "$_cmd not available, plugin aborted"
-        fi
-        cfg_use_whiptail=true
-        [ "$initialize_plugin" = "1" ] && {
-            log_it "NOTICE: $_cmd is selected due to TMUX_MENUS_HANDLER=2"
-        }
-        b_whiptail_forced=true
-        ;;
-    *)
-        msg="TMUX_MENUS_HANDLER=$TMUX_MENUS_HANDLER - valid options: 0 1 2"
-        error_msg "$msg"
-        ;;
+        0) $cfg_use_whiptail && verify_menu_handler_override_valid "tmux display-menu" ;;
+        1)
+            _cmd=whiptail
+            verify_menu_handler_override_valid "$_cmd"
+            if command -v "$_cmd" >/dev/null; then
+                cfg_alt_menu_handler="$_cmd"
+            else
+                error_msg "$_cmd not available, plugin aborted"
+            fi
+            cfg_use_whiptail=true
+            [ "$initialize_plugin" = "1" ] && {
+                log_it "NOTICE: $_cmd is selected due to TMUX_MENUS_HANDLER=1"
+            }
+            b_whiptail_forced=true
+            ;;
+        2)
+            _cmd=dialog
+            verify_menu_handler_override_valid "$_cmd"
+            if command -v "$_cmd" >/dev/null; then
+                cfg_alt_menu_handler="$_cmd"
+            else
+                error_msg "$_cmd not available, plugin aborted"
+            fi
+            cfg_use_whiptail=true
+            [ "$initialize_plugin" = "1" ] && {
+                log_it "NOTICE: $_cmd is selected due to TMUX_MENUS_HANDLER=2"
+            }
+            b_whiptail_forced=true
+            ;;
+        *)
+            msg="TMUX_MENUS_HANDLER=$TMUX_MENUS_HANDLER - valid options: 0 1 2"
+            error_msg "$msg"
+            ;;
     esac
 
     $b_whiptail_forced && {
@@ -315,21 +315,21 @@ safe_now() {
     # }
 
     case "$selected_safe_now_mthd" in
-    date) t_now="$(date +%s.%N)" ;;
-    gdate) t_now="$(gdate +%s.%N)" ;;
-    perl) t_now="$(perl -MTime::HiRes=time -E '$t = time; printf "%.9f\n", $t')" ;;
-    *)
-        select_safe_now_method
+        date) t_now="$(date +%s.%N)" ;;
+        gdate) t_now="$(gdate +%s.%N)" ;;
+        perl) t_now="$(perl -MTime::HiRes=time -E '$t = time; printf "%.9f\n", $t')" ;;
+        *)
+            select_safe_now_method
 
-        # to prevent infinite recursion, eunsure a valid timing method is now selected
-        case "$selected_safe_now_mthd" in
-        date | gdate | perl) ;;
-        *) error_msg "safe_now($varname) - failed to select a timing method" ;;
-        esac
+            # to prevent infinite recursion, eunsure a valid timing method is now selected
+            case "$selected_safe_now_mthd" in
+                date | gdate | perl) ;;
+                *) error_msg "safe_now($varname) - failed to select a timing method" ;;
+            esac
 
-        safe_now "$varname"
-        return
-        ;;
+            safe_now "$varname"
+            return
+            ;;
     esac
     [ -n "$varname" ] && {
         # if variable name provided set it to t_now
@@ -386,12 +386,12 @@ tmux_vers_check() { # local usage when checking $min_tmux_vers
 
     # Check if the version is in the cached good or bad lists using case statements
     case " $cached_ok_tmux_versions " in
-    *"$_v_comp "*) return 0 ;; # Version found in good list
-    *) ;;
+        *"$_v_comp "*) return 0 ;; # Version found in good list
+        *) ;;
     esac
     case "$cached_bad_tmux_versions" in
-    *"$_v_comp "*) return 1 ;; # Version found in bad list
-    *) ;;
+        *"$_v_comp "*) return 1 ;; # Version found in bad list
+        *) ;;
     esac
 
     # Once a menu has been processed once, all version references should already be
@@ -443,18 +443,21 @@ tpt_digits_from_string() { # local usage by tpt_retrieve_running_tmux_vers()
 
     # Remove leading "next-" if present. If found reduce version by one minor
     case $_vers in
-    next-*)
-        # shellcheck disable=SC2046,SC2086
-        set -- $(IFS=-; echo $_vers)
-        major=${_vers%.*}
-        minor=${_vers#*.}
-        _vers2=$major.$((minor - 1))
-        log_it "><> filtered next vers: $_vers  -> $_vers2"
-        _vers="$_vers2"
-        ;;
-    *) ;; # default
+        next-*)
+            # shellcheck disable=SC2046,SC2086
+            set -- $(
+                IFS=-
+                echo $_vers
+            )
+            major=${_vers%.*}
+            minor=${_vers#*.}
+            _vers2=$major.$((minor - 1))
+            log_it "><> filtered next vers: $_vers  -> $_vers2"
+            _vers="$_vers2"
+            ;;
+        *) ;; # default
     esac
-    _vers=${_vers%%-rc*}                  # Remove trailing "-rc" and anything after
+    _vers=${_vers%%-rc*} # Remove trailing "-rc" and anything after
 
     _i=$(echo "$_vers" | tr -cd '0-9') # Keep only digits
 
@@ -472,7 +475,7 @@ tpt_tmux_vers_suffix() { # local usage by tpt_retrieve_running_tmux_vers()
     # Assigning the supplied variable name instead of printing output in a subshell,
     # for better performance
     varname="$1"
-    vers="${2##next-}"  # Remove leading "next-" if present
+    vers="${2##next-}" # Remove leading "next-" if present
     validate_varname "$varname" "tpt_tmux_vers_suffix()"
     # Remove leading digits, dots, and dashes to isolate suffix
     _s=$(printf "%s" "$vers" | sed 's/^[0-9.-]*//')

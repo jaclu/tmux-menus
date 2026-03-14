@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-#   Copyright (c) 2022-2025: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2022-2026: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
@@ -34,7 +34,7 @@ static_content() {
         0.0 C l "Last selected session" "switch-client -l        $runshell_reload_mnu" \
         0.0 C p "Previous session [in order]" "switch-client -p  $runshell_reload_mnu" \
         0.0 C n "Next     session [in order]" "switch-client -n  $runshell_reload_mnu" \
-	0.0 C c "Choose session" "choose-tree -Zs" \
+        0.0 C c "Choose session" "choose-tree -Zs" \
         0.0 S \
         1.8 C x "Kill current session" \
         "confirm-before -p \
@@ -45,7 +45,6 @@ static_content() {
         \"kill-session -a\" $runshell_reload_mnu"
     menu_generate_part 3 "$@"
 }
-
 
 # menus: "switch-client -n  ; run-shell /Users/jaclu/git_repos/mine/tmux-menus/items/sessions.sh"
 # whiptail:
@@ -62,4 +61,4 @@ menu_name="Handling Session"
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
 D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/.." && pwd)
 
-. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
+. "$D_TM_BASE_PATH"/scripts/menu_handling.sh

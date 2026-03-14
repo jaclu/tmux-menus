@@ -41,5 +41,5 @@ D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")" && pwd)
         # Report if init failed
         tmux display-message "tmux-menus - Failed to initialize"
         sleep 3
-        }
+    }
 ) &

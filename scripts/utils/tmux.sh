@@ -43,8 +43,8 @@ tmux_vers_check_do_compare() {
         return 1
     }
     # Perform lexicographical comparison of suffixes only if necessary
-    [ "$(printf '%s\n%s\n' "$_suf" "$current_tmux_vers_suffix" |
-        LC_COLLATE=C sort | head -n 1)" = "$_suf" ] && {
+    [ "$(printf '%s\n%s\n' "$_suf" "$current_tmux_vers_suffix" \
+        | LC_COLLATE=C sort | head -n 1)" = "$_suf" ] && {
         cache_add_ok_vers "$_v_comp"
         return 0
     }
@@ -173,11 +173,11 @@ tmux_get_option() {
                 # space after tgo_option needed in order to not find
                 # @menus_simple_style_border when looking for @menus_simple_style
                 case $_cache_line in
-                "$tgo_option "*)
-                    _line=$_cache_line
-                    break
-                    ;;
-                *) ;;
+                    "$tgo_option "*)
+                        _line=$_cache_line
+                        break
+                        ;;
+                    *) ;;
                 esac
             done <"$f_cached_tmux_options"
         fi
@@ -198,12 +198,12 @@ tmux_get_option() {
         tgo_value=${_line#* }
 
         case $tgo_value in
-        \"*\")
-            # Remove outer double quotes, if present
-            tgo_value=${tgo_value#\"}
-            tgo_value=${tgo_value%\"}
-            ;;
-        *) ;;
+            \"*\")
+                # Remove outer double quotes, if present
+                tgo_value=${tgo_value#\"}
+                tgo_value=${tgo_value%\"}
+                ;;
+            *) ;;
         esac
     fi
     # log_it "tmux_get_option() - using [$tgo_value]"
@@ -244,39 +244,39 @@ fix_home_path() {
     if tmux_vers_check 3.4 && ! tmux_vers_check 3.5; then
         # Special case for tmux 3.4
         case "$fhp_path" in
-        \\~/*)
-            fhp_path="${fhp_path#\\}"        # Remove leading backslash
-            fhp_path="${HOME}${fhp_path#\~}" # Expand ~ to $HOME
-            ;;
-        \\\\\$HOME/*)
-            fhp_path="${fhp_path#\\\\}"          # Remove leading backslash
-            fhp_path="${HOME}${fhp_path#\$HOME}" # Expand $HOME
-            ;;
-        *) ;;
+            \\~/*)
+                fhp_path="${fhp_path#\\}"        # Remove leading backslash
+                fhp_path="${HOME}${fhp_path#\~}" # Expand ~ to $HOME
+                ;;
+            \\\\\$HOME/*)
+                fhp_path="${fhp_path#\\\\}"          # Remove leading backslash
+                fhp_path="${HOME}${fhp_path#\$HOME}" # Expand $HOME
+                ;;
+            *) ;;
         esac
     elif tmux_vers_check 3.0; then
         case "$fhp_path" in
-        \\~/*)
-            fhp_path="${fhp_path#\\}"        # Remove leading backslash
-            fhp_path="${HOME}${fhp_path#\~}" # Expand ~ to $HOME
-            ;;
-        \\\$HOME/*)
-            fhp_path="${fhp_path#\\}"            # Remove leading backslash
-            fhp_path="${HOME}${fhp_path#\$HOME}" # Expand ~ to $HOME
-            ;;
-        *) ;;
+            \\~/*)
+                fhp_path="${fhp_path#\\}"        # Remove leading backslash
+                fhp_path="${HOME}${fhp_path#\~}" # Expand ~ to $HOME
+                ;;
+            \\\$HOME/*)
+                fhp_path="${fhp_path#\\}"            # Remove leading backslash
+                fhp_path="${HOME}${fhp_path#\$HOME}" # Expand ~ to $HOME
+                ;;
+            *) ;;
         esac
     else
         case "$fhp_path" in
-        \~/*)
-            fhp_path="${fhp_path#\\}"        # Remove leading backslash
-            fhp_path="${HOME}${fhp_path#\~}" # Expand ~ to $HOME
-            ;;
-        \$HOME/*)
-            fhp_path="${fhp_path#\\}"            # Remove leading backslash
-            fhp_path="${HOME}${fhp_path#\$HOME}" # Expand $HOME
-            ;;
-        *) ;;
+            \~/*)
+                fhp_path="${fhp_path#\\}"        # Remove leading backslash
+                fhp_path="${HOME}${fhp_path#\~}" # Expand ~ to $HOME
+                ;;
+            \$HOME/*)
+                fhp_path="${fhp_path#\\}"            # Remove leading backslash
+                fhp_path="${HOME}${fhp_path#\$HOME}" # Expand $HOME
+                ;;
+            *) ;;
         esac
     fi
 
@@ -427,8 +427,8 @@ tmux_get_plugin_options() { # new init
     #  bind-key Notes were added in tmux 3.1, so should not be used on
     #  older versions!
     #
-    if tmux_vers_check 3.1 &&
-        normalize_bool_param "@use_bind_key_notes_in_plugins" No; then
+    if tmux_vers_check 3.1 \
+        && normalize_bool_param "@use_bind_key_notes_in_plugins" No; then
         cfg_use_notes=true
     else
         # shellcheck disable=SC2034 # variable used to define cache/plugin_params

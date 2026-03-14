@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-#   Copyright (c) 2022-2025: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2022-2026: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
@@ -22,19 +22,19 @@ gather_about_box_variables() {
         td_current_rev_no_tz=${td_pull% *}
 
         case "$td_current_rev_no_tz" in
-        "$td_tag_no_tz") td_pull="" ;;
-        *)
-            # only keep td_pull if it is newer than td_vers
-            td_pull="$(printf '%s\n%s\n' "$td_tag_no_tz" "$td_current_rev_no_tz" |
-                sort | tail -1 | grep -qx "$td_current_rev_no_tz" && echo "$td_pull")"
-            ;;
+            "$td_tag_no_tz") td_pull="" ;;
+            *)
+                # only keep td_pull if it is newer than td_vers
+                td_pull="$(printf '%s\n%s\n' "$td_tag_no_tz" "$td_current_rev_no_tz" \
+                    | sort | tail -1 | grep -qx "$td_current_rev_no_tz" && echo "$td_pull")"
+                ;;
         esac
     }
 
     branch="$(git symbolic-ref --quiet --short HEAD 2>/dev/null)"
     case "$branch" in
-    main | master) branch="" ;;
-    *) ;;
+        main | master) branch="" ;;
+        *) ;;
     esac
 }
 
@@ -97,5 +97,4 @@ menu_name="Help summary"
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
 D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/../.." && pwd)
 
-
-. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
+. "$D_TM_BASE_PATH"/scripts/menu_handling.sh

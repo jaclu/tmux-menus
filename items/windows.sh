@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-#   Copyright (c) 2022-2025: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2022-2026: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
@@ -13,8 +13,8 @@ static_content() {
     set -- \
         0.0 M Left "Back to Main menu  $nav_home" "$cfg_main_menu" \
         0.0 M S "Split window       $nav_next" window_split.sh \
-        0.0 M L "Layouts            $nav_next" "$d_items/layouts.sh $0 $menu_name" \
-        0.0 M M "Move window        $nav_next" window_move.sh
+        0.0 M M "Move window        $nav_next" window_move.sh \
+        0.0 M L "Layouts            $nav_next" "$d_items/layouts.sh $0 $menu_name"
     menu_generate_part 1 "$@"
     $cfg_display_cmds && display_commands_toggle 2
 
@@ -37,7 +37,7 @@ static_content() {
         0.0 C n "Next     window [in order]" "next-window $runshell_reload_mnu" \
         0.0 C M-p "Previous window with an alert" "previous-window -a $runshell_reload_mnu" \
         0.0 C M-n "Next     window with an alert" "next-window -a $runshell_reload_mnu" \
-	0.0 C c "Choose window" "choose-tree -Zw" \
+        0.0 C c "Choose window" "choose-tree -Zw" \
         0.0 S \
         1.8 C x "Kill current window" "confirm-before -p \
             'kill-window #W? (y/n)' kill-window  $runshell_reload_mnu" \
@@ -58,4 +58,4 @@ menu_name="Handling Window"
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
 D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/.." && pwd)
 
-. "$D_TM_BASE_PATH"/scripts/dialog_handling.sh
+. "$D_TM_BASE_PATH"/scripts/menu_handling.sh

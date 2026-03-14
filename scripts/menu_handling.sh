@@ -1,7 +1,7 @@
 #!/bin/sh
 # This script is sourced. Fake shebang to assist editors and linters.
 #
-#   Copyright (c) 2023–2025: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2023–2026: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
@@ -47,12 +47,12 @@ get_mtime() {
 
 debug_print() {
     case "$menu_debug" in
-    "") ;; # not active
-    1) print_stderr "$1" ;;
-    2) log_it "$1" ;;
-    *)
-        error_msg "$menu_debug state invalid [$menu_debug] should be 1 or 2! p1[$1]"
-        ;;
+        "") ;; # not active
+        1) print_stderr "$1" ;;
+        2) log_it "$1" ;;
+        *)
+            error_msg "$menu_debug state invalid [$menu_debug] should be 1 or 2! p1[$1]"
+            ;;
     esac
 }
 
@@ -63,8 +63,8 @@ starting_with_dash() {
     #  ignored
 
     case "$1" in
-      -*) return 0 ;;
-      *) return 1 ;;
+        -*) return 0 ;;
+        *) return 1 ;;
     esac
 }
 
@@ -298,8 +298,8 @@ mnu_spacer() {
 
 alt_prefix() {
     case "$cfg_alt_menu_handler" in
-    whiptail | dialog) ;;
-    *) error_msg "Un-recognized cfg_alt_menu_handler: [$cfg_alt_menu_handler]" ;;
+        whiptail | dialog) ;;
+        *) error_msg "Un-recognized cfg_alt_menu_handler: [$cfg_alt_menu_handler]" ;;
     esac
     menu_items="$cfg_alt_menu_handler --title \"$menu_name\"  --menu \"\" 0 0 0 "
 }
@@ -420,130 +420,130 @@ menu_parse() {
         [ -n "$menu_debug" ] && debug_print "-- parsing an item [$min_vers] [$action]"
         case "$action" in
 
-        "C")
-            #  direct tmux command - params: key label task
-            key="$1"
-            shift
-            label="$1"
-            shift
-            cmd="$1"
-            shift
+            "C")
+                #  direct tmux command - params: key label task
+                key="$1"
+                shift
+                label="$1"
+                shift
+                cmd="$1"
+                shift
 
-            # first extract the variables, then  if it shouldn't be used move on
-            ! tmux_vers_check "$min_vers" && continue
+                # first extract the variables, then  if it shouldn't be used move on
+                ! tmux_vers_check "$min_vers" && continue
 
-            verify_menu_key "$key" "tmux command: $cmd"
+                verify_menu_key "$key" "tmux command: $cmd"
 
-            [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
+                [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
 
-            if $cfg_use_whiptail; then
-                alt_command "$label" "$key" "$cmd"
-            else
-                mnu_command "$label" "$key" "$cmd"
-                $b_do_show_cmds && sc_show_cmd "$TMUX_BIN $cmd"
-            fi
-            ;;
+                if $cfg_use_whiptail; then
+                    alt_command "$label" "$key" "$cmd"
+                else
+                    mnu_command "$label" "$key" "$cmd"
+                    $b_do_show_cmds && sc_show_cmd "$TMUX_BIN $cmd"
+                fi
+                ;;
 
-        E)
-            #
-            #  Run external command - params: key label cmd
-            #
-            #  If no initial / is found in the script param, it will be prefixed with
-            #  $d_scripts
-            #  This means that if you give full path to something in this
-            #  param, all scriptd needs to have full path prepended.
-            #  For example help menus, which takes the full path to the
-            #  current script, in order to be able to go back.
-            #  For the normal case a name pointing to a script in the same
-            #  dir as the current, this will be prepended automatically.
-            #
-            key="$1"
-            shift
-            label="$1"
-            shift
-            cmd="$1"
-            shift
+            E)
+                #
+                #  Run external command - params: key label cmd
+                #
+                #  If no initial / is found in the script param, it will be prefixed with
+                #  $d_scripts
+                #  This means that if you give full path to something in this
+                #  param, all scriptd needs to have full path prepended.
+                #  For example help menus, which takes the full path to the
+                #  current script, in order to be able to go back.
+                #  For the normal case a name pointing to a script in the same
+                #  dir as the current, this will be prepended automatically.
+                #
+                key="$1"
+                shift
+                label="$1"
+                shift
+                cmd="$1"
+                shift
 
-            # first extract the variables, then  if it shouldn't be used move on
-            ! tmux_vers_check "$min_vers" && continue
+                # first extract the variables, then  if it shouldn't be used move on
+                ! tmux_vers_check "$min_vers" && continue
 
-            verify_menu_key "$key" "external command: $cmd"
+                verify_menu_key "$key" "external command: $cmd"
 
-            [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
+                [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
 
-            if $cfg_use_whiptail; then
-                alt_external_cmd "$label" "$key" "$cmd"
-            else
-                mnu_external_cmd "$label" "$key" "$cmd"
-                $b_do_show_cmds && [ "$key" != "!" ] && sc_show_cmd "$cmd"
-            fi
-            ;;
+                if $cfg_use_whiptail; then
+                    alt_external_cmd "$label" "$key" "$cmd"
+                else
+                    mnu_external_cmd "$label" "$key" "$cmd"
+                    $b_do_show_cmds && [ "$key" != "!" ] && sc_show_cmd "$cmd"
+                fi
+                ;;
 
-        "M")
-            #  Open another menu
-            key="$1"
-            shift
-            label="$1"
-            shift
-            menu="$1"
-            shift
+            "M")
+                #  Open another menu
+                key="$1"
+                shift
+                label="$1"
+                shift
+                menu="$1"
+                shift
 
-            # first extract the variables, then  if it shouldn't be used move on
-            ! tmux_vers_check "$min_vers" && continue
+                # first extract the variables, then  if it shouldn't be used move on
+                ! tmux_vers_check "$min_vers" && continue
 
-            verify_menu_key "$key" "$menu"
+                verify_menu_key "$key" "$menu"
 
-            #
-            #  If menu is not full PATH, assume it to be a tmux-menus
-            #  item
-            #
-            case $menu in
-            */*) ;;
-            *) menu="$d_items/$menu" ;;
-            esac
+                #
+                #  If menu is not full PATH, assume it to be a tmux-menus
+                #  item
+                #
+                case $menu in
+                    */*) ;;
+                    *) menu="$d_items/$menu" ;;
+                esac
 
-            [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] menu[$menu]"
+                [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] menu[$menu]"
 
-            if $cfg_use_whiptail; then
-                alt_open_menu "$label" "$key" "$menu"
-            else
-                mnu_open_menu "$label" "$key" "$menu"
-            fi
-            ;;
+                if $cfg_use_whiptail; then
+                    alt_open_menu "$label" "$key" "$menu"
+                else
+                    mnu_open_menu "$label" "$key" "$menu"
+                fi
+                ;;
 
-        "T")
-            #  text line - params: txt
-            txt="$1"
-            shift
+            "T")
+                #  text line - params: txt
+                txt="$1"
+                shift
 
-            # first extract the variables, then  if it shouldn't be used move on
-            ! tmux_vers_check "$min_vers" && continue
+                # first extract the variables, then  if it shouldn't be used move on
+                ! tmux_vers_check "$min_vers" && continue
 
-            [ -n "$menu_debug" ] && debug_print "text line [$txt]"
-            if $cfg_use_whiptail; then
-                alt_text_line "$txt"
-            else
-                mnu_text_line "$txt"
-            fi
-            ;;
+                [ -n "$menu_debug" ] && debug_print "text line [$txt]"
+                if $cfg_use_whiptail; then
+                    alt_text_line "$txt"
+                else
+                    mnu_text_line "$txt"
+                fi
+                ;;
 
-        "S")
-            #  Spacer line - params: none
+            "S")
+                #  Spacer line - params: none
 
-            # first extract the variables, then  if it shouldn't be used move on
-            ! tmux_vers_check "$min_vers" && continue
+                # first extract the variables, then  if it shouldn't be used move on
+                ! tmux_vers_check "$min_vers" && continue
 
-            [ -n "$menu_debug" ] && debug_print "Spacer line"
+                [ -n "$menu_debug" ] && debug_print "Spacer line"
 
-            # Whiptail/dialog does not have a concept of spacer lines
-            if $cfg_use_whiptail; then
-                alt_spacer
-            else
-                mnu_spacer
-            fi
-            ;;
+                # Whiptail/dialog does not have a concept of spacer lines
+                if $cfg_use_whiptail; then
+                    alt_spacer
+                else
+                    mnu_spacer
+                fi
+                ;;
 
-        *) mnu_parse_error "$action" "$@" ;;
+            *) mnu_parse_error "$action" "$@" ;;
         esac
     done
 
@@ -745,8 +745,8 @@ set_menu_env_variables() {
     fi
 
     case "$show_cmds_state" in
-    "1" | "2") prepare_show_commands ;;
-    *) ;;
+        "1" | "2") prepare_show_commands ;;
+        *) ;;
     esac
 
     #
@@ -871,7 +871,7 @@ cache_read_menu_items() {
             else
                 menu_items="$menu_items $line"
             fi
-        done < "$f_name"
+        done <"$f_name"
     done
 }
 
@@ -893,18 +893,18 @@ sort_uncached_menu_items() {
     _sumi_rest="$uncached_menu"
     while :; do
         case "$_sumi_rest" in
-        *"$uncached_item_splitter"*)
-            _sumi_part=${_sumi_rest%%"$uncached_item_splitter"*}
-            _sumi_rest=${_sumi_rest#*"$uncached_item_splitter"}
-            ;;
-        *)
-            _sumi_part=$_sumi_rest
-            _sumi_rest=''
-            ;;
+            *"$uncached_item_splitter"*)
+                _sumi_part=${_sumi_rest%%"$uncached_item_splitter"*}
+                _sumi_rest=${_sumi_rest#*"$uncached_item_splitter"}
+                ;;
+            *)
+                _sumi_part=$_sumi_rest
+                _sumi_rest=''
+                ;;
         esac
 
-        idx=${_sumi_part%% *}         # First word
-        _sumi_body=${_sumi_part#* }     # Everything after first space
+        idx=${_sumi_part%% *}       # First word
+        _sumi_body=${_sumi_part#* } # Everything after first space
         # Save as index<TAB>content
         #region  gmi item separation
         _sumi_entries="$_sumi_entries
@@ -957,8 +957,8 @@ prepare_menu() {
     get_menu_items_sorted
 
     case "$show_cmds_state" in
-    "1" | "2") clear_prep_disp_status ;;
-    *) ;;
+        "1" | "2") clear_prep_disp_status ;;
+        *) ;;
     esac
 
     [ -n "$cfg_log_file" ] && {
@@ -1008,7 +1008,7 @@ ensure_menu_fits_on_screen() {
     # log_it "$_s"
 
     [ "$(echo "$t_time_span < $t_minimal_display_time" | bc)" -eq 1 ] && {
-            ${all_helpers_sourced:-false} || {
+        ${all_helpers_sourced:-false} || {
             _m="ensure_menu_fits_on_screen() - short display time, give warning"
             source_all_helpers "$_m"
         }
@@ -1048,7 +1048,7 @@ wt_cached_selection() {
             _file_content=""
             while IFS= read -r line || [ -n "$line" ]; do
                 _file_content="${_file_content:+$_file_content }$line"
-            done < "$file"
+            done <"$file"
 
             all_wt_actions="$all_wt_actions $_file_content"
             menu_items="$menu_items $_file_content"
@@ -1091,7 +1091,7 @@ EOF
 alt_parse_selection() {
     #
     #  Whiptail/dialog can only display selected keyword,
-    #  so a post dialog step is needed matching keyword with intended
+    #  so a post menu step is needed matching keyword with intended
     #  action, and then perform it
     #
     wt_actions="$1"
@@ -1163,16 +1163,16 @@ display_menu() {
         menu_selection=$(eval "$menu_items" 3>&2 2>&1 1>&3)
         menu_exit_code="$?"
         case "$menu_exit_code" in
-        0) ;;
-        1)
-            [ -n "$menu_selection" ] && {
-                # no selection = menu canceled
+            0) ;;
+            1)
+                [ -n "$menu_selection" ] && {
+                    # no selection = menu canceled
+                    display_invalid_menu_error "$menu_selection"
+                }
+                ;;
+            *)
                 display_invalid_menu_error "$menu_selection"
-            }
-            ;;
-        *)
-            display_invalid_menu_error "$menu_selection"
-            ;;
+                ;;
         esac
 
         [ -n "$menu_selection" ] && handle_wt_selecion
@@ -1187,7 +1187,7 @@ display_menu() {
     fi
 }
 
-do_dialog_handling() {
+do_menu_handling() {
     # shellcheck disable=SC2154 # log_file_forced usually not set
     [ "$log_file_forced" = 1 ] && {
         # Useful when debugging to keep each menu generation process separate
@@ -1197,7 +1197,7 @@ do_dialog_handling() {
         log_it
         log_it
     }
-    # log_it "do_dialog_handling()"
+    # log_it "do_menu_handling()"
 
     #
     # Some env checks
@@ -1213,7 +1213,7 @@ do_dialog_handling() {
     # shellcheck disable=SC2154 # TMUX_MENUS_NO_DISPLAY is an env variable
     [ "$TMUX_MENUS_NO_DISPLAY" != "1" ] && display_menu
 
-    # log_it "[$$]   COMPLETED: scripts/dialog_handling.sh - $rn_current_script"
+    # log_it "[$$]   COMPLETED: scripts/menu_handling.sh - $rn_current_script"
     return 0 # ensuring this exits true
 }
 
@@ -1225,7 +1225,7 @@ do_dialog_handling() {
 
 [ -z "$D_TM_BASE_PATH" ] && {
     # helpers not yet sourced, so error_msg() not yet available
-    msg="ERROR: dialog_handling.sh - D_TM_BASE_PATH must be set before sourcing this file"
+    msg="ERROR: menu_handling.sh - D_TM_BASE_PATH must be set before sourcing this file"
     (
         echo
         echo "$msg"
@@ -1239,5 +1239,5 @@ do_dialog_handling() {
     . "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
 }
 
-# shellcheck disable=SC2154 # no_auto_dialog_handling usually not set
-[ "$no_auto_dialog_handling" != 1 ] && do_dialog_handling
+# shellcheck disable=SC2154 # no_auto_menu_handling usually not set
+[ "$no_auto_menu_handling" != 1 ] && do_menu_handling

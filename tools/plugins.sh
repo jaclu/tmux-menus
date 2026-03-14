@@ -100,7 +100,7 @@ check_unknown_items() {
         done
 
         if [ "$found" = false ]; then
-            [ "$undefined_item" = false ] && echo " "  # spacer before 1st entry
+            [ "$undefined_item" = false ] && echo " " # spacer before 1st entry
             echo "Undefined item: $d_plugins/$item"
             undefined_item=true
         fi
