@@ -60,7 +60,7 @@ if there's insufficient space. The other screenshots show native tmux menus.
 
 <img width="255" alt="Handling Pane"
 src="https://github.com/user-attachments/assets/4216b5cf-bcac-42c2-bef8-90951f8042c3" />
-<img width="302" alt="Handling Window" 
+<img width="302" alt="Handling Window"
 src="https://github.com/user-attachments/assets/11f368b0-8c93-4432-a9cb-36589ace819a" />
 <img width="337" alt="Help summary"
 src="https://github.com/user-attachments/assets/efa0e3e5-5d37-4c88-b379-16d5a5264946" />
