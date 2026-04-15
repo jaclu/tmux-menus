@@ -203,7 +203,7 @@ cache_write_plugin_params() {
     check_speed_cutoff 0.5
     examine_code_base
 
-    _f_params_tmp=$(mktemp) || {
+    _f_params_tmp=$(mktemp -t tmux-menus-plugins-params) || {
         error_msg "cache_write_plugin_params() - Failed to create tmp config file"
     }
 
