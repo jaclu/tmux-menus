@@ -9,9 +9,6 @@
 #  Cache related stuff
 #
 
-# shellcheck source=tools/variables_meta.sh # faking external variables & functions for shellcheck
-. "$D_TM_BASE_PATH"/tools/variables_meta.sh
-
 #---------------------------------------------------------------
 #
 #   cache handling
@@ -372,5 +369,8 @@ create_param_cache() {
 #   Main
 #
 #===============================================================
+
+# shellcheck source=tools/variables_meta.sh # faking external variables & functions for shellcheck
+. "$D_TM_BASE_PATH"/tools/variables_meta.sh
 
 # log_it "===  Completed: scripts/utils/cache.sh  =="
