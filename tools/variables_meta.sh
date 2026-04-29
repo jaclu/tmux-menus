@@ -46,6 +46,32 @@
 
 cfg_main_menu="${cfg_main_menu:-}"
 cfg_use_whiptail="${cfg_use_whiptail:-}"
+cfg_use_cache="${cfg_use_cache:-}"
+d_cache="${d_cache:-}"
+cfg_trigger_key="${cfg_trigger_key:-}"
+cfg_no_prefix="${cfg_no_prefix:-}"
+cfg_mnu_loc_x="${cfg_mnu_loc_x:-}"
+cfg_mnu_loc_y="${cfg_mnu_loc_y:-}"
+cfg_format_title="${cfg_format_title:-}"
+cfg_border_type="${cfg_border_type:-}"
+cfg_simple_style_selected="${cfg_simple_style_selected:-}"
+cfg_simple_style="${cfg_simple_style:-}"
+cfg_simple_style_border="${cfg_simple_style_border:-}"
+cfg_display_cmds_cols="${cfg_display_cmds_cols:-}"
+cfg_nav_next="${cfg_nav_next:-}"
+cfg_nav_prev="${cfg_nav_prev:-}"
+cfg_nav_home="${cfg_nav_home:-}"
+cfg_use_hint_overlays="${cfg_use_hint_overlays:-}"
+cfg_show_key_hints="${cfg_show_key_hints:-}"
+cfg_alt_menu_handler="${cfg_alt_menu_handler:-}"
+cfg_tmux_conf="${cfg_tmux_conf:-}"
+cfg_use_notes="${cfg_use_notes:-}"
+current_tmux_vers_i="${current_tmux_vers_i:-}"
+current_tmux_vers_suffix="${current_tmux_vers_suffix:-}"
+t_minimal_display_time="${t_minimal_display_time:-}"
+f_cache_params="${f_cache_params:-}"
+initialize_plugin="${initialize_plugin:-}"
+D_TM_BASE_PATH="${D_TM_BASE_PATH:-}"
 
 #===============================================================
 # scripts/menu_handling.sh
@@ -74,6 +100,13 @@ wt_pasting="${wt_pasting:-}"
 
 tmux_error_handler() { :; }
 tmux_error_handler "$@"
+
+#===============================================================
+# scripts/utils/cache.sh
+#===============================================================
+
+f_cache_known_tmux_vers="${f_cache_known_tmux_vers:-}"
+cached_bad_tmux_versions="${cached_bad_tmux_versions:-}"
 
 #===============================================================
 # scripts/utils/helpers_full.sh
