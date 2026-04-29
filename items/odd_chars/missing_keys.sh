@@ -20,7 +20,6 @@ static_content() {
     #  It doesn't seem possible to reliably display an actual backtick in menus...
     #  on some platforms it works, on others it breaks this menu
     #
-    # shellcheck disable=SC2154 # cfg_main_menu is set in helpers_minimal.sh
     set -- \
         0.0 M Left "Back to Main menu  $nav_home" "$cfg_main_menu" \
         2.0 M C "Currencies         $nav_next" "$d_odd_chars"/currencies.sh \
@@ -54,6 +53,7 @@ menu_min_vers=2.0
 D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/../.." && pwd)
 
 no_auto_menu_handling=1 # delay processing of dialog, only source it for now
+# shellcheck source=tools/variables_meta.sh # faking external variables & functions for shellcheck
 . "$D_TM_BASE_PATH"/scripts/menu_handling.sh
 
 if [ -n "$1" ]; then
