@@ -138,6 +138,8 @@ profiling_display() {
 #   Main
 #
 #===============================================================
+# shellcheck source=tools/variables_meta.sh # faking external variables & functions for shellcheck
+. "$D_TM_BASE_PATH"/tools/variables_meta.sh
 
 [ "$profiling_sourced" = 1 ] && {
     profiling_error_msg "scripts/utils/dbg_profiling.sh already sourced"

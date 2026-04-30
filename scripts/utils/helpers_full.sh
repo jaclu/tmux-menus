@@ -543,6 +543,8 @@ parse_move_link_dest() {
 #   Main
 #
 #===============================================================
+# shellcheck source=tools/variables_meta.sh # faking external variables & functions for shellcheck
+. "$D_TM_BASE_PATH"/tools/variables_meta.sh
 
 # log_it "><> [$$] STARTING: scripts/utils/helpers_full.sh"
 

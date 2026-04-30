@@ -453,6 +453,7 @@ tmux_escape_for_display() {
     echo "$@" | sed "s/'/\`/g" | sed 's/#/##/g'
 }
 
+# shellcheck disable=SC2329 # used indirectly by other scripts via sourcing
 tmux_error_handler() {
     teh_store_result=false
     # fake assigning a variable in order to use the same func
@@ -600,6 +601,8 @@ EOF
 #   Main
 #
 #===============================================================
+# shellcheck source=tools/variables_meta.sh # faking external variables & functions for shellcheck
+. "$D_TM_BASE_PATH"/tools/variables_meta.sh
 
 # The default for tmux_error_handler_assign() is to store result in a provided
 # variable. When no output is needed call tmux_error_handler() this sets this

@@ -30,4 +30,13 @@ f_plugin_params_cache="$D_TM_BASE_PATH"/cache/plugin_params
     }
 }
 
+#===============================================================
+#
+#   Main
+#
+#===============================================================
+
+# shellcheck source=tools/variables_meta.sh # faking external variables & functions for shellcheck
+. "$D_TM_BASE_PATH"/tools/variables_meta.sh
+
 echo "sal [no log file]: $log_msg" >/dev/stderr
