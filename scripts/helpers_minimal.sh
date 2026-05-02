@@ -514,8 +514,8 @@ plugin_name="tmux-menus"
 #
 #  This should normally be commented out!
 #
-# cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
-# log_file_forced="1"
+cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
+log_file_forced="1"
 
 #
 #  If set to 1 log will happen to stderr if script is run in an interactive
