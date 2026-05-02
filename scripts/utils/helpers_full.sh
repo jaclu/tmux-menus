@@ -398,7 +398,7 @@ safe_remove() {
     reason="$2"
     skip_plugin_name_in_path_check="$3"
 
-    # log_it "safe_remove($pattern) - $reason"
+    log_it "safe_remove($pattern) - $reason"
     [ -z "$pattern" ] && error_msg "safe_remove() - no path supplied to remove"
     [ -z "$reason" ] && error_msg "safe_remove() - no reason given"
 

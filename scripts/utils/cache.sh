@@ -28,7 +28,10 @@ cache_create_folder() {
     _linked_cache="$(readlink cache)" # use actual path if it was a softlink
     # This only needs to point to the softlink destination for the mkdir,
     # in all future calls it will not matter if this is a folder or softlink
-    [ -n "$_linked_cache" ] && d_cache="$_linked_cache"
+    [ -n "$_linked_cache" ] && {
+        d_cache="$_linked_cache"
+        log_it "><> utils/cache d_cache[$d_cache]"
+    }
 
     mkdir -p "$d_cache" || {
         error_msg "cache_create_folder() - Failed to create cache folder: $d_cache"
