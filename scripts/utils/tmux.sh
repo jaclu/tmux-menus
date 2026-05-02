@@ -601,8 +601,6 @@ EOF
 #   Main
 #
 #===============================================================
-# shellcheck source=tools/variables_meta.sh # faking external variables & functions for shellcheck
-. "$D_TM_BASE_PATH"/tools/variables_meta.sh
 
 # The default for tmux_error_handler_assign() is to store result in a provided
 # variable. When no output is needed call tmux_error_handler() this sets this
@@ -611,6 +609,21 @@ EOF
 # to true again. This is needed to initialize the variable so that a first call
 # to tmux_error_handler_assign() will behave as expected
 teh_store_result=true
+
+# Ridiculous but seemingly only way to sattisfy two needss:
+# 1) Ensure the shellceck source directvie is used to feed shelcheck global
+#    variables/functions. Shellcheck only accepts this directive if there is
+#    a source statement coming next (blank lines ignored), regardless if the
+#    source statement will ever actually happen.
+# 2) Use a condition that will always fail, preventing the source statement
+#    actually being executed, then use a dummy file to source.
+#    Since this file will not actually be sourced, wha it is, is relevant.
+#    All that is needed for shellcheck is "can I find it", so /dev/null is fine,
+#    and if it was ever sourced, an error would happen.
+
+# faking external variables & functions for shellcheck
+# shell check source=tools/variables_meta.sh
+# [ -z "$teh_store_result" ] && . /dev/null
 
 #
 # tmux_error_handler & tmux_error_handler_assign never log normally.
