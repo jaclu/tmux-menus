@@ -516,8 +516,8 @@ plugin_name="tmux-menus"
 #
 #  This should normally be commented out!
 #
-# cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
-# log_file_forced="1"
+cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
+log_file_forced="1"
 
 #
 #  If set to 1 log will happen to stderr if script is run in an interactive
@@ -542,6 +542,7 @@ f_no_cache_hint="$d_tmp"/tmux-menus-no-cache-hint
 d_scripts="$D_TM_BASE_PATH"/scripts
 d_items="$D_TM_BASE_PATH"/items
 d_cache="$D_TM_BASE_PATH"/cache
+log_it "><> minimal d_cache[$d_cache]"
 f_cache_known_tmux_vers="$d_cache"/known_tmux_versions
 f_cache_params="$d_cache"/plugin_params
 

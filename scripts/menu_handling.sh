@@ -772,6 +772,7 @@ set_menu_env_variables() {
     if $cfg_use_cache; then
         # Include relative script path in cache folder name to avoid name collisions
         #  items/main.sh -> cache/items/main.sh/
+        log_it "><> set_menu_env_variables() d_cache[$d_cache] rn_current_script[$rn_current_script]"
         d_menu_cache="$d_cache/$rn_current_script"
 
         $cfg_use_whiptail && d_wt_actions="$d_menu_cache/wt_actions"
