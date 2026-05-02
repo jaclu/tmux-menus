@@ -84,9 +84,11 @@ source_all_helpers() {
 }
 
 relative_path() { # Needed here due to: prepare_menu() - set_menu_env_variables()
-    # remove D_TM_BASE_PATH prefix
-    # log_it "relative_path($1) - removing prefix: $D_TM_BASE_PATH"
-    printf '%s\n' "${1#"$D_TM_BASE_PATH"/}"
+    case "$1" in
+        /*) _rp_path="$1" ;;
+        *)  _rp_path=$(realpath "$1") ;;
+    esac
+    printf '%s\n' "${_rp_path#"$D_TM_BASE_PATH"/}"
 }
 
 validate_varname() { # local usage tpt_digits_from_string() tpt_tmux_vers_suffix()
