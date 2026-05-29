@@ -52,4 +52,4 @@ profiling output from other log messages.
 
 When set to `1`, menus are processed but not displayed. Also prevents
 `cfg_trigger_key` from being bound. Useful for testing menu generation without
-showing them.
+displaying the menu.
