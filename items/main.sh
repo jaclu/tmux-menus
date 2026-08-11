@@ -70,6 +70,12 @@ static_content() {
 menu_name="Main menu"
 
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/.." && pwd)
+D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
 
+# temp  profiling code to check performance
+# [ "$profiling_sourced" != 1 ] && . "$D_TM_BASE_PATH"/scripts/utils/dbg_profiling.sh
+
+# shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$D_TM_BASE_PATH"/scripts/menu_handling.sh
+
+# profiling_display "after dialog_handling"

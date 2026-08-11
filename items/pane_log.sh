@@ -20,7 +20,6 @@ log_to_file() {
 }
 
 static_content() {
-    # shellcheck disable=SC2154 # cfg_main_menu is set in helpers_minimal.sh
     set -- \
         0.0 M Left "Back to Handling Pane  $nav_prev" panes.sh \
         0.0 M Home "Back to Main menu      $nav_home" "$cfg_main_menu"
@@ -34,8 +33,8 @@ static_content() {
             'run-shell \"$0 --log-file %1\"'"
 
     tmux_vers_check 2.6 || {
-        # before 2.6 it can't be detected if pane is piped, so the Clear logging
-        # is always displayed
+        # before 2.6 it can't be detected if pane is piped,
+        # so "Clear logging (if enabled)" is always displayed
         set -- "$@" \
             1.1 C c "Clear logging (if enabled)" "pipe-pane $runshell_reload_mnu"
     }
@@ -50,13 +49,14 @@ static_content() {
 
 menu_name="Saving pane output to file"
 
-# Be aware: If pane is piped can only be detected from 2.6, so before
 menu_min_vers=1.1
 
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/.." && pwd)
+D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
 
 no_auto_menu_handling=1 # delay processing of dialog, only source it for now
+
+# shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$D_TM_BASE_PATH"/scripts/menu_handling.sh
 
 if $cfg_use_whiptail; then

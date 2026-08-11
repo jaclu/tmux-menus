@@ -44,19 +44,16 @@ param_check() {
 #===============================================================
 
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/.." && pwd)
+D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
 
+# shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
-
-# log_it "><> ==> $rn_current_script params: $*"
 
 tmux_vers_check 1.8 || {
     error_msg "$rn_current_script - needs tmux 1.8"
 }
 
 param_check "$1" "$2"
-
-# log_it "><> $rn_current_script params: $* - whiptail: $cfg_use_whiptail"
 
 if $cfg_use_hint_overlays && ! $cfg_use_whiptail; then
     "$d_hints"/choose-tree.sh skip-oversized &

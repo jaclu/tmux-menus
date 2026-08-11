@@ -9,16 +9,15 @@
 #
 
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/.." && pwd)
+D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
 
+# shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 next_menu="$*"
-log_it "><> $rn_current_script next_menu: [$next_menu]"
 
 tmux_error_handler_assign prefix_char command-prompt -1 -p \
     "Prefix key without C- (will take effect imeditally)" "display -p %%"
-log_it "><> prefix: [$prefix_char]"
 
 #
 #  Since this is a critical param, make extra sure we have valid input

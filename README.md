@@ -13,6 +13,9 @@ screenshot above.
 
 Once installed, press the trigger key to display the main menu. The default
 trigger is `<prefix> \` (see Configuration below to customize).
+There is also a secondary default `<prefix> Enter` if it has not already been
+bound to something else. See [docs/SecondaryDefault.md](docs/SecondaryDefault.md)
+for details.
 
 The menus are designed to be easily adaptable to your workflow. Some items may
 seem redundant to experienced users, but this makes it easier for newcomers to
@@ -20,14 +23,13 @@ discover functionality—advanced users can simply remove what they don't need.
 
 ## Recent Changes
 
-- Panes-Pane Logging - Enable/disable logging of pane output to file
-- Re-ordered main menu to better align with frequently used items
-- Layouts – The currently active option is dimmed and cannot be selected. Also giving a
-  hint about current setting
-- New menu for `tmux 3.6` `Panes - Layouts - Scroll Bars`
-- tmux versions with `next-` prefix are treated as one version lower for
-  compatibility. For example, `next-3.4` is treated as `3.3` since `next-3.4`
-  doesn't yet support display-menu profiling
+- **Secondary default trigger key** `<prefix> Enter` for non-US keyboards
+- Significant performance improvements across all scripts and 250x faster
+  shellcheck integration
+- Comprehensive documentation of tmux 3.7 display-menu navigation bug with
+  workaround
+- Enhanced quoting documentation for special characters in tmux configuration
+- Improved error handling and various code optimizations reducing processing time
 
 ## Purpose
 
@@ -72,6 +74,12 @@ src="https://github.com/user-attachments/assets/d4025441-a310-4805-8204-431197c1
 ## Known Limitations
 
 This plugin does not work when the tmux environment path contains spaces.
+
+### tmux 3.7 - display-menu bug
+
+Left arrow to go back to previous menu does not work. - Workaround: Highlight and hit Enter.
+
+Still present in 3.7b
 
 ## Dependencies & Compatibility
 
@@ -145,8 +153,9 @@ The default trigger is `<prefix> \`. To customize it:
 set -g @menus_trigger 'Space'
 ```
 
-See [SingleQuotes](docs/SingleQuotes.md) for handling special characters like
-`\` in tmux variables.
+See [QuotingPitfalls](docs/QuotingPitfalls.md) for handling special characters like
+`\` in tmux variables. For more information about the secondary default and why
+it was introduced, see [docs/SecondaryDefault.md](docs/SecondaryDefault.md).
 
 ### Trigger Without Prefix
 
@@ -164,7 +173,7 @@ Enable this to trigger menus without pressing `<prefix>` first.
 set -g @menus_config_file "~/.configs/tmux.conf"
 ```
 
-See [SingleQuotes](docs/SingleQuotes.md) for handling `$HOME` and `~` in tmux
+See [QuotingPitfalls](docs/QuotingPitfalls.md) for handling `$HOME` and `~` in tmux
 variables.
 
 The main menu includes a reload option that needs to know which config file to
@@ -264,7 +273,7 @@ Logging is disabled by default. To enable it, specify a log file:
 set -g @menus_log_file "~/tmp/tmux-menus.log"
 ```
 
-See [SingleQuotes](docs/SingleQuotes.md) for handling `$HOME` and `~` in tmux
+See [QuotingPitfalls](docs/QuotingPitfalls.md) for handling `$HOME` and `~` in tmux
 variables.
 
 ### Display Menu Commands
@@ -361,7 +370,7 @@ To use whiptail/dialog on modern tmux versions, set an environment variable:
 - For `whiptail`: `export TMUX_MENUS_HANDLER=1`
 - For `dialog`: `export TMUX_MENUS_HANDLER=2`
 
-### Installation
+### Installation of whiptail
 
 **Linux:** Most distributions include `whiptail` by default. If not, install it
 via your package manager. Note that in the Red Hat ecosystem, the package is
@@ -381,6 +390,8 @@ To report bugs, request features, or provide feedback, please file an
 
 Thanks to everyone who has contributed to making this plugin better:
 
+- [shixianqin](https://github.com/shixianqin) - Reported that `<prefix> \` is
+  problematic on non-US keyboards, leading to the secondary default `<prefix> Enter`
 - [cmon1701](https://github.com/cmon1701) - Reported hardcoded path assumptions
   in plugin listing (fixed in 2.1.3)
 - [sumskyi](https://github.com/sumskyi) - Improved boolean check error messages

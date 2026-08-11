@@ -9,48 +9,81 @@
 #  Initiate plugin, should be run in background from .tmux file
 #
 
+is_key_enter_available() {
+    $TMUX_BIN list-keys -T prefix Enter >/dev/null 2>&1 && {
+        return 1
+    }
+    return 0
+}
+
+consider_secondary_default() {
+    #
+    #  On many non-US keyboards the default \ isn't practical or sometimes even possible
+    #  This can be resolved by setting a different @menus_trigger, but this would be
+    #  a blocker for people new to tmux.
+    #
+    #  Changing the default after many years risks causing issues for long time users,
+    #  So the workaround is to add a secondary default bind <prefix> Enter if it has
+    #  not already been bound.
+    #
+    grep -q @menus_trigger "$f_cached_tmux_options" && {
+        # since a @menus_trigger is defined in tmux.conf, assume user knows how
+        # to configure things, and skip secondary default
+        return 1
+    }
+    is_key_enter_available && {
+        cfg_no_prefix=false # disable skip prefix for this secondary default
+        bind_plugin_key Enter
+    }
+}
+
 bind_plugin_key() {
-    # shellcheck disable=SC2154 # defined in helpers_minimal.sh
+    _bpk_key="$1"
+    [ -z "$_bpk_key" ] && error_msg "bind_plugin_key() - No param"
+    # log_it "bind_plugin_key($_bpk_key)"
+
+    # shellcheck disable=SC1003 # false positive: this is a literal backslash pattern, not an escape attempt
+    case "$_bpk_key" in
+        '\') _bpk_key='\\' ;; # needs to be escaped
+        *) ;;
+    esac
+
     bind_cmd="$cfg_main_menu"
-    # shellcheck disable=SC2154 # defined in cache/plugin_params
     if $cfg_use_whiptail; then
         bind_cmd="$f_ext_dlg_trigger"
         log_it "Will use alternate menu handler: $cfg_alt_menu_handler"
     fi
     cmd="bind-key"
-    # shellcheck disable=SC2154 # defined in cache/plugin_params
+    # cfg_use_notes=false
     $cfg_use_notes && {
-        # And why can't space be used in this note?
-        # cmd+=" -N \"plugin ${plugin_name} trigger\""
-        cmd="$cmd -N 'plugin ${plugin_name} trigger'"
+        cmd="$cmd -N \"plugin ${plugin_name}\""
     }
-    # shellcheck disable=SC2154 # defined in cache/plugin_params
+
+    u=$(cache_unescape_special_chars "$_bpk_key")
     if $cfg_no_prefix; then
         cmd="$cmd -n"
-        trigger_sequence="Menus will be bound to: $cfg_trigger_key"
+        trigger_announce="Menus will be bound to: $u"
     else
-        trigger_sequence="Menus will be bound to: <prefix> $cfg_trigger_key"
+        trigger_announce="Menus will be bound to: <prefix> $u"
     fi
-    cmd="$cmd '$cfg_trigger_key' run-shell $bind_cmd"
+    cmd="$cmd \"$_bpk_key\" run-shell $bind_cmd"
 
-    tmux_get_option f_main_menu_override "@menus_main_menu" "-"
-    # shellcheck disable=SC2154
+    tmux_get_option _f_main_menu_override "@menus_main_menu" "-"
     # SC2154: variable assigned dynamically by tmux_get_option using eval
-    [ "$f_main_menu_override" != "-" ] && {
-        log_it "Using alternate main menu: $f_main_menu_override"
+    # shellcheck disable=SC2154
+    [ "$_f_main_menu_override" != "-" ] && {
+        log_it "Using alternate main menu: $_f_main_menu_override"
     }
 
-    # shellcheck disable=SC2154 # TMUX_MENUS_NO_DISPLAY is an env variable
     [ "$TMUX_MENUS_NO_DISPLAY" = "1" ] && {
         # used for debugging menu builds
-        log_it "Due to TMUX_MENUS_NO_DISPLAY terminating before binding trigger key"
+        log_it "Due to TMUX_MENUS_NO_DISPLAY terminating before binding trigger _bpk_key"
         exit 0
     }
 
     [ ! -f "$f_skip_low_tmux_version_warning" ] && ! tmux_vers_check 1.8 && {
-        # shellcheck disable=SC2154 # current_tmux_vers is an env variable
         msg="Due to tmux($current_tmux_vers) < 1.8 user options can not be processed.\n\n"
-        msg="${msg}The tmux-menus plugin will be bound to its default key: $cfg_trigger_key"
+        msg="${msg}The tmux-menus plugin will be bound to its default key: $_bpk_key"
         msg="${msg} \n\nAll other options will also use their defaults.\n\n"
         msg="${msg}  tools/show_config.sh will display current settings.\n\n"
         msg="${msg}To avoid seeing this message again - do:\n"
@@ -58,12 +91,11 @@ bind_plugin_key() {
         display_formatted_message "$msg"
     }
 
-    # shellcheck disable=SC2154 # defined in helpers_minimal.sh
     eval "$TMUX_BIN" "$cmd" || {
-        error_msg "Failed to bind trigger: $cfg_trigger_key"
+        error_msg "Failed to bind trigger: $_bpk_key"
     }
 
-    log_it_minimal "$trigger_sequence"
+    log_it_minimal "$trigger_announce"
 }
 
 #===============================================================
@@ -73,13 +105,13 @@ bind_plugin_key() {
 #===============================================================
 
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/.." && pwd)
+D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
 
-# shellcheck disable=SC2034 # used in helpers_minimal.sh
 initialize_plugin=1
 
 f_skip_low_tmux_version_warning="$D_TM_BASE_PATH"/.skip_old_tmux_warning
 
+# shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 # log_it "=====   plugin_init.sh starting   ====="
@@ -88,14 +120,12 @@ f_skip_low_tmux_version_warning="$D_TM_BASE_PATH"/.skip_old_tmux_warning
 # param since it is as of yet unknown if caching is enabled.
 # Once this has been set, it defines if caching should be used or not
 
-# shellcheck disable=SC2154 # default_use_cache defined in tmux.sh
 if normalize_bool_param "@menus_use_cache" "$default_use_cache" "no-cache"; then
     cfg_use_cache=true
 else
     cfg_use_cache=false
 fi
 
-# shellcheck disable=SC2154 # d_cache defined in helpers_minimal.sh
 if [ "$cfg_use_cache" = true ] && [ -d "$d_cache" ]; then
     # clear out potentially obsolete cache items
     safe_remove "$f_cached_tmux_options" "plugin_init.sh"
@@ -127,7 +157,6 @@ config_setup
 #
 log_it
 
-# shellcheck disable=SC2154 # defined in cache/plugin_params
 if $cfg_use_cache; then
     #
     #  If custom inventory is used, update link to its main index
@@ -143,4 +172,7 @@ fi
 # Key is not bound until cache (if allowed) has been prepared, so normally
 # no menus will be triggered by the user before this
 #
-bind_plugin_key
+bind_plugin_key "$cfg_trigger_key"
+consider_secondary_default
+
+exit 0 # ensure consider_secondary_default exit code doesn't indicate error exit

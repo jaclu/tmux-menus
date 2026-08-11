@@ -25,7 +25,6 @@ sc_invert_quotes() {
 # Helper: run awk to extract matching key
 sc_extract_key_bind_run_awk() {
     # log_it "sc_extract_key_bind_run_awk()"
-    # shellcheck disable=SC2154 # f_cached_tmux_key_binds defined in helpers_minimal.sh
     awk -v target="$1" -v cmd="$2" '
     {
         found_target = 0
@@ -182,17 +181,12 @@ sc_check_key_binds() {
 
     sc_extract_key_bind prefix "$sc_ckb_cmd"
     # sc_ckb_prefix_bind=""
-    # SC2154: sc_ekb assigned dynamically by sc_extract_key_bind using eval
-    # shellcheck disable=SC2154
     for _key in $sc_ekb; do
         sc_filter_bind_escapes_single "$_key"
         sc_ckb_prefix_bind="${sc_ckb_prefix_bind}${sc_ckb_prefix_bind:+ }$sc_ckb_escaped"
     done
 
     sc_extract_key_bind root "$sc_ckb_cmd"
-    # sc_ckb_root_bind=""
-    # SC2154: sc_ckb_root_raw assigned dynamically by sc_extract_key_bind using eval
-    # shell check disable=SC2154
     for _key in $sc_ekb; do
         sc_filter_bind_escapes_single "$_key"
         sc_ckb_root_bind="${sc_ckb_root_bind}${sc_ckb_root_bind:+ }$sc_ckb_escaped"
@@ -200,14 +194,14 @@ sc_check_key_binds() {
 
     set -f # disable globbing - needed in case a bind is *
     [ -n "$sc_ckb_prefix_bind" ] && {
-        # shellcheck disable=SC2086 # intentional not using quotes in this case
+        # shellcheck disable=SC2086 # intentionally unquoted string
         set -- $sc_ckb_prefix_bind
         for _l; do
             add_result "<prefix> $_l"
         done
     }
     [ -n "$sc_ckb_root_bind" ] && {
-        # shellcheck disable=SC2086 # intentionally not using quotes in this case
+        # shellcheck disable=SC2086 # intentionally unquoted string
         set -- $sc_ckb_root_bind
         for _l; do
             add_result "$_l" # "[NO-Prefix] $_l"
@@ -244,7 +238,7 @@ sc_filter_ws() {
     sc_fw_cmd=${sc_fw_cmd%"${sc_fw_cmd##*[! ]}"}
 
     # Collapse inner whitespace to single spaces
-    # shellcheck disable=SC2086 # intentional word splitting
+    # shellcheck disable=SC2086 # intentionally unquoted string
     set -- $sc_fw_cmd
     sc_fw_cmd=$*
 
@@ -294,7 +288,6 @@ sc_clean_up_result() {
 
     # _s2="$(echo "$sc_cur_s1" | sed "s#^$TMUX_BIN #[TMUX] #")"
 
-    # shellcheck disable=SC2154 # TMUX_BIN defined in helpers_minimal.sh
     case $sc_cur_s1 in
         "$TMUX_BIN "*) sc_cur_s2='[TMUX] '"${sc_cur_s1#"$TMUX_BIN "}" ;;
         *) sc_cur_s2=$sc_cur_s1 ;;
@@ -305,7 +298,6 @@ sc_clean_up_result() {
     # to avoid long absolute paths that are redundant
     #
 
-    # shellcheck disable=SC2154 # TMUX_BIN defined in $0 calling script
     case $sc_cur_s2 in
         "$D_TM_BASE_PATH/"*) sc_cur_rslt='[tmux-menus] '"${sc_cur_s2#"$D_TM_BASE_PATH/"}" ;;
         *) sc_cur_rslt=$sc_cur_s2 ;;
@@ -324,7 +316,6 @@ sc_display_cmd() {
     # log_it "sc_display_cmd($sc_dc_remainder)"
 
     while [ -n "$sc_dc_remainder" ]; do
-        # shellcheck disable=SC2154 # cfg_display_cmds_cols defined in cache/plugin_params
         sc_dc_chunk=$(printf '%s\n' "$sc_dc_remainder" | awk -v max="$cfg_display_cmds_cols" '
         {
             if (length($0) <= max) {
@@ -370,7 +361,6 @@ sc_show_cmd() {
     # log_it
     # log_it "sc_show_cmd($sc_cmd) - $_lbl"
 
-    # shellcheck disable=SC2154 # show_cmds_state defined in display_commands_toggle()
     case "$show_cmds_state" in
         1) # Display Commands
             sc_clean_up_result "$sc_cmd" sc_processed
@@ -384,12 +374,20 @@ sc_show_cmd() {
         *) ;;
     esac
 
-    # SC2154: sc_processed assigned dynamically by above using eval
-    # shellcheck disable=SC2154
     sc_display_cmd "$sc_processed"
 
     # refresh it for each cmd processed in case the display timeout is shortish
     set_display_command_labels
-    # shellcheck disable=SC2154 # _lbl definef in set_display_command_labels()
     tmux_error_handler display-message "Preparing $_lbl ..."
 }
+
+#===============================================================
+#
+#   Main
+#
+#===============================================================
+
+if false; then
+    # Shellcheck analyzes this code path but it never executes at runtime
+    . tools/variables_meta.sh
+fi

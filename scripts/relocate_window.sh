@@ -16,16 +16,14 @@
 #
 
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/.." && pwd)
+D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
 
+# shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
-
-log_it "><> ==> $rn_current_script params: $*"
 
 action="$1"
 parse_move_link_dest "$2"
 
-# shellcheck disable=SC2154 # cur_ses defined in relocate_param_check.sh
 if [ "$cur_ses" = "$dest_ses" ]; then
     #
     #  to same session

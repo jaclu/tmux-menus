@@ -21,7 +21,6 @@ print_stderr() {
 }
 
 log_it() {
-    # shellcheck disable=SC2154 # TMUX_MENUS_LOGGING_MINIMAL is an env variable
     [ "$TMUX_MENUS_LOGGING_MINIMAL" = "1" ] && return
     log_it_minimal "$1"
 }
@@ -42,7 +41,8 @@ log_it_minimal() {
 
     if [ -n "$cfg_log_file" ]; then
         # log to file
-        printf "[%s] %s\n" "$(date '+%H:%M:%S')" "$_msg" >>"$cfg_log_file"
+        _lim_timestamp=$(date '+%H:%M:%S')
+        printf '[%s] %s\n' "$_lim_timestamp" "$_msg" >>"$cfg_log_file"
     # else
     #     # if no log file has been defined, try to use stderr
     #     # should only be used for debugging
@@ -78,15 +78,47 @@ source_all_helpers() {
     }
     all_helpers_sourced=true # set it early to avoid recursion
 
+    # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
     . "$D_TM_BASE_PATH"/scripts/utils/helpers_full.sh || {
         error_msg "Failed to source: scripts/utils/helpers_full.sh"
     }
 }
 
-relative_path() { # Needed here due to: prepare_menu() - set_menu_env_variables()
-    # remove D_TM_BASE_PATH prefix
-    # log_it "relative_path($1) - removing prefix: $D_TM_BASE_PATH"
-    printf '%s\n' "${1#"$D_TM_BASE_PATH"/}"
+relative_path() {
+    #
+    # To fully avoid a fork, set $2=silent, and retrieve the value via _rp_proj_path:
+    #   relative_path "$foo" silent
+    #   rel_foo="$_rp_proj_path"
+    # otherwise the more expensive but easier to code usage is the more typical:
+    #   rel_foo=$(relative_path "$foo")
+    #
+    _rp_in="$1"
+    _rp_old_pwd="$PWD"
+
+    case "$_rp_in" in
+        /*)
+            # Already absolute
+            _rp_full_path="$_rp_in"
+            ;;
+        *)
+            # Relative path - convert to absolute
+            _rp_dir="${_rp_in%/*}"
+            _rp_bn="${_rp_in##*/}" # same but faster than "$(basename "$0")"
+
+            # No directory component means current directory
+            [ "$_rp_dir" = "$_rp_in" ] && _rp_dir="."
+
+            # cd to normalize the path (builtin, no fork)
+            cd -- "$_rp_dir" || error_msg "relative_path() - failed to cd $_rp_dir"
+            _rp_full_path="$PWD/$_rp_bn"
+            cd -- "$_rp_old_pwd" || error_msg "relative_path() - failed to cd $_rp_old_pwd"
+            ;;
+    esac
+
+    # Extract project-relative path by removing prefix
+    _rp_proj_path="${_rp_full_path#"$D_TM_BASE_PATH"/}"
+
+    [ "$2" != silent ] && printf '%s' "$_rp_proj_path"
 }
 
 validate_varname() { # local usage tpt_digits_from_string() tpt_tmux_vers_suffix()
@@ -112,7 +144,7 @@ source_cached_params() {
             orig_log_file="$cfg_log_file"
         }
 
-        # shellcheck source=/dev/null # not always present
+        # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
         . "$f_cache_params" || {
             # restore forced log file setting if sourcing failed
             [ "$log_file_forced" = 1 ] && cfg_log_file="$orig_log_file"
@@ -177,10 +209,13 @@ get_config() { # local usage during sourcing
 #
 #---------------------------------------------------------------
 
+get_env() {
+    [ -n "$env_unmame" ] || env_unmame="$(uname -s)"
+}
+
 menu_handler_cache_missmatch() {
     # Report a mismatch between TMUX_MENUS_HANDLER and current cache
 
-    # shellcheck disable=SC2154 # TMUX_MENUS_HANDLER is an env variable
     msg="TMUX_MENUS_HANDLER=$TMUX_MENUS_HANDLER"
     [ -n "$1" ] && msg="$msg ($1)"
     msg="$msg does not match current cache:\n\n"
@@ -192,7 +227,6 @@ menu_handler_cache_missmatch() {
 verify_menu_handler_override_valid() {
     # Ensure manual override of menu handler is not a mismatch vs current cache
 
-    # shellcheck disable=SC2154 # defined in plugin_init.sh
     [ "$initialize_plugin" = "1" ] && return # not relevant during plugin init
     # log_it "verify_menu_handler_override_valid($requested_handler)"
     requested_handler="$1"
@@ -277,6 +311,7 @@ handle_env_variables() { # local usage by get_config()
 select_safe_now_method() { # local usage by safe_now()
     #
     # Select and save the time method for future use.
+    # Using milliseconds when possible
     #
     # Provides: selected_safe_now_mthd
     #
@@ -285,17 +320,19 @@ select_safe_now_method() { # local usage by safe_now()
     }
     # log_it "select_safe_now_method()"
 
-    if [ -d /proc ] && [ -f /proc/version ]; then
-        selected_safe_now_mthd="date" # Linux with sub-second precision
-    elif [ "$(uname)" = "Linux" ]; then
-        selected_safe_now_mthd="date" # Termux or other Linux variations
-    elif command -v gdate >/dev/null; then
-        selected_safe_now_mthd="gdate" # macOS, using GNU date if available
-    elif command -v perl >/dev/null; then
-        selected_safe_now_mthd="perl" # Use Perl if date is not available
+    # Probe actual output: %3N is a GNU extension, BusyBox date silently ignores it
+    # and returns seconds only — so test the output length rather than inferring from OS
+    _snm_test="$(date +%s%3N 2>/dev/null)"
+    if [ "${#_snm_test}" -ge 13 ]; then
+        selected_safe_now_mthd="date" # date supports ms precision
+    elif command -v gdate >/dev/null 2>&1; then
+        selected_safe_now_mthd="gdate" # macOS with GNU date
+    elif command -v perl >/dev/null 2>&1; then
+        selected_safe_now_mthd="perl" # fallback via Perl
     else
-        selected_safe_now_mthd="date" # Fallback
+        selected_safe_now_mthd="date" # last resort, seconds-only
     fi
+    unset _snm_test
 }
 
 safe_now() {
@@ -374,7 +411,7 @@ tmux_vers_check() { # local usage when checking $min_tmux_vers
 
     if [ -z "$cached_ok_tmux_versions" ] && [ -f "$f_cache_known_tmux_vers" ]; then
         # Reading it if existing is harmless even if cache is disabled
-        # shellcheck source=/dev/null
+        # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
         . "$f_cache_known_tmux_vers" || {
             log_it "WARNING: Failed to source: f_cache_known_tmux_vers"
             # Since the source failed, clear these in orde to ensure no bad
@@ -424,6 +461,32 @@ tpt_retrieve_running_tmux_vers() { # local usage by tmux_vers_check()
     tpt_tmux_vers_suffix current_tmux_vers_suffix "$current_tmux_vers"
 }
 
+_tpt_apply_next_reduction() {
+    # Helper: Apply "next-" version reduction consistently across functions.
+    # Reduces next-X.Y versions: next-X.0 => (X-1).9, next-X.Y => X.(Y-1)
+    # Sets _tpt_reduced_vers to the reduced version string.
+    #
+    _tpt_reduced_vers="$1"
+
+    case $_tpt_reduced_vers in
+        next-*)
+            _tpt_reduced_vers="${_tpt_reduced_vers#next-}" # Strip "next-" prefix
+            _major="${_tpt_reduced_vers%.*}"               # Everything before last dot
+            _minor="${_tpt_reduced_vers#*.}"               # Everything after first dot
+            _minor_num=$(echo "$_minor" | sed 's/[^0-9].*//')
+
+            if [ "$_minor_num" -eq 0 ] 2>/dev/null; then
+                # next-X.0: decrement major, set minor to 9
+                _tpt_reduced_vers="$((_major - 1)).9"
+            else
+                # next-X.Y (Y>0): decrement minor
+                _tpt_reduced_vers="${_major}.$((_minor_num - 1))"
+            fi
+            ;;
+        *) ;; # no reduction needed
+    esac
+}
+
 tpt_digits_from_string() { # local usage by tpt_retrieve_running_tmux_vers()
     # Extracts all numeric digits from a string, ignoring other characters.
     # Example inputs and outputs:
@@ -441,22 +504,9 @@ tpt_digits_from_string() { # local usage by tpt_retrieve_running_tmux_vers()
     [ -z "$varname" ] && error_msg "tpt_digits_from_string() - no variable name"
     [ -z "$_vers" ] && error_msg "tpt_digits_from_string() - no param"
 
-    # Remove leading "next-" if present. If found reduce version by one minor
-    case $_vers in
-        next-*)
-            # shellcheck disable=SC2046,SC2086
-            set -- $(
-                IFS=-
-                echo $_vers
-            )
-            major=${_vers%.*}
-            minor=${_vers#*.}
-            _vers2=$major.$((minor - 1))
-            log_it "><> filtered next vers: $_vers  -> $_vers2"
-            _vers="$_vers2"
-            ;;
-        *) ;; # default
-    esac
+    _tpt_apply_next_reduction "$_vers"
+    _vers="$_tpt_reduced_vers"
+
     _vers=${_vers%%-rc*} # Remove trailing "-rc" and anything after
 
     _i=$(echo "$_vers" | tr -cd '0-9') # Keep only digits
@@ -470,14 +520,22 @@ tpt_digits_from_string() { # local usage by tpt_retrieve_running_tmux_vers()
 
 tpt_tmux_vers_suffix() { # local usage by tpt_retrieve_running_tmux_vers()
     # Extracts any alphabetic suffix from the end of a version string.
+    # Applies the same "next-" version reduction as tpt_digits_from_string to ensure
+    # suffix and digit extraction work on the same semantic version.
     # If no suffix exists, returns an empty string.
     #
     # Assigning the supplied variable name instead of printing output in a subshell,
     # for better performance
     varname="$1"
-    vers="${2##next-}" # Remove leading "next-" if present
+    vers="$2"
     validate_varname "$varname" "tpt_tmux_vers_suffix()"
-    # Remove leading digits, dots, and dashes to isolate suffix
+
+    _tpt_apply_next_reduction "$vers"
+    vers="$_tpt_reduced_vers"
+
+    vers=${vers%%-rc*} # Remove trailing "-rc" and anything after (RC suffixes are ignored)
+
+    # Remove leading digits, dots, and dashes to isolate non-rc suffix
     _s=$(printf "%s" "$vers" | sed 's/^[0-9.-]*//')
 
     eval "$varname=\"\$_s\""
@@ -492,6 +550,27 @@ base_path_not_defined() {
     exit 1
 }
 
+#---------------------------------------------------------------
+#
+#  Early debug options
+#
+#  Define before anything else. Normally commented out.
+#
+#---------------------------------------------------------------
+
+#
+# Set to 1 to validate menu freshness on each render (compares menu vs
+# cache mtime, invalidates stale cache). Default: trust cache (faster).
+#
+# validate_menu_cache=1
+
+#
+# Hardcoded log file for early startup tracing (before @menus_log_file is
+# read). If log_file_forced=1, @menus_log_file is ignored and this remains.
+#
+# cfg_log_file="$HOME/tmp/tmux-menus-dbg.log"
+# log_file_forced=1
+
 #===============================================================
 #
 #   Main
@@ -500,22 +579,11 @@ base_path_not_defined() {
 
 [ -z "$TMUX_BIN" ] && TMUX_BIN="tmux"
 
-env_initialized=0 # will be 1 when limited env is ready, 2 when full env is ready
+[ -n "$env_initialized" ] && error_msg "helpers_minimal already sourced []"
+
+env_initialized=0 # also matches for "" - basic init done
 
 plugin_name="tmux-menus"
-
-#
-# Defining a cfg_log_file here, allows tracing early startup, before the plugin
-# defined log_file variable @menus_log_file have been read.
-#
-# At that point @menus_log_file will override this setting, unless log_file_forced
-# is also used. If 1 it means that @menus_log_file will be ignored and whatever
-# cfg_log_file is defined here remains. Be it a file or empty.
-#
-#  This should normally be commented out!
-#
-# cfg_log_file="$HOME/tmp/${plugin_name}-dbg.log"
-# log_file_forced="1"
 
 #
 #  If set to 1 log will happen to stderr if script is run in an interactive
@@ -546,28 +614,29 @@ f_cache_params="$d_cache"/plugin_params
 # Set this as early as possible to be able to calculate the entire menu processing time
 safe_now t_script_start
 
-# shellcheck disable=SC2034 # provided as env for other scripts
-{
-    # in order to only need one SC2034 group all variables under one shellcheck
+# Used if main menu cache should be purged, like if custom_items are detected
+# or found to be gone
+d_cache_main_menu="$d_cache"/items/main.sh
 
-    # Used if main menu cache should be purged, like if custom_items are detected
-    # or found to be gone
-    d_cache_main_menu="$d_cache"/items/main.sh
+# System-initial default for the main menu.
+# After options are parsed, always use $cfg_main_menu to refer to the current main menu.
+# This ensures any user-defined main menu or redirections are respected.
+f_main_menu="$d_items"/main.sh
 
-    # System-initial default for the main menu.
-    # After options are parsed, always use $cfg_main_menu to refer to the current main menu.
-    # This ensures any user-defined main menu or redirections are respected.
-    f_main_menu="$d_items"/main.sh
+f_ext_dlg_trigger="$d_scripts/external_dialog_trigger.sh"
 
-    f_ext_dlg_trigger="$d_scripts/external_dialog_trigger.sh"
+bn_current_script=${0##*/} # same but faster than "$(basename "$0")"
 
-    bn_current_script=${0##*/} # same but faster than "$(basename "$0")"
-    rn_current_script=$(relative_path "$0")
-    # bn_current_script_no_ext=${bn_current_script%.*}
-}
+relative_path "$0" silent
+rn_current_script="$_rp_proj_path"
 
-# --->  Only enable this if profiling is being used  <---
-# [ "$profiling_sourced" != 1 ] && . "$D_TM_BASE_PATH"/scripts/utils/dbg_profiling.sh
+# current_script_no_ext=${rn_current_script%.*} # not used ATM
+
+# --->  Only enable this if profiling is being used during startup  <---
+# [ "$profiling_sourced" != 1 ] && {
+#     # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
+#     . "$D_TM_BASE_PATH"/scripts/utils/dbg_profiling.sh
+# }
 
 [ "$initialize_plugin" != "1" ] && {
     # plugin_init will call config_setup directly, so should not call get_config
@@ -589,9 +658,8 @@ else
 fi
 
 # This allows 'Display Commands' even when cache is disabled
-# shellcheck disable=SC2034 # provided as env for other scripts
 f_cached_tmux_key_binds="$d_safe_tmp_folder"/tmux_key_binds
 
-[ "$env_initialized" -eq 0 ] && env_initialized=1 # basic init done
+[ "$env_initialized" -lt 1 ] && env_initialized=1 # also matches for "" - basic init done
 
 # log_it "><> [$$] scripts/helpers_minimal.sh - completed [$0]"

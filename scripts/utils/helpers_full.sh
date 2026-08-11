@@ -18,12 +18,10 @@
 display_message() {
     dm_msg="$1"
     dm_no_hold="$2"
-    # shellcheck disable=SC2154 # plugin_name defined in cache/plugin_params
     dm_msg_hold="$plugin_name: $dm_msg"
 
     if tmux_vers_check 1.7; then
         # "#{client_width}" - not usable before tmux 1.7
-        # shellcheck disable=SC2154 # $TMUX_BIN defined in helpers_minimal.sh
         actual_win_width="$($TMUX_BIN display-message -p '#{client_width}')"
         if [ "${#dm_msg_hold}" -ge "$actual_win_width" ] || has_lf_not_at_end "$dm_msg"; then
             display_formatted_message "$dm_msg"
@@ -91,7 +89,6 @@ display_formatted_message() {
     _msg_escaped="$(tmux_escape_for_display "$_dfm_msg")"
     _display_msg="$(
         [ "$_msg_type" = "$_default_msg_type" ] && {
-            # shellcheck disable=SC2154 # rn_current_script defined in helpers_minimal.sh
             echo "Notification from plugin $plugin_name - running: $rn_current_script"
             echo
         }
@@ -113,11 +110,7 @@ To scroll back in this ${_msg_type}:
 Press Ctrl-C to close this message
 "
 
-    $TMUX_BIN new-window -n "tmux-menus notification" "echo '$_display_msg' ; tail -f /dev/null " || {
-
-        log_it "><> display_formatted_message() - triggered error: $?"
-        exit 1
-    }
+    $TMUX_BIN new-window -n "tmux-menus notification" "echo '$_display_msg' ; tail -f /dev/null " || exit 1
 }
 
 error_msg_real() {
@@ -159,7 +152,6 @@ error_msg_actual() {
         # not able to generate a formatted error msg...
         (
             echo
-            # shellcheck disable=SC2154 # defined in helpers_minimal.sh
             echo "error_msg() can't proceed on tmux < 1.4 - Dumping it to stderr:"
             echo "-----   start   -----"
             echo "$em_msg"
@@ -304,7 +296,8 @@ has_lf_not_at_end() {
     #  somewhere within, since I could not figure out how to to substring
     #  search for LF in this env
     #
-    [ "$1" != "$(printf '%s' "$1" | tr '\n' 'X')" ]
+    _hlnae_lf_detect="$(printf '%s' "$1" | tr '\n' 'X')"
+    [ "$1" != "$_hlnae_lf_detect" ]
 }
 
 is_int() {
@@ -337,17 +330,12 @@ check_speed_cutoff() {
     # display time before triggering "SCREEN might be too small" warning
     cut_off="$1"
 
-    # SC2154: t_script_start assigned dynamically by safe_now using eval in helpers_minimal.sh
-    # shellcheck disable=SC2154
     time_span "$t_script_start"
 
-    # # SC2154: t_time_span assigned dynamically by time_span
-    # # shellcheck disable=SC2154
     # log_it "-T- check_speed_cutoff($cut_off) - $t_time_span"
 
-    # SC2154: t_time_span assigned dynamically by time_span
-    # shellcheck disable=SC2154
-    if [ "$(echo "$t_time_span < $cut_off" | bc)" -eq 1 ]; then
+    _csc_speed_ok=$(echo "$t_time_span < $cut_off" | bc)
+    if [ "$_csc_speed_ok" -eq 1 ]; then
         t_minimal_display_time=0.1
     else
         # log_it "  Failed cutoff time, considered a slow system: $t_time_span >= $cut_off"
@@ -373,13 +361,11 @@ config_setup() {
     # params, it should be re-checked here.
     # Since this will not happen regularly this overhead will not ruin general performance
     #
-    # shellcheck disable=SC2154 # default_use_cache defined in tmux.sh
     if normalize_bool_param "@menus_use_cache" "$default_use_cache"; then
         cfg_use_cache=true
         safe_remove "$f_no_cache_hint" "config_setup()" config_setup
         create_param_cache
     else
-        # shellcheck disable=SC2034 # cfg_use_cache used to define cache/plugin_params
         cfg_use_cache=false
         touch "$f_no_cache_hint"
         tmux_get_plugin_options
@@ -431,7 +417,7 @@ safe_remove() {
         esac
     }
 
-    # shellcheck disable=SC2086 # maintain any wildcards in pattern
+    # shellcheck disable=SC2086 # intentionally unquoted string, to preserve wildcards
     rm -rf $pattern || error_msg "safe_remove() - Failed to delete: $pattern"
     return 0
 }
@@ -449,7 +435,6 @@ wait_to_close_display() {
     _b_is_whiptail=false
     case $(ps -o command= -p "$PPID" 2>/dev/null) in
         *tmux-menus*)
-            # shellcheck disable=SC2154 # cfg_use_whiptail defined in settings
             [ "$cfg_use_whiptail" = true ] && _b_is_whiptail=true
             ;;
         *) ;;
@@ -475,16 +460,14 @@ wait_to_close_display() {
 }
 
 helpers_full_additional_files_sourced() {
-    # SC2154: d_scripts  defined in helpers_minimal.sh
-    # shellcheck disable=SC2154
+    # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
     . "$d_scripts"/utils/cache.sh
+    # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
     . "$d_scripts"/utils/tmux.sh
 }
 
 set_display_command_labels() {
     # log_it "set_display_command_labels() - $show_cmds_state"
-
-    # shellcheck disable=SC2154 # show_cmds_state defined in display_commands_toggle()
     case "$show_cmds_state" in
         1)
             _lbl="Display Commands"
@@ -528,14 +511,11 @@ parse_move_link_dest() {
 
     tmux_error_handler_assign cur_ses display-message -p '#S'
 
-    _dest="${_raw_dest#*=}" # skipping initial =
-    _win_pane="${_dest#*:}" # after first colon
-    # shellcheck disable=SC2034 # used in relocate_pane.sh & relocate_window.sh
-    {
-        dest_ses="${_dest%%:*}"         # up to first colon excluding it
-        dest_win_idx="${_win_pane%%.*}" # up to first dot excluding it
-        dest_pane_idx="${_win_pane#*.}"
-    }
+    _dest="${_raw_dest#*=}"         # skipping initial =
+    _win_pane="${_dest#*:}"         # after first colon
+    dest_ses="${_dest%%:*}"         # up to first colon excluding it
+    dest_win_idx="${_win_pane%%.*}" # up to first dot excluding it
+    dest_pane_idx="${_win_pane#*.}"
 }
 
 #===============================================================
@@ -544,29 +524,29 @@ parse_move_link_dest() {
 #
 #===============================================================
 
+[ -z "$env_initialized" ] && {
+    printf "\n\nERROR: helpers_full.sh can't be run standalone\n"
+    exit 1
+}
+
+[ "$env_initialized" -gt 1 ] && error_msg "helpers_full already sourced [$env_initialized]"
+
 # log_it "><> [$$] STARTING: scripts/utils/helpers_full.sh"
 
 #
 #  Convenience shortcuts
 #
 
-# shellcheck disable=SC2034 # defined as full env for other scripts
-{
-    # shellcheck disable=SC2154 # defined in helpers_minimal.sh
-    d_help="$d_items"/help
-
-    d_hints="$d_items"/hints
-    d_custom_items="$D_TM_BASE_PATH"/custom_items
-    f_custom_items_index="$d_custom_items"/_index.sh
-    f_chksum_custom="$d_cache"/chksum_custom_content
-    f_min_display_time="$d_cache"/min_display_time
-}
-
+d_help="$d_items"/help
+d_hints="$d_items"/hints
+d_custom_items="$D_TM_BASE_PATH"/custom_items
+f_custom_items_index="$d_custom_items"/_index.sh
+f_chksum_custom="$d_cache"/chksum_custom_content
+f_min_display_time="$d_cache"/min_display_time
 f_cached_tmux_options="$d_cache"/tmux_options
 
 helpers_full_additional_files_sourced
 
-# shellcheck disable=SC2034 # defined as full env for other scripts
 env_initialized=2 # indicates that env is fully configured
 
 # log_it "><> [$$] scripts/utils/helpers_full.sh - completed [$0]"

@@ -12,7 +12,6 @@ static_content() {
     if [ -z "$prev_menu" ]; then
         error_msg "$bn_current_script was called without notice of what called it"
     fi
-    # shellcheck disable=SC2154 # cfg_main_menu is set in helpers_minimal.sh
     set -- \
         0.0 M Left "Back to Previous menu  $nav_prev" "$prev_menu" \
         0.0 M Home "Back to Main menu      $nav_home" "$cfg_main_menu" \
@@ -49,6 +48,7 @@ static_content() {
 menu_name="Help Missing Keys"
 
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/../.." && pwd)
+D_TM_BASE_PATH=$(cd "${0%/*}/../.." && pwd)
 
+# shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$D_TM_BASE_PATH"/scripts/menu_handling.sh

@@ -21,8 +21,9 @@
 #===============================================================
 
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/.." && pwd)
+D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
 
+# shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 #
@@ -40,8 +41,4 @@ fi
 
 tmux_error_handler clear-history
 
-[ -n "$1" ] && {
-    log_it "><> $0 - will run: $next_menu"
-    $next_menu
-}
-# log_it "><> $0 - done"
+[ -n "$1" ] && $next_menu

@@ -35,14 +35,15 @@
 #---------------------------------------------------------------
 
 get_mtime() {
-    _fname="$1"
-    if [ "$(uname)" = "Darwin" ]; then
-        # macOS version
-        stat -f "%m" "$_fname"
-    else
-        # Linux version
-        stat -c "%Y" "$_fname"
-    fi
+    _gm_fname="$1"
+    # [ -f "$_gm_fname" ] || return 1
+
+    # date -r should normally work and is faster than stat
+    # then try GNU/Linux, BSD & Darwin fallback, finally return 0
+    date -r "$_gm_fname" +%s 2>/dev/null \
+        || stat -c %Y "$_gm_fname" 2>/dev/null \
+        || stat -f %m "$_gm_fname" 2>/dev/null \
+        || printf 0 # indicate failed mtime retrieval by setting a zero timestamp
 }
 
 debug_print() {
@@ -132,7 +133,7 @@ mnu_parse_error() {
     s_remainders=$(show_params "$@")
 
     #region error_msg explaining parsing error
-    error_msg "$(
+    _mpe_msg="$(
         cat <<EOF
 Parsing error when processing menu.
 
@@ -158,6 +159,7 @@ $s_remainders
 EOF
     )"
     #endregion
+    error_msg "$_mpe_msg"
 }
 
 display_invalid_menu_error() {
@@ -204,23 +206,25 @@ EOF
         )"
         #endregion
     fi
+
+    _dime_cache_info=""
+    if [ -n "$d_menu_cache" ]; then
+        _dime_cache_info=$(printf '\nThe original cached snippets that generated the above, can be found
+    here:\n  %s/\n\n' "$d_menu_cache")
+    fi
+
     #region m_menu_code = Display the generated menu code
     m_menu_code="$(
         cat <<EOF
 
-Menu Exit code: $menu_exit_code
+  Menu Exit code: $menu_exit_code
 
-Generated menu below
+  Generated menu below
 
------   menu start   -----
-$menu_items
------    menu end    -----
-$(
-            [ -n "$d_menu_cache" ] && {
-                printf '\nThe original cached snippets that generated the above,'
-                printf ' can be found here:\n  %s/\n\n' "$d_menu_cache"
-            }
-        )
+  -----   menu start   -----
+  $menu_items
+  -----    menu end    -----
+  $_dime_cache_info
 EOF
     )"
     #endregion
@@ -237,7 +241,6 @@ EOF
 mnu_prefix() {
 
     _title="$(echo "$cfg_format_title" | sed "s/#{@menu_name}/$menu_name/g")"
-    # shellcheck disable=SC2154 # cfg_mnu_loc_x & cfg_mnu_loc_y are defined in settings
     menu_items="$TMUX_BIN display-menu -T $_title -x '$cfg_mnu_loc_x' -y '$cfg_mnu_loc_y'"
 
     tmux_vers_check 3.4 && {
@@ -266,25 +269,25 @@ mnu_open_menu() {
 }
 
 mnu_external_cmd() {
-    label="$1"
+    _mec_label="$1"
     key="$2"
-    cmd="$(echo "$3" | sed 's/"/\\"/g')" # replace embedded " with \"
-    # [ -n "$menu_debug" ] && debug_print "mnu_external_cmd($label,$key,$cmd)"
+    cmd="$(printf '%s\n' "$3" | sed 's/"/\\"/g')"
 
     #
     #  needs to be prefixed with run-shell, since this is triggered by
     #  tmux
     #
-    menu_items="$menu_items \"$label\" $key 'run-shell \"$cmd\"'"
+    menu_items="$menu_items \"$_mec_label\" $key 'run-shell \"$cmd\"'"
 }
 
 mnu_command() {
-    label="$1"
-    key="$2"
-    cmd="$(echo "$3" | sed 's/"/\\"/g')" # replace embedded " with \"
+    _mc_label="$1"
+    _mc_key="$2"
 
-    # [ -n "$menu_debug" ] && debug_print "mnu_command($label,$key,$cmd)"
-    menu_items="$menu_items \"$label\" $key \"$cmd\""
+    cmd="$(printf '%s\n' "$3" | sed 's/"/\\"/g')"
+
+    # [ -n "$menu_debug" ] && debug_print "mnu_command($_mc_label,$_mc_key,$cmd)"
+    menu_items="$menu_items \"$_mc_label\" $_mc_key \"$cmd\""
 }
 
 mnu_text_line() {
@@ -305,7 +308,7 @@ alt_prefix() {
 }
 
 alt_open_menu() {
-    label="$1"
+    _aom_label="$1"
     key="$2"
     menu="$3"
 
@@ -314,14 +317,14 @@ alt_open_menu() {
     #  whiptail can not handle labels starting with -, so just skip
     #  those lines
     #
-    starting_with_dash "$label" && return
+    starting_with_dash "$_aom_label" && return
 
-    menu_items="$menu_items $key \"$label\""
+    menu_items="$menu_items $key \"$_aom_label\""
     wt_actions="$wt_actions $key | $menu $external_action_separator"
 }
 
 alt_external_cmd() {
-    label="$1"
+    _aec_label="$1"
     key="$2"
     cmd="$3"
 
@@ -330,16 +333,16 @@ alt_external_cmd() {
     #  whiptail can not handle labels starting with -, so just skip
     #  those lines
     #
-    starting_with_dash "$label" && return
+    starting_with_dash "$_aec_label" && return
 
-    menu_items="$menu_items $key \"$label\""
+    menu_items="$menu_items $key \"$_aec_label\""
     # This will run outside tmux, so should not have run-shell prefix
     wt_actions="$wt_actions $key | $cmd $external_action_separator"
 }
 
 alt_command() {
     # filtering out tmux #{...} & #[...] sequences
-    label="$(echo "$1" | sed 's/#{[^}]*}//g' | sed 's/#\[[^}]*\]//g')"
+    _ac_label="$(echo "$1" | sed 's/#{[^}]*}//g' | sed 's/#\[[^}]*\]//g')"
     key="$2"
     cmd="$3"
 
@@ -348,12 +351,12 @@ alt_command() {
     #  whiptail can not handle labels starting with -, so just skip
     #  those lines
     #
-    starting_with_dash "$label" && return
+    starting_with_dash "$_ac_label" && return
 
     # filer out backslashes prefixing special chars
     key_action="$(echo "$key" | sed 's/\\//')"
 
-    menu_items="$menu_items $key \"$label\""
+    menu_items="$menu_items $key \"$_ac_label\""
     wt_actions="$wt_actions $key_action | tmux_error_handler_assign wt_output $cmd $external_action_separator"
 }
 
@@ -396,7 +399,7 @@ menu_parse() {
     #
     #  Since the various menu entries have different numbers of params
     #  we first identify all the params used by the different options,
-    #  only then can we continue if the min_vers does not match running tmux
+    #  only then can we continue if the _mp_min_vers does not match running tmux
     #
     # log_it "mennu_parse()"
 
@@ -412,41 +415,41 @@ menu_parse() {
 
     [ -n "$menu_debug" ] && debug_print ">> menu_parse($menu_idx)"
     while [ -n "$1" ]; do
-        min_vers="$1"
+        _mp_min_vers="$1"
         shift
-        action="$1"
+        _mp_action="$1"
         shift
 
-        [ -n "$menu_debug" ] && debug_print "-- parsing an item [$min_vers] [$action]"
-        case "$action" in
+        [ -n "$menu_debug" ] && debug_print "-- parsing an item [$_mp_min_vers] [$_mp_action]"
+        case "$_mp_action" in
 
             "C")
                 #  direct tmux command - params: key label task
-                key="$1"
+                _mp_key="$1"
                 shift
-                label="$1"
+                _mp_label="$1"
                 shift
-                cmd="$1"
+                _mp_cmd="$1"
                 shift
 
                 # first extract the variables, then  if it shouldn't be used move on
-                ! tmux_vers_check "$min_vers" && continue
+                ! tmux_vers_check "$_mp_min_vers" && continue
 
-                verify_menu_key "$key" "tmux command: $cmd"
+                verify_menu_key "$_mp_key" "tmux command: $_mp_cmd"
 
-                [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
+                [ -n "$menu_debug" ] && debug_print "key[$_mp_key] label[$_mp_label] command[$_mp_cmd]"
 
                 if $cfg_use_whiptail; then
-                    alt_command "$label" "$key" "$cmd"
+                    alt_command "$_mp_label" "$_mp_key" "$_mp_cmd"
                 else
-                    mnu_command "$label" "$key" "$cmd"
-                    $b_do_show_cmds && sc_show_cmd "$TMUX_BIN $cmd"
+                    mnu_command "$_mp_label" "$_mp_key" "$_mp_cmd"
+                    $b_do_show_cmds && sc_show_cmd "$TMUX_BIN $_mp_cmd"
                 fi
                 ;;
 
             E)
                 #
-                #  Run external command - params: key label cmd
+                #  Run external command - params: _mp_key _mp_label _mp_cmd
                 #
                 #  If no initial / is found in the script param, it will be prefixed with
                 #  $d_scripts
@@ -457,41 +460,41 @@ menu_parse() {
                 #  For the normal case a name pointing to a script in the same
                 #  dir as the current, this will be prepended automatically.
                 #
-                key="$1"
+                _mp_key="$1"
                 shift
-                label="$1"
+                _mp_label="$1"
                 shift
-                cmd="$1"
+                _mp_cmd="$1"
                 shift
 
                 # first extract the variables, then  if it shouldn't be used move on
-                ! tmux_vers_check "$min_vers" && continue
+                ! tmux_vers_check "$_mp_min_vers" && continue
 
-                verify_menu_key "$key" "external command: $cmd"
+                verify_menu_key "$_mp_key" "external command: $_mp_cmd"
 
-                [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] command[$cmd]"
+                [ -n "$menu_debug" ] && debug_print "key[$_mp_key] label[$_mp_label] command[$_mp_cmd]"
 
                 if $cfg_use_whiptail; then
-                    alt_external_cmd "$label" "$key" "$cmd"
+                    alt_external_cmd "$_mp_label" "$_mp_key" "$_mp_cmd"
                 else
-                    mnu_external_cmd "$label" "$key" "$cmd"
-                    $b_do_show_cmds && [ "$key" != "!" ] && sc_show_cmd "$cmd"
+                    mnu_external_cmd "$_mp_label" "$_mp_key" "$_mp_cmd"
+                    $b_do_show_cmds && [ "$_mp_key" != "!" ] && sc_show_cmd "$_mp_cmd"
                 fi
                 ;;
 
             "M")
                 #  Open another menu
-                key="$1"
+                _mp_key="$1"
                 shift
-                label="$1"
+                _mp_label="$1"
                 shift
                 menu="$1"
                 shift
 
                 # first extract the variables, then  if it shouldn't be used move on
-                ! tmux_vers_check "$min_vers" && continue
+                ! tmux_vers_check "$_mp_min_vers" && continue
 
-                verify_menu_key "$key" "$menu"
+                verify_menu_key "$_mp_key" "$menu"
 
                 #
                 #  If menu is not full PATH, assume it to be a tmux-menus
@@ -502,12 +505,12 @@ menu_parse() {
                     *) menu="$d_items/$menu" ;;
                 esac
 
-                [ -n "$menu_debug" ] && debug_print "key[$key] label[$label] menu[$menu]"
+                [ -n "$menu_debug" ] && debug_print "key[$_mp_key] label[$_mp_label] menu[$menu]"
 
                 if $cfg_use_whiptail; then
-                    alt_open_menu "$label" "$key" "$menu"
+                    alt_open_menu "$_mp_label" "$_mp_key" "$menu"
                 else
-                    mnu_open_menu "$label" "$key" "$menu"
+                    mnu_open_menu "$_mp_label" "$_mp_key" "$menu"
                 fi
                 ;;
 
@@ -517,7 +520,7 @@ menu_parse() {
                 shift
 
                 # first extract the variables, then  if it shouldn't be used move on
-                ! tmux_vers_check "$min_vers" && continue
+                ! tmux_vers_check "$_mp_min_vers" && continue
 
                 [ -n "$menu_debug" ] && debug_print "text line [$txt]"
                 if $cfg_use_whiptail; then
@@ -531,7 +534,7 @@ menu_parse() {
                 #  Spacer line - params: none
 
                 # first extract the variables, then  if it shouldn't be used move on
-                ! tmux_vers_check "$min_vers" && continue
+                ! tmux_vers_check "$_mp_min_vers" && continue
 
                 [ -n "$menu_debug" ] && debug_print "Spacer line"
 
@@ -543,12 +546,13 @@ menu_parse() {
                 fi
                 ;;
 
-            *) mnu_parse_error "$action" "$@" ;;
+            *) mnu_parse_error "$_mp_action" "$@" ;;
         esac
     done
 
     if $cfg_use_cache; then
-        log_it_minimal "Caching: $(relative_path "$f_cache_file")"
+        _mp_rel_path=$(relative_path "$f_cache_file")
+        log_it_minimal "Caching: $_mp_rel_path"
         echo "$menu_items" >"$f_cache_file" || {
             error_msg "Failed to write to: $f_cache_file"
         }
@@ -578,8 +582,9 @@ menu_generate_part() {
 
     [ -z "$2" ] && {
         # no params clear cache file if any
-        log_it "><> menu_generate_part() - clear: $f_cache_file"
-        $cfg_use_cache && rm -f "$f_cache_file"
+        $cfg_use_cache && {
+            rm -f "$f_cache_file" || error_msg "Failed to remove $f_cache_file"
+        }
         return
     }
 
@@ -635,6 +640,7 @@ prepare_show_commands() {
     b_do_show_cmds=true
     set_display_command_labels
     tmux_error_handler display-message "Preparing $_lbl ..."
+    # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
     . "$D_TM_BASE_PATH"/scripts/show_cmd.sh
 }
 
@@ -735,7 +741,6 @@ set_menu_env_variables() {
     static_cache_updated=false  # used to decide if static cache file reduction should happen
     b_do_show_cmds=false
 
-    # shellcheck disable=SC2034 # Used by currencies and diacritics menus
     d_odd_chars="$d_items/odd_chars"
 
     if [ "$cfg_use_whiptail" = true ]; then
@@ -762,7 +767,6 @@ set_menu_env_variables() {
     #
     # allow for having shorter variable names in menus
     #
-    # shellcheck disable=SC2034
     {
         nav_next="$cfg_nav_next"
         nav_prev="$cfg_nav_prev"
@@ -813,7 +817,22 @@ static_files_reduction() {
         [ -d "$f_name" ] && continue
         rm "$f_name" || error_msg "static_files_reduction() - failed to remove: $f_name"
     done
-    echo "$menu_items" >"$d_menu_cache/1"
+    echo "$menu_items" >"$d_menu_cache/1" || {
+        error_msg "static_files_reduction Failed to write"
+    }
+}
+
+cache_regenerate_static_content() {
+    # Cache is missing or obsolete, regenerate it
+    [ -d "$d_menu_cache" ] && log_it_minimal "$rn_current_script changed - dropping cache"
+    # log_it "  regenerate cache for: $d_menu_cache"
+    ${all_helpers_sourced:-false} || {
+        source_all_helpers "cache_static_content() - cache generation"
+    }
+    safe_remove "$d_menu_cache" "cache_static_content() - remove previous item"
+    mkdir -p "$d_menu_cache" || error_msg "Failed to create: $d_menu_cache"
+
+    run_if_found static_content && static_cache_updated=true
 }
 
 cache_static_content() {
@@ -821,18 +840,16 @@ cache_static_content() {
     # Ensure the cache folder is present, and newer than the menu file, making sure
     # obsolete cache is dropped.
     #
-    # log_it "cache_static_content() - [$0] d_menu_cache [$d_menu_cache]"
-    if [ ! -d "$d_menu_cache" ] || [ "$(get_mtime "$0")" -gt "$(get_mtime "$d_menu_cache")" ]; then
-        # Cache is missing or obsolete, regenerate it
-        [ -d "$d_menu_cache" ] && log_it_minimal "$rn_current_script changed - dropping cache"
-        # log_it "  regenerate cache for: $d_menu_cache"
-        ${all_helpers_sourced:-false} || {
-            source_all_helpers "cache_static_content() - cache generation"
-        }
-        safe_remove "$d_menu_cache" "cache_static_content()"
-        mkdir -p "$d_menu_cache" || error_msg "Failed to create: $d_menu_cache"
-
-        run_if_found static_content && static_cache_updated=true
+    if [ "$validate_menu_cache" = 1 ]; then
+        # Check freshness
+        _csc_mtimr_caller="$(get_mtime "$0")"
+        _csc_cache="$(get_mtime "$d_menu_cache")"
+        if [ ! -d "$d_menu_cache" ] || [ "$_csc_mtimr_caller" -gt "$_csc_cache" ]; then
+            cache_regenerate_static_content
+        fi
+    else
+        # Normal: trust cache if it exists
+        [ ! -d "$d_menu_cache" ] && cache_regenerate_static_content
     fi
 }
 
@@ -861,6 +878,11 @@ cache_read_menu_items() {
     # Provides: menu_items
     #
     menu_items=""
+
+    # Exit early if no files exist (protects against empty directory glob issue)
+    set -- "$d_menu_cache"/*
+    [ -f "$1" ] || return # no files found
+
     for f_name in "$d_menu_cache"/*; do
         [ -d "$f_name" ] && continue # most likely a wt_actions/
 
@@ -873,6 +895,7 @@ cache_read_menu_items() {
             fi
         done <"$f_name"
     done
+    # [ -n "$menu_items" ] && debug_print "cache_read_menu_items() found: [$menu_items]"
 }
 
 sort_uncached_menu_items() {
@@ -966,7 +989,6 @@ prepare_menu() {
         #
         # Instead of displaying processing time at end of prepare_menu
 
-        # shellcheck disable=SC2154 # defined in helpers_minimal.sh
         time_span "$t_script_start"
 
         _m="Menu $rn_current_script"
@@ -999,15 +1021,13 @@ ensure_menu_fits_on_screen() {
     #  would do.
     #
     # Display time menu was shown
-    # SC2154: variable assigned dynamically by safe_now using eval in display_menu()
-    # shellcheck disable=SC2154
     time_span "$dh_t_start"
 
     # _s="ensure_menu_fits_on_screen() Menu $bn_current_script - "
     # _s="$_s Display time:  $disp_time ($t_minimal_display_time)"
     # log_it "$_s"
 
-    [ "$(echo "$t_time_span < $t_minimal_display_time" | bc)" -eq 1 ] && {
+    [ "$(echo "$t_time_span < $t_minimal_display_time" | bc || true)" -eq 1 ] && {
         ${all_helpers_sourced:-false} || {
             _m="ensure_menu_fits_on_screen() - short display time, give warning"
             source_all_helpers "$_m"
@@ -1031,7 +1051,6 @@ ensure_menu_fits_on_screen() {
         fi
         error_msg "$_s"
     }
-    # log_it "><> display time: $t_time_span"
 }
 
 wt_cached_selection() {
@@ -1112,14 +1131,13 @@ alt_parse_selection() {
         [ -z "$section" ] && continue # skip blank lines
 
         key="$(echo "$section" | cut -d'|' -f 1 | awk '{$1=$1};1')"
-        action="$(echo "$section" | cut -d'|' -f 2 | awk '{$1=$1};1')"
+        _aps_action="$(echo "$section" | cut -d'|' -f 2 | awk '{$1=$1};1')"
 
-        [ "$key" = "$menu_selection" ] && [ -n "$action" ] && {
+        [ "$key" = "$menu_selection" ] && [ -n "$_aps_action" ] && {
             ${all_helpers_sourced:-false} || source_all_helpers "alt_parse_selection()"
-            # log_it "><>action: >>$action<<"
             # too many arguments (need at most 2) - fixed by eval
             # teh_debug=true
-            eval "$action"
+            eval "$_aps_action"
             [ -n "$wt_output" ] && alt_parse_output "$wt_output"
             break
         }
@@ -1139,8 +1157,6 @@ handle_wt_selecion() {
 }
 
 clear_prep_disp_status() {
-    # SC2154: variable assigned dynamically by safe_now using eval in prepare_show_commands()
-    # shellcheck disable=SC2154
     time_span "$t_show_cmds"
     set_display_command_labels
     log_it "$rn_current_script - Preparing $_lbl took: ${t_time_span}s"
@@ -1180,15 +1196,15 @@ display_menu() {
     else
         safe_now dh_t_start
         f_cmd_err="$d_tmp/tmux-menu-cmd-error"
+        _dm_err_msg="$(cat "$f_cmd_err")"
         eval "$menu_items" 2>"$f_cmd_err" || {
-            display_invalid_menu_error "$(cat "$f_cmd_err")"
+            display_invalid_menu_error "$_dm_err_msg"
         }
         ensure_menu_fits_on_screen
     fi
 }
 
 do_menu_handling() {
-    # shellcheck disable=SC2154 # log_file_forced usually not set
     [ "$log_file_forced" = 1 ] && {
         # Useful when debugging to keep each menu generation process separate
         log_it
@@ -1204,13 +1220,11 @@ do_menu_handling() {
     #
     [ -z "$menu_name" ] && error_msg "menu_name not defined"
     [ -n "$menu_min_vers" ] && check_menu_min_vers
-    # shellcheck disable=SC2154 # might be defined in calling menu
     [ "$skip_oversized" = "1" ] && oversized_check
 
     menu_debug="" # Set to 1 to use echo 2 to use log_it
 
     prepare_menu
-    # shellcheck disable=SC2154 # TMUX_MENUS_NO_DISPLAY is an env variable
     [ "$TMUX_MENUS_NO_DISPLAY" != "1" ] && display_menu
 
     # log_it "[$$]   COMPLETED: scripts/menu_handling.sh - $rn_current_script"
@@ -1236,8 +1250,8 @@ do_menu_handling() {
 
 # Only import if needed, checking a random variable
 [ -z "$d_scripts" ] && {
+    # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
     . "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
 }
 
-# shellcheck disable=SC2154 # no_auto_menu_handling usually not set
 [ "$no_auto_menu_handling" != 1 ] && do_menu_handling

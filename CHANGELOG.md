@@ -4,6 +4,32 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [2.3.0] - 2026-08-11
+
+### Added
+
+- **Secondary default trigger key** `<prefix> Enter` for users with non-US keyboards
+  where `<prefix> \` is impractical or unavailable
+- `scripts/variables_meta.sh` - Shell compatibility metadata enabling 250x faster
+  shellcheck runs (5-6 mins → 20s)
+- Comprehensive documentation of tmux 3.7 display-menu bug (left arrow navigation)
+  with workaround instructions
+
+### Changed
+
+- Improved error handling for temporary file creation with `mktemp -t`
+- Enhanced documentation on quoting pitfalls and special character handling in
+  tmux configuration
+- Optimized `relative_path()` function to reduce subprocess calls
+- Optimized `get_mtime()` to gracefully handle missing items
+- Refactored error messaging with unified `error_msg()` function
+- Improved tmux version handling for `next-` and `rc-` version prefixes
+- Updated screenshot links and image metadata in README
+- Extensive performance optimizations across all scripts reducing subprocess
+  spawning and improving initialization time
+
+---
+
 ## [2.2.34] - 2026-03-14
 
 ### Added
@@ -365,11 +391,11 @@ Added some tmux 3.6 features
 
 ### Added
 
-- New documentation: docs/SingleQuotes.md
+- New documentation: docs/QuotingPitfalls.md
 
 ### Changed
 
-- Updated README.md to refer to docs/SingleQuotes.md when relevant
+- Updated README.md to refer to docs/QuotingPitfalls.md when relevant
 
 ---
 

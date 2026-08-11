@@ -12,7 +12,6 @@ dynamic_content() {
     # Things that change dependent on various states
 
     if [ -n "$prev_menu" ]; then
-        # shellcheck disable=SC2154 # cfg_main_menu is set in helpers_minimal.sh
         set -- \
             0.0 M Left "Back to Previous menu  $nav_prev" "$prev_menu" \
             0.0 M Home "Back to Main menu      $nav_home" "$cfg_main_menu"
@@ -69,9 +68,11 @@ elif [ -n "$1" ]; then
 fi
 
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/../.." && pwd)
+D_TM_BASE_PATH=$(cd "${0%/*}/../.." && pwd)
 
 no_auto_menu_handling=1 # delay processing of dialog, only source it for now
+
+# shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$D_TM_BASE_PATH"/scripts/menu_handling.sh
 
 menu_width=50

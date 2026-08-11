@@ -15,7 +15,7 @@ This changed in version 3.0:
 - `'~/some/path'` becomes `\~/some/path` (literal string)
 
 Version 3.4 made things worse: `$HOME` became `"\\$HOME/some/path"` while `~`
-remained broken. As of 3.5, tmux reverted to the 3.0 behavior.
+remained broken. As of 3.5, tmux reverted to the 3.0 broken behavior.
 
 ### Workaround
 
@@ -32,38 +32,36 @@ versions.
 
 ---
 
-## Special Characters and Escaping
+## Special Characters in tmux.conf
 
-Quoting affects how special characters like backslash (`\`) are parsed:
+Quoting affects how special characters like backslash (`\`) are parsed. Safe
+notation has changed over time.
 
-- **No quoting**: Must use `\\`
-- **Single quotes**: Both `'\\'` and `'\'` work
-- **Double quotes**: Must escape the backslash: `"\\"`
+**Before tmux 3.0:**
 
-To avoid subtle quoting issues in key bindings or option values, escape
-special characters consistently:
+- Unescaped inside single quotes: `'\'`
+- Escaped inside double quotes: `"\\"`
 
-- Use `\\` for a literal backslash
-- Avoid switching between single and double quotes unnecessarily
+**Starting with tmux 3.0:**
 
----
-
-## Examples
+- Escaped without quotes: `\\`
+- Unescaped without quotes if not backslash: `$`
+- Unescaped inside double quotes if not backslash: `"$"`
 
 **Incorrect (common mistakes):**
 
 ```tmux
 set -g @plugin_path '$HOME/.tmux/plugins'
 set -g @plugin_path '~/plugins'
-set -g @my_key '\'  # unreliable in some quoting contexts
+set -g @my_key \\  # Fails on older tmux versions
 ```
 
-**Correct (portable and safe):**
+**Correct (portable and safe on all tmux versions):**
 
 ```tmux
 set -g @plugin_path "$HOME/.tmux/plugins"
 set -g @plugin_path "~/plugins"
-set -g @my_key "\\" # explicit and unambiguous
+set -g @my_key '\'
 ```
 
 These patterns behave consistently across tmux versions and quoting contexts.

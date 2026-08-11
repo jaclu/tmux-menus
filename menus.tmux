@@ -30,8 +30,7 @@
 #===============================================================
 
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")" && pwd)
-
+D_TM_BASE_PATH=$(cd "${0%/*}" && pwd)
 #  Run the plugin setup in the background to not slow down tpm on startup
 #  On systems with "normal" performance init takes perhaps 0.5 seconds
 #  On slower things like iSH or termux it might take 2-3 seconds, then the

@@ -92,7 +92,6 @@ tmux_get_defaults() { # new init
     default_use_hint_overlays=Yes
     default_show_key_hints=No
 
-    # shellcheck disable=SC2154 # this is available at runtime
     default_main_menu="$f_main_menu"
 
     if [ -n "$TMUX_CONF" ]; then
@@ -111,10 +110,8 @@ cache_save_options_defined_in_tmux() {
     #  On slow systems, doing individual show-options takes a ridiculous amount of
     #  time. Here we read all relevant options in one go and store them in a cache file
     #
-    # shellcheck disable=SC2154 # defined in helpers_full.sh
     [ -f "$f_cached_tmux_options" ] && return
     # log_it "cache_save_options_defined_in_tmux()"
-    # shellcheck disable=SC2154 # TMUX_BIN defined in helpers_minimal.sh
     $TMUX_BIN show-options -g | grep ^@menus_ >"$f_cached_tmux_options"
     $TMUX_BIN show-options -g | grep @use_bind_key_notes_in_plugins \
         >>"$f_cached_tmux_options"
@@ -144,7 +141,6 @@ tmux_get_option() {
         tgo_default=""
     }
 
-    # shellcheck disable=SC2154 # cfg_use_cache sourced or defined in other support scripts
     if [ -z "$tgo_no_cache" ] && $cfg_use_cache && [ -d "$d_cache" ]; then
         tgo_use_cache=true
     else
@@ -192,8 +188,6 @@ tmux_get_option() {
         # if using show-options  on undefined options
         tgo_value="$tgo_default"
     else
-        # shell built-in string splitting and unqoting avoids spawning external processes
-
         # Extract value (skip key)
         tgo_value=${_line#* }
 
@@ -310,14 +304,11 @@ tmux_get_plugin_options() { # new init
     if normalize_bool_param "@menus_without_prefix" "$default_no_prefix"; then
         cfg_no_prefix=true
     else
-        # shellcheck disable=SC2034 # variable used to define cache/plugin_params
         cfg_no_prefix=false
     fi
 
     # Define main menu
     tmux_get_option cfg_main_menu "@menus_main_menu" "$default_main_menu"
-    # shellcheck disable=SC2154
-    # SC2154: variable assigned dynamically by tmux_get_option using eval
     [ ! -f "$cfg_main_menu" ] && error_msg "Alternate main menu not found: $cfg_main_menu"
 
     if ! tmux_vers_check 3.0; then
@@ -334,7 +325,6 @@ tmux_get_plugin_options() { # new init
         cfg_use_whiptail=true
     else
         cfg_use_whiptail=false
-        # shellcheck disable=SC2034 # variable used to define cache/plugin_params
         cfg_alt_menu_handler=""
     fi
 
@@ -342,19 +332,16 @@ tmux_get_plugin_options() { # new init
 
     if $cfg_use_whiptail; then
         # variables only used by whiptail
-        # shellcheck disable=SC2034 # cfg_ variables used to define cache/plugin_params
-        {
-            cfg_display_cmds=false
-            cfg_use_hint_overlays=false
-            cfg_show_key_hints=false
-            cfg_nav_next="$default_nav_next"
-            cfg_nav_prev="$default_nav_prev"
-            cfg_nav_home="$default_nav_home"
+        cfg_display_cmds=false
+        cfg_use_hint_overlays=false
+        cfg_show_key_hints=false
+        cfg_nav_next="$default_nav_next"
+        cfg_nav_prev="$default_nav_prev"
+        cfg_nav_home="$default_nav_home"
 
-            # not a config variable as such, just used as paste bufferr for
-            # missing keys and currencies
-            wt_pasting="@tmp_menus_wt_paste_in_progress"
-        }
+        # not a config variable as such, just used as paste bufferr for
+        # missing keys and currencies
+        wt_pasting="@tmp_menus_wt_paste_in_progress"
     else
         tmux_get_option cfg_mnu_loc_x "@menus_location_x" "$default_location_x"
         tmux_get_option cfg_mnu_loc_y "@menus_location_y" "$default_location_y"
@@ -377,8 +364,6 @@ tmux_get_plugin_options() { # new init
             tmux_get_option cfg_display_cmds_cols "@menus_display_cmds_cols" \
                 "$default_display_cmds_cols"
 
-            # SC2154: variable assigned dynamically by tmux_get_option using eval
-            # shellcheck disable=SC2154
             is_int "$cfg_display_cmds_cols" || {
                 error_msg "@menus_display_cmds_cols is not int: $cfg_display_cmds_cols"
             }
@@ -388,7 +373,6 @@ tmux_get_plugin_options() { # new init
         if normalize_bool_param "@menus_use_hint_overlays" "$default_use_hint_overlays"; then
             cfg_use_hint_overlays=true
         else
-            # shellcheck disable=SC2034 # variable used to define cache/plugin_params
             cfg_use_hint_overlays=false
         fi
         if normalize_bool_param "@menus_show_key_hints" "$default_show_key_hints"; then
@@ -403,11 +387,9 @@ tmux_get_plugin_options() { # new init
     if [ -n "$_tmux_conf" ]; then
         fix_home_path "$_tmux_conf" cfg_tmux_conf
     else
-        # shellcheck disable=SC2034 # variable used to define cache/plugin_params
         cfg_tmux_conf=""
     fi
 
-    # shellcheck disable=SC2154 # defined in helpers_minimal.sh
     [ "$log_file_forced" != 1 ] && {
         #  If a debug logfile has been set, the tmux setting will be ignored.
         # log_it "tmux will read cfg_log_file"
@@ -416,7 +398,6 @@ tmux_get_plugin_options() { # new init
         if [ -n "$_log_file" ]; then
             fix_home_path "$_log_file" cfg_log_file
         else
-            # shellcheck disable=SC2034 # variable used to define cache/plugin_params
             cfg_log_file=""
         fi
     }
@@ -431,7 +412,6 @@ tmux_get_plugin_options() { # new init
         && normalize_bool_param "@use_bind_key_notes_in_plugins" No; then
         cfg_use_notes=true
     else
-        # shellcheck disable=SC2034 # variable used to define cache/plugin_params
         cfg_use_notes=false
     fi
 }
@@ -441,7 +421,6 @@ use_whiptail_env() {
     # move the required defaults to that file
     # log_it "use_whiptail_env()"
     if $cfg_use_whiptail; then
-        # shellcheck disable=SC2034 # variables used to define cache/plugin_params
         {
             cfg_display_cmds=false
             cfg_show_key_hints=false
@@ -501,7 +480,6 @@ tmux_error_handler_assign() { # cache references
     if $cfg_use_cache; then
         d_errors="$d_cache"
     else
-        # shellcheck disable=SC2154 # defined in helpers_minimal.sh
         d_errors="$d_tmp"
     fi
     # ensure it exists
@@ -601,6 +579,11 @@ EOF
 #
 #===============================================================
 
+if false; then
+    # Shellcheck analyzes this code path but it never executes at runtime
+    . tools/variables_meta.sh
+fi
+
 # The default for tmux_error_handler_assign() is to store result in a provided
 # variable. When no output is needed call tmux_error_handler() this sets this
 # to false then call tmux_error_handler_assign() with a dummy variable name
@@ -621,7 +604,6 @@ teh_debug=false
 # called, it is defined here
 #
 
-# shellcheck disable=SC2034 # used in helpers_full.sh
 default_use_cache=Yes
 
 # log_it "===  Completed: scripts/utils/tmux.sh  =="

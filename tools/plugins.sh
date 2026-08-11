@@ -22,7 +22,7 @@ extract_defined_plugins() {
 
     defined_plugins=""
     while IFS= read -r line; do
-        # shellcheck disable=SC2086 # line needs to be read word by word
+        # shellcheck disable=SC2086 # intentionally unquoted string
         set -- $line
         plugin=$4
         plugin=${plugin%\"}
@@ -114,12 +114,12 @@ check_unknown_items() {
 #===============================================================
 
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/.." && pwd)
+D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
 
+# shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
 tmux_vers_check 1.8 || {
-    # shellcheck disable=SC2154 # defined in helpers_minimal.sh
     error_msg "$rn_current_script can't be used before tmux 1.8" 1
 }
 

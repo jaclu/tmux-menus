@@ -7,7 +7,15 @@
         {
             "type": "bashdb",
             "request": "launch",
-            "name": "Bash-Debug (simplest configuration)",
+            "name": "Bash-Debug preselected",
+            "cwd": "${workspaceFolder}",
+            "program": "${workspaceFolder}/items/main.sh",
+            "args": []
+        },
+        {
+            "type": "bashdb",
+            "request": "launch",
+            "name": "Bash-Debug (current file)",
             "program": "${file}"
         }
     ]

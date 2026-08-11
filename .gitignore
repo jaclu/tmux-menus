@@ -8,6 +8,10 @@ __pycache__
 # olint linter cache
 .cache.olint
 
+# Claude stuff
+CLAUDE.md
+.claude/
+
 # tmux-menus cache
 cache/
 cache

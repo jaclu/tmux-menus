@@ -1,5 +1,4 @@
 #!/bin/sh
-# shellcheck disable=SC2154  # these variables would be defined in env
 #
 #   Copyright (c) 2025: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -8,6 +7,11 @@
 #
 #  Available debug variables
 #
+
+if false; then
+    # Shellcheck analyzes this code path but it never executes at runtime
+    . tools/variables_meta.sh
+fi
 
 if [ "$1" = "clear" ]; then
     unset TMUX_MENUS_LOGGING_MINIMAL

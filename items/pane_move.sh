@@ -18,7 +18,7 @@ dynamic_content() {
         -p '#{&&:#{pane_marked_set},#{!=:#{pane_marked},1}}'
 
     # SC2154: variable assigned dynamically by tmux_error_handler_assign using eval
-    # shellcheck disable=SC2154
+    # shellcheck disable=SC2154# faking external variables for shellcheck
     if [ "$other_pane_marked" = 1 ]; then
         set -- \
             3.0 C s "Swap current pane with marked" "swap-pane $runshell_reload_mnu"
@@ -32,7 +32,6 @@ dynamic_content() {
 }
 
 static_content() {
-    # shellcheck disable=SC2154 # cfg_main_menu is set in helpers_minimal.sh
     set -- \
         0.0 M Left "Back to Handling Pane  $nav_prev" panes.sh \
         0.0 M Home "Back to Main menu      $nav_home" "$cfg_main_menu"
@@ -83,6 +82,7 @@ static_content() {
 menu_name="Move Pane"
 
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/.." && pwd)
+D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
 
+# shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$D_TM_BASE_PATH"/scripts/menu_handling.sh

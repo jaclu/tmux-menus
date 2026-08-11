@@ -29,7 +29,8 @@
 #
 
 profiling_is_function_defined() {
-    [ "$(command -v "$1")" = "$1" ]
+    # [ "$(command -v "$1")" = "$1" ]
+    command -v "$1" >/dev/null
 }
 
 profiling_display_it() {
@@ -52,30 +53,30 @@ profiling_error_msg() {
 }
 
 profiling_select_timing_method() {
-    # figure out what method to use and save the selection for future usage
+    #
+    # Select and save the time method for future use.
+    # Using milliseconds when possible
+    #
+    # Provides: selected_safe_now_mthd
+    #
     [ -n "$profiling_selected_get_time" ] && {
-        # if this is called when the method was selected something is wrong...
-        _m="recursive call to: profiling_select_timing_method()"
-        profiling_error_msg "$_m"
+        error_msg "Recursive call to: profiling_selected_get_time"
     }
+    # log_it "profiling_select_timing_method()"
 
-    if [ -d /proc ] && [ -f /proc/version ]; then
-        #  On Linux the native date supports sub second precision
-        #  unless its the busybox date - only gives seconds...
-        profiling_selected_get_time="date"
-    elif [ "$(uname)" = "Linux" ]; then
-        # Non-standard devices still being Linux, such as termux
-        profiling_selected_get_time="date"
-    elif [ -n "$(command -v gdate)" ]; then
-        # The MacOS date doesn't support sub seconds, if gdate is available use it.
-        profiling_selected_get_time="gdate"
-    elif [ -n "$(command -v perl)" ]; then
-        # Slower than gdate but still usable, built-in on MacOS
-        profiling_selected_get_time="perl"
+    # Probe actual output: %3N is a GNU extension, BusyBox date silently ignores it
+    # and returns seconds only — so test the output length rather than inferring from OS
+    _pstm_test="$(date +%s%3N 2>/dev/null)"
+    if [ "${#_pstm_test}" -ge 13 ]; then
+        profiling_selected_get_time="date" # date supports ms precision
+    elif command -v gdate >/dev/null 2>&1; then
+        profiling_selected_get_time="gdate" # macOS with GNU date
+    elif command -v perl >/dev/null 2>&1; then
+        profiling_selected_get_time="perl" # fallback via Perl
     else
-        # Fallback
-        profiling_selected_get_time="date"
+        profiling_selected_get_time="date" # last resort, seconds-only
     fi
+    unset _pstm_test
 }
 
 profiling_get_time() {
@@ -139,11 +140,15 @@ profiling_display() {
 #
 #===============================================================
 
+if false; then
+    # Shellcheck analyzes this code path but it never executes at runtime
+    . tools/variables_meta.sh
+fi
+
 [ "$profiling_sourced" = 1 ] && {
     profiling_error_msg "scripts/utils/dbg_profiling.sh already sourced"
 }
 
-# shellcheck disable=SC2154 # TMUX_MENUS_PROFILING is an env variable
 case "$TMUX_MENUS_PROFILING" in
     1)
         # profiling will be used
@@ -167,6 +172,9 @@ case "$TMUX_MENUS_PROFILING" in
         }
         ;;
 esac
+
+# harmless linting helper
+this_platform="${this_platform:-}"
 
 profiling_use_default_timer=0
 profiling_sourced=1 # Indicate this has been sourced

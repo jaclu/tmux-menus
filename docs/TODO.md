@@ -3,21 +3,22 @@
 ## Potential new items
 
 - Client
-  - Detach other clients: tmux detach-client -a
-  - Detach other clients from this session: tmux detach-client -a -s '#S'
-- Session
+  - Detach other clients:
   - list connected clients
+  - Detach this client
+    tmux detach-client
   - Detach other clients
-    - how to use -f filter to detect this client
-  - Detach from this
+    tmux detach-client -a
+  - Detach all other clients from current session
+    tmux detach-client -a -s "$(tmux display-message -p '#{session_name}')"
   - Switch session
 
 - Display commands - if no binds, say so and go to default
 
 - Window
-  - list connected clients ?
+  <!-- - list connected clients ?
   - Detach other clients ?
-  - Detach from this ?updated
+  - Detach from this ?updated -->
   - Scroll window larger than screen
     prefix S-Arrow
 

@@ -36,7 +36,6 @@ static_content() {
     fi
     fw_cmd="command-prompt -p 'Search for:' 'find-window $fw_flags %%'"
 
-    # shellcheck disable=SC2154 # cfg_main_menu is set in helpers_minimal.sh
     set -- \
         0.0 M Left "Back to Main menu  $nav_home" "$cfg_main_menu"
     menu_generate_part 1 "$@"
@@ -69,6 +68,7 @@ menu_name="Navigate - Search"
 menu_min_vers=1.7
 
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/.." && pwd)
+D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
 
+# shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$D_TM_BASE_PATH"/scripts/menu_handling.sh

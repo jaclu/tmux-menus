@@ -14,15 +14,21 @@ sal_error() {
     exit 1
 }
 
-log_msg="$1"
+#===============================================================
+#
+#   Main
+#
+#===============================================================
 
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/../.." && pwd)
+D_TM_BASE_PATH=$(cd "${0%/*}/../.." && pwd)
+
+log_msg="$1"
 
 f_plugin_params_cache="$D_TM_BASE_PATH"/cache/plugin_params
 
 [ -f "$f_plugin_params_cache" ] && {
-    # shellcheck source=/dev/null # not always present
+    # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
     . "$f_plugin_params_cache" || sal_error "Failed to source: $f_plugin_params_cache"
     [ -n "$cfg_log_file" ] && {
         echo "sal: $log_msg" >>"$cfg_log_file"

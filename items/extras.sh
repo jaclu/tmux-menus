@@ -36,7 +36,6 @@ dynamic_content() {
 }
 
 static_content() {
-    # shellcheck disable=SC2154 # cfg_main_menu is set in helpers_minimal.sh
     set -- \
         0.0 M Left "Back to Main menu  $nav_prev" "$cfg_main_menu"
     menu_generate_part 1 "$@"
@@ -58,6 +57,7 @@ static_content() {
 menu_name="Extras"
 
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/.." && pwd)
+D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
 
+# shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$D_TM_BASE_PATH"/scripts/menu_handling.sh

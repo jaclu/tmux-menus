@@ -23,7 +23,8 @@ menu_name="Mullvad Select Country"
 
 #  Full path to tmux-menux plugin
 D_TM_BASE_PATH="$(dirname -- "$(dirname -- "$(dirname -- "$(realpath "$0")")")")"
-# shellcheck source=scripts/menu_handling.sh
+
+# shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$D_TM_BASE_PATH"/scripts/menu_handling.sh
 
 error_msg "THIS IS NOT USED ATM"
@@ -32,7 +33,7 @@ offset="${1:-0}" #  optional param indicating first item to display
 
 tmux_error_handler_assign lines display -p '#{menu_height}'
 
-# shellcheck disable=SC2154
+
 display_items=$((lines - 7))
 max_item=$((offset + display_items))
 

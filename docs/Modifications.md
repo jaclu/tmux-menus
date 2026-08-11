@@ -84,7 +84,7 @@ menu_name="Simple Test"
 #  Full path to tmux-menux plugin
 #  This script is assumed to have been placed in the items folder of
 #  this repo, if not, D_TM_BASE_PATH needs to bechanged the path of the repo
-D_TM_BASE_PATH=$(cd -- "$(dirname -- "$0")/.." && pwd)
+D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
 
 . "$D_TM_BASE_PATH"/scripts/menu_handling.sh
 
