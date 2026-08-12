@@ -12,7 +12,7 @@ gather_about_box_variables() {
     cd "$D_TM_BASE_PATH" || error_msg "Failed to cd into $D_TM_BASE_PATH"
 
     td_pull="$(git log -1 --format=%cd --date=iso)"
-    vers_no="$(git describe --tags --abbrev=0 2>/dev/null || echo "No tag found")"
+    vers_no="$(git describe --tags --abbrev=0 2>/dev/null || echo "Version unavailable (requires .git)")"
     [ -n "$vers_no" ] && {
         td_vers="$(git for-each-ref --format="%(taggerdate:iso)" "refs/tags/$vers_no")"
     }

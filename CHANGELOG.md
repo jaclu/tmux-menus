@@ -4,6 +4,17 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [2.3.1] - 2026-08-12
+
+### Fixed
+
+- Cache-disabled fallback in secondary default key detection now gracefully
+  handles missing cache file
+- Improved version message display when .git directory is unavailable
+- Fixed quoting issues in key availability check for tmux compatibility
+
+---
+
 ## [2.3.0] - 2026-08-11
 
 ### Added
