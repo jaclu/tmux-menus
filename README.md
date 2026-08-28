@@ -23,13 +23,13 @@ discover functionality—advanced users can simply remove what they don't need.
 
 ## Recent Changes
 
-- **Secondary default trigger key** `<prefix> Enter` for non-US keyboards
-- Significant performance improvements across all scripts and 250x faster
-  shellcheck integration
-- Comprehensive documentation of tmux 3.7 display-menu navigation bug with
-  workaround
-- Enhanced quoting documentation for special characters in tmux configuration
-- Improved error handling and various code optimizations reducing processing time
+- **tmux 3.8 support** - Screen size handling optimized for the latest tmux version
+- **Secondary default trigger key** `<prefix> Enter` for non-US keyboards where
+  `<prefix> \` is impractical
+- **Comprehensive tmux 3.7 workaround** - Documentation for display-menu navigation
+  bug with solution
+- Bug fixes and performance optimizations across configuration handling and version
+  detection
 
 ## Purpose
 
