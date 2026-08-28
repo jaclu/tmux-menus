@@ -20,7 +20,7 @@ display_char() {
     # log_it "display_char($c)"
     [ -z "$c" ] && error_msg "display_char() - no param"
 
-    if $cfg_use_whiptail; then
+    if $b_use_alt_handler; then
         #
         #  Normally the char is just sent into the current pane
         #  If whiptail is used, this can't be done, since whatever was

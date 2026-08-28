@@ -55,7 +55,7 @@ tmux_vers_check 1.8 || {
 
 param_check "$1" "$2"
 
-if $cfg_use_hint_overlays && ! $cfg_use_whiptail; then
+if $cfg_use_hint_overlays && ! $b_use_alt_handler; then
     "$d_hints"/choose-tree.sh skip-oversized &
 fi
 

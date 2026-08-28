@@ -65,33 +65,9 @@ tmux_get_defaults() { # new init
 
     default_trigger_key=\\
     default_no_prefix=No
-
     # Since default_use_cache is needed early on, before this function can be
     # called, it is defined in the main segment of this script
-
-    if tmux_vers_check 3.2; then
-        default_location_x=C
-        default_location_y=C
-    else
-        default_location_x=P
-        default_location_y=P
-    fi
-
-    default_format_title="'#[align=centre] #{@menu_name} '"
-    default_border_type="EMPTY"
-    default_simple_style_selected="EMPTY"
-    default_simple_style="EMPTY"
-    default_simple_style_border="EMPTY"
-    default_nav_next="-->"
-    default_nav_prev="<--"
-    default_nav_home="<=="
-
     default_display_commands=Yes
-    default_display_cmds_cols=75
-
-    default_use_hint_overlays=Yes
-    default_show_key_hints=No
-
     default_main_menu="$f_main_menu"
 
     if [ -n "$TMUX_CONF" ]; then
@@ -101,8 +77,32 @@ tmux_get_defaults() { # new init
     else
         default_tmux_conf="$HOME/.tmux.conf"
     fi
+    default_log_file="$cfg_default_is_empty_string"
 
-    default_log_file="EMPTY"
+    # display-menu related defaults
+    default_display_cmds_cols=75
+
+    if tmux_vers_check 3.2; then
+        default_location_x=C
+        default_location_y=C
+    else
+        default_location_x=P
+        default_location_y=P
+    fi
+
+    default_use_hint_overlays=Yes
+    default_show_key_hints=No
+    default_format_title="'#[align=centre] #{@menu_name} '"
+    default_nav_next="-->"
+    default_nav_prev="<--"
+    default_nav_home="<=="
+
+    # tmux >= 3.4
+    default_border_type="$cfg_default_is_empty_string"
+    default_simple_style_selected="$cfg_default_is_empty_string"
+    default_simple_style="$cfg_default_is_empty_string"
+    default_simple_style_border="$cfg_default_is_empty_string"
+
 }
 
 cache_save_options_defined_in_tmux() {
@@ -112,9 +112,10 @@ cache_save_options_defined_in_tmux() {
     #
     [ -f "$f_cached_tmux_options" ] && return
     # log_it "cache_save_options_defined_in_tmux()"
-    $TMUX_BIN show-options -g | grep ^@menus_ >"$f_cached_tmux_options"
+    $TMUX_BIN show-options -g | grep ^@menus_ \
+        | grep -v "$cfg_force_unset" | sort >"$f_cached_tmux_options"
     $TMUX_BIN show-options -g | grep @use_bind_key_notes_in_plugins \
-        >>"$f_cached_tmux_options"
+        | grep -v "$cfg_force_unset" >>"$f_cached_tmux_options"
     # log_it "  <-- cache_save_options_defined_in_tmux() - wrote: $f_cached_tmux_options"
 }
 
@@ -134,12 +135,6 @@ tmux_get_option() {
     # [ -z "$tgo_varname" ] && error_msg "tmux_get_option() param 1 empty"
     [ -z "$tgo_option" ] && error_msg "tmux_get_option() param 2 empty"
     [ -z "$tgo_default" ] && log_it "tmux_get_option($tgo_option) - No default supplied"
-
-    [ "$tgo_default" = "EMPTY" ] && {
-        # a bit of a hack, supply something so the No default supplied isn't displayed
-        # yet still set default to empty string
-        tgo_default=""
-    }
 
     if [ -z "$tgo_no_cache" ] && $cfg_use_cache && [ -d "$d_cache" ]; then
         tgo_use_cache=true
@@ -179,7 +174,8 @@ tmux_get_option() {
         fi
     else
         # log_it "tmux_get_option($tgo_option) - not using cache"
-        _line="$($TMUX_BIN show-options -g "$tgo_option" 2>/dev/null)"
+        _line="$($TMUX_BIN show-options -g "$tgo_option" 2>/dev/null \
+            | grep -v "$cfg_force_unset")"
     fi
 
     if [ -z "$_line" ]; then
@@ -187,6 +183,7 @@ tmux_get_option() {
         # option was empty ie "", which confuses tmux 3.0–3.2a returning success
         # if using show-options  on undefined options
         tgo_value="$tgo_default"
+        # log_it "><> using default due to undefined for $tgo_option [$tgo_value]"
     else
         # Extract value (skip key)
         tgo_value=${_line#* }
@@ -200,7 +197,14 @@ tmux_get_option() {
             *) ;;
         esac
     fi
-    # log_it "tmux_get_option() - using [$tgo_value]"
+    case "$tgo_value" in
+        "$cfg_default_is_empty_string")
+            tgo_value=""
+            # log_it "><> overriding to empty for $tgo_option [$tgo_value]"
+            ;;
+        *) ;;
+    esac
+    # log_it "tmux_get_option($tgo_option) - using [$tgo_value]"
     eval "$tgo_varname=\"\$tgo_value\""
 }
 
@@ -309,28 +313,28 @@ tmux_get_plugin_options() { # new init
 
     # Define main menu
     tmux_get_option cfg_main_menu "@menus_main_menu" "$default_main_menu"
-    [ ! -f "$cfg_main_menu" ] && error_msg "Alternate main menu not found: $cfg_main_menu"
+    [ ! -f "$cfg_main_menu" ] && error_msg "Main menu not found: $cfg_main_menu"
 
-    if ! tmux_vers_check 3.0; then
+    if tmux_vers_check 3.0; then
+        b_use_alt_handler=false
+        alt_menu_handler=""
+    else
+        b_use_alt_handler=true
         # if on next plugin_setup a menus able tmux is detected the relevant
         # additional settings will be cached
         if command -v whiptail >/dev/null; then
-            cfg_alt_menu_handler=whiptail
+            alt_menu_handler=whiptail
         elif command -v dialog >/dev/null; then
-            cfg_alt_menu_handler=dialog
+            alt_menu_handler=dialog
         else
             error_msg "Neither whiptail or dialog found, plugin aborted"
         fi
-        log_it "--- Activating cfg_use_whiptail [$cfg_alt_menu_handler] due to tmux < 3.0"
-        cfg_use_whiptail=true
-    else
-        cfg_use_whiptail=false
-        cfg_alt_menu_handler=""
+        log_it "--- Activating b_use_alt_handler [$alt_menu_handler] due to tmux < 3.0"
     fi
 
-    handle_env_variables # potential cfg_use_whiptail override
+    handle_env_variables # potential b_use_alt_handler override
 
-    if $cfg_use_whiptail; then
+    if $b_use_alt_handler; then
         # variables only used by whiptail
         cfg_display_cmds=false
         cfg_use_hint_overlays=false
@@ -410,9 +414,9 @@ tmux_get_plugin_options() { # new init
     #
     if tmux_vers_check 3.1 \
         && normalize_bool_param "@use_bind_key_notes_in_plugins" No; then
-        cfg_use_notes=true
+        use_bind_key_notes=true
     else
-        cfg_use_notes=false
+        use_bind_key_notes=false
     fi
 }
 
@@ -420,7 +424,7 @@ use_whiptail_env() {
     # if this is moved to helpers_minimal, ensure to also
     # move the required defaults to that file
     # log_it "use_whiptail_env()"
-    if $cfg_use_whiptail; then
+    if $b_use_alt_handler; then
         {
             cfg_display_cmds=false
             cfg_show_key_hints=false
@@ -433,7 +437,7 @@ tmux_escape_for_display() {
 }
 
 tmux_error_handler() {
-    teh_store_result=false
+    sut_store_result=false
     # fake assigning a variable in order to use the same func
     tmux_error_handler_assign _foo "$@"
 }
@@ -468,7 +472,7 @@ tmux_error_handler_assign() { # cache references
         # logging, to minimize overhead
         validate_varname "$varname" "tmux_error_handler_assign()"
 
-        if $teh_store_result; then
+        if $sut_store_result; then
             log_it "tmux_error_handler_assign(\$TMUX_BIN $cmd_simplified) -> $varname"
         else
             log_it "tmux_error_handler(\$TMUX_BIN $cmd_simplified)"
@@ -490,14 +494,14 @@ tmux_error_handler_assign() { # cache references
     # Run the actual command and save any error output. If the command succeeded
     # just ignore the empty error output file
     #
-    if $teh_store_result; then
+    if $sut_store_result; then
         value=$($TMUX_BIN "$@" 2>"$f_tmux_err")
     else
         $TMUX_BIN "$@" 2>"$f_tmux_err" >/dev/null
     fi
     ex_code="$?"
     $teh_debug && {
-        if $teh_store_result; then
+        if $sut_store_result; then
             log_it "tmux handler: cmd done - excode:$ex_code - output: >>$value<<"
         else
             log_it "tmux handler: cmd done - excode:$ex_code"
@@ -566,9 +570,9 @@ EOF
     #
     # Depending on call type, potentially save output in caller supplied variable name
     #
-    $teh_store_result && eval "$varname=\"\$value\""
+    $sut_store_result && eval "$varname=\"\$value\""
 
-    teh_store_result=true # reset this for the next call
+    sut_store_result=true # reset this for the next call
     teh_debug=false       # This needs to be enabled on a per call basis
     return 0
 }
@@ -590,7 +594,18 @@ fi
 # that will be ignored. At the end of tmux_error_handler_assign() this will be set
 # to true again. This is needed to initialize the variable so that a first call
 # to tmux_error_handler_assign() will behave as expected
-teh_store_result=true
+sut_store_result=true
+
+# Two special usage tmux.conf values, of probably of little to no use for most,
+# hwo directly configures their tmux.conf. However I use a python based tmux.conf
+# generator, and sometimes an inherited class might want to unset a variable
+# that is placed earlier on in the tmux.conf, then FORCE-UNSET comes in handy.
+# It filters out such variables, and this plugins uses the default value.
+# also used in pligin_init.sh
+cfg_force_unset="FORCE-UNSET"
+
+# primarilly internal usage, to point out that the value SHOULD be ""
+cfg_default_is_empty_string="FORCE-EMPTY"
 
 #
 # tmux_error_handler & tmux_error_handler_assign never log normally.
@@ -606,4 +621,4 @@ teh_debug=false
 
 default_use_cache=Yes
 
-# log_it "===  Completed: scripts/utils/tmux.sh  =="
+# log_it "><> [$$] scripts/utils/tmux.sh - completed [$0]"

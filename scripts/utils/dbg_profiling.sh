@@ -29,7 +29,6 @@
 #
 
 profiling_is_function_defined() {
-    # [ "$(command -v "$1")" = "$1" ]
     command -v "$1" >/dev/null
 }
 
@@ -69,9 +68,9 @@ profiling_select_timing_method() {
     _pstm_test="$(date +%s%3N 2>/dev/null)"
     if [ "${#_pstm_test}" -ge 13 ]; then
         profiling_selected_get_time="date" # date supports ms precision
-    elif command -v gdate >/dev/null 2>&1; then
+    elif command -v gdate >/dev/null; then
         profiling_selected_get_time="gdate" # macOS with GNU date
-    elif command -v perl >/dev/null 2>&1; then
+    elif command -v perl >/dev/null; then
         profiling_selected_get_time="perl" # fallback via Perl
     else
         profiling_selected_get_time="date" # last resort, seconds-only

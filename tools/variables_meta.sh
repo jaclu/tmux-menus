@@ -58,13 +58,13 @@ D_TM_BASE_PATH="${D_TM_BASE_PATH:-}"
 TMUX_BIN="${TMUX_BIN:-tmux}"
 
 bn_current_script="${bn_current_script:-}"
-cfg_alt_menu_handler="${cfg_alt_menu_handler:-}"
+alt_menu_handler="${alt_menu_handler:-}"
 
 # shellcheck disable=SC2031 # needed since cache.sh redefines it in a subshell
 cfg_log_file="${cfg_log_file:-}"
 
 cfg_use_cache="${cfg_use_cache:-}"
-cfg_use_whiptail="${cfg_use_whiptail:-}"
+b_use_alt_handler="${b_use_alt_handler:-}"
 current_tmux_vers="${current_tmux_vers:-}"
 current_tmux_vers_i="${current_tmux_vers_i:-}"
 current_tmux_vers_suffix="${current_tmux_vers_suffix:-}"
@@ -128,7 +128,7 @@ cfg_simple_style_selected="${cfg_simple_style_selected:-}"
 cfg_tmux_conf="${cfg_tmux_conf:-}"
 cfg_trigger_key="${cfg_trigger_key:-}"
 cfg_use_hint_overlays="${cfg_use_hint_overlays:-}"
-cfg_use_notes="${cfg_use_notes:-}"
+use_bind_key_notes="${use_bind_key_notes:-}"
 f_cache_known_tmux_vers="${f_cache_known_tmux_vers:-}"
 wt_pasting="${wt_pasting:-}"
 
@@ -155,6 +155,8 @@ f_min_display_time="${f_min_display_time:-}"
 # scripts/utils/tmux.sh
 #===============================================================
 
+cfg_force_unset="${cfg_force_unset:-}"
+cfg_default_is_empty_string="${cfg_default_is_empty_string:-}"
 default_border_type="${default_border_type:-}"
 default_display_cmds_cols="${default_display_cmds_cols:-}"
 default_display_commands="${default_display_commands:-}"
@@ -162,6 +164,7 @@ default_format_title="${default_format_title:-}"
 default_location_x="${default_location_x:-}"
 default_location_y="${default_location_y:-}"
 default_log_file="${default_log_file:-}"
+default_main_menu="${default_main_menu:-}"
 default_nav_home="${default_nav_home:-}"
 default_nav_next="${default_nav_next:-}"
 default_nav_prev="${default_nav_prev:-}"

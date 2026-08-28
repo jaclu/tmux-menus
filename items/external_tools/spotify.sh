@@ -23,7 +23,7 @@ display_currently_playing_track() {
 
 static_content() {
     # reload_no_output=" >/dev/null ; $0"
-    [ -z "$(command -v spotify)" ] && error_msg "spotify bin not found"
+    command -v spotify >/dev/null || error_msg "spotify bin not found"
 
     set -- \
         0.0 M Left "Back to Extras     $nav_prev" extras.sh \

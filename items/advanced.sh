@@ -36,7 +36,7 @@ dynamic_content() {
 }
 
 static_content() {
-    $cfg_use_hint_overlays && ! $cfg_use_whiptail && {
+    $cfg_use_hint_overlays && ! $b_use_alt_handler && {
         hint="\& $d_hints/choose-client.sh skip-oversized"
     }
 
@@ -48,7 +48,7 @@ static_content() {
     set -- \
         0.0 S
 
-    # if $cfg_use_whiptail; then
+    # if $b_use_alt_handler; then
     #     #
     #     #  The tmux output down to Customize options will be displayed
     #     #  then disappear instantly since whiptail restarts the foreground

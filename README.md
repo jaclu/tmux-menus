@@ -79,7 +79,7 @@ This plugin does not work when the tmux environment path contains spaces.
 
 Left arrow to go back to previous menu does not work. - Workaround: Highlight and hit Enter.
 
-Still present in 3.7b
+Still present in `3.7c` - resolved in `next-3.8`
 
 ## Dependencies & Compatibility
 
@@ -335,8 +335,11 @@ Override the default menu system with a completely custom set.
 
 ## Screen Size Detection
 
-tmux doesn't provide an error when a menu doesn't fit the screen—it simply
-refuses to display it. The only indication is that the menu closes immediately.
+Starting with tmux 3.8, a menu will always be displayed even if it can't fit on screen,
+letting it be cut off if it's too tall.
+
+Prior to version 3.8, tmux doesn't provide an error when a menu doesn't fit the screen,
+it simply refuses to display it. The only indication is that the menu closes immediately.
 
 To help identify this issue, the plugin monitors menu display time. If a menu
 closes in less than 0.1 seconds, it assumes the screen was too small and displays:
@@ -392,6 +395,7 @@ Thanks to everyone who has contributed to making this plugin better:
 
 - [shixianqin](https://github.com/shixianqin) - Reported that `<prefix> \` is
   problematic on non-US keyboards, leading to the secondary default `<prefix> Enter`
+  (fixed in 2.3.0)
 - [cmon1701](https://github.com/cmon1701) - Reported hardcoded path assumptions
   in plugin listing (fixed in 2.1.3)
 - [sumskyi](https://github.com/sumskyi) - Improved boolean check error messages

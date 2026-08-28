@@ -46,7 +46,7 @@ no_auto_menu_handling=1 # delay processing of dialog, only source it for now
 
 if [ -n "$1" ]; then
     "$D_TM_BASE_PATH"/scripts/act_display_char.sh "$1"
-elif $cfg_use_whiptail; then
+elif $b_use_alt_handler; then
     tmux_error_handler set-option -gqu "$wt_pasting"
 fi
 

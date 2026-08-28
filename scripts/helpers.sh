@@ -29,8 +29,11 @@
     exit 1
 }
 
-# shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
+[ -z "$f_ext_dlg_trigger" ] && {
+    # Only source if not already done so
+    # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
+    . "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
+}
 
 ${all_helpers_sourced:-false} || source_all_helpers "helpers.sh"
 

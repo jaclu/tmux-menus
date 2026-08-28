@@ -11,17 +11,17 @@
 
 is_key_enter_available() {
     # Clunky but version independent approach
-    _ikea_found=0
+    enter_in_use=0
     if tmux_vers_check 2.1; then
-        "$TMUX_BIN" list-keys -T prefix | awk '{ print $4 }' | grep -q Enter && _ikea_found=1
+        "$TMUX_BIN" list-keys -T prefix | awk '{ print $4 }' | grep -q Enter && enter_in_use=1
     else
-        "$TMUX_BIN" list-keys | awk '{ print $2 }' | grep -q Enter && _ikea_found=1
+        "$TMUX_BIN" list-keys | awk '{ print $2 }' | grep -q Enter && enter_in_use=1
     fi
-    [ "$_ikea_found" = 1 ] && {
-        log_it "><> Enter Already used"
+    [ "$enter_in_use" = 1 ] && {
+        # log_it "<Prefix> Enter Already used"
         return 1
     }
-    log_it "><> Enter is Available"
+    # log_it "<Prefix> Enter is Available"
     return 0
 }
 
@@ -33,7 +33,8 @@ consider_secondary_default() {
         grep -q @menus_trigger "$f_cached_tmux_options" && _csd_skip=1
     else
         # assume cachless state
-        $TMUX_BIN show-option -gv @menus_trigger >/dev/null 2>&1 && _csd_skip=1
+        $TMUX_BIN show-option -gv @menus_trigger 2>/dev/null \
+            | grep -vq "$cfg_force_unset" && _csd_skip=1
     fi
     [ "$_csd_skip" = 1 ] && {
         # since a @menus_trigger is defined in tmux.conf, assume user knows how
@@ -42,7 +43,6 @@ consider_secondary_default() {
     }
     is_key_enter_available && {
         cfg_no_prefix=false # disable skip prefix for this secondary default
-        echo "><> binding Enter" >/dev/stderr
         bind_plugin_key Enter
     }
 }
@@ -59,18 +59,15 @@ bind_plugin_key() {
     esac
 
     bind_cmd="$cfg_main_menu"
-    if $cfg_use_whiptail; then
+    if $b_use_alt_handler; then
         bind_cmd="$f_ext_dlg_trigger"
         [ "$alt_menu_handler_announced" != 1 ] && {
             alt_menu_handler_announced=1 # avoid logging it twice if secondary default is used
-            log_it "Will use alternate menu handler: $cfg_alt_menu_handler"
+            log_it "Will use alternate menu handler: $alt_menu_handler"
         }
     fi
     cmd="bind-key"
-    # cfg_use_notes=false
-    $cfg_use_notes && {
-        cmd="$cmd -N \"plugin ${plugin_name}\""
-    }
+    $use_bind_key_notes && cmd="$cmd -N \"plugin ${plugin_name}\""
 
     u=$(cache_unescape_special_chars "$_bpk_key")
     if $cfg_no_prefix; then

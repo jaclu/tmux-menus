@@ -61,7 +61,7 @@ static_content() {
         0.0 T "-#[nodim]for menus, and lower case for actions."
     menu_generate_part 1 "$@"
 
-    $cfg_use_whiptail || {
+    $b_use_alt_handler || {
         set -- \
             0.0 T "-" \
             0.0 T "-#[nodim]j & k can be used for menu scrolling" \
@@ -77,7 +77,7 @@ static_content() {
     git_repo="$(git config --get remote.origin.url)"
     set --
     [ -n "$git_repo" ] && set -- "$@" 0.0 T "-#[nodim]Repo: $git_repo"
-    ! $cfg_use_whiptail && {
+    ! $b_use_alt_handler && {
         set -- "$@" \
             0.0 S \
             0.0 T "-#[nodim]Exit menus with ESC or Ctrl-C"

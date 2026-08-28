@@ -59,7 +59,7 @@ no_auto_menu_handling=1 # delay processing of dialog, only source it for now
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$D_TM_BASE_PATH"/scripts/menu_handling.sh
 
-if $cfg_use_whiptail; then
+if $b_use_alt_handler; then
     # It "should" work, but something is going wrong and I haven't figured it out yet...
     error_msg "Menu pane_log is not yet usable for whiptail/dialog"
     exit 1

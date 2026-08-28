@@ -431,11 +431,11 @@ wait_to_close_display() {
     #
     #  Busybox ps has no -x and will throw error, so send to /dev/null
     #  pgrep does not provide the command line, so ignore SC2009
-    # if ps -x "$PPID" 2>/dev/null | grep -q tmux-menus && $cfg_use_whiptail; then
+    # if ps -x "$PPID" 2>/dev/null | grep -q tmux-menus && $b_use_alt_handler; then
     _b_is_whiptail=false
     case $(ps -o command= -p "$PPID" 2>/dev/null) in
         *tmux-menus*)
-            [ "$cfg_use_whiptail" = true ] && _b_is_whiptail=true
+            [ "$b_use_alt_handler" = true ] && _b_is_whiptail=true
             ;;
         *) ;;
     esac

@@ -16,7 +16,7 @@ static_content() {
     fi
 
     navigate_cmd="$TMUX_BIN $choose_tree"
-    if $cfg_use_hint_overlays && ! $cfg_use_whiptail; then
+    if $cfg_use_hint_overlays && ! $b_use_alt_handler; then
         # The help overlay can't be displayed using whiptail
         navigate_cmd="$navigate_cmd & $d_hints/choose-tree.sh skip-oversized"
     fi

@@ -4,6 +4,32 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [2.3.2] - 2026-08-28
+
+### Added
+
+- Screen size check now skipped for tmux 3.8
+- Support for tmate version detection alongside tmux version handling
+- Version suffix handling: next- versions now append 'z' suffix to sort after
+  realistic prior suffixes
+- Special menu variable states in utils/tmux.sh: FORCE-UNSET and FORCE-EMPTY
+
+### Changed
+
+- show_config.sh: corrected handling of cfg_default_is_empty_string; brought
+  utility current
+- cache_write_plugin_params: reordered cache contents for consistency
+- Configuration variable renames for clarity:
+  - cfg_use_notes → use_bind_key_notes
+  - cfg_use_whiptail → b_use_alt_handler
+  - cfg_alt_menu_handler → alt_menu_handler
+
+### Fixed
+
+- examine_code_base: resolved bugs and improved performance
+
+---
+
 ## [2.3.1] - 2026-08-12
 
 ### Fixed

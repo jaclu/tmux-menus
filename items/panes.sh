@@ -17,7 +17,7 @@ static_content() {
         0.0 M L "Layouts            $nav_next" "$d_items/layouts.sh $0 $menu_name" \
         0.0 M I "Pane history       $nav_next" pane_history.sh
 
-    if ! $cfg_use_whiptail; then
+    if ! $b_use_alt_handler; then
         set -- "$@" \
             1.1 M O "Pane logging       $nav_next" pane_log.sh
     fi

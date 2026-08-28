@@ -15,7 +15,7 @@ is_avalable() {
     if [ -z "$cmd" ]; then
         error_msg "extras.is_available() - no parameters given"
     fi
-    if [ -n "$(command -v "$cmd")" ]; then
+    if command -v "$cmd" >/dev/null; then
         echo "$label  $nav_next"
     else
         echo "-$label"

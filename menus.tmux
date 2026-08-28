@@ -17,7 +17,8 @@
 #  as intended, since the tmux env is just read once then this cache is used.
 #
 #  If those tmux instances do not have identical tmux-menus configuration,
-#  thing will not work as intended.
+#  thing will not work as intended, since each version will generate menus
+#  fitting their specifics in the same cache.
 #
 #  Therefore each instance using tmux-menus should use a separate folder
 #  for the plugin, not using soft-links to the same folder!
@@ -31,10 +32,12 @@
 
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
 D_TM_BASE_PATH=$(cd "${0%/*}" && pwd)
-#  Run the plugin setup in the background to not slow down tpm on startup
+#
+#  Run the plugin setup in the background in order not to slow down tpm during startup.
 #  On systems with "normal" performance init takes perhaps 0.5 seconds
 #  On slower things like iSH or termux it might take 2-3 seconds, then the
 #  long wait for tpm to complete becomes more apparent.
+#
 (
     "$D_TM_BASE_PATH"/scripts/plugin_init.sh || {
         # Report if init failed
@@ -42,3 +45,4 @@ D_TM_BASE_PATH=$(cd "${0%/*}" && pwd)
         sleep 3
     }
 ) &
+exit 0 # ensure we report success to tpm

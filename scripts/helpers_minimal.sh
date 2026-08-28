@@ -219,8 +219,8 @@ menu_handler_cache_missmatch() {
     msg="TMUX_MENUS_HANDLER=$TMUX_MENUS_HANDLER"
     [ -n "$1" ] && msg="$msg ($1)"
     msg="$msg does not match current cache:\n\n"
-    msg="$msg    cfg_use_whiptail=$cfg_use_whiptail\n"
-    msg="$msg    cfg_alt_menu_handler=$cfg_alt_menu_handler"
+    msg="$msg    b_use_alt_handler=$b_use_alt_handler\n"
+    msg="$msg    alt_menu_handler=$alt_menu_handler"
     error_msg "$msg"
 }
 
@@ -232,7 +232,7 @@ verify_menu_handler_override_valid() {
     requested_handler="$1"
     ! $cfg_use_cache && return # irrelevant check when not using cache
 
-    if ! $cfg_use_whiptail || [ "$cfg_alt_menu_handler" != "$requested_handler" ]; then
+    if ! $b_use_alt_handler || [ "$alt_menu_handler" != "$requested_handler" ]; then
         menu_handler_cache_missmatch "$requested_handler"
     fi
 }
@@ -245,16 +245,16 @@ env_variable_menus_handler() {
     # log_it "env_variable_menus_handler()"
 
     case "$TMUX_MENUS_HANDLER" in
-        0) $cfg_use_whiptail && verify_menu_handler_override_valid "tmux display-menu" ;;
+        0) $b_use_alt_handler && verify_menu_handler_override_valid "tmux display-menu" ;;
         1)
             _cmd=whiptail
             verify_menu_handler_override_valid "$_cmd"
             if command -v "$_cmd" >/dev/null; then
-                cfg_alt_menu_handler="$_cmd"
+                alt_menu_handler="$_cmd"
             else
                 error_msg "$_cmd not available, plugin aborted"
             fi
-            cfg_use_whiptail=true
+            b_use_alt_handler=true
             [ "$initialize_plugin" = "1" ] && {
                 log_it "NOTICE: $_cmd is selected due to TMUX_MENUS_HANDLER=1"
             }
@@ -264,11 +264,11 @@ env_variable_menus_handler() {
             _cmd=dialog
             verify_menu_handler_override_valid "$_cmd"
             if command -v "$_cmd" >/dev/null; then
-                cfg_alt_menu_handler="$_cmd"
+                alt_menu_handler="$_cmd"
             else
                 error_msg "$_cmd not available, plugin aborted"
             fi
-            cfg_use_whiptail=true
+            b_use_alt_handler=true
             [ "$initialize_plugin" = "1" ] && {
                 log_it "NOTICE: $_cmd is selected due to TMUX_MENUS_HANDLER=2"
             }
@@ -325,9 +325,9 @@ select_safe_now_method() { # local usage by safe_now()
     _snm_test="$(date +%s%3N 2>/dev/null)"
     if [ "${#_snm_test}" -ge 13 ]; then
         selected_safe_now_mthd="date" # date supports ms precision
-    elif command -v gdate >/dev/null 2>&1; then
+    elif command -v gdate >/dev/null; then
         selected_safe_now_mthd="gdate" # macOS with GNU date
-    elif command -v perl >/dev/null 2>&1; then
+    elif command -v perl >/dev/null; then
         selected_safe_now_mthd="perl" # fallback via Perl
     else
         selected_safe_now_mthd="date" # last resort, seconds-only
@@ -455,7 +455,11 @@ tpt_retrieve_running_tmux_vers() { # local usage by tmux_vers_check()
     # caching is disabled, this won't be called by menus directly.
     #
     # log_it "tpt_retrieve_running_tmux_vers()"
-    current_tmux_vers="$($TMUX_BIN -V | cut -d' ' -f2)"
+    current_tmux_vers=$($TMUX_BIN -V | cut -d' ' -f2)
+    case "$current_tmux_vers" in
+        "2.4."*) current_tmux_vers="2.4" ;; # handle tmate triple digits
+        *) ;;
+    esac
     # log_it "  current_tmux_vers [$current_tmux_vers]"
     tpt_digits_from_string current_tmux_vers_i "$current_tmux_vers"
     tpt_tmux_vers_suffix current_tmux_vers_suffix "$current_tmux_vers"
@@ -485,6 +489,9 @@ _tpt_apply_next_reduction() {
             ;;
         *) ;; # no reduction needed
     esac
+    # ensure the next version has the last suffix, ending in a virtual subvers
+    # higher than any actual release
+    _tpt_reduced_vers="${_tpt_reduced_vers}z"
 }
 
 tpt_digits_from_string() { # local usage by tpt_retrieve_running_tmux_vers()
