@@ -35,6 +35,9 @@ static_content() {
     tmux_vers_check 2.6 || {
         # before 2.6 it can't be detected if pane is piped,
         # so "Clear logging (if enabled)" is always displayed
+        # For never versions part 4 will be filled with this option
+        # if logging is enabled
+
         set -- "$@" \
             1.1 C c "Clear logging (if enabled)" "pipe-pane $runshell_reload_mnu"
     }
