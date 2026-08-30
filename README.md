@@ -295,9 +295,13 @@ Menu files define two functions: `static_content()` for items that never change
 regenerate each display. See [items/pane_move.sh](items/pane_move.sh) where
 "Swap current pane with marked" only appears when a marked pane exists.
 
-The cache is automatically invalidated when:
+The cache is fully invalidated when:
 
 - A different tmux version is detected at initialization
+- Any changes to the tmux-menus variables in tmux.conf
+
+The cache for a specific menu is invalidated when:
+
 - A menu script has been modified (checked via timestamp)
 
 ### Logging
@@ -383,7 +387,7 @@ letters, and don't support special keys (arrow keys, Home, etc.).
 ### Installation
 
 **Linux:** Most distributions include `whiptail` by default. In the Red Hat
-ecosystem, it's called `newt` instead.
+an Homebrew ecosystems, the package that contains `whiptail` is called `newt`.
 
 **macOS:** Install via Homebrew: `brew install newt`
 
