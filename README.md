@@ -233,11 +233,11 @@ configured.
 
 Note: Menus grow larger with this feature enabled—ensure sufficient screen space.
 
-<img width="385" height="246" alt="Move-Window"
+<img width="269" alt="Move-Window"
   src="https://github.com/user-attachments/assets/365d414a-1d3b-41f8-8ba8-2c5f827c12d9" />
-<img width="487" height="337" alt="Move-Window-Cmds"
+<img width="341" alt="Move-Window-Cmds"
   src="https://github.com/user-attachments/assets/82472dcc-2789-4f15-a159-5699390389d4" />
-<img width="387" height="282" alt="Move-Window-KeyBinds"
+<img width="269" alt="Move-Window-KeyBinds"
   src="https://github.com/user-attachments/assets/14274950-1030-4710-9d6e-f81013184ccc" />
 
 #### Command Display Width
