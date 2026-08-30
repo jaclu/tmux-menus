@@ -1,5 +1,11 @@
 # TODO
 
+## Feature availability
+
+choose-tree - 1.8 - not usable in 1.7
+  - flags
+    - -Z 2.7
+
 ## Floating pane menu
 
 implement checks that move and resize doesn't go outside window borders.

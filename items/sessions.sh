@@ -33,7 +33,7 @@ static_content() {
         0.0 C l "Last selected session" "switch-client -l        $runshell_reload_mnu" \
         0.0 C p "Previous session [in order]" "switch-client -p  $runshell_reload_mnu" \
         0.0 C n "Next     session [in order]" "switch-client -n  $runshell_reload_mnu" \
-        0.0 C c "Choose session" "choose-tree -Zs" \
+        2.7 C c "Choose session" "choose-tree -Zs" \
         0.0 S \
         1.8 C x "Kill current session" \
         "confirm-before -p \

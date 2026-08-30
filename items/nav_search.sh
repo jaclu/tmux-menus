@@ -10,7 +10,7 @@
 
 static_content() {
     choose_tree="choose-tree"
-    if tmux_vers_check 2.7; then
+    if tmux_vers_check 2.8; then
         #  zooms the pane
         choose_tree="$choose_tree -Z"
     fi
@@ -43,11 +43,11 @@ static_content() {
 
     set -- \
         0.0 S \
-        1.7 E n "Navigate & select ses/win/pane" "$navigate_cmd"
+        2.7 E n "Navigate & select ses/win/pane" "$navigate_cmd"
 
     $cfg_use_hint_overlays && $cfg_show_key_hints && {
         set -- "$@" \
-            1.7 M K "Key hints - Navigate & select  $nav_next" \
+            1.8 M K "Key hints - Navigate & select  $nav_next" \
             "$d_hints/choose-tree.sh $0"
     }
 
