@@ -103,6 +103,9 @@ tmux_get_defaults() { # new init
     default_simple_style="$cfg_default_is_empty_string"
     default_simple_style_border="$cfg_default_is_empty_string"
 
+    # tmux >= 3.8
+    default_floating_pane_incr_horizontal=1
+    default_floating_pane_incr_vertical=1
 }
 
 cache_save_options_defined_in_tmux() {
@@ -360,6 +363,14 @@ tmux_get_plugin_options() { # new init
             tmux_get_option cfg_simple_style_border "@menus_simple_style_border" \
                 "$default_simple_style_border"
         }
+        tmux_vers_check 3.7z && {
+            tmux_get_option cfg_floating_pane_incr_horizontal \
+                "@menus_floating_pane_incr_horizontal" \
+                "$default_floating_pane_incr_horizontal"
+            tmux_get_option cfg_floating_pane_incr_vertical \
+                "@menus_floating_pane_incr_vertical" \
+                "$default_floating_pane_incr_vertical"
+        }
         tmux_get_option cfg_nav_next "@menus_nav_next" "$default_nav_next"
         tmux_get_option cfg_nav_prev "@menus_nav_prev" "$default_nav_prev"
         tmux_get_option cfg_nav_home "@menus_nav_home" "$default_nav_home"
@@ -565,6 +576,8 @@ EOF
             error_msg "$_e_msg"
         fi
         return 1 # shouldn't get here, but at least return an error
+    elif [ ! -s "$f_tmux_err" ]; then
+        rm "$f_tmux_err"
     fi
 
     #

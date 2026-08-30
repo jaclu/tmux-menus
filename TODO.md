@@ -1,5 +1,9 @@
 # TODO
 
+## Floating pane menu
+
+implement checks that move and resize doesn't go outside window borders.
+
 ## Revert to default
 
 an empty setting like "" / '' should revert to default

@@ -4,6 +4,29 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [2.3.3] - 2026-08-30
+
+### Added
+
+- New menu "Handling Floating Pane" available for 3.8 (and next-3.8), only listed in
+  main menu if started from a floating pane.
+- Introduced @menus*floating_pane_incr*\* variables for the "Handling Floating Pane"
+  to control incrementation rate
+- New pane-scrollbars option "auto-hide" for tmux 3.6+
+
+### Changed
+
+- **Deprecation Notice**: Custom Menus feature will be removed by end of 2026
+
+### Fixed
+
+- Source helpers if need-be for alt-handlers in items/odd_chars
+- Replaced some rm with safe_remove
+- Handling show-environment for tmux < 1.7
+- Only parse output of alt-handler tmux cmd output if error
+
+---
+
 ## [2.3.2] - 2026-08-28
 
 ### Added

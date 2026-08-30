@@ -584,6 +584,7 @@ menu_generate_part() {
         # no params clear cache file if any
         $cfg_use_cache && {
             rm -f "$f_cache_file" || error_msg "Failed to remove $f_cache_file"
+            # log_it "part $menu_idx empty - Cleared cache item"
         }
         return
     }
@@ -815,7 +816,7 @@ static_files_reduction() {
     cache_read_menu_items
     for f_name in "$d_menu_cache"/*; do
         [ -d "$f_name" ] && continue
-        rm "$f_name" || error_msg "static_files_reduction() - failed to remove: $f_name"
+        safe_remove "$f_name" "static_files_reduction()"
     done
     echo "$menu_items" >"$d_menu_cache/1" || {
         error_msg "static_files_reduction Failed to write"
@@ -1137,8 +1138,9 @@ alt_parse_selection() {
             ${all_helpers_sourced:-false} || source_all_helpers "alt_parse_selection()"
             # too many arguments (need at most 2) - fixed by eval
             # teh_debug=true
-            eval "$_aps_action"
-            [ -n "$wt_output" ] && alt_parse_output "$wt_output"
+            eval "$_aps_action" || {
+                [ -n "$wt_output" ] && alt_parse_output "$wt_output"
+            }
             break
         }
         [ -z "$lst" ] && break # we have processed last group
@@ -1200,9 +1202,9 @@ display_menu() {
         eval "$menu_items" 2>"$f_cmd_err" || {
             display_invalid_menu_error "$_dm_err_msg"
         }
-        tmux_vers_check 3.8 || [ "$current_tmux_vers" = "next-3.8" ] || {
-            # Pre-3.8: check if menu actually displayed
-            # TODO: Remove the next-3.8 check once tmux 3.8 is officially released
+        tmux_vers_check 3.7z || {
+            # Pre-3.8: Check if menu actually was displayed
+            # TODO: Remove the next-3.7z check once tmux 3.8 is officially released
             ensure_menu_fits_on_screen
         }
     fi

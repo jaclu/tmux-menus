@@ -12,14 +12,16 @@ dynamic_content() {
     t_opt="pane-scrollbars"
     _cmd="set-option -w $t_opt" # only change on a per window basis
     lbl_off="Off"
-    lbl_modal="Modal (only in scrollback)"
+    lbl_modal="Modal"
+    lbl_auto_hhide="Auto-hide"
     lbl_on="On"
     win_option="$($TMUX_BIN show-options -wv "$t_opt")"
 
     if [ -n "$win_option" ]; then
         case "$win_option" in
             off) lbl_off="-Off" ;;
-            modal) lbl_modal="-Modal (only in scrollback)" ;;
+            modal) lbl_modal="-Modal" ;;
+            auto-hide) lbl_auto_hhide="-Auto-hide" ;;
             on) lbl_on="-On" ;;
             *) error_msg "Unknown $t_opt -w option: $win_option" ;;
         esac
@@ -27,7 +29,8 @@ dynamic_content() {
         glob_option="$($TMUX_BIN show-options -gv "$t_opt")"
         case "$glob_option" in
             off) lbl_off="-(glob) Off" ;;
-            modal) lbl_modal="-(glob) Modal (only in scrollback)" ;;
+            modal) lbl_modal="-(glob) Modal" ;;
+            auto-hide) lbl_auto_hhide="-(glob) Auto-hide" ;;
             on) lbl_on="-(glob) On" ;;
             *) error_msg "Unknown $t_opt -g option: $glob_option" ;;
         esac
@@ -36,6 +39,7 @@ dynamic_content() {
     set -- \
         3.6 C o "$lbl_off" "$_cmd  off    $runshell_reload_mnu" \
         3.6 C m "$lbl_modal" "$_cmd  modal  $runshell_reload_mnu" \
+        3.7z C a "$lbl_auto_hhide" "$_cmd  auto-hide  $runshell_reload_mnu" \
         3.6 C n "$lbl_on" "$_cmd  on     $runshell_reload_mnu"
     menu_generate_part 4 "$@"
 }

@@ -42,6 +42,7 @@ D_TM_BASE_PATH=$(cd "${0%/*}/../.." && pwd)
 if [ -n "$1" ]; then
     "$D_TM_BASE_PATH"/scripts/act_display_char.sh "$1"
 elif $b_use_alt_handler; then
+    ${all_helpers_sourced:-false} || source_all_helpers "diacritics_g.sh"
     tmux_error_handler set-option -gqu "$wt_pasting"
 fi
 

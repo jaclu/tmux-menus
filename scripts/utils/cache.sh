@@ -314,9 +314,20 @@ cfg_simple_style_border=\"$(cache_escape_special_chars "$cfg_simple_style_border
 " >>"$_f_params_tmp" || error_msg "Failed to write to tmpfile: $_f_params_tmp"
             #endregion param cache file - Styling tmux >= 3.4
         }
+        tmux_vers_check 3.7z && {
+            #region param cache file - Floating panes tmux >= 3.8
+            printf '%s' "\
+
+# Floating pane handling - tmux >= 3.8
+cfg_floating_pane_incr_horizontal=$cfg_floating_pane_incr_horizontal
+cfg_floating_pane_incr_vertical=$cfg_floating_pane_incr_vertical
+" >>"$_f_params_tmp" || error_msg "Failed to write to tmpfile: $_f_params_tmp"
+            #endregion param cache file - Floating panes tmux >= 3.8
+        }
+
     }
 
-    #region param cache file - Not config related
+    #region param cache file - Not config related 1
     printf '\n%s' "\
 #
 # Non configuration related cached states
@@ -324,7 +335,25 @@ cfg_simple_style_border=\"$(cache_escape_special_chars "$cfg_simple_style_border
 env_unmame=\"$env_unmame\" # cached uname -s
 use_bind_key_notes=$use_bind_key_notes # From @use_bind_key_notes_in_plugins
 
-#  If tmux version has changed, the entire cache is invalidated
+# If tmux version has changed, the entire cache is invalidated
+" >>"$_f_params_tmp" || error_msg "Failed to write to tmpfile: $_f_params_tmp"
+    #endregion param cache file - Not config related 1
+
+    case "$current_tmux_vers" in
+        "next-"*)
+            printf '#\n%s\n%s\n%s\n#\n' \
+                '# For compatibility checks, next- versions are rounded down' \
+                '# to prior subvers, with z suffix' \
+                "# Since they frequently don't yet support all next version features" \
+                >>"$_f_params_tmp" || {
+                error_msg "Failed to write to tmpfile: $_f_params_tmp"
+            }
+            ;;
+        *) ;;
+    esac
+
+    #region param cache file - Not config related 2
+    printf '%s' "\
 current_tmux_vers=\"$current_tmux_vers\"
 current_tmux_vers_i=\"$current_tmux_vers_i\"
 current_tmux_vers_suffix=\"$current_tmux_vers_suffix\"
@@ -345,7 +374,7 @@ t_minimal_display_time=\"$t_minimal_display_time\"
 b_use_alt_handler=$b_use_alt_handler
 alt_menu_handler=\"$alt_menu_handler\"
 " >>"$_f_params_tmp" || error_msg "Failed to write to tmpfile: $_f_params_tmp"
-    #endregion param cache file - Not config related
+    #endregion param cache file - Not config related 2
     $b_use_alt_handler && {
         echo "wt_pasting=\"$wt_pasting\" # Only used by whiptail/dialog" \
             >>"$_f_params_tmp" || error_msg "Failed to write to tmpfile: $_f_params_tmp"

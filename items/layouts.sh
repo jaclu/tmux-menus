@@ -19,13 +19,17 @@ dynamic_content() {
     if [ -n "$prev_menu" ]; then
         # Since this menu might reload itself and then using no params,
         # store them for later potential reuse
-        $TMUX_BIN set-environment -g "$e_prev_menu" "$prev_menu"
-        $TMUX_BIN set-environment -g "$e_prev_menu_name" "${prev_name:-Previous menu}"
+        $TMUX_BIN set-environment "$e_prev_menu" "$prev_menu"
+        $TMUX_BIN set-environment "$e_prev_menu_name" "${prev_name:-Previous menu}"
     else
-        prev_menu=$($TMUX_BIN show-environment -g "$e_prev_menu" 2>/dev/null \
-            | cut -d= -f2)
-        prev_name=$($TMUX_BIN show-environment -g "$e_prev_menu_name" 2>/dev/null \
-            | cut -d= -f2)
+        if tmux_vers_check 1.7; then
+            prev_menu=$($TMUX_BIN show-environment "$e_prev_menu" | cut -d= -f2)
+            prev_name=$($TMUX_BIN show-environment "$e_prev_menu_name" | cut -d= -f2)
+        else
+            # doesn't support variable name for show-environment - use grep
+            prev_menu=$($TMUX_BIN show-environment | grep "$e_prev_menu" | cut -d= -f2)
+            prev_name=$($TMUX_BIN show-environment | grep "$e_prev_menu_name" | cut -d= -f2)
+        fi
     fi
 
     set -- 0.0 M Left "Back to $prev_name   $nav_prev" "$prev_menu"

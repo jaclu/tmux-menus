@@ -1,5 +1,14 @@
 # Custom Menus
 
+## Planned obsolescence - end of 2026
+
+This feature is deprecated and will be removed by end of 2026. Earlier versions
+will remain available.
+
+For new setups, use [**Alternate Menus**](../README.md#alternate-menus) instead—it's
+simpler and more convenient. Alternate Menus lets you completely replace the default
+menu system with your own, rather than integrating custom items into the existing one.
+
 ## Overview
 
 This feature streamlines the integration of custom menus into the tmux-menus

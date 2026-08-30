@@ -1,9 +1,9 @@
 # Tmux-Menus
 
 <img width="250" alt="main"
-src="https://github.com/user-attachments/assets/63b13583-471d-4cfb-89db-3e30bdcd0f58" />
-<img width="250" alt="main-styled"
-src="https://github.com/user-attachments/assets/0dafa700-529a-4020-b049-93b5cf92358b" />
+  src="https://github.com/user-attachments/assets/91e98aa5-6ca0-4927-98e9-e309d0b953b2" />
+<img width="250" alt="main styled"
+src="https://github.com/user-attachments/assets/905026bf-4f9a-48ba-ade4-3a1ff7d6b31f" />
 
 ## Summary
 
@@ -23,13 +23,13 @@ discover functionality—advanced users can simply remove what they don't need.
 
 ## Recent Changes
 
-- **tmux 3.8 support** - Screen size handling optimized for the latest tmux version
+- **tmux 3.8 support**
+  - New menu "Handling Floating Pane" (can be tested on next-3.8)
+  - Screen size handling optimized for the latest tmux version
 - **Secondary default trigger key** `<prefix> Enter` for non-US keyboards where
   `<prefix> \` is impractical
 - **Comprehensive tmux 3.7 workaround** - Documentation for display-menu navigation
   bug with solution
-- Bug fixes and performance optimizations across configuration handling and version
-  detection
 
 ## Purpose
 
@@ -77,7 +77,7 @@ This plugin does not work when the tmux environment path contains spaces.
 
 ### tmux 3.7 - display-menu bug
 
-Left arrow to go back to previous menu does not work. - Workaround: Highlight and hit Enter.
+Left arrow doesn't work to go back. Workaround: Highlight and press Enter instead.
 
 Still present in `3.7c` - resolved in `next-3.8`
 
@@ -85,6 +85,7 @@ Still present in `3.7c` - resolved in `next-3.8`
 
 | Version    | Notes                                                                                                 |
 | ---------- | ----------------------------------------------------------------------------------------------------- |
+| 3.8        | `Handling Floating Pane` menu can be used.                                                            |
 | 3.4        | Styling supported.                                                                                    |
 | 3.2        | Full menu positioning available.                                                                      |
 | 3.0 - 3.1c | Menu centering not supported; displays top-left if C is selected.                                     |
@@ -101,40 +102,33 @@ report them!
 
 ### Via TPM (Recommended)
 
-The easiest installation method is via the [Tmux Plugin
-Manager](https://github.com/tmux-plugins/tpm).
+Add the plugin to your `.tmux.conf`:
 
-1. Add the plugin to your TPM plugin list in `.tmux.conf`:
+```tmux
+set -g @plugin 'jaclu/tmux-menus'
+```
 
-   ```tmux
-   set -g @plugin 'jaclu/tmux-menus'
-   ```
-
-2. Press `<prefix> + I` to install and activate the plugin. It should now be
-   ready to use.
+Press `<prefix> I` to install and source the plugin.
 
 ### Manual Installation
 
-1. Clone the repository:
+Clone the repository:
 
-   ```sh
-   git clone https://github.com/jaclu/tmux-menus ~/clone/path
-   ```
+```sh
+git clone https://github.com/jaclu/tmux-menus ~/path/to/tmux-menus
+```
 
-2. Add this line to the bottom of your `.tmux.conf`:
+Add to the bottom of your `.tmux.conf`:
 
-   ```tmux
-   run-shell ~/clone/path/menus.tmux
-   ```
+```tmux
+run-shell ~/path/to/tmux-menus/menus.tmux
+```
 
-3. Reload your tmux configuration:
+Reload your configuration:
 
-   ```sh
-   # Inside tmux
-   tmux source-file ~/.tmux.conf
-   ```
-
-The plugin should now be active.
+```sh
+tmux source-file ~/.tmux.conf
+```
 
 ## Configuration
 
@@ -167,25 +161,20 @@ Default: `No`
 
 Enable this to trigger menus without pressing `<prefix>` first.
 
-### Config File Location
+### Alternate Menus
 
 ```tmux
-set -g @menus_config_file "~/.configs/tmux.conf"
+set -g @menus_main_menu "~/my_tmux_menus/main.sh"
 ```
 
-See [QuotingPitfalls](docs/QuotingPitfalls.md) for handling `$HOME` and `~` in tmux
-variables.
+Default: None (uses built-in menus)
 
-The main menu includes a reload option that needs to know which config file to
-reload. The location is determined in this order:
+Override the default menu system with custom menus.
 
-1. `@menus_config_file` - if defined in your tmux config
-2. `$TMUX_CONF` - if present in the environment
-3. `$XDG_CONFIG_HOME/tmux/tmux.conf` - if `$XDG_CONFIG_HOME` is defined
-4. `~/.tmux.conf` - default fallback
+**Important notes:**
 
-When reloading, you'll be prompted to confirm the config file path, which
-defaults to the first match above and can be edited if needed.
+- All custom menus must define `D_TM_BASE_PATH` to point to the tmux-menus
+  installation directory for support scripts to work correctly.
 
 ### Menu Position
 
@@ -208,6 +197,88 @@ Common options:
 | W     | Both | Window position on status line  |
 | S     | -y   | Line above or below status line |
 
+### Floating Panes handling
+
+<img width="295" height="91" alt="float-selected"
+  src="https://github.com/user-attachments/assets/15370e6f-4af9-4445-a9c3-fe4de35b5e42" />
+
+This option appears on the main menu only if a floating pane is focused when the
+trigger key is pressed. The `Handling Floating Pane` menu can move and resize
+floating panes (requires tmux 3.8).
+
+The stepping size is defined by these two settings:
+
+```tmux
+set -g @menus_floating_pane_incr_horizontal 5
+set -g @menus_floating_pane_incr_vertical 2
+```
+
+Default for both: `1`
+
+### Display Menu Commands
+
+```tmux
+set -g @menus_display_commands 'No'
+```
+
+Default: `Yes` (not available when using whiptail/dialog or when caching is
+disabled)
+
+When enabled, each menu includes a "Display Commands" item (shortcut `!`). Press it
+to cycle through three views: the underlying tmux commands, all matching prefix and
+root key bindings, and back to the normal menu.
+
+This helps you discover tmux bindings and verify if an action already has a shortcut
+configured.
+
+Note: Menus grow larger with this feature enabled—ensure sufficient screen space.
+
+<img width="385" height="246" alt="Move-Window"
+  src="https://github.com/user-attachments/assets/365d414a-1d3b-41f8-8ba8-2c5f827c12d9" />
+<img width="487" height="337" alt="Move-Window-Cmds"
+  src="https://github.com/user-attachments/assets/82472dcc-2789-4f15-a159-5699390389d4" />
+<img width="387" height="282" alt="Move-Window-KeyBinds"
+  src="https://github.com/user-attachments/assets/14274950-1030-4710-9d6e-f81013184ccc" />
+
+#### Command Display Width
+
+This option only applies when Display Menu Commands is enabled above.
+
+```tmux
+set -g @menus_display_cmds_cols 160
+```
+
+Default: `75`
+
+Controls the maximum line length for displayed commands. Long commands are split
+into chunks at whitespace when possible, or at the maximum length if no
+whitespace is found.
+
+If lines end with `>`, they've been truncated by tmux because they exceed the
+display width. Reduce `@menus_display_cmds_cols` to prevent truncation.
+
+### Config File Location
+
+Usually the default (below) is sufficient, but you can configure it if needed:
+
+```tmux
+set -g @menus_config_file "~/.configs/tmux.conf"
+```
+
+See [QuotingPitfalls](docs/QuotingPitfalls.md) for handling `$HOME` and `~` in tmux
+variables.
+
+The main menu includes a reload option that needs to know which config file to
+reload. The location is determined in this order:
+
+1. `@menus_config_file` - if defined in your tmux config
+2. `$TMUX_CONF` - if present in the environment
+3. `$XDG_CONFIG_HOME/tmux/tmux.conf` - if `$XDG_CONFIG_HOME` is defined
+4. `~/.tmux.conf` - default fallback
+
+When reloading, you'll be prompted to confirm the config file path, which
+defaults to the first match above and can be edited if needed.
+
 ### Caching
 
 ```tmux
@@ -219,15 +290,26 @@ Default: `Yes`
 Menu items are cached by default for better performance. Disabling caching also
 disables the Custom Menus feature.
 
-Technically, only items defined in `static_content()` are cached, while items that
-need fresh generation each time (like conditional menu entries) are defined in
-`dynamic_content()`. See [scripts/pane_move.sh](items/pane_move.sh) for an
-example—it only shows "Swap current pane with marked" when a marked pane exists.
+Menu files define two functions: `static_content()` for items that never change
+(cached for performance), and `dynamic_content()` for conditional items that
+regenerate each display. See [items/pane_move.sh](items/pane_move.sh) where
+"Swap current pane with marked" only appears when a marked pane exists.
 
 The cache is automatically invalidated when:
 
 - A different tmux version is detected at initialization
 - A menu script has been modified (checked via timestamp)
+
+### Logging
+
+Logging is disabled by default. To enable it, specify a log file:
+
+```tmux
+set -g @menus_log_file "~/tmp/tmux-menus.log"
+```
+
+See [QuotingPitfalls](docs/QuotingPitfalls.md) for handling `$HOME` and `~` in tmux
+variables.
 
 ### Hint Overlays
 
@@ -265,121 +347,54 @@ This serves two purposes:
 - Provides access to key hints even when automatic overlays don't fit
 - Indicates which menu entries normally trigger an overlay
 
-### Logging
-
-Logging is disabled by default. To enable it, specify a log file:
-
-```tmux
-set -g @menus_log_file "~/tmp/tmux-menus.log"
-```
-
-See [QuotingPitfalls](docs/QuotingPitfalls.md) for handling `$HOME` and `~` in tmux
-variables.
-
-### Display Menu Commands
-
-```tmux
-set -g @menus_display_commands 'No'
-```
-
-Default: `Yes` (not available when using whiptail/dialog or when caching is
-disabled)
-
-When enabled, each menu includes a "Display Commands" item (shortcut `!`) that
-shows the underlying tmux commands for each action. Press again to display all
-matching prefix and root key bindings.
-
-Note: Menus are taller when this feature is enabled, so ensure your screen has
-sufficient height.
-
-#### Command Display Width
-
-```tmux
-set -g @menus_display_cmds_cols 160
-```
-
-Default: `75`
-
-Controls the maximum line length for displayed commands. Long commands are split
-into chunks at whitespace when possible, or at the maximum length if no
-whitespace is found.
-
-If lines end with `>`, they've been truncated by tmux because they exceed the
-display width. Reduce `@menus_display_cmds_cols` to prevent truncation.
-
-## Custom Menus
-
-Originally, customization required forking the repository and modifying menus
-directly. However, a dynamic menu system has been added that allows users to
-add custom menus without forking.
-
-The key difference: **custom menus** integrate into the official menu system,
-while **alternate menus** (below) replace it entirely.
-
-For implementation details, see [docs/CustomMenus.md](docs/CustomMenus.md).
-
-### Alternate Menus
-
-```tmux
-set -g @menus_main_menu "~/my_tmux_menus/main.sh"
-```
-
-Default: None (uses built-in menus)
-
-Override the default menu system with a completely custom set.
-
-**Important notes:**
-
-- All custom menus must define `D_TM_BASE_PATH` to point to the tmux-menus
-  installation directory for support scripts to work correctly.
-
 ## Screen Size Detection
 
-Starting with tmux 3.8, a menu will always be displayed even if it can't fit on screen,
-letting it be cut off if it's too tall.
+In tmux versions prior to 3.8, when a menu doesn't fit on screen, tmux silently refuses
+to display it without raising an error—the menu simply won't appear.
 
-Prior to version 3.8, tmux doesn't provide an error when a menu doesn't fit the screen,
-it simply refuses to display it. The only indication is that the menu closes immediately.
-
-To help identify this issue, the plugin monitors menu display time. If a menu
-closes in less than 0.1 seconds, it assumes the screen was too small and displays:
+To help diagnose this issue, the plugin monitors how quickly a menu closes. If it closes
+in less than 0.1 seconds, it displays:
 
 ```text
 tmux-menus ERROR: Screen might be too small
 ```
 
-**Note:** This detection isn't perfect. The error may also appear if you close
-the menu immediately (intentionally or not), leading to false positives. If it
-doesn't recur when you retry, it can be safely ignored.
+**Note:** This detection has false positives—a quick close can also mean you
+dismissed the menu while it was rendering. Try again to confirm. (Not an issue
+on tmux 3.8+.)
 
 ## Alternative Menu Handlers: whiptail / dialog
 
-For tmux versions prior to 3.0, the `display-menu` feature is unavailable. In
-these cases, the plugin falls back to `whiptail` or `dialog` for menu display.
+For tmux versions prior to 3.0, the plugin falls back to `whiptail` or `dialog`
+for menu display since `display-menu` doesn't exist.
 
-The plugin prefers `whiptail`, falling back to `dialog` if unavailable. If
-neither tool is found, the plugin will abort with an error message.
+The plugin tries handlers in this order:
 
-Since these are full-screen applications, they suspend any running task, display
-the menu, and then resume the suspended task when done.
+1. `whiptail` (preferred)
+2. `dialog` (fallback)
 
-**Limitations:** External menu handlers don't differentiate between uppercase
-and lowercase letters, and don't support special keys like arrow keys or Home.
+If neither is available, the plugin will error.
 
-### Forcing External Handlers
+These are full-screen terminal applications that pause your session while displaying the menu.
 
-To use whiptail/dialog on modern tmux versions, set an environment variable:
+**Limitations:** External handlers don't differentiate between uppercase and lowercase
+letters, and don't support special keys (arrow keys, Home, etc.).
 
-- For `whiptail`: `export TMUX_MENUS_HANDLER=1`
-- For `dialog`: `export TMUX_MENUS_HANDLER=2`
+### Installation
 
-### Installation of whiptail
-
-**Linux:** Most distributions include `whiptail` by default. If not, install it
-via your package manager. Note that in the Red Hat ecosystem, the package is
-called `newt` (not `whiptail`).
+**Linux:** Most distributions include `whiptail` by default. In the Red Hat
+ecosystem, it's called `newt` instead.
 
 **macOS:** Install via Homebrew: `brew install newt`
+
+### Forcing External Handlers on Modern Tmux
+
+To use whiptail/dialog on tmux 3.0+, set an environment variable:
+
+```bash
+export TMUX_MENUS_HANDLER=1  # force whiptail
+export TMUX_MENUS_HANDLER=2  # force dialog
+```
 
 ## Contributing
 

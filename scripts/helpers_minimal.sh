@@ -484,14 +484,13 @@ _tpt_apply_next_reduction() {
                 _tpt_reduced_vers="$((_major - 1)).9"
             else
                 # next-X.Y (Y>0): decrement minor
-                _tpt_reduced_vers="${_major}.$((_minor_num - 1))"
+                # ensure the next version has the last suffix, ending in a virtual subvers
+                # higher than any actual release
+                _tpt_reduced_vers="${_major}.$((_minor_num - 1))z"
             fi
             ;;
         *) ;; # no reduction needed
     esac
-    # ensure the next version has the last suffix, ending in a virtual subvers
-    # higher than any actual release
-    _tpt_reduced_vers="${_tpt_reduced_vers}z"
 }
 
 tpt_digits_from_string() { # local usage by tpt_retrieve_running_tmux_vers()
