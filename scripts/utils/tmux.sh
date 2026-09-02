@@ -98,10 +98,11 @@ tmux_get_defaults() { # new init
     default_nav_home="<=="
 
     # tmux >= 3.4
-    default_border_type="$cfg_default_is_empty_string"
+    default_border_type="$cfg_default_is_empty_string" # menu-border-style ??
     default_simple_style_selected="$cfg_default_is_empty_string"
-    default_simple_style="$cfg_default_is_empty_string"
+    default_simple_style="$cfg_default_is_empty_string" # menu-border-style ??
     default_simple_style_border="$cfg_default_is_empty_string"
+    # menu-border-lines
 
     # tmux >= 3.8
     default_floating_pane_incr_horizontal=1

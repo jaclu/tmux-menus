@@ -25,3 +25,27 @@ export TMUX_OUTER=/private/tmp/tmux-501/501-default,64195,0
 # Is this needed?
 export TMUX_PLUGIN_MANAGER_PATH=/Users/jaclu/t2/tmux/plugins/
 ```
+
+## @menus_border_type might be obsoleted
+
+- 3.4
+  menu-style
+  menu-selected-style [display-menu -H]
+  menu-border-style
+  menu-border-lines
+
+### works
+
+set -g @menus_border_type 'rounded'
+
+ends up as: -b rounded
+
+### no effect
+
+set -g @menus_simple_style_selected 'rounded'
+
+ends up as -H -rounded
+
+### obsoleted in tmux 3.4 by
+
+$TMUX_BIN set-option menu-border-lines rounded
