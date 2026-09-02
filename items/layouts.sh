@@ -40,7 +40,7 @@ dynamic_content() {
 static_content() {
     set -- \
         0.0 M Home "Back to Main menu  $nav_home" "$cfg_main_menu" \
-        2.5 M L "Border Lines" layouts_lines.sh \
+        2.3 M L "Border Lines" layouts_lines.sh \
         3.3 M I "Border Indicators" layouts_indicators.sh \
         3.6 M S "Scroll Bars" layouts_scrollbars.sh
     menu_generate_part 2 "$@"
