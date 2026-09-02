@@ -576,7 +576,7 @@ EOF
             error_msg "$_e_msg"
         fi
         return 1 # shouldn't get here, but at least return an error
-    elif [ ! -s "$f_tmux_err" ]; then
+    elif [ -f "$f_tmux_err" ] && [ ! -s "$f_tmux_err" ]; then
         rm "$f_tmux_err"
     fi
 
