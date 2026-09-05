@@ -1,5 +1,4 @@
 #!/bin/sh
-# Always sourced file - Fake bang path to help editors
 #
 #   Copyright (c) 2022-2025: Jacob.Lundqvist@gmail.com
 #   License: MIT
