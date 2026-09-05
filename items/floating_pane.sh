@@ -9,12 +9,9 @@
 #
 #   For basic move & resize use this diamond, lower-case move, upper-case resize
 #
-#       T
-#      F G
-#       V
-#
-#   Placement keys (q,w,e,a,s,d,z,x,c) centered on s, left-hand keyboard cluster.
-#   Avoids numpad 5-centered logic which fails for keyboards without numpad.
+#       W
+#      A S
+#       Z
 #
 #   The version next-3.8 is handled as 3.7z in order to not match 3.8
 #   until it is released, so the below 3.7z will be replaced with 3.8 once
@@ -51,15 +48,15 @@ dynamic_content() {
             # focus is on a floating pane, primary actions relevant
             set -- "$@" \
                 3.7z S \
-                3.7z C t "Move pane up" "move-pane -D -$_vert_step $_rrm" \
-                3.7z C f "Move pane left" "move-pane -R -$_hori_step $_rrm" \
-                3.7z C g "Move pane right" "move-pane -R $_hori_step $_rrm" \
-                3.7z C v "Move pane down" "move-pane -D $_vert_step $_rrm" \
+                3.7z C w "Move pane up" "move-pane -D -$_vert_step $_rrm" \
+                3.7z C a "Move pane left" "move-pane -R -$_hori_step $_rrm" \
+                3.7z C s "Move pane right" "move-pane -R $_hori_step $_rrm" \
+                3.7z C z "Move pane down" "move-pane -D $_vert_step $_rrm" \
                 3.7z S \
-                3.7z C T "Reduce pane height" "resize-pane -D -$_vert_step $_rrm" \
-                3.7z C F "Reduce pane width" "resize-pane -R -$_hori_step $_rrm" \
-                3.7z C G "Grow pane width" "resize-pane -R $_hori_step $_rrm" \
-                3.7z C V "Grow pane height" "resize-pane -D $_vert_step $_rrm" \
+                3.7z C W "Reduce pane height" "resize-pane -D -$_vert_step $_rrm" \
+                3.7z C A "Reduce pane width" "resize-pane -R -$_hori_step $_rrm" \
+                3.7z C S "Grow pane width" "resize-pane -R $_hori_step $_rrm" \
+                3.7z C Z "Grow pane height" "resize-pane -D $_vert_step $_rrm" \
                 3.7z S \
                 3.7z M H "Help               $nav_next" "$d_help/h_floating_pane.sh $0"
             menu_generate_part "$_dy_idx" "$@"

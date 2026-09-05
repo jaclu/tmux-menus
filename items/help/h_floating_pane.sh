@@ -9,9 +9,9 @@
 #
 #   For basic move & resize use this diamond, lower-case move, upper-case resize
 #
-#       T
-#      F G
-#       V
+#       W
+#      A S
+#       Z
 #
 
 static_content() {
@@ -24,9 +24,9 @@ static_content() {
         0.0 S \
         0.0 T "-#[nodim]Movement diamond: " \
         0.0 T "-" \
-        0.0 T "-#[nodim]        T(up)" \
-        0.0 T "-#[nodim]F(left)         G(right) " \
-        0.0 T "-#[nodim]        V(down)" \
+        0.0 T "-#[nodim]          W (up)" \
+        0.0 T "-#[nodim]A (left)          S (right) " \
+        0.0 T "-#[nodim]         Z (down)" \
         0.0 T "-" \
         0.0 T "-#[nodim]Use lowercase to move" \
         0.0 T "-#[nodim]Use uppercase to resize"
