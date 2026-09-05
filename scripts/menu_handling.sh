@@ -796,8 +796,10 @@ set_menu_env_variables() {
         mnu_reload_direct=""
     else
         # built in menu handler doesn't ever seem to need \;
-        runshell_reload_mnu=" ; run-shell $0"
-        mnu_reload_direct=" ; $0"
+        _rp=$(realpath "$0")
+        runshell_reload_mnu=" ; run-shell \"sleep 0.2 ; $_rp\""
+        # runshell_reload_mnu=" ; run-shell $_rp"
+        mnu_reload_direct=" ; $_rp"
     fi
 
 }
