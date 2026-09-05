@@ -29,7 +29,10 @@ static_content() {
         2.0 C l "Left" "split-window  -bh  $same_folder  $runshell_reload_mnu" \
         0.0 C r "Right" "split-window -h   $same_folder  $runshell_reload_mnu" \
         2.0 C a "Above" "split-window -bv  $same_folder  $runshell_reload_mnu" \
-        0.0 C b "Below" "split-window      $same_folder  $runshell_reload_mnu"
+        0.0 C b "Below" "split-window      $same_folder  $runshell_reload_mnu" \
+        3.7 S \
+        3.7 C f "Float" "new-pane          $same_folder  $runshell_reload_mnu" \
+        3.7 C z "Float (keep zoomed)" "new-pane  $same_folder  $runshell_reload_mnu"
     menu_generate_part 3 "$@"
 }
 
