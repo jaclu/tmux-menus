@@ -1,11 +1,19 @@
 #!/bin/sh
 #
-#   Copyright (c) 2022-2026: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2026: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
 #   Define how pane lines should be displayed
+#
+# menu-border-lines [pane-border-lines] popup-border-lines
+#
+# Will not be used: pane-active-border-style pane-border-
+#
+# menu-border-lines
+# pane-border-lines
+# popup-border-lines
 #
 
 handle_pane_border_status() {
@@ -52,65 +60,17 @@ handle_pane_border_status() {
     menu_generate_part 4 "$@"
 }
 
-handle_pane_border_lines() {
-    t_opt="pane-border-lines"
-    _cmd="set-option -w $t_opt" # only change on a per window basis
-    lbl_single="Single"
-    lbl_double="Double"
-    lbl_heavy="Heavy"
-    lbl_simple="Simple"
-    lbl_number="Number"
-    lbl_spaces="Spaces"
-    lbl_none="None"
-
-    win_option="$($TMUX_BIN show-options -wv "$t_opt")"
-    glob_option="$($TMUX_BIN show-options -gv "$t_opt")"
-    [ -z "$win_option" ] && [ -z "$glob_option" ] && {
-        # only fall-back to global if there is any
-        win_option=single
-    }
-    case "$win_option" in
-        single) lbl_single="-$lbl_single" ;;
-        double) lbl_double="-$lbl_double" ;;
-        heavy) lbl_heavy="-$lbl_heavy" ;;
-        simple) lbl_simple="-$lbl_simple" ;;
-        number) lbl_number="-$lbl_number" ;;
-        spaces) lbl_spaces="-$lbl_spaces" ;;
-        none) lbl_none="-$lbl_none" ;;
-        "") # No win option - use global as current
-            case "$glob_option" in
-                single) lbl_single="-(global) $lbl_single" ;;
-                double) lbl_double="-(global) $lbl_double" ;;
-                heavy) lbl_heavy="-(global) $lbl_heavy" ;;
-                simple) lbl_simple="-(global) $lbl_simple" ;;
-                number) lbl_number="-(global) $lbl_number" ;;
-                spaces) lbl_spaces="-(global) $lbl_spaces" ;;
-                none) lbl_none="-(global) $lbl_none" ;;
-                *) error_msg "Unknown global option: $t_opt [$glob_option]" ;;
-            esac
-            ;;
-        *) error_msg "Unknown win option: $t_opt [$win_option]" ;;
-    esac
-
-    # TODO: option none below did not work as per man page as late as 26-09-02
-    #       disable is still broken by release
-    no_border="No border for floating panes"
-    set -- \
-        3.2 T "-" \
-        3.2 T "-#[align=centre,nodim]pane-border-lines" \
-        3.2 C s "$lbl_single" "$_cmd  single  $runshell_reload_mnu" \
-        3.2 C d "$lbl_double" "$_cmd  double  $runshell_reload_mnu" \
-        3.2 C h "$lbl_heavy" "$_cmd  heavy   $runshell_reload_mnu" \
-        3.2 C i "$lbl_simple" "$_cmd  simple  $runshell_reload_mnu" \
-        3.2 C \\# "$lbl_number" "$_cmd  number  $runshell_reload_mnu" \
-        3.6 C p "$lbl_spaces" "$_cmd  spaces  $runshell_reload_mnu" \
-        3.7z C n "$no_border" "$_cmd  none    $runshell_reload_mnu"
-    menu_generate_part 5 "$@" #
-}
-
 dynamic_content() {
+    log_it "><> dynamic_content() - might run: handle_pane_border_status()"
     tmux_vers_check 2.3 && handle_pane_border_status
-    tmux_vers_check 3.2 && handle_pane_border_lines
+    tmux_vers_check 3.2 && {
+        log_it "><> dynamic_content() - will source: layouts_support.sh"
+        # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
+        . "$d_scripts"/layouts_support.sh
+
+        handle_layout_border_lines "pane-border-lines"
+        log_it "><> dynamic_content() - completed handle_layout_border_lines 'pane-border-lines'"
+    }
 }
 
 static_content() {
@@ -132,7 +92,7 @@ static_content() {
 #
 #===============================================================
 
-menu_name="Layouts - Border Lines"
+menu_name="Layouts - Pany Borders"
 menu_min_vers=2.3
 
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder

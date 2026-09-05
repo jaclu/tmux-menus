@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Choose layout
+#   pane indicators
 #
 
 dynamic_content() {
