@@ -19,11 +19,10 @@ static_content() {
         0.0 M Left "Back to Previous menu  $nav_prev" "$prev_menu" \
         0.0 M Home "Back to Main menu      $nav_home" "$cfg_main_menu" \
         0.0 S \
-        0.0 T "-#[nodim]Use s for centering" \
+        0.0 T "-#[nodim]Use 's' for centering on the screen" \
         0.0 T "-" \
-        0.0 T "-#[nodim]And the surrounding chars" \
-        0.0 T "-#[nodim]for the respective edges" \
-        0.0 T "-#[nodim]of the screen"
+        0.0 T "-#[nodim]And the surrounding chars for the" \
+        0.0 T "-#[nodim]respective edges of the screen"
     menu_generate_part 1 "$@"
 }
 

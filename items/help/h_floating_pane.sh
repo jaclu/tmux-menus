@@ -23,6 +23,7 @@ static_content() {
         0.0 M Home "Back to Main menu      $nav_home" "$cfg_main_menu" \
         0.0 S \
         0.0 T "-#[nodim]Movement diamond: " \
+        0.0 T "-" \
         0.0 T "-#[nodim]        T(up)" \
         0.0 T "-#[nodim]F(left)         G(right) " \
         0.0 T "-#[nodim]        V(down)" \
