@@ -35,8 +35,6 @@ static_content() {
         2.6 C t "Set Pane Title" "command-prompt -I '#T'  -p 'Title: '  \
             'select-pane -T \"%%\"' $runshell_reload_mnu" \
         1.1 C '\#' "Display pane numbers" "display-panes $runshell_reload_mnu" \
-        1.7 C d "Display pane size" "display-message \
-            'Pane: #P size: #{pane_width}x#{pane_height}' $runshell_reload_mnu" \
         0.0 S \
         1.4 C l "Last selected pane" "last-pane $runshell_reload_mnu" \
         1.4 C p "Previous pane [in order]" "select-pane -t :.- $runshell_reload_mnu" \
