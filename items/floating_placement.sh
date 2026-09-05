@@ -24,8 +24,8 @@ dynamic_content() {
         -f "$filt_all_other_floating_panes" | sort -t '%' -k 2 -n)
     if [ -n "$other_floating_panes" ]; then
         set -- \
-            3.7z E p "previous floating pane" "$d_scripts/floating_pane_switch.sh previous \; $0" \
-            3.7z E o "next floating pane" "$d_scripts/floating_pane_switch.sh next \; $0"
+            3.7 E p "previous floating pane" "$d_scripts/floating_pane_switch.sh previous \; $0" \
+            3.7 E o "next floating pane" "$d_scripts/floating_pane_switch.sh next \; $0"
         menu_generate_part "$_dy_idx" "$@"
     else
         menu_generate_part "$_dy_idx" # clear prev entry

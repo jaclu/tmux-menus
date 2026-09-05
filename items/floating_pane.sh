@@ -24,7 +24,7 @@
 dynamic_content() {
     _dy_idx=4
 
-    tmux_vers_check 3.7z || return
+    tmux_vers_check 3.7 || return
     _is_floating=$($TMUX_BIN display -p '#{pane_floating_flag}')
 
     case "$_is_floating" in
@@ -42,26 +42,26 @@ dynamic_content() {
 
             if [ -n "$other_floating_panes" ]; then
                 set -- \
-                    3.7z E p "previous floating pane" "$d_scripts/floating_pane_switch.sh previous \; $0" \
-                    3.7z E o "next floating pane" "$d_scripts/floating_pane_switch.sh next \; $0"
+                    3.7 E p "previous floating pane" "$d_scripts/floating_pane_switch.sh previous \; $0" \
+                    3.7 E o "next floating pane" "$d_scripts/floating_pane_switch.sh next \; $0"
             else
                 set --
             fi
 
             # focus is on a floating pane, primary actions relevant
             set -- "$@" \
-                0.0 S \
+                3.7z S \
                 3.7z C t "Move pane up" "move-pane -D -$_vert_step $_rrm" \
                 3.7z C f "Move pane left" "move-pane -R -$_hori_step $_rrm" \
                 3.7z C g "Move pane right" "move-pane -R $_hori_step $_rrm" \
                 3.7z C v "Move pane down" "move-pane -D $_vert_step $_rrm" \
-                0.0 S \
+                3.7z S \
                 3.7z C T "Reduce pane height" "resize-pane -D -$_vert_step $_rrm" \
                 3.7z C F "Reduce pane width" "resize-pane -R -$_hori_step $_rrm" \
                 3.7z C G "Grow pane width" "resize-pane -R $_hori_step $_rrm" \
                 3.7z C V "Grow pane height" "resize-pane -D $_vert_step $_rrm" \
-                0.0 S \
-                0.0 M H "Help               $nav_next" "$d_help/h_floating_pane.sh $0"
+                3.7z S \
+                3.7z M H "Help               $nav_next" "$d_help/h_floating_pane.sh $0"
             menu_generate_part "$_dy_idx" "$@"
             ;;
         *) error_msg "Invalid value for pane_floating_flag [$_is_floating]" ;;
