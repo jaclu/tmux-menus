@@ -28,10 +28,7 @@ static_content() {
         0.0 T "-#[nodim]        V(down)" \
         0.0 T "-" \
         0.0 T "-#[nodim]Use lowercase to move" \
-        0.0 T "-#[nodim]Use uppercase to resize" \
-        0.0 S \
-        0.0 T "-#[nodim]For placements use s and" \
-        0.0 T "-#[nodim]the surrounding 8 chars"
+        0.0 T "-#[nodim]Use uppercase to resize"
     menu_generate_part 1 "$@"
 }
 

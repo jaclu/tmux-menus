@@ -12,19 +12,6 @@
 #   it is releases
 #
 
-dynamic_content() {
-    tmux_vers_check 3.7z || return
-
-    [ "$($TMUX_BIN display -p '#{pane_floating_flag}')" = 1 ] || {
-        # Skip if floating pane is not focused
-        menu_generate_part 2 # clear menu item
-        return
-    }
-
-    set -- 3.7z M F "  Floating Pane    $nav_next" floating_pane.sh
-    menu_generate_part 2 "$@"
-}
-
 static_content() {
     rld_cmd="command-prompt -I '$cfg_tmux_conf' -p 'Source file:' \
         'run-shell \"$d_scripts/reload_conf.sh %%\"'"
@@ -46,10 +33,8 @@ static_content() {
     }
 
     set -- "$@" \
-        0.0 M P "Handling Pane      $nav_next" panes.sh
-    menu_generate_part 1 "$@"
-
-    set -- \
+        0.0 M P "Handling Pane      $nav_next" panes.sh \
+        3.7 M F "  Floating Pane    $nav_next" floating_pane.sh \
         0.0 M W "Handling Window    $nav_next" windows.sh \
         0.0 M S "Handling Sessions  $nav_next" sessions.sh \
         0.0 M B "Paste Buffers      $nav_next" paste_buffers.sh \
@@ -57,8 +42,8 @@ static_content() {
         2.0 M M "Missing Keys       $nav_next" "$d_odd_chars"/missing_keys.sh \
         0.0 M A "Advanced Options   $nav_next" advanced.sh \
         0.0 M E "Extras             $nav_next" extras.sh
-    menu_generate_part 3 "$@"
-    $cfg_display_cmds && display_commands_toggle 4 # give this its own menu part idx
+    menu_generate_part 1 "$@"
+    $cfg_display_cmds && display_commands_toggle 2 # give this its own menu part idx
 
     set -- \
         0.0 S \
@@ -78,7 +63,7 @@ static_content() {
         0.0 S \
         0.0 M H "Help               $nav_next" \
         "$d_help/help_summary.sh $0"
-    menu_generate_part 5 "$@"
+    menu_generate_part 3 "$@"
 }
 
 #===============================================================
