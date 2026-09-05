@@ -71,7 +71,7 @@ dynamic_content() {
 static_content() {
     set -- \
         0.0 M Left "Back to Main menu   $nav_home" "$cfg_main_menu" \
-        0.0 M P "Placement of pane      $nav_next" floating_placement.sh
+        3.7z M P "Placement of pane      $nav_next" floating_placement.sh
     menu_generate_part 1 "$@"
     $cfg_display_cmds && display_commands_toggle 2
 
