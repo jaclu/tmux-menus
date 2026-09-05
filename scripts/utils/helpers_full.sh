@@ -537,7 +537,6 @@ parse_move_link_dest() {
 #  Convenience shortcuts
 #
 
-d_help="$d_items"/help
 d_hints="$d_items"/hints
 d_custom_items="$D_TM_BASE_PATH"/custom_items
 f_custom_items_index="$d_custom_items"/_index.sh

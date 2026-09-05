@@ -613,6 +613,7 @@ f_no_cache_hint="$d_tmp"/tmux-menus-no-cache-hint
 
 d_scripts="$D_TM_BASE_PATH"/scripts
 d_items="$D_TM_BASE_PATH"/items
+d_help="$d_items"/help
 d_cache="$D_TM_BASE_PATH"/cache
 f_cache_known_tmux_vers="$d_cache"/known_tmux_versions
 f_cache_params="$d_cache"/plugin_params
