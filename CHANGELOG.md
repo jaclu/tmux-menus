@@ -4,6 +4,15 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [2.4.1] - 2026-09-12
+
+### Fixed
+
+- removed left-over debug logging
+- corrected some shellcheck directives
+
+---
+
 ## [2.4.0] - 2026-09-11
 
 ### Added
