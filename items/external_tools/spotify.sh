@@ -9,7 +9,7 @@
 #
 
 display_currently_playing_track() {
-    ${all_helpers_sourced:-false} || source_all_helpers "display_currently_playing_track()"
+    ${b_all_helpers_sourced:-false} || source_all_helpers "display_currently_playing_track()"
 
     spotify status >/dev/null 2>&1
 
@@ -26,10 +26,10 @@ static_content() {
     command -v spotify >/dev/null || error_msg "spotify bin not found"
 
     set -- \
-        0.0 M Left "Back to Extras     $nav_prev" extras.sh \
-        0.0 M Home "Back to Main menu  $nav_home" "$cfg_main_menu"
+        0.0 M Left "Back to Previous   $nav_prev" extras.sh \
+        0.0 M Home "Back to Main       $nav_home" "$cfg_main_menu"
     menu_generate_part 1 "$@"
-    $cfg_display_cmds && display_commands_toggle 2
+    display_commands_toggle 2
 
     set -- \
         0.0 S \

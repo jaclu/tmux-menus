@@ -4,6 +4,37 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [2.4.0] - 2026-09-11
+
+### Added
+
+- New danger-zone functionality with documented controls
+- New combined Floating Pane menu for easier pane handling
+- Help screen for pane-split operations
+- Advanced documentation with new features and use cases
+- Support for centralized menu text styling through `mnu_text_line()`
+
+### Changed
+
+- Updated README screenshots to include new layouts and highlighting items
+  in the danger zone
+- Help menu filenames refactored from `help_*.sh` to `h_*.sh` (shorter, cleaner naming)
+- Extensive cleanup of Display Commands processing and handling
+- Floating Pane positioning and layout improvements
+- README simplified and streamlined
+- Reworked `should_display_cmds_be_used()` logic
+- Centralized styling handling to reduce duplication in menu entries
+
+### Fixed
+
+- Display Commands issue resolved - fixed crashes in specific menu contexts
+- Option to disable Display Commands functionality where it currently crashes
+- Corrected menu option handling and selection logic
+- Code cleanup and removed dead whitespace
+- Various linting and configuration fixes
+
+---
+
 ## [2.3.3] - 2026-08-30
 
 ### Added
@@ -189,7 +220,7 @@ Added some tmux 3.6 features
 
 ### Changed
 
-- Linting - ensure correct handling even if all_helpers_sourced is not set
+- Linting - ensure correct handling even if b_all_helpers_sourced is not set
 
 ---
 

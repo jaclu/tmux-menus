@@ -46,10 +46,10 @@ dynamic_content() {
 
 static_content() {
     set -- \
-        0.0 M Left "Back to Layouts    $nav_prev" layouts.sh \
-        0.0 M Home "Back to Main menu  $nav_home" "$cfg_main_menu"
+        0.0 M Left "Back to Previous  $nav_prev" layouts.sh \
+        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu"
     menu_generate_part 1 "$@"
-    $cfg_display_cmds && display_commands_toggle 2
+    display_commands_toggle 2
     set -- \
         0.0 S
     menu_generate_part 3 "$@"

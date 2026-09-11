@@ -19,7 +19,7 @@ cache_create_folder() {
     # Returns 0 if already present or could be created, 1 for failure to create
     # log_it "cache_create_folder($1) - folder: $d_cache"
 
-    $cfg_use_cache || error_msg "cache_create_folder() - called when cache is disabled"
+    ${cfg_use_cache:-false} || error_msg "cache_create_folder() - called when cache is disabled"
     [ -z "$d_cache" ] && {
         error_msg "cache_create_folder() - variable d_cache undefined"
     }
@@ -45,7 +45,7 @@ cache_prepare() {
     #  Aborts with error if it couldn't be created
     #
     # log_it "cache_prepare() - $1"
-    $cfg_use_cache || error_msg "cache_prepare() - called when not using cache"
+    ${cfg_use_cache:-false} || error_msg "cache_prepare() - called when not using cache"
     cache_create_folder "cache_prepare()"
 }
 
@@ -56,7 +56,7 @@ cache_clear() {
     #
 
     log_it "cache_clear() $1"
-    $cfg_use_cache || error_msg "cache_clear() - called when not using cache"
+    ${cfg_use_cache:-false} || error_msg "cache_clear() - called when not using cache"
     [ -z "$d_cache" ] && error_msg "cache_clear() - called when d_cache is undefined"
     safe_remove "$d_cache/*" "cache_clear()"
     cache_prepare "cache_clear()"
@@ -78,8 +78,8 @@ cache_add_ok_vers() {
         *"$1 "*) ;;
         *)
             # log_it "Adding ok tmux vers: $1"
-            cached_ok_tmux_versions="${cached_ok_tmux_versions}$1 "
-            [ "$cfg_use_cache" = true ] && cache_save_known_tmux_versions
+            cached_ok_tmux_versions="${cached_ok_tmux_versions} $1 "
+            ${cfg_use_cache:-false} && cache_save_known_tmux_versions
             ;;
     esac
     return 0
@@ -97,8 +97,8 @@ cache_add_bad_vers() {
         *"$1"*) ;;
         *)
             # log_it "Adding bad tmux vers: $1"
-            cached_bad_tmux_versions="${cached_bad_tmux_versions}$1 "
-            [ "$cfg_use_cache" = true ] && cache_save_known_tmux_versions
+            cached_bad_tmux_versions="${cached_bad_tmux_versions} $1 "
+            ${cfg_use_cache:-false} && cache_save_known_tmux_versions
             ;;
     esac
     return 1
@@ -110,7 +110,7 @@ cache_save_known_tmux_versions() { # tmux stuff
     #  since they are checked with a case to speed things up
     #
     # log_it "cache_save_known_tmux_versions()"
-    [ "$cfg_use_cache" = true ] || {
+    ${cfg_use_cache:-false} || {
         error_msg "cache_save_known_tmux_versions() - called when not using cache"
     }
     [ -d "$d_cache" ] || {
@@ -249,7 +249,7 @@ cache_write_plugin_params() {
     # log_it "cache_write_plugin_params()"
     get_env
 
-    $cfg_use_cache || error_msg "cache_write_plugin_params() - called when not using cache"
+    ${cfg_use_cache:-false} || error_msg "cache_write_plugin_params() - called when not using cache"
 
     # cloud node .22 jacmac .25 jacpad 2.5 jacdoid 1
     check_speed_cutoff 0.5
@@ -273,15 +273,18 @@ cache_write_plugin_params() {
 
 cfg_trigger_key=\"$_cwpp_trigger_key\"
 cfg_no_prefix=$cfg_no_prefix
-cfg_use_cache=$cfg_use_cache
-cfg_display_cmds=\"$cfg_display_cmds\"
 cfg_main_menu=\"$cfg_main_menu\"
-
 cfg_tmux_conf=\"$cfg_tmux_conf\"
 cfg_log_file=\"$cfg_log_file\"
+
+cfg_use_cache=$cfg_use_cache
+cfg_validate_cache=$cfg_validate_cache
+cfg_use_timers=$cfg_use_timers
+cfg_display_cmds=$cfg_display_cmds
 " >"$_f_params_tmp" || error_msg "Failed to write to tmpfile: $_f_params_tmp"
     #endregion param cache file - header
-    $b_use_alt_handler || {
+
+    ${b_use_alt_handler:-false} || {
         # Only use these settings if not using whiptail/dialog
         #region param cache file - display-menu related
         printf '%s\n' "\
@@ -295,6 +298,9 @@ cfg_mnu_loc_y=\"$cfg_mnu_loc_y\"
 
 cfg_use_hint_overlays=$cfg_use_hint_overlays
 cfg_show_key_hints=$cfg_show_key_hints
+
+# If set will use this style for all destructive actions - kill/delete etc
+cfg_danger_zone='$cfg_danger_zone'
 
 cfg_format_title=\"$(cache_escape_special_chars "$cfg_format_title")\"
 cfg_nav_next=\"$(cache_escape_special_chars "$cfg_nav_next")\"
@@ -329,6 +335,7 @@ cfg_floating_pane_incr_vertical=$cfg_floating_pane_incr_vertical
 
     #region param cache file - Not config related 1
     printf '\n%s' "\
+
 #
 # Non configuration related cached states
 #
@@ -352,6 +359,8 @@ use_bind_key_notes=$use_bind_key_notes # From @use_bind_key_notes_in_plugins
         *) ;;
     esac
 
+    _mnu_reload_delay=$(awk -v t="$t_minimal_display_time" 'BEGIN { print t + 1 }')
+
     #region param cache file - Not config related 2
     printf '%s' "\
 current_tmux_vers=\"$current_tmux_vers\"
@@ -366,16 +375,23 @@ repo_last_changed=\"$new_repo_last_changed\"
 last_local_edit=\"$new_last_local_edit\"
 
 #
+#  For some menus 'Display Commands' fail, and until this is resolved
+#  those  menus will skip the feature even if enabled, unless this is set to true
+#
+b_debug_display_cmds=false
+
+#
 # If menu is displayed shorter than this, assume it was due to not fitting
 # the screen
 #
-t_minimal_display_time=\"$t_minimal_display_time\"
+t_minimal_display_time=$t_minimal_display_time
+t_delayed_menu_reload=$_mnu_reload_delay
 
 b_use_alt_handler=$b_use_alt_handler
 alt_menu_handler=\"$alt_menu_handler\"
 " >>"$_f_params_tmp" || error_msg "Failed to write to tmpfile: $_f_params_tmp"
     #endregion param cache file - Not config related 2
-    $b_use_alt_handler && {
+    ${b_use_alt_handler:-false} && {
         echo "wt_pasting=\"$wt_pasting\" # Only used by whiptail/dialog" \
             >>"$_f_params_tmp" || error_msg "Failed to write to tmpfile: $_f_params_tmp"
     }
@@ -450,9 +466,7 @@ create_param_cache() {
     # most likely already called by the check for min version, but it is quick
     # enough to call again here to ensure tmux version is known
     tpt_retrieve_running_tmux_vers
-
-    [ "$initialize_plugin" = 1 ] && [ -d "$d_cache" ] && verify_tmux_vers_unchanged
-
+    ${initialize_plugin:-false} && [ -d "$d_cache" ] && verify_tmux_vers_unchanged
     cache_prepare
     source_cached_params # get additional env config if available
     # b_use_alt_handler=false

@@ -10,10 +10,10 @@
 
 static_content() {
     set -- \
-        0.0 M Left "Back to Diacritics  $nav_home" "$d_odd_chars"/diacritics.sh \
-        0.0 M Home "Back to Main menu  $nav_home" "$cfg_main_menu"
+        0.0 M Left "Back to Previous  $nav_home" "$d_odd_chars"/diacritics.sh \
+        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu"
     menu_generate_part 1 "$@"
-    $cfg_display_cmds && display_commands_toggle 2
+    display_commands_toggle 2
 
     set -- \
         0.0 S \
@@ -40,8 +40,8 @@ no_auto_menu_handling=1 # delay processing of dialog, only source it for now
 
 if [ -n "$1" ]; then
     "$D_TM_BASE_PATH"/scripts/act_display_char.sh "$1"
-elif $b_use_alt_handler; then
-    ${all_helpers_sourced:-false} || source_all_helpers "diacritics_k.sh"
+elif ${b_use_alt_handler:-false}; then
+    ${b_all_helpers_sourced:-false} || source_all_helpers "diacritics_k.sh"
     tmux_error_handler set-option -gqu "$wt_pasting"
 fi
 

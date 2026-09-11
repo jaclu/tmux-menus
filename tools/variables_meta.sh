@@ -70,47 +70,61 @@ current_tmux_vers_i="${current_tmux_vers_i:-}"
 current_tmux_vers_suffix="${current_tmux_vers_suffix:-}"
 d_cache="${d_cache:-}"
 d_cache_main_menu="${d_cache_main_menu:-}"
+d_help="${d_help:-}"
 d_items="${d_items:-}"
 d_safe_tmp_folder="${d_safe_tmp_folder:-}"
 d_scripts="${d_scripts:-}"
 d_tmp="${d_tmp:-}"
+env_initialized="${env_initialized:-}"
 env_unmame="${env_unmame:-}"
 f_cache_params="${f_cache_params:-}"
 f_cached_tmux_key_binds="${f_cached_tmux_key_binds:-}"
 f_ext_dlg_trigger="${f_ext_dlg_trigger:-}"
 f_main_menu="${f_main_menu:-}"
+f_max_25_line_menus="${f_max_25_line_menus:-}"
 f_no_cache_hint="${f_no_cache_hint:-}"
+f_safe_now_method="${f_safe_now_method:-}"
 initialize_plugin="${initialize_plugin:-}"
 log_file_forced="${log_file_forced:-}" # debug variable, normally not defined
 plugin_name="${plugin_name:-}"
 rn_current_script="${rn_current_script:-}"
+scr_float_pane_switch="${scr_float_pane_switch:-}"
 t_minimal_display_time="${t_minimal_display_time:-}"
 t_script_start="${t_script_start:-}"
 t_time_span="${t_time_span:-}"
-validate_menu_cache="${validate_menu_cache:-}"
+tpt_vers_digits="${tpt_vers_digits:-}"
+
+#===============================================================
+# scripts/helpers_floating_pane.sh
+#===============================================================
+
+current_pane_is_floating="${current_pane_is_floating:-}"
+other_floating_panes="${other_floating_panes:-}"
 
 #===============================================================
 # scripts/menu_handling.sh
 #===============================================================
 
+b_display_commands_issue="${b_display_commands_issue:-}"
 d_odd_chars="${d_odd_chars:-}"
 dh_t_start="${dh_t_start:-}" # time when menu is displayed
-menu_width="${menu_width:-}"
 mnu_reload_direct="${mnu_reload_direct:-}"
 nav_home="${nav_home:-}"
 nav_next="${nav_next:-}"
 nav_prev="${nav_prev:-}"
 runshell_reload_mnu="${runshell_reload_mnu:-}"
+runshell_sleep_reload_mnu="${runshell_sleep_reload_mnu:-}"
 show_cmds_state="${show_cmds_state:-}" # current state for displaying cmds
-skip_oversized="${skip_oversized:-}"
-t_show_cmds="${t_show_cmds:-}" # time when cmds generation starts
+t_show_cmds="${t_show_cmds:-}"         # time when cmds generation starts
 
 #===============================================================
 # scripts/utils/cache.sh
 #===============================================================
 
+cached_ok_tmux_versions="${cached_ok_tmux_versions:-}"
 cached_bad_tmux_versions="${cached_bad_tmux_versions:-}"
 cfg_border_type="${cfg_border_type:-}"
+cfg_danger_zone="${cfg_danger_zone:-}"
 cfg_display_cmds="${cfg_display_cmds:-}"
 cfg_display_cmds_cols="${cfg_display_cmds_cols:-}"
 cfg_format_title="${cfg_format_title:-}"
@@ -121,6 +135,8 @@ cfg_nav_home="${cfg_nav_home:-}"
 cfg_nav_next="${cfg_nav_next:-}"
 cfg_nav_prev="${cfg_nav_prev:-}"
 cfg_no_prefix="${cfg_no_prefix:-}"
+cfg_validate_cache="${cfg_validate_cache:-}"
+cfg_use_timers="${cfg_use_timers:-}"
 cfg_show_key_hints="${cfg_show_key_hints:-}"
 cfg_simple_style="${cfg_simple_style:-}"
 cfg_simple_style_border="${cfg_simple_style_border:-}"
@@ -130,6 +146,7 @@ cfg_trigger_key="${cfg_trigger_key:-}"
 cfg_use_hint_overlays="${cfg_use_hint_overlays:-}"
 use_bind_key_notes="${use_bind_key_notes:-}"
 f_cache_known_tmux_vers="${f_cache_known_tmux_vers:-}"
+t_delayed_menu_reload="${t_delayed_menu_reload:-}"
 wt_pasting="${wt_pasting:-}"
 
 #===============================================================
@@ -141,7 +158,6 @@ _lbl="${_lbl:-}"
 _lbl_next="${_lbl_next:-}"
 cur_ses="${cur_ses:-}"
 d_custom_items="${d_custom_items:-}"
-d_help="${d_help:-}"
 d_hints="${d_hints:-}"
 dest_pane_idx="${dest_pane_idx:-}"
 dest_ses="${dest_ses:-}"

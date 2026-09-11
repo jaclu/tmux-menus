@@ -10,13 +10,13 @@
 
 static_content() {
     choose_tree="choose-tree"
-    if tmux_vers_check 2.7; then
+    if tmux_vers_check 2.8; then
         #  zooms the pane
         choose_tree="$choose_tree -Z"
     fi
 
     navigate_cmd="$TMUX_BIN $choose_tree"
-    if $cfg_use_hint_overlays && ! $b_use_alt_handler; then
+    if ${cfg_use_hint_overlays:-false} && ! ${b_use_alt_handler:-false}; then
         # The help overlay can't be displayed using whiptail
         navigate_cmd="$navigate_cmd & $d_hints/choose-tree.sh skip-oversized"
     fi
@@ -37,23 +37,23 @@ static_content() {
     fw_cmd="command-prompt -p 'Search for:' 'find-window $fw_flags %%'"
 
     set -- \
-        0.0 M Left "Back to Main menu  $nav_home" "$cfg_main_menu"
+        0.0 M Home "Back to Main            $nav_home" "$cfg_main_menu"
     menu_generate_part 1 "$@"
-    $cfg_display_cmds && display_commands_toggle 2
+    display_commands_toggle 2
 
     set -- \
         0.0 S \
-        1.7 E n "Navigate & select ses/win/pane" "$navigate_cmd"
+        2.7 E n "Navigate & select ses/win/pane" "$navigate_cmd"
 
-    $cfg_use_hint_overlays && $cfg_show_key_hints && {
+    ${cfg_use_hint_overlays:-false} && $cfg_show_key_hints && {
         set -- "$@" \
-            1.7 M K "Key hints - Navigate & select  $nav_next" \
+            1.8 M K "Key hints - Navigate & select  $nav_next" \
             "$d_hints/choose-tree.sh $0"
     }
 
     set -- "$@" \
         1.8 S \
-        1.8 T "-#[nodim]Search in all $fw_span" \
+        1.8 T "Search in all $fw_span" \
         1.8 C s "$fw_lbl_line2" "$fw_cmd"
     menu_generate_part 3 "$@"
 }

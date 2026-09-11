@@ -21,11 +21,12 @@ static_content() {
     #  on some platforms it works, on others it breaks this menu
     #
     set -- \
-        0.0 M Left "Back to Main menu  $nav_home" "$cfg_main_menu" \
-        2.0 M C "Currencies         $nav_next" "$d_odd_chars"/currencies.sh \
-        0.0 M D "Diacritics         $nav_next" "$d_odd_chars"/diacritics.sh
+        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu" \
+        2.0 M C "Currencies        $nav_next" "$d_odd_chars"/currencies.sh \
+        0.0 M D "Diacritics        $nav_next" "$d_odd_chars"/diacritics.sh \
+        0.0 M H "Help              $nav_next" "$d_help/h_missing_keys.sh $0"
     menu_generate_part 1 "$@"
-    $cfg_display_cmds && display_commands_toggle 2
+    display_commands_toggle 2
 
     set -- \
         0.0 S \
@@ -34,9 +35,7 @@ static_content() {
         0.0 E t "Send ~ (tilde)" "$0  0x7e" \
         0.0 E a "Send @ (at)" "$0 @" \
         0.0 E p "Send § (paragraph)" "$0 §" \
-        0.0 E h "Send # (hash)" "$0 0x23" \
-        0.0 S \
-        0.0 M H "Help               $nav_next" "$d_help/help_missing_keys.sh $0"
+        0.0 E h "Send # (hash)" "$0 0x23"
     menu_generate_part 3 "$@"
 }
 
@@ -59,8 +58,8 @@ no_auto_menu_handling=1 # delay processing of dialog, only source it for now
 
 if [ -n "$1" ]; then
     "$D_TM_BASE_PATH"/scripts/act_display_char.sh "$1"
-elif $b_use_alt_handler; then
-    ${all_helpers_sourced:-false} || source_all_helpers "missing_keys.sh"
+elif ${b_use_alt_handler:-false}; then
+    ${b_all_helpers_sourced:-false} || source_all_helpers "missing_keys.sh"
     tmux_error_handler set-option -gqu "$wt_pasting"
 fi
 

@@ -18,29 +18,29 @@ static_content() {
     cli_dtch_mode="set-option -s detach-on-destroy $_s"
 
     set -- \
-        0.0 M Left "Back to Main menu  $nav_home" "$cfg_main_menu"
+        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu"
     menu_generate_part 1 "$@"
-    $cfg_display_cmds && display_commands_toggle 2
+    display_commands_toggle 2
 
     set -- \
         0.0 S \
-        0.0 C r "Rename this session" "command-prompt -I '#{session_name}' \
+        0.0 C r "Rename" "command-prompt -I '#{session_name}' \
             'rename-session -- \"%%\"' $runshell_reload_mnu" \
-        0.0 C \+ "New session" "command-prompt -p \
-            'Name of new session: ' \
+        0.0 C s "New" "command-prompt -p \
+            'Name of new: ' \
             'new-session -d -s \"%1\" ; switch-client -t \"%1\"' $runshell_reload_mnu" \
         0.0 S \
-        0.0 C l "Last selected session" "switch-client -l        $runshell_reload_mnu" \
-        0.0 C p "Previous session [in order]" "switch-client -p  $runshell_reload_mnu" \
-        0.0 C n "Next     session [in order]" "switch-client -n  $runshell_reload_mnu" \
-        0.0 C c "Choose session" "choose-tree -Zs" \
+        0.0 C l "Last selected" "switch-client -l        $runshell_reload_mnu" \
+        0.0 C p "Previous" "switch-client -p  $runshell_reload_mnu" \
+        0.0 C n "Next" "switch-client -n  $runshell_reload_mnu" \
+        2.7 C c "Choose" "choose-tree -Zs" \
         0.0 S \
-        1.8 C x "Kill current session" \
+        1.8 C x "${cfg_danger_zone}Kill current" \
         "confirm-before -p \
-        'Are you sure you want to kill this session: [#S] (y/n)' \
+        'Are you sure you want to kill this: [#S] (y/n)' \
         \"$cli_dtch_mode ; kill-session\" $runshell_reload_mnu" \
-        1.8 C o "Kill all other sessions" "confirm-before -p \
-        'Are you sure you want to kill all other sessions? (y/n)' \
+        1.8 C o "${cfg_danger_zone}Kill all other" "confirm-before -p \
+        'Are you sure you want to kill all other? (y/n)' \
         \"kill-session -a\" $runshell_reload_mnu"
     menu_generate_part 3 "$@"
 }
@@ -55,7 +55,7 @@ static_content() {
 #
 #===============================================================
 
-menu_name="Handling Session"
+menu_name="Handling Sessions"
 
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
 D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)

@@ -10,10 +10,10 @@
 
 static_content() {
     set -- \
-        0.0 M Left "Back to Handling Pane  $nav_prev" panes.sh \
-        0.0 M Home "Back to Main menu      $nav_home" "$cfg_main_menu"
+        0.0 M Left "Back to Previous  $nav_prev" panes.sh \
+        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu"
     menu_generate_part 1 "$@"
-    $cfg_display_cmds && display_commands_toggle 2
+    display_commands_toggle 2
 
     set -- \
         0.0 S \
@@ -26,9 +26,11 @@ static_content() {
         0.0 C D "down  by  5" "resize-pane -D 5 $runshell_reload_mnu" \
         0.0 C L "left  by 10" "resize-pane -L 10 $runshell_reload_mnu" \
         0.0 C R "right by 10" "resize-pane -R 10 $runshell_reload_mnu" \
-        0.0 S \
-        1.8 C s "Specify width & height" "command-prompt -p \
-            'Pane width,Pane height' 'resize-pane -x %1 -y %2'"
+        1.7 S \
+        1.8 C w "Set width & height" "command-prompt -p \
+            'Pane width,Pane height' 'resize-pane -x %1 -y %2'" \
+        1.7 C s "Show size" "display-message \
+            'Pane: #P size: #{pane_width}x#{pane_height}' $runshell_reload_mnu"
     menu_generate_part 3 "$@"
 }
 

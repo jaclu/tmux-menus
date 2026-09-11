@@ -14,7 +14,10 @@ dynamic_content() {
     #
     #  Gather some info in order to be able to show states
     #
-    tmux_vers_check 2.1 || return # no dynamic item is tmux < 2.1
+    tmux_vers_check 2.1 || {
+        menu_generate_part 4 0 D
+        return # no dynamic items is tmux < 2.1
+    }
 
     # save value in a pre tmux 1.7 safe way, not relying on show-options -v
     current_mouse_status="$($TMUX_BIN show-options -g mouse | cut -d' ' -f2)"
@@ -28,7 +31,7 @@ dynamic_content() {
     # save value in a pre tmux 1.7 safe way, not relying on show-options -v
     current_prefix="$($TMUX_BIN show-options -g prefix | cut -d' ' -f2)"
     set -- \
-        2.1 C o "Toggle mouse to: $new_mouse_status" \
+        2.1 C o "Set mouse to: $new_mouse_status" \
         "set-option -g mouse $new_mouse_status $runshell_reload_mnu" \
         2.4 E p "Change prefix (Current: $current_prefix)" \
         "$d_scripts/change_prefix.sh $0"
@@ -36,19 +39,19 @@ dynamic_content() {
 }
 
 static_content() {
-    $cfg_use_hint_overlays && ! $b_use_alt_handler && {
+    ${cfg_use_hint_overlays:-false} && ! ${b_use_alt_handler:-false} && {
         hint="\& $d_hints/choose-client.sh skip-oversized"
     }
 
     set -- \
-        0.0 M Left "Back to Main menu  $nav_home" "$cfg_main_menu"
+        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu"
     menu_generate_part 1 "$@"
-    $cfg_display_cmds && display_commands_toggle 2
+    display_commands_toggle 2
 
     set -- \
         0.0 S
 
-    # if $b_use_alt_handler; then
+    # if ${b_use_alt_handler:-false}; then
     #     #
     #     #  The tmux output down to Customize options will be displayed
     #     #  then disappear instantly since whiptail restarts the foreground
@@ -74,7 +77,7 @@ static_content() {
         0.0 C s "Toggle status line" "set-option -g status $runshell_reload_mnu" \
         1.8 S
 
-    $cfg_use_hint_overlays && $cfg_show_key_hints && tmux_vers_check 2.7 && {
+    ${cfg_use_hint_overlays:-false} && ${cfg_show_key_hints:-false} && tmux_vers_check 2.7 && {
         # Only generate this segment if any content will be displayed
         # i.e. tmux >= 2.7
         set -- "$@" \
@@ -86,9 +89,9 @@ static_content() {
 
     set -- \
         0.0 S \
-        2.7 E c "Disconnect clients" \
+        2.7 E c "${cfg_danger_zone}Disconnect clients" \
         "$TMUX_BIN choose-client -Z $hint" \
-        1.8 C x "Kill server" "confirm-before -p \
+        1.8 C x "${cfg_danger_zone}Kill server" "confirm-before -p \
             'kill tmux server defined in($cfg_tmux_conf) ? (y/n)' kill-server"
     menu_generate_part 5 "$@"
 }

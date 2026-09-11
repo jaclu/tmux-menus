@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   General Help
+#   Help regarding panes menu
 #
 
 static_content() {
@@ -13,13 +13,15 @@ static_content() {
         error_msg "$bn_current_script was called without notice of what called it"
     fi
     set -- \
-        0.0 M Left "Back to Previous menu  $nav_prev" "$prev_menu" \
-        0.0 M Home "Back to Main menu      $nav_home" "$cfg_main_menu" \
+        0.0 M Left "Back to Previous  $nav_prev" "$prev_menu" \
+        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu" \
         0.0 S \
-        0.0 T "-#[nodim]Extras are menus manipulating" \
-        0.0 T "-#[nodim]other software." \
-        0.0 T "-#[nodim]If a specific app is not found," \
-        0.0 T "-#[nodim]that entry is grayed out."
+        0.0 T "When viewing history with escapes," \
+        0.0 T "use: less -R" \
+        0.0 T " " \
+        0.0 T "Or a color handling pager, like:" \
+        0.0 T " bat/most" \
+        0.0 T "In order to not get garbled output"
     menu_generate_part 1 "$@"
 }
 
@@ -30,7 +32,7 @@ static_content() {
 #===============================================================
 
 [ -n "$1" ] && prev_menu="$(realpath "$1")"
-menu_name="Help Extras"
+menu_name="Help Pane History"
 
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
 D_TM_BASE_PATH=$(cd "${0%/*}/../.." && pwd)

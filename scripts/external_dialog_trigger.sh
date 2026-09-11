@@ -15,8 +15,7 @@ D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
 
-menu_name="$1"
-[ -z "$menu_name" ] && menu_name="$f_main_menu"
+menu_name="${1:-$f_main_menu}"
 
 dlg_handler="$d_scripts/external_dialog_handle.sh"
 [ ! -f "$dlg_handler" ] && error_msg "File not found: $dlg_handler"

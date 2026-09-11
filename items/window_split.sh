@@ -10,10 +10,10 @@
 
 static_content() {
     set -- \
-        0.0 M Left "Back to Handling Window  $nav_prev" windows.sh \
-        0.0 M Home "Back to Main menu        $nav_home" "$cfg_main_menu"
+        0.0 M Left "Back to Previous  $nav_prev" windows.sh \
+        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu"
     menu_generate_part 1 "$@"
-    $cfg_display_cmds && display_commands_toggle 2
+    display_commands_toggle 2
 
     if tmux_vers_check 1.7; then
         same_folder="-c '#{pane_current_path}'"
@@ -23,9 +23,9 @@ static_content() {
 
     set -- \
         0.0 S \
-        0.0 T "-#[nodim]Divides the entire window/screen" \
-        0.0 T "-#[nodim]in desired direction." \
-        0.0 T "-#[nodim]" \
+        0.0 T "Divides the entire window/screen" \
+        0.0 T "in desired direction." \
+        0.0 T "" \
         2.0 C l "Left" "split-window   -bfh  $same_folder  $runshell_reload_mnu" \
         0.0 C r "Right" "split-window  -fh   $same_folder  $runshell_reload_mnu" \
         2.0 C a "Above" "split-window  -bfv  $same_folder  $runshell_reload_mnu" \

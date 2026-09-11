@@ -1,50 +1,16 @@
 # Menu Styling
 
-## About Styling
+## Introduction
 
-These styling features were added to allow menus to match various tmux themes.
-The focus is on ease of use and implementation rather than providing preset
-themes.
+Common menu styling can be set using:
 
-Sample configurations are included to demonstrate what's possible. Users with
-design expertise can leverage these features to better integrate menus with
-their themed environments.
+- menu-style
+- menu-selected-style
+- menu-border-style
+- menu-border-lines
 
-## Style Variables
-
-The table below lists available style variables. "Param" refers to
-`display-menu` parameters (see the tmux man page).
-
-| Param | Variable                     | Default                              | Example             |
-| ----- | ---------------------------- | ------------------------------------ | ------------------- |
-| -T    | @menus_format_title          | `"'#[align=centre] #{@menu_name} '"` | `"#{@menu_name}"`   |
-| -b    | @menus_border_type           | (none)                               | `rounded`           |
-| -H    | @menus_simple_style_selected | (none)                               | `fg=blue,bg=yellow` |
-| -s    | @menus_simple_style          | (none)                               | `bg=red`            |
-| -S    | @menus_simple_style_border   | (none)                               | `fg=green`          |
-
-**Notes:**
-
-- The `simple_style` prefix indicates limited style notation support.
-- **-T** (`@menus_format_title`): A FORMAT field. Use `#{@menu_name}` to
-  display the menu name.
-- **-b** (`@menus_border_type`): Sets border character style. See
-  `popup-border-lines` in the tmux man page.
-- **-H, -s, -S**: Appear to only support `fg`, `bg`, and `default` attributes.
-
-### Quoting Considerations
-
-To maximize styling freedom, these variables are **not** wrapped in quotes in
-the generated menu code. This means you're responsible for proper quoting,
-especially for spaces in menu names.
-
-If using `#{@menu_name}` and menus contain spaces, wrap it in an inner quote.
-
-Example:
-
-```tmux
-set -g @menus_format_title "'#[align=centre] #[fg=colour34]#{@menu_name} '"
-```
+The plugin styling features are not so much meant to duplicate this, instead
+offering convenient overrides for certain menus/items.
 
 ## Navigation Indicators
 
@@ -79,30 +45,50 @@ regenerate with the new style on next display.
 
 ![sample of dynamic changes using overrides](https://github.com/user-attachments/assets/e4f1c2b6-fb99-40d8-b8df-9174e9d5d3e3)
 
-## Example Configurations
+## Style Variables
 
-### Catppuccin Frappe
+The table below lists available style variables. "Param" refers to
+`display-menu` parameters (see the tmux man page).
 
-![Catppuccin Frappe inspired](https://github.com/user-attachments/assets/82bd152a-e577-4e1b-abc0-f959c30a87c3)
+In the Defaults it is indicated what Session option will control this if not
+directly provided to `display-menu`. This means that at least in principle
+these menus can have different styling from other tmux menus. If that might be
+desirable I leave up to others to decide...
+
+| Param | Variable                     | Default                              | Example             |
+| ----- | ---------------------------- | ------------------------------------ | ------------------- |
+| -T    | @menus_format_title          | `"'#[align=centre] #{@menu_name} '"` | `"#{@menu_name}"`   |
+| -s    | @menus_simple_style          | menu-style                           | `bg=red`            |
+| -H    | @menus_simple_style_selected | menu-selected-style                  | `fg=blue,bg=yellow` |
+| -S    | @menus_simple_style_border   | menu-border-style                    | `fg=green`          |
+| -b    | @menus_border_type           | menu-border-lines                    | `rounded`           |
+
+**Notes:**
+
+- The `simple_style` prefix indicates limited style notation support.
+- **-T** (`@menus_format_title`): A FORMAT field. Use `#{@menu_name}` to
+  display the menu name.
+- **-b** (`@menus_border_type`): Sets border character style. See
+  `popup-border-lines` in the tmux man page.
+- **-H, -s, -S**: Appear to only support `fg`, `bg`, and `default` attributes.
+
+### Quoting Considerations
+
+To maximize styling freedom, these variables are **not** wrapped in quotes in
+the generated menu code. This means you're responsible for proper quoting,
+especially for spaces in menu names.
+
+If using `#{@menu_name}` and menus contain spaces, wrap it in an inner quote.
+
+Example:
 
 ```tmux
-# fg @thm_surface_0 bg @thm_yellow
-set -g @menus_simple_style_selected 'fg=#414559,bg=#e5c890'
-set -g @menus_simple_style 'bg=#414559'        # @thm_surface_0
-set -g @menus_simple_style_border 'bg=#414559' # @thm_surface_0
-set -g @menus_nav_next '#[fg=colour220]-->'
-set -g @menus_nav_prev '#[fg=colour71]<--'
-set -g @menus_nav_home '#[fg=colour84]<=='
+set -g @menus_format_title "'#[align=centre] #[fg=colour34]#{@menu_name} '"
 ```
 
-### The styling I use
-
-![My Styling](https://github.com/user-attachments/assets/0dafa700-529a-4020-b049-93b5cf92358b)
+## The styling I use
 
 ```tmux
-set -g @menus_format_title "'#[fg=yellow,align=left] #{@menu_name} '"
-set -g @menus_simple_style_border "fg=green,bg=default"
-set -g @menus_border_type 'rounded'
 set -g @menus_nav_next "#[fg=colour220]-->"
 set -g @menus_nav_prev "#[fg=colour71]<--"
 set -g @menus_nav_home "#[fg=colour84]<=="

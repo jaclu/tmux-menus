@@ -21,10 +21,10 @@ log_to_file() {
 
 static_content() {
     set -- \
-        0.0 M Left "Back to Handling Pane  $nav_prev" panes.sh \
-        0.0 M Home "Back to Main menu      $nav_home" "$cfg_main_menu"
+        0.0 M Left "Back to Previous  $nav_prev" panes.sh \
+        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu"
     menu_generate_part 1 "$@"
-    $cfg_display_cmds && display_commands_toggle 2
+    display_commands_toggle 2
 
     set -- \
         0.0 S \
@@ -35,6 +35,9 @@ static_content() {
     tmux_vers_check 2.6 || {
         # before 2.6 it can't be detected if pane is piped,
         # so "Clear logging (if enabled)" is always displayed
+        # For never versions part 4 will be filled with this option
+        # if logging is enabled
+
         set -- "$@" \
             1.1 C c "Clear logging (if enabled)" "pipe-pane $runshell_reload_mnu"
     }
@@ -59,7 +62,7 @@ no_auto_menu_handling=1 # delay processing of dialog, only source it for now
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$D_TM_BASE_PATH"/scripts/menu_handling.sh
 
-if $b_use_alt_handler; then
+if ${b_use_alt_handler:-false}; then
     # It "should" work, but something is going wrong and I haven't figured it out yet...
     error_msg "Menu pane_log is not yet usable for whiptail/dialog"
     exit 1

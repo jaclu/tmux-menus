@@ -10,32 +10,30 @@
 
 static_content() {
     if [ -d "$HOME"/tmp ]; then
-        d_history="$HOME"/tmp
+        _d_history="$HOME"/tmp
     else
-        d_history="$d_tmp"
+        _d_history="$d_tmp"
     fi
 
     set -- \
-        0.0 M Left "Back to Handling Pane  $nav_prev" panes.sh \
-        0.0 M Home "Back to Main menu      $nav_home" "$cfg_main_menu"
+        0.0 M Left "Back to Previous  $nav_prev" panes.sh \
+        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu" \
+        0.0 M H "Help              $nav_next" "$d_help/h_pane_history.sh $0"
     menu_generate_part 1 "$@"
-    $cfg_display_cmds && display_commands_toggle 2
+    display_commands_toggle 2
 
     #
     set -- \
         0.0 S \
-        0.0 E c "Clear screen & history" "$d_scripts/act_clear_screen.sh $rn_current_script" \
-        0.0 C h 'Pane history (enter \"copy mode\")' "copy-mode" \
-        2.0 C s "Save pane history no escapes" "command-prompt -p \
-            'Save to (no escapes):' -I '$d_history/tmux-history' \
+        0.0 E c "${cfg_danger_zone}Clear all" "$d_scripts/act_clear_screen.sh $rn_current_script" \
+        0.0 C h 'History (enter copy mode)' "copy-mode" \
+        2.0 C s "Save (no escapes)" "command-prompt -p \
+            'Save to (no escapes):' -I '$_d_history/tmux-history' \
             'capture-pane -S - -E - ; save-buffer %1 ; delete-buffer'  $runshell_reload_mnu" \
-        2.0 C e "Save pane history with escapes" "command-prompt -p \
-            'Save to (with escapes):' -I '$d_history/tmux-history-escapes' \
-            'capture-pane -S - -E - -e ; save-buffer %1 ; delete-buffer' $runshell_reload_mnu" \
-        0.0 S \
-        0.0 M H "Help                   $nav_next" "$d_help/help_pane_history.sh $0"
+        2.0 C e "Save (with escapes)" "command-prompt -p \
+            'Save to (with escapes):' -I '$_d_history/tmux-history-escapes' \
+            'capture-pane -S - -E - -e ; save-buffer %1 ; delete-buffer' $runshell_reload_mnu"
     menu_generate_part 3 "$@"
-    unset d_history
 }
 
 #===============================================================

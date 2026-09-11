@@ -28,7 +28,7 @@ All scripts start with a minimal environment. Static cached content requires not
 To load the full environment in manually added/modified scripts, use:
 
 ```sh
-${all_helpers_sourced:-false} || source_all_helpers "Reason for souring the full env"
+${b_all_helpers_sourced:-false} || source_all_helpers "Reason for souring the full env"
 ```
 
 This prevents repeated sourcings if script logic might take multiple paths to a

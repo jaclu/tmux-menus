@@ -10,10 +10,11 @@
 
 static_content() {
     set -- \
-        0.0 M Left "Back to Handling Pane  $nav_prev" panes.sh \
-        0.0 M Home "Back to Main menu      $nav_home" "$cfg_main_menu"
+        0.0 M Left "Back to Previous  $nav_prev" panes.sh \
+        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu" \
+        0.0 M H "Help              $nav_next" "$d_help/h_pane_split.sh $0"
     menu_generate_part 1 "$@"
-    $cfg_display_cmds && display_commands_toggle 2
+    display_commands_toggle 2
 
     if tmux_vers_check 1.7; then
         same_folder="-c '#{pane_current_path}'"
@@ -23,13 +24,17 @@ static_content() {
 
     set -- \
         0.0 S \
-        0.0 T "-#[nodim]Subdivides the current pane" \
-        0.0 T "-#[nodim]in desired direction." \
-        0.0 T "-#[nodim]" \
+        0.0 T "Subdivides the current pane" \
+        0.0 T "in desired direction." \
+        0.0 T "" \
         2.0 C l "Left" "split-window  -bh  $same_folder  $runshell_reload_mnu" \
         0.0 C r "Right" "split-window -h   $same_folder  $runshell_reload_mnu" \
         2.0 C a "Above" "split-window -bv  $same_folder  $runshell_reload_mnu" \
-        0.0 C b "Below" "split-window      $same_folder  $runshell_reload_mnu"
+        0.0 C b "Below" "split-window      $same_folder  $runshell_reload_mnu" \
+        3.7 S \
+        3.7 C f "Float" "new-pane          $same_folder  $runshell_sleep_reload_mnu" \
+        3.8 C z "Float (keep zoomed)" "new-pane -A $same_folder  \
+            $runshell_sleep_reload_mnu"
     menu_generate_part 3 "$@"
 }
 

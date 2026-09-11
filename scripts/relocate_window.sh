@@ -24,6 +24,11 @@ D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
 action="$1"
 parse_move_link_dest "$2"
 
+# If no destination window index was given, assume last position
+if [ -z "$dest_win_idx" ]; then
+    dest_win_idx=999
+fi
+
 if [ "$cur_ses" = "$dest_ses" ]; then
     #
     #  to same session
@@ -54,11 +59,4 @@ else
     #  auto-switch, so this manually sets focus to the destination.
     #
     tmux_error_handler switch-client -t "$dest_ses" # switch focus to new location
-fi
-
-if [ -z "$dest_win_idx" ]; then
-    #
-    # No dest windows idx given, assume it should go last
-    #
-    tmux_error_handler move-window -t 999
 fi

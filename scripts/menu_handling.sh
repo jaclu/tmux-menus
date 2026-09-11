@@ -16,11 +16,6 @@
 #
 #   Optional variables:
 #     menu_min_vers      – Minimum tmux version required
-#     menu_height        – Number of rows required to display the menu
-#     menu_width         – Number of columns required to display the menu
-#     skip_oversized     – If set to 1, the menu will be silently skipped
-#                          if it's too large to fit on the current display.
-#                          Requires both menu_height and menu_width to be set.
 #
 # When debugging menu generation, ensure @menus_use_cache is disabled,
 # or manually clear the relevant cache entry before each run.
@@ -33,18 +28,6 @@
 #   Common
 #
 #---------------------------------------------------------------
-
-get_mtime() {
-    _gm_fname="$1"
-    # [ -f "$_gm_fname" ] || return 1
-
-    # date -r should normally work and is faster than stat
-    # then try GNU/Linux, BSD & Darwin fallback, finally return 0
-    date -r "$_gm_fname" +%s 2>/dev/null \
-        || stat -c %Y "$_gm_fname" 2>/dev/null \
-        || stat -f %m "$_gm_fname" 2>/dev/null \
-        || printf 0 # indicate failed mtime retrieval by setting a zero timestamp
-}
 
 debug_print() {
     case "$menu_debug" in
@@ -85,7 +68,7 @@ run_if_found() {
 
 update_wt_actions() {
     # log_it "update_wt_actions()"
-    if $cfg_use_cache; then
+    if ${cfg_use_cache:-false}; then
         mkdir -p "$d_wt_actions"
         echo "$wt_actions" >"$d_wt_actions/$menu_idx"
     else
@@ -240,8 +223,14 @@ EOF
 
 mnu_prefix() {
 
-    _title="$(echo "$cfg_format_title" | sed "s/#{@menu_name}/$menu_name/g")"
-    menu_items="$TMUX_BIN display-menu -T $_title -x '$cfg_mnu_loc_x' -y '$cfg_mnu_loc_y'"
+    menu_items="$TMUX_BIN display-menu"
+
+    # Replace @menu_name with $menu_name
+    _title=$(printf '%s' "$cfg_format_title" | sed "s/#{@menu_name}/$menu_name/g")
+
+    [ -n "$_title" ] && menu_items="$menu_items -T $_title"
+    [ -n "$cfg_mnu_loc_x" ] && menu_items="$menu_items -x $cfg_mnu_loc_x"
+    [ -n "$cfg_mnu_loc_y" ] && menu_items="$menu_items -y $cfg_mnu_loc_y"
 
     tmux_vers_check 3.4 && {
         # Styling is supported
@@ -292,7 +281,18 @@ mnu_command() {
 
 mnu_text_line() {
     txt="$1"
-    menu_items="$menu_items \"$txt\" '' ''"
+    case "$show_cmds_state" in
+        "1" | "2")
+            # Escape backslashes and double quotes for safe insertion in double-quoted context
+            # This prevents unbalanced quotes in split display command lines from breaking eval
+            txt_escaped=$(printf '%s' "$txt" | sed 's/\\/\\\\/g; s/"/\\"/g')
+            ;;
+        *) # Normal T items will not be line broken and end up with unmatched quotes
+            txt_escaped="$txt"
+            ;;
+    esac
+
+    menu_items="$menu_items \"-#[nodim]${txt_escaped}\" '' ''"
 }
 
 mnu_spacer() {
@@ -406,7 +406,7 @@ menu_parse() {
     menu_items=""
     [ "$menu_idx" -eq 1 ] && {
         # set prefix for item 1
-        if $b_use_alt_handler; then
+        if ${b_use_alt_handler:-false}; then
             alt_prefix
         else
             mnu_prefix
@@ -439,13 +439,17 @@ menu_parse() {
 
                 [ -n "$menu_debug" ] && debug_print "key[$_mp_key] label[$_mp_label] command[$_mp_cmd]"
 
-                if $b_use_alt_handler; then
+                if ${b_use_alt_handler:-false}; then
                     alt_command "$_mp_label" "$_mp_key" "$_mp_cmd"
                 else
                     mnu_command "$_mp_label" "$_mp_key" "$_mp_cmd"
-                    $b_do_show_cmds && sc_show_cmd "$TMUX_BIN $_mp_cmd"
+                    ${b_do_show_cmds:-false} && sc_show_cmd "$TMUX_BIN $_mp_cmd"
                 fi
                 ;;
+
+            "D")
+                # menu_items="$menu_items D"
+                ;; # dummy to just create empty cache item, to make next available
 
             E)
                 #
@@ -474,11 +478,11 @@ menu_parse() {
 
                 [ -n "$menu_debug" ] && debug_print "key[$_mp_key] label[$_mp_label] command[$_mp_cmd]"
 
-                if $b_use_alt_handler; then
+                if ${b_use_alt_handler:-false}; then
                     alt_external_cmd "$_mp_label" "$_mp_key" "$_mp_cmd"
                 else
                     mnu_external_cmd "$_mp_label" "$_mp_key" "$_mp_cmd"
-                    $b_do_show_cmds && [ "$_mp_key" != "!" ] && sc_show_cmd "$_mp_cmd"
+                    ${b_do_show_cmds:-false} && [ "$_mp_key" != "!" ] && sc_show_cmd "$_mp_cmd"
                 fi
                 ;;
 
@@ -507,7 +511,7 @@ menu_parse() {
 
                 [ -n "$menu_debug" ] && debug_print "key[$_mp_key] label[$_mp_label] menu[$menu]"
 
-                if $b_use_alt_handler; then
+                if ${b_use_alt_handler:-false}; then
                     alt_open_menu "$_mp_label" "$_mp_key" "$menu"
                 else
                     mnu_open_menu "$_mp_label" "$_mp_key" "$menu"
@@ -523,7 +527,7 @@ menu_parse() {
                 ! tmux_vers_check "$_mp_min_vers" && continue
 
                 [ -n "$menu_debug" ] && debug_print "text line [$txt]"
-                if $b_use_alt_handler; then
+                if ${b_use_alt_handler:-false}; then
                     alt_text_line "$txt"
                 else
                     mnu_text_line "$txt"
@@ -539,7 +543,7 @@ menu_parse() {
                 [ -n "$menu_debug" ] && debug_print "Spacer line"
 
                 # Whiptail/dialog does not have a concept of spacer lines
-                if $b_use_alt_handler; then
+                if ${b_use_alt_handler:-false}; then
                     alt_spacer
                 else
                     mnu_spacer
@@ -550,7 +554,7 @@ menu_parse() {
         esac
     done
 
-    if $cfg_use_cache; then
+    if ${cfg_use_cache:-false}; then
         _mp_rel_path=$(relative_path "$f_cache_file")
         log_it_minimal "Caching: $_mp_rel_path"
         echo "$menu_items" >"$f_cache_file" || {
@@ -574,31 +578,31 @@ menu_generate_part() {
 
     menu_idx="$1"
     shift # get rid of the idx param
-    $cfg_use_cache && f_cache_file="$d_menu_cache/$menu_idx"
+    ${cfg_use_cache:-false} && f_cache_file="$d_menu_cache/$menu_idx"
 
     # needs to be set even if this is an empty dynamic menu to prevent
     # static_files_reduction() from running
-    $is_dynamic_content && dynamic_content_found=true
+    ${is_dynamic_content:-false} && dynamic_content_found=true
 
     [ -z "$2" ] && {
         # no params clear cache file if any
-        $cfg_use_cache && {
+        ${cfg_use_cache:-false} && {
             rm -f "$f_cache_file" || error_msg "Failed to remove $f_cache_file"
             # log_it "part $menu_idx empty - Cleared cache item"
         }
         return
     }
 
-    if $is_dynamic_content; then
+    if ${is_dynamic_content:-false}; then
         _mgp_prefix="is_dynamic_content - "
     else
         _mgp_prefix=""
     fi
-    ${all_helpers_sourced:-false} || source_all_helpers "$_mgp_prefix menu_generate_part($menu_idx)"
+    ${b_all_helpers_sourced:-false} || source_all_helpers "$_mgp_prefix menu_generate_part($menu_idx)"
 
     wt_actions=""
     menu_parse "$@"
-    $b_use_alt_handler && update_wt_actions
+    ${b_use_alt_handler:-false} && update_wt_actions
 }
 
 #---------------------------------------------------------------
@@ -607,19 +611,35 @@ menu_generate_part() {
 #
 #---------------------------------------------------------------
 
+should_display_cmds_be_used() {
+
+    ${cfg_display_cmds:-false} && {
+        # Always display if debug is on
+        ${b_debug_display_cmds:-false} && return 0
+
+        # skip if it is flagged as problematic
+        ${b_display_commands_issue:-false} && return 1
+
+        return 0
+    }
+    return 1
+}
+
 display_commands_toggle() {
-    menu_part="$1"
+    _itm_id="$1"
     # log_it "display_commands_toggle($menu_part)"
-    [ -z "$menu_part" ] && error_msg "add_display_commands() - called with no param"
+    [ -z "$_itm_id" ] && error_msg "add_display_commands() - called with no param"
 
-    # In case we got here via dynamic_content()
-    ${all_helpers_sourced:-false} || source_all_helpers "display_commands_toggle()"
-
-    set_display_command_labels
-    set -- \
-        0.0 E ! "$_lbl_next" "show_cmds_state='$_idx_next' $0"
-
-    menu_generate_part "$menu_part" "$@"
+    if should_display_cmds_be_used; then
+        # In case we got here via dynamic_content()
+        ${b_all_helpers_sourced:-false} || source_all_helpers "display_commands_toggle()"
+        set_display_command_labels
+        set -- \
+            0.0 E ! "$_lbl_next" "show_cmds_state='$_idx_next' $0"
+    else
+        set -- 0.0 D
+    fi
+    menu_generate_part "$_itm_id" "$@"
 }
 
 prepare_show_commands() {
@@ -629,7 +649,7 @@ prepare_show_commands() {
 
     # Do this before the timer is started, otherwise the first usage of show commands
     # will always be slower
-    ${all_helpers_sourced:-false} || source_all_helpers "prepare_show_commands"
+    ${b_all_helpers_sourced:-false} || source_all_helpers "prepare_show_commands"
     [ ! -f "$f_cached_tmux_key_binds" ] && {
         log_it "Creating: $f_cached_tmux_key_binds"
         # Filtering out all key binds displaying a menu, since they won't be relevant
@@ -663,65 +683,6 @@ check_menu_min_vers() {
     }
 }
 
-check_screen_size() {
-    #
-    #  Only consider checking win size if not whiptail/dialog, since they
-    #  can scroll menus that don't fit the screen
-    #
-    #  Only checks if menu_width and or menu_height has been set
-    #
-    #  Examining client_height instead of menu_height, includes the entire terminal
-    #  including lines covered by a status bar. Since Menus can cover the status bar
-    #  This gives the actual screen limits for menus
-    #
-    $b_use_alt_handler && return 0
-    # log_it "check_screen_size()"
-
-    ${all_helpers_sourced:-false} || source_all_helpers "check_screen_size()"
-
-    tmux_vers_check 1.7 || {
-        # Prior to 1.7 #{client_height} and #{client_width} are not available
-        return 0
-    }
-
-    [ -n "$menu_height" ] && {
-        [ -z "$current_screen_rows" ] && get_screen_size_variables # only get if not defined
-        [ "$menu_height" -gt "$current_screen_rows" ] && {
-            _warn="$rn_current_script - aborted, win height > actual: "
-            _warn="$_warn $menu_height > $current_screen_rows"
-            log_it "$_warn"
-            return 1
-        }
-    }
-    [ -n "$menu_width" ] && {
-        [ -z "$current_screen_cols" ] && get_screen_size_variables # only get if not defined
-        [ "$menu_width" -gt "$current_screen_cols" ] && {
-            _warn="menu display aborted, win width > actual: "
-            _warn="$_warn $menu_width > $current_screen_cols"
-            log_it "$_warn"
-            return 1
-        }
-    }
-    return 0
-}
-
-oversized_check() {
-    # To minimize overhead, the normal case is to rely on oversized menus instantly
-    # closing and the displayal of the warning: Screen might be too small
-    #
-    # only do this check if it is requested, this assumes at least one of
-    # menu_height or menu_width must have been set
-    #
-    [ -z "$menu_height" ] && [ -z "$menu_width" ] && {
-        _m="With neither menu_height or menu_width defined"
-        _m="$_m\n It is not possible to check if menu fits on screen"
-        error_msg "$_m"
-    }
-
-    # Useful for hints, if it doesn't fit on screen, just silently skip this menu
-    check_screen_size || exit 0
-}
-
 #---------------------------------------------------------------
 #
 #   Preparing menu
@@ -737,14 +698,14 @@ set_menu_env_variables() {
     #
     # State of menu generating process
     #
-    is_dynamic_content=false    # indicates if a dynamic content segment is being processed
-    dynamic_content_found=false # indicate dynamic content was generated
-    static_cache_updated=false  # used to decide if static cache file reduction should happen
+    is_dynamic_content=false     # indicates if a dynamic content segment is being processed
+    dynamic_content_found=false  # indicate dynamic content was generated
+    b_static_cache_updated=false # used to decide if static cache file reduction should happen
     b_do_show_cmds=false
 
     d_odd_chars="$d_items/odd_chars"
 
-    if [ "$b_use_alt_handler" = true ]; then
+    if [ "${b_use_alt_handler:-false}" = true ]; then
         # Display Commands can only be used with tmux menus and caching
         cfg_display_cmds=false
         unset show_cmds_state
@@ -758,13 +719,14 @@ set_menu_env_variables() {
     #
     #  Per menu overrides of Styling
     #
-    [ -n "$override_title" ] && cfg_format_title="$override_title"
-    [ -n "$override_selected" ] && cfg_simple_style_selected="$override_selected"
-    [ -n "$override_border" ] && cfg_simple_style_border="$override_border"
-    [ -n "$override_style" ] && cfg_simple_style="$override_style"
-    [ -n "$override_next" ] && cfg_nav_next="$override_next"
-    [ -n "$override_prev" ] && cfg_nav_prev="$override_prev"
-    [ -n "$override_home" ] && cfg_nav_home="$override_home"
+    cfg_format_title="${override_title:-$cfg_format_title}"
+    cfg_simple_style_selected="${override_selected:-$cfg_simple_style_selected}"
+    cfg_simple_style_border="${override_border:-$cfg_simple_style_border}"
+    cfg_simple_style="${override_style:-$cfg_simple_style}"
+    cfg_nav_next="${override_next:-$cfg_nav_next}"
+    cfg_nav_prev="${override_prev:-$cfg_nav_prev}"
+    cfg_nav_home="${override_home:-$cfg_nav_home}"
+
     #
     # allow for having shorter variable names in menus
     #
@@ -774,19 +736,19 @@ set_menu_env_variables() {
         nav_home="$cfg_nav_home"
     }
 
-    if $cfg_use_cache; then
+    if ${cfg_use_cache:-false}; then
         # Include relative script path in cache folder name to avoid name collisions
         #  items/main.sh -> cache/items/main.sh/
         d_menu_cache="$d_cache/$rn_current_script"
 
-        $b_use_alt_handler && d_wt_actions="$d_menu_cache/wt_actions"
+        ${b_use_alt_handler:-false} && d_wt_actions="$d_menu_cache/wt_actions"
     else
         uncached_menu=""
         uncached_wt_actions=""
         uncached_item_splitter="||||"
     fi
 
-    if $b_use_alt_handler; then
+    if ${b_use_alt_handler:-false}; then
         external_action_separator=":/:/:/:"
         #
         #  I haven't been able do to menu reload with whiptail/dialog yet,
@@ -796,8 +758,15 @@ set_menu_env_variables() {
         mnu_reload_direct=""
     else
         # built in menu handler doesn't ever seem to need \;
-        runshell_reload_mnu=" ; run-shell $0"
-        mnu_reload_direct=" ; $0"
+        _rp=$(realpath "$0")
+        runshell_reload_mnu=" ; run-shell $_rp"
+        mnu_reload_direct=" ; $_rp"
+
+        # Some tasks - like creating a floating pane takes some time, yet are forked
+        # so the cmd completes quickly. This can lead to the next menu being
+        # displayed and then the new pane etc gets drawnn over it, use this sleep
+        # for such tasks
+        runshell_sleep_reload_mnu=" ; run-shell \"sleep $t_delayed_menu_reload ; $_rp\""
     fi
 
 }
@@ -809,7 +778,7 @@ static_files_reduction() {
     #
     # this is not performance critical
     #
-    $dynamic_content_found && {
+    ${dynamic_content_found:-false} && {
         error_msg "static_files_reduction() called when dynamic content was generated"
     }
     # log_it "static_files_reduction()"
@@ -827,13 +796,13 @@ cache_regenerate_static_content() {
     # Cache is missing or obsolete, regenerate it
     [ -d "$d_menu_cache" ] && log_it_minimal "$rn_current_script changed - dropping cache"
     # log_it "  regenerate cache for: $d_menu_cache"
-    ${all_helpers_sourced:-false} || {
+    ${b_all_helpers_sourced:-false} || {
         source_all_helpers "cache_static_content() - cache generation"
     }
     safe_remove "$d_menu_cache" "cache_static_content() - remove previous item"
     mkdir -p "$d_menu_cache" || error_msg "Failed to create: $d_menu_cache"
 
-    run_if_found static_content && static_cache_updated=true
+    run_if_found static_content && b_static_cache_updated=true
 }
 
 cache_static_content() {
@@ -841,11 +810,9 @@ cache_static_content() {
     # Ensure the cache folder is present, and newer than the menu file, making sure
     # obsolete cache is dropped.
     #
-    if [ "$validate_menu_cache" = 1 ]; then
-        # Check freshness
-        _csc_mtimr_caller="$(get_mtime "$0")"
-        _csc_cache="$(get_mtime "$d_menu_cache")"
-        if [ ! -d "$d_menu_cache" ] || [ "$_csc_mtimr_caller" -gt "$_csc_cache" ]; then
+
+    if ${cfg_validate_cache:-false}; then
+        if [ ! -d "$d_menu_cache" ] || [ "$0" -nt "$d_menu_cache" ]; then
             cache_regenerate_static_content
         fi
     else
@@ -868,7 +835,7 @@ handle_dynamic() {
     wt_actions_static="$wt_actions"
     wt_actions=""
     is_dynamic_content=true
-    $cfg_use_cache && mkdir -p "$d_menu_cache" # needed if menu is purely dynamic
+    ${cfg_use_cache:-false} && mkdir -p "$d_menu_cache" # needed if menu is purely dynamic
     dynamic_content
     is_dynamic_content=false
     wt_actions="$wt_actions_static"
@@ -884,17 +851,20 @@ cache_read_menu_items() {
     set -- "$d_menu_cache"/*
     [ -f "$1" ] || return # no files found
 
-    for f_name in "$d_menu_cache"/*; do
-        [ -d "$f_name" ] && continue # most likely a wt_actions/
-
-        # Read the content of the files line-by-line and append to the menu_items variable
+    # To Allow for complex menus that should only sometimes be visible
+    # have a dynamic dummy item as 6 if 7 should be used and absent when 7 should
+    # be skipped
+    _f_idx=1
+    while [ -f "$d_menu_cache/$_f_idx" ]; do
         while IFS= read -r line || [ -n "$line" ]; do
             if [ -z "$menu_items" ]; then
                 menu_items="$line"
             else
                 menu_items="$menu_items $line"
             fi
-        done <"$f_name"
+        done <"$d_menu_cache/$_f_idx"
+
+        _f_idx=$((_f_idx + 1))
     done
     # [ -n "$menu_items" ] && debug_print "cache_read_menu_items() found: [$menu_items]"
 }
@@ -910,7 +880,7 @@ sort_uncached_menu_items() {
     # together, leads to this rather hackish in-memory implementation of sorting
     # the uncached_menu clearly lots of room for improvement...
     #
-    # log_it "sort_uncached_menu_items()"
+    log_it "sort_uncached_menu_items()"
 
     _sumi_entries=""
 
@@ -938,7 +908,20 @@ $idx	$_sumi_body"
         [ -z "$_sumi_rest" ] && break
     done
 
-    # Now sort and print, skipping initial empty line
+    # # Now sort and print, skipping initial empty line
+    # _ewr=2
+    # menu_items="$(
+    #     printf "%s\n" "$_sumi_entries" | sed 1d | sort -n | {
+    #         expected=0
+    #         while IFS='    ' read -r idx this_section; do
+    #             expected=$((expected + 1))
+    #             log_it "><> [$idx] expected [$expected] this_section [$this_section]"
+    #             [ "$idx" -ne "$expected" ] && break
+    #             printf '%s' "$this_section"
+    #         done
+    #     }
+    # )"
+
     menu_items="$(
         printf "%s\n" "$_sumi_entries" | sed 1d | sort -n | while IFS='	' read -r idx this_section; do
             printf '%s' "$this_section" # send it back to the script
@@ -948,7 +931,7 @@ $idx	$_sumi_body"
 
 get_menu_items_sorted() {
     # log_it "get_menu_items_sorted()"
-    if $cfg_use_cache; then
+    if ${cfg_use_cache:-false}; then
         cache_read_menu_items
     else
         sort_uncached_menu_items
@@ -966,7 +949,7 @@ prepare_menu() {
     set_menu_env_variables
 
     # 1 - Handle static parts, use cache if enabled and available
-    if $cfg_use_cache; then
+    if ${cfg_use_cache:-false}; then
         cache_static_content
     else
         run_if_found static_content
@@ -975,7 +958,10 @@ prepare_menu() {
     # 2 - Handle dynamic parts (if any)
     handle_dynamic
 
-    $static_cache_updated && ! $dynamic_content_found && static_files_reduction
+    ${b_static_cache_updated:-false} && ! ${dynamic_content_found:-false} && {
+        # If only static content, combine into one file for faster reads
+        static_files_reduction
+    }
 
     # 3 - Gather each item in correct order
     get_menu_items_sorted
@@ -985,15 +971,20 @@ prepare_menu() {
         *) ;;
     esac
 
-    [ -n "$cfg_log_file" ] && {
-        # If logging is disabled - no point in generating this log msg
-        #
-        # Instead of displaying processing time at end of prepare_menu
+    #
+    # 3.8 forks display-menu, so by checking processing time after menu is
+    # displayed we get better timing info, previously it had to be done before
+    # menu is displayed - the side effect is that 3.8 will show higher processing times
+    #
+    [ -n "$cfg_log_file" ] && ! tmux_vers_check 3.7z && log_processing_time
+}
 
+log_processing_time() {
+    ${cfg_use_timers:-false} && {
         time_span "$t_script_start"
-
-        _m="Menu $rn_current_script"
-        _m="$_m - processing time:  $t_time_span"
+        _m="Processing"
+        [ -n "$1" ] && _m="$_m (inc disp)"
+        _m="$_m $t_time_span   $rn_current_script"
         log_it_minimal "$_m"
     }
 }
@@ -1029,27 +1020,8 @@ ensure_menu_fits_on_screen() {
     # log_it "$_s"
 
     [ "$(echo "$t_time_span < $t_minimal_display_time" | bc || true)" -eq 1 ] && {
-        ${all_helpers_sourced:-false} || {
-            _m="ensure_menu_fits_on_screen() - short display time, give warning"
-            source_all_helpers "$_m"
-        }
-        #
-        # Save menu that failed to show, helpful to try to figure out why it failed
-        #
-        # _f_mnu="$d_tmp"/tmux-menus-failed-to-show.cmd
-        # echo "$menu_items" >"$_f_mnu"
-        # log_it "Failed menu saved to: $_f_mnu"
-
-        if [ -n "$menu_width" ] && [ -n "$menu_height" ]; then
-            _s="$rn_current_script: screen mins: ${menu_width}x$menu_height"
-        elif [ -n "$menu_height" ]; then
-            _s="$rn_current_script: Height required: $menu_height"
-        elif [ -n "$menu_width" ]; then
-            _s="$rn_current_script: Width required: $menu_width"
-        else
-            # log_it "display time was: $t_time_span"
-            _s="$rn_current_script: Screen might be too small - menu closed after $t_time_span"
-        fi
+        _s="$rn_current_script: Screen might be too small"
+        _s="$_s - menu closed after $t_time_span"
         error_msg "$_s"
     }
 }
@@ -1135,7 +1107,7 @@ alt_parse_selection() {
         _aps_action="$(echo "$section" | cut -d'|' -f 2 | awk '{$1=$1};1')"
 
         [ "$key" = "$menu_selection" ] && [ -n "$_aps_action" ] && {
-            ${all_helpers_sourced:-false} || source_all_helpers "alt_parse_selection()"
+            ${b_all_helpers_sourced:-false} || source_all_helpers "alt_parse_selection()"
             # too many arguments (need at most 2) - fixed by eval
             # teh_debug=true
             eval "$_aps_action" || {
@@ -1149,7 +1121,7 @@ alt_parse_selection() {
 
 handle_wt_selecion() {
     # log_it "handle_wt_selecion($menu_selection)"
-    if $cfg_use_cache; then
+    if ${cfg_use_cache:-false}; then
         wt_cached_selection
     else
         all_wt_actions="$uncached_wt_actions"
@@ -1161,7 +1133,9 @@ handle_wt_selecion() {
 clear_prep_disp_status() {
     time_span "$t_show_cmds"
     set_display_command_labels
-    log_it "$rn_current_script - Preparing $_lbl took: ${t_time_span}s"
+    ${cfg_use_timers:-false} && {
+        log_it "$rn_current_script - Preparing $_lbl took: ${t_time_span}s"
+    }
 
     if tmux_vers_check 3.2; then
         tmux_error_handler display-message -d 1 ""
@@ -1176,8 +1150,9 @@ display_menu() {
     # log_it "display_menu()"
     # Display time to generate menu
 
-    if $b_use_alt_handler; then
-        # display whiptail menu
+    if ${b_use_alt_handler:-false}; then
+        [ -n "$cfg_log_file" ] && tmux_vers_check 3.7z && log_processing_time
+        # display alternate menu
         menu_selection=$(eval "$menu_items" 3>&2 2>&1 1>&3)
         menu_exit_code="$?"
         case "$menu_exit_code" in
@@ -1196,17 +1171,24 @@ display_menu() {
         [ -n "$menu_selection" ] && handle_wt_selecion
         true #  hides none true exit if whiptail menu was cancelled
     else
-        safe_now dh_t_start
+        # Starting in 3.8 menu will always be displayed even if it doesn't fit
+        # prior tmux silently skipped an error not fitting the window without
+        # giving an error, so the only hint that it might not fit is if it was
+        # instantly closed
+        tmux_vers_check 3.7z || safe_now dh_t_start
+
         f_cmd_err="$d_tmp/tmux-menu-cmd-error"
-        _dm_err_msg="$(cat "$f_cmd_err")"
         eval "$menu_items" 2>"$f_cmd_err" || {
+            _ex_code="$?"
+            log_it "menu_items exited with: [$_ex_code]"
+            _dm_err_msg="$(cat "$f_cmd_err")"
             display_invalid_menu_error "$_dm_err_msg"
         }
-        tmux_vers_check 3.7z || {
-            # Pre-3.8: Check if menu actually was displayed
-            # TODO: Remove the next-3.7z check once tmux 3.8 is officially released
+        if tmux_vers_check 3.7z; then
+            [ -n "$cfg_log_file" ] && log_processing_time post
+        else
             ensure_menu_fits_on_screen
-        }
+        fi
     fi
 }
 
@@ -1241,19 +1223,19 @@ do_menu_handling() {
 #
 #===============================================================
 
-[ -z "$D_TM_BASE_PATH" ] && {
-    # helpers not yet sourced, so error_msg() not yet available
-    msg="ERROR: menu_handling.sh - D_TM_BASE_PATH must be set before sourcing this file"
-    (
-        echo
-        echo "$msg"
-        echo
-    ) >/dev/stderr
-    exit 1
-}
+[ "${env_initialized:-0}" -lt 1 ] && {
+    # Only source if not done
 
-# Only import if needed, checking a random variable
-[ -z "$d_scripts" ] && {
+    [ -z "$D_TM_BASE_PATH" ] && {
+        # helpers not yet sourced, so error_msg() not yet available
+        msg="ERROR: menu_handling.sh - D_TM_BASE_PATH must be set before sourcing this file"
+        (
+            echo
+            echo "$msg"
+            echo
+        ) >/dev/stderr
+        exit 1
+    }
     # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
     . "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
 }

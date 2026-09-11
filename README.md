@@ -1,14 +1,14 @@
 # Tmux-Menus
 
-<img width="250" alt="main"
-  src="https://github.com/user-attachments/assets/91e98aa5-6ca0-4927-98e9-e309d0b953b2" />
-<img width="250" alt="main styled"
-src="https://github.com/user-attachments/assets/905026bf-4f9a-48ba-ade4-3a1ff7d6b31f" />
+<img width="236" alt="Main"
+  src="https://github.com/user-attachments/assets/f8510b2f-4880-4fed-99e5-7db29f400cd8" />
+<img width="235" alt="Main styled"
+  src="https://github.com/user-attachments/assets/12188f8f-fcdd-457c-ae74-2a6fd8cc38f1" />
 
 ## Summary
 
 A collection of popup menus for managing your tmux environment. Menus can be
-customized with optional [docs/Styling](docs/Styling.md), as shown in the right
+customized with optional [docs/Styling.md](docs/Styling.md), as shown in the right
 screenshot above.
 
 Once installed, press the trigger key to display the main menu. The default
@@ -23,13 +23,14 @@ discover functionality—advanced users can simply remove what they don't need.
 
 ## Recent Changes
 
-- **tmux 3.8 support**
-  - New menu "Handling Floating Pane" (can be tested on next-3.8)
-  - Screen size handling optimized for the latest tmux version
+- **Danger Zone** — Destructive commands are highlighted by default; enable/disable
+  or customize as needed
+- **Enhanced Floating Panes handling** — New combined menu, with a toggle to
+  split format for standard 25x80 terminals, plus new pane placement controls
+- **Stabilized Display Commands** — Fixed crashes and improved stability when
+  displaying menu command references
 - **Secondary default trigger key** `<prefix> Enter` for non-US keyboards where
   `<prefix> \` is impractical
-- **Comprehensive tmux 3.7 workaround** - Documentation for display-menu navigation
-  bug with solution
 
 ## Purpose
 
@@ -57,19 +58,29 @@ This isn't just a beginner's tool—it's useful for experienced users too:
 
 The white screenshot shows a whiptail-generated menu, which uses more screen
 space than native tmux menus. However, whiptail menus are scrollable when they
-don't fit the screen, whereas tmux's native `display-menu` simply won't render
-if there's insufficient space. The other screenshots show native tmux menus.
+don't fit the screen. The other screenshots show native tmux menus.
 
-<img width="255" alt="Handling Pane"
-src="https://github.com/user-attachments/assets/4216b5cf-bcac-42c2-bef8-90951f8042c3" />
-<img width="302" alt="Handling Window"
-src="https://github.com/user-attachments/assets/11f368b0-8c93-4432-a9cb-36589ace819a" />
-<img width="337" alt="Help summary"
-src="https://github.com/user-attachments/assets/efa0e3e5-5d37-4c88-b379-16d5a5264946" />
-<img width="264" alt="Missing Keys"
-src="https://github.com/user-attachments/assets/95d4b08f-894d-4b78-bf46-95b4447393e3" />
-<img width="270" alt="Missing Keys-whiptail"
-src="https://github.com/user-attachments/assets/d4025441-a310-4805-8204-431197c1056a" />
+<img width="254" height="354" alt="Handling Pane"
+  src="https://github.com/user-attachments/assets/2aa664b7-33a7-4560-a6e6-d128212e16f4" />
+<img width="253" height="325" alt="Handling Window"
+  src="https://github.com/user-attachments/assets/54e3ce58-0f18-4bef-8388-712e21acb930" />
+<img width="268" height="294" alt="Layouts"
+  src="https://github.com/user-attachments/assets/ae6a3bea-c550-4062-9cb7-92d56dc72680" />
+<img width="251" height="203" alt="Missing Keys"
+  src="https://github.com/user-attachments/assets/638d5071-669d-483a-bacf-6fb2d45b248a" />
+<img width="227" height="264" alt="Missing Keys-whiptail"
+  src="https://github.com/user-attachments/assets/6186795e-ef99-4a73-b958-61f42aa9fb13" />
+
+Floating pane handling offers both a combined menu and split menus. If the combined
+menu is too tall for your terminal, you can toggle to split format. This selection
+is remembered for the next time.
+
+<img width="253" height="325" alt="Handling floating panes - Placement"
+  src="https://github.com/user-attachments/assets/5018d1a9-5e25-4b58-95c9-618682d45b88" />
+<img width="254" height="355" alt="Handling floating panes - split menu"
+  src="https://github.com/user-attachments/assets/ec90a06a-8861-4fa4-bdf4-4db8e22059c5" />
+<img width="262" height="492" alt="Handling floating panes - combined"
+  src="https://github.com/user-attachments/assets/902e3a1f-d6fe-4327-8bd0-5c0022e4d88b" />
 
 ## Known Limitations
 
@@ -79,13 +90,12 @@ This plugin does not work when the tmux environment path contains spaces.
 
 Left arrow doesn't work to go back. Workaround: Highlight and press Enter instead.
 
-Still present in `3.7c` - resolved in `next-3.8`
+Still present in `3.7c` - resolved in `3.8`
 
 ## Dependencies & Compatibility
 
 | Version    | Notes                                                                                                 |
 | ---------- | ----------------------------------------------------------------------------------------------------- |
-| 3.8        | `Handling Floating Pane` menu can be used.                                                            |
 | 3.4        | Styling supported.                                                                                    |
 | 3.2        | Full menu positioning available.                                                                      |
 | 3.0 - 3.1c | Menu centering not supported; displays top-left if C is selected.                                     |
@@ -147,9 +157,9 @@ The default trigger is `<prefix> \`. To customize it:
 set -g @menus_trigger 'Space'
 ```
 
-See [QuotingPitfalls](docs/QuotingPitfalls.md) for handling special characters like
+See [docs/QuotingPitfalls.md](docs/QuotingPitfalls.md) for handling special characters like
 `\` in tmux variables. For more information about the secondary default and why
-it was introduced, see [docs/SecondaryDefault.md](docs/SecondaryDefault.md).
+it was introduced, see [SecondaryDefault](docs/SecondaryDefault.md).
 
 ### Trigger Without Prefix
 
@@ -160,6 +170,18 @@ set -g @menus_without_prefix 'Yes'
 Default: `No`
 
 Enable this to trigger menus without pressing `<prefix>` first.
+
+### Danger Zone
+
+All commands that are destructive, such as kill/delete/respawn etc can be made
+to standout by using a specific style. If this is not desired, set it to `""`
+
+```tmux
+set -g @menus_danger_zone "#[fg=red,bg=white]" # prints it red on white
+set -g @menus_danger_zone "" # Disables the feature
+```
+
+Default: `#[reverse]`
 
 ### Alternate Menus
 
@@ -197,14 +219,10 @@ Common options:
 | W     | Both | Window position on status line  |
 | S     | -y   | Line above or below status line |
 
-### Floating Panes handling
+### Floating Panes positioning
 
-<img width="295" height="91" alt="float-selected"
-  src="https://github.com/user-attachments/assets/15370e6f-4af9-4445-a9c3-fe4de35b5e42" />
-
-This option appears on the main menu only if a floating pane is focused when the
-trigger key is pressed. The `Handling Floating Pane` menu can move and resize
-floating panes (requires tmux 3.8).
+This impacts floating pane move/resize actions in the Panes - Floating Panes
+menu (requires tmux 3.8).
 
 The stepping size is defined by these two settings:
 
@@ -221,8 +239,7 @@ Default for both: `1`
 set -g @menus_display_commands 'No'
 ```
 
-Default: `Yes` (not available when using whiptail/dialog or when caching is
-disabled)
+Default: `Yes` (not available when using whiptail/dialog)
 
 When enabled, each menu includes a "Display Commands" item (shortcut `!`). Press it
 to cycle through three views: the underlying tmux commands, all matching prefix and
@@ -233,12 +250,12 @@ configured.
 
 Note: Menus grow larger with this feature enabled—ensure sufficient screen space.
 
-<img width="269" alt="Move-Window"
-  src="https://github.com/user-attachments/assets/365d414a-1d3b-41f8-8ba8-2c5f827c12d9" />
-<img width="341" alt="Move-Window-Cmds"
-  src="https://github.com/user-attachments/assets/82472dcc-2789-4f15-a159-5699390389d4" />
-<img width="269" alt="Move-Window-KeyBinds"
-  src="https://github.com/user-attachments/assets/14274950-1030-4710-9d6e-f81013184ccc" />
+<img width="251" height="188" alt="Move Window"
+  src="https://github.com/user-attachments/assets/55daaf9d-80c8-49f8-a5c2-121536e159e3" />
+<img width="389" height="264" alt="Move Window-Cmds"
+  src="https://github.com/user-attachments/assets/16142418-5a9a-4798-a87a-3407d8e7d55a" />
+<img width="251" height="217" alt="Move Window-KeyBinds"
+  src="https://github.com/user-attachments/assets/df2262ae-c055-4451-9d00-c7580fae30f5" />
 
 #### Command Display Width
 
@@ -279,73 +296,10 @@ reload. The location is determined in this order:
 When reloading, you'll be prompted to confirm the config file path, which
 defaults to the first match above and can be edited if needed.
 
-### Caching
+## Advanced Configuration
 
-```tmux
-set -g @menus_use_cache 'No'
-```
-
-Default: `Yes`
-
-Menu items are cached by default for better performance. Disabling caching also
-disables the Custom Menus feature.
-
-Menu files define two functions: `static_content()` for items that never change
-(cached for performance), and `dynamic_content()` for conditional items that
-regenerate each display. See [items/pane_move.sh](items/pane_move.sh) where
-"Swap current pane with marked" only appears when a marked pane exists.
-
-The cache is automatically invalidated when:
-
-- A different tmux version is detected at initialization
-- A menu script has been modified (checked via timestamp)
-
-### Logging
-
-Logging is disabled by default. To enable it, specify a log file:
-
-```tmux
-set -g @menus_log_file "~/tmp/tmux-menus.log"
-```
-
-See [QuotingPitfalls](docs/QuotingPitfalls.md) for handling `$HOME` and `~` in tmux
-variables.
-
-### Hint Overlays
-
-```tmux
-set -g @menus_use_hint_overlays 'No'
-```
-
-Default: `Yes` (not available when using whiptail/dialog)
-
-Some menu items launch tmux dialogs with complex keybindings (choose-buffer,
-choose-client, choose-tree, and customize-mode). When enabled, this setting
-displays an overlay listing available keys before entering the dialog, if
-screen space permits.
-
-Set to `No` to disable overlays.
-
-Note: If `@menus_use_hint_overlays` is disabled, the `@menus_show_key_hints`
-option (below) is ignored.
-
-#### Show Key Hints
-
-```tmux
-set -g @menus_show_key_hints 'Yes'
-```
-
-Default: `No`
-
-Related to `@menus_use_hint_overlays`. Since key listings can be quite long,
-they may not fit on screen and will be silently skipped. Enabling this option
-adds a "Key Hints" entry to relevant menus, which displays the dialog normally
-with a size warning if needed.
-
-This serves two purposes:
-
-- Provides access to key hints even when automatic overlays don't fit
-- Indicates which menu entries normally trigger an overlay
+For advanced settings including caching, logging, and hint overlays, see
+[docs/Advanced.md](docs/Advanced.md).
 
 ## Screen Size Detection
 
@@ -383,7 +337,7 @@ letters, and don't support special keys (arrow keys, Home, etc.).
 ### Installation
 
 **Linux:** Most distributions include `whiptail` by default. In the Red Hat
-ecosystem, it's called `newt` instead.
+an Homebrew ecosystems, the package that contains `whiptail` is called `newt`.
 
 **macOS:** Install via Homebrew: `brew install newt`
 

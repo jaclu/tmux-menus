@@ -33,7 +33,7 @@ D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
 rel_path_menu="$(relative_path "$1")"
 next_menu="$D_TM_BASE_PATH/$rel_path_menu"
 
-if $b_use_alt_handler; then
+if ${b_use_alt_handler:-false}; then
     clear
 else
     tmux_error_handler send-keys C-l

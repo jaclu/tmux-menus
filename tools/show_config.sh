@@ -58,12 +58,17 @@ echo
 show_item @menus_log_file "$cfg_log_file" "$default_log_file"
 show_item @menus_display_cmds_cols "$cfg_display_cmds_cols" "$default_display_cmds_cols"
 
-$b_use_alt_handler || {
+${b_use_alt_handler:-false} || {
     printf '\n# Display-menu related config\n'
     show_item @menus_location_x "$cfg_mnu_loc_x" "$default_location_x"
     show_item @menus_location_y "$cfg_mnu_loc_y" "$default_location_y"
-    show_item @menus_use_hint_overlays "$cfg_use_hint_overlays" "$default_use_hint_overlays"
-    show_item @menus_show_key_hints "$cfg_show_key_hints" "$default_show_key_hints"
+
+    tmux_vers_check 3.7 || {
+        # Not used in 3.7 and up
+        show_item @menus_use_hint_overlays "$cfg_use_hint_overlays" "$default_use_hint_overlays"
+        show_item @menus_show_key_hints "$cfg_show_key_hints" "$default_show_key_hints"
+    }
+
     show_item @menus_format_title "$cfg_format_title" "$default_format_title"
     show_item @menus_nav_next "$cfg_nav_next" "$default_nav_next"
     show_item @menus_nav_prev "$cfg_nav_prev" "$default_nav_prev"
@@ -85,4 +90,4 @@ fi
 echo
 show_item "b_use_alt_handler" "$b_use_alt_handler" "$default_use_whiptail"
 
-$b_use_alt_handler && show_item "alt_menu_handler" "$alt_menu_handler" "whiptail"
+show_item "alt_menu_handler" "$alt_menu_handler" "whiptail"

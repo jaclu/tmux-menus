@@ -13,14 +13,14 @@ static_content() {
         error_msg "$bn_current_script was called without notice of what called it"
     fi
     set -- \
-        0.0 M Left "Back to Previous menu  $nav_prev" "$prev_menu" \
-        0.0 M Home "Back to Main menu      $nav_home" "$cfg_main_menu" \
+        0.0 M Left "Back to Previous  $nav_prev" "$prev_menu" \
+        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu" \
         0.0 S \
-        0.0 T "-#[nodim]Use this to send keys that might" \
-        0.0 T "-#[nodim]not be available with the current" \
-        0.0 T "-#[nodim]keyboard settings."
+        0.0 T "Use this to send keys that might" \
+        0.0 T "not be available with the current" \
+        0.0 T "keyboard settings."
 
-    if $b_use_alt_handler; then
+    if ${b_use_alt_handler:-false}; then
         set -- "$@" \
             0.0 T " " \
             0.0 T "When using whiptail it is not possible" \

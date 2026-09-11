@@ -13,8 +13,8 @@ dynamic_content() {
 
     if [ -n "$prev_menu" ]; then
         set -- \
-            0.0 M Left "Back to Previous menu  $nav_prev" "$prev_menu" \
-            0.0 M Home "Back to Main menu      $nav_home" "$cfg_main_menu"
+            0.0 M Left "Back to Previous  $nav_prev" "$prev_menu" \
+            0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu"
     else
         set -- \
             0.0 T "Press Esc or q to close this help overlay"
@@ -31,25 +31,25 @@ static_content() {
     fi
     set -- \
         0.0 S \
-        0.0 T "-#[nodim]Enter  Paste selected buffer" \
-        0.0 T "-#[nodim]Up     Select previous buffer" \
-        0.0 T "-#[nodim]Down   Select next buffer" \
-        2.6 T "-#[nodim]C-s    Search by name or content" \
-        2.6 T "-#[nodim]n      Repeat last search forwards" \
-        3.5 T "-#[nodim]N      Repeat last search backwards" \
-        2.6 T "-#[nodim]t      Toggle if buffer is tagged" \
-        2.6 T "-#[nodim]T      Tag no buffers" \
-        2.6 T "-#[nodim]C-t    Tag all buffers" \
-        2.7 T "-#[nodim]p      Paste selected buffer" \
-        2.7 T "-#[nodim]P      Paste tagged buffers" \
-        2.6 T "-#[nodim]d      Delete selected buffer" \
-        2.6 T "-#[nodim]D      Delete tagged buffers" \
-        3.2 T "-#[nodim]e      Open the buffer in an editor" \
-        2.6 T "-#[nodim]f      Enter a format to filter items" \
-        2.6 T "-#[nodim]O      $o_lbl" \
-        3.1 T "-#[nodim]r      Reverse sort order" \
-        2.6 T "-#[nodim]v      Toggle preview" \
-        0.0 T "-#[nodim]Esc/q  Exit mode"
+        0.0 T "Enter  Paste selected buffer" \
+        0.0 T "Up     Select previous buffer" \
+        0.0 T "Down   Select next buffer" \
+        2.6 T "C-s    Search by name or content" \
+        2.6 T "n      Repeat last search forwards" \
+        3.5 T "N      Repeat last search backwards" \
+        2.6 T "t      Toggle if buffer is tagged" \
+        2.6 T "T      Tag no buffers" \
+        2.6 T "C-t    Tag all buffers" \
+        2.7 T "p      Paste selected buffer" \
+        2.7 T "P      Paste tagged buffers" \
+        2.6 T "d      Delete selected buffer" \
+        2.6 T "D      Delete tagged buffers" \
+        3.2 T "e      Open the buffer in an editor" \
+        2.6 T "f      Enter a format to filter items" \
+        2.6 T "O      $o_lbl" \
+        3.1 T "r      Reverse sort order" \
+        2.6 T "v      Toggle preview" \
+        0.0 T "Esc/q  Exit mode"
     menu_generate_part 2 "$@"
 }
 
@@ -61,9 +61,7 @@ static_content() {
 
 menu_name="Keys for choose-buffer"
 
-if [ "$1" = "skip-oversized" ]; then
-    skip_oversized=1
-elif [ -n "$1" ]; then
+if [ -n "$1" ]; then
     prev_menu="$(realpath "$1")"
 fi
 
@@ -74,13 +72,6 @@ no_auto_menu_handling=1 # delay processing of dialog, only source it for now
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$D_TM_BASE_PATH"/scripts/menu_handling.sh
-
-menu_width=50
-menu_height=20
-tmux_vers_check "3.1" && menu_height=$((menu_height + 1))
-tmux_vers_check "3.2" && menu_height=$((menu_height + 1))
-tmux_vers_check "3.5" && menu_height=$((menu_height + 1))
-[ -n "$prev_menu" ] && menu_height=$((menu_height + 1))
 
 # manually trigger dialog handling
 do_menu_handling

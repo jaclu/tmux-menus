@@ -176,14 +176,9 @@ create_custom_index() {
     chmod 0755 "$f_custom_items_index"
     checksum_content_write # custom index change
     # Verify that custom_items/_index.sh was correctly generated
-    run_in_sub_shell="$(
-        printf '%s\n%s\n%s\n' \
-            "export TMUX_MENUS_NO_DISPLAY=1" \
-            "export TMUX_MENUS_LOGGING_MINIMAL=2" \
-            "$f_custom_items_index"
-    )"
-    # 'export TMUX_MENUS_LOGGING_MINIMAL=2' \
-    variable_content=$(sh -c "$run_in_sub_shell")
+    TMUX_MENUS_NO_DISPLAY=1 TMUX_MENUS_LOGGING_MINIMAL=2 sh "$f_custom_items_index" >/dev/null 2>&1 || {
+        error_msg "Generated custom index failed validation"
+    }
 }
 
 process_custom_items() {
@@ -257,7 +252,7 @@ f_custom_items_template="$D_TM_BASE_PATH"/templates/custom_index_template.sh
 # then inserted into the custom index and removed
 f_custom_items_content="$d_cache"/custom_items_content
 
-if $cfg_use_cache; then
+if ${cfg_use_cache:-false}; then
     custom_items_prepare
 else
     error_msg "$rn_current_script - should not be run if caching is disabled"

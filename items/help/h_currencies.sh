@@ -13,14 +13,14 @@ static_content() {
         error_msg "$bn_current_script was called without notice of what called it"
     fi
     set -- \
-        0.0 M Left "Back to Previous menu  $nav_prev" "$prev_menu" \
-        0.0 M Home "Back to Main menu      $nav_home" "$cfg_main_menu" \
+        0.0 M Left "Back to Previous  $nav_prev" "$prev_menu" \
+        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu" \
         0.0 S \
-        0.0 T "-#[nodim]Even if due to font or screen settings," \
-        0.0 T "-#[nodim]the symbol isn't visible, this should" \
-        0.0 T "-#[nodim]still be able to paste it in."
+        0.0 T "Even if due to font or screen settings," \
+        0.0 T "the symbol isn't visible, this should" \
+        0.0 T "still be able to paste it in."
 
-    if $b_use_alt_handler; then
+    if ${b_use_alt_handler:-false}; then
         set -- "$@" \
             0.0 T " " \
             0.0 T "When using whiptail it is not possible" \

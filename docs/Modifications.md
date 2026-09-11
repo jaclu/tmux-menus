@@ -1,7 +1,12 @@
 # Modifications
 
 Each menu is a standalone script, making it easy to edit. Once saved,
-the updated content will be displayed the next time the menu is triggered.
+the updated content will be displayed the next time the menu is triggered,
+as long as [Validate Cache](/docs/Advanced.md#validate-cache) is enabled,
+or [Caching](/docs/Advanced.md#caching) is disabled.
+
+If this is not the case doing `rm [tmux-menus folder]/cache/items -rf`
+will cause all menus to be regenerated.
 
 **Fast development with minimal hassle!**
 
@@ -14,16 +19,14 @@ line to check for syntax errors:
 
 This will immediately execute the menu and display any errors in the terminal.
 
-If `@menus_log_file` is set—either in the tmux configuration or hardcoded in
-`scripts/helpers_minimal.sh` (around line 491, look for assignment of cfg_log_file)
-logging can be used within menus:
+If [Logging](docs/Advanced.md#logging) is enabled, logging can be used within menus:
 
 ```bash
 log_it "foo is now [$foo]"
 ```
 
 If monitoring a log file in a separate terminal is impractical,
-you can set the log file to `/dev/stderr` to make `log_it` behave like `echo`.
+the log file can be set to `/dev/stderr` to make `log_it` behave like `echo`.
 
 Using `/dev/stderr` instead of `/dev/stdout` prevents unintended errors if
 `log_it` is called during string assignments.
@@ -40,19 +43,18 @@ Item types and their parameters
 
 - M - Open another menu
   - shortcut for this item, or "" if none wanted
-  - label
+  - label - can use styling
   - menu script
 - C - run tmux Command
   - shortcut for this item, or "" if none wanted
-  - label
+  - label - can use styling
   - tmux command
 - E - run External command
   - shortcut for this item, or "" if none wanted
-  - label
+  - label - can use styling
   - external command
 - T - Display text line
-  - text to display. Any initial "-" (making it unselectable in tmux menus)
-    will be skipped if whiptail is used, since a leading "-" would cause it to crash.
+  - text to display - can use styling
 - S - Separator/Spacer line line
   - no parameters
 
@@ -67,11 +69,10 @@ static_content() {
   #   'set -- "$@" \' should be used when appending parameters
 
   set -- \
-    0.0 M Left "Back to Main menu  $nav_home" "$cfg_main_menu" \
+    0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu" \
     0.0 S \
     0.0 T "Example of a line extending action" \
-    2.0 C "r" "Rename this session" "command-prompt -I '#S' \
-        'rename-session -- \"%%\"'" \
+    2.0 C "r" "Rename this session" "command-prompt -I '#S' 'rename-session -- \"%%\"'" \
     0.0 S \
     0.0 T "Example of action reloading the menu" \
     1.8 C "z" "Zoom pane toggle" "resize-pane -Z $runshell_reload_mnu"

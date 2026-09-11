@@ -1,5 +1,4 @@
 #!/bin/sh
-# Always sourced file - Fake bang path to help editors
 #
 #   Copyright (c) 2022-2025: Jacob.Lundqvist@gmail.com
 #   License: MIT
@@ -59,7 +58,7 @@ bind_plugin_key() {
     esac
 
     bind_cmd="$cfg_main_menu"
-    if $b_use_alt_handler; then
+    if ${b_use_alt_handler:-false}; then
         bind_cmd="$f_ext_dlg_trigger"
         [ "$alt_menu_handler_announced" != 1 ] && {
             alt_menu_handler_announced=1 # avoid logging it twice if secondary default is used
@@ -67,7 +66,7 @@ bind_plugin_key() {
         }
     fi
     cmd="bind-key"
-    $use_bind_key_notes && cmd="$cmd -N \"plugin ${plugin_name}\""
+    ${use_bind_key_notes:-false} && cmd="$cmd -N \"plugin ${plugin_name}\""
 
     u=$(cache_unescape_special_chars "$_bpk_key")
     if $cfg_no_prefix; then
@@ -114,12 +113,11 @@ bind_plugin_key() {
 #
 #===============================================================
 
+initialize_plugin=true
+f_skip_low_tmux_version_warning="$D_TM_BASE_PATH"/.skip_old_tmux_warning
+
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
 D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
-
-initialize_plugin=1
-
-f_skip_low_tmux_version_warning="$D_TM_BASE_PATH"/.skip_old_tmux_warning
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
@@ -136,18 +134,30 @@ else
     cfg_use_cache=false
 fi
 
-if [ "$cfg_use_cache" = true ] && [ -d "$d_cache" ]; then
-    # clear out potentially obsolete cache items
-    safe_remove "$f_cached_tmux_options" "plugin_init.sh"
-    safe_remove "$f_cached_tmux_key_binds" "plugin_init.sh" external_path_ok
-    # Clear any errors from previous runs
-    safe_remove "$d_cache"/error-* "plugin_init.sh"
-    safe_remove "$d_cache"/cmd_output "plugin_init.sh"
+if ${cfg_use_cache:-false} && [ -d "$d_cache" ]; then
+    #
+    # Clear out potentially obsolete cache items
     #
     # If these are removed, it can't be detected if config changed, so
     # there is no hint if cached items should be dropped or not
     #
     # "$f_cache_params"  "$f_chksum_custom"  "$f_min_display_time"
+    #
+    [ -f "$f_cache_known_tmux_vers" ] && {
+        safe_remove "$f_cache_known_tmux_vers" "plugin_init.sh - known_tmux_vers"
+        # Ensure env didn't pick anything up from an obsolete version of this file
+        cached_ok_tmux_versions=""
+        cached_bad_tmux_versions=""
+    }
+
+    safe_remove "$f_cached_tmux_options" "plugin_init.sh - listing detected tmux options"
+    safe_remove "$f_safe_now_method" "plugin_init.sh - safe_now method"
+    # Used by display commands
+    safe_remove "$f_cached_tmux_key_binds" "plugin_init.sh - display commands util" external_path_ok
+
+    # Clear any errors from previous runs
+    safe_remove "$d_cache"/error-* "plugin_init.sh"
+    safe_remove "$d_cache"/cmd_output "plugin_init.sh"
 fi
 
 #
@@ -167,7 +177,7 @@ config_setup
 #
 log_it
 
-if $cfg_use_cache; then
+if ${cfg_use_cache:-false}; then
     #
     #  If custom inventory is used, update link to its main index
     #

@@ -15,36 +15,30 @@ tmux_vers_check_do_compare() {
     [ -z "$_v_comp" ] && error_msg "tmux_vers_check_do_compare() - no param supplied"
     # log_it "tmux_vers_check_do_compare($_v_comp)"
 
-    # Compare numeric parts first for quick decisions.
-    tpt_digits_from_string _i_comp "$_v_comp"
+    tpt_parse_tmux_vers "$_v_comp"
 
-    # SC2154: _i_comp assigned dynamically by tpt_digits_from_string using eval
-    #         current_tmux_vers_i defined in cache.sh
-    # shellcheck disable=SC2154
-    [ "$_i_comp" -lt "$current_tmux_vers_i" ] && {
+    [ "$tpt_vers_digits" -lt "$current_tmux_vers_i" ] && {
         cache_add_ok_vers "$_v_comp"
         return 0
     }
-    [ "$_i_comp" -gt "$current_tmux_vers_i" ] && {
+    [ "$tpt_vers_digits" -gt "$current_tmux_vers_i" ] && {
         cache_add_bad_vers "$_v_comp"
         return 1
     }
 
-    # Compare suffixes only if numeric parts are equal.
-    tpt_tmux_vers_suffix _suf "$_v_comp"
     # - If no suffix is required or suffix matches, return success
-    if [ -z "$_suf" ] || [ "$_suf" = "$current_tmux_vers_suffix" ]; then
+    if [ -z "$tpt_vers_suffix" ] || [ "$tpt_vers_suffix" = "$current_tmux_vers_suffix" ]; then
         cache_add_ok_vers "$_v_comp"
         return 0
     fi
     # If the desired version has a suffix but the running version doesn't, fail
-    [ -n "$_suf" ] && [ -z "$current_tmux_vers_suffix" ] && {
+    [ -n "$tpt_vers_suffix" ] && [ -z "$current_tmux_vers_suffix" ] && {
         cache_add_bad_vers "$_v_comp"
         return 1
     }
     # Perform lexicographical comparison of suffixes only if necessary
-    [ "$(printf '%s\n%s\n' "$_suf" "$current_tmux_vers_suffix" \
-        | LC_COLLATE=C sort | head -n 1)" = "$_suf" ] && {
+    [ "$(printf '%s\n%s\n' "$tpt_vers_suffix" "$current_tmux_vers_suffix" \
+        | LC_COLLATE=C sort | head -n 1)" = "$tpt_vers_suffix" ] && {
         cache_add_ok_vers "$_v_comp"
         return 0
     }
@@ -69,6 +63,7 @@ tmux_get_defaults() { # new init
     # called, it is defined in the main segment of this script
     default_display_commands=Yes
     default_main_menu="$f_main_menu"
+    default_danger_zone="#[reverse]"
 
     if [ -n "$TMUX_CONF" ]; then
         default_tmux_conf="$TMUX_CONF"
@@ -90,18 +85,24 @@ tmux_get_defaults() { # new init
         default_location_y=P
     fi
 
+    # Obsolete for tmux += 3.7 - provides F1 popup for this, then enforced to False
     default_use_hint_overlays=Yes
     default_show_key_hints=No
+
     default_format_title="'#[align=centre] #{@menu_name} '"
     default_nav_next="-->"
     default_nav_prev="<--"
     default_nav_home="<=="
 
+    default_use_timers=No
+    default_validate_cache=No
+
     # tmux >= 3.4
-    default_border_type="$cfg_default_is_empty_string"
+    default_border_type="$cfg_default_is_empty_string" # menu-border-style ??
     default_simple_style_selected="$cfg_default_is_empty_string"
-    default_simple_style="$cfg_default_is_empty_string"
+    default_simple_style="$cfg_default_is_empty_string" # menu-border-style ??
     default_simple_style_border="$cfg_default_is_empty_string"
+    # menu-border-lines
 
     # tmux >= 3.8
     default_floating_pane_incr_horizontal=1
@@ -139,7 +140,7 @@ tmux_get_option() {
     [ -z "$tgo_option" ] && error_msg "tmux_get_option() param 2 empty"
     [ -z "$tgo_default" ] && log_it "tmux_get_option($tgo_option) - No default supplied"
 
-    if [ -z "$tgo_no_cache" ] && $cfg_use_cache && [ -d "$d_cache" ]; then
+    if [ -z "$tgo_no_cache" ] && ${cfg_use_cache:-false} && [ -d "$d_cache" ]; then
         tgo_use_cache=true
     else
         tgo_use_cache=false
@@ -153,7 +154,7 @@ tmux_get_option() {
         # before 1.8 no support for user options
         log_it "tmux_get_option() - tmux < 1.8 - User options not available, using default"
         _line=""
-    elif $tgo_use_cache; then
+    elif ${tgo_use_cache:-false}; then
         cache_save_options_defined_in_tmux
 
         if [ -d /proc/ish ]; then
@@ -201,7 +202,7 @@ tmux_get_option() {
         esac
     fi
     case "$tgo_value" in
-        "$cfg_default_is_empty_string")
+        "$cfg_default_is_empty_string" | "''" | '""')
             tgo_value=""
             # log_it "><> overriding to empty for $tgo_option [$tgo_value]"
             ;;
@@ -335,11 +336,18 @@ tmux_get_plugin_options() { # new init
         log_it "--- Activating b_use_alt_handler [$alt_menu_handler] due to tmux < 3.0"
     fi
 
+    tmux_get_option cfg_danger_zone "@menus_danger_zone" "$default_danger_zone"
+
     handle_env_variables # potential b_use_alt_handler override
 
-    if $b_use_alt_handler; then
+    if ${b_use_alt_handler:-false}; then
         # variables only used by whiptail
         cfg_display_cmds=false
+
+        # this is slowish anyhow, so no point in optimizing for peak cached performance
+        cfg_use_timers=true
+        cfg_validate_cache=true
+
         cfg_use_hint_overlays=false
         cfg_show_key_hints=false
         cfg_nav_next="$default_nav_next"
@@ -353,6 +361,28 @@ tmux_get_plugin_options() { # new init
         tmux_get_option cfg_mnu_loc_x "@menus_location_x" "$default_location_x"
         tmux_get_option cfg_mnu_loc_y "@menus_location_y" "$default_location_y"
         tmux_get_option cfg_format_title "@menus_format_title" "$default_format_title"
+
+        if tmux_vers_check 3.7z; then
+            if normalize_bool_param "@menus_use_timers" "$default_use_timers"; then
+                cfg_use_timers=true
+            else
+                cfg_use_timers=false
+            fi
+        else
+            # Prior to 3.8, timers are needed to check if menu didn't fit on screen
+            # So always enabled
+            cfg_use_timers=true
+            _use_timers_found=$(grep @menus_use_timers "$f_cached_tmux_options")
+            [ -n "$_use_timers_found" ] && {
+                log_it "Config ignored for tmux < 3.8: $_use_timers_found"
+            }
+        fi
+
+        if normalize_bool_param "@menus_validate_cache" "$default_validate_cache"; then
+            cfg_validate_cache=true
+        else
+            cfg_validate_cache=false
+        fi
 
         tmux_vers_check 3.4 && {
             tmux_get_option cfg_border_type "@menus_border_type" "$default_border_type"
@@ -385,15 +415,21 @@ tmux_get_plugin_options() { # new init
         else
             cfg_display_cmds=false
         fi
-        if normalize_bool_param "@menus_use_hint_overlays" "$default_use_hint_overlays"; then
-            cfg_use_hint_overlays=true
-        else
+        if tmux_vers_check 3.7; then
+            # Obsolete, tmux provides F1 popup for this
             cfg_use_hint_overlays=false
-        fi
-        if normalize_bool_param "@menus_show_key_hints" "$default_show_key_hints"; then
-            cfg_show_key_hints=true
-        else
             cfg_show_key_hints=false
+        else
+            if normalize_bool_param "@menus_use_hint_overlays" "$default_use_hint_overlays"; then
+                cfg_use_hint_overlays=true
+            else
+                cfg_use_hint_overlays=false
+            fi
+            if normalize_bool_param "@menus_show_key_hints" "$default_show_key_hints"; then
+                cfg_show_key_hints=true
+            else
+                cfg_show_key_hints=false
+            fi
         fi
     fi
 
@@ -423,8 +459,7 @@ tmux_get_plugin_options() { # new init
     #  bind-key Notes were added in tmux 3.1, so should not be used on
     #  older versions!
     #
-    if tmux_vers_check 3.1 \
-        && normalize_bool_param "@use_bind_key_notes_in_plugins" No; then
+    if tmux_vers_check 3.1 && normalize_bool_param "@use_bind_key_notes_in_plugins" No; then
         use_bind_key_notes=true
     else
         use_bind_key_notes=false
@@ -435,7 +470,7 @@ use_whiptail_env() {
     # if this is moved to helpers_minimal, ensure to also
     # move the required defaults to that file
     # log_it "use_whiptail_env()"
-    if $b_use_alt_handler; then
+    if ${b_use_alt_handler:-false}; then
         {
             cfg_display_cmds=false
             cfg_show_key_hints=false
@@ -478,12 +513,12 @@ tmux_error_handler_assign() { # cache references
     # *) error_msg "tmux_error_handler_assign() = teh_debug invalid: [$teh_debug]" ;;
     # esac
 
-    $teh_debug && {
+    ${teh_debug:-false} && {
         # in principle this should be done every time, but limited to when
         # logging, to minimize overhead
         validate_varname "$varname" "tmux_error_handler_assign()"
 
-        if $sut_store_result; then
+        if ${sut_store_result:-false}; then
             log_it "tmux_error_handler_assign(\$TMUX_BIN $cmd_simplified) -> $varname"
         else
             log_it "tmux_error_handler(\$TMUX_BIN $cmd_simplified)"
@@ -492,7 +527,7 @@ tmux_error_handler_assign() { # cache references
 
     # Define a location where to store the potentiall error output
     # and create a file name based on this location
-    if $cfg_use_cache; then
+    if ${cfg_use_cache:-false}; then
         d_errors="$d_cache"
     else
         d_errors="$d_tmp"
@@ -505,14 +540,14 @@ tmux_error_handler_assign() { # cache references
     # Run the actual command and save any error output. If the command succeeded
     # just ignore the empty error output file
     #
-    if $sut_store_result; then
+    if ${sut_store_result:-false}; then
         value=$($TMUX_BIN "$@" 2>"$f_tmux_err")
     else
         $TMUX_BIN "$@" 2>"$f_tmux_err" >/dev/null
     fi
     ex_code="$?"
-    $teh_debug && {
-        if $sut_store_result; then
+    ${teh_debug:-false} && {
+        if ${sut_store_result:-false}; then
             log_it "tmux handler: cmd done - excode:$ex_code - output: >>$value<<"
         else
             log_it "tmux handler: cmd done - excode:$ex_code"
@@ -543,7 +578,7 @@ tmux_error_handler_assign() { # cache references
         echo "\$TMUX_BIN $cmd_simplified" >"$f_error_log"
         rm "$f_tmux_err"
 
-        if $teh_debug; then
+        if ${teh_debug:-false}; then
             log_it "tmux cmd failed:\n\n$(cat "$f_error_log")\n"
             exit 1
         else
@@ -576,14 +611,14 @@ EOF
             error_msg "$_e_msg"
         fi
         return 1 # shouldn't get here, but at least return an error
-    elif [ ! -s "$f_tmux_err" ]; then
+    elif [ -f "$f_tmux_err" ] && [ ! -s "$f_tmux_err" ]; then
         rm "$f_tmux_err"
     fi
 
     #
     # Depending on call type, potentially save output in caller supplied variable name
     #
-    $sut_store_result && eval "$varname=\"\$value\""
+    ${sut_store_result:-false} && eval "$varname=\"\$value\""
 
     sut_store_result=true # reset this for the next call
     teh_debug=false       # This needs to be enabled on a per call basis

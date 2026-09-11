@@ -232,6 +232,16 @@ get_digits_from_string() {
     echo "$_i"
 }
 
+as_bool() {
+    # Display a 0/1 variable as the strings true/false
+    case "$1" in
+        0) echo "false" ;;
+        1) echo "true" ;;
+        "") error_msg "as_bool() - no param" ;;
+        *) error_msg "as_bool() param should be 0/1 - was [$1]" ;;
+    esac
+}
+
 normalize_bool_param() {
     #
     #  Normalizes a string into a boolean value usable in conditionals.
@@ -279,7 +289,7 @@ normalize_bool_param() {
         1 | yes | true) return 0 ;;
         0 | no | false) return 1 ;;
         *)
-            if $_tmux_param; then
+            if ${_tmux_param:-false}; then
                 error_msg "$nbp_param = [$nbp_value_lc] ($_v) - should be yes/true/1 or no/false/0"
             else
                 error_msg "[$nbp_param] - should be yes/true/1 or no/false/0"
@@ -330,9 +340,13 @@ check_speed_cutoff() {
     # display time before triggering "SCREEN might be too small" warning
     cut_off="$1"
 
+    ${cfg_use_cache:-false} || {
+        t_minimal_display_time=1
+        return
+    }
     time_span "$t_script_start"
 
-    # log_it "-T- check_speed_cutoff($cut_off) - $t_time_span"
+    log_it "-T- check_speed_cutoff($cut_off) - $t_time_span"
 
     _csc_speed_ok=$(echo "$t_time_span < $cut_off" | bc)
     if [ "$_csc_speed_ok" -eq 1 ]; then
@@ -340,7 +354,7 @@ check_speed_cutoff() {
     else
         # log_it "  Failed cutoff time, considered a slow system: $t_time_span >= $cut_off"
         # for slower systems
-        t_minimal_display_time=0.5
+        t_minimal_display_time=1
     fi
 }
 
@@ -431,15 +445,15 @@ wait_to_close_display() {
     #
     #  Busybox ps has no -x and will throw error, so send to /dev/null
     #  pgrep does not provide the command line, so ignore SC2009
-    # if ps -x "$PPID" 2>/dev/null | grep -q tmux-menus && $b_use_alt_handler; then
+    # if ps -x "$PPID" 2>/dev/null | grep -q tmux-menus && ${b_use_alt_handler:-false}; then
     _b_is_whiptail=false
     case $(ps -o command= -p "$PPID" 2>/dev/null) in
         *tmux-menus*)
-            [ "$b_use_alt_handler" = true ] && _b_is_whiptail=true
+            ${b_use_alt_handler:-false} && _b_is_whiptail=true
             ;;
         *) ;;
     esac
-    if [ "$_b_is_whiptail" = true ]; then
+    if ${_b_is_whiptail:-false}; then
         #
         # called using whiptail menus, since a pause is needed, before what
         # might be a backgrounded process is resumed
@@ -529,7 +543,9 @@ parse_move_link_dest() {
     exit 1
 }
 
-[ "$env_initialized" -gt 1 ] && error_msg "helpers_full already sourced [$env_initialized]"
+[ "${env_initialized:-0}" -gt 1 ] && {
+    error_msg "helpers_full already sourced [$env_initialized]"
+}
 
 # log_it "><> [$$] STARTING: scripts/utils/helpers_full.sh"
 
@@ -537,7 +553,6 @@ parse_move_link_dest() {
 #  Convenience shortcuts
 #
 
-d_help="$d_items"/help
 d_hints="$d_items"/hints
 d_custom_items="$D_TM_BASE_PATH"/custom_items
 f_custom_items_index="$d_custom_items"/_index.sh

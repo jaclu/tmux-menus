@@ -87,22 +87,22 @@ check_unknown_items() {
     #
     # List all items in d_plugins not supposed to be there
     #
-    undefined_item=false
+    b_undefined_item=false
 
     for file in "$d_plugins"/*; do
         # Strip leading path
         item=$(basename "$file")
 
         # Check if item is in valid_items (space-separated)
-        found=false
+        b_found=false
         for valid in $valid_items; do
-            [ "$item" = "$valid" ] && found=true && break
+            [ "$item" = "$valid" ] && b_found=true && break
         done
 
-        if [ "$found" = false ]; then
-            [ "$undefined_item" = false ] && echo " " # spacer before 1st entry
+        if ! ${b_found:-false}; then
+            ${b_undefined_item:-false} || echo " " # spacer before 1st entry
             echo "Undefined item: $d_plugins/$item"
-            undefined_item=true
+            b_undefined_item=true
         fi
     done
 }
@@ -142,12 +142,12 @@ echo " "
 list_install_status
 check_unknown_items
 
-if $plugin_missing || $undefined_item; then
+if ${plugin_missing:-true} || ${b_undefined_item:-false}; then
     echo " " # spacers
     echo " "
 fi
 
-if $plugin_missing; then
+if ${plugin_missing:-true}; then
     if tmux_vers_check 1.9; then
         echo "You can install plugins listed as NOT INSTALLED with <prefix> I"
     else
@@ -157,7 +157,7 @@ if $plugin_missing; then
     fi
 fi
 
-if $undefined_item; then
+if ${b_undefined_item:-false}; then
     if tmux_vers_check 1.9; then
         echo "You can remove undefined items with <prefix> M-u"
     else

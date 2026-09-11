@@ -7,6 +7,17 @@
         {
             "type": "bashdb",
             "request": "launch",
+            "name": "Bash-T2 env",
+            "cwd": "${workspaceFolder}",
+            "program": "${file}",
+            "args": [],
+            "env": {
+                // "show_cmds_state": "1",
+            }
+        },
+        {
+            "type": "bashdb",
+            "request": "launch",
             "name": "Bash-Debug preselected",
             "cwd": "${workspaceFolder}",
             "program": "${workspaceFolder}/items/main.sh",
@@ -16,7 +27,7 @@
             "type": "bashdb",
             "request": "launch",
             "name": "Bash-Debug (current file)",
-            "program": "${file}"
+            "program": "${file}",
         }
     ]
 }

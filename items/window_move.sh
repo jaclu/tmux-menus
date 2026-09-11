@@ -12,7 +12,7 @@ dynamic_content() {
     # marking a pane is an ancient feature, but pane_marked came at 3.0
     tmux_vers_check 3.0 || return
 
-    ${all_helpers_sourced:-false} || source_all_helpers "window_move:dynamic_content()"
+    ${b_all_helpers_sourced:-false} || source_all_helpers "window_move:dynamic_content()"
 
     tmux_error_handler_assign this_win_id display-message -p '#{window_id}'
     tmux_error_handler_assign pane_marked_status list-panes -a \
@@ -23,20 +23,21 @@ dynamic_content() {
     s_found="$(echo "$pane_marked_status" | grep '1 ' | grep -v "$this_win_id")"
     if [ -n "$s_found" ]; then
         set -- \
-            3.0 T "-#[nodim]Swap current window with window" \
+            3.0 T "Swap current window with window" \
             3.0 C s " containing marked pane" swap-window
     else
-        set --
+        set -- 0 D
     fi
     menu_generate_part 4 "$@"
 }
 
 static_content() {
     set -- \
-        0.0 M Left "Back to Handling Window  $nav_prev" windows.sh \
-        0.0 M Home "Back to Main menu        $nav_home" "$cfg_main_menu"
+        0.0 M Left "Back to Previous  $nav_prev" windows.sh \
+        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu" \
+        0.0 M H "Help,  Move/Link  $nav_next" "$d_help/h_window_move.sh $0"
     menu_generate_part 1 "$@"
-    $cfg_display_cmds && display_commands_toggle 2 # give this its own menu part idx
+    display_commands_toggle 2 # give this its own menu part idx
 
     set -- \
         0.0 S \
@@ -46,22 +47,20 @@ static_content() {
 
     set -- \
         0.0 S \
-        1.8 E m "Move window to other location" "$d_scripts/act_choose_tree.sh w m" \
-        1.8 E l "Link window to other session" "$d_scripts/act_choose_tree.sh w l"
+        1.8 E m "Move to other" "$d_scripts/act_choose_tree.sh w m" \
+        1.8 E l "Link to other" "$d_scripts/act_choose_tree.sh w l"
 
     tmux_vers_check 1.8 && {
         # Limit to same vers as act_choose-tree.sh, even if this is not vers dependent.
         # Showing help about a disabled feature would be confusing
 
-        $cfg_use_hint_overlays && $cfg_show_key_hints && {
+        ${cfg_use_hint_overlays:-false} && ${cfg_show_key_hints:-false} && {
             set -- "$@" \
                 0.0 M K "Key hints - Move/Link      $nav_next" "$d_hints/choose-tree.sh $0"
         }
 
         set -- "$@" \
-            0.0 C u "Unlink window from this session" "unlink-window" \
-            0.0 S \
-            0.0 M H "Help, explaining Move/Link $nav_next" "$d_help/help_window_move.sh $0"
+            0.0 C u "Unlink from session" "unlink-window"
     }
     menu_generate_part 5 "$@"
 }

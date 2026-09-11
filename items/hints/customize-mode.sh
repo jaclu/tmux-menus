@@ -13,8 +13,8 @@ dynamic_content() {
 
     if [ -n "$prev_menu" ]; then
         set -- \
-            0.0 M Left "Back to Previous menu  $nav_prev" "$prev_menu" \
-            0.0 M Home "Back to Main menu      $nav_home" "$cfg_main_menu"
+            0.0 M Left "Back to Previous  $nav_prev" "$prev_menu" \
+            0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu"
     else
         set -- \
             0.0 T "Press Esc or q to close this help overlay"
@@ -29,29 +29,29 @@ static_content() {
     fi
     set -- \
         3.2 S \
-        3.2 T "-#[nodim]Enter  Set option value" \
-        3.2 T "-#[nodim]Up     Select previous item" \
-        3.2 T "-#[nodim]Down   Select next item" \
-        3.2 T "-#[nodim]+      Expand selected item" \
-        3.2 T "-#[nodim]-      Collapse selected item" \
-        3.2 T "-#[nodim]M-+    Expand all items" \
-        3.2 T "-#[nodim]M--    Collapse all items" \
-        3.2 T "-#[nodim]s      Set option value or key attribute" \
-        3.2 T "-#[nodim]S      Set global option value" \
-        3.2 T "-#[nodim]w      Set window option value, for pane/window option" \
-        3.2 T "-#[nodim]d      Set an option or key to the default" \
-        3.2 T "-#[nodim]D      Set tagged options/keys to default" \
-        3.2 T "-#[nodim]u      Unset an option or unbind a key" \
-        3.2 T "-#[nodim]U      Unset tagged options and unbind tagged keys" \
-        3.2 T "-#[nodim]C-s    Search by name" \
-        3.2 T "-#[nodim]n      Repeat last search $forwards_hint" \
-        3.5 T "-#[nodim]N      Repeat last search backwards" \
-        3.2 T "-#[nodim]t      Toggle if item is tagged" \
-        3.2 T "-#[nodim]T      Tag no items" \
-        3.2 T "-#[nodim]C-t    Tag all items" \
-        3.2 T "-#[nodim]f      Enter a format to filter items" \
-        3.2 T "-#[nodim]v      Toggle option information" \
-        3.2 T "-#[nodim]Esc/q  Exit mode"
+        3.2 T "Enter  Set option value" \
+        3.2 T "Up     Select previous item" \
+        3.2 T "Down   Select next item" \
+        3.2 T "+      Expand selected item" \
+        3.2 T " -     Collapse selected item" \
+        3.2 T "M-+    Expand all items" \
+        3.2 T "M--    Collapse all items" \
+        3.2 T "s      Set option value or key attribute" \
+        3.2 T "S      Set global option value" \
+        3.2 T "w      Set window option value, for pane/window option" \
+        3.2 T "d      Set an option or key to the default" \
+        3.2 T "D      Set tagged options/keys to default" \
+        3.2 T "u      Unset an option or unbind a key" \
+        3.2 T "U      Unset tagged options and unbind tagged keys" \
+        3.2 T "C-s    Search by name" \
+        3.2 T "n      Repeat last search $forwards_hint" \
+        3.5 T "N      Repeat last search backwards" \
+        3.2 T "t      Toggle if item is tagged" \
+        3.2 T "T      Tag no items" \
+        3.2 T "C-t    Tag all items" \
+        3.2 T "f      Enter a format to filter items" \
+        3.2 T "v      Toggle option information" \
+        3.2 T "Esc/q  Exit mode"
     menu_generate_part 2 "$@"
 }
 
@@ -64,9 +64,7 @@ static_content() {
 menu_name="Keys for customize-mode"
 menu_min_vers=3.2
 
-if [ "$1" = "skip-oversized" ]; then
-    skip_oversized=1
-elif [ -n "$1" ]; then
+if [ -n "$1" ]; then
     prev_menu="$(realpath "$1")"
 fi
 
@@ -77,11 +75,6 @@ no_auto_menu_handling=1 # delay processing of dialog, only source it for now
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$D_TM_BASE_PATH"/scripts/menu_handling.sh
-
-menu_width=50
-menu_height=26
-tmux_vers_check "3.5" && menu_height=$((menu_height + 1))
-[ -n "$prev_menu" ] && menu_height=$((menu_height + 1))
 
 # manually trigger dialog handling
 do_menu_handling

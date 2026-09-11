@@ -14,37 +14,37 @@ dynamic_content() {
     # be left once this menu is done
     #
     e_prev_menu="$plugin_name-layouts-prev-menu"
-    e_prev_menu_name="$plugin_name-layouts-prev-menu-name"
+    # e_prev_menu_name="$plugin_name-layouts-prev-menu-name"
 
     if [ -n "$prev_menu" ]; then
         # Since this menu might reload itself and then using no params,
         # store them for later potential reuse
         $TMUX_BIN set-environment "$e_prev_menu" "$prev_menu"
-        $TMUX_BIN set-environment "$e_prev_menu_name" "${prev_name:-Previous menu}"
+        # $TMUX_BIN set-environment "$e_prev_menu_name" "${prev_name:-Previous menu}"
     else
         if tmux_vers_check 1.7; then
             prev_menu=$($TMUX_BIN show-environment "$e_prev_menu" | cut -d= -f2)
-            prev_name=$($TMUX_BIN show-environment "$e_prev_menu_name" | cut -d= -f2)
+            # prev_name=$($TMUX_BIN show-environment "$e_prev_menu_name" | cut -d= -f2)
         else
             # doesn't support variable name for show-environment - use grep
             prev_menu=$($TMUX_BIN show-environment | grep "$e_prev_menu" | cut -d= -f2)
-            prev_name=$($TMUX_BIN show-environment | grep "$e_prev_menu_name" | cut -d= -f2)
+            # prev_name=$($TMUX_BIN show-environment | grep "$e_prev_menu_name" | cut -d= -f2)
         fi
     fi
 
-    set -- 0.0 M Left "Back to $prev_name   $nav_prev" "$prev_menu"
+    set -- 0.0 M Left "Back to Previous    $nav_prev" "$prev_menu"
     [ -n "$prev_menu" ] || error_msg "$rn_current_script - no previous menu parameter given"
     menu_generate_part 1 "$@"
 }
 
 static_content() {
     set -- \
-        0.0 M Home "Back to Main menu  $nav_home" "$cfg_main_menu" \
-        2.5 M L "Border Lines" layouts_lines.sh \
-        3.3 M I "Border Indicators" layouts_indicators.sh \
-        3.6 M S "Scroll Bars" layouts_scrollbars.sh
+        0.0 M Home "Back to Main        $nav_home" "$cfg_main_menu" \
+        2.3 M P "Pane Borders        $nav_next" layouts_pane_borders.sh \
+        3.3 M I "Border Indicator    $nav_next" layouts_indicators.sh \
+        3.6 M S "Scroll Bars         $nav_next" layouts_scrollbars.sh
     menu_generate_part 2 "$@"
-    $cfg_display_cmds && display_commands_toggle 3
+    display_commands_toggle 3
 
     set -- \
         0.0 S \
@@ -78,7 +78,7 @@ D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
 if [ -n "$1" ]; then
     prev_menu="$(realpath "$1")"
     shift # reamiing params are prev menu name
-    prev_name="$*"
+    # prev_name="$*"
 fi
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck

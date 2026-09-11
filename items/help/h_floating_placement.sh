@@ -5,13 +5,8 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Help about floating_pane menu
+#   Help about floating_placement menu
 #
-#   For basic move & resize use this diamond, lower-case move, upper-case resize
-#
-#       T
-#      F G
-#       V
 #
 
 static_content() {
@@ -19,19 +14,18 @@ static_content() {
         error_msg "$bn_current_script was called without notice of what called it"
     fi
     set -- \
-        0.0 M Left "Back to Previous menu  $nav_prev" "$prev_menu" \
-        0.0 M Home "Back to Main menu      $nav_home" "$cfg_main_menu" \
+        0.0 M Left "Back to Previous  $nav_prev" "$prev_menu" \
+        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu" \
         0.0 S \
-        0.0 T "-#[nodim]Movement diamond: " \
-        0.0 T "-#[nodim]        T(up)" \
-        0.0 T "-#[nodim]F(left)         G(right) " \
-        0.0 T "-#[nodim]        V(down)" \
-        0.0 T "-" \
-        0.0 T "-#[nodim]Use lowercase to move" \
-        0.0 T "-#[nodim]Use uppercase to resize" \
-        0.0 S \
-        0.0 T "-#[nodim]For placements use s and" \
-        0.0 T "-#[nodim]the surrounding 8 chars"
+        0.0 T "The placement keys form a 3x3 grid" \
+        0.0 T "that mirrors the window:" \
+        0.0 T "" \
+        0.0 T "          q   w   e" \
+        0.0 T "          a   s   d" \
+        0.0 T "          z   x   c" \
+        0.0 T "" \
+        0.0 T "Key position = pane position," \
+        0.0 T "with s placing it in the centre."
     menu_generate_part 1 "$@"
 }
 
@@ -42,7 +36,7 @@ static_content() {
 #===============================================================
 
 [ -n "$1" ] && prev_menu="$(realpath "$1")"
-menu_name="Help, Floating Pane"
+menu_name="Help, Floating Pane - Placement"
 
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
 D_TM_BASE_PATH=$(cd "${0%/*}/../.." && pwd)
