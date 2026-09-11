@@ -68,7 +68,7 @@ add_result() {
 sc_filter_bind_escapes_single() {
     # Escape special characters in bind sequences for display
     # Defines: sc_ckb_escaped
-    log_it "sc_filter_bind_escapes_single($1)"
+    # log_it "sc_filter_bind_escapes_single($1)"
 
     case "$1" in
         '\"' | "\\\\" | "\\\$")
@@ -242,7 +242,6 @@ sc_show_cmd() {
     # Adds display lines via mnu_text_line()
 
     sc_clean_up_cmd "$1"
-    log_it "><> sc_cmd [$sc_cmd]"
     [ -z "$sc_cmd" ] && error_msg "sc_show_cmd($1) - no command could be extracted"
 
     case "$show_cmds_state" in
