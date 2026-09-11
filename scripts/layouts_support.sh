@@ -12,7 +12,7 @@ handle_layout_border_lines() {
     # Display if the current setting is local (this window) or global
     # Set this as a window option
     hlbl_opt="$1"
-    log_it "><> handle_pane_border_status($hlbl_opt)"
+    # log_it "><> handle_pane_border_status($hlbl_opt)"
 
     [ -n "$hlbl_opt" ] || error_msg "handle_layout_border_lines() - no param"
     hlbl_lbl_single="Single"
@@ -105,4 +105,4 @@ if false; then
     # Shellcheck analyzes this code path but it never executes at runtime
     . tools/variables_meta.sh
 fi
-log_it "><> layouts_support.sh: init"
+# log_it "><> layouts_support.sh: init"

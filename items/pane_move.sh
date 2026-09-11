@@ -18,7 +18,7 @@ dynamic_content() {
         -p '#{&&:#{pane_marked_set},#{!=:#{pane_marked},1}}'
 
     # SC2154: variable assigned dynamically by tmux_error_handler_assign using eval
-    # shellcheck disable=SC2154# faking external variables for shellcheck
+    # shellcheck disable=SC2154
     if [ "$other_pane_marked" = 1 ]; then
         set -- \
             3.0 C s "Swap marked" "swap-pane $runshell_reload_mnu"

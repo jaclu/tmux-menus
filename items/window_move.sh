@@ -19,7 +19,7 @@ dynamic_content() {
         -F '#{pane_marked} #{window_id}'
 
     # SC2154: variables assigned dynamically by tmux_error_handler_assign using eval
-    # shellcheck disable=SC2154# faking external variables for shellcheck
+    # shellcheck disable=SC2154
     s_found="$(echo "$pane_marked_status" | grep '1 ' | grep -v "$this_win_id")"
     if [ -n "$s_found" ]; then
         set -- \

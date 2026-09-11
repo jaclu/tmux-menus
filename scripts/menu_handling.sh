@@ -880,7 +880,7 @@ sort_uncached_menu_items() {
     # together, leads to this rather hackish in-memory implementation of sorting
     # the uncached_menu clearly lots of room for improvement...
     #
-    log_it "sort_uncached_menu_items()"
+    # log_it "sort_uncached_menu_items()"
 
     _sumi_entries=""
 
@@ -1049,7 +1049,7 @@ wt_cached_selection() {
 }
 
 alt_parse_output() {
-    log_it "alt_parse_output()"
+    # log_it "alt_parse_output()"
     #  $(tmux_escape_for_display "$1")
 
     #region display whiptail output
