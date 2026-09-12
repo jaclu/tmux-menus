@@ -6,6 +6,10 @@ All notable changes to this project will be documented here.
 
 ## [2.4.2] - not released
 
+### Changed
+
+- moved 'Clear all' in 'Pane History' to the last item since its a danger zone
+
 ### Fixed
 
 - Changed all 3.7z vers tags to 3.8 now that 3.8-rc is available

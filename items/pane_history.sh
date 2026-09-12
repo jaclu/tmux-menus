@@ -25,14 +25,14 @@ static_content() {
     #
     set -- \
         0.0 S \
-        0.0 E c "${cfg_danger_zone}Clear all" "$d_scripts/act_clear_screen.sh $rn_current_script" \
         0.0 C h 'History (enter copy mode)' "copy-mode" \
         2.0 C s "Save (no escapes)" "command-prompt -p \
             'Save to (no escapes):' -I '$_d_history/tmux-history' \
             'capture-pane -S - -E - ; save-buffer %1 ; delete-buffer'  $runshell_reload_mnu" \
         2.0 C e "Save (with escapes)" "command-prompt -p \
             'Save to (with escapes):' -I '$_d_history/tmux-history-escapes' \
-            'capture-pane -S - -E - -e ; save-buffer %1 ; delete-buffer' $runshell_reload_mnu"
+            'capture-pane -S - -E - -e ; save-buffer %1 ; delete-buffer' $runshell_reload_mnu" \
+        0.0 E c "${cfg_danger_zone}Clear all" "$d_scripts/act_clear_screen.sh $rn_current_script"
     menu_generate_part 3 "$@"
 }
 
