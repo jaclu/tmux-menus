@@ -12,7 +12,7 @@ static_content() {
     set -- \
         0.0 M Left "Back to Previous  $nav_prev" panes.sh \
         0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu" \
-        0.0 M H "Help              $nav_next" "$d_help/h_pane_split.sh $0"
+        3.7 M H "Help              $nav_next" "$d_help/h_pane_split.sh $0"
     menu_generate_part 1 "$@"
     display_commands_toggle 2
 
@@ -32,8 +32,9 @@ static_content() {
         2.0 C a "Above" "split-window -bv  $same_folder  $runshell_reload_mnu" \
         0.0 C b "Below" "split-window      $same_folder  $runshell_reload_mnu" \
         3.7 S \
-        3.7 C f "Float" "new-pane          $same_folder  $runshell_sleep_reload_mnu" \
-        3.8 C z "Float (keep zoomed)" "new-pane -A $same_folder  \
+        3.7 C f "Floating pane" "new-pane    $same_folder  \
+            $runshell_sleep_reload_mnu" \
+        3.8 C z "Floating pane (keep zoomed)" "new-pane -A $same_folder  \
             $runshell_sleep_reload_mnu"
     menu_generate_part 3 "$@"
 }

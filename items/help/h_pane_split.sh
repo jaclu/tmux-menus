@@ -16,12 +16,13 @@ static_content() {
         0.0 M Left "Back to Previous  $nav_prev" "$prev_menu" \
         0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu" \
         0.0 S \
-        0.0 T "'Float' Creates a floating pane, after unzooming" \
-        0.0 T "the current pane if it was zoomed." \
-        0.0 T "(the default behaviour)." \
-        0.0 T "" \
-        0.0 T "'Float (keep zoomed)' means that if created above" \
-        0.0 T " a zoomed pane, it remains zoomed."
+        0.0 T "'Floating pane' - Creates a floating pane," \
+        0.0 T "after unzooming the current pane," \
+        0.0 T "if it was zoomed." \
+        3.8 T "(the default behaviour)." \
+        3.8 S \
+        3.8 T "'Float (keep zoomed)' - If created above" \
+        3.8 T " a zoomed pane, it remains zoomed."
     menu_generate_part 1 "$@"
 }
 
@@ -32,6 +33,7 @@ static_content() {
 #===============================================================
 
 menu_name="Help, Split Pane"
+menu_min_vers=3.7
 
 [ -n "$1" ] && prev_menu="$(realpath "$1")"
 
