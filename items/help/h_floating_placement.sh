@@ -35,8 +35,9 @@ static_content() {
 #
 #===============================================================
 
-[ -n "$1" ] && prev_menu="$(realpath "$1")"
 menu_name="Help, Floating Pane - Placement"
+
+[ -n "$1" ] && prev_menu="$(realpath "$1")"
 
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
 D_TM_BASE_PATH=$(cd "${0%/*}/../.." && pwd)

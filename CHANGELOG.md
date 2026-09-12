@@ -8,6 +8,7 @@ All notable changes to this project will be documented here.
 
 ### Changed
 
+- Moved menu_name to start of main
 - moved 'Clear all' in 'Pane History' to the last item since its a danger zone
 
 ### Fixed
