@@ -122,6 +122,15 @@ D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$D_TM_BASE_PATH"/scripts/helpers.sh
 
+case "$1" in
+    -z) safe_remove "$d_cache" "Clear cache" && echo "$d_cache cleared!" ;;
+    "") ;;
+    *)
+        echo "$0 [-z to clear cache]"
+        exit 0
+        ;;
+esac
+
 # log_it "=====   plugin_init.sh starting   ====="
 
 # Define cfg_use_cache as soon as possible, and importantly, don't cache this

@@ -6,6 +6,10 @@ All notable changes to this project will be documented here.
 
 ## [2.4.2] - not released
 
+### Added
+
+- plugin_init.sh: added -z for clear cache
+
 ### Changed
 
 - Moved menu_name to start of main
