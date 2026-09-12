@@ -320,7 +320,7 @@ cfg_simple_style_border=\"$(cache_escape_special_chars "$cfg_simple_style_border
 " >>"$_f_params_tmp" || error_msg "Failed to write to tmpfile: $_f_params_tmp"
             #endregion param cache file - Styling tmux >= 3.4
         }
-        tmux_vers_check 3.7z && {
+        tmux_vers_check 3.8 && {
             #region param cache file - Floating panes tmux >= 3.8
             printf '%s' "\
 

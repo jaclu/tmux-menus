@@ -91,7 +91,7 @@ handle_layout_border_lines() {
     esac
 
     set -- "$@" \
-        3.7z C n "$hlbl_no_border" "$hlbl_cmd  none    $runshell_reload_mnu"
+        3.8 C n "$hlbl_no_border" "$hlbl_cmd  none    $runshell_reload_mnu"
     menu_generate_part 5 "$@" #
 }
 

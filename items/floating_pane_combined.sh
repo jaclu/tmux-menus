@@ -7,10 +7,6 @@
 #
 #   Handling floating pane
 #
-#   The version next-3.8 is handled as 3.7z in order to not match 3.8
-#   until it is released, so the below 3.7z will be replaced with 3.8 once
-#   it is released
-#
 
 dynamic_content() {
     #
@@ -27,7 +23,7 @@ dynamic_content() {
             # Only use this part if current is a floating pane
 
             set -- \
-                3.7z M H "Help              $nav_next" \
+                3.8 M H "Help              $nav_next" \
                 "$d_help/h_floating_pane_combined.sh $0"
             menu_generate_part 2 "$@"
 
@@ -88,26 +84,26 @@ static_content() {
     _rrm="$runshell_reload_mnu"
 
     set -- \
-        3.7z S \
-        3.7z C t "Move up" "move-pane -D -$_vert_step $_rrm" \
-        3.7z C v "Move down" "move-pane -D $_vert_step $_rrm" \
-        3.7z C f "Move left" "move-pane -R -$_hori_step $_rrm" \
-        3.7z C g "Move right" "move-pane -R $_hori_step $_rrm" \
-        3.7z S \
-        3.7z C T "Reduce height" "resize-pane -D -$_vert_step $_rrm" \
-        3.7z C V "Grow height" "resize-pane -D $_vert_step $_rrm" \
-        3.7z C F "Reduce width" "resize-pane -R -$_hori_step $_rrm" \
-        3.7z C G "Grow width" "resize-pane -R $_hori_step $_rrm" \
-        3.7z S \
-        3.7z C q "Place top-left" "move-pane -P top-left $_rrm" \
-        3.7z C w "Place top-centre" "move-pane -P top-centre $_rrm" \
-        3.7z C e "Place top-right" "move-pane -P top-right $_rrm" \
-        3.7z C a "Place centre-left" "move-pane -P centre-left $_rrm" \
-        3.7z C s "Place centre" "move-pane -P centre $_rrm" \
-        3.7z C d "Place centre-right" "move-pane -P centre-right $_rrm" \
-        3.7z C z "Place bottom-left" "move-pane -P bottom-left $_rrm" \
-        3.7z C x "Place bottom-centre" "move-pane -P bottom-centre $_rrm" \
-        3.7z C c "Place bottom-right" "move-pane -P bottom-right $_rrm" \
+        3.8 S \
+        3.8 C t "Move up" "move-pane -D -$_vert_step $_rrm" \
+        3.8 C v "Move down" "move-pane -D $_vert_step $_rrm" \
+        3.8 C f "Move left" "move-pane -R -$_hori_step $_rrm" \
+        3.8 C g "Move right" "move-pane -R $_hori_step $_rrm" \
+        3.8 S \
+        3.8 C T "Reduce height" "resize-pane -D -$_vert_step $_rrm" \
+        3.8 C V "Grow height" "resize-pane -D $_vert_step $_rrm" \
+        3.8 C F "Reduce width" "resize-pane -R -$_hori_step $_rrm" \
+        3.8 C G "Grow width" "resize-pane -R $_hori_step $_rrm" \
+        3.8 S \
+        3.8 C q "Place top-left" "move-pane -P top-left $_rrm" \
+        3.8 C w "Place top-centre" "move-pane -P top-centre $_rrm" \
+        3.8 C e "Place top-right" "move-pane -P top-right $_rrm" \
+        3.8 C a "Place centre-left" "move-pane -P centre-left $_rrm" \
+        3.8 C s "Place centre" "move-pane -P centre $_rrm" \
+        3.8 C d "Place centre-right" "move-pane -P centre-right $_rrm" \
+        3.8 C z "Place bottom-left" "move-pane -P bottom-left $_rrm" \
+        3.8 C x "Place bottom-centre" "move-pane -P bottom-centre $_rrm" \
+        3.8 C c "Place bottom-right" "move-pane -P bottom-right $_rrm" \
         1.8 S \
         1.8 C K "${cfg_danger_zone}Kill current" "confirm-before -p \
             'kill-pane #T (#P)? (y/n)' kill-pane $runshell_reload_mnu"

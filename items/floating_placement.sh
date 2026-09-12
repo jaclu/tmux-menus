@@ -10,10 +10,6 @@
 #   Placement keys (q,w,e,a,s,d,z,x,c) centered on s, left-hand keyboard cluster.
 #   Avoids numpad 5-centered logic which fails for keyboards without numpad.
 #
-#   The version next-3.8 is handled as 3.7z in order to not match 3.8
-#   until it is released, so the below 3.7z will be replaced with 3.8 once
-#   it is released
-#
 
 dynamic_content() {
     #
@@ -51,15 +47,15 @@ static_content() {
 
     set -- \
         0.0 S \
-        3.7z C q "Place top-left" "move-pane -P top-left $_rrm" \
-        3.7z C w "Place top-centre" "move-pane -P top-centre $_rrm" \
-        3.7z C e "Place top-right" "move-pane -P top-right $_rrm" \
-        3.7z C a "Place centre-left" "move-pane -P centre-left $_rrm" \
-        3.7z C s "Place centre" "move-pane -P centre $_rrm" \
-        3.7z C d "Place centre-right" "move-pane -P centre-right $_rrm" \
-        3.7z C z "Place bottom-left" "move-pane -P bottom-left $_rrm" \
-        3.7z C x "Place bottom-centre" "move-pane -P bottom-centre $_rrm" \
-        3.7z C c "Place bottom-right" "move-pane -P bottom-right $_rrm" \
+        3.8 C q "Place top-left" "move-pane -P top-left $_rrm" \
+        3.8 C w "Place top-centre" "move-pane -P top-centre $_rrm" \
+        3.8 C e "Place top-right" "move-pane -P top-right $_rrm" \
+        3.8 C a "Place centre-left" "move-pane -P centre-left $_rrm" \
+        3.8 C s "Place centre" "move-pane -P centre $_rrm" \
+        3.8 C d "Place centre-right" "move-pane -P centre-right $_rrm" \
+        3.8 C z "Place bottom-left" "move-pane -P bottom-left $_rrm" \
+        3.8 C x "Place bottom-centre" "move-pane -P bottom-centre $_rrm" \
+        3.8 C c "Place bottom-right" "move-pane -P bottom-right $_rrm" \
         0.0 S \
         1.8 C K "${cfg_danger_zone}Kill current" "confirm-before -p \
         'kill-pane #T (#P)? (y/n)' kill-pane $runshell_reload_mnu"
@@ -73,7 +69,7 @@ static_content() {
 #===============================================================
 
 menu_name="Floating Pane - Placement"
-menu_min_vers=3.7z
+menu_min_vers=3.8
 
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
 D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)

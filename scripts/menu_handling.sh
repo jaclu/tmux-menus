@@ -976,7 +976,7 @@ prepare_menu() {
     # displayed we get better timing info, previously it had to be done before
     # menu is displayed - the side effect is that 3.8 will show higher processing times
     #
-    [ -n "$cfg_log_file" ] && ! tmux_vers_check 3.7z && log_processing_time
+    [ -n "$cfg_log_file" ] && ! tmux_vers_check 3.8 && log_processing_time
 }
 
 log_processing_time() {
@@ -1014,10 +1014,6 @@ ensure_menu_fits_on_screen() {
     #
     # Display time menu was shown
     time_span "$dh_t_start"
-
-    # _s="ensure_menu_fits_on_screen() Menu $bn_current_script - "
-    # _s="$_s Display time:  $disp_time ($t_minimal_display_time)"
-    # log_it "$_s"
 
     [ "$(echo "$t_time_span < $t_minimal_display_time" | bc || true)" -eq 1 ] && {
         _s="$rn_current_script: Screen might be too small"
@@ -1151,7 +1147,7 @@ display_menu() {
     # Display time to generate menu
 
     if ${b_use_alt_handler:-false}; then
-        [ -n "$cfg_log_file" ] && tmux_vers_check 3.7z && log_processing_time
+        [ -n "$cfg_log_file" ] && tmux_vers_check 3.8 && log_processing_time
         # display alternate menu
         menu_selection=$(eval "$menu_items" 3>&2 2>&1 1>&3)
         menu_exit_code="$?"
@@ -1175,7 +1171,7 @@ display_menu() {
         # prior tmux silently skipped an error not fitting the window without
         # giving an error, so the only hint that it might not fit is if it was
         # instantly closed
-        tmux_vers_check 3.7z || safe_now dh_t_start
+        tmux_vers_check 3.8 || safe_now dh_t_start
 
         f_cmd_err="$d_tmp/tmux-menu-cmd-error"
         eval "$menu_items" 2>"$f_cmd_err" || {
@@ -1184,7 +1180,7 @@ display_menu() {
             _dm_err_msg="$(cat "$f_cmd_err")"
             display_invalid_menu_error "$_dm_err_msg"
         }
-        if tmux_vers_check 3.7z; then
+        if tmux_vers_check 3.8; then
             [ -n "$cfg_log_file" ] && log_processing_time post
         else
             ensure_menu_fits_on_screen

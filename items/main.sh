@@ -1,15 +1,11 @@
 #!/bin/sh
 #
-#  Copyright (c) 2022-2026: Jacob.Lundqvist@gmail.com
+#  Copyright (c) 2026: Jacob.Lundqvist@gmail.com
 #  License: MIT
 #
 #  Part of https://github.com/jaclu/tmux-menus
 #
 #  Main menu, the one popping up when you hit the trigger
-#
-#   The version next-3.8 is stored as 3.7z in order to not match 3.8
-#   until it is released, so the below 3.7z will be replaced with 3.8 once
-#   it is releases
 #
 
 static_content() {
