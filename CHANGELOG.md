@@ -12,6 +12,7 @@ All notable changes to this project will be documented here.
 
 ### Fixed
 
+- Corrected broken path generation in act_clear_screen.sh
 - Changed all 3.7z vers tags to 3.8 now that 3.8-rc is available
 - Corrected copyright year on some files that have seen a lot of work this year
 
