@@ -1,7 +1,7 @@
 #!/bin/sh
 # Always sourced file - Fake bang path to help editors
 #
-#   Copyright (c) 2022-2025: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2022-2026: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
@@ -362,7 +362,7 @@ tmux_get_plugin_options() { # new init
         tmux_get_option cfg_mnu_loc_y "@menus_location_y" "$default_location_y"
         tmux_get_option cfg_format_title "@menus_format_title" "$default_format_title"
 
-        if tmux_vers_check 3.7z; then
+        if tmux_vers_check 3.8; then
             if normalize_bool_param "@menus_use_timers" "$default_use_timers"; then
                 cfg_use_timers=true
             else
@@ -393,7 +393,7 @@ tmux_get_plugin_options() { # new init
             tmux_get_option cfg_simple_style_border "@menus_simple_style_border" \
                 "$default_simple_style_border"
         }
-        tmux_vers_check 3.7z && {
+        tmux_vers_check 3.8 && {
             tmux_get_option cfg_floating_pane_incr_horizontal \
                 "@menus_floating_pane_incr_horizontal" \
                 "$default_floating_pane_incr_horizontal"

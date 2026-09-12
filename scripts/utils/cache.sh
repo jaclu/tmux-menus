@@ -1,7 +1,7 @@
 #!/bin/sh
 # Always sourced file - Fake bang path to help editors
 #
-#   Copyright (c) 2022-2025: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2022-2026: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
@@ -375,8 +375,12 @@ repo_last_changed=\"$new_repo_last_changed\"
 last_local_edit=\"$new_last_local_edit\"
 
 #
-#  For some menus 'Display Commands' fail, and until this is resolved
-#  those  menus will skip the feature even if enabled, unless this is set to true
+#  For some menus 'Display Commands' fail, and until it is resolved, those
+#  menus should be tagged with:
+#    b_display_commands_issue=true
+#  This disables the feature for normal usage.
+#  Setting this debug setting to true, forces those menus to still offer
+#  the feature for testing and debugging.
 #
 b_debug_display_cmds=false
 
@@ -385,6 +389,14 @@ b_debug_display_cmds=false
 # the screen
 #
 t_minimal_display_time=$t_minimal_display_time
+
+#
+# Some actions like creating a floating pane instantly completes, resulting in
+# the reloaded menu being drawn before the floater appears, being drawn over the
+# menu. this delay is used for such menu reloads to allow the action to take
+# effect before menu is displayed. This time is estimated based on computer
+# performance during plugin initialisation.
+#
 t_delayed_menu_reload=$_mnu_reload_delay
 
 b_use_alt_handler=$b_use_alt_handler
