@@ -105,4 +105,9 @@ if false; then
     # Shellcheck analyzes this code path but it never executes at runtime
     . tools/variables_meta.sh
 fi
+
 # log_it "><> layouts_support.sh: init"
+
+# ensure show-options -v can be used, this is only run for tmux > 2.3,
+# so shouldn't be an issue
+tmux_vers_check 1.8 || error_msg "layouts_support.sh: Needs tmux 1.8"
