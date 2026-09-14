@@ -20,7 +20,7 @@ static_content() {
         0.0 T "not be available with the current" \
         0.0 T "keyboard settings."
 
-    if ${b_use_alt_handler:-false}; then
+    if [ -n "$alt_menu_handler" ]; then
         set -- "$@" \
             0.0 T " " \
             0.0 T "When using whiptail it is not possible" \

@@ -21,7 +21,7 @@ static_content() {
 
     tmux_vers_check 3.2 && {
         customize_mode_cmd="$TMUX_BIN customize-mode -Z "
-        if ${cfg_use_hint_overlays:-false} && ! ${b_use_alt_handler:-false}; then
+        if ${cfg_use_hint_overlays:-false} && [ -z "$alt_menu_handler" ]; then
             # log_it "hint overlays and not whiptail"
             hint="\& $d_hints/customize-mode.sh skip-oversized"
             customize_mode_cmd="$customize_mode_cmd $hint"

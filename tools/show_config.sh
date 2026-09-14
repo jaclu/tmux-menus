@@ -58,7 +58,7 @@ echo
 show_item @menus_log_file "$cfg_log_file" "$default_log_file"
 show_item @menus_display_cmds_cols "$cfg_display_cmds_cols" "$default_display_cmds_cols"
 
-${b_use_alt_handler:-false} || {
+[ -n "$alt_menu_handler" ] || {
     printf '\n# Display-menu related config\n'
     show_item @menus_location_x "$cfg_mnu_loc_x" "$default_location_x"
     show_item @menus_location_y "$cfg_mnu_loc_y" "$default_location_y"
@@ -83,11 +83,9 @@ ${b_use_alt_handler:-false} || {
 }
 
 if tmux_vers_check 3.0; then
-    default_use_whiptail=false
+    default_alt_handler=""
 else
-    default_use_whiptail=true
+    default_alt_handler="whiptail"
 fi
 echo
-show_item "b_use_alt_handler" "$b_use_alt_handler" "$default_use_whiptail"
-
-show_item "alt_menu_handler" "$alt_menu_handler" "whiptail"
+show_item "alt_menu_handler" "$alt_menu_handler" "$default_alt_handler"

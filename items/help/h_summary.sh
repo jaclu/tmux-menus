@@ -61,7 +61,7 @@ static_content() {
         0.0 T "for menus, and lower case for actions."
     menu_generate_part 1 "$@"
 
-    ${b_use_alt_handler:-false} || {
+    [ -n "$alt_menu_handler" ] || {
         set -- \
             0.0 T "" \
             0.0 T "j & k can be used for menu scrolling" \
@@ -77,7 +77,7 @@ static_content() {
     git_repo="$(git config --get remote.origin.url)"
     set --
     [ -n "$git_repo" ] && set -- "$@" 0.0 T "Repo: $git_repo"
-    ! ${b_use_alt_handler:-false} && {
+    [ -z "$alt_menu_handler" ] && {
         set -- "$@" \
             0.0 S \
             0.0 T "Exit menus with ESC or Ctrl-C"

@@ -10,15 +10,22 @@
 
 static_content() {
     set -- \
-        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu" \
-        3.7 M F "Floating panes    $nav_next" floating_pane_combined.sh \
+        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu"
+
+    [ -z "$alt_menu_handler" ] && {
+        # can not be used with alt menu handlers...
+        set -- "$@" \
+            3.7 M F "Floating panes    $nav_next" floating_pane_combined.sh
+    }
+
+    set -- "$@" \
         0.0 M S "Split             $nav_next" pane_split.sh \
         0.0 M R "Resize            $nav_next" pane_resize.sh \
         0.0 M M "Move              $nav_next" pane_move.sh \
         0.0 M L "Layouts           $nav_next" "$d_items/layouts.sh $0 $menu_name" \
         0.0 M I "History           $nav_next" pane_history.sh
 
-    if ! ${b_use_alt_handler:-false}; then
+    if [ -z "$alt_menu_handler" ]; then
         set -- "$@" \
             1.1 M O "Logging           $nav_next" pane_log.sh
     fi

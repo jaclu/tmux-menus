@@ -13,7 +13,7 @@ static_content() {
     select_cmd="$TMUX_BIN choose-buffer"
     tmux_vers_check 2.6 && select_cmd="$select_cmd -Z"
 
-    if ${cfg_use_hint_overlays:-false} && ! ${b_use_alt_handler:-false}; then
+    if ${cfg_use_hint_overlays:-false} && [ -z "$alt_menu_handler" ]; then
         select_cmd="$select_cmd \& $d_hints/choose-buffer.sh skip-oversized"
     fi
 
@@ -35,7 +35,7 @@ static_content() {
     set -- \
         0.0 S
 
-    if ! ${b_use_alt_handler:-false}; then
+    if [ -z "$alt_menu_handler" ]; then
         set -- "$@" \
             0.0 C v "Paste latest" "paste-buffer -p  $runshell_reload_mnu"
     fi

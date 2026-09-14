@@ -37,7 +37,7 @@ D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
     }
 }
 
-if ${b_use_alt_handler:-false}; then
+if [ -n "$alt_menu_handler" ]; then
     clear
 else
     tmux_error_handler send-keys C-l

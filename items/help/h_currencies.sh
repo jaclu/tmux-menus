@@ -20,7 +20,7 @@ static_content() {
         0.0 T "the symbol isn't visible, this should" \
         0.0 T "still be able to paste it in."
 
-    if ${b_use_alt_handler:-false}; then
+    if [ -n "$alt_menu_handler" ]; then
         set -- "$@" \
             0.0 T " " \
             0.0 T "When using whiptail it is not possible" \

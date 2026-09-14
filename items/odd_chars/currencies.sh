@@ -11,7 +11,7 @@
 
 show_label() {
     # Some Currency symbols can't be printed in whiptail
-    if ${b_use_alt_handler:-false}; then
+    if [ -n "$alt_menu_handler" ]; then
         case "$1" in
             ₺ | ₴ | ₽ | ₹ | ₿)
                 echo "Send   ($2) - not printable in whiptail"
@@ -74,7 +74,7 @@ no_auto_menu_handling=1 # delay processing of dialog, only source it for now
 
 if [ -n "$1" ]; then
     "$D_TM_BASE_PATH"/scripts/act_display_char.sh "$1"
-elif ${b_use_alt_handler:-false}; then
+elif [ -n "$alt_menu_handler" ]; then
     ${b_all_helpers_sourced:-false} || source_all_helpers "currencies.sh"
     tmux_error_handler set-option -gqu "$wt_pasting"
 fi
