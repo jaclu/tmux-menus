@@ -320,10 +320,8 @@ tmux_get_plugin_options() { # new init
     [ ! -f "$cfg_main_menu" ] && error_msg "Main menu not found: $cfg_main_menu"
 
     if tmux_vers_check 3.0; then
-        b_use_alt_handler=false
         alt_menu_handler=""
     else
-        b_use_alt_handler=true
         # if on next plugin_setup a menus able tmux is detected the relevant
         # additional settings will be cached
         if command -v whiptail >/dev/null; then
@@ -333,14 +331,12 @@ tmux_get_plugin_options() { # new init
         else
             error_msg "Neither whiptail or dialog found, plugin aborted"
         fi
-        log_it "--- Activating b_use_alt_handler [$alt_menu_handler] due to tmux < 3.0"
+        log_it "--- Activating alt_menu_handler [$alt_menu_handler] due to tmux < 3.0"
     fi
 
     tmux_get_option cfg_danger_zone "@menus_danger_zone" "$default_danger_zone"
 
-    handle_env_variables # potential b_use_alt_handler override
-
-    if ${b_use_alt_handler:-false}; then
+    if [ -n "$alt_menu_handler" ]; then
         # variables only used by whiptail
         cfg_display_cmds=false
 
@@ -463,18 +459,6 @@ tmux_get_plugin_options() { # new init
         use_bind_key_notes=true
     else
         use_bind_key_notes=false
-    fi
-}
-
-use_whiptail_env() {
-    # if this is moved to helpers_minimal, ensure to also
-    # move the required defaults to that file
-    # log_it "use_whiptail_env()"
-    if ${b_use_alt_handler:-false}; then
-        {
-            cfg_display_cmds=false
-            cfg_show_key_hints=false
-        }
     fi
 }
 

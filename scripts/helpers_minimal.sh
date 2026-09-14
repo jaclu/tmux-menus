@@ -203,8 +203,12 @@ get_config() { # local usage during sourcing
             source_all_helpers "get_config() - failed to source cached params"
         }
         config_setup
-    else
+    fi
+
+    if [ -z "$skip_env_check" ]; then
         handle_env_variables
+    # else
+    #     log_it "><> skip_env_check set"
     fi
 }
 
@@ -214,97 +218,56 @@ get_config() { # local usage during sourcing
 #
 #---------------------------------------------------------------
 
-get_env() {
-    [ -n "$env_unmame" ] || env_unmame="$(uname -s)"
-}
-
-menu_handler_cache_missmatch() {
-    # Report a mismatch between TMUX_MENUS_HANDLER and current cache
-
-    msg="TMUX_MENUS_HANDLER=$TMUX_MENUS_HANDLER"
-    [ -n "$1" ] && msg="$msg ($1)"
-    msg="$msg does not match current cache:\n\n"
-    msg="$msg    b_use_alt_handler=$b_use_alt_handler\n"
-    msg="$msg    alt_menu_handler=$alt_menu_handler"
-    error_msg "$msg"
-}
-
-verify_menu_handler_override_valid() {
-    # Ensure manual override of menu handler is not a mismatch vs current cache
-
-    ${initialize_plugin:-false} && return # not relevant during plugin init
-    # log_it "verify_menu_handler_override_valid($requested_handler)"
-    requested_handler="$1"
-    ${cfg_use_cache:-false} || return # irrelevant check when not using cache
-
-    if ! ${b_use_alt_handler:-false} || [ "$alt_menu_handler" != "$requested_handler" ]; then
-        menu_handler_cache_missmatch "$requested_handler"
-    fi
-}
-
-env_variable_menus_handler() {
-    # handles TMUX_MENUS_HANDLER
-    #
-    # Provides: b_whiptail_forced
-    #
-    # log_it "env_variable_menus_handler()"
-
-    case "$TMUX_MENUS_HANDLER" in
-        0) ${b_use_alt_handler:-false} && verify_menu_handler_override_valid "tmux display-menu" ;;
-        1)
-            _cmd=whiptail
-            verify_menu_handler_override_valid "$_cmd"
-            if command -v "$_cmd" >/dev/null; then
-                alt_menu_handler="$_cmd"
-            else
-                error_msg "$_cmd not available, plugin aborted"
-            fi
-            b_use_alt_handler=true
-            ${initialize_plugin:-false} && {
-                log_it "NOTICE: $_cmd is selected due to TMUX_MENUS_HANDLER=1"
-            }
-            b_whiptail_forced=true
-            ;;
-        2)
-            _cmd=dialog
-            verify_menu_handler_override_valid "$_cmd"
-            if command -v "$_cmd" >/dev/null; then
-                alt_menu_handler="$_cmd"
-            else
-                error_msg "$_cmd not available, plugin aborted"
-            fi
-            b_use_alt_handler=true
-            ${initialize_plugin:-false} && {
-                log_it "NOTICE: $_cmd is selected due to TMUX_MENUS_HANDLER=2"
-            }
-            b_whiptail_forced=true
-            ;;
-        *)
-            msg="TMUX_MENUS_HANDLER=$TMUX_MENUS_HANDLER - valid options: 0 1 2"
-            error_msg "$msg"
-            ;;
-    esac
-
-    ${b_whiptail_forced:-false} && {
-        ${b_all_helpers_sourced:-false} || {
-            source_all_helpers "get_config() needs use_whiptail_env"
+item_handler_changed() {
+    # ${b_all_helpers_sourced:-false} || {
+    #     source_all_helpers "item_handler_changed()"
+    # }
+    [ -d "$d_cache_main_menu" ] && {
+        rm -rf "$d_cache_main_menu" || {
+            error_msg "Failed to clear: $d_cache_main_menu"
         }
-        use_whiptail_env
     }
+    [ -n "$alt_menu_handler" ] && {
+        echo "$alt_menu_handler" >"$f_alt_handler_in_use" || {
+            error_msg "Failed to write: $f_alt_handler_in_use"
+        }
+    }
+    _s="Cleared cache, since alt_menu_handler [$alt_menu_handler] is now used"
+    log_it "$_s"
+}
+
+alt_handler_status_check() {
+    # log_it "alt_handler_status_check()"
+    if "${b_whiptail_forced:-false}"; then
+        previous_alt_handler=$(cat "$f_alt_handler_in_use" 2>/dev/null)
+        case "$previous_alt_handler" in
+            whiptail) [ "$alt_menu_handler" != whiptail ] && item_handler_changed ;;
+            dialog) [ "$alt_menu_handler" != dialog ] && item_handler_changed ;;
+            "") item_handler_changed ;;
+            *) error_msg "invalid previous_alt_handler [$previous_alt_handler]" ;;
+        esac
+    else
+        [ -f "$f_alt_handler_in_use" ] && {
+            item_handler_changed
+            safe_remove "$f_alt_handler_in_use" "Clearing alt-handler status"
+        }
+    fi
 }
 
 handle_env_variables() { # local usage by get_config()
     # Check env variables and apply relevant env checks & config overrides
-    #
-    # Provides: b_whiptail_forced
-    #
     # log_it "handle_env_variables()"
 
     # TMUX_MENUS_LOGGING_MINIMAL - is handled directly by log_it() - no config needed
     # TMUX_MENUS_NO_DISPLAY -  is handled directly - no config needed
     # TMUX_MENUS_PROFILING - is handled directly - no config needed
-    [ -n "$TMUX_MENUS_HANDLER" ] && env_variable_menus_handler
-
+    [ -n "$TMUX_MENUS_HANDLER" ] && {
+        ${b_all_helpers_sourced:-false} || {
+            source_all_helpers "item_handler_changed()"
+        }
+        env_variable_menus_handler
+    }
+    alt_handler_status_check
 }
 
 #---------------------------------------------------------------

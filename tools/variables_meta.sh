@@ -58,7 +58,6 @@ D_TM_BASE_PATH="${D_TM_BASE_PATH:-}"
 TMUX_BIN="${TMUX_BIN:-tmux}"
 
 bn_current_script="${bn_current_script:-}"
-alt_menu_handler="${alt_menu_handler:-}"
 
 # shellcheck disable=SC2031 # needed since cache.sh redefines it in a subshell
 cfg_log_file="${cfg_log_file:-}"
@@ -75,7 +74,6 @@ d_safe_tmp_folder="${d_safe_tmp_folder:-}"
 d_scripts="${d_scripts:-}"
 d_tmp="${d_tmp:-}"
 env_initialized="${env_initialized:-}"
-# env_unmame="${env_unmame:-}"
 f_cache_params="${f_cache_params:-}"
 f_cached_tmux_key_binds="${f_cached_tmux_key_binds:-}"
 f_ext_dlg_trigger="${f_ext_dlg_trigger:-}"
@@ -156,6 +154,7 @@ wt_pasting="${wt_pasting:-}"
 _idx_next="${_idx_next:-}"
 _lbl="${_lbl:-}"
 _lbl_next="${_lbl_next:-}"
+b_whiptail_forced="${b_whiptail_forced:-}"
 cur_ses="${cur_ses:-}"
 d_custom_items="${d_custom_items:-}"
 d_hints="${d_hints:-}"
@@ -171,6 +170,7 @@ f_min_display_time="${f_min_display_time:-}"
 # scripts/utils/tmux.sh
 #===============================================================
 
+alt_menu_handler="${alt_menu_handler:-}"
 cfg_force_unset="${cfg_force_unset:-}"
 cfg_default_is_empty_string="${cfg_default_is_empty_string:-}"
 cfg_floating_pane_incr_horizontal="${cfg_floating_pane_incr_horizontal:-}"

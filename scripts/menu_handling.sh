@@ -406,7 +406,7 @@ menu_parse() {
     menu_items=""
     [ "$menu_idx" -eq 1 ] && {
         # set prefix for item 1
-        if ${b_use_alt_handler:-false}; then
+        if [ -n "$alt_menu_handler" ]; then
             alt_prefix
         else
             mnu_prefix
@@ -439,7 +439,7 @@ menu_parse() {
 
                 [ -n "$menu_debug" ] && debug_print "key[$_mp_key] label[$_mp_label] command[$_mp_cmd]"
 
-                if ${b_use_alt_handler:-false}; then
+                if [ -n "$alt_menu_handler" ]; then
                     alt_command "$_mp_label" "$_mp_key" "$_mp_cmd"
                 else
                     mnu_command "$_mp_label" "$_mp_key" "$_mp_cmd"
@@ -478,7 +478,7 @@ menu_parse() {
 
                 [ -n "$menu_debug" ] && debug_print "key[$_mp_key] label[$_mp_label] command[$_mp_cmd]"
 
-                if ${b_use_alt_handler:-false}; then
+                if [ -n "$alt_menu_handler" ]; then
                     alt_external_cmd "$_mp_label" "$_mp_key" "$_mp_cmd"
                 else
                     mnu_external_cmd "$_mp_label" "$_mp_key" "$_mp_cmd"
@@ -511,7 +511,7 @@ menu_parse() {
 
                 [ -n "$menu_debug" ] && debug_print "key[$_mp_key] label[$_mp_label] menu[$menu]"
 
-                if ${b_use_alt_handler:-false}; then
+                if [ -n "$alt_menu_handler" ]; then
                     alt_open_menu "$_mp_label" "$_mp_key" "$menu"
                 else
                     mnu_open_menu "$_mp_label" "$_mp_key" "$menu"
@@ -527,7 +527,7 @@ menu_parse() {
                 ! tmux_vers_check "$_mp_min_vers" && continue
 
                 [ -n "$menu_debug" ] && debug_print "text line [$txt]"
-                if ${b_use_alt_handler:-false}; then
+                if [ -n "$alt_menu_handler" ]; then
                     alt_text_line "$txt"
                 else
                     mnu_text_line "$txt"
@@ -543,7 +543,7 @@ menu_parse() {
                 [ -n "$menu_debug" ] && debug_print "Spacer line"
 
                 # Whiptail/dialog does not have a concept of spacer lines
-                if ${b_use_alt_handler:-false}; then
+                if [ -n "$alt_menu_handler" ]; then
                     alt_spacer
                 else
                     mnu_spacer
@@ -602,7 +602,7 @@ menu_generate_part() {
 
     wt_actions=""
     menu_parse "$@"
-    ${b_use_alt_handler:-false} && update_wt_actions
+    [ -n "$alt_menu_handler" ] && update_wt_actions
 }
 
 #---------------------------------------------------------------
@@ -705,7 +705,7 @@ set_menu_env_variables() {
 
     d_odd_chars="$d_items/odd_chars"
 
-    if [ "${b_use_alt_handler:-false}" = true ]; then
+    if [ -n "$alt_menu_handler" ]; then
         # Display Commands can only be used with tmux menus and caching
         cfg_display_cmds=false
         unset show_cmds_state
@@ -741,7 +741,7 @@ set_menu_env_variables() {
         #  items/main.sh -> cache/items/main.sh/
         d_menu_cache="$d_cache/$rn_current_script"
 
-        ${b_use_alt_handler:-false} && d_wt_actions="$d_menu_cache/wt_actions"
+        [ -n "$alt_menu_handler" ] && d_wt_actions="$d_menu_cache/wt_actions"
     else
         uncached_menu=""
         uncached_wt_actions=""
@@ -1146,11 +1146,12 @@ display_menu() {
     # log_it "display_menu()"
     # Display time to generate menu
 
-    if ${b_use_alt_handler:-false}; then
+    if [ -n "$alt_menu_handler" ]; then
         [ -n "$cfg_log_file" ] && tmux_vers_check 3.8 && log_processing_time
         # display alternate menu
         menu_selection=$(eval "$menu_items" 3>&2 2>&1 1>&3)
         menu_exit_code="$?"
+        # log_it "><> menu_exit_code[$menu_exit_code]"
         case "$menu_exit_code" in
             0) ;;
             1)

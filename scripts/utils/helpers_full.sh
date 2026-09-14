@@ -360,6 +360,53 @@ check_speed_cutoff() {
 
 #---------------------------------------------------------------
 #
+#   Handling TMUX_MENUS_HANDLER
+#
+#---------------------------------------------------------------
+
+set_alt_handler() {
+    _cmd="$1"
+    [ -z "$_cmd" ] && {
+        # No alt handler
+        b_whiptail_forced=false
+        alt_menu_handler=""
+        return
+    }
+
+    if command -v "$_cmd" >/dev/null; then
+        alt_menu_handler="$_cmd"
+    else
+        error_msg "$_cmd not available, plugin aborted"
+    fi
+    b_whiptail_forced=true
+    set_wt_pasting # if we started of with no alt handler this is not in plugin_params
+    log_it "NOTICE: $_cmd is selected due to TMUX_MENUS_HANDLER=$TMUX_MENUS_HANDLER"
+}
+
+env_variable_menus_handler() {
+    # handles TMUX_MENUS_HANDLER
+    # log_it "env_variable_menus_handler()"
+
+    case "$TMUX_MENUS_HANDLER" in
+        0) set_alt_handler ;;
+        1) set_alt_handler whiptail ;;
+        2) set_alt_handler dialog ;;
+        *)
+            msg="TMUX_MENUS_HANDLER=$TMUX_MENUS_HANDLER - valid options: 0 1 2"
+            error_msg "$msg"
+            ;;
+    esac
+
+    if [ -n "$alt_menu_handler" ]; then
+        {
+            cfg_display_cmds=false
+            cfg_show_key_hints=false
+        }
+    fi
+}
+
+#---------------------------------------------------------------
+#
 #   Other
 #
 #---------------------------------------------------------------
