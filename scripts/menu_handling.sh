@@ -1190,14 +1190,6 @@ display_menu() {
 }
 
 do_menu_handling() {
-    [ "$log_file_forced" = 1 ] && {
-        # Useful when debugging to keep each menu generation process separate
-        log_it
-        log_it
-        log_it
-        log_it
-        log_it
-    }
     # log_it "do_menu_handling()"
 
     #

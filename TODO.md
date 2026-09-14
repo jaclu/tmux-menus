@@ -1,12 +1,32 @@
 # TODO
 
-screenshots without danger zone
-<img width="252" height="369" alt="Handling Pane"
-  src="https://github.com/user-attachments/assets/2437cc87-4dd7-4413-98df-a8082771a202" />
-<img width="252" height="323" alt="Handling Window"
-  src="https://github.com/user-attachments/assets/1b7e2c27-d1dd-4417-ba3a-85557f2b5cfb" />
-<img width="251" height="218" alt="Handling Sessions"
-  src="https://github.com/user-attachments/assets/f325d4c4-b0cf-4b9c-9045-f898a89f5eb0" />
+## startup sequence
+
+### menu render
+
+```shell
+if not cache/plugin_params present
+  check for caching enabled - generate it
+fi
+source it and move on
+```
+
+## check
+
+- [ -z "$alt_menu_handler" ] should not hinder plugin_params writings
+- verify_tmux_vers_unchanged
+- cache_prepare - should be removed
+- handle_env_variables - should be done outside tmux_get_plugin_options(), but still be run
+
+## timings on pad7 running tmux 3.6b
+
+### v2.3.3
+
+[13:58:38] [12822] Menu items/main.sh - processing time: .178910000
+
+### devel
+
+[13:48:26] [8505] Processing .234144000 items/panes.sh
 
 ## popup panes
 

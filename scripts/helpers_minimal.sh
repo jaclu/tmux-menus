@@ -142,6 +142,7 @@ validate_varname() {
 source_cached_params() {
     # This is just reading, so ok to do even if cache is disabled
     # log_it "source_cached_params()"
+    ${b_cache_params_sourced:-false} && return 0
 
     if [ -f "$f_cache_params" ]; then
         [ "$log_file_forced" = 1 ] && {
@@ -156,6 +157,7 @@ source_cached_params() {
             log_it "source_cached_params() - Failed to source: $f_cache_params"
             return 1
         }
+        b_cache_params_sourced=true
 
         [ "$log_file_forced" = 1 ] && {
             # use the forced log_file, ignoring any potential cached entry
@@ -277,6 +279,9 @@ handle_env_variables() { # local usage by get_config()
 #---------------------------------------------------------------
 
 timers_disabled() {
+    [ -n "$cfg_use_timers" ] || {
+        return 0 # has not been set yet
+    }
     ! ${initialize_plugin:-false} && ! ${cfg_use_timers:-false}
 }
 
@@ -321,6 +326,15 @@ select_safe_now_method() { # local usage by safe_now()
             error_msg "Failed to save: $f_safe_now_method"
         }
     }
+}
+
+set_script_start() {
+    case "$t_script_start" in
+        "") ;; # unset
+        0) ;;  # previously unable to set
+        *) return ;;
+    esac
+    safe_now t_script_start
 }
 
 safe_now() {
@@ -390,6 +404,9 @@ time_span() { # display_menu() / check_speed_cutoff()
     }
 
     _t_start="$1"
+    [ -n "$_t_start" ] || {
+        error_msg "time_span() - called without t_start param"
+    }
 
     safe_now # assigns t_now
 
@@ -397,7 +414,8 @@ time_span() { # display_menu() / check_speed_cutoff()
         # iSH performs better with bc due to emulation characteristics
         t_time_span="$(echo "$t_now - $_t_start" | bc)"
     else
-        t_time_span="$(awk "BEGIN {print $t_now - $_t_start}")"
+        t_time_span="$(awk -v now="$t_now" -v start="$_t_start" \
+            'BEGIN { print now - start }')"
     fi
 }
 
@@ -558,7 +576,7 @@ base_path_not_defined() {
 # Hardcoded log file for early startup tracing (before @menus_log_file is
 # read). If log_file_forced=1, @menus_log_file is ignored and this remains.
 #
-# cfg_log_file="$HOME/tmp/tmux-menus-dbg.log"
+# cfg_log_file="$HOME/tmp/tmux-menus-dev.log"
 # log_file_forced=1
 
 TMUX_BIN="${TMUX_BIN:-tmux}"
@@ -597,10 +615,7 @@ f_cache_known_tmux_vers="$d_cache"/known_tmux_versions
 f_cache_params="$d_cache"/plugin_params
 f_safe_now_method="$d_cache"/safe_now_method
 f_max_25_line_menus="$d_cache"/height-max-25-lines
-
-# Used if main menu cache should be purged, like if custom_items are detected
-# or found to be gone
-d_cache_main_menu="$d_cache"/items/main.sh
+f_alt_handler_in_use="$d_cache"/alt_handler_in_use
 
 # System-initial default for the main menu.
 # After options are parsed, always use $cfg_main_menu to refer to the current main menu.
@@ -613,7 +628,7 @@ scr_float_pane_switch="$d_scripts/floating_pane_switch.sh"
 bn_current_script=${0##*/} # same but faster than "$(basename "$0")"
 
 relative_path "$0" silent
-rn_current_script="$_rp_proj_path"
+rn_current_script="$_rp_proj_path" # saves a fork
 
 # current_script_no_ext=${rn_current_script%.*} # not used ATM
 
@@ -625,7 +640,12 @@ rn_current_script="$_rp_proj_path"
 
 # Set this as early as possible to be able to calculate the entire menu processing time
 # This depends on cfg_use_timers, so can't be done before config is processed
-safe_now t_script_start
+
+source_cached_params && {
+    # might be obsolete settings, but should be good enough to serve the
+    # old state of cfg_use_timers
+    set_script_start
+}
 
 ${initialize_plugin:-false} || {
     # plugin_init will call config_setup directly, so should not call get_config

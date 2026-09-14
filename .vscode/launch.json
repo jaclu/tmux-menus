@@ -13,6 +13,7 @@
             "args": [],
             "env": {
                 // "show_cmds_state": "1",
+                // "TMUX_MENUS_HANDLER": 2,
             }
         },
         {
