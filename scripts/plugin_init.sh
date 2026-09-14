@@ -111,6 +111,7 @@ bind_plugin_key() {
 #
 #   Main
 #
+#
 #===============================================================
 
 initialize_plugin=true
@@ -137,38 +138,6 @@ esac
 # param since it is as of yet unknown if caching is enabled.
 # Once this has been set, it defines if caching should be used or not
 
-if normalize_bool_param "@menus_use_cache" "$default_use_cache" "no-cache"; then
-    cfg_use_cache=true
-else
-    cfg_use_cache=false
-fi
-
-if ${cfg_use_cache:-false} && [ -d "$d_cache" ]; then
-    #
-    # Clear out potentially obsolete cache items
-    #
-    # If these are removed, it can't be detected if config changed, so
-    # there is no hint if cached items should be dropped or not
-    #
-    # "$f_cache_params"  "$f_chksum_custom"  "$f_min_display_time"
-    #
-    [ -f "$f_cache_known_tmux_vers" ] && {
-        safe_remove "$f_cache_known_tmux_vers" "plugin_init.sh - known_tmux_vers"
-        # Ensure env didn't pick anything up from an obsolete version of this file
-        cached_ok_tmux_versions=""
-        cached_bad_tmux_versions=""
-    }
-
-    safe_remove "$f_cached_tmux_options" "plugin_init.sh - listing detected tmux options"
-    safe_remove "$f_safe_now_method" "plugin_init.sh - safe_now method"
-    # Used by display commands
-    safe_remove "$f_cached_tmux_key_binds" "plugin_init.sh - display commands util" external_path_ok
-
-    # Clear any errors from previous runs
-    safe_remove "$d_cache"/error-* "plugin_init.sh"
-    safe_remove "$d_cache"/cmd_output "plugin_init.sh"
-fi
-
 #
 # These will only do something during debugging, if cfg_log_file was hardcoded
 # in helpers_minimal.sh or similar...
@@ -179,7 +148,7 @@ log_it
 log_it
 
 config_setup
-
+handle_env_variables # should have been checked set a breakpoint to verify
 #
 # If @menus_log_file was defined, it has now taken effect
 # create a blank line in the log to separate tmux sessions
