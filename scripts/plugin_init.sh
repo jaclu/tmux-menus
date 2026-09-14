@@ -58,7 +58,7 @@ bind_plugin_key() {
     esac
 
     bind_cmd="$cfg_main_menu"
-    if ${b_use_alt_handler:-false}; then
+    if [ -n "$alt_menu_handler" ]; then
         bind_cmd="$f_ext_dlg_trigger"
         [ "$alt_menu_handler_announced" != 1 ] && {
             alt_menu_handler_announced=1 # avoid logging it twice if secondary default is used

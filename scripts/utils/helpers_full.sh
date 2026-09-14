@@ -496,7 +496,7 @@ wait_to_close_display() {
     _b_is_whiptail=false
     case $(ps -o command= -p "$PPID" 2>/dev/null) in
         *tmux-menus*)
-            ${b_use_alt_handler:-false} && _b_is_whiptail=true
+            [ -n "$alt_menu_handler" ] && _b_is_whiptail=true
             ;;
         *) ;;
     esac

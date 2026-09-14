@@ -748,7 +748,7 @@ set_menu_env_variables() {
         uncached_item_splitter="||||"
     fi
 
-    if ${b_use_alt_handler:-false}; then
+    if [ -n "$alt_menu_handler" ]; then
         external_action_separator=":/:/:/:"
         #
         #  I haven't been able do to menu reload with whiptail/dialog yet,
