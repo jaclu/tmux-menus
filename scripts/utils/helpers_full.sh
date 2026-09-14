@@ -56,8 +56,12 @@ display_message_hold() {
     else
         # Manually make the error msg stay on screen a long time
 
-        # save value in a pre tmux 1.7 safe way, not relying on show-options -v
-        org_display_time="$($TMUX_BIN show-options -g display-time | cut -d' ' -f2)"
+        if tmux_vers_check 1.8; then
+            org_display_time=$($TMUX_BIN show-options -gv display-time)
+        else
+            # save value in a pre tmux 1.7 safe way, not relying on show-options -v
+            org_display_time=$($TMUX_BIN show-options -g display-time | cut -d' ' -f2)
+        fi
         $TMUX_BIN set -g display-time 120000 >/dev/null
         $TMUX_BIN display-message "$dmh_msg"
 
@@ -347,8 +351,9 @@ check_speed_cutoff() {
     time_span "$t_script_start"
 
     log_it "-T- check_speed_cutoff($cut_off) - $t_time_span"
-
-    _csc_speed_ok=$(echo "$t_time_span < $cut_off" | bc)
+    # _csc_speed_ok=$(echo "$t_time_span < $cut_off" | bc)
+    _csc_speed_ok=$(awk -v ts="$t_time_span" -v co="$cut_off" \
+        'BEGIN { print (ts < co) }')
     if [ "$_csc_speed_ok" -eq 1 ]; then
         t_minimal_display_time=0.1
     else
@@ -411,25 +416,61 @@ env_variable_menus_handler() {
 #
 #---------------------------------------------------------------
 
+config_setup_cached() {
+    "${cfg_use_cache:-false}" || {
+        error_msg "config_setup_cached() - Called when caching is disabled"
+    }
+    cache_create_folder
+
+    safe_remove "$f_no_cache_hint" "config_setup_cached()"
+    safe_remove "$f_cached_tmux_options" "config_setup_cached()"
+
+    if "${initialize_plugin:-false}"; then
+        # if verify_tmux_vers_unchanged was false, the entire cache has already
+        # been purged, so no need to consider what to keep/drop
+        [ -f "$f_cache_known_tmux_vers" ] && {
+            safe_remove "$f_cache_known_tmux_vers" "plugin_init.sh - known_tmux_vers"
+            # Ensure env didn't pick anything up from an obsolete version of this file
+            cached_ok_tmux_versions=""
+            cached_bad_tmux_versions=""
+        }
+
+        safe_remove "$f_safe_now_method" "config_setup_cached()"
+        # Used by display commands
+        safe_remove "$f_cached_tmux_key_binds" "config_setup_cached()"
+
+        # Clear any errors from previous runs
+        safe_remove "$d_cache"/error-* "config_setup_cached()"
+        safe_remove "$d_cache"/cmd_output "config_setup_cached()"
+    else
+        tpt_retrieve_running_tmux_vers
+        verify_tmux_vers_unchanged # clears entire cache if current_tmux_vers changed
+    fi
+
+    tmux_get_plugin_options
+    set_script_start
+    cache_write_plugin_params
+}
+
+config_setup_un_cached() {
+    "${cfg_use_cache:-false}" && {
+        error_msg "config_setup_un_cached() - Called when caching is enabled"
+    }
+    touch "$f_no_cache_hint"
+    tmux_get_plugin_options
+}
+
 config_setup() {
     # Examins tmux env, and depending on caching config either plainly read
     # tmux.conf, or prepare a f_cache_params
     # log_it "config_setup()"
 
-    #
-    # If called from plugin_init.sh cfg_use_cache has already been checked, but since
-    # config_setup will also be called if other things fail to read the cached
-    # params, it should be re-checked here.
-    # Since this will not happen regularly this overhead will not ruin general performance
-    #
     if normalize_bool_param "@menus_use_cache" "$default_use_cache"; then
         cfg_use_cache=true
-        safe_remove "$f_no_cache_hint" "config_setup()" config_setup
-        create_param_cache
+        config_setup_cached
     else
         cfg_use_cache=false
-        touch "$f_no_cache_hint"
-        tmux_get_plugin_options
+        config_setup_un_cached
     fi
 }
 
@@ -471,6 +512,8 @@ safe_remove() {
     [ -z "$skip_plugin_name_in_path_check" ] && {
         case "$pattern" in
             *"$plugin_name"*) ;;
+            $TMPDIR*)
+                ;;
             *)
                 _s="safe_remove($pattern) seems wrong - $plugin_name not in that path"
                 error_msg "$_s"
@@ -492,7 +535,7 @@ wait_to_close_display() {
     #
     #  Busybox ps has no -x and will throw error, so send to /dev/null
     #  pgrep does not provide the command line, so ignore SC2009
-    # if ps -x "$PPID" 2>/dev/null | grep -q tmux-menus && ${b_use_alt_handler:-false}; then
+    # if ps -x "$PPID" 2>/dev/null | grep -q tmux-menus && [ -n "$alt_menu_handler" ]; then
     _b_is_whiptail=false
     case $(ps -o command= -p "$PPID" 2>/dev/null) in
         *tmux-menus*)

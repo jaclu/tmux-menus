@@ -9,6 +9,12 @@
 #  Handling tmux env
 #
 
+set_wt_pasting() {
+    # not a config variable as such, just used as paste buffer for
+    # missing keys and currencies
+    wt_pasting="@tmp_menus_wt_paste_in_progress"
+}
+
 tmux_vers_check_do_compare() {
     # Called fomh helpers_minimal.sh:tmux_vers_check() if checked version was not cached
     _v_comp="$1"
@@ -114,13 +120,19 @@ cache_save_options_defined_in_tmux() {
     #  On slow systems, doing individual show-options takes a ridiculous amount of
     #  time. Here we read all relevant options in one go and store them in a cache file
     #
+    "${cfg_use_cache:-false}" || {
+        error_msg "cache_save_options_defined_in_tmux() - Called when caching is disabled"
+    }
+
     [ -f "$f_cached_tmux_options" ] && return
     # log_it "cache_save_options_defined_in_tmux()"
+
+    # Can't check for errors here, since if the item is not present grep will exit error
     $TMUX_BIN show-options -g | grep ^@menus_ \
         | grep -v "$cfg_force_unset" | sort >"$f_cached_tmux_options"
     $TMUX_BIN show-options -g | grep @use_bind_key_notes_in_plugins \
         | grep -v "$cfg_force_unset" >>"$f_cached_tmux_options"
-    # log_it "  <-- cache_save_options_defined_in_tmux() - wrote: $f_cached_tmux_options"
+    return 0 # hide potential grep error
 }
 
 tmux_get_option() {
@@ -155,8 +167,6 @@ tmux_get_option() {
         log_it "tmux_get_option() - tmux < 1.8 - User options not available, using default"
         _line=""
     elif ${tgo_use_cache:-false}; then
-        cache_save_options_defined_in_tmux
-
         if [ -d /proc/ish ]; then
             # much slower due to subshell, but iSH lacks a full /dev so the quick method
             # below can't be used
@@ -298,14 +308,15 @@ fix_home_path() {
 
 tmux_get_plugin_options() { # new init
     #
-    #  This only reads all plugin options from tmux env, any decisions based
-    #  on debug variables etc are handled by create_param_cache()
+    #  This only reads all plugin options from tmux env
     #
     #  Public variables
     #   cfg_  config variables, either read from tmux or the default
     #
     # log_it "tmux_get_plugin_options()"
     tmux_get_defaults
+    # caching is known to be enabled, cache tmux options right away
+    cache_save_options_defined_in_tmux
 
     tmux_get_option cfg_trigger_key "@menus_trigger" "$default_trigger_key"
 
@@ -349,17 +360,15 @@ tmux_get_plugin_options() { # new init
         cfg_nav_next="$default_nav_next"
         cfg_nav_prev="$default_nav_prev"
         cfg_nav_home="$default_nav_home"
-
-        # not a config variable as such, just used as paste bufferr for
-        # missing keys and currencies
-        wt_pasting="@tmp_menus_wt_paste_in_progress"
+        set_wt_pasting
     else
         tmux_get_option cfg_mnu_loc_x "@menus_location_x" "$default_location_x"
         tmux_get_option cfg_mnu_loc_y "@menus_location_y" "$default_location_y"
         tmux_get_option cfg_format_title "@menus_format_title" "$default_format_title"
 
+        _v_use_timers="@menus_use_timers"
         if tmux_vers_check 3.8; then
-            if normalize_bool_param "@menus_use_timers" "$default_use_timers"; then
+            if normalize_bool_param "$_v_use_timers" "$default_use_timers"; then
                 cfg_use_timers=true
             else
                 cfg_use_timers=false
@@ -370,7 +379,7 @@ tmux_get_plugin_options() { # new init
             cfg_use_timers=true
             _use_timers_found=$(grep @menus_use_timers "$f_cached_tmux_options")
             [ -n "$_use_timers_found" ] && {
-                log_it "Config ignored for tmux < 3.8: $_use_timers_found"
+                log_it "$_v_use_timers ignored for tmux < 3.8"
             }
         fi
 
