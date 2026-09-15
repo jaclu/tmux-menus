@@ -1,5 +1,12 @@
 # TODO
 
+## startup
+
+```shell
+$TMUX_BIN set-environment TMUX_MENUS_LOCATION "$D_TM_BASE_PATH"
+# $TMUX_BIN set-environment -g TMUX_MENUS_LOCATION "$D_TM_BASE_PATH"
+```
+
 ## startup sequence
 
 ### menu render
@@ -18,15 +25,114 @@ source it and move on
 - cache_prepare - should be removed
 - handle_env_variables - should be done outside tmux_get_plugin_options(), but still be run
 
-## timings on pad7 running tmux 3.6b
+## timings on pad7 running tmux 3.6
+
+### config
+
+@menus_danger_zone ''
+@menus_display_commands No
+@menus_log_file /home/jaclu/tmp/tmux-menus-t2.log
+@menus_show_key_hints No
+@menus_use_hint_overlays No
+@menus_use_timers Yes
+@menus_validate_cache No
+@use_bind_key_notes_in_plugins No
+
+### v2.1.2
+
+[15:47:22] Menu items/main.sh - processing time: .239275000
+[15:47:36] Menu items/panes.sh - processing time: .196227000
+[15:47:39] Menu items/main.sh - processing time: .175351000
+[15:47:44] Menu items/panes.sh - processing time: .191781000
+[15:47:45] Menu items/main.sh - processing time: .163891000
+[15:47:50] Menu items/panes.sh - processing time: .176848000
+[15:47:52] Menu items/main.sh - processing time: .161251000
+[15:48:04] Menu items/panes.sh - processing time: .194568000
+[15:48:07] Menu items/main.sh - processing time: .163826000
+[15:48:10] Menu items/panes.sh - processing time: .194417000
+
+### v2.2.6
+
+[15:54:08] Menu items/main.sh - processing time: .176981000
+[15:54:12] Menu items/panes.sh - processing time: .151914000
+[15:54:14] Menu items/main.sh - processing time: .148046000
+[15:54:25] Menu items/panes.sh - processing time: .174673000
+[15:54:31] Menu items/main.sh - processing time: .178097000
+[15:54:37] Menu items/panes.sh - processing time: .176642000
+[15:54:39] Menu items/main.sh - processing time: .247189000
+[15:54:43] Menu items/panes.sh - processing time: .180330000
+[15:54:45] Menu items/main.sh - processing time: .157654000
+[15:54:50] Menu items/panes.sh - processing time: .228079000
+
+### v2.3.1
+
+[15:57:46] [6913] Menu items/main.sh - processing time: .133041000
+[15:57:51] [6961] Menu items/panes.sh - processing time: .182060000
+[15:57:54] [6982] Menu items/main.sh - processing time: .133957000
+[15:57:58] [7028] Menu items/panes.sh - processing time: .180419000
+[15:58:00] [7049] Menu items/main.sh - processing time: .149671000
+[15:58:04] [7096] Menu items/panes.sh - processing time: .198743000
+[15:58:06] [7131] Menu items/main.sh - processing time: .126630000
+[15:58:09] [7162] Menu items/panes.sh - processing time: .180307000
+[15:58:12] [7186] Menu items/main.sh - processing time: .129501000
+[15:58:15] [7229] Menu items/panes.sh - processing time: .204381000
 
 ### v2.3.3
 
-[13:58:38] [12822] Menu items/main.sh - processing time: .178910000
+[15:11:09] [3260] Menu items/main.sh - processing time: .160241000
+[15:11:11] [3282] Menu items/panes.sh - processing time: .194557000
+[15:11:13] [3301] Menu items/main.sh - processing time: .171941000
+[15:11:15] [3323] Menu items/panes.sh - processing time: .150771000
+[15:11:17] [3344] Menu items/main.sh - processing time: .169610000
+[15:11:19] [3364] Menu items/panes.sh - processing time: .177177000
+[15:11:21] [3385] Menu items/main.sh - processing time: .169182000
+[15:11:24] [3416] Menu items/panes.sh - processing time: .154338000
+[15:11:26] [3439] Menu items/main.sh - processing time: .148890000
+[15:11:28] [3462] Menu items/panes.sh - processing time: .177650000
 
-### devel
+### 2.4.1
 
-[13:48:26] [8505] Processing .234144000 items/panes.sh
+[16:01:59] [8414] Processing .150313000 items/main.sh
+[16:02:02] [8434] Processing .175476000 items/panes.sh
+[16:02:06] [8479] Processing .263597000 items/main.sh
+[16:02:09] [8501] Processing .184731000 items/panes.sh
+[16:02:12] [8546] Processing .162126000 items/main.sh
+[16:02:15] [8591] Processing .184015000 items/panes.sh
+[16:02:20] [8613] Processing .151939000 items/main.sh
+[16:02:23] [8658] Processing .160622000 items/panes.sh
+[16:02:28] [8704] Processing .137572000 items/main.sh
+[16:02:30] [8725] Processing .180426000 items/panes.sh
+
+### devel # disabled cfg_display_cmds cfg_validate_cache
+
+#### via local ssh known config
+
+[22:14:11] [1480] Processing .142632000 items/main.sh
+[22:14:13] [1498] Processing .173864000 items/panes.sh
+[22:14:15] [1518] Processing .134530000 items/main.sh
+[22:14:18] [1538] Processing .184212000 items/panes.sh
+[22:14:20] [1558] Processing .147532000 items/main.sh
+[22:14:23] [1578] Processing .188491000 items/panes.sh
+[22:14:27] [1600] Processing .142098000 items/main.sh
+[22:15:50] [2055] Processing .178498000 items/main.sh
+[22:16:05] [2159] Processing .172887000 items/panes.sh
+[22:16:21] [2264] Processing .143464000 items/main.sh
+[22:16:38] [2379] Processing .174575000 items/panes.sh
+[22:17:30] [2662] Processing .340197000 items/main.sh
+[22:17:50] [2806] Processing .175803000 items/panes.s
+
+#### jacpad
+
+[16:11:29] [11825] Processing .153842000 items/main.sh
+[16:11:34] [11871] Processing .153216000 items/panes.sh
+[16:11:37] [11892] Processing .149771000 items/main.sh
+[16:11:40] [11937] Processing .154677000 items/panes.sh
+[16:11:43] [11957] Processing .151411000 items/main.sh
+[16:11:47] [12004] Processing .184886000 items/panes.sh
+[16:11:50] [12049] Processing .131883000 items/main.sh
+[16:11:53] [12069] Processing .183821000 items/panes.sh
+[16:11:58] [12116] Processing .150793000 items/main.sh
+[16:12:02] [12161] Processing .198775000 items/panes.sh
 
 ## popup panes
 
