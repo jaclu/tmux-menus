@@ -120,9 +120,7 @@ cache_save_options_defined_in_tmux() {
     #  On slow systems, doing individual show-options takes a ridiculous amount of
     #  time. Here we read all relevant options in one go and store them in a cache file
     #
-    "${cfg_use_cache:-false}" || {
-        error_msg "cache_save_options_defined_in_tmux() - Called when caching is disabled"
-    }
+    "${cfg_use_cache:-false}" || return
 
     [ -f "$f_cached_tmux_options" ] && return
     # log_it "cache_save_options_defined_in_tmux()"
