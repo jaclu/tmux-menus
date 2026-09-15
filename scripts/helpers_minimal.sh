@@ -334,7 +334,12 @@ set_script_start() {
         0) ;;  # previously unable to set
         *) return ;;
     esac
+
     safe_now t_script_start
+
+    # # fake null time
+    # t_now=0
+    # t_script_start=0
 }
 
 safe_now() {
@@ -404,9 +409,14 @@ time_span() { # display_menu() / check_speed_cutoff()
     }
 
     _t_start="$1"
-    [ -n "$_t_start" ] || {
-        error_msg "time_span() - called without t_start param"
-    }
+    case "$_t_start" in
+        "") error_msg "time_span() - called without t_start param" ;;
+        0) # safe_now() failed to provide a time-stamp, give token 1 response
+            t_time_span=1
+            return
+            ;;
+        *) ;;
+    esac
 
     safe_now # assigns t_now
 
@@ -614,8 +624,10 @@ d_cache="$TMUX_MENUS_LOCATION"/cache
 f_cache_known_tmux_vers="$d_cache"/known_tmux_versions
 f_cache_params="$d_cache"/plugin_params
 f_safe_now_method="$d_cache"/safe_now_method
-f_max_25_line_menus="$d_cache"/height-max-25-lines # hint to avoid excessive menus
-f_alt_handler_in_use="$d_cache"/alt_handler_in_use
+
+# Can be re-routed to cache once it is known if it is allowed
+f_max_25_line_menus="$d_tmp"/height-max-25-lines # hint to avoid excessive menus
+f_alt_handler_in_use="$d_tmp"/alt_handler_in_use
 
 # System-initial default for the main menu.
 # After options are parsed, always use $cfg_main_menu to refer to the current main menu.
@@ -655,7 +667,7 @@ ${initialize_plugin:-false} || {
 # The initial safe_now returned 0, since it was run before config had
 # been checked, and would only return a time if initialize_plugin is set
 # Now config has been read and it's known if a time should be returned or not
-[ "$t_now" = 0 ] && safe_now t_script_start
+set_script_start
 
 if ! tmux_vers_check "$min_tmux_vers"; then
     # @variables are not usable prior to 1.8
