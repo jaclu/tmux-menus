@@ -11,12 +11,25 @@
 # Prevents handle_env_variables to be run by this process
 skip_env_check=1
 
+[ -z "$TMUX_MENUS_LOCATION" ] && {
+    #
+    # Weird little oddity, external menus inherit env from the pane its run in,
+    # thus when done in the initial tmux pane TMUX_MENUS_LOCATION is not available
+    # so needs to be retrieved
+    #
+    TMUX_MENUS_LOCATION=$($TMUX_BIN show-environment -g | grep TMUX_MENUS_LOCATION \
+        2>/dev/null | cut -d= -f2)
+    export TMUX_MENUS_LOCATION # propagate it to processes called from here
+    # location_manually_set=1
+}
+
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$TMUX_MENUS_LOCATION"/scripts/helpers_minimal.sh
 
 menu_name="${1:-$cfg_main_menu}"
-$menu_name
+$menu_name # run it in this env potentiallu suspended by external_dialog_trigger
 
 if pgrep -P "$PPID" | grep -qv "$$"; then
+    # resume prior activity
     $TMUX_BIN send-keys fg Enter
 fi
