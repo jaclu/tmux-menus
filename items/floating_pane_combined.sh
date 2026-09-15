@@ -56,19 +56,12 @@ static_content() {
     menu_generate_part 1 "$@"
     display_commands_toggle 3
 
-    set -- \
-        0.0 S
-
-    [ -d "$d_cache" ] && {
-        # Height compatibility option unless cache is disabled
-        set -- "$@" \
-            3.7 E l "Fit to 25 Lines" "touch '$f_max_25_line_menus' \; $0"
-    }
-
     _new_pane="new-pane -c '#{pane_current_path}'"
     tmux_vers_check 3.8 && _new_pane="$_new_pane -A" # does not unzoom window
 
-    set -- "$@" \
+    set -- \
+        0.0 S \
+        3.7 E l "Fit to 25 Lines" "touch '$f_max_25_line_menus' ; $0" \
         3.7 C N "New" \
         "$_new_pane $runshell_sleep_reload_mnu"
     menu_generate_part 4 "$@"

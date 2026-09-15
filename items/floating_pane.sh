@@ -52,6 +52,12 @@ dynamic_content() {
 }
 
 static_content() {
+    # shorter variablenames to avoid too long lines
+    _combo_menu="$d_items"/floating_pane_combined.sh
+    _vert_step="$cfg_floating_pane_incr_vertical"
+    _hori_step="$cfg_floating_pane_incr_horizontal"
+    _rrm="$runshell_reload_mnu"
+
     set -- \
         0.0 M Left "Back to Previous  $nav_prev" panes.sh \
         0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu"
@@ -59,17 +65,8 @@ static_content() {
     display_commands_toggle 3
 
     set -- \
-        0.0 S
-
-    [ -d "$d_cache" ] && {
-        _f_max_25="$f_max_25_line_menus"
-        # Combined option unless cache is disabled
-        _combo_menu="$d_items"/floating_pane_combined.sh
-        set -- "$@" \
-            3.7 E c "Use Combined Menu" "rm -f '$_f_max_25' \; $_combo_menu"
-    }
-
-    set -- "$@" \
+        0.0 S \
+        3.7 E c "Use Combined Menu" "rm -f '$f_max_25_line_menus' ; $_combo_menu" \
         3.7 C N "New" \
         "new-pane -c \"#{pane_current_path}\" $runshell_sleep_reload_mnu"
     menu_generate_part 4 "$@"
@@ -80,12 +77,6 @@ static_content() {
     # item 5 is omitted, item 6 is skipped automatically.
     #
 
-    # shorter variablenames to avoid too long lines
-    _vert_step="$cfg_floating_pane_incr_vertical"
-    _hori_step="$cfg_floating_pane_incr_horizontal"
-    _rrm="$runshell_reload_mnu"
-
-    # focus is on a floating pane, primary actions relevant
     set -- \
         3.8 S \
         3.8 C t "Move up" "move-pane -D -$_vert_step $_rrm" \
