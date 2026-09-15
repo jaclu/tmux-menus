@@ -23,14 +23,12 @@ dynamic_content() {
             3.7 E n "Next" "$_fps  next \; $0"
 
     else
-        set -- 0 D
+        set -- 0 D # dummy allows next item to be considered
     fi
     menu_generate_part 4 "$@"
 }
 
 static_content() {
-    _rrm="$runshell_reload_mnu"
-
     set -- \
         0.0 M Left "Back to Previous  $nav_prev" floating_pane.sh \
         0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu" \
@@ -45,6 +43,9 @@ static_content() {
         "new-pane -c \"#{pane_current_path}\" $runshell_sleep_reload_mnu"
     menu_generate_part 3 "$@"
 
+    # shorter variablenames to avoid too long lines
+    _rrm="$runshell_reload_mnu"
+
     set -- \
         0.0 S \
         3.8 C q "Place top-left" "move-pane -P top-left $_rrm" \
@@ -57,8 +58,8 @@ static_content() {
         3.8 C x "Place bottom-centre" "move-pane -P bottom-centre $_rrm" \
         3.8 C c "Place bottom-right" "move-pane -P bottom-right $_rrm" \
         0.0 S \
-        1.8 C K "${cfg_danger_zone}Kill current" "confirm-before -p \
-        'kill-pane #T (#P)? (y/n)' kill-pane $runshell_reload_mnu"
+        1.8 C k "${cfg_danger_zone}Kill current" "confirm-before -p \
+        'kill-pane #T (#P)? (y/n)' kill-pane $_rrm"
     menu_generate_part 5 "$@"
 }
 
@@ -68,7 +69,7 @@ static_content() {
 #
 #===============================================================
 
-menu_name="Floating Pane - Placement"
+menu_name="Floating Panes - Placement"
 menu_min_vers=3.8
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
@@ -76,9 +77,6 @@ menu_min_vers=3.8
 floating_pane_focus
 
 if [ "$current_pane_is_floating" = 1 ]; then
-    # Since this will only be used if a floater is focused, full caching can be
-    # implemented
-
     # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
     . "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh
 else

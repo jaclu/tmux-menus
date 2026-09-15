@@ -29,10 +29,10 @@ dynamic_content() {
 
             if [ -n "$other_floating_panes" ]; then
                 set -- \
-                    3.7 E p "Previous" "$scr_float_pane_switch  previous \; $0" \
-                    3.7 E n "Next" "$scr_float_pane_switch  next \; $0"
+                    3.7 E p "Previous" "$scr_float_pane_switch  previous ; $0" \
+                    3.7 E n "Next" "$scr_float_pane_switch  next ; $0"
             else
-                set -- 0 D
+                set -- 0 D # dummy allows next item to be considered
             fi
             menu_generate_part 5 "$@"
             ;;
@@ -74,8 +74,9 @@ static_content() {
     menu_generate_part 4 "$@"
 
     #
-    # If not floating panes, there is no item 5, so item 6 below is skipped
-    # this speeds up things a lot since this can be statically cached
+    # This can be cached statically, greatly improving responsiveness.
+    # Item 6 depends on item 5, so when there are no floating panes and
+    # item 5 is omitted, item 6 is skipped automatically.
     #
 
     # shorter variablenames to avoid too long lines
@@ -85,27 +86,27 @@ static_content() {
 
     set -- \
         3.8 S \
-        3.8 C t "Move up" "move-pane -D -$_vert_step $_rrm" \
-        3.8 C v "Move down" "move-pane -D $_vert_step $_rrm" \
-        3.8 C f "Move left" "move-pane -R -$_hori_step $_rrm" \
-        3.8 C g "Move right" "move-pane -R $_hori_step $_rrm" \
+        3.8 C t "Move up" "move-pane -D -$_vert_step  $_rrm" \
+        3.8 C v "Move down" "move-pane -D $_vert_step  $_rrm" \
+        3.8 C f "Move left" "move-pane -R -$_hori_step  $_rrm" \
+        3.8 C g "Move right" "move-pane -R $_hori_step  $_rrm" \
         3.8 S \
-        3.8 C T "Reduce height" "resize-pane -D -$_vert_step $_rrm" \
-        3.8 C V "Grow height" "resize-pane -D $_vert_step $_rrm" \
-        3.8 C F "Reduce width" "resize-pane -R -$_hori_step $_rrm" \
-        3.8 C G "Grow width" "resize-pane -R $_hori_step $_rrm" \
+        3.8 C T "Reduce height" "resize-pane -D -$_vert_step  $_rrm" \
+        3.8 C V "Grow height" "resize-pane -D $_vert_step  $_rrm" \
+        3.8 C F "Reduce width" "resize-pane -R -$_hori_step  $_rrm" \
+        3.8 C G "Grow width" "resize-pane -R $_hori_step  $_rrm" \
         3.8 S \
-        3.8 C q "Place top-left" "move-pane -P top-left $_rrm" \
-        3.8 C w "Place top-centre" "move-pane -P top-centre $_rrm" \
-        3.8 C e "Place top-right" "move-pane -P top-right $_rrm" \
-        3.8 C a "Place centre-left" "move-pane -P centre-left $_rrm" \
-        3.8 C s "Place centre" "move-pane -P centre $_rrm" \
-        3.8 C d "Place centre-right" "move-pane -P centre-right $_rrm" \
-        3.8 C z "Place bottom-left" "move-pane -P bottom-left $_rrm" \
-        3.8 C x "Place bottom-centre" "move-pane -P bottom-centre $_rrm" \
-        3.8 C c "Place bottom-right" "move-pane -P bottom-right $_rrm" \
+        3.8 C q "Place top-left" "move-pane -P top-left  $_rrm" \
+        3.8 C w "Place top-centre" "move-pane -P top-centre  $_rrm" \
+        3.8 C e "Place top-right" "move-pane -P top-right  $_rrm" \
+        3.8 C a "Place centre-left" "move-pane -P centre-left  $_rrm" \
+        3.8 C s "Place centre" "move-pane -P centre  $_rrm" \
+        3.8 C d "Place centre-right" "move-pane -P centre-right  $_rrm" \
+        3.8 C z "Place bottom-left" "move-pane -P bottom-left  $_rrm" \
+        3.8 C x "Place bottom-centre" "move-pane -P bottom-centre  $_rrm" \
+        3.8 C c "Place bottom-right" "move-pane -P bottom-right  $_rrm" \
         1.8 S \
-        1.8 C K "${cfg_danger_zone}Kill current" "confirm-before -p \
+        1.8 C k "${cfg_danger_zone}Kill current" "confirm-before -p \
             'kill-pane #T (#P)? (y/n)' kill-pane $runshell_reload_mnu"
     menu_generate_part 6 "$@"
 }

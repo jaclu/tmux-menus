@@ -614,7 +614,7 @@ d_cache="$TMUX_MENUS_LOCATION"/cache
 f_cache_known_tmux_vers="$d_cache"/known_tmux_versions
 f_cache_params="$d_cache"/plugin_params
 f_safe_now_method="$d_cache"/safe_now_method
-f_max_25_line_menus="$d_cache"/height-max-25-lines
+f_max_25_line_menus="$d_cache"/height-max-25-lines # hint to avoid excessive menus
 f_alt_handler_in_use="$d_cache"/alt_handler_in_use
 
 # System-initial default for the main menu.

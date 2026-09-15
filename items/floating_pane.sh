@@ -40,7 +40,7 @@ dynamic_content() {
                     3.7 E n "Next" "$scr_float_pane_switch  next \; $0"
 
             else
-                set -- 0 D
+                set -- 0 D # dummy allows next item to be considered
             fi
             menu_generate_part 5 "$@"
 
@@ -62,16 +62,23 @@ static_content() {
         0.0 S
 
     [ -d "$d_cache" ] && {
+        _f_max_25="$f_max_25_line_menus"
         # Combined option unless cache is disabled
         _combo_menu="$d_items"/floating_pane_combined.sh
         set -- "$@" \
-            3.7 E c "Use Combined Menu" "rm -f '$f_max_25_line_menus' \; $_combo_menu"
+            3.7 E c "Use Combined Menu" "rm -f '$_f_max_25' \; $_combo_menu"
     }
 
     set -- "$@" \
         3.7 C N "New" \
         "new-pane -c \"#{pane_current_path}\" $runshell_sleep_reload_mnu"
     menu_generate_part 4 "$@"
+
+    #
+    # This can be cached statically, greatly improving responsiveness.
+    # Item 6 depends on item 5, so when there are no floating panes and
+    # item 5 is omitted, item 6 is skipped automatically.
+    #
 
     # shorter variablenames to avoid too long lines
     _vert_step="$cfg_floating_pane_incr_vertical"
@@ -91,7 +98,7 @@ static_content() {
         3.8 C F "Reduce width" "resize-pane -R -$_hori_step $_rrm" \
         3.8 C G "Grow width" "resize-pane -R $_hori_step $_rrm" \
         1.8 S \
-        1.8 C K "${cfg_danger_zone}Kill current" "confirm-before -p \
+        1.8 C k "${cfg_danger_zone}Kill current" "confirm-before -p \
             'kill-pane #T (#P)? (y/n)' kill-pane $runshell_reload_mnu"
     menu_generate_part 6 "$@"
 }
