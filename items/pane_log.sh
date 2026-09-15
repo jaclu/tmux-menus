@@ -54,13 +54,10 @@ menu_name="Saving pane output to file"
 
 menu_min_vers=1.1
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
-
 no_auto_menu_handling=1 # delay processing of dialog, only source it for now
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/menu_handling.sh
+. "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh
 
 if [ -n "$alt_menu_handler" ]; then
     # It "should" work, but something is going wrong and I haven't figured it out yet...

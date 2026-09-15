@@ -3,8 +3,8 @@
 ## startup
 
 ```shell
-$TMUX_BIN set-environment TMUX_MENUS_LOCATION "$D_TM_BASE_PATH"
-# $TMUX_BIN set-environment -g TMUX_MENUS_LOCATION "$D_TM_BASE_PATH"
+$TMUX_BIN set-environment TMUX_MENUS_LOCATION "$TMUX_MENUS_LOCATION"
+# $TMUX_BIN set-environment -g TMUX_MENUS_LOCATION "$TMUX_MENUS_LOCATION"
 ```
 
 ## startup sequence

@@ -12,6 +12,9 @@ All notable changes to this project will be documented here.
 
 ### Changed
 
+- Automated location of plugin by setting TMUX_MENUS_LOCATION as a global tmux
+  env during plugin init, menus no longer need to be aware where the plugin is
+  installed via the previous manual D_TM_BASE_PATH assignment.
 - Moved menu_name to start of main
 - moved 'Clear all' in 'Pane History' to the last item since its a danger zone
 

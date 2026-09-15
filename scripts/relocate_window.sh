@@ -15,11 +15,8 @@
 #   If a pane is selected, that part of the selection is simply ignored.
 #
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
-
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/helpers.sh
+. "$TMUX_MENUS_LOCATION"/scripts/helpers.sh
 
 action="$1"
 parse_move_link_dest "$2"

@@ -18,22 +18,11 @@
 [ "${env_initialized:-0}" -lt 1 ] && {
     # Only source if not done
 
-    [ -z "$D_TM_BASE_PATH" ] && {
-        # helpers not yet sourced, so error_msg() not yet available
-        msg="ERROR: menu_handling.sh - D_TM_BASE_PATH must be set before sourcing this file"
-        (
-            echo
-            echo "$msg"
-            echo
-        ) >/dev/stderr
-        exit 1
-    }
-
     # Prevents handle_env_variables to be run by this process
     skip_env_check=1
 
     # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-    . "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
+    . "$TMUX_MENUS_LOCATION"/scripts/helpers_minimal.sh
 }
 
 ${b_all_helpers_sourced:-false} || source_all_helpers "helpers.sh"

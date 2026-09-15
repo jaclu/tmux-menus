@@ -193,11 +193,6 @@ Default: None (uses built-in menus)
 
 Override the default menu system with custom menus.
 
-**Important notes:**
-
-- All custom menus must define `D_TM_BASE_PATH` to point to the tmux-menus
-  installation directory for support scripts to work correctly.
-
 ### Menu Position
 
 Default: `C` for tmux ≥ 3.2, `P` otherwise. Ignored when using whiptail/dialog.

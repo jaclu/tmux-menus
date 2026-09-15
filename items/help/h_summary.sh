@@ -9,7 +9,9 @@
 #
 
 gather_about_box_variables() {
-    cd "$D_TM_BASE_PATH" || error_msg "Failed to cd into $D_TM_BASE_PATH"
+    cd "$TMUX_MENUS_LOCATION" || {
+        error_msg "Failed to cd into TMUX_MENUS_LOCATION [$TMUX_MENUS_LOCATION]"
+    }
 
     td_pull="$(git log -1 --format=%cd --date=iso)"
     vers_no="$(git describe --tags --abbrev=0 2>/dev/null || echo "Version unavailable (requires .git)")"
@@ -93,8 +95,5 @@ static_content() {
 
 menu_name="Help summary"
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/../.." && pwd)
-
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/menu_handling.sh
+. "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh

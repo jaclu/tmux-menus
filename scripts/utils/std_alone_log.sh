@@ -20,12 +20,9 @@ sal_error() {
 #
 #===============================================================
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/../.." && pwd)
-
 log_msg="$1"
 
-f_plugin_params_cache="$D_TM_BASE_PATH"/cache/plugin_params
+f_plugin_params_cache="$TMUX_MENUS_LOCATION"/cache/plugin_params
 
 [ -f "$f_plugin_params_cache" ] && {
     # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck

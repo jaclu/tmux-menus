@@ -239,14 +239,11 @@ custom_items_prepare() {
 #
 #===============================================================
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
-
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/helpers.sh
+. "$TMUX_MENUS_LOCATION"/scripts/helpers.sh
 
 template_splitter="CUSTOM_ITEMS_SPLITTER" # items will be inserted at his point
-f_custom_items_template="$D_TM_BASE_PATH"/templates/custom_index_template.sh
+f_custom_items_template="$TMUX_MENUS_LOCATION"/templates/custom_index_template.sh
 # File used during generation of custom image index
 # as each custom item is verified, it is added here
 # then inserted into the custom index and removed

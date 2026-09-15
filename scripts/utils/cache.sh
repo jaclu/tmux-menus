@@ -188,8 +188,8 @@ examine_code_base() {
     # log_it "examine_code_base()"
 
     # need to be in repo base dir for the git chcecks below
-    cd "$D_TM_BASE_PATH" || {
-        error_msg "examine_code_base() - Failed to cd into $D_TM_BASE_PATH"
+    cd "$TMUX_MENUS_LOCATION" || {
+        error_msg "Failed to cd into TMUX_MENUS_LOCATION [$TMUX_MENUS_LOCATION]"
     }
 
     #
@@ -239,6 +239,7 @@ examine_code_base() {
 params_basic() {
     _cwpp_trigger_key=$(cache_escape_special_chars "$cfg_trigger_key")
 
+    cfg_d_menus=$(dirname "$cfg_main_menu")
     #region params_basic
     printf '%s\n' "\
 #!/bin/sh
@@ -250,6 +251,7 @@ params_basic() {
 
 cfg_trigger_key=\"$_cwpp_trigger_key\"
 cfg_no_prefix=$cfg_no_prefix
+cfg_d_menus=\"$cfg_d_menus\"
 cfg_main_menu=\"$cfg_main_menu\"
 cfg_tmux_conf=\"$cfg_tmux_conf\"
 cfg_log_file=\"$cfg_log_file\"

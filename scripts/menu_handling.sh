@@ -9,7 +9,6 @@
 #   Parses menu definitions and generates tmux or whiptail menus.
 #
 #   Expected definitions for each menu:
-#     D_TM_BASE_PATH     – Base directory of the tmux-menus plugin
 #     menu_name          – Name of the menu
 #     static_content()   – Defines static menu content; can be cached
 #     dynamic_content()  – Defines dynamic content; regenerated each time
@@ -504,9 +503,9 @@ menu_parse() {
                 #  If menu is not full PATH, assume it to be a tmux-menus
                 #  item
                 #
-                case $menu in
-                    */*) ;;
-                    *) menu="$d_items/$menu" ;;
+                case "$menu" in
+                    /*) ;;                          # Already absolute
+                    *) menu="$cfg_d_menus/$menu" ;; # fix relative path
                 esac
 
                 [ -n "$menu_debug" ] && debug_print "key[$_mp_key] label[$_mp_label] menu[$menu]"
@@ -662,7 +661,7 @@ prepare_show_commands() {
     set_display_command_labels
     tmux_error_handler display-message "Preparing $_lbl ..."
     # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-    . "$D_TM_BASE_PATH"/scripts/show_cmd.sh
+    . "$TMUX_MENUS_LOCATION"/scripts/show_cmd.sh
 }
 
 #---------------------------------------------------------------
@@ -1214,19 +1213,8 @@ do_menu_handling() {
 
 [ "${env_initialized:-0}" -lt 1 ] && {
     # Only source if not done
-
-    [ -z "$D_TM_BASE_PATH" ] && {
-        # helpers not yet sourced, so error_msg() not yet available
-        msg="ERROR: menu_handling.sh - D_TM_BASE_PATH must be set before sourcing this file"
-        (
-            echo
-            echo "$msg"
-            echo
-        ) >/dev/stderr
-        exit 1
-    }
     # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-    . "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
+    . "$TMUX_MENUS_LOCATION"/scripts/helpers_minimal.sh
 }
 
 [ "$no_auto_menu_handling" != 1 ] && do_menu_handling

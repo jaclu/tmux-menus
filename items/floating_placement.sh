@@ -71,11 +71,8 @@ static_content() {
 menu_name="Floating Pane - Placement"
 menu_min_vers=3.8
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
-
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/helpers_floating_pane.sh
+. "$TMUX_MENUS_LOCATION"/scripts/helpers_floating_pane.sh
 floating_pane_focus
 
 if [ "$current_pane_is_floating" = 1 ]; then
@@ -83,9 +80,9 @@ if [ "$current_pane_is_floating" = 1 ]; then
     # implemented
 
     # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-    . "$D_TM_BASE_PATH"/scripts/menu_handling.sh
+    . "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh
 else
     # Jump back to floating pane overview menu, it can handle the case of no
     # visible floating panes
-    "$D_TM_BASE_PATH"/items/floating_pane.sh
+    "$TMUX_MENUS_LOCATION"/items/floating_pane.sh
 fi

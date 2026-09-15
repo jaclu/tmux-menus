@@ -30,16 +30,13 @@ static_content() {
 
 menu_name="Diacritics - k K"
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/../.." && pwd)
-
 no_auto_menu_handling=1 # delay processing of dialog, only source it for now
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/menu_handling.sh
+. "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh
 
 if [ -n "$1" ]; then
-    "$D_TM_BASE_PATH"/scripts/act_display_char.sh "$1"
+    "$TMUX_MENUS_LOCATION"/scripts/act_display_char.sh "$1"
 elif [ -n "$alt_menu_handler" ]; then
     ${b_all_helpers_sourced:-false} || source_all_helpers "diacritics_k.sh"
     tmux_error_handler set-option -gqu "$wt_pasting"

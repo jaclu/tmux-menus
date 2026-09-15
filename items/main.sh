@@ -54,7 +54,7 @@ static_content() {
             "$d_hints/customize-mode.sh $0"
     }
     set -- "$@" \
-        1.8 E p "Plugins inventory" "$D_TM_BASE_PATH"/tools/plugins.sh \
+        1.8 E p "Plugins inventory" "$TMUX_MENUS_LOCATION"/tools/plugins.sh \
         0.0 C r "Reload tmux conf" "$rld_cmd" \
         0.0 C d 'Detach from tmux' detach-client
     menu_generate_part 3 "$@"
@@ -68,13 +68,10 @@ static_content() {
 
 menu_name="Main Menu"
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
-
 # temp  profiling code to check performance
-# [ "$profiling_sourced" != 1 ] && . "$D_TM_BASE_PATH"/scripts/utils/dbg_profiling.sh
+# [ "$profiling_sourced" != 1 ] && . "$TMUX_MENUS_LOCATION"/scripts/utils/dbg_profiling.sh
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/menu_handling.sh
+. "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh
 
 # profiling_display "after dialog_handling"

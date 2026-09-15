@@ -46,7 +46,7 @@ static_content() {
 
     set -- \
         0.0 S \
-        0.0 E i "public IP" "$D_TM_BASE_PATH"/tools/public_ip.sh
+        0.0 E i "public IP" "$TMUX_MENUS_LOCATION"/tools/public_ip.sh
     menu_generate_part 5 "$@"
 }
 
@@ -58,8 +58,5 @@ static_content() {
 
 menu_name="Extras"
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
-
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/menu_handling.sh
+. "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh

@@ -11,7 +11,7 @@
 #   In any script that sources other files, use the shellcheck directive:
 #
 #     # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-#     . "$D_TM_BASE_PATH"/scripts/menu_handling.sh
+#     . "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh
 #
 #   This tells shellcheck to use THIS file (variables_meta.sh) as the reference
 #   for variable and function definitions when analyzing the sourcing statement,
@@ -54,7 +54,7 @@
 # scripts/helpers_minimal.sh
 #===============================================================
 
-D_TM_BASE_PATH="${D_TM_BASE_PATH:-}"
+TMUX_MENUS_LOCATION="${TMUX_MENUS_LOCATION:-}"
 TMUX_BIN="${TMUX_BIN:-tmux}"
 
 bn_current_script="${bn_current_script:-}"
@@ -122,6 +122,7 @@ t_show_cmds="${t_show_cmds:-}"         # time when cmds generation starts
 cached_ok_tmux_versions="${cached_ok_tmux_versions:-}"
 cached_bad_tmux_versions="${cached_bad_tmux_versions:-}"
 cfg_border_type="${cfg_border_type:-}"
+cfg_d_menus="${cfg_d_menus:-}"
 cfg_danger_zone="${cfg_danger_zone:-}"
 cfg_display_cmds="${cfg_display_cmds:-}"
 cfg_display_cmds_cols="${cfg_display_cmds_cols:-}"

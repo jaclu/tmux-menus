@@ -84,7 +84,7 @@ source_all_helpers() {
     b_all_helpers_sourced=true # set it early to avoid recursion
 
     # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-    . "$D_TM_BASE_PATH"/scripts/utils/helpers_full.sh || {
+    . "$TMUX_MENUS_LOCATION"/scripts/utils/helpers_full.sh || {
         error_msg "Failed to source: scripts/utils/helpers_full.sh"
     }
 }
@@ -121,7 +121,7 @@ relative_path() {
     esac
 
     # Extract project-relative path by removing prefix
-    _rp_proj_path="${_rp_full_path#"$D_TM_BASE_PATH"/}"
+    _rp_proj_path="${_rp_full_path#"$TMUX_MENUS_LOCATION"/}"
 
     [ "$2" != silent ] && printf '%s' "$_rp_proj_path"
 }
@@ -548,9 +548,9 @@ tpt_parse_tmux_vers() {
 }
 
 base_path_not_defined() {
-    # Show error msg if D_TM_BASE_PATH is not defined
+    # Show error msg if TMUX_MENUS_LOCATION is not defined
     # helpers not yet sourced, so TMUX_BIN & error_msg() not yet available
-    msg="$plugin_name ERROR: $0 - D_TM_BASE_PATH must be set before sourcing this file"
+    msg="$plugin_name ERROR: $0 - TMUX_MENUS_LOCATION must be set before sourcing this file"
     print_stderr "$msg"
     $TMUX_BIN display-message "$msg"
     exit 1
@@ -605,12 +605,12 @@ d_tmp="${TMPDIR:-/tmp}"
 d_tmp="${d_tmp%/}" # Removes a trailing slash if present - sometimes set in TMPDIR...
 f_no_cache_hint="$d_tmp"/tmux-menus-no-cache-hint
 
-[ -z "$D_TM_BASE_PATH" ] && base_path_not_defined
+[ -z "$TMUX_MENUS_LOCATION" ] && base_path_not_defined
 
-d_scripts="$D_TM_BASE_PATH"/scripts
-d_items="$D_TM_BASE_PATH"/items
+d_scripts="$TMUX_MENUS_LOCATION"/scripts
+d_items="$TMUX_MENUS_LOCATION"/items
 d_help="$d_items"/help
-d_cache="$D_TM_BASE_PATH"/cache
+d_cache="$TMUX_MENUS_LOCATION"/cache
 f_cache_known_tmux_vers="$d_cache"/known_tmux_versions
 f_cache_params="$d_cache"/plugin_params
 f_safe_now_method="$d_cache"/safe_now_method
@@ -635,7 +635,7 @@ rn_current_script="$_rp_proj_path" # saves a fork
 # --->  Only enable this if profiling is being used during startup  <---
 # [ "$profiling_sourced" != 1 ] && {
 #     # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-#     . "$D_TM_BASE_PATH"/scripts/utils/dbg_profiling.sh
+#     . "$TMUX_MENUS_LOCATION"/scripts/utils/dbg_profiling.sh
 # }
 
 # Set this as early as possible to be able to calculate the entire menu processing time

@@ -8,6 +8,9 @@ or [Caching](/docs/Advanced.md#caching) is disabled.
 If this is not the case doing `rm [tmux-menus folder]/cache/items -rf`
 will cause all menus to be regenerated.
 
+At plugin init TMUX_MENUS_LOCATION is defined in the plugin initialization as
+a global environment variable, so it can always be used as the location of the plugin
+
 **Fast development with minimal hassle!**
 
 If an edited menu fails to load, you can run it directly from the command
@@ -82,12 +85,7 @@ static_content() {
 
 menu_name="Simple Test"
 
-#  Full path to tmux-menux plugin
-#  This script is assumed to have been placed in the items folder of
-#  this repo, if not, D_TM_BASE_PATH needs to bechanged the path of the repo
-D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
-
-. "$D_TM_BASE_PATH"/scripts/menu_handling.sh
+. "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh
 
 
 ```

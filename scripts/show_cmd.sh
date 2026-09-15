@@ -196,7 +196,7 @@ sc_clean_up_result() {
 
     # Replace plugin path with tag
     case $_sc_cur_result in
-        "$D_TM_BASE_PATH/"*) _sc_cur_result='[tmux-menus] '"${_sc_cur_result#"$D_TM_BASE_PATH/"}" ;;
+        "$TMUX_MENUS_LOCATION/"*) _sc_cur_result='[tmux-menus] '"${_sc_cur_result#"$TMUX_MENUS_LOCATION/"}" ;;
         *) ;;
     esac
 

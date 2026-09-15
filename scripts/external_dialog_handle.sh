@@ -8,14 +8,11 @@
 #  This is run in the current pane, so job control is available
 #
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
-
 # Prevents handle_env_variables to be run by this process
 skip_env_check=1
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
+. "$TMUX_MENUS_LOCATION"/scripts/helpers_minimal.sh
 
 menu_name="${1:-$cfg_main_menu}"
 $menu_name

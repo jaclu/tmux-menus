@@ -644,7 +644,7 @@ parse_move_link_dest() {
 #
 
 d_hints="$d_items"/hints
-d_custom_items="$D_TM_BASE_PATH"/custom_items
+d_custom_items="$TMUX_MENUS_LOCATION"/custom_items
 f_custom_items_index="$d_custom_items"/_index.sh
 f_chksum_custom="$d_cache"/chksum_custom_content
 f_min_display_time="$d_cache"/min_display_time

@@ -119,11 +119,8 @@ static_content() {
 menu_name="Handling Floating Panes (C)"
 menu_min_vers=3.7
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
-
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/helpers_floating_pane.sh
+. "$TMUX_MENUS_LOCATION"/scripts/helpers_floating_pane.sh
 floating_pane_focus
 
 # Sourcing helpers_floating_pane sourced helpers_minimal,
@@ -131,9 +128,9 @@ floating_pane_focus
 # If caching is disabled, play it safe and always use split menus, since it can't be toggled
 if [ -f "$f_max_25_line_menus" ]; then # Use split menus if hint is found
     # Switch to the not as tall split menus, fitting inside 25 rows
-    "$D_TM_BASE_PATH"/items/floating_pane.sh
+    "$TMUX_MENUS_LOCATION"/items/floating_pane.sh
     exit 0
 fi
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/menu_handling.sh
+. "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh

@@ -8,14 +8,11 @@
 #   Lists all sessions, if popups are available it will be used
 #
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
-
 # Prevents handle_env_variables to be run by this process
 skip_env_check=1
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
+. "$TMUX_MENUS_LOCATION"/scripts/helpers_minimal.sh
 
 cmd="$TMUX_BIN list-sessions"
 if tmux_vers_check 3.2; then

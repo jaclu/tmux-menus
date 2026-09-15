@@ -31,8 +31,19 @@
 #===============================================================
 
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}" && pwd)
-$TMUX_BIN set-environment TMUX_MENUS_LOCATION "$D_TM_BASE_PATH"
+TMUX_MENUS_LOCATION=$(cd "${0%/*}" && pwd)
+TMUX_BIN="${TMUX_BIN:-tmux}"
+
+$TMUX_BIN set-environment -g TMUX_MENUS_LOCATION "$TMUX_MENUS_LOCATION"
+
+#
+#  This is not yet in the env for this process, so it needs to be exported
+#  to any child processes that might need it.
+#  The same will be true for any panes initially created during tmux startup,
+#  most likely they also will not have it in their env,
+#  due to being started before this was run.
+#
+export TMUX_MENUS_LOCATION
 
 #
 #  Run the plugin setup in the background in order not to slow down tpm during startup.
@@ -41,7 +52,7 @@ $TMUX_BIN set-environment TMUX_MENUS_LOCATION "$D_TM_BASE_PATH"
 #  long wait for tpm to complete becomes more apparent.
 #
 (
-    "$D_TM_BASE_PATH"/scripts/plugin_init.sh || {
+    "$TMUX_MENUS_LOCATION"/scripts/plugin_init.sh || {
         # Report if init failed
         tmux display-message "tmux-menus - Failed to initialize"
         sleep 3
