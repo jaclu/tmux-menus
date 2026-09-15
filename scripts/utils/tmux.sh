@@ -328,7 +328,12 @@ tmux_get_plugin_options() { # new init
 
     # Define main menu
     tmux_get_option cfg_main_menu "@menus_main_menu" "$default_main_menu"
-    [ ! -f "$cfg_main_menu" ] && error_msg "Main menu not found: $cfg_main_menu"
+    _s="Main menu not found: $cfg_main_menu"
+    tmux_vers_check 1.8 || {
+        _s="$_s\n\ntmux < 1.8 can't read user variables, thus stuck with the defaults."
+        _s="$_s\nand can't handle menus at other locations."
+    }
+    [ ! -f "$cfg_main_menu" ] && error_msg "$_s"
 
     if tmux_vers_check 3.0; then
         alt_menu_handler=""
