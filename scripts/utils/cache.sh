@@ -236,10 +236,20 @@ examine_code_base() {
     return 0 # Don't return if state...
 }
 
+retrieve_non_tmux_env_vars() {
+    cfg_d_menus=$(dirname "$cfg_main_menu")
+    _rel_path_main_menu=$(relative_path "$cfg_main_menu")
+    d_cache_main_menu="$d_cache/$(dirname "$_rel_path_main_menu")"
+
+    # for uncached:
+    # repo_last_changed="$new_repo_last_changed"
+    # last_local_edit="$new_last_local_edit"
+
+}
+
 params_basic() {
     _cwpp_trigger_key=$(cache_escape_special_chars "$cfg_trigger_key")
 
-    cfg_d_menus=$(dirname "$cfg_main_menu")
     #region params_basic
     printf '%s\n' "\
 #!/bin/sh
@@ -379,8 +389,7 @@ current_tmux_vers_suffix=\"$current_tmux_vers_suffix\"
 
 params_not_config_2() {
     # log_it "params_not_config_2()"
-    _rel_path_main_menu=$(relative_path "$cfg_main_menu")
-    d_cache_main_menu="$d_cache/$(dirname "$_rel_path_main_menu")"
+    d_cache_main_menu=\"$d_cache_main_menu\"
 
     _mnu_reload_delay=$(awk -v t="$t_minimal_display_time" 'BEGIN { print t + 1 }')
     #region params_not_config_2
@@ -446,6 +455,7 @@ cache_write_plugin_params() {
     #
     # log_it "cache_write_plugin_params()"
     get_env
+    retrieve_non_tmux_env_vars
 
     ${cfg_use_cache:-false} || error_msg "cache_write_plugin_params() - called when not using cache"
 

@@ -193,7 +193,9 @@ get_config() { # local usage during sourcing
         ${b_all_helpers_sourced:-false} || {
             source_all_helpers "get_config() - no cache hint found"
         }
+        path_that_might_be_cached
         tmux_get_plugin_options
+        retrieve_non_tmux_env_vars
         # ckoud node .16 jacmacm 0.32 jacpad 1.5  jacdroid 1.2
         check_speed_cutoff 0.6
     else
@@ -566,6 +568,26 @@ base_path_not_defined() {
     exit 1
 }
 
+path_that_might_be_cached() {
+    # Some files that will go into TMPDIR if caching is disabled, can be called
+    # multiple times if cache state might have changed
+
+    if "${cfg_use_cache:-false}"; then
+        _d="$d_cache"
+    else
+        _d="$d_tmp"
+    fi
+
+    d_safe_tmp_folder="$_d" # base path that can be used
+
+    # Can be re-routed to cache once it is known if it is allowed
+    f_max_25_line_menus="$_d"/height-max-25-lines # hint to avoid excessive menus
+    f_alt_handler_in_use="$_d"/alt_handler_in_use
+
+    # This allows 'Display Commands' even when cache is disabled
+    f_cached_tmux_key_binds="$_d"/tmux_key_binds
+}
+
 #===============================================================
 #
 #   Main
@@ -625,10 +647,6 @@ f_cache_known_tmux_vers="$d_cache"/known_tmux_versions
 f_cache_params="$d_cache"/plugin_params
 f_safe_now_method="$d_cache"/safe_now_method
 
-# Can be re-routed to cache once it is known if it is allowed
-f_max_25_line_menus="$d_tmp"/height-max-25-lines # hint to avoid excessive menus
-f_alt_handler_in_use="$d_tmp"/alt_handler_in_use
-
 # System-initial default for the main menu.
 # After options are parsed, always use $cfg_main_menu to refer to the current main menu.
 # This ensures any user-defined main menu or redirections are respected.
@@ -674,17 +692,7 @@ if ! tmux_vers_check "$min_tmux_vers"; then
     error_msg "$plugin_name needs at least tmux $min_tmux_vers to work properly."
 fi
 
-if [ -d "$d_cache" ]; then
-    # For temp files etc that needs to be created even when caching is disabled
-    # use d_safe_tmp_folder folder. This will prioritize the cach-folder, and use tmp
-    # as fallback
-    d_safe_tmp_folder="$d_cache"
-else
-    d_safe_tmp_folder="$d_tmp"
-fi
-
-# This allows 'Display Commands' even when cache is disabled
-f_cached_tmux_key_binds="$d_safe_tmp_folder"/tmux_key_binds
+path_that_might_be_cached
 
 [ "${env_initialized:-0}" -lt 1 ] && env_initialized=1 # also matches for "" - basic init done
 
