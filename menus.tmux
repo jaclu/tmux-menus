@@ -31,8 +31,12 @@
 #===============================================================
 
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-TMUX_MENUS_LOCATION=$(cd "${0%/*}" && pwd)
 TMUX_BIN="${TMUX_BIN:-tmux}"
+
+[ -z "$TMUX_MENUS_LOCATION" ] && {
+    TMUX_MENUS_LOCATION=$(cd "${0%/*}/.." && pwd)
+    export TMUX_MENUS_LOCATION
+}
 
 $TMUX_BIN set-environment -g TMUX_MENUS_LOCATION "$TMUX_MENUS_LOCATION"
 
