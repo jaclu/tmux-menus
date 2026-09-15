@@ -8,6 +8,7 @@ All notable changes to this project will be documented here.
 
 ### Added
 
+- New menu: "Display Settings"
 - plugin_init.sh: added -z for clear cache
 
 ### Changed

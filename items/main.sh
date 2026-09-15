@@ -35,6 +35,7 @@ static_content() {
         0.0 M B "Paste Buffers      $nav_next" paste_buffers.sh \
         1.7 M N "Navigate & Search  $nav_next" nav_search.sh \
         2.0 M M "Missing Keys       $nav_next" "$d_odd_chars"/missing_keys.sh \
+        3.8 M D "Display Settings   $nav_next" display_settings.sh \
         0.0 M A "Advanced Options   $nav_next" advanced.sh \
         0.0 M E "Extras             $nav_next" extras.sh \
         0.0 M H "Help               $nav_next" \
