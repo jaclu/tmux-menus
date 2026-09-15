@@ -71,6 +71,12 @@ menu_name="Main Menu"
 # temp  profiling code to check performance
 # [ "$profiling_sourced" != 1 ] && . "$TMUX_MENUS_LOCATION"/scripts/utils/dbg_profiling.sh
 
+# [ -z "$TMUX_MENUS_LOCATION" ] && {
+#     TMUX_MENUS_LOCATION=$(cd "${0%/*}/.." && pwd)
+#     export TMUX_MENUS_LOCATION
+#     echo "><> $0 had to set TMUX_MENUS_LOCATION"
+# }
+
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh
 

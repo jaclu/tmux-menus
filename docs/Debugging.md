@@ -1,6 +1,10 @@
 # Debugging
 
-## Logging
+The plugin initialisation sets TMUX_MENUS_LOCATION in the global tmux env
+
+Since this will happen after the initial pane(-s) of the tmux session was created,
+it is suggested to always create a new pane when working interactively with the
+code, so that pane has this env variable defined.
 
 If `@menus_log_file` is defined, it will be used for status updates generated
 by `log_it "msg"`.
