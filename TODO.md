@@ -1,11 +1,10 @@
 # TODO
 
-## startup
+## investigate cache disabled
 
-```shell
-$TMUX_BIN set-environment TMUX_MENUS_LOCATION "$TMUX_MENUS_LOCATION"
-# $TMUX_BIN set-environment -g TMUX_MENUS_LOCATION "$TMUX_MENUS_LOCATION"
-```
+not fully working atm
+
+## startup
 
 ## startup sequence
 
