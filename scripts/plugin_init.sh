@@ -62,7 +62,7 @@ bind_plugin_key() {
         bind_cmd="$f_ext_dlg_trigger"
         [ "$alt_menu_handler_announced" != 1 ] && {
             alt_menu_handler_announced=1 # avoid logging it twice if secondary default is used
-            log_it "Will use alternate menu handler: $alt_menu_handler"
+            log_it "Alternate menu handler: $alt_menu_handler"
         }
     fi
     cmd="bind-key"
@@ -81,7 +81,7 @@ bind_plugin_key() {
     # SC2154: variable assigned dynamically by tmux_get_option using eval
     # shellcheck disable=SC2154
     [ "$_f_main_menu_override" != "-" ] && {
-        log_it "Using alternate main menu: $_f_main_menu_override"
+        log_it "Alternate main menu: $_f_main_menu_override"
     }
 
     [ "$TMUX_MENUS_NO_DISPLAY" = "1" ] && {

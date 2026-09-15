@@ -330,8 +330,8 @@ tmux_get_plugin_options() { # new init
     tmux_get_option cfg_main_menu "@menus_main_menu" "$default_main_menu"
     _s="Main menu not found: $cfg_main_menu"
     tmux_vers_check 1.8 || {
-        _s="$_s\n\ntmux < 1.8 can't read user variables, thus stuck with the defaults."
-        _s="$_s\nand can't handle menus at other locations."
+        _s="$_s\n\ntmux < 1.8 can't read user variables, so it is limited to"
+        _s="$_s\nthe default settings and cannot use menus from other locations."
     }
     [ ! -f "$cfg_main_menu" ] && error_msg "$_s"
 
@@ -345,7 +345,7 @@ tmux_get_plugin_options() { # new init
         elif command -v dialog >/dev/null; then
             alt_menu_handler=dialog
         else
-            error_msg "Neither whiptail or dialog found, plugin aborted"
+            error_msg "Neither whiptail nor dialog found, plugin aborted"
         fi
         log_it "--- Activating alt_menu_handler [$alt_menu_handler] due to tmux < 3.0"
     fi
