@@ -32,6 +32,8 @@
 
 #  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
 D_TM_BASE_PATH=$(cd "${0%/*}" && pwd)
+$TMUX_BIN set-environment TMUX_MENUS_LOCATION "$D_TM_BASE_PATH"
+
 #
 #  Run the plugin setup in the background in order not to slow down tpm during startup.
 #  On systems with "normal" performance init takes perhaps 0.5 seconds
