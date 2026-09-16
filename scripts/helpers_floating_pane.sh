@@ -149,11 +149,14 @@ menu_section_help_nav() {
             # Only use this part if current is a floating pane
 
             case "$0" in
-                *placement.sh) help_menu="h_floating_placement.sh" ;;
+                *placement.sh)
+                    help_menu="h_floating_placement.sh"
+                    skip_placement=1
+                    ;;
                 *combined.sh) help_menu="h_floating_pane_combined.sh" ;;
                 *) help_menu="h_floating_pane.sh" ;;
             esac
-            if [ -f "$f_max_25_line_menus" ]; then
+            if [ -f "$f_max_25_line_menus" ] && [ "$skip_placement" != 1 ]; then
                 set -- \
                     3.8 M P "Placement         $nav_next" floating_placement.sh
             else
