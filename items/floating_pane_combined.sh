@@ -22,6 +22,8 @@
 #
 
 dynamic_content() {
+    # Could have been in helpers_floating_pane.sh, but left it here
+    # to make it obvious this menu has dynamic_content
     menu_section_help_nav
 }
 
