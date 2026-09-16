@@ -107,6 +107,7 @@ other_floating_panes="${other_floating_panes:-}"
 b_display_commands_issue="${b_display_commands_issue:-}"
 d_odd_chars="${d_odd_chars:-}"
 dh_t_start="${dh_t_start:-}" # time when menu is displayed
+menu_handling_sourced="${menu_handling_sourced:-}"
 mnu_reload_direct="${mnu_reload_direct:-}"
 nav_home="${nav_home:-}"
 nav_next="${nav_next:-}"

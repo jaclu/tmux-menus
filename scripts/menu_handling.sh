@@ -701,6 +701,16 @@ check_menu_min_vers() {
 
 set_menu_env_variables() {
     # log_it "set_menu_env_variables()"
+    [ "$menu_handling_env_variables_init_done" = 1 ] && {
+        #
+        # sometimes this needs to be run early, to get some variables, like from
+        # helpers_floating_pane.sh
+        # This avoids running it again later
+        #
+        log_it "><> set_menu_env_variables() - already done"
+        return 0
+    }
+
     #
     #  Needs to be done for every menu even if caching is done,
     #  since the cache might refer to tmux variables like menu_name
@@ -779,17 +789,18 @@ set_menu_env_variables() {
         # For C items where a run-shell has not been started
         runshell_reload_mnu=" ; run-shell $_f_mnu"
 
-        # For E items and C items where a run-shell is already started
-        mnu_reload_direct=" ; $_f_mnu"
-
         # Some tasks - like creating a floating pane takes some time, yet are forked
         # so the cmd completes quickly. This can lead to the next menu being
         # displayed and then the new pane etc gets drawnn over it, use this sleep
         # for such tasks
         _s="sleep $t_delayed_menu_reload"
         runshell_sleep_reload_mnu=" ; run-shell \"$_s ; $_f_mnu\""
-    fi
 
+        # For E items and C items where a run-shell is already started
+        mnu_reload_direct=" ; $_f_mnu"
+
+    fi
+    menu_handling_env_variables_init_done=1
 }
 
 static_files_reduction() {
@@ -966,8 +977,6 @@ prepare_menu() {
     #  then process it in dynamic_content()
     #
     # log_it "prepare_menu()"
-
-    set_menu_env_variables
 
     # 1 - Handle static parts, use cache if enabled and available
     if ${cfg_use_cache:-false}; then
@@ -1239,4 +1248,7 @@ do_menu_handling() {
     . "$TMUX_MENUS_LOCATION"/scripts/helpers_minimal.sh
 }
 
+set_menu_env_variables
+
 [ "$no_auto_menu_handling" != 1 ] && do_menu_handling
+menu_handling_sourced=1
