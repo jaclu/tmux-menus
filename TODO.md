@@ -1,5 +1,27 @@
 # TODO
 
+## menu path
+
+1) assume main menu is in the relative top dir, extract that path
+
+```text
+  - at plugin_params generation generate
+  - d_items       - folder where main menu resides
+  - d_menus_cache - top folder for menu caching
+  not cached but used whilst processing a menu
+    - rel_f_menu   - relative file name with d_items extracted (needed?)
+    - d_item_cache - d_menus_cache + rel_f_menu, location of menus cache items
+                     this includes extensions like .sh etc, doesn't matter
+                     makes it simpler to process and recognize when inspecting
+                     the cache
+```
+
+- menus referenced without path are assumed to be in the same folder
+- outside the path of main menu are ignored, extract the base path,
+   if it is still a full path - rejet.
+- subdirs within this is fine
+- this also gives menus a clear location within the cache folder
+
 ## investigate cache disabled
 
 not fully working atm
