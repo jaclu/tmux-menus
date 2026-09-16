@@ -1,8 +1,12 @@
 # TODO
 
+## cache/plugin_params
+
+not deleted when mismatching tmux vers is used
+
 ## menu path
 
-1) assume main menu is in the relative top dir, extract that path
+1. assume main menu is in the relative top dir, extract that path
 
 ```text
   - at plugin_params generation generate
@@ -18,7 +22,8 @@
 
 - menus referenced without path are assumed to be in the same folder
 - outside the path of main menu are ignored, extract the base path,
-   if it is still a full path - rejet.
+  outside the path of main menu are ignored, extract the base path,
+  if it is still a full path - rejet.
 - subdirs within this is fine
 - this also gives menus a clear location within the cache folder
 
