@@ -11,56 +11,24 @@
 #   Avoids numpad 5-centered logic which fails for keyboards without numpad.
 #
 
+# 1,3,4 menu_section_base
+#   1 - move back
+#   3 - Display Commands
+#   4 - New floating pane
+# 2,5 menu_section_help_nav
+#   2 - help displayed if current pane is floating, otherwise dummy
+#   5 - nav displayed if more than one floating pane, prevents rest if no floating
+# 6   menu_section_placement
+# 7   menu_section_kill
+#
 dynamic_content() {
-    #
-    # menu_idx used, empty if no floating pane is present:
-    #  4 items for moving prev/next
-    #
-    if [ -n "$other_floating_panes" ]; then
-        _fps="$d_scripts/floating_pane_switch.sh"
-        set -- \
-            3.7 E p "Previous" "$_fps  previous \; $0" \
-            3.7 E n "Next" "$_fps  next \; $0"
-
-    else
-        set -- 0 D # dummy allows next item to be considered
-    fi
-    menu_generate_part 4 "$@"
+    menu_section_help_nav
 }
 
 static_content() {
-    set -- \
-        0.0 M Left "Back to Previous  $nav_prev" floating_pane.sh \
-        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu" \
-        0.0 M H "Help              $nav_next" \
-        "$d_help/h_floating_placement.sh $0"
-    menu_generate_part 1 "$@"
-    display_commands_toggle 2
-
-    set -- \
-        0.0 S \
-        3.7 C N "New" \
-        "new-pane -c \"#{pane_current_path}\" $runshell_sleep_reload_mnu"
-    menu_generate_part 3 "$@"
-
-    # shorter variablenames to avoid too long lines
-    _rrm="$runshell_reload_mnu"
-
-    set -- \
-        0.0 S \
-        3.8 C q "Place top-left" "move-pane -P top-left $_rrm" \
-        3.8 C w "Place top-centre" "move-pane -P top-centre $_rrm" \
-        3.8 C e "Place top-right" "move-pane -P top-right $_rrm" \
-        3.8 C a "Place centre-left" "move-pane -P centre-left $_rrm" \
-        3.8 C s "Place centre" "move-pane -P centre $_rrm" \
-        3.8 C d "Place centre-right" "move-pane -P centre-right $_rrm" \
-        3.8 C z "Place bottom-left" "move-pane -P bottom-left $_rrm" \
-        3.8 C x "Place bottom-centre" "move-pane -P bottom-centre $_rrm" \
-        3.8 C c "Place bottom-right" "move-pane -P bottom-right $_rrm" \
-        0.0 S \
-        1.8 C K "${cfg_danger_zone}Kill current" "confirm-before -p \
-        'kill-pane #T (#P)? (y/n)' kill-pane $_rrm"
-    menu_generate_part 5 "$@"
+    menu_section_base
+    menu_section_placement 6
+    menu_section_kill 7
 }
 
 #===============================================================

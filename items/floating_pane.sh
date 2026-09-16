@@ -14,84 +14,33 @@
 #        v
 #
 
+# 1,3,4 menu_section_base
+#   1 - move back
+#   3 - Display Commands
+#   4 - New floating pane
+# 2,5 menu_section_help_nav
+#   2 - help displayed if current pane is floating, otherwise dummy
+#   5 - nav displayed if more than one floating pane, prevents rest if no floating
+# 6   menu_section_move
+# 7   menu_section_resize
+# 8   menu_section_kill
+#
+
 dynamic_content() {
-    #
-    # menu_idx used, empty if no floating pane is present:
-    #  2 navigate to floating_placement.sh, prev, next & Help
-    #  5 Floating pane manipulation
-    #
-    case "$current_pane_is_floating" in
-        0)                           # clear items
-            menu_generate_part 2 0 D # dummy allows next item to be considered
-            menu_generate_part 5     # non-item prevents 6 and on from being considered
-            ;;
-        1)
-            # Only use this part if current is a floating pane
-
-            set -- \
-                3.8 M P "Placement         $nav_next" floating_placement.sh \
-                3.8 M H "Help              $nav_next" \
-                "$d_help/h_floating_pane.sh $0"
-            menu_generate_part 2 "$@"
-
-            if [ -n "$other_floating_panes" ]; then
-                set -- \
-                    3.7 E p "Previous" "$scr_float_pane_switch  previous \; $0" \
-                    3.7 E n "Next" "$scr_float_pane_switch  next \; $0"
-
-            else
-                set -- 0 D # dummy allows next item to be considered
-            fi
-            menu_generate_part 5 "$@"
-
-            # rest to static 6 ??
-
-            ;;
-        *) error_msg "Invalid value for pane_floating_flag [$current_pane_is_floating]" ;;
-    esac
+    menu_section_help_nav
 }
 
 static_content() {
     # shorter variablenames to avoid too long lines
-    _combo_menu="$d_items"/floating_pane_combined.sh
     _vert_step="$cfg_floating_pane_incr_vertical"
     _hori_step="$cfg_floating_pane_incr_horizontal"
     _rrm="$runshell_reload_mnu"
 
-    set -- \
-        0.0 M Left "Back to Previous  $nav_prev" panes.sh \
-        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu"
-    menu_generate_part 1 "$@"
-    display_commands_toggle 3
+    menu_section_base split
 
-    set -- \
-        0.0 S \
-        3.7 E c "Use Combined Menu" "rm -f '$f_max_25_line_menus' ; $_combo_menu" \
-        3.7 C N "New" \
-        "new-pane -c \"#{pane_current_path}\" $runshell_sleep_reload_mnu"
-    menu_generate_part 4 "$@"
-
-    #
-    # This can be cached statically, greatly improving responsiveness.
-    # Item 6 depends on item 5, so when there are no floating panes and
-    # item 5 is omitted, item 6 is skipped automatically.
-    #
-
-    set -- \
-        3.8 S \
-        3.8 C t "Move up" "move-pane -D -$_vert_step $_rrm" \
-        3.8 C v "Move down" "move-pane -D $_vert_step $_rrm" \
-        3.8 C f "Move left" "move-pane -R -$_hori_step $_rrm" \
-        3.8 C g "Move right" "move-pane -R $_hori_step $_rrm" \
-        3.8 S \
-        3.8 C T "Reduce height" "resize-pane -D -$_vert_step $_rrm" \
-        3.8 C V "Grow height" "resize-pane -D $_vert_step $_rrm" \
-        3.8 C F "Reduce width" "resize-pane -R -$_hori_step $_rrm" \
-        3.8 C G "Grow width" "resize-pane -R $_hori_step $_rrm" \
-        1.8 S \
-        1.8 C K "${cfg_danger_zone}Kill current" "confirm-before -p \
-            'kill-pane #T (#P)? (y/n)' kill-pane $runshell_reload_mnu"
-    menu_generate_part 6 "$@"
+    menu_section_move 6
+    menu_section_resize 7
+    menu_section_kill 8
 }
 
 #===============================================================

@@ -8,63 +8,25 @@
 #   Handling floating pane
 #
 
+# 1,3,4 menu_section_base
+#   1 - move back
+#   3 - Display Commands
+#   4 - New floating pane
+# 2,5 menu_section_help_nav
+#   2 - help displayed if current pane is floating, otherwise dummy
+#   5 - nav displayed if more than one floating pane, prevents rest if no floating
+# 6   menu_section_move
+# 7   menu_section_resize
+# 8   menu_section_placement
+# 9   menu_section_kill
+#
+
 dynamic_content() {
-    #
-    # menu_idx used, empty if no floating pane is present:
-    #  2 navigate to floating_placement.sh, prev, next & Help
-    #  5 Floating pane manipulation
-    #  6 dummy to allow 7 to be used
-    case "$current_pane_is_floating" in
-        0)                           # clear items
-            menu_generate_part 2 0 D # dummy allows next item to be considered
-            menu_generate_part 5     # non-item prevents 6 and on from being considered
-            ;;
-        1)
-            # Only use this part if current is a floating pane
-
-            set -- \
-                3.8 M H "Help              $nav_next" \
-                "$d_help/h_floating_pane_combined.sh $0"
-            menu_generate_part 2 "$@"
-
-            if [ -n "$other_floating_panes" ]; then
-                set -- \
-                    3.7 E p "Previous" "$scr_float_pane_switch  previous ; $0" \
-                    3.7 E n "Next" "$scr_float_pane_switch  next ; $0"
-            else
-                set -- 0 D # dummy allows next item to be considered
-            fi
-            menu_generate_part 5 "$@"
-            ;;
-        *) error_msg "Invalid value for pane_floating_flag [$current_pane_is_floating]" ;;
-    esac
+    menu_section_help_nav
 }
 
-# 1 Navigation back
-# 2 navigate to floating_placement.sh, prev, next & Help
-# 3 display_commands_toggle (optional otherwise dummy)
-# 4 actions
-# 3 move
-# 4 resize
-# 5 Floating pane manipulation
-# 7 placement
-
 static_content() {
-    set -- \
-        0.0 M Left "Back to Previous  $nav_prev" panes.sh \
-        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu"
-    menu_generate_part 1 "$@"
-    display_commands_toggle 3
-
-    _new_pane="new-pane -c '#{pane_current_path}'"
-    tmux_vers_check 3.8 && _new_pane="$_new_pane -A" # does not unzoom window
-
-    set -- \
-        0.0 S \
-        3.7 E l "Fit to 25 Lines" "touch '$f_max_25_line_menus' ; $0" \
-        3.7 C N "New" \
-        "$_new_pane $runshell_sleep_reload_mnu"
-    menu_generate_part 4 "$@"
+    menu_section_base combined
 
     #
     # This can be cached statically, greatly improving responsiveness.
@@ -72,36 +34,10 @@ static_content() {
     # item 5 is omitted, item 6 is skipped automatically.
     #
 
-    # shorter variablenames to avoid too long lines
-    _vert_step="$cfg_floating_pane_incr_vertical"
-    _hori_step="$cfg_floating_pane_incr_horizontal"
-    _rrm="$runshell_reload_mnu"
-
-    set -- \
-        3.8 S \
-        3.8 C t "Move up" "move-pane -D -$_vert_step  $_rrm" \
-        3.8 C v "Move down" "move-pane -D $_vert_step  $_rrm" \
-        3.8 C f "Move left" "move-pane -R -$_hori_step  $_rrm" \
-        3.8 C g "Move right" "move-pane -R $_hori_step  $_rrm" \
-        3.8 S \
-        3.8 C T "Reduce height" "resize-pane -D -$_vert_step  $_rrm" \
-        3.8 C V "Grow height" "resize-pane -D $_vert_step  $_rrm" \
-        3.8 C F "Reduce width" "resize-pane -R -$_hori_step  $_rrm" \
-        3.8 C G "Grow width" "resize-pane -R $_hori_step  $_rrm" \
-        3.8 S \
-        3.8 C q "Place top-left" "move-pane -P top-left  $_rrm" \
-        3.8 C w "Place top-centre" "move-pane -P top-centre  $_rrm" \
-        3.8 C e "Place top-right" "move-pane -P top-right  $_rrm" \
-        3.8 C a "Place centre-left" "move-pane -P centre-left  $_rrm" \
-        3.8 C s "Place centre" "move-pane -P centre  $_rrm" \
-        3.8 C d "Place centre-right" "move-pane -P centre-right  $_rrm" \
-        3.8 C z "Place bottom-left" "move-pane -P bottom-left  $_rrm" \
-        3.8 C x "Place bottom-centre" "move-pane -P bottom-centre  $_rrm" \
-        3.8 C c "Place bottom-right" "move-pane -P bottom-right  $_rrm" \
-        1.8 S \
-        1.8 C K "${cfg_danger_zone}Kill current" "confirm-before -p \
-            'kill-pane #T (#P)? (y/n)' kill-pane $runshell_reload_mnu"
-    menu_generate_part 6 "$@"
+    menu_section_move 6
+    menu_section_resize 7
+    menu_section_placement 8
+    menu_section_kill 9
 }
 
 #===============================================================

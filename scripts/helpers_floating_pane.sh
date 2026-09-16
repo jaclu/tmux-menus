@@ -91,6 +91,206 @@ switch_floating_pane() {
     esac
 }
 
+menu_section_base() {
+    #
+    # menu_idx used
+    #   1 - move back
+    #   3 - Display Commands
+    #   4 - New floating pane
+    #
+    menu_type="$1"
+    case "$0" in
+        *placement.sh) _prev="$d_items"/floating_pane.sh ;;
+        *) _prev="panes.sh" ;;
+    esac
+
+    set -- \
+        0.0 M Left "Back to Previous  $nav_prev" "$_prev" \
+        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu"
+    menu_generate_part 1 "$@"
+    display_commands_toggle 3
+
+    set -- \
+        0.0 S
+    case "$menu_type" in
+        combined)
+            set -- "$@" \
+                3.7 E l "Fit to 25 Lines" \
+                "touch '$f_max_25_line_menus' ; '$d_items'/floating_pane.sh"
+            ;;
+        split)
+            set -- "$@" \
+                3.7 E c "Use Combined Menu" \
+                "rm -f '$f_max_25_line_menus' ; '$d_items'/floating_pane_combined.sh"
+            ;;
+        "") ;; # If
+        *) error_msg "menu_section_base() - No param" ;;
+    esac
+
+    set -- "$@" \
+        3.7 C N "New" "$new_pane $runshell_sleep_reload_mnu"
+    menu_generate_part 4 "$@"
+}
+
+menu_section_help_nav() {
+    #
+    # Needs to be called from dynamic_content
+    #
+    # menu_idx used, empty if no floating pane is present:
+    #  2 navigate to floating_placement.sh, prev, next & Help
+    #  5 Floating pane manipulation
+    #
+    case "$current_pane_is_floating" in
+        0)                           # clear items
+            menu_generate_part 2 0 D # dummy allows next item to be considered
+            menu_generate_part 5     # non-item prevents 6 and on from being considered
+            ;;
+        1)
+            # Only use this part if current is a floating pane
+
+            case "$0" in
+                *placement.sh) help_menu="h_floating_placement.sh" ;;
+                *combined.sh) help_menu="h_floating_pane_combined.sh" ;;
+                *) help_menu="h_floating_pane.sh" ;;
+            esac
+            if [ -f "$f_max_25_line_menus" ]; then
+                set -- \
+                    3.8 M P "Placement         $nav_next" floating_placement.sh
+            else
+                set --
+            fi
+            set -- "$@" \
+                3.8 M H "Help              $nav_next" "$d_help/$help_menu $0"
+            menu_generate_part 2 "$@"
+
+            if [ -n "$other_floating_panes" ]; then
+                set -- \
+                    3.7 E p "Previous" "$scr_float_pane_switch  previous ; $0" \
+                    3.7 E n "Next" "$scr_float_pane_switch  next ; $0"
+            else
+                set -- 0 D # dummy allows next item to be considered
+            fi
+            menu_generate_part 5 "$@"
+            ;;
+        *) error_msg "Invalid value for pane_floating_flag [$current_pane_is_floating]" ;;
+    esac
+}
+
+menu_section_move() {
+    _idx="$1"
+    [ -n "$_idx" ] || error_msg "menu_section_move() - no item index"
+
+    set -- \
+        3.8 S \
+        3.8 C t "Move up" "move-pane -D -$s_v_step  $runshell_reload_mnu" \
+        3.8 C v "Move down" "move-pane -D $s_v_step  $runshell_reload_mnu" \
+        3.8 C f "Move left" "move-pane -R -$s_h_step  $runshell_reload_mnu" \
+        3.8 C g "Move right" "move-pane -R $s_h_step  $runshell_reload_mnu"
+    menu_generate_part "$_idx" "$@"
+}
+
+menu_section_resize() {
+    _idx="$1"
+    [ -n "$_idx" ] || error_msg "menu_section_resize() - no item index"
+
+    set -- \
+        3.8 S \
+        3.8 C T "Reduce height" "resize-pane -U $s_v_step  $s_rrm" \
+        3.8 C V "Grow height" "resize-pane -D $s_v_step  $s_rrm" \
+        3.8 C F "Reduce width" "resize-pane -L $s_h_step  $s_rrm" \
+        3.8 C G "Grow width" "resize-pane -R $s_h_step  $s_rrm"
+
+    menu_generate_part "$_idx" "$@"
+}
+
+menu_section_placement() {
+    _idx="$1"
+    [ -n "$_idx" ] || error_msg "menu_section_resize() - no item index"
+
+    set -- \
+        3.8 S \
+        3.8 C q "Place top-left" "move-pane -P top-left  $s_rrm" \
+        3.8 C w "Place top-centre" "move-pane -P top-centre  $s_rrm" \
+        3.8 C e "Place top-right" "move-pane -P top-right  $s_rrm" \
+        3.8 C a "Place centre-left" "move-pane -P centre-left  $s_rrm" \
+        3.8 C s "Place centre" "move-pane -P centre  $s_rrm" \
+        3.8 C d "Place centre-right" "move-pane -P centre-right  $s_rrm" \
+        3.8 C z "Place bottom-left" "move-pane -P bottom-left  $s_rrm" \
+        3.8 C x "Place bottom-centre" "move-pane -P bottom-centre  $s_rrm" \
+        3.8 C c "Place bottom-right" "move-pane -P bottom-right  $s_rrm"
+
+    menu_generate_part "$_idx" "$@"
+}
+
+menu_section_kill() {
+    _idx="$1"
+    [ -n "$_idx" ] || error_msg "menu_section_kill() - no item index"
+
+    set -- \
+        1.8 S \
+        1.8 C K "${cfg_danger_zone}Kill current" "confirm-before -p \
+            'kill-pane #T (#P)? (y/n)' kill-pane $runshell_reload_mnu"
+
+    menu_generate_part "$_idx" "$@"
+}
+
+help_section_base() {
+    if [ -z "$prev_menu" ]; then
+        error_msg "$bn_current_script was called without notice of what called it"
+    fi
+    set -- \
+        0.0 M Left "Back to Previous  $nav_prev" "$prev_menu" \
+        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu" \
+        0.0 S
+    menu_generate_part 1 "$@"
+}
+
+help_section_move_resize() {
+    _idx="$1"
+    [ -n "$_idx" ] || error_msg "help_section_move_resize() - no item index"
+
+    set -- \
+        0.0 T "Move / Resize - diamond pattern:" \
+        0.0 T "" \
+        0.0 T "           t (up)" \
+        0.0 T " f (left)            g (right)" \
+        0.0 T "           v (down)" \
+        0.0 T "" \
+        0.0 T "lowercase:  move" \
+        0.0 T "UPPERCASE:  resize" \
+        0.0 T ""
+    menu_generate_part "$_idx" "$@"
+}
+
+help_section_placement() {
+    _idx="$1"
+    [ -n "$_idx" ] || error_msg "help_section_placement() - no item index"
+
+    set -- \
+        0.0 T "" \
+        0.0 T "          q   w   e" \
+        0.0 T "          a   s   d" \
+        0.0 T "          z   x   c" \
+        0.0 T "" \
+        0.0 T "Key position = pane position," \
+        0.0 T "with s placing it in the centre."
+    menu_generate_part "$_idx" "$@"
+}
+
+help_section_be_aware() {
+    _idx="$1"
+    [ -n "$_idx" ] || error_msg "help_section_placement() - no item index"
+
+    set -- \
+        0.0 T "" \
+        0.0 T "The menu closes and reopens on" \
+        0.0 T "every key. Press one key, wait" \
+        0.0 T "for it to redraw, then the next —" \
+        0.0 T "anything typed in between goes" \
+        0.0 T "straight into the pane."
+    menu_generate_part "$_idx" "$@"
+}
+
 #===============================================================
 #
 #   Main
@@ -103,7 +303,16 @@ switch_floating_pane() {
     . "$TMUX_MENUS_LOCATION"/scripts/helpers_minimal.sh
 }
 
-# Set up basic floating pane env
+# f_floating_pane_combined="$d_items"/floating_pane_combined.sh
 
+# shorter variablenames to avoid too long lines
+s_v_step="$cfg_floating_pane_incr_vertical"
+s_h_step="$cfg_floating_pane_incr_horizontal"
+s_rrm="$runshell_reload_mnu"
+
+new_pane="new-pane -c '#{pane_current_path}'"
+tmux_vers_check 3.8 && new_pane="$new_pane -A" # does not unzoom window
+
+# Set up basic floating pane env
 current_pane_is_floating=$($TMUX_BIN display -p '#{pane_floating_flag}')
 define_other_floating_panes

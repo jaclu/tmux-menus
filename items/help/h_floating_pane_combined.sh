@@ -9,38 +9,10 @@
 #
 
 static_content() {
-    if [ -z "$prev_menu" ]; then
-        error_msg "$bn_current_script was called without notice of what called it"
-    fi
-    set -- \
-        0.0 M Left "Back to Previous  $nav_prev" "$prev_menu" \
-        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu" \
-        0.0 S \
-        0.0 T "Move / Resize - diamond pattern:" \
-        0.0 T "" \
-        0.0 T "           t (up)" \
-        0.0 T " f (left)            g (right)" \
-        0.0 T "           v (down)" \
-        0.0 T "" \
-        0.0 T "lowercase:  move" \
-        0.0 T "UPPERCASE:  resize" \
-        0.0 T "" \
-        0.0 T "The placement keys form a 3x3 grid" \
-        0.0 T "that mirrors the window:" \
-        0.0 T "" \
-        0.0 T "          q   w   e" \
-        0.0 T "          a   s   d" \
-        0.0 T "          z   x   c" \
-        0.0 T "" \
-        0.0 T "Key position = pane position," \
-        0.0 T "with s placing it in the centre." \
-        0.0 T "" \
-        0.0 T "The menu closes and reopens on" \
-        0.0 T "every key. Press one key, wait" \
-        0.0 T "for it to redraw, then the next —" \
-        0.0 T "anything typed in between goes" \
-        0.0 T "straight into the pane."
-    menu_generate_part 1 "$@"
+    help_section_base
+    help_section_move_resize 2
+    help_section_placement 3
+    help_section_be_aware 4
 }
 
 #===============================================================
@@ -49,9 +21,12 @@ static_content() {
 #
 #===============================================================
 
-menu_name="Help, Floating Pane"
+menu_name="Help, Floating Pane (C)"
 
 [ -n "$1" ] && prev_menu="$(realpath "$1")"
+
+# shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
+. "$TMUX_MENUS_LOCATION"/scripts/helpers_floating_pane.sh
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh
