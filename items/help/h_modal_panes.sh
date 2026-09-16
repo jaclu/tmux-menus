@@ -9,15 +9,14 @@
 #
 
 static_content() {
-    set -- \
-        0.0 M Left "Back to Previous  $nav_prev" "$1"
+    if [ -z "$prev_menu" ]; then
+        error_msg "$bn_current_script was called without notice of what called it"
+    fi
 
-    menu_generate_part 1 "$@"
-
     set -- \
-        0.0 T "" \
-        0.0 T "#[align=centre]Modal Panes - Help" \
-        0.0 T "" \
+        0.0 M Left "Back to Previous  $nav_prev" "$prev_menu" \
+        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu" \
+        0.0 S \
         0.0 T "Modal panes are floating panes (tmux 3.8+) that prevent interaction with" \
         0.0 T "other panes while active. They are useful for:" \
         0.0 T "" \
@@ -33,11 +32,8 @@ static_content() {
         0.0 T "Modal (custom)  - Creates modal with custom command" \
         0.0 T "Set title       - Sets the modal pane title" \
         0.0 T "" \
-        0.0 T "Note: Modal panes require tmux 3.8 or later." \
-        0.0 T "Only one modal pane can be active at a time." \
-        0.0 T ""
-
-    menu_generate_part 2 "$@"
+        0.0 T "Note: Only one modal pane can be active at a time."
+    menu_generate_part 1 "$@"
 }
 
 #===============================================================
@@ -47,6 +43,8 @@ static_content() {
 #===============================================================
 
 menu_name="Modal Panes - Help"
+
+[ -n "$1" ] && prev_menu="$(realpath "$1")"
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh
