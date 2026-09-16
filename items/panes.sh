@@ -10,7 +10,13 @@
 
 static_content() {
     set -- \
-        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu"
+        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu" \
+        0.0 M S "Split             $nav_next" pane_split.sh \
+        0.0 M R "Resize            $nav_next" pane_resize.sh \
+        0.0 M M "Move              $nav_next" pane_move.sh \
+        0.0 M T "Toggle states     $nav_next" pane_toggle.sh \
+        0.0 M L "Layouts           $nav_next" "$d_items/layouts.sh $0 $menu_name" \
+        0.0 M I "History           $nav_next" pane_history.sh
 
     [ -z "$alt_menu_handler" ] && {
         # can not be used with alt menu handlers...
@@ -19,15 +25,11 @@ static_content() {
     }
 
     set -- "$@" \
-        0.0 M S "Split             $nav_next" pane_split.sh \
-        0.0 M R "Resize            $nav_next" pane_resize.sh \
-        0.0 M M "Move              $nav_next" pane_move.sh \
-        0.0 M L "Layouts           $nav_next" "$d_items/layouts.sh $0 $menu_name" \
-        0.0 M I "History           $nav_next" pane_history.sh
+        3.8 M O "Modal Panes       $nav_next" modal_panes.sh
 
     if [ -z "$alt_menu_handler" ]; then
         set -- "$@" \
-            1.1 M O "Logging           $nav_next" pane_log.sh
+            1.1 M G "Logging           $nav_next" pane_log.sh
     fi
 
     menu_generate_part 1 "$@"
@@ -37,15 +39,14 @@ static_content() {
     respawn_action="$respawn_action $runshell_reload_mnu"
     set -- \
         0.0 S \
-        2.6 C t "Rename (title)" "command-prompt -I '#T'  -p 'Title: '  \
-            'select-pane -T \"%%\"' $runshell_reload_mnu" \
-        1.8 C z "Toggle zoom" "resize-pane -Z $runshell_reload_mnu" \
-        2.1 C m "Toggle mark" "select-pane -m $runshell_reload_mnu" \
-        1.5 C s "Toggle synchronization" "set-option -w synchronize-panes $runshell_reload_mnu" \
-        0.0 S \
         1.4 C l "Last selected" "last-pane $runshell_reload_mnu" \
         1.4 C p "Previous" "select-pane -t :.- $runshell_reload_mnu" \
         1.4 C n "Next" "select-pane -t :.+ $runshell_reload_mnu" \
+        0.8 C f "Rotate forward" "rotate-window -D $runshell_reload_mnu" \
+        0.8 C b "Rotate backward" "rotate-window -U $runshell_reload_mnu" \
+        0.0 S \
+        2.6 C t "Rename (title)" "command-prompt -I '#T'  -p 'Title: '  \
+            'select-pane -T \"%%\"' $rrm" \
         0.0 S \
         1.5 C r "${cfg_danger_zone}Respawn current" "$respawn_action" \
         1.8 C x "${cfg_danger_zone}Kill current" "confirm-before -p \
