@@ -391,7 +391,18 @@ add_uncached_item() {
 verify_menu_key() {
     _key="$1"
     _item="$2"
+
     [ -z "$_key" ] && error_msg "Key was empty for: $_item in: $0"
+
+    case $used_keys in
+        *" $_key "*)
+            log_it "Found ($_key) in: $used_keys"
+            error_msg "Key ($_key) for: $_item\n\nAlready used: $used_keys"
+            ;;
+        *);;
+    esac
+    used_keys="$used_keys $_key "
+
 }
 
 menu_parse() {
@@ -693,6 +704,8 @@ set_menu_env_variables() {
     #
     #  Needs to be done for every menu even if caching is done,
     #  since the cache might refer to tmux variables like menu_name
+    #
+    used_keys=" j k " # ensure nothing uses vi up/down nav keys
 
     #
     # State of menu generating process
