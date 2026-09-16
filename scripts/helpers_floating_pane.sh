@@ -208,7 +208,7 @@ menu_section_resize() {
 
 menu_section_placement() {
     _idx="$1"
-    [ -n "$_idx" ] || error_msg "menu_section_resize() - no item index"
+    [ -n "$_idx" ] || error_msg "menu_section_placement() - no item index"
 
     set -- \
         3.8 S \
@@ -282,7 +282,7 @@ help_section_placement() {
 
 help_section_be_aware() {
     _idx="$1"
-    [ -n "$_idx" ] || error_msg "help_section_placement() - no item index"
+    [ -n "$_idx" ] || error_msg "help_section_be_aware() - no item index"
 
     set -- \
         0.0 T "" \
