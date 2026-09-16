@@ -399,7 +399,7 @@ verify_menu_key() {
             log_it "Found ($_key) in: $used_keys"
             error_msg "Key ($_key) for: $_item\n\nAlready used: $used_keys"
             ;;
-        *);;
+        *) ;;
     esac
     used_keys="$used_keys $_key "
 
