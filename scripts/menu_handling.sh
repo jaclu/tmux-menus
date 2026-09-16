@@ -707,7 +707,6 @@ set_menu_env_variables() {
         # helpers_floating_pane.sh
         # This avoids running it again later
         #
-        log_it "><> set_menu_env_variables() - already done"
         return 0
     }
 
