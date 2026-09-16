@@ -237,6 +237,17 @@ examine_code_base() {
 }
 
 retrieve_non_tmux_env_vars() {
+    # TODO: must be called before params_not_config_2
+
+    #  ---  retrieve_non_tmux_env_vars  ---
+    # if cached, called at start of cache_write_plugin_params, only after get_env
+    # if not cached called in get_config(), right after tmux_get_plugin_options
+
+    #  ---  params_not_config_2  ---
+    # config_setup_cached - at the end:
+    #   cache_write_plugin_params
+    #     params_not_config_2
+
     cfg_d_menus=$(dirname "$cfg_main_menu")
     _rel_path_main_menu=$(relative_path "$cfg_main_menu")
     d_cache_main_menu="$d_cache/$(dirname "$_rel_path_main_menu")"
@@ -389,7 +400,6 @@ current_tmux_vers_suffix=\"$current_tmux_vers_suffix\"
 
 params_not_config_2() {
     # log_it "params_not_config_2()"
-    d_cache_main_menu=\"$d_cache_main_menu\"
 
     _mnu_reload_delay=$(awk -v t="$t_minimal_display_time" 'BEGIN { print t + 1 }')
     #region params_not_config_2

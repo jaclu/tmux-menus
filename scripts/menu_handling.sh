@@ -751,7 +751,7 @@ set_menu_env_variables() {
     if ${cfg_use_cache:-false}; then
         # Include relative script path in cache folder name to avoid name collisions
         #  items/main.sh -> cache/items/main.sh/
-        d_menu_cache="$d_cache/$rn_current_script"
+        d_menu_cache="$d_cache_menus/$rn_current_script"
 
         [ -n "$alt_menu_handler" ] && d_wt_actions="$d_menu_cache/wt_actions"
     else
