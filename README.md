@@ -108,7 +108,7 @@ may have minimum version requirements—items incompatible with your tmux versio
 will be automatically skipped. If you encounter incorrect version limits, please
 report them!
 
-## Installation
+## Installation of tmux-menus
 
 ### Via TPM (Recommended)
 
@@ -329,7 +329,7 @@ These are full-screen terminal applications that pause your session while displa
 **Limitations:** External handlers don't differentiate between uppercase and lowercase
 letters, and don't support special keys (arrow keys, Home, etc.).
 
-### Installation
+### Installation of whiptail
 
 **Linux:** Most distributions include `whiptail` by default. In the Red Hat
 an Homebrew ecosystems, the package that contains `whiptail` is called `newt`.
