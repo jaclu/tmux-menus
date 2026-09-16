@@ -5,7 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Help about floating_placement menu
+#   Help about floating_pane_placement menu
 #
 #
 
@@ -23,6 +23,9 @@ static_content() {
 menu_name="Help, Floating Pane - Placement"
 
 [ -n "$1" ] && prev_menu="$(realpath "$1")"
+
+# shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
+. "$TMUX_MENUS_LOCATION"/scripts/helpers_floating_pane.sh
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh

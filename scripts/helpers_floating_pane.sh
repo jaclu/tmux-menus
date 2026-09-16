@@ -137,7 +137,7 @@ menu_section_help_nav() {
     # Needs to be called from dynamic_content
     #
     # menu_idx used, empty if no floating pane is present:
-    #  2 navigate to floating_placement.sh, prev, next & Help
+    #  2 navigate to floating_pane_placement.sh, prev, next & Help
     #  5 Floating pane manipulation
     #
     case "$current_pane_is_floating" in
@@ -150,7 +150,7 @@ menu_section_help_nav() {
 
             case "$0" in
                 *placement.sh)
-                    help_menu="h_floating_placement.sh"
+                    help_menu="h_floating_pane_placement.sh"
                     skip_placement=1
                     ;;
                 *combined.sh) help_menu="h_floating_pane_combined.sh" ;;
@@ -158,7 +158,7 @@ menu_section_help_nav() {
             esac
             if [ -f "$f_max_25_line_menus" ] && [ "$skip_placement" != 1 ]; then
                 set -- \
-                    3.8 M P "Placement         $nav_next" floating_placement.sh
+                    3.8 M P "Placement         $nav_next" floating_pane_placement.sh
             else
                 set --
             fi
