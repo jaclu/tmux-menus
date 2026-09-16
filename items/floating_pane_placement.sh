@@ -42,13 +42,14 @@ static_content() {
 menu_name="Floating Panes - Placement"
 menu_min_vers=3.8
 
+no_auto_menu_handling=1
+
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$TMUX_MENUS_LOCATION"/scripts/helpers_floating_pane.sh
 floating_pane_focus
 
 if [ "$current_pane_is_floating" = 1 ]; then
-    # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-    . "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh
+    do_menu_handling
 else
     # Jump back to floating pane overview menu, it can handle the case of no
     # visible floating panes

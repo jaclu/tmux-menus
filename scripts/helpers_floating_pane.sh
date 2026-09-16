@@ -91,6 +91,12 @@ switch_floating_pane() {
     esac
 }
 
+#---------------------------------------------------------------
+#
+#   Components of floating-panes menu
+#
+#---------------------------------------------------------------
+
 menu_section_base() {
     #
     # menu_idx used
@@ -185,10 +191,10 @@ menu_section_move() {
 
     set -- \
         3.8 S \
-        3.8 C t "Move up" "move-pane -D -$s_v_step  $runshell_reload_mnu" \
-        3.8 C v "Move down" "move-pane -D $s_v_step  $runshell_reload_mnu" \
-        3.8 C f "Move left" "move-pane -R -$s_h_step  $runshell_reload_mnu" \
-        3.8 C g "Move right" "move-pane -R $s_h_step  $runshell_reload_mnu"
+        3.8 C t "Move up" "move-pane -D -$hfp_v_step  $runshell_reload_mnu" \
+        3.8 C v "Move down" "move-pane -D $hfp_v_step  $runshell_reload_mnu" \
+        3.8 C f "Move left" "move-pane -R -$hfp_h_step  $runshell_reload_mnu" \
+        3.8 C g "Move right" "move-pane -R $hfp_h_step  $runshell_reload_mnu"
     menu_generate_part "$_idx" "$@"
 }
 
@@ -198,29 +204,31 @@ menu_section_resize() {
 
     set -- \
         3.8 S \
-        3.8 C T "Reduce height" "resize-pane -U $s_v_step  $s_rrm" \
-        3.8 C V "Grow height" "resize-pane -D $s_v_step  $s_rrm" \
-        3.8 C F "Reduce width" "resize-pane -L $s_h_step  $s_rrm" \
-        3.8 C G "Grow width" "resize-pane -R $s_h_step  $s_rrm"
+        3.8 C T "Reduce height" "resize-pane -D -$hfp_v_step  $runshell_reload_mnu" \
+        3.8 C V "Grow height" "resize-pane -D $hfp_v_step  $runshell_reload_mnu" \
+        3.8 C F "Reduce width" "resize-pane -R -$hfp_h_step  $runshell_reload_mnu" \
+        3.8 C G "Grow width" "resize-pane -R $hfp_h_step  $runshell_reload_mnu"
 
     menu_generate_part "$_idx" "$@"
 }
 
 menu_section_placement() {
+    hfp_rrm="$runshell_reload_mnu"
+
     _idx="$1"
     [ -n "$_idx" ] || error_msg "menu_section_placement() - no item index"
 
     set -- \
         3.8 S \
-        3.8 C q "Place top-left" "move-pane -P top-left  $s_rrm" \
-        3.8 C w "Place top-centre" "move-pane -P top-centre  $s_rrm" \
-        3.8 C e "Place top-right" "move-pane -P top-right  $s_rrm" \
-        3.8 C a "Place centre-left" "move-pane -P centre-left  $s_rrm" \
-        3.8 C s "Place centre" "move-pane -P centre  $s_rrm" \
-        3.8 C d "Place centre-right" "move-pane -P centre-right  $s_rrm" \
-        3.8 C z "Place bottom-left" "move-pane -P bottom-left  $s_rrm" \
-        3.8 C x "Place bottom-centre" "move-pane -P bottom-centre  $s_rrm" \
-        3.8 C c "Place bottom-right" "move-pane -P bottom-right  $s_rrm"
+        3.8 C q "Place top-left" "move-pane -P top-left  $hfp_rrm" \
+        3.8 C w "Place top-centre" "move-pane -P top-centre  $hfp_rrm" \
+        3.8 C e "Place top-right" "move-pane -P top-right  $hfp_rrm" \
+        3.8 C a "Place centre-left" "move-pane -P centre-left  $hfp_rrm" \
+        3.8 C s "Place centre" "move-pane -P centre  $hfp_rrm" \
+        3.8 C d "Place centre-right" "move-pane -P centre-right  $hfp_rrm" \
+        3.8 C z "Place bottom-left" "move-pane -P bottom-left  $hfp_rrm" \
+        3.8 C x "Place bottom-centre" "move-pane -P bottom-centre  $hfp_rrm" \
+        3.8 C c "Place bottom-right" "move-pane -P bottom-right  $hfp_rrm"
 
     menu_generate_part "$_idx" "$@"
 }
@@ -236,6 +244,12 @@ menu_section_kill() {
 
     menu_generate_part "$_idx" "$@"
 }
+
+#---------------------------------------------------------------
+#
+#   Components of floating-panes help menu
+#
+#---------------------------------------------------------------
 
 help_section_base() {
     if [ -z "$prev_menu" ]; then
@@ -300,18 +314,19 @@ help_section_be_aware() {
 #
 #===============================================================
 
-[ "${env_initialized:-0}" -lt 1 ] && {
+no_auto_menu_handling=1 # delay processing of dialog, only source it for now
+[ "$menu_handling_sourced" != 1 ] && {
     # Only source if not done
     # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-    . "$TMUX_MENUS_LOCATION"/scripts/helpers_minimal.sh
+    . "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh
 }
 
 # f_floating_pane_combined="$d_items"/floating_pane_combined.sh
 
 # shorter variablenames to avoid too long lines
-s_v_step="$cfg_floating_pane_incr_vertical"
-s_h_step="$cfg_floating_pane_incr_horizontal"
-s_rrm="$runshell_reload_mnu"
+hfp_v_step="$cfg_floating_pane_incr_vertical"
+hfp_h_step="$cfg_floating_pane_incr_horizontal"
+hfp_rrm="$runshell_reload_mnu"
 
 new_pane="new-pane -c '#{pane_current_path}'"
 tmux_vers_check 3.8 && new_pane="$new_pane -A" # does not unzoom window

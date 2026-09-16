@@ -51,12 +51,18 @@ static_content() {
 menu_name="Handling Floating Panes (C)"
 menu_min_vers=3.7
 
+no_auto_menu_handling=1
+
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$TMUX_MENUS_LOCATION"/scripts/helpers_floating_pane.sh
 floating_pane_focus
 
-# Sourcing helpers_floating_pane sourced helpers_minimal,
-# this ensures f_max_25_line_menus to be available.
+[ "$menu_handling_sourced" != 1 ] && {
+    # Only source if not done
+    # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
+    . "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh
+}
+
 # If caching is disabled, play it safe and always use split menus, since it can't be toggled
 if [ -f "$f_max_25_line_menus" ]; then # Use split menus if hint is found
     # Switch to the not as tall split menus, fitting inside 25 rows
@@ -64,5 +70,4 @@ if [ -f "$f_max_25_line_menus" ]; then # Use split menus if hint is found
     exit 0
 fi
 
-# shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh
+do_menu_handling

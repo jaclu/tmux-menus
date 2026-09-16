@@ -54,9 +54,16 @@ static_content() {
 menu_name="Handling Floating Panes"
 menu_min_vers=3.7
 
+no_auto_menu_handling=1
+
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$TMUX_MENUS_LOCATION"/scripts/helpers_floating_pane.sh
 floating_pane_focus
 
-# shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh
+[ "$menu_handling_sourced" != 1 ] && {
+    # Only source if not done
+    # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
+    . "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh
+}
+
+do_menu_handling
