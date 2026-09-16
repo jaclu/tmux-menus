@@ -760,25 +760,34 @@ set_menu_env_variables() {
         uncached_item_splitter="||||"
     fi
 
+    case "$0" in
+        /*) _f_mnu="$0" ;; # Already absolute
+        *) _f_mnu=$(realpath "$0") ;;
+    esac
+
     if [ -n "$alt_menu_handler" ]; then
         external_action_separator=":/:/:/:"
         #
         #  I haven't been able do to menu reload with whiptail/dialog yet,
         #  so disabled for now
         #
-        runshell_reload_mnu="\; run-shell \"$f_ext_dlg_trigger $(realpath "$0")\""
+        runshell_reload_mnu="\; run-shell \"$f_ext_dlg_trigger $_f_mnu\""
         mnu_reload_direct=""
     else
         # built in menu handler doesn't ever seem to need \;
-        _rp=$(realpath "$0")
-        runshell_reload_mnu=" ; run-shell $_rp"
-        mnu_reload_direct=" ; $_rp"
+
+        # For C items where a run-shell has not been started
+        runshell_reload_mnu=" ; run-shell $_f_mnu"
+
+        # For E items and C items where a run-shell is already started
+        mnu_reload_direct=" ; $_f_mnu"
 
         # Some tasks - like creating a floating pane takes some time, yet are forked
         # so the cmd completes quickly. This can lead to the next menu being
         # displayed and then the new pane etc gets drawnn over it, use this sleep
         # for such tasks
-        runshell_sleep_reload_mnu=" ; run-shell \"sleep $t_delayed_menu_reload ; $_rp\""
+        _s="sleep $t_delayed_menu_reload"
+        runshell_sleep_reload_mnu=" ; run-shell \"$_s ; $_f_mnu\""
     fi
 
 }
