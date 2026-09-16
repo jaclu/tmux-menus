@@ -207,6 +207,7 @@ menu_key="${menu_key:-}" # When Custom Menus are used
 menu_min_vers="${menu_min_vers:-}"
 menu_name="${menu_name:-}"
 no_auto_menu_handling="${no_auto_menu_handling:-}"
+prev_menu="${prev_menu:-}"
 
 #===============================================================
 # env settings probed for inside app
