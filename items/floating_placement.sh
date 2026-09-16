@@ -58,7 +58,7 @@ static_content() {
         3.8 C x "Place bottom-centre" "move-pane -P bottom-centre $_rrm" \
         3.8 C c "Place bottom-right" "move-pane -P bottom-right $_rrm" \
         0.0 S \
-        1.8 C k "${cfg_danger_zone}Kill current" "confirm-before -p \
+        1.8 C K "${cfg_danger_zone}Kill current" "confirm-before -p \
         'kill-pane #T (#P)? (y/n)' kill-pane $_rrm"
     menu_generate_part 5 "$@"
 }

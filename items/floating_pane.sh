@@ -89,7 +89,7 @@ static_content() {
         3.8 C F "Reduce width" "resize-pane -R -$_hori_step $_rrm" \
         3.8 C G "Grow width" "resize-pane -R $_hori_step $_rrm" \
         1.8 S \
-        1.8 C k "${cfg_danger_zone}Kill current" "confirm-before -p \
+        1.8 C K "${cfg_danger_zone}Kill current" "confirm-before -p \
             'kill-pane #T (#P)? (y/n)' kill-pane $runshell_reload_mnu"
     menu_generate_part 6 "$@"
 }
