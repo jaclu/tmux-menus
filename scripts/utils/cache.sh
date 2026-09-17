@@ -248,7 +248,9 @@ retrieve_non_tmux_env_vars() {
     #   cache_write_plugin_params
     #     params_not_config_2
 
-    cfg_d_menus=$(dirname "$cfg_main_menu")
+    simple_dirname "$cfg_main_menu" silent
+    cfg_d_menus="$_d_name"
+
     d_cache_main_menu="$d_cache/menus"
 
     # for uncached:
