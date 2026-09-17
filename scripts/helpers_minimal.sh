@@ -223,14 +223,14 @@ get_config() { # local usage during sourcing
 #---------------------------------------------------------------
 
 item_handler_changed() {
-    # ${b_all_helpers_sourced:-false} || {
-    #     source_all_helpers "item_handler_changed()"
+    # Was manual can not remember why - replaced with safe_remove
+    # [ -d "$d_cache_main_menu" ] && {
+    #     rm -rf "$d_cache_main_menu" || {
+    #         error_msg "Failed to clear: $d_cache_main_menu"
+    #     }
     # }
-    [ -d "$d_cache_main_menu" ] && {
-        rm -rf "$d_cache_main_menu" || {
-            error_msg "Failed to clear: $d_cache_main_menu"
-        }
-    }
+    safe_remove "$d_cache_main_menu" "item_handler_changed()"
+
     [ -n "$alt_menu_handler" ] && {
         echo "$alt_menu_handler" >"$f_alt_handler_in_use" || {
             error_msg "Failed to write: $f_alt_handler_in_use"
