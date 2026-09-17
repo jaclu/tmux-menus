@@ -40,7 +40,7 @@ static_content() {
         0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu"
     menu_generate_part 1 "$@"
     set -- \
-        0.0 M H "Help              $nav_next" "$d_help/h_extras.sh $0"
+        0.0 M H "Help              $nav_next" "$cfg_d_menus/help/h_extras.sh $0"
     menu_generate_part 3 "$@"
     display_commands_toggle 4
 

@@ -24,7 +24,7 @@ static_content() {
         0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu" \
         2.0 M C "Currencies        $nav_next" "$d_odd_chars"/currencies.sh \
         0.0 M D "Diacritics        $nav_next" "$d_odd_chars"/diacritics.sh \
-        0.0 M H "Help              $nav_next" "$d_help/h_missing_keys.sh $0"
+        0.0 M H "Help              $nav_next" "$cfg_d_menus/help/h_missing_keys.sh $0"
     menu_generate_part 1 "$@"
     display_commands_toggle 2
 

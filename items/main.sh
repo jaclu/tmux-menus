@@ -39,7 +39,7 @@ static_content() {
         1.7 M N "Navigate & Search  $nav_next" nav_search.sh \
         0.0 M E "Extras             $nav_next" extras.sh \
         0.0 M H "Help               $nav_next" \
-        "$d_help/h_summary.sh $0"
+        "$cfg_d_menus/help/h_summary.sh $0"
     menu_generate_part 1 "$@"
     display_commands_toggle 2 # give this its own menu part idx
 
