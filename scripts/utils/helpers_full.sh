@@ -465,7 +465,7 @@ config_setup() {
     # tmux.conf, or prepare a f_cache_params
     # log_it "config_setup()"
 
-    if normalize_bool_param "@menus_use_cache" "$default_use_cache"; then
+    if normalize_bool_param "@menus_use_cache" "${default_use_cache:-Yes}"; then
         cfg_use_cache=true
         config_setup_cached
     else
