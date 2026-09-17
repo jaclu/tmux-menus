@@ -1,5 +1,7 @@
 # TODO
 
+heplp dialogs fail if using other menu location
+
 ## cache/plugin_params
 
 not deleted when mismatching tmux vers is used
