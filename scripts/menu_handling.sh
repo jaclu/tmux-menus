@@ -780,23 +780,23 @@ set_menu_env_variables() {
         #  I haven't been able do to menu reload with whiptail/dialog yet,
         #  so disabled for now
         #
-        runshell_reload_mnu="\; run-shell \"$f_ext_dlg_trigger $_f_mnu\""
+        runshell_reload_mnu="\; run-shell \"$f_ext_dlg_trigger $0\""
         mnu_reload_direct=""
     else
         # built in menu handler doesn't ever seem to need \;
 
         # For C items where a run-shell has not been started
-        runshell_reload_mnu=" ; run-shell $_f_mnu"
+        runshell_reload_mnu=" ; run-shell $0"
 
         # Some tasks - like creating a floating pane takes some time, yet are forked
         # so the cmd completes quickly. This can lead to the next menu being
         # displayed and then the new pane etc gets drawnn over it, use this sleep
         # for such tasks
         _s="sleep $t_delayed_menu_reload"
-        runshell_sleep_reload_mnu=" ; run-shell \"$_s ; $_f_mnu\""
+        runshell_sleep_reload_mnu=" ; run-shell \"$_s ; $0\""
 
         # For E items and C items where a run-shell is already started
-        mnu_reload_direct=" ; $_f_mnu"
+        mnu_reload_direct=" ; $0"
 
     fi
     menu_handling_env_variables_init_done=1

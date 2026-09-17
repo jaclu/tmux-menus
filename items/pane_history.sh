@@ -40,7 +40,7 @@ static_content() {
         3.8 C o "Copy Mode Refresh - Disable" "send-keys -X refresh-off" \
         3.8 C g "Copy Mode Refresh - Toggle" "send-keys -X refresh-toggle" \
         3.8 C n "Copy Mode - Refresh now" "send-keys -X refresh-now" \
-        0.0 E c "${cfg_danger_zone}Clear all" "$d_scripts/act_clear_screen.sh $rn_current_script"
+        0.0 E c "${cfg_danger_zone}Clear all" "$d_scripts/act_clear_screen.sh $0"
     menu_generate_part 3 "$@"
 }
 
