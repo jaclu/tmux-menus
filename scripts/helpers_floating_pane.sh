@@ -106,7 +106,7 @@ menu_section_base() {
     #
     menu_type="$1"
     case "$0" in
-        *placement.sh) _prev="$d_items"/floating_pane.sh ;;
+        *placement.sh) _prev="$cfg_d_menus"/floating_pane.sh ;;
         *) _prev="panes.sh" ;;
     esac
 
@@ -122,12 +122,12 @@ menu_section_base() {
         combined)
             set -- "$@" \
                 3.7 E l "Fit to 25 Lines" \
-                "touch '$f_max_25_line_menus' ; '$d_items'/floating_pane.sh"
+                "touch '$f_max_25_line_menus' ; '$cfg_d_menus'/floating_pane.sh"
             ;;
         split)
             set -- "$@" \
                 3.7 E c "Use Combined Menu" \
-                "rm -f '$f_max_25_line_menus' ; '$d_items'/floating_pane_combined.sh"
+                "rm -f '$f_max_25_line_menus' ; '$cfg_d_menus'/floating_pane_combined.sh"
             ;;
         "") ;; # If
         *) error_msg "menu_section_base() - No param" ;;
@@ -321,7 +321,7 @@ no_auto_menu_handling=1 # delay processing of dialog, only source it for now
     . "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh
 }
 
-# f_floating_pane_combined="$d_items"/floating_pane_combined.sh
+# f_floating_pane_combined="$cfg_d_menus"/floating_pane_combined.sh
 
 # shorter variablenames to avoid too long lines
 hfp_v_step="$cfg_floating_pane_incr_vertical"
