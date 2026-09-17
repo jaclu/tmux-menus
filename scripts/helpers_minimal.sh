@@ -660,7 +660,6 @@ f_no_cache_hint="$d_tmp"/tmux-menus-no-cache-hint
 
 d_scripts="$TMUX_MENUS_LOCATION"/scripts
 d_items="$TMUX_MENUS_LOCATION"/items
-d_help="$d_items"/help
 d_cache="$TMUX_MENUS_LOCATION"/cache
 d_cache_menus="$d_cache"/menus
 f_cache_known_tmux_vers="$d_cache"/known_tmux_versions

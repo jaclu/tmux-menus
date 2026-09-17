@@ -169,7 +169,7 @@ menu_section_help_nav() {
                 set --
             fi
             set -- "$@" \
-                3.8 M H "Help              $nav_next" "$d_help/$help_menu $0"
+                3.8 M H "Help              $nav_next" "$cfg_d_menus/help/$help_menu $0"
             menu_generate_part 2 "$@"
 
             if [ -n "$other_floating_panes" ]; then
