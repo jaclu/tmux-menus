@@ -1,57 +1,7 @@
 # TODO
 
-heplp dialogs fail if using other menu location
-
-## cache/plugin_params
-
-not deleted when mismatching tmux vers is used
-
-## menu path
-
-1. assume main menu is in the relative top dir, extract that path
-
-```text
-  - at plugin_params generation generate
-  - d_items       - folder where main menu resides
-  - d_menus_cache - top folder for menu caching
-  not cached but used whilst processing a menu
-    - rel_f_menu   - relative file name with d_items extracted (needed?)
-    - d_item_cache - d_menus_cache + rel_f_menu, location of menus cache items
-                     this includes extensions like .sh etc, doesn't matter
-                     makes it simpler to process and recognize when inspecting
-                     the cache
-```
-
-- menus referenced without path are assumed to be in the same folder
-- outside the path of main menu are ignored, extract the base path,
-  outside the path of main menu are ignored, extract the base path,
-  if it is still a full path - rejet.
-- subdirs within this is fine
-- this also gives menus a clear location within the cache folder
-
-## investigate cache disabled
-
-not fully working atm
-
-## startup
-
-## startup sequence
-
-### menu render
-
-```shell
-if not cache/plugin_params present
-  check for caching enabled - generate it
-fi
-source it and move on
-```
-
-## check
-
-- [ -z "$alt_menu_handler" ] should not hinder plugin_params writings
-- verify_tmux_vers_unchanged
-- cache_prepare - should be removed
-- handle_env_variables - should be done outside tmux_get_plugin_options(), but still be run
+In Display command - filter out menu reload stuff
+if line is cut off with > the - for disabling the line does not seem to work
 
 ## timings on pad7 running tmux 3.6
 
