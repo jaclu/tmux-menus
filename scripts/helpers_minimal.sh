@@ -89,6 +89,27 @@ source_all_helpers() {
     }
 }
 
+simple_dirname() {
+    #
+    # To fully avoid a fork, set $2=silent, and retrieve the value via _d_name:
+    #   simple_dirname "$f_foo" silent
+    #   d_foo="$_d_name"
+    # otherwise the more expensive but easier to code usage is the more typical:
+    #   d_foo=$(simple_dirname "$f_foo")
+    #
+    # But then you might-as-well do a double fork: d_foo=$(dirname "$d_foo")
+    #
+    _fp="$1"
+
+    case "$_fp" in
+        */*) _d_name=${_fp%/*} ;;
+        *)   _d_name=. ;;
+    esac
+    [ -n "$_d_name" ] || _d_name=/
+
+    [ "$2" != silent ] && printf '%s' "$_d_name"
+}
+
 do_validate_path() {
     #
     #  Provides: on success will set: relative_fname relative_fname
@@ -132,9 +153,9 @@ validate_path_script_or_menu() {
     #  Provides: relative_fname
     #
     validate_relativise_path "$1" "$TMUX_MENUS_LOCATION" || {
-        [ -n "$cfg_d_menus" ] || {
-            error_msg "validate_path_script_or_menu() - when checking for cfg_d_menus it was undefined"
-        }
+        # [ -n "$cfg_d_menus" ] || {
+        #     error_msg "validate_path_script_or_menu() - when checking for cfg_d_menus it was undefined"
+        # }
         validate_relativise_path "$1" "$cfg_d_menus" || {
             _s="validate_path_script_or_menu() - $1"
             _s="$_s\n\nNot in either valid path"
@@ -627,8 +648,8 @@ path_that_might_be_cached() {
 # Hardcoded log file for early startup tracing (before @menus_log_file is
 # read). If log_file_forced=1, @menus_log_file is ignored and this remains.
 #
-cfg_log_file="$HOME/tmp/tmux-menus-t2.log"
-log_file_forced=1
+# cfg_log_file="$HOME/tmp/tmux-menus-t2.log"
+# log_file_forced=1
 
 TMUX_BIN="${TMUX_BIN:-tmux}"
 
