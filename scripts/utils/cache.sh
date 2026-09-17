@@ -249,8 +249,7 @@ retrieve_non_tmux_env_vars() {
     #     params_not_config_2
 
     cfg_d_menus=$(dirname "$cfg_main_menu")
-    _rel_path_main_menu=$(relative_path "$cfg_main_menu")
-    d_cache_main_menu="$d_cache/$(dirname "$_rel_path_main_menu")"
+    d_cache_main_menu="$d_cache/menus"
 
     # for uncached:
     # repo_last_changed="$new_repo_last_changed"
@@ -272,8 +271,8 @@ params_basic() {
 
 cfg_trigger_key=\"$_cwpp_trigger_key\"
 cfg_no_prefix=$cfg_no_prefix
-cfg_d_menus=\"$cfg_d_menus\"
 cfg_main_menu=\"$cfg_main_menu\"
+cfg_d_menus=\"$cfg_d_menus\"
 cfg_tmux_conf=\"$cfg_tmux_conf\"
 cfg_log_file=\"$cfg_log_file\"
 
@@ -426,10 +425,6 @@ b_debug_display_cmds=false
 # the screen
 #
 t_minimal_display_time=$t_minimal_display_time
-
-# Used if main menu cache should be purged, like if custom_items are detected
-# or found to be gone
-d_cache_main_menu=\"$d_cache_main_menu\"
 
 #
 # Some actions like creating a floating pane instantly completes, resulting in

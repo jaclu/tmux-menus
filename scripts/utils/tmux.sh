@@ -68,7 +68,7 @@ tmux_get_defaults() { # new init
     # Since default_use_cache is needed early on, before this function can be
     # called, it is defined in the main segment of this script
     default_display_commands=Yes
-    default_main_menu="$f_main_menu"
+    default_main_menu="$d_items"/main.sh
     default_danger_zone="#[reverse]"
 
     if [ -n "$TMUX_CONF" ]; then
@@ -326,12 +326,14 @@ tmux_get_plugin_options() { # new init
 
     # Define main menu
     tmux_get_option cfg_main_menu "@menus_main_menu" "$default_main_menu"
-    _s="Main menu not found: $cfg_main_menu"
-    tmux_vers_check 1.8 || {
-        _s="$_s\n\ntmux < 1.8 can't read user variables, so it is limited to"
-        _s="$_s\nthe default settings and cannot use menus from other locations."
+    [ ! -f "$cfg_main_menu" ] && {
+        _s="Main menu not found: $cfg_main_menu"
+        tmux_vers_check 1.8 || {
+            _s="$_s\n\ntmux < 1.8 can't read user variables, so it is limited to"
+            _s="$_s\nthe default settings and cannot use menus from other locations."
+        }
+        error_msg "$_s"
     }
-    [ ! -f "$cfg_main_menu" ] && error_msg "$_s"
 
     if tmux_vers_check 3.0; then
         alt_menu_handler=""
@@ -593,9 +595,7 @@ $(cat "$f_error_log")
 -----------------------------------
 
 The error message has been saved in:
-  $(relative_path "$f_error_log")
-
-Full path: $f_error_log
+$f_error_log
 EOF
             )"
             #endregion

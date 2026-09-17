@@ -89,41 +89,60 @@ source_all_helpers() {
     }
 }
 
-relative_path() {
+do_validate_path() {
     #
-    # To fully avoid a fork, set $2=silent, and retrieve the value via _rp_proj_path:
-    #   relative_path "$foo" silent
-    #   rel_foo="$_rp_proj_path"
-    # otherwise the more expensive but easier to code usage is the more typical:
-    #   rel_foo=$(relative_path "$foo")
+    #  Provides: on success will set: relative_fname relative_fname
     #
-    _rp_in="$1"
-    _rp_old_pwd="$PWD"
+    [ -n "$1" ] || error_msg "do_validate_path() - param 1 missing"
+    [ -n "$2" ] || error_msg "do_validate_path() - param 2 missing"
 
-    case "$_rp_in" in
-        /*)
-            # Already absolute
-            _rp_full_path="$_rp_in"
+    case "$1" in
+        /*) # absolute path
+            case "$1" in
+                $2/*) : ;;
+                *) return 1 ;; # error_msg "Abs-path outside bounds [$_d_base] - $1" ;;
+            esac
             ;;
-        *)
-            # Relative path - convert to absolute
-            _rp_dir="${_rp_in%/*}"
-            _rp_bn="${_rp_in##*/}" # same but faster than "$(basename "$0")"
-
-            # No directory component means current directory
-            [ "$_rp_dir" = "$_rp_in" ] && _rp_dir="."
-
-            # cd to normalize the path (builtin, no fork)
-            cd -- "$_rp_dir" || error_msg "relative_path() - failed to cd $_rp_dir"
-            _rp_full_path="$PWD/$_rp_bn"
-            cd -- "$_rp_old_pwd" || error_msg "relative_path() - failed to cd $_rp_old_pwd"
-            ;;
+        *) ;; # relative path
     esac
+    relative_fname=${1#"$2"/}
+    return 0
+}
 
-    # Extract project-relative path by removing prefix
-    _rp_proj_path="${_rp_full_path#"$TMUX_MENUS_LOCATION"/}"
+validate_relativise_path() {
+    #
+    #  $1 validates this
+    #  $2 is base path to try to extract, defaults to TMUX_MENUS_LOCATION
+    #
+    #  Provides: relative_fname (relative to $1/TMUX_MENUS_LOCATION)
+    #
+    # Ensure menu is within main menu hierarchy if a fullpath is given
+    # remove (valid) absolute prefix - first check if relative or absolute
 
-    [ "$2" != silent ] && printf '%s' "$_rp_proj_path"
+    if [ -n "$2" ]; then
+        _d_base="$2"
+    else
+        _d_base="$TMUX_MENUS_LOCATION"
+    fi
+    do_validate_path "$1" "$_d_base"
+}
+
+validate_path_script_or_menu() {
+    #
+    #  Provides: relative_fname
+    #
+    validate_relativise_path "$1" "$TMUX_MENUS_LOCATION" || {
+        [ -n "$cfg_d_menus" ] || {
+            error_msg "validate_path_script_or_menu() - when checking for cfg_d_menus it was undefined"
+        }
+        validate_relativise_path "$1" "$cfg_d_menus" || {
+            _s="validate_path_script_or_menu() - $1"
+            _s="$_s\n\nNot in either valid path"
+            _s="$_s\n  plugin: $TMUX_MENUS_LOCATION"
+            _s="$_s\n  menus: $cfg_d_menus\n"
+            error_msg "$_s"
+        }
+    }
 }
 
 validate_varname() {
@@ -179,7 +198,7 @@ get_config() { # local usage during sourcing
     #  This is used by everything else sourcing helpers_minimal.sh, then trusting
     #  that the param cache is valid if found
     #
-    # log_it "get_config() - $rn_current_script"
+    # log_it "get_config()"
     replace_config=false
     if [ -f "$f_cache_params" ]; then
         source_cached_params || {
@@ -608,8 +627,8 @@ path_that_might_be_cached() {
 # Hardcoded log file for early startup tracing (before @menus_log_file is
 # read). If log_file_forced=1, @menus_log_file is ignored and this remains.
 #
-# cfg_log_file="$HOME/tmp/tmux-menus-dev.log"
-# log_file_forced=1
+cfg_log_file="$HOME/tmp/tmux-menus-t2.log"
+log_file_forced=1
 
 TMUX_BIN="${TMUX_BIN:-tmux}"
 
@@ -648,20 +667,10 @@ f_cache_known_tmux_vers="$d_cache"/known_tmux_versions
 f_cache_params="$d_cache"/plugin_params
 f_safe_now_method="$d_cache"/safe_now_method
 
-# System-initial default for the main menu.
-# After options are parsed, always use $cfg_main_menu to refer to the current main menu.
-# This ensures any user-defined main menu or redirections are respected.
-f_main_menu="$d_items"/main.sh
-
 f_ext_dlg_trigger="$d_scripts/external_dialog_trigger.sh"
 scr_float_pane_switch="$d_scripts/floating_pane_switch.sh"
 
 bn_current_script=${0##*/} # same but faster than "$(basename "$0")"
-
-relative_path "$0" silent
-rn_current_script="$_rp_proj_path" # saves a fork
-
-# current_script_no_ext=${rn_current_script%.*} # not used ATM
 
 # --->  Only enable this if profiling is being used during startup  <---
 # [ "$profiling_sourced" != 1 ] && {
@@ -672,13 +681,13 @@ rn_current_script="$_rp_proj_path" # saves a fork
 # Set this as early as possible to be able to calculate the entire menu processing time
 # This depends on cfg_use_timers, so can't be done before config is processed
 
-source_cached_params && {
-    # might be obsolete settings, but should be good enough to serve the
-    # old state of cfg_use_timers
-    set_script_start
-}
-
 ${initialize_plugin:-false} || {
+    source_cached_params && {
+        # might be obsolete settings, but should be good enough to serve the
+        # old state of cfg_use_timers
+        set_script_start
+    }
+
     # plugin_init will call config_setup directly, so should not call get_config
     get_config
 }
@@ -692,6 +701,10 @@ if ! tmux_vers_check "$min_tmux_vers"; then
     # @variables are not usable prior to 1.8
     error_msg "$plugin_name needs at least tmux $min_tmux_vers to work properly."
 fi
+
+validate_path_script_or_menu "$0"
+rn_current_script="$relative_fname" # saves a fork
+# current_script_no_ext=${rn_current_script%.*} # not used ATM
 
 path_that_might_be_cached
 

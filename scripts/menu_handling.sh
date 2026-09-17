@@ -565,8 +565,8 @@ menu_parse() {
     done
 
     if ${cfg_use_cache:-false}; then
-        _mp_rel_path=$(relative_path "$f_cache_file")
-        log_it_minimal "Caching: $_mp_rel_path"
+        validate_relativise_path "$f_cache_file" "$d_cache_menus"
+        log_it_minimal "Caching: $relative_fname"
         echo "$menu_items" >"$f_cache_file" || {
             error_msg "Failed to write to: $f_cache_file"
         }
@@ -760,19 +760,14 @@ set_menu_env_variables() {
     if ${cfg_use_cache:-false}; then
         # Include relative script path in cache folder name to avoid name collisions
         #  items/main.sh -> cache/items/main.sh/
-        d_menu_cache="$d_cache_menus/$rn_current_script"
 
+        d_menu_cache="$d_cache_menus/$rn_current_script"
         [ -n "$alt_menu_handler" ] && d_wt_actions="$d_menu_cache/wt_actions"
     else
         uncached_menu=""
         uncached_wt_actions=""
         uncached_item_splitter="||||"
     fi
-
-    case "$0" in
-        /*) _f_mnu="$0" ;; # Already absolute
-        *) _f_mnu=$(realpath "$0") ;;
-    esac
 
     if [ -n "$alt_menu_handler" ]; then
         external_action_separator=":/:/:/:"
@@ -938,20 +933,6 @@ $idx	$_sumi_body"
 
         [ -z "$_sumi_rest" ] && break
     done
-
-    # # Now sort and print, skipping initial empty line
-    # _ewr=2
-    # menu_items="$(
-    #     printf "%s\n" "$_sumi_entries" | sed 1d | sort -n | {
-    #         expected=0
-    #         while IFS='    ' read -r idx this_section; do
-    #             expected=$((expected + 1))
-    #             log_it "><> [$idx] expected [$expected] this_section [$this_section]"
-    #             [ "$idx" -ne "$expected" ] && break
-    #             printf '%s' "$this_section"
-    #         done
-    #     }
-    # )"
 
     menu_items="$(
         printf "%s\n" "$_sumi_entries" | sed 1d | sort -n | while IFS='	' read -r idx this_section; do
