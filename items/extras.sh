@@ -25,7 +25,7 @@ is_avalable() {
 dynamic_content() {
     # Need to check for pesence of the external tools on each update, in case
     # something has been installed / removed
-    d_extras="$d_items"/external_tools
+    d_extras="$cfg_d_menus"/external_tools
 
     # Try to pad label with spaces so that navs line up with "Back to Main" and "Help"
     set -- \

@@ -15,7 +15,7 @@ static_content() {
         0.0 M R "Resize            $nav_next" pane_resize.sh \
         0.0 M M "Move              $nav_next" pane_move.sh \
         0.0 M T "Toggle states     $nav_next" pane_toggle.sh \
-        0.0 M L "Layouts           $nav_next" "$d_items/layouts.sh $0 $menu_name" \
+        0.0 M L "Layouts           $nav_next" "$cfg_d_menus/layouts.sh $0 $menu_name" \
         0.0 M I "History           $nav_next" pane_history.sh
 
     [ -z "$alt_menu_handler" ] && {

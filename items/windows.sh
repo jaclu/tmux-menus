@@ -13,7 +13,7 @@ static_content() {
         0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu" \
         0.0 M S "Split             $nav_next" window_split.sh \
         0.0 M M "Move              $nav_next" window_move.sh \
-        0.0 M L "Layouts           $nav_next" "$d_items/layouts.sh $0 $menu_name"
+        0.0 M L "Layouts           $nav_next" "$cfg_d_menus/layouts.sh $0 $menu_name"
     menu_generate_part 1 "$@"
     display_commands_toggle 2
 
