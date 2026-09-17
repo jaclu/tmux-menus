@@ -117,7 +117,7 @@ check_unknown_items() {
 . "$TMUX_MENUS_LOCATION"/scripts/helpers.sh
 
 tmux_vers_check 1.8 || {
-    error_msg "$rn_current_script can't be used before tmux 1.8" 1
+    error_msg "$0 can't be used before tmux 1.8" 1
 }
 
 # defined_plugins=() #  plugins mentioned in config file
