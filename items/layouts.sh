@@ -31,9 +31,10 @@ dynamic_content() {
             # prev_name=$($TMUX_BIN show-environment | grep "$e_prev_menu_name" | cut -d= -f2)
         fi
     fi
+    # check this late since it might have been manually assigned above
+    [ -n "$prev_menu" ] || error_msg "$rn_current_script - no previous menu parameter given"
 
     set -- 0.0 M Left "Back to Previous    $nav_prev" "$prev_menu"
-    [ -n "$prev_menu" ] || error_msg "$rn_current_script - no previous menu parameter given"
     menu_generate_part 1 "$@"
 }
 
@@ -72,11 +73,7 @@ static_content() {
 
 menu_name="Layouts"
 
-if [ -n "$1" ]; then
-    prev_menu="$(realpath "$1")"
-    shift # reamiing params are prev menu name
-    # prev_name="$*"
-fi
+[ -n "$1" ] && prev_menu="$(realpath "$1")"
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh
