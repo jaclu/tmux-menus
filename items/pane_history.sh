@@ -36,10 +36,6 @@ static_content() {
             'Save to (with timestamps):' -I '$_d_history/tmux-history-timestamps' \
             '$cmd -I ; save-buffer %1 ; delete-buffer' $runshell_reload_mnu" \
         0.0 S \
-        3.8 C r "Copy Mode Refresh - Enable" "send-keys -X refresh-on" \
-        3.8 C o "Copy Mode Refresh - Disable" "send-keys -X refresh-off" \
-        3.8 C g "Copy Mode Refresh - Toggle" "send-keys -X refresh-toggle" \
-        3.8 C n "Copy Mode - Refresh now" "send-keys -X refresh-now" \
         0.0 E c "${cfg_danger_zone}Clear all" "$d_scripts/act_clear_screen.sh $0"
     menu_generate_part 3 "$@"
 }
