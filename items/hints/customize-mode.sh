@@ -64,9 +64,7 @@ static_content() {
 menu_name="Keys for customize-mode"
 menu_min_vers=3.2
 
-if [ -n "$1" ]; then
-    prev_menu="$(realpath "$1")"
-fi
+prev_menu="$1"
 
 no_auto_menu_handling=1 # delay processing of dialog, only source it for now
 

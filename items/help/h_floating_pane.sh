@@ -22,7 +22,7 @@ static_content() {
 
 menu_name="Help, Floating Pane"
 
-[ -n "$1" ] && prev_menu="$(realpath "$1")"
+prev_menu="$1"
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$TMUX_MENUS_LOCATION"/scripts/helpers_floating_pane.sh

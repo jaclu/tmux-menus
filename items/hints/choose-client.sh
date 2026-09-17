@@ -63,9 +63,7 @@ static_content() {
 
 menu_name="Keys for choose-client"
 
-if [ -n "$1" ]; then
-    prev_menu="$(realpath "$1")"
-fi
+prev_menu="$1"
 
 no_auto_menu_handling=1 # delay processing of dialog, only source it for now
 

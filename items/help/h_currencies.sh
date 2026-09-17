@@ -46,7 +46,9 @@ static_content() {
 
 menu_name="Help Currency symbols"
 
-[ -n "$1" ] && prev_menu="$(realpath "$1")"
+cfg_d_menus/help
+
+prev_menu="$1"
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh
