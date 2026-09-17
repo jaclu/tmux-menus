@@ -24,8 +24,9 @@ static_content() {
             3.7 M F "Floating panes    $nav_next" floating_pane_combined.sh
     }
 
-    set -- "$@" \
-        3.8 M O "Modal Panes       $nav_next" modal_panes.sh
+    # Too buggy - skipped for now
+    # set -- "$@" \
+    #     3.8 M O "Modal Panes       $nav_next" modal_panes.sh
 
     if [ -z "$alt_menu_handler" ]; then
         set -- "$@" \
