@@ -32,7 +32,7 @@ dynamic_content() {
         fi
     fi
     # check this late since it might have been manually assigned above
-    [ -n "$prev_menu" ] || error_msg "$rn_current_script - no previous menu parameter given"
+    [ -n "$prev_menu" ] || error_msg "$0 - no previous menu parameter given"
 
     set -- 0.0 M Left "Back to Previous    $nav_prev" "$prev_menu"
     menu_generate_part 1 "$@"
