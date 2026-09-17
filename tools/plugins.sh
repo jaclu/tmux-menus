@@ -91,7 +91,7 @@ check_unknown_items() {
 
     for file in "$d_plugins"/*; do
         # Strip leading path
-        item=$(basename "$file")
+        item=${file##*/} # same but faster than "$(basename "$0")"
 
         # Check if item is in valid_items (space-separated)
         b_found=false
