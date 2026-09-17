@@ -8,7 +8,7 @@ All notable changes to this project will be documented here.
 
 ### Added
 
-- New menu: "Display Settings"
+- New menu: "Display Settings" - selects theme (3.8)
 - plugin_init.sh: added -z for clear cache
 
 ### Changed
