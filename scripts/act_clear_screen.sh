@@ -28,9 +28,9 @@
 # to make the Display Commands listing more convenient, this isolates the path
 # if it still was given as a full path
 [ -n "$1" ] && {
-    next_menu="$(relative_path "$1")"
-    [ -x "$next_menu" ] || {
-        error_msg "act_clear_Next menu is not executable: $next_menu"
+    [ -x "$1" ] || {
+        validate_relativise_path "$1" "$cfg_d_menus"
+        error_msg "act_clear_Next menu is not executable: $relative_fname"
     }
 }
 
@@ -42,4 +42,4 @@ fi
 
 tmux_error_handler clear-history
 
-[ -n "$1" ] && $next_menu
+[ -n "$1" ] && $1
