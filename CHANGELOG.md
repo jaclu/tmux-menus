@@ -8,6 +8,7 @@ All notable changes to this project will be documented here.
 
 ### Added
 
+- Key collision detection to prevent duplicate menu key assignments
 - New menu: "Display Settings" - selects theme (3.8)
 - plugin_init.sh: added -z for clear cache
 
