@@ -99,6 +99,9 @@ simple_dirname() {
     #
     # But then you might-as-well do a double fork: d_foo=$(dirname "$d_foo")
     #
+    # Provides:
+    #   _simple_d_name
+    #
     _fp="$1"
 
     case "$_fp" in
