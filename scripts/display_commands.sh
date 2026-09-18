@@ -260,7 +260,6 @@ sc_display_cmd() {
                 print substr($0, 1, max)
             }
         }')
-        log_it "dc  [$_sc_dc_chunk]"
         mnu_text_line "  $_sc_dc_chunk"
 
         _sc_dc_remainder=${_sc_dc_remainder#"$_sc_dc_chunk"}
