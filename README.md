@@ -266,8 +266,11 @@ Controls the maximum line length for displayed commands. Long commands are split
 into chunks at whitespace when possible, or at the maximum length if no
 whitespace is found.
 
-If lines end with `>`, they've been truncated by tmux because they exceed the
-display width. Reduce `@menus_display_cmds_cols` to prevent truncation.
+If the window width is below this, the window limits this setting, to ensure no
+lines are cut of.
+
+tmux 3.3 and up displays `>` when it thinks the line is to long, and enters the
+shortcut key area. But the content is not actually truncated.
 
 ### Config File Location
 

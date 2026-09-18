@@ -216,13 +216,35 @@ sc_clean_up_result() {
     sc_processed="$_sc_cur_result"
 }
 
+sc_get_window_width() {
+    #
+    #  This will only be run if $menus_display_commands is active
+    #
+    if tmux_vers_check 1.7; then
+        _sc_window_width=$($TMUX_BIN display-message -p '#{window_width}')
+        _sc_max_width=$((_sc_window_width - 8)) # 8 leave space for menu border etc
+        if [ "$cfg_display_cmds_cols" -lt "$_sc_max_width" ]; then
+            sc_max_usable_width=$cfg_display_cmds_cols
+        else
+            sc_max_usable_width=$_sc_max_width
+        fi
+    else
+        # 1.5 & 1.6 can't report window_width via display-message
+        # In principle list-windows can be used to display window_width, but I
+        # don't see much point in implementing that :)
+        sc_max_usable_width=$cfg_display_cmds_cols
+    fi
+}
+
 sc_display_cmd() {
     # Line break cmd if needed, to fit inside the menu width
     # then calls mnu_text_line() for each line of the command to be displayed.
     _sc_dc_remainder="$1"
 
+    [ "$sc_max_usable_width" = 0 ] && sc_get_window_width
+
     while [ -n "$_sc_dc_remainder" ]; do
-        _sc_dc_chunk=$(printf '%s\n' "$_sc_dc_remainder" | awk -v max="$cfg_display_cmds_cols" '
+        _sc_dc_chunk=$(printf '%s\n' "$_sc_dc_remainder" | awk -v max="$sc_max_usable_width" '
         {
             if (length($0) <= max) {
                 print $0
@@ -237,6 +259,7 @@ sc_display_cmd() {
                 print substr($0, 1, max)
             }
         }')
+        log_it "dc  [$_sc_dc_chunk]"
         mnu_text_line "  $_sc_dc_chunk"
 
         _sc_dc_remainder=${_sc_dc_remainder#"$_sc_dc_chunk"}
@@ -285,3 +308,4 @@ if false; then
     # Shellcheck analyzes this code path but it never executes at runtime
     . tools/variables_meta.sh
 fi
+sc_max_usable_width=0
