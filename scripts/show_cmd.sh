@@ -166,19 +166,31 @@ sc_filter_ws() {
     sc_filtered="$*"
 }
 
+sc_remove_a_suffix() {
+    sc_filter_ws "${1%"$2"}"
+}
+
+sc_remove_suffixes() {
+    sc_remove_a_suffix "$1" "$runshell_reload_mnu"
+    sc_remove_a_suffix "$sc_filtered" "$runshell_sleep_reload_mnu"
+    sc_remove_a_suffix "$sc_filtered" "$mnu_reload_direct"
+    # sc_remove_a_suffix "$sc_filtered" "$0"
+
+    sc_no_suffix="$sc_filtered"
+}
+
 sc_clean_up_cmd() {
     # Remove menu reload and hint overlay suffixes
     # Defines: sc_cmd (via sc_filter_ws)
+
     _sc_cuc_cmd="$1"
 
-    sc_filter_ws "$_sc_cuc_cmd"
+    sc_remove_suffixes "$1"
 
-    # Remove reload suffixes and hint overlays
-    sc_filtered="${sc_filtered%" $runshell_reload_mnu"}"
-    sc_filtered="${sc_filtered%" $mnu_reload_direct"}"
-    sc_filtered="${sc_filtered%"; $0"}"
-    sc_filtered="${sc_filtered%%\\&*}"
-    sc_cmd="$sc_filtered"
+    _sc_cuc_in="$sc_no_suffix"
+    _sc_cuc_out="${_sc_cuc_in%%\\&*}"
+
+    sc_cmd="$_sc_cuc_out"
 }
 
 sc_clean_up_result() {
