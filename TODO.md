@@ -1,6 +1,6 @@
 # TODO
 
-more if display with constrained
+## Window width for Display Commands
 
 In Display command - filter out menu reload stuff
 if line is cut off with > the - for disabling the line does not seem to work
