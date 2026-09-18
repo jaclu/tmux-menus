@@ -41,7 +41,7 @@ dynamic_content() {
 static_content() {
     set -- \
         0.0 M Home "Main Menu           $nav_home" "$cfg_main_menu" \
-        2.3 M P "Pane Borders        $nav_next" layouts_pane_borders.sh \
+        2.3 M B "Pane Borders        $nav_next" layouts_pane_borders.sh \
         3.3 M I "Border Indicator    $nav_next" layouts_indicators.sh \
         3.6 M S "Scroll Bars         $nav_next" layouts_scrollbars.sh
     menu_generate_part 2 "$@"
