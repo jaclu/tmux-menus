@@ -1,5 +1,10 @@
 # TODO
 
+In floating panes - toggle split/combined should be in navigation
+
+Display Commands use smaller of cfg max an display with - probably deceased a bit
+more if display with constrained
+
 In Display command - filter out menu reload stuff
 if line is cut off with > the - for disabling the line does not seem to work
 
