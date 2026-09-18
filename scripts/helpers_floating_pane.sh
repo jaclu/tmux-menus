@@ -125,7 +125,7 @@ menu_section_base() {
 
     set -- \
         0.0 M Left "Back to Previous  $nav_prev" "$_prev" \
-        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu"
+        0.0 M Home "Main Menu         $nav_home" "$cfg_main_menu"
     menu_generate_part 1 "$@"
     display_commands_toggle 3
     set -- 0.0 S
@@ -279,7 +279,7 @@ help_section_base() {
     fi
     set -- \
         0.0 M Left "Back to Previous  $nav_prev" "$prev_menu" \
-        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu" \
+        0.0 M Home "Main Menu         $nav_home" "$cfg_main_menu" \
         0.0 S
     menu_generate_part 1 "$@"
 }

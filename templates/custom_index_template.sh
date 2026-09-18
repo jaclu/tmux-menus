@@ -10,7 +10,7 @@
 
 static_content() {
     set -- \
-        0.0 M Home "Back to Main  $nav_home" main.sh \
+        0.0 M Home "Main Menu     $nav_home" "$cfg_main_menu" \
         0.0 S \
         "CUSTOM_ITEMS_SPLITTER" # the list of custom items will be inserted here
 

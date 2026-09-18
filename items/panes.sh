@@ -10,7 +10,7 @@
 
 static_content() {
     set -- \
-        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu" \
+        0.0 M Left "Main Menu         $nav_home" "$cfg_main_menu" \
         0.0 M S "Split             $nav_next" pane_split.sh \
         0.0 M R "Resize            $nav_next" pane_resize.sh \
         0.0 M M "Move              $nav_next" pane_move.sh \

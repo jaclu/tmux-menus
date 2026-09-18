@@ -14,7 +14,7 @@ dynamic_content() {
     if [ -n "$prev_menu" ]; then
         set -- \
             0.0 M Left "Back to Previous  $nav_prev" "$prev_menu" \
-            0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu"
+            0.0 M Home "Main Menu         $nav_home" "$cfg_main_menu"
     else
         set -- \
             0.0 T "Press Esc or q to close this keyboard hint overlay"

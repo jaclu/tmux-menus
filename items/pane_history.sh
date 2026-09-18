@@ -17,7 +17,7 @@ static_content() {
 
     set -- \
         0.0 M Left "Back to Previous  $nav_prev" panes.sh \
-        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu" \
+        0.0 M Home "Main Menu         $nav_home" "$cfg_main_menu" \
         0.0 M H "Help              $nav_next" "$cfg_d_menus/help/h_pane_history.sh $0"
     menu_generate_part 1 "$@"
     display_commands_toggle 2

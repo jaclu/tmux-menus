@@ -27,7 +27,7 @@ dynamic_content() {
     # something has been installed / removed
     d_extras="$cfg_d_menus"/external_tools
 
-    # Try to pad label with spaces so that navs line up with "Back to Main" and "Help"
+    # Try to pad label with spaces so that navs line up with "Main Menu" and "Help"
     set -- \
         0.0 M D "$(is_avalable dropbox "Dropbox         ")" "$d_extras"/dropbox.sh \
         0.0 M S "$(is_avalable spotify "Spotify         ")" "$d_extras"/spotify.sh \
@@ -37,7 +37,7 @@ dynamic_content() {
 
 static_content() {
     set -- \
-        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu"
+        0.0 M Left "Main Menu         $nav_home" "$cfg_main_menu"
     menu_generate_part 1 "$@"
     set -- \
         0.0 M H "Help              $nav_next" "$cfg_d_menus/help/h_extras.sh $0"

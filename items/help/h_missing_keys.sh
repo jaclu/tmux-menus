@@ -14,7 +14,7 @@ static_content() {
     fi
     set -- \
         0.0 M Left "Back to Previous  $nav_prev" "$prev_menu" \
-        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu" \
+        0.0 M Home "Main Menu         $nav_home" "$cfg_main_menu" \
         0.0 S \
         0.0 T "Use this to send keys that might" \
         0.0 T "not be available with the current" \

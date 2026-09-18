@@ -53,7 +53,7 @@ dynamic_content() {
 
 static_content() {
     set -- \
-        0.0 M Home "Back to Main   $nav_home" "$cfg_main_menu" \
+        0.0 M Left "Main Menu      $nav_home" "$cfg_main_menu" \
         0.0 S \
         0.0 T " $nav_next#[default,nodim]  Open a new menu." \
         0.0 T " $nav_prev#[default,nodim]  Back to previous menu." \

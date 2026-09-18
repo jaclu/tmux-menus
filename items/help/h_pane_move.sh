@@ -14,7 +14,7 @@ static_content() {
     fi
     set -- \
         0.0 M Left "Back to Previous  $nav_prev" "$prev_menu" \
-        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu" \
+        0.0 M Home "Main Menu         $nav_home" "$cfg_main_menu" \
         0.0 S \
         0.0 T "Displays a navigation tree" \
         0.0 T "Escape/q aborts" \

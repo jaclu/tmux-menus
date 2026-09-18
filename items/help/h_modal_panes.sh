@@ -15,7 +15,7 @@ static_content() {
 
     set -- \
         0.0 M Left "Back to Previous  $nav_prev" "$prev_menu" \
-        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu" \
+        0.0 M Home "Main Menu         $nav_home" "$cfg_main_menu" \
         0.0 S \
         0.0 T "Modal panes are floating panes (tmux 3.8+) that prevent interaction with" \
         0.0 T "other panes while active. They are useful for:" \

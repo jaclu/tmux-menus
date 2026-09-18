@@ -18,7 +18,7 @@ static_content() {
     fi
 
     set -- \
-        0.0 M Home "Back to Main     $nav_home" "$cfg_main_menu"
+        0.0 M Left "Main Menu        $nav_home" "$cfg_main_menu"
 
     ${cfg_use_hint_overlays:-false} && ${cfg_show_key_hints:-false} && {
         set -- "$@" \

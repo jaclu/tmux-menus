@@ -21,7 +21,7 @@ static_content() {
     #  on some platforms it works, on others it breaks this menu
     #
     set -- \
-        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu" \
+        0.0 M Left "Main Menu         $nav_home" "$cfg_main_menu" \
         2.0 M C "Currencies        $nav_next" "$d_odd_chars"/currencies.sh \
         0.0 M D "Diacritics        $nav_next" "$d_odd_chars"/diacritics.sh \
         0.0 M H "Help              $nav_next" "$cfg_d_menus/help/h_missing_keys.sh $0"
