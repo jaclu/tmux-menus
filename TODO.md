@@ -1,8 +1,5 @@
 # TODO
 
-In floating panes - toggle split/combined should be in navigation between P & H
-
-Display Commands use smaller of cfg max an display with - probably deceased a bit
 more if display with constrained
 
 In Display command - filter out menu reload stuff
