@@ -91,26 +91,26 @@ source_all_helpers() {
 
 simple_dirname() {
     #
-    # To fully avoid a fork, set $2=silent, and retrieve the value via _simple_d_name:
+    # To fully avoid a fork, set $2=silent, and retrieve the value via _d_simple_dirname:
     #   simple_dirname "$f_foo" silent
-    #   d_foo="$_simple_d_name"
+    #   d_foo="$_d_simple_dirname"
     # otherwise the more expensive but easier to code usage is the more typical:
     #   d_foo=$(simple_dirname "$f_foo")
     #
     # But then you might-as-well do a double fork: d_foo=$(dirname "$d_foo")
     #
     # Provides:
-    #   _simple_d_name
+    #   _d_simple_dirname
     #
     _fp="$1"
 
     case "$_fp" in
-        */*) _simple_d_name=${_fp%/*} ;;
-        *) _simple_d_name=. ;;
+        */*) _d_simple_dirname=${_fp%/*} ;;
+        *) _d_simple_dirname=. ;;
     esac
-    [ -n "$_simple_d_name" ] || _simple_d_name=/
+    [ -n "$_d_simple_dirname" ] || _d_simple_dirname=/
 
-    [ "$2" != silent ] && printf '%s' "$_simple_d_name"
+    [ "$2" != silent ] && printf '%s' "$_d_simple_dirname"
 }
 
 do_validate_path() {
