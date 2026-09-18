@@ -40,9 +40,9 @@ static_content() {
 
     menu_section_base split
 
-    menu_section_move 6
-    menu_section_resize 7
-    menu_section_kill 8
+    menu_section_move 8
+    menu_section_resize 9
+    menu_section_kill 10
 }
 
 #===============================================================

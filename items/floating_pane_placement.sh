@@ -29,8 +29,8 @@ dynamic_content() {
 
 static_content() {
     menu_section_base
-    menu_section_placement 6
-    menu_section_kill 7
+    menu_section_placement 8
+    menu_section_kill 9
 }
 
 #===============================================================

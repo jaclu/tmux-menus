@@ -32,14 +32,14 @@ static_content() {
 
     #
     # This can be cached statically, greatly improving responsiveness.
-    # Item 6 depends on item 5, so when there are no floating panes and
-    # item 5 is omitted, item 6 is skipped automatically.
+    # Item 8 depends on item 7, so when there are no floating panes and
+    # item 7 is omitted, item 8 and on are skipped automatically.
     #
 
-    menu_section_move 6
-    menu_section_resize 7
-    menu_section_placement 8
-    menu_section_kill 9
+    menu_section_move 8
+    menu_section_resize 9
+    menu_section_placement 10
+    menu_section_kill 11
 }
 
 #===============================================================
