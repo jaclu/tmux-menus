@@ -478,7 +478,7 @@ safe_remove() {
     #
     # Ensures what is to be removed is not a "dangerous" path that would
     # cause a mess of the file system
-    # If param 2 is empty, an extra check will be made that the pattern is prefixed
+    # If param 3 is empty, an extra check will be made that the pattern is prefixed
     # by the location of this plugin, only use param 2 if something outside
     # the plugin location needs to be removed
     #
@@ -487,7 +487,12 @@ safe_remove() {
     skip_plugin_name_in_path_check="$3"
 
     # log_it "safe_remove($pattern) - $reason"
-    [ -z "$pattern" ] && error_msg "safe_remove() - no path supplied to remove"
+    [ -z "$pattern" ] && {
+        [ -n "$reason" ] && {
+            error_msg "safe_remove() - path empty for request: $reason"
+        }
+        error_msg "safe_remove() - no path supplied to remove"
+    }
     [ -z "$reason" ] && error_msg "safe_remove() - no reason given"
 
     tmpdir_noslash="${TMPDIR%/}" # Remove trailing slash if present
