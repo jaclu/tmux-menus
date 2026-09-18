@@ -249,7 +249,7 @@ retrieve_non_tmux_env_vars() {
     #     params_not_config_2
 
     simple_dirname "$cfg_main_menu" silent
-    cfg_d_menus="$_d_name"
+    cfg_d_menus="$_simple_d_name"
 
     d_cache_main_menu="$d_cache/menus"
 

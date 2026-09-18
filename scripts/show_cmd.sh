@@ -163,7 +163,7 @@ sc_filter_ws() {
     # Remove leading/trailing spaces and collapse inner whitespace
     # shellcheck disable=SC2086 # intentionally unquoted string
     set -- $_sc_fw_input
-    sc_cmd="$*"
+    sc_filtered="$*"
 }
 
 sc_clean_up_cmd() {
@@ -171,13 +171,14 @@ sc_clean_up_cmd() {
     # Defines: sc_cmd (via sc_filter_ws)
     _sc_cuc_cmd="$1"
 
-    # Remove reload suffixes and hint overlays
-    _sc_cuc_cmd="${_sc_cuc_cmd%" $runshell_reload_mnu"}"
-    _sc_cuc_cmd="${_sc_cuc_cmd%" $mnu_reload_direct"}"
-    _sc_cuc_cmd="${_sc_cuc_cmd%"; $0"}"
-    _sc_cuc_cmd="${_sc_cuc_cmd%%\\&*}"
-
     sc_filter_ws "$_sc_cuc_cmd"
+
+    # Remove reload suffixes and hint overlays
+    sc_filtered="${sc_filtered%" $runshell_reload_mnu"}"
+    sc_filtered="${sc_filtered%" $mnu_reload_direct"}"
+    sc_filtered="${sc_filtered%"; $0"}"
+    sc_filtered="${sc_filtered%%\\&*}"
+    sc_cmd="$sc_filtered"
 }
 
 sc_clean_up_result() {

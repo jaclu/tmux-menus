@@ -4,7 +4,7 @@ All notable changes to this project will be documented here.
 
 ---
 
-## [2.4.2] - not released
+## [2.4.2] - not yet released
 
 ### Added
 
@@ -13,17 +13,29 @@ All notable changes to this project will be documented here.
 
 ### Changed
 
-- Automated location of plugin by setting TMUX_MENUS_LOCATION as a global tmux
-  env during plugin init, menus no longer need to be aware where the plugin is
-  installed via the previous manual D_TM_BASE_PATH assignment.
-- Moved menu_name to start of main
-- moved 'Clear all' in 'Pane History' to the last item since its a danger zone
+- Pane History added option -save with timestamps (tmux 3.8+)
+- Changed all 3.7z vers tags to 3.8 now that 3.8-rc is available
+- More work on Floating pane, using the same code in both combined and split menu
+  mode
+- Once TMUX_MENUS_HANDLER has beenset, menu cache is cleared if handler is changed
+  or TMUX_MENUS_HANDLER is unset
+- All cached menus go into cache/menus - to keep it in one place
+
+- Automated plugin location detection via TMUX_MENUS_LOCATION global variable
+  set by plugin init.
+
+  (eliminating need for manual D_TM_BASE_PATH configuration)
+
+- Split Pane Toggle into submenu for better organization
+- Improved floating pane handling with better code reusability
+- Help system now version-gated (3.7+ only)
+- Refactored menu environment variable initialization for sourcer compatibility
 
 ### Fixed
 
 - Corrected broken path generation in act_clear_screen.sh
-- Changed all 3.7z vers tags to 3.8 now that 3.8-rc is available
-- Corrected copyright year on some files that have seen a lot of work this year
+- Updated version tags from 3.7z to 3.8
+- Improved cache handling for non-cached menu runs
 
 ## [2.4.1] - 2026-09-12
 

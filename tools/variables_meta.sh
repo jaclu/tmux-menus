@@ -62,6 +62,7 @@ bn_current_script="${bn_current_script:-}"
 # shellcheck disable=SC2031 # needed since cache.sh redefines it in a subshell
 cfg_log_file="${cfg_log_file:-}"
 
+_simple_d_name="${_simple_d_name:-}"
 cfg_use_cache="${cfg_use_cache:-}"
 current_tmux_vers="${current_tmux_vers:-}"
 current_tmux_vers_i="${current_tmux_vers_i:-}"
