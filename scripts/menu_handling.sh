@@ -672,7 +672,7 @@ prepare_show_commands() {
     set_display_command_labels
     tmux_error_handler display-message "Preparing $_lbl ..."
     # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-    . "$TMUX_MENUS_LOCATION"/scripts/show_cmd.sh
+    . "$TMUX_MENUS_LOCATION"/scripts/display_commands.sh
 }
 
 #---------------------------------------------------------------

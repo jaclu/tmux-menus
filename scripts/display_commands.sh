@@ -224,6 +224,7 @@ sc_get_window_width() {
         _sc_window_width=$($TMUX_BIN display-message -p '#{window_width}')
         _sc_max_width=$((_sc_window_width - 8)) # 8 leave space for menu border etc
         if [ "$cfg_display_cmds_cols" -lt "$_sc_max_width" ]; then
+            # Limited by window size
             sc_max_usable_width=$cfg_display_cmds_cols
         else
             sc_max_usable_width=$_sc_max_width

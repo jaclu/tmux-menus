@@ -269,9 +269,6 @@ whitespace is found.
 If the window width is below this, the window limits this setting, to ensure no
 lines are cut of.
 
-tmux 3.3 and up displays `>` when it thinks the line is to long, and enters the
-shortcut key area. But the content is not actually truncated.
-
 ### Config File Location
 
 Usually the default (below) is sufficient, but you can configure it if needed:
