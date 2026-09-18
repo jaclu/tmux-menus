@@ -272,6 +272,8 @@ item_handler_changed() {
     #         error_msg "Failed to clear: $d_cache_main_menu"
     #     }
     # }
+    path_that_might_be_cached
+    retrieve_non_tmux_env_vars
     safe_remove "$d_cache_main_menu" "item_handler_changed()"
 
     [ -n "$alt_menu_handler" ] && {
