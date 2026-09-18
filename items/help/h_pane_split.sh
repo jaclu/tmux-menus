@@ -19,9 +19,9 @@ static_content() {
         0.0 T "'Float' Creates a floating pane, after unzooming" \
         0.0 T "the current pane if it was zoomed." \
         0.0 T "(the default behaviour)." \
-        0.0 T "" \
-        0.0 T "'Float (keep zoomed)' means that if created above" \
-        0.0 T " a zoomed pane, it remains zoomed."
+        3.8 T "" \
+        3.8 T "'Float (keep zoomed)' means that if created above" \
+        3.8 T " a zoomed pane, it remains zoomed."
     menu_generate_part 1 "$@"
 }
 
