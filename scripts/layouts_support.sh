@@ -17,6 +17,9 @@ handle_layout_border_lines() {
     [ -n "$hlbl_opt" ] || error_msg "handle_layout_border_lines() - no param"
     [ -n "$itm_idx" ] || error_msg "handle_layout_border_lines() - no param 2"
 
+    [ "$hlbl_opt" = "popup-border-lines" ] && tmux_vers_check 3.8z && {
+        error_msg "handle_layout_border_lines() - popup-border-lines not supported in 3.9"
+    }
     hlbl_lbl_single="Single"
     hlbl_lbl_rounded="Rounded"
     hlbl_lbl_double="Double"
@@ -53,7 +56,6 @@ handle_layout_border_lines() {
                 heavy) hlbl_lbl_heavy="-(global) $hlbl_lbl_heavy" ;;
                 simple) hlbl_lbl_simple="-(global) $hlbl_lbl_simple" ;;
                 padded) hlbl_lbl_padded="-$hlbl_lbl_padded" ;;
-                # padded) ;; # popup-border-lines menu-border-lines
                 number) hlbl_lbl_number="-(global) $hlbl_lbl_number" ;; # pane-border-lines
                 spaces) hlbl_lbl_spaces="-(global) $hlbl_lbl_spaces" ;; # pane-border-lines
                 none) hlbl_lbl_none="-(global) $hlbl_lbl_none" ;;
