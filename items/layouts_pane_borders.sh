@@ -55,8 +55,9 @@ handle_pane_border_status() {
         2.3 C o "$lbl_off" "$_cmd  off              $runshell_reload_mnu" \
         2.3 C t "$lbl_top" "$_cmd  top              $runshell_reload_mnu" \
         2.3 C b "$lbl_bottom" "$_cmd  bottom           $runshell_reload_mnu" \
-        3.8 C 1 "$lbb_top_float" "$_cmd  top-floating     $runshell_reload_mnu" \
-        3.8 C 2 "$lbl_bot_float" "$_cmd  bottom-floating  $runshell_reload_mnu"
+        3.8 C C-t "$lbb_top_float" "$_cmd  top-floating     $runshell_reload_mnu" \
+        3.8 C C-b "$lbl_bot_float" "$_cmd  bottom-floating  $runshell_reload_mnu"
+    # 3.8 C 2 "$lbl_bot_float" "$_cmd  bottom-floating  $runshell_reload_mnu"
     menu_generate_part 4 "$@"
 }
 
@@ -68,7 +69,7 @@ dynamic_content() {
         # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
         . "$d_scripts"/layouts_support.sh
 
-        handle_layout_border_lines "pane-border-lines"
+        handle_layout_border_lines "pane-border-lines" 5
         # log_it "><> dynamic_content() - completed handle_layout_border_lines 'pane-border-lines'"
     }
 }
