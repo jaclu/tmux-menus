@@ -1,6 +1,5 @@
 # TODO
 
-
 ## plugin init
 
 remove current param cache before reading it to avoid getting polluted by obsoleted settings
