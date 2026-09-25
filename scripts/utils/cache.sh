@@ -401,10 +401,36 @@ current_tmux_vers_suffix=\"$current_tmux_vers_suffix\"
 
 params_not_config_2() {
     # log_it "params_not_config_2()"
+    wrtie_fail_msg="params_not_config_2() - write failed: $_f_params_tmp"
+    tmux_vers_check 3.8 || {
+        #region params_not_config_2_1
+        printf '%s' "\
+#
+# If menu is displayed shorter than this, assume it was due to not fitting
+# the screen
+#
+t_minimal_display_time=$t_minimal_display_time
+" >>"$_f_params_tmp" || {
+            error_msg "$wrtie_fail_msg"
+        }
+        #endregion params_not_config_2_1
+    }
 
     _mnu_reload_delay=$(awk -v t="$t_minimal_display_time" 'BEGIN { print t + 1 }')
-    #region params_not_config_2
+    safe_now # ensure selected_safe_now_mthd has been detected
+    #region params_not_config_2_2
+
+    # shellcheck disable=SC2154 # selected_safe_now_mthd defined via safe_now
     printf '%s' "\
+#
+# Some actions like creating a floating pane instantly completes, resulting in
+# the reloaded menu being drawn before the floater appears, being drawn over the
+# menu. this delay is used for such menu reloads to allow other action to take
+# effect before menu is displayed. This time is estimated based on computer
+# performance during plugin initialisation.
+#
+t_delayed_menu_reload=$_mnu_reload_delay
+
 #
 # Get time stamps for repo and local file changes,
 # This ensures cache is cleared any time the code has changed.
@@ -422,26 +448,12 @@ last_local_edit=\"$new_last_local_edit\"
 #
 b_debug_display_cmds=false
 
-#
-# If menu is displayed shorter than this, assume it was due to not fitting
-# the screen
-#
-t_minimal_display_time=$t_minimal_display_time
-
-#
-# Some actions like creating a floating pane instantly completes, resulting in
-# the reloaded menu being drawn before the floater appears, being drawn over the
-# menu. this delay is used for such menu reloads to allow other action to take
-# effect before menu is displayed. This time is estimated based on computer
-# performance during plugin initialisation.
-#
-t_delayed_menu_reload=$_mnu_reload_delay
-
+selected_safe_now_mthd=$selected_safe_now_mthd
 alt_menu_handler=\"$alt_menu_handler\"
 " >>"$_f_params_tmp" || {
-        error_msg "params_not_config_2() - write failed: $_f_params_tmp"
+        error_msg "$wrtie_fail_msg"
     }
-    #endregion params_not_config_2
+    #endregion params_not_config_2_2
 }
 
 params_alt_handler() {
