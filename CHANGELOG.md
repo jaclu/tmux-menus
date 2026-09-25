@@ -18,6 +18,7 @@ All notable changes to this project will be documented here.
 
 ### Changed
 
+- Gave up on careful cache pruning for now, at plugin init entire cache is dropped
 - Floating Panes menu improved with grouped New/Kill operations and better code reusability
   between combined and split pane modes
 - Floating Panes switched to Navigation section of main menu for better organization

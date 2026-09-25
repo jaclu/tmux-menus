@@ -82,6 +82,7 @@ f_no_cache_hint="${f_no_cache_hint:-}"
 f_safe_now_method="${f_safe_now_method:-}"
 initialize_plugin="${initialize_plugin:-}"
 log_file_forced="${log_file_forced:-}" # debug variable, normally not defined
+min_tmux_vers="${min_tmux_vers:-}"
 plugin_name="${plugin_name:-}"
 relative_fname="${relative_fname:-}"
 rn_current_script="${rn_current_script:-}"

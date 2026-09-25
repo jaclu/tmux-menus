@@ -638,8 +638,8 @@ path_that_might_be_cached() {
 # Hardcoded log file for early startup tracing (before @menus_log_file is
 # read). If log_file_forced=1, @menus_log_file is ignored and this remains.
 #
-# cfg_log_file="$HOME/tmp/tmux-menus-t2.log"
-# log_file_forced=1
+cfg_log_file="$HOME/tmp/tmux-menus-t2.log"
+log_file_forced=1
 
 TMUX_BIN="${TMUX_BIN:-tmux}"
 
@@ -696,11 +696,6 @@ ${initialize_plugin:-false} || {
     get_config
     set_script_start_time
 }
-
-if ! tmux_vers_check "$min_tmux_vers"; then
-    # @variables are not usable prior to 1.8
-    error_msg "$plugin_name needs at least tmux $min_tmux_vers to work properly."
-fi
 
 validate_path_script_or_menu "$0"
 rn_current_script="$relative_fname" # saves a fork

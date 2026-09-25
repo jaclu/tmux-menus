@@ -410,29 +410,42 @@ config_setup_cached() {
     }
     cache_create_folder
 
-    safe_remove "$f_no_cache_hint" "config_setup_cached()"
-    safe_remove "$f_cached_tmux_options" "config_setup_cached()"
+    # For now cache is always fully cleared on init
 
-    if "${initialize_plugin:-false}"; then
-        # if verify_tmux_vers_unchanged was false, the entire cache has already
-        # been purged, so no need to consider what to keep/drop
-        [ -f "$f_cache_known_tmux_vers" ] && {
-            safe_remove "$f_cache_known_tmux_vers" "plugin_init.sh - known_tmux_vers"
-            # Ensure env didn't pick anything up from an obsolete version of this file
-            cached_ok_tmux_versions=""
-            cached_bad_tmux_versions=""
-        }
+    # verify_tmux_vers_unchanged || {
+    #     # If tmux vers changed the entire cache has been cleared, here
+    #     # the intention is to clear
 
-        safe_remove "$f_safe_now_method" "config_setup_cached()"
-        # Used by display commands
-        safe_remove "$f_cached_tmux_key_binds" "config_setup_cached()"
+    #     tpt_retrieve_running_tmux_vers
+    #     safe_remove "$f_no_cache_hint" "config_setup_cached()"
+    #     safe_remove "$f_cached_tmux_options" "config_setup_cached()"
 
-        # Clear any errors from previous runs
-        safe_remove "$d_cache"/error-* "config_setup_cached()"
-        safe_remove "$d_cache"/cmd_output "config_setup_cached()"
-    else
-        tpt_retrieve_running_tmux_vers
-        verify_tmux_vers_unchanged # clears entire cache if current_tmux_vers changed
+    #     if "${initialize_plugin:-false}"; then
+    #         # if verify_tmux_vers_unchanged was false, the entire cache has already
+    #         # been purged, so no need to consider what to keep/drop
+    #         [ -f "$f_cache_known_tmux_vers" ] && {
+    #             safe_remove "$f_cache_known_tmux_vers" "plugin_init.sh - known_tmux_vers"
+    #             # Ensure env didn't pick anything up from an obsolete version of this file
+    #             cached_ok_tmux_versions=""
+    #             cached_bad_tmux_versions=""
+    #         }
+
+    #         safe_remove "$f_safe_now_method" "config_setup_cached()"
+    #         # Used by display commands
+    #         safe_remove "$f_cached_tmux_key_binds" "config_setup_cached()"
+
+    #         # Clear any errors from previous runs
+    #         safe_remove "$d_cache"/error-* "config_setup_cached()"
+    #         safe_remove "$d_cache"/cmd_output "config_setup_cached()"
+    #     fi
+    # }
+
+    tpt_retrieve_running_tmux_vers
+
+    # should be done during init - not for every script
+    if ! tmux_vers_check "$min_tmux_vers"; then
+        # @variables are not usable prior to 1.8
+        error_msg "$plugin_name needs at least tmux $min_tmux_vers to work properly."
     fi
 
     tmux_get_plugin_options

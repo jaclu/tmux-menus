@@ -335,20 +335,6 @@ cfg_floating_pane_incr_vertical=$cfg_floating_pane_incr_vertical
     #endregion params_38
 }
 
-params_not_config_1() {
-    #region params_not_config_1
-    printf '%s\n' "\
-#
-# Non configuration related cached states
-#
-env_unmame=\"$env_unmame\" # cached uname -s
-use_bind_key_notes=$use_bind_key_notes # From @use_bind_key_notes_in_plugins
-" >>"$_f_params_tmp" || {
-        error_msg "params_not_config_1() - write failed: $_f_params_tmp"
-    }
-    #endregion params_not_config_1
-}
-
 params_tmux_plugins_manager_path() {
     _tpmp=$($TMUX_BIN show-environment -g "TMUX_PLUGIN_MANAGER_PATH" 2>/dev/null \
         | cut -d= -f2)
@@ -369,52 +355,21 @@ params_tmux_plugins_manager_path() {
     }
 }
 
-params_tmux_vers() {
-    case "$current_tmux_vers" in
-        "next-"*)
-            printf '#\n%s\n%s\n%s\n%s\n#\n' \
-                '# If tmux version has changed, the entire cache is invalidated' \
-                '# For compatibility checks, next- versions are rounded down' \
-                '# to prior subvers, with z suffix' \
-                "# Since they frequently don't yet support all next version features" \
-                >>"$_f_params_tmp" || {
-                error_msg "params_tmux_vers() - write failed: $_f_params_tmp"
-            }
-            ;;
-        *) ;;
-    esac
-    #region params_tmux_vers
-    printf '%s\n' "\
-current_tmux_vers=\"$current_tmux_vers\"
-current_tmux_vers_i=\"$current_tmux_vers_i\"
-current_tmux_vers_suffix=\"$current_tmux_vers_suffix\"
-" >>"$_f_params_tmp" || error_msg "Failed to write to tmpfile: $_f_params_tmp"
-    #endregion params_tmux_vers
-}
-
-params_not_config_2() {
-    # log_it "params_not_config_2()"
-    wrtie_fail_msg="params_not_config_2() - write failed: $_f_params_tmp"
-    tmux_vers_check 3.8 || {
-        #region params_not_config_2_1
-        printf '%s' "\
-#
-# If menu is displayed shorter than this, assume it was due to not fitting
-# the screen
-#
-t_minimal_display_time=$t_minimal_display_time
-" >>"$_f_params_tmp" || {
-            error_msg "$wrtie_fail_msg"
-        }
-        #endregion params_not_config_2_1
-    }
-
+params_not_config() {
     _mnu_reload_delay=$(awk -v t="$t_minimal_display_time" 'BEGIN { print t + 1 }')
     safe_now # ensure selected_safe_now_mthd has been detected
-    #region params_not_config_2_2
-
+    #region params_not_config_1
     # shellcheck disable=SC2154 # selected_safe_now_mthd defined via safe_now
-    printf '%s' "\
+    printf '%s\n' "\
+use_bind_key_notes=$use_bind_key_notes # From @use_bind_key_notes_in_plugins
+
+#
+# Non configuration related cached states, not changing during the tmux
+#
+env_unmame=\"$env_unmame\" # cached uname -s
+
+selected_safe_now_mthd=$selected_safe_now_mthd
+
 #
 # Some actions like creating a floating pane instantly completes, resulting in
 # the reloaded menu being drawn before the floater appears, being drawn over the
@@ -429,6 +384,7 @@ t_delayed_menu_reload=$_mnu_reload_delay
 # This ensures cache is cleared any time the code has changed.
 #
 repo_last_changed=\"$new_repo_last_changed\"
+# Only tracks uncommitted repo-changes
 last_local_edit=\"$new_last_local_edit\"
 
 #
@@ -441,12 +397,50 @@ last_local_edit=\"$new_last_local_edit\"
 #
 b_debug_display_cmds=false
 
-selected_safe_now_mthd=$selected_safe_now_mthd
 alt_menu_handler=\"$alt_menu_handler\"
 " >>"$_f_params_tmp" || {
-        error_msg "$wrtie_fail_msg"
+        error_msg "params_not_config_1 - write failed: $_f_params_tmp"
     }
-    #endregion params_not_config_2_2
+    #endregion params_not_config_1
+
+    tmux_vers_check 3.8 || {
+        #region params_not_config_2
+        printf '%s' "\
+#
+# If menu is displayed shorter than this, assume it was due to not fitting
+# the screen
+#
+t_minimal_display_time=$t_minimal_display_time
+
+" >>"$_f_params_tmp" || {
+            error_msg "params_not_config_2 - write failed: $_f_params_tmp"
+        }
+        #endregion params_not_config_2
+    }
+}
+
+params_tmux_vers() {
+    case "$current_tmux_vers" in
+        "next-"*)
+            printf '#\n%s\n%s\n%s\n%s\n#\n' \
+                '# For compatibility checks, next- versions are rounded down' \
+                '# to prior subvers, with z suffix' \
+                "# Since they frequently don't yet support all next version features" \
+                '# And new features limited to 3.8z will run once the version is 3.9' \
+                >>"$_f_params_tmp" || {
+                error_msg "params_tmux_vers() - write failed: $_f_params_tmp"
+            }
+            ;;
+        *) ;;
+    esac
+    #region params_tmux_vers
+    printf '%s\n' "\
+# If tmux version has changed, the entire cache is invalidated
+current_tmux_vers=\"$current_tmux_vers\"
+current_tmux_vers_i=\"$current_tmux_vers_i\"
+current_tmux_vers_suffix=\"$current_tmux_vers_suffix\"
+" >>"$_f_params_tmp" || error_msg "Failed to write to tmpfile: $_f_params_tmp"
+    #endregion params_tmux_vers
 }
 
 params_alt_handler() {
@@ -484,10 +478,9 @@ cache_write_plugin_params() {
         params_34
         params_38
     }
-    params_not_config_1
     params_tmux_plugins_manager_path
+    params_not_config
     params_tmux_vers
-    params_not_config_2
     params_alt_handler
 
     if [ -f "$f_cache_params" ]; then
