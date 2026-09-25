@@ -74,12 +74,12 @@ Floating pane handling offers both a combined menu and split menus. If the combi
 menu is too tall for your terminal, you can toggle to split format. This selection
 is remembered for the next time.
 
-<img width="253" height="325" alt="Handling floating panes - Placement"
-  src="https://github.com/user-attachments/assets/5018d1a9-5e25-4b58-95c9-618682d45b88" />
-<img width="254" height="355" alt="Handling floating panes - split menu"
-  src="https://github.com/user-attachments/assets/ec90a06a-8861-4fa4-bdf4-4db8e22059c5" />
-<img width="262" height="492" alt="Handling floating panes - combined"
-  src="https://github.com/user-attachments/assets/902e3a1f-d6fe-4327-8bd0-5c0022e4d88b" />
+<img width="261" height="339" alt="Handling floating panes - Placement"
+  src="https://github.com/user-attachments/assets/ba8b444f-404c-4ecb-aa09-93bd27f23bef" />
+<img width="261" height="354" alt="Handling floating panes - split menu"
+  src="https://github.com/user-attachments/assets/abb0b5fc-1b60-4f21-98b9-3889475166e0" />
+<img width="263" height="492" alt="Handling floating panes - combined"
+  src="https://github.com/user-attachments/assets/e54d79f6-5c22-4d1d-82dc-c799b030748c" />
 
 ## Known Limitations
 
