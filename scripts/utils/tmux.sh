@@ -340,10 +340,11 @@ tmux_get_plugin_options() { # new init
             alt_menu_handler=whiptail
             log_it "--- TMUX_MENUS_HANDLER=1 triggered alt_menu_handler [$alt_menu_handler]"
             ;;
-        2)  alt_menu_handler=dialog
+        2)
+            alt_menu_handler=dialog
             log_it "--- TMUX_MENUS_HANDLER=2 triggered alt_menu_handler [$alt_menu_handler]"
             ;;
-        *)  # Normal aproach decide via tmux version
+        *) # Normal approach decide via tmux version
             if tmux_vers_check 3.0; then
                 alt_menu_handler=""
             else
