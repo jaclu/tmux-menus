@@ -8,35 +8,42 @@ All notable changes to this project will be documented here.
 
 ### Added
 
-- Key collision detection to prevent duplicate menu key assignments
-- New menu: "Display Settings" - selects theme (3.8)
-- plugin_init.sh: added -z for clear cache
+- Key collision detection to prevent duplicate menu key assignments across all menus
+- New menu: "Display Settings" - theme selector for tmux 3.8+
+- Plugin now automatically detects its location via TMUX_MENUS_LOCATION global variable
+  (eliminates need for manual D_TM_BASE_PATH configuration)
+- Keyboard shortcuts for floating panes: C-t for top-floating, C-b for bottom-floating
+- plugin_init.sh: added -z flag to clear cache when run interactively
+- Light theme variant added to README documentation
 
 ### Changed
 
-- Pane History added option -save with timestamps (tmux 3.8+)
-- Changed all 3.7z vers tags to 3.8 now that 3.8-rc is available
-- More work on Floating pane, using the same code in both combined and split menu
-  mode
-- Once TMUX_MENUS_HANDLER has beenset, menu cache is cleared if handler is changed
-  or TMUX_MENUS_HANDLER is unset
-- All cached menus go into cache/menus - to keep it in one place
-
-- Automated plugin location detection via TMUX_MENUS_LOCATION global variable
-  set by plugin init.
-
-  (eliminating need for manual D_TM_BASE_PATH configuration)
-
-- Split Pane Toggle into submenu for better organization
-- Improved floating pane handling with better code reusability
-- Help system now version-gated (3.7+ only)
-- Refactored menu environment variable initialization for sourcer compatibility
+- Floating Panes menu improved with grouped New/Kill operations and better code reusability
+  between combined and split pane modes
+- Floating Panes switched to Navigation section of main menu for better organization
+- Split Pane Toggle now displays as a submenu for clearer organization
+- All cached menus consolidated under `cache/menus/` directory
+- Menu environment variable initialization refactored for better sourcer compatibility
+- Version requirements updated: all 3.7z tags changed to 3.8
+- Display Commands significantly refactored with better pruning of plugin internal sequences
+- Cache handling improved - now automatically cleared when TMUX_MENUS_HANDLER changes
+- Performance improved through:
+  - Implementation of `simple_dirname()` function reducing fork calls
+  - Caching of `selected_safe_now_mthd` in plugin_params
+  - Removal of unnecessary basename usage
+  - Simplified `set_script_start_time()` handling
+- Several menu items cleaned up and obsolete entries removed
+- Help system now version-gated for tmux 3.7+ only (popup-border-lines compatibility)
+- Improved environment initialization with TMUX_BIN and TMUX_MENUS_HANDLER support
 
 ### Fixed
 
 - Corrected broken path generation in act_clear_screen.sh
-- Updated version tags from 3.7z to 3.8
-- Improved cache handling for non-cached menu runs
+- Fixed Display Commands display in various menu contexts
+- Improved error messages in safe_remove() function
+- Corrected main menu reference handling
+- Fixed missing environment variable retrieval when TMUX_MENUS_HANDLER is configured
+- Various code simplifications eliminating redundant conditions and logic
 
 ## [2.4.1] - 2026-09-12
 

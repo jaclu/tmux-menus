@@ -7,8 +7,8 @@ src="https://github.com/user-attachments/assets/bfbd8eb2-70a6-4821-834f-fae7cc9f
 
 ## Summary
 
-A collection of popup menus for managing your tmux environment. Dark and Light theme
-above.
+A collection of popup menus for managing your tmux environment. With tmux 3.8+
+comes much better auto theeming. Dark and Light theme above.
 
 Once installed, press the trigger key to display the main menu. The default
 trigger is `<prefix> \` (see Configuration below to customize).
@@ -22,14 +22,13 @@ discover functionality—advanced users can simply remove what they don't need.
 
 ## Recent Changes
 
+- **Floating Panes handling** — New menus for positioning and managing floating panes
+  (tmux 3.8+)
+- **Display Settings** — New menu, Select from the various themes
+  (Dark/Light,Terminal,Auto) via menu (tmux 3.8+)
 - **Danger Zone** — Destructive commands are highlighted by default; enable/disable
   or customize as needed
-- **Enhanced Floating Panes handling** — New combined menu, with a toggle to
-  split format for standard 25x80 terminals, plus new pane placement controls
-- **Stabilized Display Commands** — Fixed crashes and improved stability when
-  displaying menu command references
-- **Secondary default trigger key** `<prefix> Enter` for non-US keyboards where
-  `<prefix> \` is impractical
+- **Key collision detection** — Prevents duplicate keyboard shortcuts across menus
 
 ## Purpose
 
@@ -265,8 +264,8 @@ Controls the maximum line length for displayed commands. Long commands are split
 into chunks at whitespace when possible, or at the maximum length if no
 whitespace is found.
 
-If the window width is below this, the window limits this setting, to ensure no
-lines are cut of.
+If the window width is below this, the window limits this setting to ensure no
+lines are cut off.
 
 ### Config File Location
 
@@ -330,8 +329,8 @@ letters, and don't support special keys (arrow keys, Home, etc.).
 
 ### Installation of whiptail
 
-**Linux:** Most distributions include `whiptail` by default. In the Red Hat
-an Homebrew ecosystems, the package that contains `whiptail` is called `newt`.
+**Linux:** Most distributions include `whiptail` by default. In Red Hat and Homebrew
+ecosystems, the package that contains `whiptail` is called `newt`.
 
 **macOS:** Install via Homebrew: `brew install newt`
 
