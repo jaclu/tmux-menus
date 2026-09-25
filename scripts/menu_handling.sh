@@ -702,7 +702,7 @@ set_menu_env_variables() {
     [ "$menu_handling_env_variables_init_done" = 1 ] && {
         #
         # sometimes this needs to be run early, to get some variables, like from
-        # helpers_floating_pane.sh
+        # floating_pane_helpers.sh
         # This avoids running it again later
         #
         return 0

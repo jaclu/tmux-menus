@@ -93,7 +93,7 @@ t_time_span="${t_time_span:-}"
 tpt_vers_digits="${tpt_vers_digits:-}"
 
 #===============================================================
-# scripts/helpers_floating_pane.sh
+# scripts/floating_pane_helpers.sh
 #===============================================================
 
 current_pane_is_floating="${current_pane_is_floating:-}"

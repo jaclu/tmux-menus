@@ -25,6 +25,6 @@ menu_name="Help, Floating Pane"
 prev_menu="$1"
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$TMUX_MENUS_LOCATION"/scripts/helpers_floating_pane.sh
+. "$TMUX_MENUS_LOCATION"/scripts/floating_pane_helpers.sh
 
 do_menu_handling

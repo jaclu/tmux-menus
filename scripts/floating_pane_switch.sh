@@ -16,6 +16,6 @@ tmux_vers_check 3.7 || {
 }
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$d_scripts"/helpers_floating_pane.sh
+. "$d_scripts"/floating_pane_helpers.sh
 
 switch_floating_pane "$1"

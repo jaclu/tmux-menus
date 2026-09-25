@@ -22,9 +22,9 @@
 #
 
 dynamic_content() {
-    # Could have been in helpers_floating_pane.sh, but left it here
+    # Could have been in floating_pane_helpers.sh, but left it here
     # to make it obvious this menu has dynamic_content
-    menu_section_help_nav
+    menu_section_help_nav combined
 }
 
 static_content() {
@@ -36,10 +36,10 @@ static_content() {
     # item 7 is omitted, item 8 and on are skipped automatically.
     #
 
-    menu_section_move 8
-    menu_section_resize 9
-    menu_section_placement 10
-    menu_section_kill 11
+    menu_section_move 9
+    menu_section_resize 10
+    menu_section_placement 11
+    menu_section_kill 12
 }
 
 #===============================================================
@@ -54,7 +54,7 @@ menu_min_vers=3.7
 no_auto_menu_handling=1
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$TMUX_MENUS_LOCATION"/scripts/helpers_floating_pane.sh
+. "$TMUX_MENUS_LOCATION"/scripts/floating_pane_helpers.sh
 floating_pane_focus
 
 [ "$menu_handling_sourced" != 1 ] && {

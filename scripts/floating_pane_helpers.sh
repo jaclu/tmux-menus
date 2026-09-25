@@ -97,12 +97,13 @@ switch_floating_pane() {
 #
 # menu_idx use
 #  1 - Move back
-#  2 - placemment & help displayed if current pane is floating, otherwise dummy
-#  3 - Display Commands
-#  4 - Spacer
-#  5 - nav displayed if more than one floating pane, otherwise dummy
-#  6 - Switch split/combined menu & New floating pane
-#  7 - dummy if floater visible
+#  2 - Switch split/combined menu
+#  3 - placemment & help displayed if current pane is floating, otherwise dummy
+#  4 - Display Commands
+#  5 - Spacer
+#  6 - New floating pane
+#  7 - nav displayed if more than one floating pane, otherwise dummy
+#  8 - dummy if floater visible
 #    - menu_section_move
 #    - menu_section_resize
 #    - menu_section_placement
@@ -113,8 +114,8 @@ switch_floating_pane() {
 menu_section_base() {
     # menu_idx use
     #  1 - Move back
-    #  3 - Display Commands
-    #  4 - Spacer
+    #  4 - Display Commands
+    #  5 - Spacer
     #  6 - Switch split/combined menu & New floating pane
 
     menu_type="$1"
@@ -124,28 +125,12 @@ menu_section_base() {
     esac
 
     set -- \
-        0.0 M Left "Back to Previous  $nav_prev" "$_prev" \
-        0.0 M Home "Main Menu         $nav_home" "$cfg_main_menu"
+        0.0 M Left "Back to Previous   $nav_prev" "$_prev" \
+        0.0 M Home "Main Menu          $nav_home" "$cfg_main_menu"
     menu_generate_part 1 "$@"
-    display_commands_toggle 3
+    display_commands_toggle 4
     set -- 0.0 S
-    menu_generate_part 4 "$@"
-
-    set --
-    case "$menu_type" in
-        combined)
-            set -- "$@" \
-                3.7 E l "Fit to 25 Lines" \
-                "touch '$f_max_25_line_menus' ; '$cfg_d_menus'/floating_pane.sh"
-            ;;
-        split)
-            set -- "$@" \
-                3.7 E c "Use Combined Menu" \
-                "rm -f '$f_max_25_line_menus' ; '$cfg_d_menus'/floating_pane_combined.sh"
-            ;;
-        "") ;; # If
-        *) error_msg "menu_section_base() - No param" ;;
-    esac
+    menu_generate_part 5 "$@"
 
     set -- "$@" \
         3.7 C N "New" "$new_pane $runshell_sleep_reload_mnu"
@@ -157,15 +142,33 @@ menu_section_help_nav() {
     # Needs to be called from dynamic_content
     #
     # menu_idx use
-    #  2 - placemment & help displayed if current pane is floating, otherwise dummy
-    #  5 - nav displayed if more than one floating pane, otherwise dummy
-    #  7 - dummy if floater visible
+    #  2 - Switch split/combined menu
+    #  3 - placemment & help displayed if current pane is floating, otherwise dummy
+    #  7 - nav displayed if more than one floating pane, otherwise dummy
+    #  8 - dummy if floater visible
     #
+    menu_type="$1"
+
+    case "$menu_type" in
+        combined)
+            set -- \
+                3.7 E 2 "Fit to 25 Lines    $nav_next" \
+                "touch '$f_max_25_line_menus' ; '$cfg_d_menus'/floating_pane.sh"
+            ;;
+        *)
+            set -- \
+                3.7 E C "Use Combined Menu  $nav_next" \
+                "rm -f '$f_max_25_line_menus' ; '$cfg_d_menus'/floating_pane_combined.sh"
+            ;;
+    esac
+    menu_generate_part 2 "$@"
+
     case "$current_pane_is_floating" in
-        0)                           # clear items
-            menu_generate_part 2 0 D # dummy allows next item to be considered
+        0) # clear items
+            menu_generate_part 3 0 D
             menu_generate_part 5 0 D
-            menu_generate_part 7
+            menu_generate_part 7 0 D
+            menu_generate_part 8
             ;;
 
         1) # Only use this part if current is a floating pane
@@ -180,27 +183,27 @@ menu_section_help_nav() {
 
             if [ -f "$f_max_25_line_menus" ] && [ "$skip_placement" != 1 ]; then
                 set -- \
-                    3.8 M P "Placement         $nav_next" floating_pane_placement.sh
+                    3.8 M P "Placement          $nav_next" floating_pane_placement.sh
             else
                 set --
             fi
             set -- "$@" \
-                3.8 M H "Help              $nav_next" "$cfg_d_menus/help/$help_menu $0"
-            menu_generate_part 2 "$@"
+                3.8 M H "Help               $nav_next" "$cfg_d_menus/help/$help_menu $0"
+            menu_generate_part 3 "$@"
 
             #
             #  nav
             #
             if [ -n "$other_floating_panes" ]; then
                 set -- \
-                    3.7 E n "Next" "$scr_float_pane_switch  next ; $0" \
-                    3.7 E p "Previous" "$scr_float_pane_switch  previous ; $0"
+                    3.7 E p "Previous" "$scr_float_pane_switch  previous ; $0" \
+                    3.7 E n "Next" "$scr_float_pane_switch  next ; $0"
             else
                 set -- 0 D # dummy allows next item to be considered
             fi
-            menu_generate_part 5 "$@"
+            menu_generate_part 7 "$@"
 
-            menu_generate_part 7 0 D # dummy allows next item to be considered
+            menu_generate_part 8 0 D # dummy allows next item to be considered
 
             ;;
         *) error_msg "Invalid value for pane_floating_flag [$current_pane_is_floating]" ;;
@@ -278,8 +281,8 @@ help_section_base() {
         error_msg "$bn_current_script was called without notice of what called it"
     fi
     set -- \
-        0.0 M Left "Back to Previous  $nav_prev" "$prev_menu" \
-        0.0 M Home "Main Menu         $nav_home" "$cfg_main_menu" \
+        0.0 M Left "Back to Previous    $nav_prev" "$prev_menu" \
+        0.0 M Home "Main Menu           $nav_home" "$cfg_main_menu" \
         0.0 S
     menu_generate_part 1 "$@"
 }
