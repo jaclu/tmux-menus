@@ -4,8 +4,6 @@
 src="https://github.com/user-attachments/assets/adb009fc-9a6c-4c56-b01c-b1570f1bc5ff" />
 <img width="237" height="279" alt="Main - Light Theme"
 src="https://github.com/user-attachments/assets/bfbd8eb2-70a6-4821-834f-fae7cc9f8a87" />
-<img width="235" alt="Main styled"
-  src="https://github.com/user-attachments/assets/12188f8f-fcdd-457c-ae74-2a6fd8cc38f1" />
 
 ## Summary
 
