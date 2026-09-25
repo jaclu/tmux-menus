@@ -335,20 +335,31 @@ tmux_get_plugin_options() { # new init
         error_msg "$_s"
     }
 
-    if tmux_vers_check 3.0; then
-        alt_menu_handler=""
-    else
-        # if on next plugin_setup a menus able tmux is detected the relevant
-        # additional settings will be cached
-        if command -v whiptail >/dev/null; then
+    case "$TMUX_MENUS_HANDLER" in
+        1)
             alt_menu_handler=whiptail
-        elif command -v dialog >/dev/null; then
-            alt_menu_handler=dialog
-        else
-            error_msg "Neither whiptail nor dialog found, plugin aborted"
-        fi
-        log_it "--- Activating alt_menu_handler [$alt_menu_handler] due to tmux < 3.0"
-    fi
+            log_it "--- TMUX_MENUS_HANDLER=1 triggered alt_menu_handler [$alt_menu_handler]"
+            ;;
+        2)  alt_menu_handler=dialog
+            log_it "--- TMUX_MENUS_HANDLER=2 triggered alt_menu_handler [$alt_menu_handler]"
+            ;;
+        *)  # Normal aproach decide via tmux version
+            if tmux_vers_check 3.0; then
+                alt_menu_handler=""
+            else
+                # if on next plugin_setup a menus able tmux is detected the relevant
+                # additional settings will be cached
+                if command -v whiptail >/dev/null; then
+                    alt_menu_handler=whiptail
+                elif command -v dialog >/dev/null; then
+                    alt_menu_handler=dialog
+                else
+                    error_msg "Neither whiptail nor dialog found, plugin aborted"
+                fi
+                log_it "--- Activating alt_menu_handler [$alt_menu_handler] due to tmux < 3.0"
+            fi
+            ;;
+    esac
 
     tmux_get_option cfg_danger_zone "@menus_danger_zone" "$default_danger_zone"
 
