@@ -59,14 +59,14 @@ The white screenshot shows a whiptail-generated menu, which uses more screen
 space than native tmux menus. However, whiptail menus are scrollable when they
 don't fit the screen. The other screenshots show native tmux menus.
 
-<img width="254" height="354" alt="Handling Pane"
-  src="https://github.com/user-attachments/assets/2aa664b7-33a7-4560-a6e6-d128212e16f4" />
-<img width="253" height="325" alt="Handling Window"
-  src="https://github.com/user-attachments/assets/54e3ce58-0f18-4bef-8388-712e21acb930" />
-<img width="268" height="294" alt="Layouts"
-  src="https://github.com/user-attachments/assets/ae6a3bea-c550-4062-9cb7-92d56dc72680" />
+<img width="252" height="354" alt="Handling Pane"
+  src="https://github.com/user-attachments/assets/4363910a-237e-4d07-bdd5-d659cb656592" />
+<img width="252" height="324" alt="Handling Window"
+  src="https://github.com/user-attachments/assets/fead153b-081c-420e-afff-e2db948bfac9" />
+<img width="268" height="295" alt="Layouts"
+  src="https://github.com/user-attachments/assets/aaef90f0-c1e0-4110-821e-f8b8aed3c2ed" />
 <img width="251" height="203" alt="Missing Keys"
-  src="https://github.com/user-attachments/assets/638d5071-669d-483a-bacf-6fb2d45b248a" />
+  src="https://github.com/user-attachments/assets/4211bdbb-3ce2-4273-ba45-6b081dbc1998" />
 <img width="227" height="264" alt="Missing Keys-whiptail"
   src="https://github.com/user-attachments/assets/6186795e-ef99-4a73-b958-61f42aa9fb13" />
 
