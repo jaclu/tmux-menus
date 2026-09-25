@@ -20,12 +20,10 @@
 #
 
 clear_cache_main_index() {
-    # log_it "UCI:clear_cache_main_index()"
     safe_remove "$d_cache_main_menu" "clear_cache_main_index()"
 }
 
 clear_cache_custom_items() {
-    # log_it "UCI:clear_cache_custom_items()"
     [ -z "$d_cache" ] && error_msg "variable d_cache was unexpectedly undefined"
 
     safe_remove "$d_cache"/custom_items "clear_cache_custom_items()"
@@ -37,26 +35,22 @@ clear_cache_custom_items() {
 
 clear_custom_content_template() {
     # remove temp file - items being added to custom menu
-    # log_it "UCI:clear_custom_content_template()"
     safe_remove "$f_custom_items_content" "clear_custom_content_template()"
 }
 
 remove_custom_item_content() {
     # Remove custom item index page and all related caches
-    # log_it "UCI:remove_custom_item_content() - $f_custom_items_index"
     safe_remove "$f_custom_items_index" "remove_custom_item_content()"
     clear_cache_custom_items # just to be sure its not pointing this file
 }
 
 checksum_content_read() {
-    # log_it "UCI:checksum_content_read()"
     if [ -f "$f_chksum_custom" ]; then
         cat "$f_chksum_custom"
     fi
 }
 
 checksum_content_write() {
-    # log_it "UCI:checksum_content_write()"
     find "$d_custom_items/" -type f -exec sha256sum {} + | sort \
         | sha256sum >"$f_chksum_custom" || {
 
@@ -65,8 +59,6 @@ checksum_content_write() {
 }
 
 custom_items_changed_check() {
-    # log_it "UCI:custom_items_changed_check()"
-
     previous_content_chksum="$(checksum_content_read)"
     checksum_content_write
     current_content_chksum="$(checksum_content_read)"
@@ -114,7 +106,6 @@ failed_to_extract_variable() {
 }
 
 create_custom_index() {
-    # log_it "UCI:create_custom_index()"
     cache_create_folder "create_custom_index()" # make sure it exists
     [ -z "$f_custom_items_content" ] && {
         error_msg "variable f_custom_items_content undefined"
@@ -151,7 +142,6 @@ create_custom_index() {
         printf '        %s \\\n        %s' \
             "0.0 M \"$_menu_key\" \"$_menu_name  $cfg_nav_next\"" \
             "$custom_menu" >>"$f_custom_items_content"
-        # log_it "UCI:Will use: $custom_menu"
     done
     [ ! -f "$f_custom_items_content" ] && {
         # All supposedly valid custom items failed to be processed,
@@ -185,7 +175,6 @@ process_custom_items() {
     # This index will be regenerated
     # If it would be present during the folder scan it would be added to the list
     # of menus to be listed within it :)
-    # log_it "UCI:process_custom_items()"
 
     safe_remove "$f_custom_items_index" "process_custom_items()"
 
@@ -202,7 +191,6 @@ process_custom_items() {
         get_variable_from_script "$custom_menu" menu_name || continue
 
         valid_menus="$valid_menus $custom_menu"
-        # log_it "UCI:Validated src: $custom_menu"
     done
     [ -z "$valid_menus" ] && {
         # none of the custom items are valid abort generation
@@ -216,10 +204,8 @@ process_custom_items() {
 }
 
 custom_items_prepare() {
-    # log_it "UCI:custom_items_prepare()"
     if [ ! -d "$d_custom_items" ]; then
         [ -f "$f_chksum_custom" ] && {
-            # log_it "UCI: Clearing main menu cache since custom items are gone"
             clear_cache_main_index
         }
         # Folder missing, clear custom items cache and exit

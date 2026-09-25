@@ -45,7 +45,6 @@ NOT_cache_prepare() {
     #
     #  Aborts with error if it couldn't be created
     #
-    # log_it "cache_prepare() - $1"
     ${cfg_use_cache:-false} || error_msg "cache_prepare() - called when not using cache"
     cache_create_folder "cache_prepare()"
 }
@@ -67,13 +66,11 @@ cache_add_ok_vers() {
     #  Add param to list of good versions (<=running tmux vers),
     #  if it wasn't cached already
     #
-    # log_it "cache_add_ok_vers($1)"
     [ -z "$1" ] && error_msg "cache_add_ok_vers() - no param"
 
     case "$cached_ok_tmux_versions" in
         *"$1 "*) ;;
         *)
-            # log_it "Adding ok tmux vers: $1"
             cached_ok_tmux_versions="${cached_ok_tmux_versions} $1 "
             ${cfg_use_cache:-false} && cache_save_known_tmux_versions
             ;;
@@ -86,13 +83,12 @@ cache_add_bad_vers() {
     #  Add param to list of bad versions (>running tmux vers),
     #  if it wasn't cached already
     #
-    # log_it "cache_add_bad_vers($1)"
+
     [ -z "$1" ] && error_msg "cache_add_bad_vers() - no param"
 
     case "$cached_bad_tmux_versions" in
         *"$1"*) ;;
         *)
-            # log_it "Adding bad tmux vers: $1"
             cached_bad_tmux_versions="${cached_bad_tmux_versions} $1 "
             ${cfg_use_cache:-false} && cache_save_known_tmux_versions
             ;;
@@ -105,7 +101,6 @@ cache_save_known_tmux_versions() { # tmux stuff
     #  The order the versions are saved doesn't matter,
     #  since they are checked with a case to speed things up
     #
-    # log_it "cache_save_known_tmux_versions()"
     ${cfg_use_cache:-false} || {
         error_msg "cache_save_known_tmux_versions() - called when not using cache"
     }
@@ -115,7 +110,6 @@ cache_save_known_tmux_versions() { # tmux stuff
         # reminder that d_cache does not exist yet.
         # It is perfectly normal to happen once during plugin init
         #
-        # log_it "WARNING: cache_save_known_tmux_versions() aborting, no cache folder: $d_cache"
         return 1
     }
 
@@ -185,7 +179,6 @@ examine_code_base() {
     # new_repo_last_changed - time stamp for latest repo change
     # new_last_local_edit - timestamp and filename for last local change
     #
-    # log_it "examine_code_base()"
 
     # need to be in repo base dir for the git chcecks below
     cd "$TMUX_MENUS_LOCATION" || {
@@ -472,7 +465,6 @@ cache_write_plugin_params() {
     #  Writes all config params to file
     #  if it differed with previous params, clear cache
     #
-    # log_it "cache_write_plugin_params()"
     get_env
     retrieve_non_tmux_env_vars
 
@@ -515,7 +507,6 @@ cache_write_plugin_params() {
                 cache_save_options_defined_in_tmux
             }
         else
-            # log_it " config unchanged - param cache not cleared"
             safe_remove "$_f_params_tmp" "cache_write_plugin_params() - remove tmpfile"
             _f_params_tmp=""
         fi

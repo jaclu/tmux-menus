@@ -77,7 +77,6 @@ source_all_helpers() {
     #    ${b_all_helpers_sourced:-false} || source_all_helpers "caller description"
     #
 
-    # log_it "source_all_helpers() - $1"
     ${b_all_helpers_sourced:-false} && {
         error_msg "source_all_helpers() called when it was already done - $1"
     }
@@ -184,7 +183,6 @@ validate_varname() {
 
 source_cached_params() {
     # This is just reading, so ok to do even if cache is disabled
-    # log_it "source_cached_params()"
     ${b_cache_params_sourced:-false} && return 0
 
     if [ -f "$f_cache_params" ]; then
@@ -206,10 +204,8 @@ source_cached_params() {
             # use the forced log_file, ignoring any potential cached entry
             cfg_log_file="$orig_log_file"
             unset orig_log_file
-            # log_it "restored cfg_log_file"
         }
     else
-        # log_it "source_cached_params() - not found: $f_cache_params"
         return 1
     fi
 
@@ -222,7 +218,6 @@ get_config() { # local usage during sourcing
     #  This is used by everything else sourcing helpers_minimal.sh, then trusting
     #  that the param cache is valid if found
     #
-    # log_it "get_config()"
     replace_config=false
     if [ -f "$f_cache_params" ]; then
         source_cached_params || {
@@ -254,8 +249,6 @@ get_config() { # local usage during sourcing
 
     if [ -z "$skip_env_check" ]; then
         handle_env_variables
-    # else
-    #     log_it "><> skip_env_check set"
     fi
 }
 
@@ -286,7 +279,6 @@ item_handler_changed() {
 }
 
 alt_handler_status_check() {
-    # log_it "alt_handler_status_check()"
     if "${b_whiptail_forced:-false}"; then
         previous_alt_handler=$(cat "$f_alt_handler_in_use" 2>/dev/null)
         case "$previous_alt_handler" in
@@ -305,7 +297,6 @@ alt_handler_status_check() {
 
 handle_env_variables() { # local usage by get_config()
     # Check env variables and apply relevant env checks & config overrides
-    # log_it "handle_env_variables()"
 
     # TMUX_MENUS_LOGGING_MINIMAL - is handled directly by log_it() - no config needed
     # TMUX_MENUS_NO_DISPLAY -  is handled directly - no config needed
@@ -342,7 +333,6 @@ select_safe_now_method() { # local usage by safe_now()
     [ -n "$selected_safe_now_mthd" ] && {
         error_msg "Recursive call to: select_safe_now_method"
     }
-    # log_it "select_safe_now_method()"
 
     [ -f "$f_safe_now_method" ] && {
         IFS= read -r selected_safe_now_mthd <"$f_safe_now_method" || {
@@ -481,7 +471,6 @@ time_span() { # display_menu() / check_speed_cutoff()
 
 tmux_vers_check() { # local usage when checking $min_tmux_vers
     _v_comp="$1"    # Desired minimum version to check against
-    # log_it "tmux_vers_check($_v_comp)"
     [ -z "$_v_comp" ] && error_msg "tmux_vers_check() - no parameter given"
 
     # Retrieve and cache the current tmux version on the first call,
@@ -535,7 +524,6 @@ tpt_retrieve_running_tmux_vers() { # local usage by tmux_vers_check()
     # This will by nececity be called as config_setup() is processing, so unless
     # caching is disabled, this won't be called by menus directly.
     #
-    # log_it "tpt_retrieve_running_tmux_vers()"
     current_tmux_vers=$($TMUX_BIN -V | cut -d' ' -f2)
     case "$current_tmux_vers" in
         "2.4."*) current_tmux_vers="2.4" ;; # handle tmate triple digits
@@ -650,8 +638,8 @@ path_that_might_be_cached() {
 # Hardcoded log file for early startup tracing (before @menus_log_file is
 # read). If log_file_forced=1, @menus_log_file is ignored and this remains.
 #
-cfg_log_file="$HOME/tmp/tmux-menus-t2.log"
-log_file_forced=1
+# cfg_log_file="$HOME/tmp/tmux-menus-t2.log"
+# log_file_forced=1
 
 TMUX_BIN="${TMUX_BIN:-tmux}"
 
@@ -722,4 +710,4 @@ path_that_might_be_cached
 
 [ "${env_initialized:-0}" -lt 1 ] && env_initialized=1 # also matches for "" - basic init done
 
-# log_it "><> [$$] scripts/helpers_minimal.sh - completed [$0]"
+# log_it "[$$] scripts/helpers_minimal.sh - completed [$0]"

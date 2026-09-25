@@ -13,7 +13,6 @@ handle_layout_border_lines() {
     # Set this as a window option
     hlbl_opt="$1"
     itm_idx="$2"
-    # log_it "><> handle_pane_border_status($hlbl_opt)"
     [ -n "$hlbl_opt" ] || error_msg "handle_layout_border_lines() - no param"
     [ -n "$itm_idx" ] || error_msg "handle_layout_border_lines() - no param 2"
 
@@ -33,7 +32,6 @@ handle_layout_border_lines() {
     hlbl_cmd="set-option -w $hlbl_opt" # only change on a per window basis
     hlbl_win_option="$($TMUX_BIN show-options -wv "$hlbl_opt")"
     hlbl_glob_option="$($TMUX_BIN show-options -gv "$hlbl_opt")"
-    log_it "><> hlbl_opt [$hlbl_opt] win [$hlbl_win_option] global [$hlbl_glob_option]"
     [ -z "$hlbl_win_option" ] && [ -z "$hlbl_glob_option" ] && {
         # only fall-back to default if neither is set
         hlbl_win_option=single
@@ -111,8 +109,6 @@ if false; then
     # Shellcheck analyzes this code path but it never executes at runtime
     . tools/variables_meta.sh
 fi
-
-# log_it "><> layouts_support.sh: init"
 
 # ensure show-options -v can be used, this is only run for tmux > 2.3,
 # so shouldn't be an issue

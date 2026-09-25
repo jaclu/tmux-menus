@@ -17,10 +17,8 @@ is_key_enter_available() {
         "$TMUX_BIN" list-keys | awk '{ print $2 }' | grep -q Enter && enter_in_use=1
     fi
     [ "$enter_in_use" = 1 ] && {
-        # log_it "<Prefix> Enter Already used"
         return 1
     }
-    # log_it "<Prefix> Enter is Available"
     return 0
 }
 
@@ -49,7 +47,6 @@ consider_secondary_default() {
 bind_plugin_key() {
     _bpk_key="$1"
     [ -z "$_bpk_key" ] && error_msg "bind_plugin_key() - No param"
-    # log_it "bind_plugin_key($_bpk_key)"
 
     # shellcheck disable=SC1003 # false positive: this is a literal backslash pattern, not an escape attempt
     case "$_bpk_key" in

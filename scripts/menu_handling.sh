@@ -66,7 +66,6 @@ run_if_found() {
 }
 
 update_wt_actions() {
-    # log_it "update_wt_actions()"
     if ${cfg_use_cache:-false}; then
         mkdir -p "$d_wt_actions"
         echo "$wt_actions" >"$d_wt_actions/$menu_idx"
@@ -94,7 +93,6 @@ verify_menu_runable() {
     # Check that menu starts with a menu handling cmd, if not most likely due to
     # menu idx 1 not generated, but could be other causes. eithe way this menu
     # will be displayable...
-    # log_it "verify_menu_runable()"
 
     # extract first word
     _actual_first="${menu_items%% *}"
@@ -378,7 +376,6 @@ alt_spacer() {
 }
 
 add_uncached_item() {
-    # log_it "add_uncached_item()"
     #  Add one item to $uncached_menu
     _new_item="$menu_idx $menu_items"
     if [ -n "$uncached_menu" ]; then
@@ -411,7 +408,6 @@ menu_parse() {
     #  we first identify all the params used by the different options,
     #  only then can we continue if the _mp_min_vers does not match running tmux
     #
-    # log_it "mennu_parse()"
 
     menu_items=""
     [ "$menu_idx" -eq 1 ] && {
@@ -582,7 +578,6 @@ menu_parse() {
 
 menu_generate_part() {
     # Generate one menu segment
-    # log_it "menu_generate_part($1)"
 
     menu_idx="$1"
     shift # get rid of the idx param
@@ -596,7 +591,6 @@ menu_generate_part() {
         # no params clear cache file if any
         ${cfg_use_cache:-false} && {
             rm -f "$f_cache_file" || error_msg "Failed to remove $f_cache_file"
-            # log_it "part $menu_idx empty - Cleared cache item"
         }
         return
     }
@@ -635,7 +629,6 @@ should_display_cmds_be_used() {
 
 display_commands_toggle() {
     _itm_id="$1"
-    # log_it "display_commands_toggle($menu_part)"
     [ -z "$_itm_id" ] && error_msg "add_display_commands() - called with no param"
 
     if should_display_cmds_be_used; then
@@ -653,7 +646,6 @@ display_commands_toggle() {
 prepare_show_commands() {
     # Do not use normal caching, build custom menu including cmds under each
     # action item
-    # log_it "prepare_show_commands()"
 
     # Do this before the timer is started, otherwise the first usage of show commands
     # will always be slower
@@ -698,7 +690,6 @@ check_menu_min_vers() {
 #---------------------------------------------------------------
 
 set_menu_env_variables() {
-    # log_it "set_menu_env_variables()"
     [ "$menu_handling_env_variables_init_done" = 1 ] && {
         #
         # sometimes this needs to be run early, to get some variables, like from
@@ -805,7 +796,6 @@ static_files_reduction() {
     ${dynamic_content_found:-false} && {
         error_msg "static_files_reduction() called when dynamic content was generated"
     }
-    # log_it "static_files_reduction()"
     cache_read_menu_items
     for f_name in "$d_menu_cache"/*; do
         [ -d "$f_name" ] && continue
@@ -819,7 +809,7 @@ static_files_reduction() {
 cache_regenerate_static_content() {
     # Cache is missing or obsolete, regenerate it
     [ -d "$d_menu_cache" ] && log_it_minimal "$rn_current_script changed - dropping cache"
-    # log_it "  regenerate cache for: $d_menu_cache"
+
     ${b_all_helpers_sourced:-false} || {
         source_all_helpers "cache_static_content() - cache generation"
     }
@@ -853,7 +843,6 @@ handle_dynamic() {
     # to be called there
     #
 
-    # log_it "handle_dynamic()"
     is_function_defined dynamic_content || return
 
     wt_actions_static="$wt_actions"
@@ -904,7 +893,6 @@ sort_uncached_menu_items() {
     # together, leads to this rather hackish in-memory implementation of sorting
     # the uncached_menu clearly lots of room for improvement...
     #
-    # log_it "sort_uncached_menu_items()"
 
     _sumi_entries=""
 
@@ -940,7 +928,6 @@ $idx	$_sumi_body"
 }
 
 get_menu_items_sorted() {
-    # log_it "get_menu_items_sorted()"
     if ${cfg_use_cache:-false}; then
         cache_read_menu_items
     else
@@ -954,7 +941,6 @@ prepare_menu() {
     #  menu_param="$1"
     #  then process it in dynamic_content()
     #
-    # log_it "prepare_menu()"
 
     # 1 - Handle static parts, use cache if enabled and available
     if ${cfg_use_cache:-false}; then
@@ -1035,7 +1021,6 @@ wt_cached_selection() {
     #  Public variables
     #   all_wt_actions - lists all actions
     #
-    # log_it "wt_cached_selection()"
     all_wt_actions=""
     for file in "$d_wt_actions"/*; do
 
@@ -1091,7 +1076,6 @@ alt_parse_selection() {
     #  action, and then perform it
     #
     wt_actions="$1"
-    # log_it "alt_parse_selection($wt_action)"
     [ -z "$wt_actions" ] && {
         error_msg "alt_parse_selection() - called without param"
     }
@@ -1124,7 +1108,6 @@ alt_parse_selection() {
 }
 
 handle_wt_selecion() {
-    # log_it "handle_wt_selecion($menu_selection)"
     if ${cfg_use_cache:-false}; then
         wt_cached_selection
     else
@@ -1151,7 +1134,6 @@ clear_prep_disp_status() {
 }
 
 display_menu() {
-    # log_it "display_menu()"
     # Display time to generate menu
 
     if [ -n "$alt_menu_handler" ]; then
@@ -1159,7 +1141,6 @@ display_menu() {
         # display alternate menu
         menu_selection=$(eval "$menu_items" 3>&2 2>&1 1>&3)
         menu_exit_code="$?"
-        # log_it "><> menu_exit_code[$menu_exit_code]"
         case "$menu_exit_code" in
             0) ;;
             1)
@@ -1198,8 +1179,6 @@ display_menu() {
 }
 
 do_menu_handling() {
-    # log_it "do_menu_handling()"
-
     #
     # Some env checks
     #

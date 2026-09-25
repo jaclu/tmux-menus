@@ -42,8 +42,6 @@ display_message_hold() {
     dmh_msg="$1"
     dmh_no_hold="$2"
 
-    # log_it "display_message_hold($dmh_msg) no_hold: $dmh_no_hold"
-
     [ "$dmh_no_hold" = "no_hold" ] && {
         # request to not hold the msg
         $TMUX_BIN display-message "$dmh_msg"
@@ -84,7 +82,6 @@ display_formatted_message() {
     _dfm_msg="$1"
     _default_msg_type="notification message"
     _msg_type="${2:-$_default_msg_type}"
-    # log_it "display_formatted_message()"
 
     [ -z "$_dfm_msg" ] && {
         # Can't use error_msg here, so _dfm_msg is used to display this error
@@ -145,8 +142,6 @@ error_msg_actual() {
     # log-flooded, unless exit is not requested
     # [ "$exit_code" -gt -1 ] && cfg_log_file=""
 
-    # log_it "error_msg_actual()"
-
     if [ -z "$TMUX" ]; then
         # with no tmux env, dumping it to stderr & log-file is the only output options
         log_it_minimal "***  This does not seem to be running in a tmux env  ***"
@@ -188,8 +183,6 @@ error_msg_formatted() {
     #  recursion
     #
     emf_err="$1"
-
-    # log_it "error_msg_formatted()"
 
     emf_msg="$(
         echo "ERROR in plugin $plugin_name - running: $rn_current_script"
@@ -266,7 +259,6 @@ normalize_bool_param() {
     nbp_default="$2"  # only needed for tmux options
     nbp_no_cache="$3" # if non-empty, the cache will be ignored
 
-    # log_it "normalize_bool_param($nbp_param, $nbp_default) [$nbp_no_cache]"
     if [ "${nbp_param%"${nbp_param#?}"}" = "@" ]; then
         #
         #  If it starts with "@", assume it is a tmux option, thus
@@ -303,8 +295,6 @@ normalize_bool_param() {
 }
 
 has_lf_not_at_end() {
-    # log_it "has_lf_not_at_end()" # with cache:
-
     #
     #  POSIX hack I came up with to check if a string contains LF
     #  somewhere within, since I could not figure out how to to substring
@@ -357,7 +347,6 @@ check_speed_cutoff() {
     if [ "$_csc_speed_ok" -eq 1 ]; then
         t_minimal_display_time=0.1
     else
-        # log_it "  Failed cutoff time, considered a slow system: $t_time_span >= $cut_off"
         # for slower systems
         t_minimal_display_time=1
     fi
@@ -390,7 +379,6 @@ set_alt_handler() {
 
 env_variable_menus_handler() {
     # handles TMUX_MENUS_HANDLER
-    # log_it "env_variable_menus_handler()"
 
     case "$TMUX_MENUS_HANDLER" in
         0) set_alt_handler ;;
@@ -463,7 +451,6 @@ config_setup_un_cached() {
 config_setup() {
     # Examins tmux env, and depending on caching config either plainly read
     # tmux.conf, or prepare a f_cache_params
-    # log_it "config_setup()"
 
     if normalize_bool_param "@menus_use_cache" "${default_use_cache:-Yes}"; then
         cfg_use_cache=true
@@ -486,7 +473,6 @@ safe_remove() {
     reason="$2"
     skip_plugin_name_in_path_check="$3"
 
-    # log_it "safe_remove($pattern) - $reason"
     [ -z "$pattern" ] && {
         [ -n "$reason" ] && {
             error_msg "safe_remove() - path empty for request: $reason"
@@ -576,7 +562,6 @@ helpers_full_additional_files_sourced() {
 }
 
 set_display_command_labels() {
-    # log_it "set_display_command_labels() - $show_cmds_state"
     case "$show_cmds_state" in
         1)
             _lbl="Display Commands"

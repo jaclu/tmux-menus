@@ -22,7 +22,6 @@ static_content() {
     tmux_vers_check 3.2 && {
         customize_mode_cmd="$TMUX_BIN customize-mode -Z "
         if ${cfg_use_hint_overlays:-false} && [ -z "$alt_menu_handler" ]; then
-            # log_it "hint overlays and not whiptail"
             hint="\& $d_hints/customize-mode.sh skip-oversized"
             customize_mode_cmd="$customize_mode_cmd $hint"
         fi
@@ -69,14 +68,8 @@ static_content() {
 
 menu_name="Main Menu"
 
-# temp  profiling code to check performance
+# temp profiling code to check performance
 # [ "$profiling_sourced" != 1 ] && . "$TMUX_MENUS_LOCATION"/scripts/utils/dbg_profiling.sh
-
-# [ -z "$TMUX_MENUS_LOCATION" ] && {
-#     TMUX_MENUS_LOCATION=$(cd "${0%/*}/.." && pwd)
-#     export TMUX_MENUS_LOCATION
-#     echo "><> $0 had to set TMUX_MENUS_LOCATION"
-# }
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh

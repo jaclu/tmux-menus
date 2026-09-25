@@ -61,7 +61,6 @@ profiling_select_timing_method() {
     [ -n "$profiling_selected_get_time" ] && {
         error_msg "Recursive call to: profiling_selected_get_time"
     }
-    # log_it "profiling_select_timing_method()"
 
     # Probe actual output: %3N is a GNU extension, BusyBox date silently ignores it
     # and returns seconds only — so test the output length rather than inferring from OS

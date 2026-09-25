@@ -19,7 +19,6 @@ tmux_vers_check_do_compare() {
     # Called fomh helpers_minimal.sh:tmux_vers_check() if checked version was not cached
     _v_comp="$1"
     [ -z "$_v_comp" ] && error_msg "tmux_vers_check_do_compare() - no param supplied"
-    # log_it "tmux_vers_check_do_compare($_v_comp)"
 
     tpt_parse_tmux_vers "$_v_comp"
 
@@ -60,8 +59,6 @@ tmux_get_defaults() { # new init
     #  Public variables
     #   default_  defaults for tmux config options
     #
-
-    # log_it "tmux_get_defaults()"
 
     default_trigger_key=\\
     default_no_prefix=No
@@ -123,7 +120,6 @@ cache_save_options_defined_in_tmux() {
     "${cfg_use_cache:-false}" || return
 
     [ -f "$f_cached_tmux_options" ] && return
-    # log_it "cache_save_options_defined_in_tmux()"
 
     # Can't check for errors here, since if the item is not present grep will exit error
     $TMUX_BIN show-options -g | grep ^@menus_ \
@@ -140,8 +136,6 @@ tmux_get_option() {
     # if non-empty, prevent cache from being used - when options other than
     #  @menux_ needs to be read
     tgo_no_cache="$4"
-
-    # log_it "tmux_get_option($tgo_varname, $tgo_option, $tgo_default, $tgo_no_cache)"
 
     # usually disabled for performance
     # validate_varname "$tgo_varname" "tmux_get_option()"
@@ -185,7 +179,6 @@ tmux_get_option() {
             done <"$f_cached_tmux_options"
         fi
     else
-        # log_it "tmux_get_option($tgo_option) - not using cache"
         _line="$($TMUX_BIN show-options -g "$tgo_option" 2>/dev/null \
             | grep -v "$cfg_force_unset")"
     fi
@@ -195,7 +188,6 @@ tmux_get_option() {
         # option was empty ie "", which confuses tmux 3.0–3.2a returning success
         # if using show-options  on undefined options
         tgo_value="$tgo_default"
-        # log_it "><> using default due to undefined for $tgo_option [$tgo_value]"
     else
         # Extract value (skip key)
         tgo_value=${_line#* }
@@ -210,13 +202,9 @@ tmux_get_option() {
         esac
     fi
     case "$tgo_value" in
-        "$cfg_default_is_empty_string" | "''" | '""')
-            tgo_value=""
-            # log_it "><> overriding to empty for $tgo_option [$tgo_value]"
-            ;;
+        "$cfg_default_is_empty_string" | "''" | '""') tgo_value="" ;;
         *) ;;
     esac
-    # log_it "tmux_get_option($tgo_option) - using [$tgo_value]"
     eval "$tgo_varname=\"\$tgo_value\""
 }
 
@@ -239,8 +227,6 @@ fix_home_path() {
     #
     fhp_path="$1"
     fhp_varname="$2"
-
-    # log_it "fix_home_path($fhp_varname,$fhp_path)"
 
     if false; then
         # For performance reasons full variable name assessment when is disabled by default
@@ -311,7 +297,6 @@ tmux_get_plugin_options() { # new init
     #  Public variables
     #   cfg_  config variables, either read from tmux or the default
     #
-    # log_it "tmux_get_plugin_options()"
     tmux_get_defaults
     # caching is known to be enabled, cache tmux options right away
     cache_save_options_defined_in_tmux
@@ -465,7 +450,6 @@ tmux_get_plugin_options() { # new init
 
     [ "$log_file_forced" != 1 ] && {
         #  If a debug logfile has been set, the tmux setting will be ignored.
-        # log_it "tmux will read cfg_log_file"
         tmux_get_option _log_file "@menus_log_file" "$default_log_file"
         # Handle the case of ~ or $HOME being wrapped in single quotes in tmux.conf
         if [ -n "$_log_file" ]; then

@@ -62,15 +62,12 @@ handle_pane_border_status() {
 }
 
 dynamic_content() {
-    # log_it "><> dynamic_content() - might run: handle_pane_border_status()"
     tmux_vers_check 2.3 && handle_pane_border_status
     tmux_vers_check 3.2 && {
-        # log_it "><> dynamic_content() - will source: layouts_support.sh"
         # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
         . "$d_scripts"/layouts_support.sh
 
         handle_layout_border_lines "pane-border-lines" 5
-        # log_it "><> dynamic_content() - completed handle_layout_border_lines 'pane-border-lines'"
     }
 }
 
