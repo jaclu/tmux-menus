@@ -5,22 +5,10 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Place floating pane to pre-determined locations of window
-#
-#   Placement keys (q,w,e,a,s,d,z,x,c) centered on s, left-hand keyboard cluster.
-#   Avoids numpad 5-centered logic which fails for keyboards without numpad.
+#   Place floating panes to pre-determined locations of window
+#   25x80 split menu version
 #
 
-# 1,3,4 menu_section_base
-#   1 - move back
-#   3 - Display Commands
-#   4 - New floating pane
-# 2,5 menu_section_help_nav
-#   2 - help displayed if current pane is floating, otherwise dummy
-#   5 - nav displayed if more than one floating pane, prevents rest if no floating
-# 6   menu_section_placement
-# 7   menu_section_kill
-#
 dynamic_content() {
     # Could have been in floating_pane_helpers.sh, but left it here
     # to make it obvious this menu has dynamic_content
@@ -29,8 +17,12 @@ dynamic_content() {
 
 static_content() {
     menu_section_base
+    #
+    # This can be cached statically, greatly improving responsiveness.
+    # Item 9 depends on item 8, so when there are no floating panes and
+    # item 8 is omitted, item 9 and on are skipped automatically.
+    #
     menu_section_placement 9
-    menu_section_kill 10
 }
 
 #===============================================================

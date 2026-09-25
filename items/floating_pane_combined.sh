@@ -5,20 +5,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Handling floating pane
-#
-
-# 1,3,4 menu_section_base
-#   1 - move back
-#   3 - Display Commands
-#   4 - New floating pane
-# 2,5 menu_section_help_nav
-#   2 - help displayed if current pane is floating, otherwise dummy
-#   5 - nav displayed if more than one floating pane, prevents rest if no floating
-# 6   menu_section_move
-# 7   menu_section_resize
-# 8   menu_section_placement
-# 9   menu_section_kill
+#   Handling floating panes
 #
 
 dynamic_content() {
@@ -29,17 +16,14 @@ dynamic_content() {
 
 static_content() {
     menu_section_base combined
-
     #
     # This can be cached statically, greatly improving responsiveness.
-    # Item 8 depends on item 7, so when there are no floating panes and
-    # item 7 is omitted, item 8 and on are skipped automatically.
+    # Item 9 depends on item 8, so when there are no floating panes and
+    # item 8 is omitted, item 9 and on are skipped automatically.
     #
-
     menu_section_move 9
     menu_section_resize 10
     menu_section_placement 11
-    menu_section_kill 12
 }
 
 #===============================================================

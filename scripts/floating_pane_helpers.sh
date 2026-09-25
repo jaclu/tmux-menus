@@ -107,7 +107,6 @@ switch_floating_pane() {
 #    - menu_section_move
 #    - menu_section_resize
 #    - menu_section_placement
-#    - menu_section_kill
 #
 #---------------------------------------------------------------
 
@@ -132,9 +131,6 @@ menu_section_base() {
     set -- 0.0 S
     menu_generate_part 5 "$@"
 
-    set -- "$@" \
-        3.7 C N "New" "$new_pane $runshell_sleep_reload_mnu"
-    menu_generate_part 6 "$@"
 }
 
 menu_section_help_nav() {
@@ -162,6 +158,20 @@ menu_section_help_nav() {
             ;;
     esac
     menu_generate_part 2 "$@"
+
+    set -- \
+        1.8 S \
+        3.7 C N "New" "$new_pane $runshell_sleep_reload_mnu"
+
+    [ "$current_pane_is_floating" = 1 ] && {
+        set -- "$@" \
+            1.8 C K "${cfg_danger_zone}Kill current" "confirm-before -p \
+                'kill-pane #T (#P)? (y/n)' kill-pane $runshell_reload_mnu"
+        if tmux_vers_check 3.8 || [ -n "$other_floating_panes" ]; then
+            set -- "$@" 1.8 S
+        fi
+    }
+    menu_generate_part 6 "$@"
 
     case "$current_pane_is_floating" in
         0) # clear items
@@ -254,18 +264,6 @@ menu_section_placement() {
         3.8 C z "Place bottom-left" "move-pane -P bottom-left  $hfp_rrm" \
         3.8 C x "Place bottom-centre" "move-pane -P bottom-centre  $hfp_rrm" \
         3.8 C c "Place bottom-right" "move-pane -P bottom-right  $hfp_rrm"
-
-    menu_generate_part "$_idx" "$@"
-}
-
-menu_section_kill() {
-    _idx="$1"
-    [ -n "$_idx" ] || error_msg "menu_section_kill() - no item index"
-
-    set -- \
-        1.8 S \
-        1.8 C K "${cfg_danger_zone}Kill current" "confirm-before -p \
-            'kill-pane #T (#P)? (y/n)' kill-pane $runshell_reload_mnu"
 
     menu_generate_part "$_idx" "$@"
 }
