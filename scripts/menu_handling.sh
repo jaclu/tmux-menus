@@ -433,7 +433,9 @@ menu_parse() {
         [ -n "$menu_debug" ] && debug_print "-- parsing an item [$_mp_min_vers] [$_mp_action]"
         case "$_mp_action" in
 
-            "C")
+            D) ;; # dummy to just create empty cache item, to make next item available
+
+            C)
                 #  direct tmux command - params: key label task
                 _mp_key="$1"
                 shift
@@ -456,10 +458,6 @@ menu_parse() {
                     ${b_do_show_cmds:-false} && sc_show_cmd "$TMUX_BIN $_mp_cmd"
                 fi
                 ;;
-
-            "D")
-                # menu_items="$menu_items D"
-                ;; # dummy to just create empty cache item, to make next available
 
             E)
                 #
@@ -496,7 +494,7 @@ menu_parse() {
                 fi
                 ;;
 
-            "M")
+            M)
                 #  Open another menu
                 _mp_key="$1"
                 shift
@@ -528,7 +526,7 @@ menu_parse() {
                 fi
                 ;;
 
-            "T")
+            T)
                 #  text line - params: txt
                 txt="$1"
                 shift
@@ -544,7 +542,7 @@ menu_parse() {
                 fi
                 ;;
 
-            "S")
+            S)
                 #  Spacer line - params: none
 
                 # first extract the variables, then  if it shouldn't be used move on
