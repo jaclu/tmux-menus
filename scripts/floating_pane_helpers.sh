@@ -96,14 +96,13 @@ switch_floating_pane() {
 #   Components of floating-panes menu
 #
 # menu_idx use
-#  1 - Move back
+#  1 - [S] Move back
 #  2 - Switch split/combined menu
 #  3 - placemment & help displayed if current pane is floating, otherwise dummy
-#  4 - Display Commands
-#  5 - Spacer
-#  6 - New floating pane
-#  7 - nav displayed if more than one floating pane, otherwise dummy
-#  8 - dummy if floater visible
+#  4 - [S] Display Commands
+#  5 - New floating pane & Kill if floating pane visible
+#  6 - nav displayed if more than one floating pane, otherwise dummy
+#  7 - dummy if floater visible
 #    - menu_section_move
 #    - menu_section_resize
 #    - menu_section_placement
@@ -114,8 +113,6 @@ menu_section_base() {
     # menu_idx use
     #  1 - Move back
     #  4 - Display Commands
-    #  5 - Spacer
-    #  6 - Switch split/combined menu & New floating pane
 
     menu_type="$1"
     case "$0" in
@@ -128,20 +125,18 @@ menu_section_base() {
         0.0 M Home "Main Menu          $nav_home" "$cfg_main_menu"
     menu_generate_part 1 "$@"
     display_commands_toggle 4
-    set -- 0.0 S
-    menu_generate_part 5 "$@"
-
 }
 
-menu_section_help_nav() {
+menu_section_dynamic() {
     #
     # Needs to be called from dynamic_content
     #
     # menu_idx use
     #  2 - Switch split/combined menu
     #  3 - placemment & help displayed if current pane is floating, otherwise dummy
-    #  7 - nav displayed if more than one floating pane, otherwise dummy
-    #  8 - dummy if floater visible
+    #  5 - New floating pane & Kill if floating pane visible
+    #  6 - nav displayed if more than one floating pane, otherwise dummy
+    #  7 - dummy if floater visible
     #
     menu_type="$1"
 
@@ -171,14 +166,13 @@ menu_section_help_nav() {
             set -- "$@" 1.8 S
         fi
     }
-    menu_generate_part 6 "$@"
+    menu_generate_part 5 "$@"
 
     case "$current_pane_is_floating" in
         0) # clear items
             menu_generate_part 3 0 D
-            menu_generate_part 5 0 D
-            menu_generate_part 7 0 D
-            menu_generate_part 8
+            menu_generate_part 6 0 D
+            menu_generate_part 7
             ;;
 
         1) # Only use this part if current is a floating pane
@@ -211,9 +205,9 @@ menu_section_help_nav() {
             else
                 set -- 0 D # dummy allows next item to be considered
             fi
-            menu_generate_part 7 "$@"
+            menu_generate_part 6 "$@"
 
-            menu_generate_part 8 0 D # dummy allows next item to be considered
+            menu_generate_part 7 0 D # dummy allows next item to be considered
 
             ;;
         *) error_msg "Invalid value for pane_floating_flag [$current_pane_is_floating]" ;;

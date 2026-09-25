@@ -11,18 +11,19 @@
 dynamic_content() {
     # Could have been in floating_pane_helpers.sh, but left it here
     # to make it obvious this menu has dynamic_content
-    menu_section_help_nav split
+    menu_section_dynamic split
 }
 
 static_content() {
     menu_section_base split
     #
     # This can be cached statically, greatly improving responsiveness.
-    # Item 9 depends on item 8, so when there are no floating panes and
-    # item 8 is omitted, item 9 and on are skipped automatically.
+    # Item 8 depends on item 7, so when there are no floating panes and
+    # item 7 is omitted, item 8 and on are skipped automatically.
+    # Thus can be cached statically for added performance
     #
-    menu_section_move 9
-    menu_section_resize 10
+    menu_section_move 8
+    menu_section_resize 9
 }
 
 #===============================================================
