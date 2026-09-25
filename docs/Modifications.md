@@ -5,16 +5,18 @@ the updated content will be displayed the next time the menu is triggered,
 as long as [Validate Cache](/docs/Advanced.md#validate-cache) is enabled,
 or [Caching](/docs/Advanced.md#caching) is disabled.
 
-If this is not the case doing `rm [tmux-menus folder]/cache/items -rf`
+If this is not the case doing `rm [tmux-menus folder]/cache/menus -rf`
 will cause all menus to be regenerated.
 
 At plugin init TMUX_MENUS_LOCATION is defined in the plugin initialization as
-a global environment variable, so it can always be used as the location of the plugin
+a global tmux environment variable, so it can always be used as the location of the plugin
 
 **Fast development with minimal hassle!**
 
 If an edited menu fails to load, you can run it directly from the command
-line to check for syntax errors:
+line to check for syntax errors. Be ware of the Limitation that the initial panes
+created at tmux startup will not have TMUX_MENUS_LOCATION, simplest is to create
+a nww pane, where this will be present, before running menus msnuslly.
 
 ```bash
 ./items/sessions.sh
@@ -48,17 +50,17 @@ Item types and their parameters
   - shortcut for this item, or "" if none wanted
   - label - can use styling
   - menu script
-- C - run tmux Command
+- C - Run tmux Command
   - shortcut for this item, or "" if none wanted
   - label - can use styling
   - tmux command
-- E - run External command
+- E - Run External command
   - shortcut for this item, or "" if none wanted
   - label - can use styling
   - external command
 - T - Display text line
   - text to display - can use styling
-- S - Separator/Spacer line line
+- S - Separator/Spacer line
   - no parameters
 
 ### Sample script
