@@ -375,18 +375,15 @@ select_safe_now_method() { # local usage by safe_now()
     }
 }
 
-set_script_start() {
+set_script_start_time() {
     case "$t_script_start" in
-        "") ;; # unset
-        0) ;;  # previously unable to set
-        *) return ;;
+        "") ;;         # unset
+        0) ;;          # previously unable to set
+        *) return 1 ;; # already set
     esac
 
     safe_now t_script_start
-
-    # # fake null time
-    # t_now=0
-    # t_script_start=0
+    return 0
 }
 
 safe_now() {
@@ -653,8 +650,8 @@ path_that_might_be_cached() {
 # Hardcoded log file for early startup tracing (before @menus_log_file is
 # read). If log_file_forced=1, @menus_log_file is ignored and this remains.
 #
-# cfg_log_file="$HOME/tmp/tmux-menus-t2.log"
-# log_file_forced=1
+cfg_log_file="$HOME/tmp/tmux-menus-t2.log"
+log_file_forced=1
 
 TMUX_BIN="${TMUX_BIN:-tmux}"
 
@@ -707,20 +704,10 @@ bn_current_script=${0##*/} # same but faster than "$(basename "$0")"
 # This depends on cfg_use_timers, so can't be done before config is processed
 
 ${initialize_plugin:-false} || {
-    source_cached_params && {
-        # might be obsolete settings, but should be good enough to serve the
-        # old state of cfg_use_timers
-        set_script_start
-    }
-
     # plugin_init will call config_setup directly, so should not call get_config
     get_config
+    set_script_start_time
 }
-
-# The initial safe_now returned 0, since it was run before config had
-# been checked, and would only return a time if initialize_plugin is set
-# Now config has been read and it's known if a time should be returned or not
-set_script_start
 
 if ! tmux_vers_check "$min_tmux_vers"; then
     # @variables are not usable prior to 1.8

@@ -448,7 +448,7 @@ config_setup_cached() {
     fi
 
     tmux_get_plugin_options
-    set_script_start
+    set_script_start_time
     cache_write_plugin_params
 }
 
