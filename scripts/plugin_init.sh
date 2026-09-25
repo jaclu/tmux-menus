@@ -117,18 +117,13 @@ bind_plugin_key() {
 initialize_plugin=true
 f_skip_low_tmux_version_warning="$TMUX_MENUS_LOCATION"/.skip_old_tmux_warning
 
-#
-# Since it is trivial to set from the scripts, this helps if it is run from the
-# CLI of the first pane
-#
+# Set up plugin location in tmux env
 TMUX_MENUS_LOCATION=$(cd "${0%/*}/.." && pwd)
 export TMUX_MENUS_LOCATION
+$TMUX_BIN set-environment -g TMUX_MENUS_LOCATION "$TMUX_MENUS_LOCATION"
 
-# [ -z "$TMUX_MENUS_LOCATION" ] && {
-#     TMUX_MENUS_LOCATION=$(cd "${0%/*}/.." && pwd)
-#     # export TMUX_MENUS_LOCATION
-#     echo "><> $0 had to set TMUX_MENUS_LOCATION"
-# }
+# ensure a potential old plugin_params won't be sourced
+rm -f "$TMUX_MENUS_LOCATION"/cache/plugin_params
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$TMUX_MENUS_LOCATION"/scripts/helpers.sh
