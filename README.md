@@ -1,7 +1,7 @@
 # Tmux-Menus
 
-<img width="236" alt="Main"
-  src="https://github.com/user-attachments/assets/f8510b2f-4880-4fed-99e5-7db29f400cd8" />
+<img width="237" height="278" alt="Main - Dark style"
+src="https://github.com/user-attachments/assets/adb009fc-9a6c-4c56-b01c-b1570f1bc5ff" />
 <img width="235" alt="Main styled"
   src="https://github.com/user-attachments/assets/12188f8f-fcdd-457c-ae74-2a6fd8cc38f1" />
 
