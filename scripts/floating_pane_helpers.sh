@@ -220,9 +220,9 @@ menu_section_move() {
 
     set -- \
         3.8 S \
-        3.8 C t "Move up" "move-pane -D -$hfp_v_step  $runshell_reload_mnu" \
+        3.8 C t "Move up" "move-pane -U $hfp_v_step  $runshell_reload_mnu" \
         3.8 C v "Move down" "move-pane -D $hfp_v_step  $runshell_reload_mnu" \
-        3.8 C f "Move left" "move-pane -R -$hfp_h_step  $runshell_reload_mnu" \
+        3.8 C f "Move left" "move-pane -L $hfp_h_step  $runshell_reload_mnu" \
         3.8 C g "Move right" "move-pane -R $hfp_h_step  $runshell_reload_mnu"
     menu_generate_part "$_idx" "$@"
 }
