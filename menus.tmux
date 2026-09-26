@@ -41,7 +41,7 @@ $TMUX_BIN set-environment -g TMUX_MENUS_LOCATION "$TMUX_MENUS_LOCATION"
 #
 #  Run the plugin setup in the background in order not to slow down tpm during startup.
 #  On systems with "normal" performance init takes perhaps 0.5 seconds
-#  On slower things like iSH or termux it might take 2-3 seconds, then the
+#  On slower things like iSH or termux it might take 3-5 seconds, then the
 #  long wait for tpm to complete becomes more apparent.
 #
 (
