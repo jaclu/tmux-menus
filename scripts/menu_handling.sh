@@ -743,6 +743,10 @@ set_menu_env_variables() {
         nav_prev="$cfg_nav_prev"
         nav_home="$cfg_nav_home"
     }
+    [ -z "$t_delayed_menu_reload" ] && {
+        # if not using cache, set this to a reasonable delay
+        t_delayed_menu_reload=1.2
+    }
 
     if ${cfg_use_cache:-false}; then
         # Include relative script path in cache folder name to avoid name collisions
