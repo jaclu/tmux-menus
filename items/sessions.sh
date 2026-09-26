@@ -28,7 +28,8 @@ static_content() {
             'rename-session -- \"%%\"' $runshell_reload_mnu" \
         0.0 C s "New" "command-prompt -p \
             'Name of new: ' \
-            'new-session -d -s \"%1\" ; switch-client -t \"%1\"' $runshell_reload_mnu" \
+            'new-session -d -s \"%1\" ; switch-client -t \"%1\"' \
+            $runshell_sleep_reload_mnu" \
         0.0 S \
         0.0 C l "Last selected" "switch-client -l        $runshell_reload_mnu" \
         0.0 C p "Previous" "switch-client -p  $runshell_reload_mnu" \

@@ -767,6 +767,7 @@ set_menu_env_variables() {
         #  so disabled for now
         #
         runshell_reload_mnu="\; run-shell \"$f_ext_dlg_trigger $0\""
+        runshell_sleep_reload_mnu="$runshell_reload_mnu"
         mnu_reload_direct=""
     else
         # built in menu handler doesn't ever seem to need \;

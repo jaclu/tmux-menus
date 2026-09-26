@@ -25,9 +25,9 @@ static_content() {
         1.5 C r "Rename" "command-prompt -I '#W'  \
             -p 'New name: ' 'rename-window %%' $runshell_reload_mnu" \
         1.3 C a "New after current" "command-prompt -p \
-            'Name of new: ' 'new-window -a -n \"%%\"' $runshell_reload_mnu" \
+            'Name of new: ' 'new-window -a -n \"%%\"' $runshell_sleep_reload_mnu" \
         1.3 C e "New at the end" "command-prompt -p \
-            'Name of new: ' 'new-window -n \"%%\"' $runshell_reload_mnu" \
+            'Name of new: ' 'new-window -n \"%%\"' $runshell_sleep_reload_mnu" \
         1.7 C s "Display size" "display-message \
             'Size: #{window_width}x#{window_height}' $runshell_reload_mnu" \
         0.0 S \
