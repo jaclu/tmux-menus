@@ -32,7 +32,7 @@ static_content() {
         0.0 M W "Handling Windows   $nav_next" windows.sh \
         0.0 M S "Handling Sessions  $nav_next" sessions.sh \
         0.0 M B "Paste Buffers      $nav_next" paste_buffers.sh \
-        2.0 M M "Missing Keys       $nav_next" "$d_odd_chars"/missing_keys.sh \
+        2.0 M M "Missing Keys       $nav_next" odd_chars/missing_keys.sh \
         3.8 M D "Display Settings   $nav_next" display_settings.sh \
         0.0 M A "Advanced Options   $nav_next" advanced.sh \
         1.7 M N "Navigate & Search  $nav_next" nav_search.sh \

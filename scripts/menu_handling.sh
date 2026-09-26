@@ -713,8 +713,6 @@ set_menu_env_variables() {
     b_static_cache_updated=false # used to decide if static cache file reduction should happen
     b_do_show_cmds=false
 
-    d_odd_chars="$d_items/odd_chars"
-
     if [ -n "$alt_menu_handler" ]; then
         # Display Commands can only be used with tmux menus and caching
         cfg_display_cmds=false

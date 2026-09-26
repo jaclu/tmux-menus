@@ -11,10 +11,10 @@
             "cwd": "${workspaceFolder}",
             "program": "${file}",
             "args": [],
-            "env": {
-                "show_cmds_state": "1",
+            // "env": {
+                // "show_cmds_state": "1",
                 // "TMUX_MENUS_HANDLER": 2,
-            }
+            // }
         },
         {
             "type": "bashdb",

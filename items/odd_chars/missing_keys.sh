@@ -22,8 +22,8 @@ static_content() {
     #
     set -- \
         0.0 M Left "Main Menu         $nav_home" "$cfg_main_menu" \
-        2.0 M C "Currencies        $nav_next" "$d_odd_chars"/currencies.sh \
-        0.0 M D "Diacritics        $nav_next" "$d_odd_chars"/diacritics.sh \
+        2.0 M C "Currencies        $nav_next" odd_chars/currencies.sh \
+        0.0 M D "Diacritics        $nav_next" odd_chars/diacritics.sh \
         0.0 M H "Help              $nav_next" "$cfg_d_menus/help/h_missing_keys.sh $0"
     menu_generate_part 1 "$@"
     display_commands_toggle 2
