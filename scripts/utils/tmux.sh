@@ -661,4 +661,4 @@ teh_debug=false
 
 default_use_cache=Yes
 
-# log_it "><> [$$] scripts/utils/tmux.sh - completed [$0]"
+log_it "[$$] ===  Completed: scripts/utils/tmux.sh - $0"
