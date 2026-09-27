@@ -644,7 +644,11 @@ case "${env_initialized:-0}" in
         }
         ;;
     1) ;; # helpers_minimal.sh has been sourced
-    *) error_msg "helpers_full.sh has already been sourced" ;;
+    *)
+        # error_msg "helpers_full.sh has already been sourced" ;;
+        log_it "><> =====!!   helpers_full.sh has already been sourced"
+        return 0
+        ;;
 esac
 log_it "[$$] STARTING: scripts/utils/helpers_full.sh for: $0"
 
