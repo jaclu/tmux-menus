@@ -231,11 +231,14 @@ menu_section_resize() {
     _idx="$1"
     [ -n "$_idx" ] || error_msg "menu_section_resize() - no item index"
 
+    # Weird - some envs like iSH seems to need a -- before a param like -1 to avoid
+    # it being parsed as an unknown flag
+    # And it doesn't seem to hurt the other's so safe to use
     set -- \
         3.8 S \
-        3.8 C T "Reduce height" "resize-pane -D -$hfp_v_step  $runshell_reload_mnu" \
+        3.8 C T "Reduce height" "resize-pane -D -- -$hfp_v_step  $runshell_reload_mnu" \
         3.8 C V "Grow height" "resize-pane -D $hfp_v_step  $runshell_reload_mnu" \
-        3.8 C F "Reduce width" "resize-pane -R -$hfp_h_step  $runshell_reload_mnu" \
+        3.8 C F "Reduce width" "resize-pane -R -- -$hfp_h_step  $runshell_reload_mnu" \
         3.8 C G "Grow width" "resize-pane -R $hfp_h_step  $runshell_reload_mnu"
 
     menu_generate_part "$_idx" "$@"
