@@ -44,7 +44,7 @@ param_check() {
 #===============================================================
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$TMUX_MENUS_LOCATION"/scripts/helpers.sh
+. "$TMUX_MENUS_LOCATION"/scripts/utils/helpers_full.sh
 
 tmux_vers_check 1.8 || {
     error_msg "$rn_current_script - needs tmux 1.8"

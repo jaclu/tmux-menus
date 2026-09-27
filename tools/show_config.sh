@@ -39,7 +39,7 @@ show_item() {
 #===============================================================
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$TMUX_MENUS_LOCATION"/scripts/helpers.sh
+. "$TMUX_MENUS_LOCATION"/scripts/utils/helpers_full.sh
 
 tmux_get_defaults
 
