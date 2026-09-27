@@ -631,16 +631,22 @@ parse_move_link_dest() {
 #
 #===============================================================
 
-[ -z "$env_initialized" ] && {
-    printf "\n\nERROR: helpers_full.sh can't be run standalone\n"
-    exit 1
-}
+case "${env_initialized:-0}" in
+    0)
+        [ "${env_initialized:-0}" -lt 1 ] && {
+            # Only source if not done
 
-[ "${env_initialized:-0}" -gt 1 ] && {
-    error_msg "helpers_full already sourced [$env_initialized]"
-}
+            # Prevents handle_env_variables to be run by this process
+            # skip_env_check=1
 
-# log_it "><> [$$] STARTING: scripts/utils/helpers_full.sh"
+            # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
+            . "$TMUX_MENUS_LOCATION"/scripts/helpers_minimal.sh
+        }
+        ;;
+    1) ;; # helpers_minimal.sh has been sourced
+    *) error_msg "helpers_full.sh has already been sourced" ;;
+esac
+log_it "[$$] STARTING: scripts/utils/helpers_full.sh for: $0"
 
 #
 #  Convenience shortcuts
@@ -653,8 +659,8 @@ f_chksum_custom="$d_cache"/chksum_custom_content
 f_min_display_time="$d_cache"/min_display_time
 f_cached_tmux_options="$d_cache"/tmux_options
 
-helpers_full_additional_files_sourced
+# helpers_full_additional_files_sourced
+source_all_helpers
 
 env_initialized=2 # indicates that env is fully configured
-
-# log_it "><> [$$] scripts/utils/helpers_full.sh - completed [$0]"
+log_it "[$$] ===  Completed: scripts/utils/helpers_full.sh - $0"
