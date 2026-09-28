@@ -645,8 +645,7 @@ log_file_forced=1
 
 TMUX_BIN="${TMUX_BIN:-tmux}"
 
-[ -n "$env_initialized" ] && error_msg "helpers_minimal.sh already sourced"
-
+[ -n "$env_initialized" ] && error_msg "helpers.sh already sourced"
 env_initialized=0 # also matches for "" - basic init done
 
 plugin_name="tmux-menus"
