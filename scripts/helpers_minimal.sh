@@ -645,7 +645,7 @@ log_it "[$$] STARTING: scripts/helpers_minimal.sh for: $0"
 
 TMUX_BIN="${TMUX_BIN:-tmux}"
 
-[ -n "$env_initialized" ] && error_msg "helpers_minimal already sourced []"
+[ -n "$env_initialized" ] && error_msg "helpers_minimal already sourced"
 
 env_initialized=0 # also matches for "" - basic init done
 
@@ -705,6 +705,9 @@ rn_current_script="$relative_fname" # saves a fork
 
 path_that_might_be_cached
 
-[ "${env_initialized:-0}" -lt 1 ] && env_initialized=1 # also matches for "" - basic init done
+env_initialized=1
 
 log_it "[$$] ===  Completed: scripts/helpers_minimal.sh - $0"
+
+[ "$1" = all ] && source_all_helpers
+
