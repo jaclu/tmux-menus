@@ -112,7 +112,7 @@ check_unknown_items() {
 #===============================================================
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$TMUX_MENUS_LOCATION"/scripts/helpers.sh
+. "$TMUX_MENUS_LOCATION"/scripts/helpers_minimal.sh
 
 tmux_vers_check 1.8 || {
     error_msg "$0 can't be used before tmux 1.8" 1
