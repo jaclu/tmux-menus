@@ -642,7 +642,7 @@ case "${env_initialized:-0}" in
         # return 0
         # ;;
 esac
-log_it "[$$] STARTING: scripts/utils/helpers_full.sh for: $0"
+# log_it "[$$] STARTING: scripts/utils/helpers_full.sh for: $0"
 
 #
 #  Convenience shortcuts
@@ -656,6 +656,6 @@ f_min_display_time="$d_cache"/min_display_time
 f_cached_tmux_options="$d_cache"/tmux_options
 
 env_initialized=2 # indicates that env is fully configured
-log_it "[$$] ===  Completed: scripts/utils/helpers_full.sh - $0"
+# log_it "[$$] ===  Completed: scripts/utils/helpers_full.sh - $0"
 
 helpers_full_additional_files_sourced

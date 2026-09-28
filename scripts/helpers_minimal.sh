@@ -641,7 +641,7 @@ path_that_might_be_cached() {
 cfg_log_file="$HOME/tmp/tmux-menus-t2.log"
 log_file_forced=1
 # only run this log_it if cfg_log_file was defined just above
-log_it "[$$] STARTING: scripts/helpers_minimal.sh for: $0"
+# log_it "[$$] STARTING: scripts/helpers_minimal.sh for: $0"
 
 TMUX_BIN="${TMUX_BIN:-tmux}"
 
@@ -706,8 +706,7 @@ rn_current_script="$relative_fname" # saves a fork
 path_that_might_be_cached
 
 env_initialized=1
-
-log_it "[$$] ===  Completed: scripts/helpers_minimal.sh - $0"
+# log_it "[$$] ===  Completed: scripts/helpers_minimal.sh - $0"
 
 [ "$1" = all ] && source_all_helpers
 
