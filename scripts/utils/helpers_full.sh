@@ -633,22 +633,14 @@ parse_move_link_dest() {
 
 case "${env_initialized:-0}" in
     0)
-        [ "${env_initialized:-0}" -lt 1 ] && {
-            # Only source if not done
-
-            # Prevents handle_env_variables to be run by this process
-            # skip_env_check=1
-
-            # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-            . "$TMUX_MENUS_LOCATION"/scripts/helpers_minimal.sh
-        }
+        printf "\n\nERROR: helpers_full.sh - helpers_minial.sh not sourced\n"
+        exit 1
         ;;
     1) ;; # helpers_minimal.sh has been sourced
-    *)
-        # error_msg "helpers_full.sh has already been sourced" ;;
-        log_it "><> =====!!   helpers_full.sh has already been sourced"
-        return 0
-        ;;
+    *) error_msg "helpers_full.sh has already been sourced" ;;
+        # log_it "><> =====!!   helpers_full.sh has already been sourced"
+        # return 0
+        # ;;
 esac
 log_it "[$$] STARTING: scripts/utils/helpers_full.sh for: $0"
 
@@ -663,7 +655,7 @@ f_chksum_custom="$d_cache"/chksum_custom_content
 f_min_display_time="$d_cache"/min_display_time
 f_cached_tmux_options="$d_cache"/tmux_options
 
-helpers_full_additional_files_sourced
-
 env_initialized=2 # indicates that env is fully configured
 log_it "[$$] ===  Completed: scripts/utils/helpers_full.sh - $0"
+
+helpers_full_additional_files_sourced
