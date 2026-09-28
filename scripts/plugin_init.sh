@@ -130,7 +130,7 @@ _d_cache="$TMUX_MENUS_LOCATION"/cache
 }
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$TMUX_MENUS_LOCATION"/scripts/utils/helpers_full.sh
+. "$TMUX_MENUS_LOCATION"/scripts/helpers_minimal.sh all
 
 case "$1" in
     -z) safe_remove "$d_cache" "Clear cache" && echo "$d_cache cleared!" ;;
