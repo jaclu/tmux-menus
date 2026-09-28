@@ -67,7 +67,7 @@ source_all_helpers() {
     #
     #  Sources the full helper environment, if not already loaded.
     #
-    #  Initially, only helpers_minimal.sh is loaded for performance. It includes:
+    #  Initially, only helpers.sh is sourced for performance. It includes:
     #   - log_it / log_it_minimal
     #   - tmux_vers_check
     #   - safe_now & time_span (used by dialog_handling to log render speed)
@@ -215,7 +215,7 @@ source_cached_params() {
 get_config() { # local usage during sourcing
     #
     #  The plugin init .tmux script should NOT depend on this!
-    #  This is used by everything else sourcing helpers_minimal.sh, then trusting
+    #  This is used by everything else sourcing helpers.sh, then trusting
     #  that the param cache is valid if found
     #
     replace_config=false
@@ -641,11 +641,11 @@ path_that_might_be_cached() {
 cfg_log_file="$HOME/tmp/tmux-menus-t2.log"
 log_file_forced=1
 # only run this log_it if cfg_log_file was defined just above
-# log_it "[$$] STARTING: scripts/helpers_minimal.sh for: $0"
+# log_it "[$$] STARTING: scripts/helpers.sh for: $0"
 
 TMUX_BIN="${TMUX_BIN:-tmux}"
 
-[ -n "$env_initialized" ] && error_msg "helpers_minimal already sourced"
+[ -n "$env_initialized" ] && error_msg "helpers_minimal.sh already sourced"
 
 env_initialized=0 # also matches for "" - basic init done
 
@@ -706,7 +706,7 @@ rn_current_script="$relative_fname" # saves a fork
 path_that_might_be_cached
 
 env_initialized=1
-# log_it "[$$] ===  Completed: scripts/helpers_minimal.sh - $0"
+# log_it "[$$] ===  Completed: scripts/helpers.sh - $0"
 
 [ "$1" = all ] && source_all_helpers
 

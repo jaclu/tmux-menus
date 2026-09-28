@@ -6,7 +6,7 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#  Stand aloine log for scripts not sourcing even helpers_minimal.sh
+#  Stand aloine log for scripts not sourcing even helpers.sh
 #
 
 sal_error() {

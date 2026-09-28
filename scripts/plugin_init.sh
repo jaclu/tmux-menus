@@ -130,7 +130,7 @@ _d_cache="$TMUX_MENUS_LOCATION"/cache
 }
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$TMUX_MENUS_LOCATION"/scripts/helpers_minimal.sh all
+. "$TMUX_MENUS_LOCATION"/scripts/helpers.sh all
 
 case "$1" in
     -z) safe_remove "$d_cache" "Clear cache" && echo "$d_cache cleared!" ;;
@@ -149,7 +149,7 @@ esac
 
 #
 # These will only do something during debugging, if cfg_log_file was hardcoded
-# in helpers_minimal.sh or similar...
+# in helpers.sh or similar...
 # So normally silent, and really convenient when working on the code
 #
 log_it

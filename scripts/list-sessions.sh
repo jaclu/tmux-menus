@@ -12,7 +12,7 @@
 skip_env_check=1
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$TMUX_MENUS_LOCATION"/scripts/helpers_minimal.sh
+. "$TMUX_MENUS_LOCATION"/scripts/helpers.sh
 
 cmd="$TMUX_BIN list-sessions"
 if tmux_vers_check 3.2; then

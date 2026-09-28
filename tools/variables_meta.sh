@@ -51,7 +51,7 @@
 #
 
 #===============================================================
-# scripts/helpers_minimal.sh
+# scripts/helpers.sh
 #===============================================================
 
 TMUX_MENUS_LOCATION="${TMUX_MENUS_LOCATION:-}"

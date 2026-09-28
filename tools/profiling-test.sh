@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$TMUX_MENUS_LOCATION"/scripts/helpers_minimal.sh
+. "$TMUX_MENUS_LOCATION"/scripts/helpers.sh
 
 # Set up env for profiling
 export TMUX_MENUS_PROFILING=1

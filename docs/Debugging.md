@@ -9,7 +9,7 @@ code, so that pane has this env variable defined.
 If `@menus_log_file` is defined, it will be used for status updates generated
 by `log_it "msg"`.
 
-The `log_interactive_to_stderr` variable (set in `scripts/helpers_minimal.sh`
+The `log_interactive_to_stderr` variable (set in `scripts/helpers.sh`
 around line 515) controls whether interactive scripts (run from the command
 line) log to `/dev/stderr`. This setting is independent of file-based logging.
 

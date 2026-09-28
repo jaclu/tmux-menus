@@ -636,7 +636,7 @@ case "${env_initialized:-0}" in
         printf "\n\nERROR: helpers_full.sh - helpers_minial.sh not sourced\n"
         exit 1
         ;;
-    1) ;; # helpers_minimal.sh has been sourced
+    1) ;; # helpers.sh has been sourced
     *) error_msg "helpers_full.sh has already been sourced" ;;
         # log_it "><> =====!!   helpers_full.sh has already been sourced"
         # return 0

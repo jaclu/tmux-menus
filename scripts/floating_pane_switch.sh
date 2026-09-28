@@ -9,7 +9,7 @@
 #
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$TMUX_MENUS_LOCATION"/scripts/helpers_minimal.sh
+. "$TMUX_MENUS_LOCATION"/scripts/helpers.sh
 
 tmux_vers_check 3.7 || {
     error_msg "switch_floating_pane() requires tmux 3.7"

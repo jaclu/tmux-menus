@@ -1205,7 +1205,7 @@ do_menu_handling() {
 [ "${env_initialized:-0}" -lt 1 ] && {
     # Only source if not done
     # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-    . "$TMUX_MENUS_LOCATION"/scripts/helpers_minimal.sh
+    . "$TMUX_MENUS_LOCATION"/scripts/helpers.sh
 }
 
 set_menu_env_variables

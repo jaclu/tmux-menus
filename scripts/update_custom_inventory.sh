@@ -226,7 +226,7 @@ custom_items_prepare() {
 #===============================================================
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$TMUX_MENUS_LOCATION"/scripts/helpers_minimal.sh all
+. "$TMUX_MENUS_LOCATION"/scripts/helpers.sh all
 
 template_splitter="CUSTOM_ITEMS_SPLITTER" # items will be inserted at his point
 f_custom_items_template="$TMUX_MENUS_LOCATION"/templates/custom_index_template.sh

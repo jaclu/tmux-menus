@@ -17,7 +17,7 @@ skip_env_check=1
 }
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$TMUX_MENUS_LOCATION"/scripts/helpers_minimal.sh
+. "$TMUX_MENUS_LOCATION"/scripts/helpers.sh
 
 menu_name="${1:-$cfg_main_menu}"
 $menu_name # run it in this env potentiallu suspended by external_dialog_trigger
