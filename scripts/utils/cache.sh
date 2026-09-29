@@ -257,7 +257,7 @@ retrieve_non_tmux_env_vars() {
 }
 
 params_basic() {
-    _cwpp_trigger_key=$(cache_escape_special_chars "$cfg_trigger_key")
+    cfg_trigger_key=$(cache_escape_special_chars "$cfg_trigger_key")
 
     #region params_basic
     printf '%s\n' "\
@@ -268,7 +268,7 @@ params_basic() {
 #  By sourcing this instead of gathering it each time, tons of time
 #  is saved when generating menus.
 
-cfg_trigger_key=\"$_cwpp_trigger_key\"
+cfg_trigger_key=\"$cfg_trigger_key\"
 cfg_no_prefix=$cfg_no_prefix
 cfg_main_menu=\"$cfg_main_menu\"
 cfg_d_menus=\"$cfg_d_menus\"

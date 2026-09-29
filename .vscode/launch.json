@@ -7,7 +7,7 @@
         {
             "type": "bashdb",
             "request": "launch",
-            "name": "Bash-T2 env",
+            "name": "Bash env",
             "cwd": "${workspaceFolder}",
             "program": "${file}",
             "args": [],
@@ -15,6 +15,20 @@
                 // "show_cmds_state": "1",
                 // "TMUX_MENUS_HANDLER": 2,
             // }
+        },
+        {
+            "type": "bashdb",
+            "request": "launch",
+            "name": "Bash-T2 env kajsa",
+            "cwd": "${workspaceFolder}",
+            "program": "${file}",
+            "args": [],
+            "env": {
+                "TMUX_MENUS_LOCATION": "/home/jaclu/t2/tmux/plugins/tmux-menus",
+                "TMUX": "/tmp/tmux-1000/1000-serv2,1935803,0",
+                "TMUX_BIN": "/home/jaclu/.asdf/installs/tmux/3.8-rc2/bin/tmux",
+                "TMUX_OUTER": "/tmp/tmux-1000/1000-default,1631,0",
+            }
         },
         {
             "type": "bashdb",
