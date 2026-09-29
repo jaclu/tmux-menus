@@ -515,6 +515,7 @@ config_setup_cached() {
     "${cfg_use_cache:-false}" || {
         error_msg "config_setup_cached() - Called when caching is disabled"
     }
+    rm -f "$f_no_cache_hint" || error_msg "Failed to remove: $f_no_cache_hint"
     cache_create_folder
 
     # For now cache is always fully cleared on init
