@@ -400,7 +400,17 @@ env_variable_menus_handler() {
 
 #---------------------------------------------------------------
 #
-#   Other
+#   Get Config & Env
+#
+#---------------------------------------------------------------
+
+# read_config() {
+
+# }
+
+#---------------------------------------------------------------
+#
+#   Config
 #
 #---------------------------------------------------------------
 
@@ -453,14 +463,6 @@ config_setup_cached() {
     cache_write_plugin_params
 }
 
-config_setup_un_cached() {
-    "${cfg_use_cache:-false}" && {
-        error_msg "config_setup_un_cached() - Called when caching is enabled"
-    }
-    touch "$f_no_cache_hint"
-    tmux_get_plugin_options
-}
-
 config_setup() {
     # Examins tmux env, and depending on caching config either plainly read
     # tmux.conf, or prepare a f_cache_params
@@ -470,9 +472,14 @@ config_setup() {
         config_setup_cached
     else
         cfg_use_cache=false
-        config_setup_un_cached
     fi
 }
+
+#---------------------------------------------------------------
+#
+#   Other
+#
+#---------------------------------------------------------------
 
 safe_remove() {
     #
