@@ -38,22 +38,27 @@ EOF
 }
 
 find_plugin_path() {
-    if [ -n "$TMUX_PLUGIN_MANAGER_PATH" ]; then
-        # if TMUX_PLUGIN_MANAGER_PATH is defined and it exists, assume it to be valid
-        if [ -d "$TMUX_PLUGIN_MANAGER_PATH" ]; then
-            d_plugins="$TMUX_PLUGIN_MANAGER_PATH"
-            d_plugins="${d_plugins%/}" # Removes a trailing slash if present
-            return 0
-        else
-            msg="Env variable TMUX_PLUGIN_MANAGER_PATH defined, but it does not point"
-            msg="$msg to a valid path: $TMUX_PLUGIN_MANAGER_PATH"
-            error_msg "$msg"
-        fi
+    [ -n "$TMUX_PLUGIN_MANAGER_PATH" ] || {
+        TMUX_PLUGIN_MANAGER_PATH=$(
+            $TMUX_BIN show-environment -g "TMUX_PLUGIN_MANAGER_PATH" \
+                2>/dev/null | cut -d= -f2
+        )
+        [ -n "$TMUX_PLUGIN_MANAGER_PATH" ] || {
+            # Still undefined...
+            error_msg "Could not retrieve TMUX_PLUGIN_MANAGER_PATH via show-environment"
+        }
+        _s="tools/plugins.sh - had to retrieve TMUX_PLUGIN_MANAGER_PATH"
+        _s="$_s via show-environment"
+        log_it "$_s"
+    }
+    # if TMUX_PLUGIN_MANAGER_PATH is defined and it exists, assume it to be valid
+    if [ -d "$TMUX_PLUGIN_MANAGER_PATH" ]; then
+        d_plugins="$TMUX_PLUGIN_MANAGER_PATH"
+        d_plugins="${d_plugins%/}" # Removes a trailing slash if present
+        return 0
     else
-        # msg="Failed to locate plugin folder\n\n"
-        msg="Please set TMUX_PLUGIN_MANAGER_PATH in tmux conf (usually done by tpm)\n\n"
-        msg="${msg}Something like:\n"
-        msg="$msg  set-environment -g TMUX_PLUGIN_MANAGER_PATH \"/some/other/path/\""
+        msg="Env variable TMUX_PLUGIN_MANAGER_PATH defined, but it does not point"
+        msg="$msg to a valid path: $TMUX_PLUGIN_MANAGER_PATH"
         error_msg "$msg"
     fi
 }
