@@ -225,6 +225,8 @@ custom_items_prepare() {
 #
 #===============================================================
 
+TMUX_MENUS_LOCATION=$(cd "${0%/*}/.." && pwd)
+
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 all_helpers=1 . "$TMUX_MENUS_LOCATION"/scripts/helpers.sh
 

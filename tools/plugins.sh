@@ -116,6 +116,8 @@ check_unknown_items() {
 #
 #===============================================================
 
+[ -n "$TMUX_MENUS_LOCATION" ] || TMUX_MENUS_LOCATION=$(cd "${0%/*}/.." && pwd)
+
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$TMUX_MENUS_LOCATION"/scripts/helpers.sh
 
@@ -165,4 +167,10 @@ if ${b_undefined_item:-false}; then
     fi
 fi
 
-wait_to_close_display
+log_it "><> PPID $PPID"
+
+case $TMUX in
+    *,"$PPID",*) wait_to_close_display ;;
+    *) ;;
+esac
+exit 0

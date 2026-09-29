@@ -110,13 +110,13 @@ bind_plugin_key() {
 
 initialize_plugin=true
 
-f_skip_low_tmux_version_warning="$TMUX_MENUS_LOCATION"/.skip_old_tmux_warning
-
 # Set up plugin location in tmux env
 TMUX_BIN="${TMUX_BIN:-tmux}"
 TMUX_MENUS_LOCATION=$(cd "${0%/*}/.." && pwd)
-export TMUX_MENUS_LOCATION
+# export TMUX_MENUS_LOCATION
 $TMUX_BIN set-environment -g TMUX_MENUS_LOCATION "$TMUX_MENUS_LOCATION"
+
+f_skip_low_tmux_version_warning="$TMUX_MENUS_LOCATION"/.skip_old_tmux_warning
 
 _d_cache="$TMUX_MENUS_LOCATION"/cache
 [ -d "$_d_cache" ] && {
