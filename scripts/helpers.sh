@@ -692,19 +692,17 @@ bn_current_script=${0##*/} # same but faster than "$(basename "$0")"
 # Set this as early as possible to be able to calculate the entire menu processing time
 # This depends on cfg_use_timers, so can't be done before config is processed
 
-${initialize_plugin:-false} || {
-    # plugin_init will call config_setup directly, so should not call get_config
-    get_config
-    set_script_start_time
-}
-
 validate_path_script_or_menu "$0"
 rn_current_script="$relative_fname" # saves a fork
 # current_script_no_ext=${rn_current_script%.*} # not used ATM
-
-path_that_might_be_cached
 
 env_initialized=1
 # log_it "[$$] ===  Completed: scripts/helpers.sh - $0"
 
 [ "$all_helpers" = 1 ] && source_all_helpers
+
+${initialize_plugin:-false} || {
+    # plugin_init will call config_setup directly, so should not call get_config
+    get_config
+    set_script_start_time
+}
