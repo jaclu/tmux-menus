@@ -9,12 +9,6 @@
 #  Handling tmux env
 #
 
-set_wt_pasting() {
-    # not a config variable as such, just used as paste buffer for
-    # missing keys and currencies
-    wt_pasting="@tmp_menus_wt_paste_in_progress"
-}
-
 tmux_vers_check_do_compare() {
     # Called fomh helpers.sh:tmux_vers_check() if checked version was not cached
     _v_comp="$1"
@@ -362,7 +356,6 @@ tmux_get_plugin_options() { # new init
         cfg_nav_next="$default_nav_next"
         cfg_nav_prev="$default_nav_prev"
         cfg_nav_home="$default_nav_home"
-        set_wt_pasting
     else
         tmux_get_option cfg_mnu_loc_x "@menus_location_x" "$default_location_x"
         tmux_get_option cfg_mnu_loc_y "@menus_location_y" "$default_location_y"

@@ -11,10 +11,12 @@
             "cwd": "${workspaceFolder}",
             "program": "${file}",
             "args": [],
-            // "env": {
+            "env": {
+                "TMUX_MENUS_LOCATION": "/Users/jaclu/t2/tmux/plugins/tmux-menus",
+                "TMUX_BIN": "/Users/jaclu/.asdf/installs/tmux/3.8-rc2/bin/tmux",
                 // "show_cmds_state": "1",
                 // "TMUX_MENUS_HANDLER": 2,
-            // }
+            }
         },
         {
             "type": "bashdb",

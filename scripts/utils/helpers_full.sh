@@ -325,35 +325,6 @@ get_screen_size_variables() {
 
 #---------------------------------------------------------------
 #
-#   minimal display time to trigger screen might be too small warning
-#
-#---------------------------------------------------------------
-
-check_speed_cutoff() {
-    # if processing was slower than the supplied param, set a higher minimal
-    # display time before triggering "SCREEN might be too small" warning
-    cut_off="$1"
-
-    ${cfg_use_cache:-false} || {
-        t_minimal_display_time=1
-        return
-    }
-    time_span "$t_script_start"
-
-    log_it "-T- check_speed_cutoff($cut_off) - $t_time_span"
-    # _csc_speed_ok=$(echo "$t_time_span < $cut_off" | bc)
-    _csc_speed_ok=$(awk -v ts="$t_time_span" -v co="$cut_off" \
-        'BEGIN { print (ts < co) }')
-    if [ "$_csc_speed_ok" -eq 1 ]; then
-        t_minimal_display_time=0.1
-    else
-        # for slower systems
-        t_minimal_display_time=1
-    fi
-}
-
-#---------------------------------------------------------------
-#
 #   Handling TMUX_MENUS_HANDLER
 #
 #---------------------------------------------------------------
@@ -404,9 +375,135 @@ env_variable_menus_handler() {
 #
 #---------------------------------------------------------------
 
-# read_config() {
+retrieve_non_tmux_env_vars() {
+    # TODO: must be called before params_not_config_2
 
-# }
+    #  ---  retrieve_non_tmux_env_vars  ---
+    # if cached, called at start of cache_write_plugin_params, only after get_env
+    # if not cached called in get_config(), right after tmux_get_plugin_options
+
+    #  ---  params_not_config_2  ---
+    # config_setup_cached - at the end:
+    #   cache_write_plugin_params
+    #     params_not_config_2
+
+    simple_dirname "$cfg_main_menu" silent
+    cfg_d_menus="$_d_simple_dirname"
+
+    d_cache_main_menu="$d_cache/menus"
+
+    # for uncached:
+    # repo_last_changed="$new_repo_last_changed"
+    # last_local_edit="$new_last_local_edit"
+
+}
+
+set_wt_pasting() {
+    # not a config variable as such, just used as paste buffer for
+    # missing keys and currencies
+    wt_pasting="@tmp_menus_wt_paste_in_progress"
+}
+
+check_speed_cutoff() {
+    #   minimal display time to trigger screen might be too small warning
+    # if processing was slower than the supplied param, set a higher minimal
+    # display time before triggering "SCREEN might be too small" warning
+    cut_off="$1"
+
+    ${cfg_use_cache:-false} || {
+        t_minimal_display_time=1
+        return
+    }
+    time_span "$t_script_start"
+
+    log_it "-T- check_speed_cutoff($cut_off) - $t_time_span"
+    # _csc_speed_ok=$(echo "$t_time_span < $cut_off" | bc)
+    _csc_speed_ok=$(awk -v ts="$t_time_span" -v co="$cut_off" \
+        'BEGIN { print (ts < co) }')
+    if [ "$_csc_speed_ok" -eq 1 ]; then
+        t_minimal_display_time=0.1
+    else
+        # for slower systems
+        t_minimal_display_time=1
+    fi
+}
+
+examine_code_base() {
+    #
+    # Examins state of code base, to ensure cache is cleared if anything has been
+    # changed
+    #
+    # Public variables:
+    # new_repo_last_changed - time stamp for latest repo change
+    # new_last_local_edit - timestamp and filename for last local change
+    #
+    env_unmame="$(uname -s)"
+
+    # need to be in repo base dir for the git chcecks below
+    cd "$TMUX_MENUS_LOCATION" || {
+        error_msg "Failed to cd into TMUX_MENUS_LOCATION [$TMUX_MENUS_LOCATION]"
+    }
+
+    #
+    # Log last repo change and if & when latest local changes were done
+    # to ensure any code changes will trigger a cache reset
+    #
+    if command -v git >/dev/null; then
+        # Timestamp for latest change of repo that hs been pulled
+        new_repo_last_changed="$(git log -1 --format="%ad" --date=iso 2>/dev/null)"
+
+        _ecb_modified="$(git ls-files -m 2>/dev/null)"
+        if [ -z "$_ecb_modified" ]; then
+            new_last_local_edit=""
+        else
+            if [ "$env_unmame" = "Darwin" ]; then
+                new_last_local_edit="$(printf '%s\n' "$_ecb_modified" \
+                    | xargs stat -f '%m %N' 2>/dev/null | sort -nr | head -1)"
+            else
+                new_last_local_edit="$(printf '%s\n' "$_ecb_modified" \
+                    | xargs stat -c '%Y %n' 2>/dev/null | sort -nr | head -1)"
+            fi
+        fi
+    else
+        # this check does not depend on git being present
+        log_it "examine_code_base() - no git found"
+        new_repo_last_changed="git not installed"
+
+        # Manually find latest changed file and its mtime
+        if [ "$env_unmame" = "Darwin" ]; then
+            _ecb_newest=$(
+                find . \( -path ./.git -o -path ./cache \) -prune -o -type f \
+                    -exec stat -f '%m %N' {} + 2>/dev/null | sort -rn | head -n 1
+            )
+        else
+            _ecb_newest=$(
+                find . \( -path ./.git -o -path ./cache \) -prune -o -type f \
+                    -exec stat -c '%Y %n' {} + 2>/dev/null | sort -rn | head -n 1
+            )
+        fi
+        _ecb_mtime=${_ecb_newest%% *}
+        _ecb_file=${_ecb_newest#* }
+        new_last_local_edit="$_ecb_mtime $_ecb_file"
+    fi
+    return 0 # Don't return if state...
+}
+
+read_config() {
+    # Called from cache_write_plugin_params() when setting up cache
+    # and for every script when caching is disabled
+
+    cut_off="${1:-06}"
+
+    tmux_get_plugin_options
+    retrieve_non_tmux_env_vars
+    set_wt_pasting
+
+    check_speed_cutoff "$cut_off"
+    examine_code_base
+    cfg_trigger_key=$(cache_escape_special_chars "$cfg_trigger_key")
+    t_delayed_menu_reload=$(awk -v t="$t_minimal_display_time" 'BEGIN { print t + 1 }')
+
+}
 
 #---------------------------------------------------------------
 #
@@ -458,7 +555,6 @@ config_setup_cached() {
         error_msg "$plugin_name needs at least tmux $min_tmux_vers to work properly."
     fi
 
-    tmux_get_plugin_options
     set_script_start_time
     cache_write_plugin_params
 }
@@ -466,12 +562,17 @@ config_setup_cached() {
 config_setup() {
     # Examins tmux env, and depending on caching config either plainly read
     # tmux.conf, or prepare a f_cache_params
-
     if normalize_bool_param "@menus_use_cache" "${default_use_cache:-Yes}"; then
         cfg_use_cache=true
         config_setup_cached
     else
         cfg_use_cache=false
+        touch "$f_no_cache_hint" || {
+            err_msg "config_setup() - failet to touch $f_no_cache_hint"
+        }
+        # Just read the config, don't try to cache it
+        log_it "config_setup() - @menus_use_cache is false, but no f_no_cache_hint"
+        read_config
     fi
 }
 

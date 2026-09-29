@@ -170,91 +170,7 @@ cache_unescape_special_chars() {
     printf '%s\n' "$1" | sed 's/\\\([\\`"$]\)/\1/g'
 }
 
-examine_code_base() {
-    #
-    # Examins state of code base, to ensure cache is cleared if anything has been
-    # changed
-    #
-    # Public variables:
-    # new_repo_last_changed - time stamp for latest repo change
-    # new_last_local_edit - timestamp and filename for last local change
-    #
-    env_unmame="$(uname -s)"
-
-    # need to be in repo base dir for the git chcecks below
-    cd "$TMUX_MENUS_LOCATION" || {
-        error_msg "Failed to cd into TMUX_MENUS_LOCATION [$TMUX_MENUS_LOCATION]"
-    }
-
-    #
-    # Log last repo change and if & when latest local changes were done
-    # to ensure any code changes will trigger a cache reset
-    #
-    if command -v git >/dev/null; then
-        # Timestamp for latest change of repo that hs been pulled
-        new_repo_last_changed="$(git log -1 --format="%ad" --date=iso 2>/dev/null)"
-
-        _ecb_modified="$(git ls-files -m 2>/dev/null)"
-        if [ -z "$_ecb_modified" ]; then
-            new_last_local_edit=""
-        else
-            if [ "$env_unmame" = "Darwin" ]; then
-                new_last_local_edit="$(printf '%s\n' "$_ecb_modified" \
-                    | xargs stat -f '%m %N' 2>/dev/null | sort -nr | head -1)"
-            else
-                new_last_local_edit="$(printf '%s\n' "$_ecb_modified" \
-                    | xargs stat -c '%Y %n' 2>/dev/null | sort -nr | head -1)"
-            fi
-        fi
-    else
-        # this check does not depend on git being present
-        log_it "examine_code_base() - no git found"
-        new_repo_last_changed="git not installed"
-
-        # Manually find latest changed file and its mtime
-        if [ "$env_unmame" = "Darwin" ]; then
-            _ecb_newest=$(
-                find . \( -path ./.git -o -path ./cache \) -prune -o -type f \
-                    -exec stat -f '%m %N' {} + 2>/dev/null | sort -rn | head -n 1
-            )
-        else
-            _ecb_newest=$(
-                find . \( -path ./.git -o -path ./cache \) -prune -o -type f \
-                    -exec stat -c '%Y %n' {} + 2>/dev/null | sort -rn | head -n 1
-            )
-        fi
-        _ecb_mtime=${_ecb_newest%% *}
-        _ecb_file=${_ecb_newest#* }
-        new_last_local_edit="$_ecb_mtime $_ecb_file"
-    fi
-    return 0 # Don't return if state...
-}
-
-retrieve_non_tmux_env_vars() {
-    # TODO: must be called before params_not_config_2
-
-    #  ---  retrieve_non_tmux_env_vars  ---
-    # if cached, called at start of cache_write_plugin_params, only after get_env
-    # if not cached called in get_config(), right after tmux_get_plugin_options
-
-    #  ---  params_not_config_2  ---
-    # config_setup_cached - at the end:
-    #   cache_write_plugin_params
-    #     params_not_config_2
-
-    simple_dirname "$cfg_main_menu" silent
-    cfg_d_menus="$_d_simple_dirname"
-
-    d_cache_main_menu="$d_cache/menus"
-
-    # for uncached:
-    # repo_last_changed="$new_repo_last_changed"
-    # last_local_edit="$new_last_local_edit"
-
-}
-
 params_basic() {
-    cfg_trigger_key=$(cache_escape_special_chars "$cfg_trigger_key")
 
     #region params_basic
     printf '%s\n' "\
@@ -357,7 +273,6 @@ params_tmux_plugins_manager_path() {
 }
 
 params_not_config() {
-    _mnu_reload_delay=$(awk -v t="$t_minimal_display_time" 'BEGIN { print t + 1 }')
     safe_now # ensure selected_safe_now_mthd has been detected
     #region params_not_config_1
     # shellcheck disable=SC2154 # selected_safe_now_mthd defined via safe_now
@@ -378,7 +293,7 @@ selected_safe_now_mthd=$selected_safe_now_mthd
 # effect before menu is displayed. This time is estimated based on computer
 # performance during plugin initialisation.
 #
-t_delayed_menu_reload=$_mnu_reload_delay
+t_delayed_menu_reload=$t_delayed_menu_reload
 
 #
 # Get time stamps for repo and local file changes,
@@ -460,14 +375,11 @@ cache_write_plugin_params() {
     #  Writes all config params to file
     #  if it differed with previous params, clear cache
     #
-
-    retrieve_non_tmux_env_vars
+    read_config 0.5
 
     ${cfg_use_cache:-false} || error_msg "cache_write_plugin_params() - called when not using cache"
 
     # cloud node .22 jacmac .25 jacpad 2.5 jacdoid 1
-    check_speed_cutoff 0.5
-    examine_code_base
 
     _f_params_tmp=$(mktemp -t tmux-menus-plugins-params.XXXXXX) || {
         error_msg "cache_write_plugin_params() - Failed to create tmp config file"

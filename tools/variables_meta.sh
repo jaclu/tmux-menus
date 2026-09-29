@@ -170,6 +170,8 @@ f_cached_tmux_options="${f_cached_tmux_options:-}"
 f_chksum_custom="${f_chksum_custom:-}"
 f_custom_items_index="${f_custom_items_index:-}"
 f_min_display_time="${f_min_display_time:-}"
+new_last_local_edit="${new_last_local_edit:-}"
+new_repo_last_changed="${new_repo_last_changed:-}"
 
 #===============================================================
 # scripts/utils/tmux.sh
