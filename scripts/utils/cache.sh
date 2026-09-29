@@ -130,8 +130,9 @@ cached_bad_tmux_versions=\"$cached_bad_tmux_versions\"" >"$f_cache_known_tmux_ve
 }
 
 cache_escape_special_chars() {
-    _s="$1"
+    _in="$1"
     _out=""
+    _s="$_in"
     while [ -n "$_s" ]; do
         _c=${_s%"${_s#?}"} # first char of $_s
         _rest=${_s#?}      # $_s minus first char
@@ -163,6 +164,9 @@ cache_escape_special_chars() {
         esac
         _s="$_rest"
     done
+    [ "$_in" = "$_out" ] || {
+        log_it "cache_escape_special_chars() - Changed: _in[$_in] _out[$_out]"
+    }
     printf '%s\n' "$_out"
 }
 
