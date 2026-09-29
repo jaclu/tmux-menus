@@ -707,5 +707,4 @@ path_that_might_be_cached
 env_initialized=1
 # log_it "[$$] ===  Completed: scripts/helpers.sh - $0"
 
-[ "$1" = all ] && source_all_helpers
-
+[ "$all_helpers" = 1 ] && source_all_helpers

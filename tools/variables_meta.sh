@@ -63,6 +63,7 @@ bn_current_script="${bn_current_script:-}"
 cfg_log_file="${cfg_log_file:-}"
 
 _d_simple_dirname="${_d_simple_dirname:-}"
+all_helpers="${all_helpers:-}"
 cfg_use_cache="${cfg_use_cache:-}"
 current_tmux_vers="${current_tmux_vers:-}"
 current_tmux_vers_i="${current_tmux_vers_i:-}"
