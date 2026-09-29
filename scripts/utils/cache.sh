@@ -15,10 +15,6 @@
 #
 #---------------------------------------------------------------
 
-get_env() {
-    [ -n "$env_unmame" ] || env_unmame="$(uname -s)"
-}
-
 cache_create_folder() {
     ${cfg_use_cache:-false} || error_msg "cache_create_folder() - called when cache is disabled"
     [ -z "$d_cache" ] && {
@@ -183,6 +179,7 @@ examine_code_base() {
     # new_repo_last_changed - time stamp for latest repo change
     # new_last_local_edit - timestamp and filename for last local change
     #
+    env_unmame="$(uname -s)"
 
     # need to be in repo base dir for the git chcecks below
     cd "$TMUX_MENUS_LOCATION" || {
@@ -463,7 +460,7 @@ cache_write_plugin_params() {
     #  Writes all config params to file
     #  if it differed with previous params, clear cache
     #
-    get_env
+
     retrieve_non_tmux_env_vars
 
     ${cfg_use_cache:-false} || error_msg "cache_write_plugin_params() - called when not using cache"
