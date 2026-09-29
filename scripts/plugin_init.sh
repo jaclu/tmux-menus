@@ -74,11 +74,8 @@ bind_plugin_key() {
     fi
     cmd="$cmd \"$_bpk_key\" run-shell $bind_cmd"
 
-    tmux_get_option _f_main_menu_override "@menus_main_menu" "-"
-    # SC2154: variable assigned dynamically by tmux_get_option using eval
-    # shellcheck disable=SC2154
-    [ "$_f_main_menu_override" != "-" ] && {
-        log_it "Alternate main menu: $_f_main_menu_override"
+    [ "$cfg_main_menu" = "$default_main_menu" ] || {
+        log_it "Alternate main menu: $cfg_main_menu"
     }
 
     [ "$TMUX_MENUS_NO_DISPLAY" = "1" ] && {
@@ -179,6 +176,7 @@ fi
 # Key is not bound until cache (if allowed) has been prepared, so normally
 # no menus will be triggered by the user before this
 #
+log_it "cfg_trigger_key [$cfg_trigger_key]"
 bind_plugin_key "$cfg_trigger_key"
 consider_secondary_default
 
