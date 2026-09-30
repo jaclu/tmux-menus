@@ -80,6 +80,7 @@ f_cached_tmux_key_binds="${f_cached_tmux_key_binds:-}"
 f_ext_dlg_trigger="${f_ext_dlg_trigger:-}"
 f_max_25_line_menus="${f_max_25_line_menus:-}"
 f_no_cache_hint="${f_no_cache_hint:-}"
+f_previous_alt_handler="${f_previous_alt_handler:-}"
 f_safe_now_method="${f_safe_now_method:-}"
 initialize_plugin="${initialize_plugin:-}"
 log_file_forced="${log_file_forced:-}" # debug variable, normally not defined
@@ -93,6 +94,7 @@ t_minimal_display_time="${t_minimal_display_time:-}"
 t_script_start="${t_script_start:-}"
 t_time_span="${t_time_span:-}"
 tpt_vers_digits="${tpt_vers_digits:-}"
+TMUX="${TMUX:-}"
 
 #===============================================================
 # scripts/floating_pane_helpers.sh

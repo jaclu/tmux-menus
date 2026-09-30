@@ -14,8 +14,9 @@
             "env": {
                 "TMUX_MENUS_LOCATION": "/Users/jaclu/t2/tmux/plugins/tmux-menus",
                 "TMUX_BIN": "/Users/jaclu/.asdf/installs/tmux/3.8-rc2/bin/tmux",
+                "TMUX": "/private/tmp/tmux-501/501-serv2,51966,0",
+                "TMUX_MENUS_HANDLER": 1,
                 // "show_cmds_state": "1",
-                // "TMUX_MENUS_HANDLER": 2,
             }
         },
         {

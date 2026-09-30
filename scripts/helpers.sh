@@ -254,41 +254,35 @@ get_config() { # local usage during sourcing
 #
 #---------------------------------------------------------------
 
-item_handler_changed() {
-    # Was manual can not remember why - replaced with safe_remove
-    # [ -d "$d_cache_main_menu" ] && {
-    #     rm -rf "$d_cache_main_menu" || {
-    #         error_msg "Failed to clear: $d_cache_main_menu"
-    #     }
-    # }
-    path_that_might_be_cached
-    retrieve_non_tmux_env_vars
-    safe_remove "$d_cache_main_menu" "item_handler_changed()"
-
-    [ -n "$alt_menu_handler" ] && {
-        echo "$alt_menu_handler" >"$f_alt_handler_in_use" || {
-            error_msg "Failed to write: $f_alt_handler_in_use"
-        }
+alt_handler_investigate() {
+    log_it "><> alt_handler_investigate()"
+    ${b_all_helpers_sourced:-false} || {
+        source_all_helpers "get_config() - failed to source cached params"
     }
-    _s="Cleared cache, since alt_menu_handler [$alt_menu_handler] is now used"
-    log_it "$_s"
+    check_alt_handler_changed && {
+        $cfg_use_cache && {
+            config_setup_cached
+        }
+        read_config
+    }
 }
 
-alt_handler_status_check() {
-    if "${b_whiptail_forced:-false}"; then
-        previous_alt_handler=$(cat "$f_alt_handler_in_use" 2>/dev/null)
-        case "$previous_alt_handler" in
-            whiptail) [ "$alt_menu_handler" != whiptail ] && item_handler_changed ;;
-            dialog) [ "$alt_menu_handler" != dialog ] && item_handler_changed ;;
-            "") item_handler_changed ;;
-            *) error_msg "invalid previous_alt_handler [$previous_alt_handler]" ;;
-        esac
-    else
-        [ -f "$f_alt_handler_in_use" ] && {
-            item_handler_changed
-            safe_remove "$f_alt_handler_in_use" "Clearing alt-handler status"
+check_alt_handler_state() {
+    # if entitrely unset, just return, otherwise inspect current state for change
+    log_it "><> check_alt_handler_state()"
+
+    if [ -z "$TMUX_MENUS_HANDLER" ]; then
+        [ -f "$f_previous_alt_handler" ] || {
+            # neither env variable nor hint file set
+            return
         }
+        # if tmux_vers_check 3.0 && [ -z "$alt_menu_handler" ]; then
+        #     # TMUX_MENUS_HANDLER previously set, no longer the case
+        #     alt_handler_investigate
+        #     return
+        # fi
     fi
+    alt_handler_investigate
 }
 
 handle_env_variables() { # local usage by get_config()
@@ -297,13 +291,7 @@ handle_env_variables() { # local usage by get_config()
     # TMUX_MENUS_LOGGING_MINIMAL - is handled directly by log_it() - no config needed
     # TMUX_MENUS_NO_DISPLAY -  is handled directly - no config needed
     # TMUX_MENUS_PROFILING - is handled directly - no config needed
-    [ -n "$TMUX_MENUS_HANDLER" ] && {
-        ${b_all_helpers_sourced:-false} || {
-            source_all_helpers "item_handler_changed()"
-        }
-        env_variable_menus_handler
-    }
-    alt_handler_status_check
+    check_alt_handler_state # handles state of TMUX_MENUS_HANDLER
 }
 
 #---------------------------------------------------------------
@@ -594,26 +582,6 @@ base_path_not_defined() {
     exit 1
 }
 
-path_that_might_be_cached() {
-    # Some files that will go into TMPDIR if caching is disabled, can be called
-    # multiple times if cache state might have changed
-
-    if "${cfg_use_cache:-false}"; then
-        _d="$d_cache"
-    else
-        _d="$d_tmp"
-    fi
-
-    d_safe_tmp_folder="$_d" # base path that can be used
-
-    # Can be re-routed to cache once it is known if it is allowed
-    f_max_25_line_menus="$_d"/height-max-25-lines # hint to avoid excessive menus
-    f_alt_handler_in_use="$_d"/alt_handler_in_use
-
-    # This allows 'Display Commands' even when cache is disabled
-    f_cached_tmux_key_binds="$_d"/tmux_key_binds
-}
-
 #===============================================================
 #
 #   Main
@@ -673,6 +641,11 @@ d_cache_menus="$d_cache"/menus
 f_cache_known_tmux_vers="$d_cache"/known_tmux_versions
 f_cache_params="$d_cache"/plugin_params
 f_safe_now_method="$d_cache"/safe_now_method
+
+# caching needs to be cleared if alt_handler is changed...
+tmux_client_pid=${TMUX#*,}
+tmux_client_pid=${tmux_client_pid%%,*}
+f_previous_alt_handler="$d_cache/tmux-previous-alt_handler-$tmux_client_pid"
 
 f_ext_dlg_trigger="$d_scripts/external_dialog_trigger.sh"
 scr_float_pane_switch="$d_scripts/floating_pane_switch.sh"

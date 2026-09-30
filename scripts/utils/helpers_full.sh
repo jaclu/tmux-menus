@@ -325,48 +325,110 @@ get_screen_size_variables() {
 
 #---------------------------------------------------------------
 #
-#   Handling TMUX_MENUS_HANDLER
+#   Handling alt_handler
 #
 #---------------------------------------------------------------
 
-set_alt_handler() {
-    _cmd="$1"
-    [ -z "$_cmd" ] && {
-        # No alt handler
-        b_whiptail_forced=false
-        alt_menu_handler=""
-        return
-    }
-
-    if command -v "$_cmd" >/dev/null; then
-        alt_menu_handler="$_cmd"
-    else
-        error_msg "$_cmd not available, plugin aborted"
-    fi
-    b_whiptail_forced=true
-    set_wt_pasting # if we started of with no alt handler this is not in plugin_params
-    log_it "NOTICE: $_cmd is selected due to TMUX_MENUS_HANDLER=$TMUX_MENUS_HANDLER"
+set_wt_pasting() {
+    # not a config variable as such, just used as paste buffer for
+    # missing keys and currencies
+    log_it "><> set_wt_pasting()"
+    wt_pasting="@tmp_menus_wt_paste_in_progress"
 }
 
-env_variable_menus_handler() {
-    # handles TMUX_MENUS_HANDLER
-
-    case "$TMUX_MENUS_HANDLER" in
-        0) set_alt_handler ;;
-        1) set_alt_handler whiptail ;;
-        2) set_alt_handler dialog ;;
-        *)
-            msg="TMUX_MENUS_HANDLER=$TMUX_MENUS_HANDLER - valid options: 0 1 2"
-            error_msg "$msg"
+save_alt_handler_by_number() {
+    _tmh="$TMUX_MENUS_HANDLER"
+    log_it "><> save_alt_handler_by_number() $_tmh"
+    case "$_tmh" in
+        0 | 1 | 2)
+            echo "$TMUX_MENUS_HANDLER" >"$f_previous_alt_handler" || {
+                error_msg "save_alt_handler_by_number() - Write fail: $f_previous_alt_handler"
+            }
+            log_it "save_alt_handler_by_number() - Updated: $f_previous_alt_handler"
             ;;
-    esac
+        "")
+            safe_remove "$f_previous_alt_handler" \
+                "save_alt_handler_by_number() - removing: $f_previous_alt_handler"
+            log_it "save_alt_handler_by_number() - Cleared: $f_previous_alt_handler"
+            ;;
 
+        *) error_msg "save_alt_handler_by_number() - inbalid TMUX_MENUS_HANDLER: $_tmh" ;;
+    esac
+}
+
+update_prev_alt_handler() {
+    log_it "><> update_prev_alt_handler()"
+    save_alt_handler_by_number
     if [ -n "$alt_menu_handler" ]; then
-        {
-            cfg_display_cmds=false
-            cfg_show_key_hints=false
-        }
+        log_it "update_prev_alt_handler() - Cleared: $f_previous_alt_handler"
+    else
+        log_it "update_prev_alt_handler() - Cleared: $f_previous_alt_handler"
     fi
+}
+
+set_alt_handler() {
+    log_it "><> set_alt_handler()"
+    _cmd="$1"
+    if [ -z "$_cmd" ]; then
+        # No alt handler
+        alt_menu_handler=""
+        b_whiptail_forced=false
+        # cfg_display_cmds & cfg_show_key_hints remains as set in tmux.conf
+    else
+        if command -v "$_cmd" >/dev/null; then
+            alt_menu_handler="$_cmd"
+        else
+            error_msg "$_cmd not available, plugin aborted"
+        fi
+        b_whiptail_forced=true
+        set_wt_pasting           # if we started of with no alt handler this is not in plugin_params
+        cfg_display_cmds=false   # Forced off due to alt_handler
+        cfg_show_key_hints=false # Forced off due to alt_handler
+    fi
+    update_prev_alt_handler # to ensure changes are detected
+}
+
+check_alt_handler() {
+    log_it "><> check_alt_handler()"
+    case "$TMUX_MENUS_HANDLER" in
+        0) set_alt_handler ;; # disable it
+        1)
+            set_alt_handler whiptail
+            ;;
+        2)
+            set_alt_handler dialog
+            ;;
+        "")
+            if tmux_vers_check 3.0; then
+                set_alt_handler # disable it
+            else
+                #
+                # if on next plugin_setup a menus able tmux is detected the relevant
+                # additional settings will be cached
+                if command -v whiptail >/dev/null; then
+                    set_alt_handler whiptail
+                elif command -v dialog >/dev/null; then
+                    set_alt_handler dialog
+                else
+                    error_msg "check_alt_handler() - Neither whiptail nor dialog found, plugin aborted"
+                fi
+            fi
+            log_it "Due to tmux < 3.0 selected alt_menu_handler is: $alt_menu_handler"
+            ;;
+        *) error_msg "check_alt_handler() - TMUX_MENUS_HANDLER invalid: $TMUX_MENUS_HANDLER" ;;
+    esac
+}
+
+check_alt_handler_changed() {
+    log_it "><> check_alt_handler_changed()"
+    if [ -f "$f_previous_alt_handler" ] && [ "$(cat "$f_previous_alt_handler" 2>/dev/null)" != "$TMUX_MENUS_HANDLER" ]; then
+        check_alt_handler
+        return 0
+    elif [ -n "$TMUX_MENUS_HANDLER" ]; then
+        check_alt_handler
+        return 0
+    fi
+    return 1
 }
 
 #---------------------------------------------------------------
@@ -396,12 +458,6 @@ retrieve_non_tmux_env_vars() {
     # repo_last_changed="$new_repo_last_changed"
     # last_local_edit="$new_last_local_edit"
 
-}
-
-set_wt_pasting() {
-    # not a config variable as such, just used as paste buffer for
-    # missing keys and currencies
-    wt_pasting="@tmp_menus_wt_paste_in_progress"
 }
 
 check_speed_cutoff() {
@@ -491,12 +547,13 @@ examine_code_base() {
 read_config() {
     # Called from cache_write_plugin_params() when setting up cache
     # and for every script when caching is disabled
+    log_it "><> read_config()"
 
     cut_off="${1:-06}"
 
     tmux_get_plugin_options
     retrieve_non_tmux_env_vars
-    set_wt_pasting
+    check_alt_handler
 
     check_speed_cutoff "$cut_off"
     examine_code_base
@@ -512,6 +569,7 @@ read_config() {
 #---------------------------------------------------------------
 
 config_setup_cached() {
+    log_it "><> config_setup_cached()"
     "${cfg_use_cache:-false}" || {
         error_msg "config_setup_cached() - Called when caching is disabled"
     }
