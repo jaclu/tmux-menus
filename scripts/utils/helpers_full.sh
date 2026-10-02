@@ -377,7 +377,6 @@ set_alt_handler() {
     if [ -z "$_cmd" ]; then
         # No alt handler
         alt_menu_handler=""
-        b_whiptail_forced=false
         # cfg_display_cmds & cfg_show_key_hints remains as set in tmux.conf
     else
         if command -v "$_cmd" >/dev/null; then
@@ -385,7 +384,6 @@ set_alt_handler() {
         else
             error_msg "$_cmd not available, plugin aborted"
         fi
-        b_whiptail_forced=true
         set_wt_pasting           # if we started of with no alt handler this is not in plugin_params
         cfg_display_cmds=false   # Forced off due to alt_handler
         cfg_show_key_hints=false # Forced off due to alt_handler
