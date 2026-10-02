@@ -340,13 +340,18 @@ save_alt_handler_by_number() {
     _tmh="$TMUX_MENUS_HANDLER"
     log_it "><> save_alt_handler_by_number() $_tmh"
     case "$_tmh" in
-        0 | 1 | 2)
+        1 | 2)
             echo "$TMUX_MENUS_HANDLER" >"$f_previous_alt_handler" || {
                 error_msg "save_alt_handler_by_number() - Write fail: $f_previous_alt_handler"
             }
             log_it "save_alt_handler_by_number() - Updated: $f_previous_alt_handler"
             ;;
-        "")
+        0 | "")
+            [ "$TMUX_MENUS_HANDLER" = 0 ] && {
+                # interpret 0 as unset
+                log_it "TMUX_MENUS_HANDLER=0 is unset"
+                TMUX_MENUS_HANDLER=""
+            }
             safe_remove "$f_previous_alt_handler" \
                 "save_alt_handler_by_number() - removing: $f_previous_alt_handler"
             log_it "save_alt_handler_by_number() - Cleared: $f_previous_alt_handler"
@@ -367,7 +372,7 @@ update_prev_alt_handler() {
 }
 
 set_alt_handler() {
-    log_it "><> set_alt_handler()"
+    log_it "><> set_alt_handler() $1"
     _cmd="$1"
     if [ -z "$_cmd" ]; then
         # No alt handler
@@ -388,8 +393,8 @@ set_alt_handler() {
     update_prev_alt_handler # to ensure changes are detected
 }
 
-check_alt_handler() {
-    log_it "><> check_alt_handler()"
+select_alt_handler() {
+    log_it "><> select_alt_handler()"
     case "$TMUX_MENUS_HANDLER" in
         0) set_alt_handler ;; # disable it
         1)
@@ -410,25 +415,20 @@ check_alt_handler() {
                 elif command -v dialog >/dev/null; then
                     set_alt_handler dialog
                 else
-                    error_msg "check_alt_handler() - Neither whiptail nor dialog found, plugin aborted"
+                    error_msg "select_alt_handler() - Neither whiptail nor dialog found, plugin aborted"
                 fi
             fi
             log_it "Due to tmux < 3.0 selected alt_menu_handler is: $alt_menu_handler"
             ;;
-        *) error_msg "check_alt_handler() - TMUX_MENUS_HANDLER invalid: $TMUX_MENUS_HANDLER" ;;
+        *) error_msg "select_alt_handler() - TMUX_MENUS_HANDLER invalid: $TMUX_MENUS_HANDLER" ;;
     esac
-}
 
-check_alt_handler_changed() {
-    log_it "><> check_alt_handler_changed()"
-    if [ -f "$f_previous_alt_handler" ] && [ "$(cat "$f_previous_alt_handler" 2>/dev/null)" != "$TMUX_MENUS_HANDLER" ]; then
-        check_alt_handler
-        return 0
-    elif [ -n "$TMUX_MENUS_HANDLER" ]; then
-        check_alt_handler
-        return 0
-    fi
-    return 1
+    # assume alt_handler was changed, re-create plugin_params and read config
+
+    # rm -rf "$_d_cache" || {
+    #     echo "ERROR: tmux-menus innit, clearing previous cache: $_d_cache"
+    #     exit 1
+    # }
 }
 
 #---------------------------------------------------------------
@@ -553,7 +553,7 @@ read_config() {
 
     tmux_get_plugin_options
     retrieve_non_tmux_env_vars
-    check_alt_handler
+    select_alt_handler
 
     check_speed_cutoff "$cut_off"
     examine_code_base

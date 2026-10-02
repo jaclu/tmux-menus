@@ -254,35 +254,37 @@ get_config() { # local usage during sourcing
 #
 #---------------------------------------------------------------
 
-alt_handler_investigate() {
-    log_it "><> alt_handler_investigate()"
-    ${b_all_helpers_sourced:-false} || {
-        source_all_helpers "get_config() - failed to source cached params"
-    }
-    check_alt_handler_changed && {
+check_alt_handler_changed() {
+    log_it "><> check_alt_handler_changed()"
+
+    # Special case short circuit non relevant setting
+    [ "$TMUX_MENUS_HANDLER" = 0 ] && [ ! -f "$f_previous_alt_handler" ] && return
+
+    if {
+        [ -n "$TMUX_MENUS_HANDLER" ] \
+            && {
+                [ ! -f "$f_previous_alt_handler" ] \
+                    || [ "$(cat "$f_previous_alt_handler" 2>/dev/null)" != "$TMUX_MENUS_HANDLER" ]
+            }
+    } || {
+        [ -z "$TMUX_MENUS_HANDLER" ] \
+            && [ -f "$f_previous_alt_handler" ]
+    }; then
+        ${b_all_helpers_sourced:-false} || {
+            source_all_helpers "get_config() - failed to source cached params"
+        }
+        select_alt_handler
+
+        # assume alt_handler was changed, re-create plugin_params if relevant
+        # and read config
+        safe_remove "$d_cache_menus" "check_alt_handler_changed() - handler change"
         $cfg_use_cache && {
             config_setup_cached
         }
         read_config
-    }
-}
-
-check_alt_handler_state() {
-    # if entitrely unset, just return, otherwise inspect current state for change
-    log_it "><> check_alt_handler_state()"
-
-    if [ -z "$TMUX_MENUS_HANDLER" ]; then
-        [ -f "$f_previous_alt_handler" ] || {
-            # neither env variable nor hint file set
-            return
-        }
-        # if tmux_vers_check 3.0 && [ -z "$alt_menu_handler" ]; then
-        #     # TMUX_MENUS_HANDLER previously set, no longer the case
-        #     alt_handler_investigate
-        #     return
-        # fi
+    else
+        log_it "><> alt_handler state unchnged"
     fi
-    alt_handler_investigate
 }
 
 handle_env_variables() { # local usage by get_config()
@@ -291,7 +293,9 @@ handle_env_variables() { # local usage by get_config()
     # TMUX_MENUS_LOGGING_MINIMAL - is handled directly by log_it() - no config needed
     # TMUX_MENUS_NO_DISPLAY -  is handled directly - no config needed
     # TMUX_MENUS_PROFILING - is handled directly - no config needed
-    check_alt_handler_state # handles state of TMUX_MENUS_HANDLER
+    [ -n "$TMUX_MENUS_HANDLER" ] || [ -f "$f_previous_alt_handler" ] && {
+        check_alt_handler_changed
+    }
 }
 
 #---------------------------------------------------------------
