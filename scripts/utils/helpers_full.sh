@@ -415,8 +415,8 @@ select_alt_handler() {
                 else
                     error_msg "select_alt_handler() - Neither whiptail nor dialog found, plugin aborted"
                 fi
+                log_it "Due to tmux < 3.0 selected alt_menu_handler is: $alt_menu_handler"
             fi
-            log_it "Due to tmux < 3.0 selected alt_menu_handler is: $alt_menu_handler"
             ;;
         *) error_msg "select_alt_handler() - TMUX_MENUS_HANDLER invalid: $TMUX_MENUS_HANDLER" ;;
     esac
