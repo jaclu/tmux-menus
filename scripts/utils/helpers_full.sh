@@ -325,6 +325,111 @@ get_screen_size_variables() {
 
 #---------------------------------------------------------------
 #
+#   Binding plugin key(-s)
+#
+#---------------------------------------------------------------
+
+bind_plugin_key() {
+    _bpk_key="$1"
+    [ -z "$_bpk_key" ] && error_msg "bind_plugin_key() - No param"
+
+    # shellcheck disable=SC1003 # false positive: this is a literal backslash pattern, not an escape attempt
+    case "$_bpk_key" in
+        '\') _bpk_key='\\' ;; # needs to be escaped
+        *) ;;
+    esac
+
+    bind_cmd="$cfg_main_menu"
+    if [ -n "$alt_menu_handler" ]; then
+        bind_cmd="$f_ext_dlg_trigger"
+        [ "$alt_menu_handler_announced" != 1 ] && {
+            alt_menu_handler_announced=1 # avoid logging it twice if secondary default is used
+            log_it "Alternate menu handler: $alt_menu_handler"
+        }
+    fi
+    cmd="bind-key"
+    ${use_bind_key_notes:-false} && cmd="$cmd -N \"plugin ${plugin_name}\""
+
+    u=$(cache_unescape_special_chars "$_bpk_key")
+    if $cfg_no_prefix; then
+        cmd="$cmd -n"
+        trigger_announce="Menus will be bound to: $u"
+    else
+        trigger_announce="Menus will be bound to: <prefix> $u"
+    fi
+    cmd="$cmd \"$_bpk_key\" run-shell $bind_cmd"
+
+    [ "$cfg_main_menu" = "$default_main_menu" ] || {
+        log_it "Alternate main menu: $cfg_main_menu"
+    }
+
+    [ "$TMUX_MENUS_NO_DISPLAY" = "1" ] && {
+        # used for debugging menu builds
+        log_it "Due to TMUX_MENUS_NO_DISPLAY terminating before binding trigger _bpk_key"
+        exit 0
+    }
+
+    [ ! -f "$f_skip_low_tmux_version_warning" ] && ! tmux_vers_check 1.8 && {
+        msg="Due to tmux($current_tmux_vers) < 1.8 user options can not be processed.\n\n"
+        msg="${msg}The tmux-menus plugin will be bound to its default key: $_bpk_key"
+        msg="${msg} \n\nAll other options will also use their defaults.\n\n"
+        msg="${msg}  tools/show_config.sh will display current settings.\n\n"
+        msg="${msg}To avoid seeing this message again - do:\n"
+        msg="${msg}  touch $f_skip_low_tmux_version_warning"
+        display_formatted_message "$msg"
+    }
+
+    eval "$TMUX_BIN" "$cmd" || {
+        error_msg "Failed to bind trigger: $_bpk_key"
+    }
+
+    log_it_minimal "$trigger_announce"
+}
+
+is_key_enter_available() {
+    # Clunky but version independent approach
+    enter_in_use=0
+    if tmux_vers_check 2.1; then
+        "$TMUX_BIN" list-keys -T prefix | awk '{ print $4 }' | grep -q Enter && enter_in_use=1
+    else
+        "$TMUX_BIN" list-keys | awk '{ print $2 }' | grep -q Enter && enter_in_use=1
+    fi
+    [ "$enter_in_use" = 1 ] && {
+        return 1
+    }
+    return 0
+}
+
+consider_secondary_default() {
+    # Secondary default: <prefix> Enter for non-US keyboards where \ is impractical
+    # Only if @menus_trigger not defined and Enter is available
+    _csd_skip=0
+    if [ -f "$f_cached_tmux_options" ]; then
+        grep -q @menus_trigger "$f_cached_tmux_options" && _csd_skip=1
+    else
+        # assume cachless state
+        $TMUX_BIN show-option -gv @menus_trigger 2>/dev/null \
+            | grep -vq "$cfg_force_unset" && _csd_skip=1
+    fi
+    [ "$_csd_skip" = 1 ] && {
+        # since a @menus_trigger is defined in tmux.conf, assume user knows how
+        # to configure things, and skip secondary default
+        return 1
+    }
+    is_key_enter_available && {
+        cfg_no_prefix=false # disable skip prefix for this secondary default
+        bind_plugin_key Enter
+    }
+}
+
+set_plugin_key() {
+    log_it "><> set_plugin_key() alt_menu_handler=$alt_menu_handler"
+    bind_plugin_key "$cfg_trigger_key"
+    consider_secondary_default
+}
+
+#---------------------------------------------------------------
+#
 #   Handling alt_handler
 #
 #---------------------------------------------------------------
@@ -338,13 +443,13 @@ set_wt_pasting() {
 
 save_alt_handler_by_number() {
     _tmh="$TMUX_MENUS_HANDLER"
-    log_it "><> save_alt_handler_by_number() $_tmh"
+    # log_it "><> save_alt_handler_by_number() $_tmh"
     case "$_tmh" in
         1 | 2)
             echo "$TMUX_MENUS_HANDLER" >"$f_previous_alt_handler" || {
                 error_msg "save_alt_handler_by_number() - Write fail: $f_previous_alt_handler"
             }
-            log_it "save_alt_handler_by_number() - Updated: $f_previous_alt_handler"
+            # log_it "save_alt_handler_by_number() - Updated: $f_previous_alt_handler"
             ;;
         0 | "")
             [ "$TMUX_MENUS_HANDLER" = 0 ] && {
@@ -354,7 +459,7 @@ save_alt_handler_by_number() {
             }
             safe_remove "$f_previous_alt_handler" \
                 "save_alt_handler_by_number() - removing: $f_previous_alt_handler"
-            log_it "save_alt_handler_by_number() - Cleared: $f_previous_alt_handler"
+            # log_it "save_alt_handler_by_number() - Cleared: $f_previous_alt_handler"
             ;;
 
         *) error_msg "save_alt_handler_by_number() - inbalid TMUX_MENUS_HANDLER: $_tmh" ;;
@@ -362,13 +467,13 @@ save_alt_handler_by_number() {
 }
 
 update_prev_alt_handler() {
-    log_it "><> update_prev_alt_handler()"
+    # log_it "><> update_prev_alt_handler()"
     save_alt_handler_by_number
-    if [ -n "$alt_menu_handler" ]; then
-        log_it "update_prev_alt_handler() - Cleared: $f_previous_alt_handler"
-    else
-        log_it "update_prev_alt_handler() - Cleared: $f_previous_alt_handler"
-    fi
+    # if [ -n "$alt_menu_handler" ]; then
+    #     log_it "update_prev_alt_handler() - Cleared: $f_previous_alt_handler"
+    # else
+    #     log_it "update_prev_alt_handler() - Cleared: $f_previous_alt_handler"
+    # fi
 }
 
 set_alt_handler() {
@@ -392,7 +497,7 @@ set_alt_handler() {
 }
 
 select_alt_handler() {
-    log_it "><> select_alt_handler()"
+    log_it "><> select_alt_handler() TMUX_MENUS_HANDLER:$TMUX_MENUS_HANDLER"
     case "$TMUX_MENUS_HANDLER" in
         0) set_alt_handler ;; # disable it
         1)
@@ -416,11 +521,19 @@ select_alt_handler() {
                     error_msg "select_alt_handler() - Neither whiptail nor dialog found, plugin aborted"
                 fi
                 log_it "Due to tmux < 3.0 selected alt_menu_handler is: $alt_menu_handler"
+                return
             fi
             ;;
         *) error_msg "select_alt_handler() - TMUX_MENUS_HANDLER invalid: $TMUX_MENUS_HANDLER" ;;
     esac
+    if [ -n "$alt_menu_handler" ]; then
+        log_it "Menus will be rendered using: $alt_menu_handler"
+        set_plugin_key
 
+    else
+        log_it "Menus will be rendered using: tmux display-menu"
+        set_plugin_key
+    fi
     # assume alt_handler was changed, re-create plugin_params and read config
 
     # rm -rf "$_d_cache" || {
@@ -545,13 +658,13 @@ examine_code_base() {
 read_config() {
     # Called from cache_write_plugin_params() when setting up cache
     # and for every script when caching is disabled
-    log_it "><> read_config()"
+    # log_it "><> read_config()"
 
     cut_off="${1:-06}"
 
     tmux_get_plugin_options
     retrieve_non_tmux_env_vars
-    select_alt_handler
+    # select_alt_handler
 
     check_speed_cutoff "$cut_off"
     examine_code_base
@@ -567,7 +680,7 @@ read_config() {
 #---------------------------------------------------------------
 
 config_setup_cached() {
-    log_it "><> config_setup_cached()"
+    # log_it "><> config_setup_cached()"
     "${cfg_use_cache:-false}" || {
         error_msg "config_setup_cached() - Called when caching is disabled"
     }

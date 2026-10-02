@@ -255,7 +255,7 @@ get_config() { # local usage during sourcing
 #---------------------------------------------------------------
 
 check_alt_handler_changed() {
-    log_it "><> check_alt_handler_changed()"
+    # log_it "><> check_alt_handler_changed()"
 
     # Special case short circuit non relevant setting
     [ "$TMUX_MENUS_HANDLER" = 0 ] && [ ! -f "$f_previous_alt_handler" ] && return
@@ -645,6 +645,7 @@ d_cache_menus="$d_cache"/menus
 f_cache_known_tmux_vers="$d_cache"/known_tmux_versions
 f_cache_params="$d_cache"/plugin_params
 f_safe_now_method="$d_cache"/safe_now_method
+f_skip_low_tmux_version_warning="$TMUX_MENUS_LOCATION"/.skip_old_tmux_warning
 
 # caching needs to be cleared if alt_handler is changed...
 tmux_client_pid=${TMUX#*,}

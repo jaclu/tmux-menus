@@ -82,6 +82,7 @@ f_max_25_line_menus="${f_max_25_line_menus:-}"
 f_no_cache_hint="${f_no_cache_hint:-}"
 f_previous_alt_handler="${f_previous_alt_handler:-}"
 f_safe_now_method="${f_safe_now_method:-}"
+f_skip_low_tmux_version_warning="${f_skip_low_tmux_version_warning:-}"
 initialize_plugin="${initialize_plugin:-}"
 log_file_forced="${log_file_forced:-}" # debug variable, normally not defined
 min_tmux_vers="${min_tmux_vers:-}"

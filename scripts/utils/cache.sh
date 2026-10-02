@@ -40,8 +40,11 @@ cache_clear() {
     ${cfg_use_cache:-false} || error_msg "cache_clear() - called when not using cache"
     [ -z "$d_cache" ] && error_msg "cache_clear() - called when d_cache is undefined"
     cache_create_folder # ensure it exists
-    safe_remove "$d_cache/*" "cache_clear()"
+    # This clears everything including  tmux-previous-alt_handler
+    # safe_remove "$d_cache/*" "cache_clear()"
+    cache_create_folder "$f_cache_params" "cache_clear() f_cache_params"
 
+    cache_create_folder "$f_cache_known_tmux_vers" "cache_clear() f_cache_known_tmux_vers"
     # Invalidate what might have already been sourced
     cached_ok_tmux_versions=""
     cached_bad_tmux_versions=""

@@ -1,5 +1,10 @@
 # TODO
 
+## in progress
+
+if alt_menu_handler is enabled/disabled plugin key needs to be changed
+to handle/skip suspending screen
+
 ## plugin init
 
 remove current param cache before reading it to avoid getting polluted by obsoleted settings
