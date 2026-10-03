@@ -33,7 +33,7 @@ dynamic_content() {
     set -- \
         2.1 C o "Set mouse to: $new_mouse_status" \
         "set-option -g mouse $new_mouse_status $runshell_reload_mnu" \
-        2.4 E p "Change prefix (Current: $current_prefix)" \
+        2.4 E p "${cfg_danger_zone}Change prefix (Current: $current_prefix)" \
         "$d_scripts/change_prefix.sh $0"
     menu_generate_part 4 "$@"
 }

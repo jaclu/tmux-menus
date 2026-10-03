@@ -60,7 +60,7 @@ static_content() {
         }
 
         set -- "$@" \
-            0.0 C u "Unlink from session" "unlink-window"
+            0.0 C u "${cfg_danger_zone}Unlink from session" "unlink-window"
     }
     menu_generate_part 5 "$@"
 }
