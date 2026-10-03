@@ -650,10 +650,12 @@ prepare_show_commands() {
     # Do this before the timer is started, otherwise the first usage of show commands
     # will always be slower
     ${b_all_helpers_sourced:-false} || source_all_helpers "prepare_show_commands"
-    [ ! -f "$f_cached_tmux_key_binds" ] && {
+    [ "$show_cmds_state" = 2 ] && {
         log_it "Creating: $f_cached_tmux_key_binds"
         # Filtering out all key binds displaying a menu, since they won't be relevant
-        $TMUX_BIN list-keys | grep -iv display-menu >"$f_cached_tmux_key_binds"
+        $TMUX_BIN list-keys | grep -iv display-menu >"$f_cached_tmux_key_binds" || {
+            error_msg "Failed to generate: $f_cached_tmux_key_binds"
+        }
     }
 
     safe_now t_show_cmds

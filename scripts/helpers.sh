@@ -639,14 +639,15 @@ f_no_cache_hint="$d_tmp"/tmux-menus-no-cache-hint
 [ -z "$TMUX_MENUS_LOCATION" ] && base_path_not_defined
 
 d_scripts="$TMUX_MENUS_LOCATION"/scripts
-d_items="$TMUX_MENUS_LOCATION"/items
 d_cache="$TMUX_MENUS_LOCATION"/cache
-d_cache_menus="$d_cache"/menus
-f_cache_known_tmux_vers="$d_cache"/known_tmux_versions
-f_cache_params="$d_cache"/plugin_params
-f_safe_now_method="$d_cache"/safe_now_method
-f_skip_low_tmux_version_warning="$TMUX_MENUS_LOCATION"/.skip_old_tmux_warning
+d_items="$TMUX_MENUS_LOCATION"/items # where the built in menus are located
+d_cache_menus="$d_cache"/menus       # where rendered menus/menu fragments are located
 
+f_cache_params="$d_cache"/plugin_params
+f_cache_known_tmux_vers="$d_cache"/known_tmux_versions
+f_safe_now_method="$d_cache"/safe_now_method
+f_cached_tmux_key_binds="$d_cache"/tmux_key_binds
+f_skip_low_tmux_version_warning="$TMUX_MENUS_LOCATION"/.skip_old_tmux_warning
 # caching needs to be cleared if alt_handler is changed...
 tmux_client_pid=${TMUX#*,}
 tmux_client_pid=${tmux_client_pid%%,*}
