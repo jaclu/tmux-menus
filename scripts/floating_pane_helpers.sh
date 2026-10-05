@@ -143,12 +143,12 @@ menu_section_dynamic() {
     case "$menu_type" in
         combined)
             set -- \
-                3.7 E 2 "Fit to 25 Lines    $nav_next" \
+                3.8 E 2 "Fit to 25 Lines    $nav_next" \
                 "touch '$f_max_25_line_menus' ; '$cfg_d_menus'/floating_pane.sh"
             ;;
         *)
             set -- \
-                3.7 E C "Use Combined Menu  $nav_next" \
+                3.8 E C "Use Combined Menu  $nav_next" \
                 "rm -f '$f_max_25_line_menus' ; '$cfg_d_menus'/floating_pane_combined.sh"
             ;;
     esac
