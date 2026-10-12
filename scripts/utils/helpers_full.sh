@@ -342,10 +342,7 @@ bind_plugin_key() {
     bind_cmd="$cfg_main_menu"
     if [ -n "$alt_menu_handler" ]; then
         bind_cmd="$f_ext_dlg_trigger"
-        [ "$alt_menu_handler_announced" != 1 ] && {
-            alt_menu_handler_announced=1 # avoid logging it twice if secondary default is used
-            log_it "Alternate menu handler: $alt_menu_handler"
-        }
+        log_it "Alternate menu handler: $alt_menu_handler"
     fi
     cmd="bind-key"
     ${use_bind_key_notes:-false} && cmd="$cmd -N \"plugin ${plugin_name}\""
@@ -773,18 +770,9 @@ wait_to_close_display() {
     #  call this to display an appropriate suggestion, and in the
     #  whiptail case wait for that key
     #
-    #  Busybox ps has no -x and will throw error, so send to /dev/null
-    #  pgrep does not provide the command line, so ignore SC2009
-    _b_is_whiptail=false
-    case $(ps -o command= -p "$PPID" 2>/dev/null) in
-        *tmux-menus*)
-            [ -n "$alt_menu_handler" ] && _b_is_whiptail=true
-            ;;
-        *) ;;
-    esac
-    if ${_b_is_whiptail:-false}; then
+    if [ -n "$alt_menu_handler" ]; then
         #
-        # called using whiptail menus, since a pause is needed, before what
+        # called using whiptail/dialog menus, since a pause is needed, before what
         # might be a backgrounded process is resumed
         #
         echo " "

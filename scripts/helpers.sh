@@ -262,7 +262,6 @@ check_alt_handler_changed() {
         ${b_all_helpers_sourced:-false} || {
             source_all_helpers "get_config() - failed to source cached params"
         }
-        # select_alt_handler
 
         # assume alt_handler was changed, dump memu cache, re-create plugin_params
         # if relevant and read config
