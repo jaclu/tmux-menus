@@ -6,38 +6,10 @@ Themes
 Alt menus
 Theme overrides
 
-## alt menu handler
-
-mnu_handler 0/1/2 should be definite statement about what handler is used, once
-init has processed current handler
-if it is not 0 - alt_menu_handler is the cmd to run that handler
-
-TMUX_MENUS_HANDLER only acts as a hint from env what handler should be selected, and if it
-differs from mnu_handler, config should be reprocessed using this
-
-[ -n "$TMUX_MENUS_HANDLER" ] && [ "$TMUX_MENUS_HANDLER" != "$mnu_handler" ]
-can be used to detect if handler needs to be changed
-
 ### figure out how to handle
 
 - set_wt_pasting()
 - alt_menu_handler_announced
-- \_b_is_whiptail
-
-### obsolete
-
-- f_previous_alt_handler
-- select_alt_handler()
-- set_alt_handler()
-
-## in progress
-
-if alt_menu_handler is enabled/disabled plugin key needs to be changed
-to handle/skip suspending screen
-
-## plugin init
-
-remove current param cache before reading it to avoid getting polluted by obsoleted settings
 
 ## Potential new items
 

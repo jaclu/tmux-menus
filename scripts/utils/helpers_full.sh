@@ -412,7 +412,6 @@ consider_secondary_default() {
 }
 
 set_plugin_key() {
-    log_it "><> set_plugin_key() alt_menu_handler=$alt_menu_handler"
     bind_plugin_key "$cfg_trigger_key"
     consider_secondary_default
 }
@@ -586,7 +585,6 @@ select_handler() {
             ;;
         *) error_msg "Invalid menu-handler (by number): $_sh_handler" 1 ;;
     esac
-    log_it "><> select_handler() - selected: $mnu_handler"
     if [ -n "$TMUX_MENUS_HANDLER" ]; then
         $TMUX_BIN set-environment -g TMUX_MENUS_HANDLER "$TMUX_MENUS_HANDLER"
     else

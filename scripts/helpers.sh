@@ -592,10 +592,10 @@ base_path_not_defined() {
 # Hardcoded log file for early startup tracing (before @menus_log_file is
 # read). If log_file_forced=1, @menus_log_file is ignored and this remains.
 #
-cfg_log_file="$HOME/tmp/tmux-menus-t2.log"
+cfg_log_file="$HOME"/tmp/tmux-menus-t2.log
 log_file_forced=1
 # only run this log_it if cfg_log_file was defined just above
-# log_it "[$$] STARTING: scripts/helpers.sh for: $0"
+log_it "[$$] STARTING: scripts/helpers.sh all_helpers[$all_helpers] for: $0"
 
 TMUX_BIN="${TMUX_BIN:-tmux}"
 
@@ -657,7 +657,7 @@ rn_current_script="$relative_fname" # saves a fork
 # current_script_no_ext=${rn_current_script%.*} # not used ATM
 
 env_initialized=1
-# log_it "[$$] ===  Completed: scripts/helpers.sh - $0"
+log_it "[$$] ===  Completed: scripts/helpers.sh - $0"
 
 [ "$all_helpers" = 1 ] && source_all_helpers
 

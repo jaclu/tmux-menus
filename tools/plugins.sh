@@ -167,8 +167,6 @@ if ${b_undefined_item:-false}; then
     fi
 fi
 
-log_it "><> PPID $PPID"
-
 case $TMUX in
     *,"$PPID",*) wait_to_close_display ;;
     *) ;;
