@@ -23,7 +23,7 @@ static_content() {
     if [ -n "$alt_menu_handler" ]; then
         set -- "$@" \
             0.0 T " " \
-            0.0 T "When using whiptail it is not possible" \
+            0.0 T "When using whiptail/dialog it is not possible" \
             0.0 T "to paste directly into the pane." \
             0.0 T "Instead a tmux buffer is used." \
             0.0 T " " \

@@ -16,6 +16,10 @@ static_content() {
         0.0 M Left "Back to Previous  $nav_prev" "$prev_menu" \
         0.0 M Home "Main Menu         $nav_home" "$cfg_main_menu" \
         0.0 S \
+        0.0 T "Use this to send keys that might" \
+        0.0 T "not be available with the current" \
+        0.0 T "keyboard settings." \
+        0.0 T " " \
         0.0 T "Even if due to font or screen settings," \
         0.0 T "the symbol isn't visible, this should" \
         0.0 T "still be able to paste it in."
@@ -23,7 +27,7 @@ static_content() {
     if [ -n "$alt_menu_handler" ]; then
         set -- "$@" \
             0.0 T " " \
-            0.0 T "When using whiptail it is not possible" \
+            0.0 T "When using whiptail/dialog it is not possible" \
             0.0 T "to paste directly into the pane." \
             0.0 T "Instead a tmux buffer is used." \
             0.0 T " " \
@@ -31,7 +35,7 @@ static_content() {
             0.0 T "invalid if another menu is selected" \
             0.0 T "before pasting." \
             0.0 T " " \
-            0.0 T "Once one or more currencies have been selected," \
+            0.0 T "Once one or more characters have been selected," \
             0.0 T "cancel this menu. Then, when back in the pane," \
             0.0 T "use <prefix> ] to paste the key(-s)."
     fi
@@ -44,9 +48,7 @@ static_content() {
 #
 #===============================================================
 
-menu_name="Help Currency symbols"
-
-cfg_d_menus/help
+menu_name="Help Odd Chars"
 
 prev_menu="$1"
 
