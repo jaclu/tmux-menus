@@ -8,8 +8,7 @@ Theme overrides
 
 ### figure out how to handle
 
-- set_wt_pasting()
-- alt_menu_handler_announced
+alt menus missing keys
 
 ## Potential new items
 
