@@ -43,8 +43,9 @@ param_check() {
 #
 #===============================================================
 
+TMUX_MENUS_LOCATION=$(cd "${0%/*}/.." && pwd)
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$TMUX_MENUS_LOCATION"/scripts/utils/helpers_full.sh
+all_helpers=1 . "$TMUX_MENUS_LOCATION"/scripts/helpers.sh
 
 tmux_vers_check 1.8 || {
     error_msg "$rn_current_script - needs tmux 1.8"

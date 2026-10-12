@@ -20,8 +20,9 @@
 #
 #===============================================================
 
+TMUX_MENUS_LOCATION=$(cd "${0%/*}/.." && pwd)
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$TMUX_MENUS_LOCATION"/scripts/utils/helpers_full.sh
+all_helpers=1 . "$TMUX_MENUS_LOCATION"/scripts/helpers.sh
 
 #
 #  The intent for $1 - next menu is to be provided using relative path

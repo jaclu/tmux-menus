@@ -65,8 +65,9 @@ handle_char() {
 #
 #===============================================================
 
+TMUX_MENUS_LOCATION=$(cd "${0%/*}/.." && pwd)
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$TMUX_MENUS_LOCATION"/scripts/utils/helpers_full.sh
+all_helpers=1 . "$TMUX_MENUS_LOCATION"/scripts/helpers.sh
 
 if [ -n "$1" ]; then
     handle_char "$1"
