@@ -38,8 +38,10 @@ show_item() {
 #
 #===============================================================
 
+all_helpers=1
+TMUX_MENUS_LOCATION=$(cd "${0%/*}/.." && pwd)
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$TMUX_MENUS_LOCATION"/scripts/utils/helpers_full.sh
+. "$TMUX_MENUS_LOCATION"/scripts/helpers.sh
 
 tmux_get_defaults
 
@@ -80,9 +82,12 @@ show_item @menus_display_cmds_cols "$cfg_display_cmds_cols" "$default_display_cm
 }
 
 if tmux_vers_check 3.0; then
+    default_mnu_handler=0
     default_alt_handler=""
 else
+    default_mnu_handler=1
     default_alt_handler="whiptail"
 fi
 echo
+show_item "mnu_handler" "$mnu_handler" "$default_mnu_handler"
 show_item "alt_menu_handler" "$alt_menu_handler" "$default_alt_handler"

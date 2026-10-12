@@ -316,93 +316,78 @@ tmux_get_plugin_options() { # new init
 
     tmux_get_option cfg_danger_zone "@menus_danger_zone" "$default_danger_zone"
 
-    if [ -n "$alt_menu_handler" ]; then
-        # variables only used by whiptail
-        cfg_display_cmds=false
+    tmux_get_option cfg_mnu_loc_x "@menus_location_x" "$default_location_x"
+    tmux_get_option cfg_mnu_loc_y "@menus_location_y" "$default_location_y"
+    tmux_get_option cfg_format_title "@menus_format_title" "$default_format_title"
 
-        # this is slowish anyhow, so no point in optimizing for peak cached performance
+    _v_use_timers="@menus_use_timers"
+    if tmux_vers_check 3.8; then
+        if normalize_bool_param "$_v_use_timers" "$default_use_timers"; then
+            cfg_use_timers=true
+        else
+            cfg_use_timers=false
+        fi
+    else
+        # Prior to 3.8, timers are needed to check if menu didn't fit on screen
+        # So always enabled
         cfg_use_timers=true
-        cfg_validate_cache=true
+        _use_timers_found=$(grep @menus_use_timers "$f_cached_tmux_options")
+        [ -n "$_use_timers_found" ] && {
+            log_it "$_v_use_timers ignored for tmux < 3.8"
+        }
+    fi
 
+    if normalize_bool_param "@menus_validate_cache" "$default_validate_cache"; then
+        cfg_validate_cache=true
+    else
+        cfg_validate_cache=false
+    fi
+
+    tmux_vers_check 3.4 && {
+        tmux_get_option cfg_border_type "@menus_border_type" "$default_border_type"
+        tmux_get_option cfg_simple_style_selected "@menus_simple_style_selected" \
+            "$default_simple_style_selected"
+        tmux_get_option cfg_simple_style "@menus_simple_style" \
+            "$default_simple_style"
+        tmux_get_option cfg_simple_style_border "@menus_simple_style_border" \
+            "$default_simple_style_border"
+    }
+    tmux_vers_check 3.8 && {
+        tmux_get_option cfg_floating_pane_incr_horizontal \
+            "@menus_floating_pane_incr_horizontal" \
+            "$default_floating_pane_incr_horizontal"
+        tmux_get_option cfg_floating_pane_incr_vertical \
+            "@menus_floating_pane_incr_vertical" \
+            "$default_floating_pane_incr_vertical"
+    }
+    tmux_get_option cfg_nav_next "@menus_nav_next" "$default_nav_next"
+    tmux_get_option cfg_nav_prev "@menus_nav_prev" "$default_nav_prev"
+    tmux_get_option cfg_nav_home "@menus_nav_home" "$default_nav_home"
+    if normalize_bool_param "@menus_display_commands" "$default_display_commands"; then
+        cfg_display_cmds=true
+        tmux_get_option cfg_display_cmds_cols "@menus_display_cmds_cols" \
+            "$default_display_cmds_cols"
+
+        is_int "$cfg_display_cmds_cols" || {
+            error_msg "@menus_display_cmds_cols is not int: $cfg_display_cmds_cols"
+        }
+    else
+        cfg_display_cmds=false
+    fi
+    if tmux_vers_check 3.7; then
+        # Obsolete, tmux provides F1 popup for this
         cfg_use_hint_overlays=false
         cfg_show_key_hints=false
-        cfg_nav_next="$default_nav_next"
-        cfg_nav_prev="$default_nav_prev"
-        cfg_nav_home="$default_nav_home"
     else
-        tmux_get_option cfg_mnu_loc_x "@menus_location_x" "$default_location_x"
-        tmux_get_option cfg_mnu_loc_y "@menus_location_y" "$default_location_y"
-        tmux_get_option cfg_format_title "@menus_format_title" "$default_format_title"
-
-        _v_use_timers="@menus_use_timers"
-        if tmux_vers_check 3.8; then
-            if normalize_bool_param "$_v_use_timers" "$default_use_timers"; then
-                cfg_use_timers=true
-            else
-                cfg_use_timers=false
-            fi
+        if normalize_bool_param "@menus_use_hint_overlays" "$default_use_hint_overlays"; then
+            cfg_use_hint_overlays=true
         else
-            # Prior to 3.8, timers are needed to check if menu didn't fit on screen
-            # So always enabled
-            cfg_use_timers=true
-            _use_timers_found=$(grep @menus_use_timers "$f_cached_tmux_options")
-            [ -n "$_use_timers_found" ] && {
-                log_it "$_v_use_timers ignored for tmux < 3.8"
-            }
-        fi
-
-        if normalize_bool_param "@menus_validate_cache" "$default_validate_cache"; then
-            cfg_validate_cache=true
-        else
-            cfg_validate_cache=false
-        fi
-
-        tmux_vers_check 3.4 && {
-            tmux_get_option cfg_border_type "@menus_border_type" "$default_border_type"
-            tmux_get_option cfg_simple_style_selected "@menus_simple_style_selected" \
-                "$default_simple_style_selected"
-            tmux_get_option cfg_simple_style "@menus_simple_style" \
-                "$default_simple_style"
-            tmux_get_option cfg_simple_style_border "@menus_simple_style_border" \
-                "$default_simple_style_border"
-        }
-        tmux_vers_check 3.8 && {
-            tmux_get_option cfg_floating_pane_incr_horizontal \
-                "@menus_floating_pane_incr_horizontal" \
-                "$default_floating_pane_incr_horizontal"
-            tmux_get_option cfg_floating_pane_incr_vertical \
-                "@menus_floating_pane_incr_vertical" \
-                "$default_floating_pane_incr_vertical"
-        }
-        tmux_get_option cfg_nav_next "@menus_nav_next" "$default_nav_next"
-        tmux_get_option cfg_nav_prev "@menus_nav_prev" "$default_nav_prev"
-        tmux_get_option cfg_nav_home "@menus_nav_home" "$default_nav_home"
-        if normalize_bool_param "@menus_display_commands" "$default_display_commands"; then
-            cfg_display_cmds=true
-            tmux_get_option cfg_display_cmds_cols "@menus_display_cmds_cols" \
-                "$default_display_cmds_cols"
-
-            is_int "$cfg_display_cmds_cols" || {
-                error_msg "@menus_display_cmds_cols is not int: $cfg_display_cmds_cols"
-            }
-        else
-            cfg_display_cmds=false
-        fi
-        if tmux_vers_check 3.7; then
-            # Obsolete, tmux provides F1 popup for this
             cfg_use_hint_overlays=false
-            cfg_show_key_hints=false
+        fi
+        if normalize_bool_param "@menus_show_key_hints" "$default_show_key_hints"; then
+            cfg_show_key_hints=true
         else
-            if normalize_bool_param "@menus_use_hint_overlays" "$default_use_hint_overlays"; then
-                cfg_use_hint_overlays=true
-            else
-                cfg_use_hint_overlays=false
-            fi
-            if normalize_bool_param "@menus_show_key_hints" "$default_show_key_hints"; then
-                cfg_show_key_hints=true
-            else
-                cfg_show_key_hints=false
-            fi
+            cfg_show_key_hints=false
         fi
     fi
 

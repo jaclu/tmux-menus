@@ -257,34 +257,21 @@ get_config() { # local usage during sourcing
 check_alt_handler_changed() {
     # log_it "><> check_alt_handler_changed()"
 
-    # Special case short circuit non relevant setting
-    [ "$TMUX_MENUS_HANDLER" = 0 ] && [ ! -f "$f_previous_alt_handler" ] && return
-
-    if {
-        [ -n "$TMUX_MENUS_HANDLER" ] \
-            && {
-                [ ! -f "$f_previous_alt_handler" ] \
-                    || [ "$(cat "$f_previous_alt_handler" 2>/dev/null)" != "$TMUX_MENUS_HANDLER" ]
-            }
-    } || {
-        [ -z "$TMUX_MENUS_HANDLER" ] \
-            && [ -f "$f_previous_alt_handler" ]
-    }; then
+    [ -n "$TMUX_MENUS_HANDLER" ] && [ "$TMUX_MENUS_HANDLER" != "$mnu_handler" ] && {
+        # env requests a change of handler
         ${b_all_helpers_sourced:-false} || {
             source_all_helpers "get_config() - failed to source cached params"
         }
-        select_alt_handler
+        # select_alt_handler
 
-        # assume alt_handler was changed, re-create plugin_params if relevant
-        # and read config
+        # assume alt_handler was changed, dump memu cache, re-create plugin_params
+        # if relevant and read config
         safe_remove "$d_cache_menus" "check_alt_handler_changed() - handler change"
         $cfg_use_cache && {
             config_setup_cached
         }
         read_config
-    else
-        log_it "><> alt_handler state unchnged"
-    fi
+    }
 }
 
 handle_env_variables() { # local usage by get_config()
@@ -293,7 +280,7 @@ handle_env_variables() { # local usage by get_config()
     # TMUX_MENUS_LOGGING_MINIMAL - is handled directly by log_it() - no config needed
     # TMUX_MENUS_NO_DISPLAY -  is handled directly - no config needed
     # TMUX_MENUS_PROFILING - is handled directly - no config needed
-    [ -n "$TMUX_MENUS_HANDLER" ] || [ -f "$f_previous_alt_handler" ] && {
+    [ -n "$TMUX_MENUS_HANDLER" ] && [ "$TMUX_MENUS_HANDLER" != "$mnu_handler" ] && {
         check_alt_handler_changed
     }
 }
@@ -651,7 +638,6 @@ f_skip_low_tmux_version_warning="$TMUX_MENUS_LOCATION"/.skip_old_tmux_warning
 # caching needs to be cleared if alt_handler is changed...
 tmux_client_pid=${TMUX#*,}
 tmux_client_pid=${tmux_client_pid%%,*}
-f_previous_alt_handler="$d_cache/tmux-previous-alt_handler-$tmux_client_pid"
 
 f_ext_dlg_trigger="$d_scripts/external_dialog_trigger.sh"
 scr_float_pane_switch="$d_scripts/floating_pane_switch.sh"

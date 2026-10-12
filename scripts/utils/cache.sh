@@ -282,6 +282,7 @@ last_local_edit=\"$new_last_local_edit\"
 #
 b_debug_display_cmds=false
 
+mnu_handler=$mnu_handler
 alt_menu_handler=\"$alt_menu_handler\"
 " >>"$_f_params_tmp" || {
         error_msg "Region params_not_config_1 - write failed: $_f_params_tmp"

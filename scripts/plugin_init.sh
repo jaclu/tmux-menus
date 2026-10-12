@@ -59,16 +59,15 @@ log_it
 log_it
 
 config_setup
-#
-# Key is not bound until cache (if allowed) has been prepared, so normally
-# no menus will be triggered by the user before this
-#
-log_it "cfg_trigger_key [$cfg_trigger_key]"
-# select_alt_handler
-set_plugin_key
+
+if $cfg_no_prefix; then
+    log_it "Menus will be bound to: $cfg_trigger_key"
+else
+    log_it "Menus will be bound to: <prefix> $cfg_trigger_key"
+fi
 
 # potentially will change plugin key
-handle_env_variables # should have been checked set a breakpoint to verify
+# handle_env_variables # should have been checked set a breakpoint to verify
 #
 # If @menus_log_file was defined, it has now taken effect
 # create a blank line in the log to separate tmux sessions

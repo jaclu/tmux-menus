@@ -412,11 +412,10 @@ menu_parse() {
     menu_items=""
     [ "$menu_idx" -eq 1 ] && {
         # set prefix for item 1
-        if [ -n "$alt_menu_handler" ]; then
-            alt_prefix
-        else
-            mnu_prefix
-        fi
+        case "$mnu_handler" in
+            0) mnu_prefix ;;
+            *) alt_prefix ;;
+        esac
     }
 
     [ -n "$menu_debug" ] && debug_print ">> menu_parse($menu_idx)"
@@ -1141,46 +1140,49 @@ clear_prep_disp_status() {
 display_menu() {
     # Display time to generate menu
 
-    if [ -n "$alt_menu_handler" ]; then
-        [ -n "$cfg_log_file" ] && tmux_vers_check 3.8 && log_processing_time
-        # display alternate menu
-        menu_selection=$(eval "$menu_items" 3>&2 2>&1 1>&3)
-        menu_exit_code="$?"
-        case "$menu_exit_code" in
-            0) ;;
-            1)
-                [ -n "$menu_selection" ] && {
-                    # no selection = menu canceled
+    case "$mnu_handler" in
+        0)
+            # Starting in 3.8 menu will always be displayed even if it doesn't fit
+            # prior tmux silently skipped an error not fitting the window without
+            # giving an error, so the only hint that it might not fit is if it was
+            # instantly closed
+            tmux_vers_check 3.8 || safe_now dh_t_start
+
+            f_cmd_err="$d_tmp/tmux-menu-cmd-error"
+            eval "$menu_items" 2>"$f_cmd_err" || {
+                _ex_code="$?"
+                log_it "menu_items exited with: [$_ex_code]"
+                _dm_err_msg="$(cat "$f_cmd_err")"
+                display_invalid_menu_error "$_dm_err_msg"
+            }
+            if tmux_vers_check 3.8; then
+                [ -n "$cfg_log_file" ] && log_processing_time post
+            else
+                ensure_menu_fits_on_screen
+            fi
+            ;;
+        *)
+            [ -n "$cfg_log_file" ] && tmux_vers_check 3.8 && log_processing_time
+            # display alternate menu
+            menu_selection=$(eval "$menu_items" 3>&2 2>&1 1>&3)
+            menu_exit_code="$?"
+            case "$menu_exit_code" in
+                0) ;;
+                1)
+                    [ -n "$menu_selection" ] && {
+                        # no selection = menu canceled
+                        display_invalid_menu_error "$menu_selection"
+                    }
+                    ;;
+                *)
                     display_invalid_menu_error "$menu_selection"
-                }
-                ;;
-            *)
-                display_invalid_menu_error "$menu_selection"
-                ;;
-        esac
+                    ;;
+            esac
 
-        [ -n "$menu_selection" ] && handle_wt_selecion
-        true #  hides none true exit if whiptail menu was cancelled
-    else
-        # Starting in 3.8 menu will always be displayed even if it doesn't fit
-        # prior tmux silently skipped an error not fitting the window without
-        # giving an error, so the only hint that it might not fit is if it was
-        # instantly closed
-        tmux_vers_check 3.8 || safe_now dh_t_start
-
-        f_cmd_err="$d_tmp/tmux-menu-cmd-error"
-        eval "$menu_items" 2>"$f_cmd_err" || {
-            _ex_code="$?"
-            log_it "menu_items exited with: [$_ex_code]"
-            _dm_err_msg="$(cat "$f_cmd_err")"
-            display_invalid_menu_error "$_dm_err_msg"
-        }
-        if tmux_vers_check 3.8; then
-            [ -n "$cfg_log_file" ] && log_processing_time post
-        else
-            ensure_menu_fits_on_screen
-        fi
-    fi
+            [ -n "$menu_selection" ] && handle_wt_selecion
+            true #  hides none true exit if whiptail menu was cancelled
+            ;;
+    esac
 }
 
 do_menu_handling() {

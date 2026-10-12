@@ -8,8 +8,10 @@
 #   Displays public IP
 #
 
+all_helpers=1
+TMUX_MENUS_LOCATION=$(cd "${0%/*}/.." && pwd)
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$TMUX_MENUS_LOCATION"/scripts/utils/helpers_full.sh
+. "$TMUX_MENUS_LOCATION"/scripts/helpers.sh
 
 _this="public_ip.sh" # error prone if script name is changed :(
 [ "$bn_current_script" != "$_this" ] && error_msg "$_this should NOT be sourced"

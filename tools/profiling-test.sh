@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# all_helpers=1
+TMUX_MENUS_LOCATION=$(cd "${0%/*}/.." && pwd)
+export TMUX_MENUS_LOCATION
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$TMUX_MENUS_LOCATION"/scripts/helpers.sh
 

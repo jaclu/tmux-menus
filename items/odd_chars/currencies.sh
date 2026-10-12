@@ -15,14 +15,12 @@ show_label() {
         case "$1" in
             ₺ | ₴ | ₽ | ₹ | ₿)
                 echo "Send   ($2) - not printable in whiptail"
+                return
                 ;;
-            *)
-                echo "Send $1 ($2)"
-                ;;
+            *) ;; # default handling
         esac
-    else
-        echo "Send $1 ($2)"
     fi
+    echo "Send $1 ($2)"
 }
 
 static_content() {
