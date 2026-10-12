@@ -595,7 +595,7 @@ base_path_not_defined() {
 cfg_log_file="$HOME"/tmp/tmux-menus-t2.log
 log_file_forced=1
 # only run this log_it if cfg_log_file was defined just above
-log_it "[$$] STARTING: scripts/helpers.sh all_helpers[$all_helpers] for: $0"
+# log_it "[$$] STARTING: scripts/helpers.sh all_helpers[$all_helpers] for: $0"
 
 TMUX_BIN="${TMUX_BIN:-tmux}"
 
