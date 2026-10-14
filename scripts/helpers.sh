@@ -657,8 +657,11 @@ rn_current_script="$relative_fname" # saves a fork
 # current_script_no_ext=${rn_current_script%.*} # not used ATM
 
 env_initialized=1
-log_it "[$$] ===  Completed: scripts/helpers.sh - $0"
+# log_it "[$$] ===  Completed: scripts/helpers.sh - $0"
 
+#
+#  Some post-init tasks
+#
 [ "$all_helpers" = 1 ] && source_all_helpers
 
 ${initialize_plugin:-false} || {
