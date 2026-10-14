@@ -7,3 +7,4 @@ mh="$($TMUX_BIN show-environment -g "TMUX_MENUS_HANDLER" 2>/dev/null | cut -d= -
     echo "exporting TMUX_MENUS_HANDLER"
     export TMUX_MENUS_HANDLER="$mh"
 }
+return 0
