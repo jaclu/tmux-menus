@@ -20,8 +20,6 @@ initialize_plugin=true
 # Set up plugin location in tmux env
 TMUX_BIN="${TMUX_BIN:-tmux}"
 TMUX_MENUS_LOCATION=$(cd "${0%/*}/.." && pwd)
-# export TMUX_MENUS_LOCATION
-$TMUX_BIN set-environment -g TMUX_MENUS_LOCATION "$TMUX_MENUS_LOCATION"
 
 _d_cache="$TMUX_MENUS_LOCATION"/cache
 [ -d "$_d_cache" ] && {
@@ -43,8 +41,6 @@ case "$1" in
         ;;
 esac
 
-# log_it "=====   plugin_init.sh starting   ====="
-
 # Define cfg_use_cache as soon as possible, and importantly, don't cache this
 # param since it is as of yet unknown if caching is enabled.
 # Once this has been set, it defines if caching should be used or not
@@ -57,6 +53,17 @@ esac
 log_it
 log_it
 log_it
+log_it "=====   plugin_init.sh starting   ====="
+
+$TMUX_BIN set-environment -g TMUX_MENUS_LOCATION "$TMUX_MENUS_LOCATION"
+
+[ -n "$($TMUX_BIN show-environment -g TMUX_PLUGIN_MANAGER_PATH 2>/dev/null)" ] || {
+    # will normally happen for tmux < 1.9
+    $TMUX_BIN show-environment -g TMUX_PLUGIN_MANAGER_PATH | cut
+    TMUX_PLUGIN_MANAGER_PATH=$(cd "${0%/*}/../.." && pwd)
+    log_it "TMUX_PLUGIN_MANAGER_PATH was unset, now set to: $TMUX_PLUGIN_MANAGER_PATH"
+    $TMUX_BIN set-environment -g TMUX_PLUGIN_MANAGER_PATH "$TMUX_PLUGIN_MANAGER_PATH"
+}
 
 config_setup
 
