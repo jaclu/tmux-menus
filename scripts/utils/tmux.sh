@@ -148,8 +148,9 @@ tmux_get_option() {
         # this is run standalone outside tmux, just report the defaults
         log_it "tmux_get_option() - no \$TMUX - using default"
         _line=""
-    elif ! tmux_vers_check 1.8; then
+    elif ! tmux_vers_check 1.8 && [ -z "$no_user_options_warning_displayed" ]; then
         # before 1.8 no support for user options
+        no_user_options_warning_displayed=1
         log_it "tmux_get_option() - tmux < 1.8 - User options not available, using default"
         _line=""
     elif ${tgo_use_cache:-false}; then
