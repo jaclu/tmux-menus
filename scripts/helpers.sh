@@ -586,7 +586,7 @@ base_path_not_defined() {
 #
 #---------------------------------------------------------------
 
-# cfg_use_timers=true # will be set during get_config
+cfg_use_timers=true # will be set during get_config, initially on for init timings
 
 #
 # Hardcoded log file for early startup tracing (before @menus_log_file is
