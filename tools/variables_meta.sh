@@ -115,6 +115,7 @@ mnu_reload_direct="${mnu_reload_direct:-}"
 nav_home="${nav_home:-}"
 nav_next="${nav_next:-}"
 nav_prev="${nav_prev:-}"
+prompt_reload_mnu="${prompt_reload_mnu:-}"
 runshell_reload_mnu="${runshell_reload_mnu:-}"
 runshell_sleep_reload_mnu="${runshell_sleep_reload_mnu:-}"
 show_cmds_state="${show_cmds_state:-}" # current state for displaying cmds

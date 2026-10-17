@@ -775,6 +775,14 @@ set_menu_env_variables() {
 
         # For C items where a run-shell has not been started
         runshell_reload_mnu=" ; run-shell $0"
+        if tmux_vers_check 3.3; then
+            prompt_reload_mnu="$runshell_reload_mnu"
+        else
+            # command-prompt seems to fork, either way it returns directly as soon
+            # as the prompt is presented,causing loss of focus if the menu is
+            # displayed before the prompt related action has completed.
+            prompt_reload_mnu=""
+        fi
 
         # Some tasks - like creating a floating pane takes some time, yet are forked
         # so the cmd completes quickly. This can lead to the next menu being

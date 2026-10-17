@@ -15,7 +15,7 @@ all_helpers=1 . "$TMUX_MENUS_LOCATION"/scripts/helpers.sh
 next_menu="$*"
 
 tmux_error_handler_assign prefix_char command-prompt -1 -p \
-    "Prefix key without C- (will take effect imeditally)" "display -p %%"
+    "Prefix key without C- (will take effect imeditally)" "display -p \"%%%\""
 
 #
 #  Since this is a critical param, make extra sure we have valid input

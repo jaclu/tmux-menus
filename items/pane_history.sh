@@ -28,13 +28,13 @@ static_content() {
         0.0 C h 'History (enter copy mode)' "copy-mode" \
         2.0 C s "Save (no escapes)" "command-prompt -p \
             'Save to (no escapes):' -I '$_d_history/tmux-history' \
-            '$cmd ; save-buffer %1 ; delete-buffer'  $runshell_reload_mnu" \
+            '$cmd ; save-buffer \"%%%\" ; delete-buffer'  $prompt_reload_mnu" \
         2.0 C e "Save (with escapes)" "command-prompt -p \
             'Save to (with escapes):' -I '$_d_history/tmux-history-escapes' \
-            '$cmd -e ; save-buffer %1 ; delete-buffer' $runshell_reload_mnu" \
+            '$cmd -e ; save-buffer \"%%%\" ; delete-buffer' $prompt_reload_mnu" \
         3.8 C t "Save (with timestamps)" "command-prompt -p \
             'Save to (with timestamps):' -I '$_d_history/tmux-history-timestamps' \
-            '$cmd -I ; save-buffer %1 ; delete-buffer' $runshell_reload_mnu" \
+            '$cmd -I ; save-buffer \"%%%\" ; delete-buffer' $prompt_reload_mnu" \
         0.0 S \
         0.0 E c "${cfg_danger_zone}Clear all" "$d_scripts/act_clear_screen.sh $0"
     menu_generate_part 3 "$@"

@@ -46,8 +46,8 @@ static_content() {
         0.8 C f "Rotate forward" "rotate-window -D $runshell_reload_mnu" \
         0.8 C b "Rotate backward" "rotate-window -U $runshell_reload_mnu" \
         0.0 S \
-        2.6 C t "Rename (title)" "command-prompt -I '#T'  -p 'Title: '  \
-            'select-pane -T \"%%\"' $runshell_reload_mnu" \
+        2.6 C t "Rename (title)" "command-prompt -I '##T'  -p 'Title: '  \
+            'select-pane -T \"%%%\"' $prompt_reload_mnu" \
         0.0 S \
         1.5 C r "${cfg_danger_zone}Respawn current" "$respawn_action" \
         1.8 C x "${cfg_danger_zone}Kill current" "confirm-before -p \

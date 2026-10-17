@@ -34,7 +34,7 @@ static_content() {
     else
         fw_flags=""
     fi
-    fw_cmd="command-prompt -p 'Search for:' 'find-window $fw_flags %%'"
+    fw_cmd="command-prompt -p 'Search for:' 'find-window $fw_flags \n%%%\n'"
 
     set -- \
         0.0 M Left "Main Menu               $nav_home" "$cfg_main_menu"

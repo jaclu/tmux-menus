@@ -17,17 +17,14 @@ static_content() {
     menu_generate_part 1 "$@"
     display_commands_toggle 2
 
-    # def bindings
-    #  Previous window with an alert    <p> M-p
-    #  Next window with an alert        <p> M-n
     set -- \
         0.0 S \
-        1.5 C r "Rename" "command-prompt -I '#W'  \
-            -p 'New name: ' 'rename-window %%' $runshell_reload_mnu" \
+        1.5 C r "Rename" "command-prompt -I '##W'  \
+            -p 'New name: ' 'rename-window -- \"%%%\"' $prompt_reload_mnu" \
         1.3 C a "New after current" "command-prompt -p \
-            'Name of new: ' 'new-window -a -n \"%%\"' $runshell_sleep_reload_mnu" \
+            'Name of new  ' 'new-window -a -n \"%%%\"' $prompt_reload_mnu" \
         1.3 C e "New at the end" "command-prompt -p \
-            'Name of new: ' 'new-window -n \"%%\"' $runshell_sleep_reload_mnu" \
+            'Name of new: ' 'new-window -n \"%%%\"' $prompt_reload_mnu" \
         1.7 C s "Display size" "display-message \
             'Size: #{window_width}x#{window_height}' $runshell_reload_mnu" \
         0.0 S \

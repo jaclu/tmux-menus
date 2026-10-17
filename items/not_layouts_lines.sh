@@ -66,7 +66,7 @@ static_content() {
     set -- \
         0.0 S \
         2.6 C c "Change Title" "command-prompt -I '#T' -p 'Pane title: ' \
-            'select-pane -T \"%%\"' $runshell_reload_mnu"
+            'select-pane -T \"%%\"' $prompt_reload_mnu"
     menu_generate_part 3 "$@"
 }
 
