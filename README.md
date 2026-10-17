@@ -22,6 +22,7 @@ discover functionality—advanced users can simply remove what they don't need.
 
 ## Recent Changes
 
+- Fixed handling of names with quotes and spaces
 - **Floating Panes handling** — New menus for positioning and managing floating panes
   (tmux 3.8+)
 - **Display Settings** — New menu, Select from the various themes
@@ -355,6 +356,8 @@ To report bugs, request features, or provide feedback, please file an
 
 Thanks to everyone who has contributed to making this plugin better:
 
+- [gregorias](https://github.com/gregorias) - Reported about issues handling
+  quotes and spaces when naming tmux entities, like sessions, windows and more
 - [shixianqin](https://github.com/shixianqin) - Reported that `<prefix> \` is
   problematic on non-US keyboards, leading to the secondary default `<prefix> Enter`
   (fixed in 2.3.0)
