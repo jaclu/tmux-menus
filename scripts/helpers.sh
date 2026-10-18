@@ -634,6 +634,7 @@ f_cache_known_tmux_vers="$d_cache"/known_tmux_versions
 f_safe_now_method="$d_cache"/safe_now_method
 f_cached_tmux_key_binds="$d_cache"/tmux_key_binds
 f_skip_low_tmux_version_warning="$TMUX_MENUS_LOCATION"/.skip_old_tmux_warning
+f_max_25_line_menus="$d_tmp/${plugin_name}"-limit_menus_to_25_lines
 # caching needs to be cleared if alt_handler is changed...
 tmux_client_pid=${TMUX#*,}
 tmux_client_pid=${tmux_client_pid%%,*}
