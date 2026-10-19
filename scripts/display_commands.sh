@@ -289,8 +289,7 @@ sc_show_cmd() {
             # Keybind mode: check if command is bound to a shortcut
             sc_check_key_binds "${sc_cmd#"$TMUX_BIN "}"
             ;;
-        *)
-            ;;
+        *) ;;
     esac
 
     sc_display_cmd "$sc_processed"

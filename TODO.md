@@ -2,9 +2,9 @@
 
 ## other items that need altering for alt_win_handlers
 
-- ##W
-- ##T
-- ##{session_name}
+`##W`
+`##T`
+`##{session_name}`
 
 ## clean out
 

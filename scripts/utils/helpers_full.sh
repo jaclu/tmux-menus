@@ -747,8 +747,7 @@ safe_remove() {
     [ -z "$skip_plugin_name_in_path_check" ] && {
         case "$pattern" in
             *"$plugin_name"*) ;;
-            $TMPDIR*)
-                ;;
+            $TMPDIR*) ;;
             *)
                 _s="safe_remove($pattern) seems wrong - $plugin_name not in that path"
                 error_msg "$_s"
