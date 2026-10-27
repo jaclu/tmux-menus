@@ -47,7 +47,7 @@ dynamic_content() {
 static_content() {
     set -- \
         0.0 M Left "Back to Previous  $nav_prev" layouts.sh \
-        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu"
+        0.0 M Home "Main Menu         $nav_home" "$cfg_main_menu"
     menu_generate_part 1 "$@"
     display_commands_toggle 2
 
@@ -65,8 +65,5 @@ static_content() {
 menu_name="Layouts - Border Indicators"
 menu_min_vers=3.3
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
-
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/menu_handling.sh
+. "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh

@@ -1,15 +1,11 @@
 #!/bin/sh
 #
-#  Copyright (c) 2022-2026: Jacob.Lundqvist@gmail.com
+#  Copyright (c) 2026: Jacob.Lundqvist@gmail.com
 #  License: MIT
 #
 #  Part of https://github.com/jaclu/tmux-menus
 #
 #  Main menu, the one popping up when you hit the trigger
-#
-#   The version next-3.8 is stored as 3.7z in order to not match 3.8
-#   until it is released, so the below 3.7z will be replaced with 3.8 once
-#   it is releases
 #
 
 static_content() {
@@ -25,8 +21,7 @@ static_content() {
 
     tmux_vers_check 3.2 && {
         customize_mode_cmd="$TMUX_BIN customize-mode -Z "
-        if ${cfg_use_hint_overlays:-false} && ! ${b_use_alt_handler:-false}; then
-            # log_it "hint overlays and not whiptail"
+        if ${cfg_use_hint_overlays:-false} && [ -z "$alt_menu_handler" ]; then
             hint="\& $d_hints/customize-mode.sh skip-oversized"
             customize_mode_cmd="$customize_mode_cmd $hint"
         fi
@@ -37,12 +32,13 @@ static_content() {
         0.0 M W "Handling Windows   $nav_next" windows.sh \
         0.0 M S "Handling Sessions  $nav_next" sessions.sh \
         0.0 M B "Paste Buffers      $nav_next" paste_buffers.sh \
-        1.7 M N "Navigate & Search  $nav_next" nav_search.sh \
-        2.0 M M "Missing Keys       $nav_next" "$d_odd_chars"/missing_keys.sh \
+        2.0 M M "Missing Keys       $nav_next" odd_chars/missing_keys.sh \
+        3.8 M D "Display Settings   $nav_next" display_settings.sh \
         0.0 M A "Advanced Options   $nav_next" advanced.sh \
+        1.7 M N "Navigate & Search  $nav_next" nav_search.sh \
         0.0 M E "Extras             $nav_next" extras.sh \
         0.0 M H "Help               $nav_next" \
-        "$d_help/h_summary.sh $0"
+        "$cfg_d_menus/help/h_summary.sh $0"
     menu_generate_part 1 "$@"
     display_commands_toggle 2 # give this its own menu part idx
 
@@ -58,7 +54,7 @@ static_content() {
             "$d_hints/customize-mode.sh $0"
     }
     set -- "$@" \
-        1.8 E p "Plugins inventory" "$D_TM_BASE_PATH"/tools/plugins.sh \
+        1.8 E p "Plugins inventory" "$TMUX_MENUS_LOCATION"/tools/plugins.sh \
         0.0 C r "Reload tmux conf" "$rld_cmd" \
         0.0 C d 'Detach from tmux' detach-client
     menu_generate_part 3 "$@"
@@ -72,13 +68,10 @@ static_content() {
 
 menu_name="Main Menu"
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
-
-# temp  profiling code to check performance
-# [ "$profiling_sourced" != 1 ] && . "$D_TM_BASE_PATH"/scripts/utils/dbg_profiling.sh
+# temp profiling code to check performance
+# [ "$profiling_sourced" != 1 ] && . "$TMUX_MENUS_LOCATION"/scripts/utils/dbg_profiling.sh
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/menu_handling.sh
+. "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh
 
 # profiling_display "after dialog_handling"

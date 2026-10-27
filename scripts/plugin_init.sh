@@ -8,169 +8,73 @@
 #  Initiate plugin, should be run in background from .tmux file
 #
 
-is_key_enter_available() {
-    # Clunky but version independent approach
-    enter_in_use=0
-    if tmux_vers_check 2.1; then
-        "$TMUX_BIN" list-keys -T prefix | awk '{ print $4 }' | grep -q Enter && enter_in_use=1
-    else
-        "$TMUX_BIN" list-keys | awk '{ print $2 }' | grep -q Enter && enter_in_use=1
-    fi
-    [ "$enter_in_use" = 1 ] && {
-        # log_it "<Prefix> Enter Already used"
-        return 1
-    }
-    # log_it "<Prefix> Enter is Available"
-    return 0
-}
-
-consider_secondary_default() {
-    # Secondary default: <prefix> Enter for non-US keyboards where \ is impractical
-    # Only if @menus_trigger not defined and Enter is available
-    _csd_skip=0
-    if [ -f "$f_cached_tmux_options" ]; then
-        grep -q @menus_trigger "$f_cached_tmux_options" && _csd_skip=1
-    else
-        # assume cachless state
-        $TMUX_BIN show-option -gv @menus_trigger 2>/dev/null \
-            | grep -vq "$cfg_force_unset" && _csd_skip=1
-    fi
-    [ "$_csd_skip" = 1 ] && {
-        # since a @menus_trigger is defined in tmux.conf, assume user knows how
-        # to configure things, and skip secondary default
-        return 1
-    }
-    is_key_enter_available && {
-        cfg_no_prefix=false # disable skip prefix for this secondary default
-        bind_plugin_key Enter
-    }
-}
-
-bind_plugin_key() {
-    _bpk_key="$1"
-    [ -z "$_bpk_key" ] && error_msg "bind_plugin_key() - No param"
-    # log_it "bind_plugin_key($_bpk_key)"
-
-    # shellcheck disable=SC1003 # false positive: this is a literal backslash pattern, not an escape attempt
-    case "$_bpk_key" in
-        '\') _bpk_key='\\' ;; # needs to be escaped
-        *) ;;
-    esac
-
-    bind_cmd="$cfg_main_menu"
-    if ${b_use_alt_handler:-false}; then
-        bind_cmd="$f_ext_dlg_trigger"
-        [ "$alt_menu_handler_announced" != 1 ] && {
-            alt_menu_handler_announced=1 # avoid logging it twice if secondary default is used
-            log_it "Will use alternate menu handler: $alt_menu_handler"
-        }
-    fi
-    cmd="bind-key"
-    ${use_bind_key_notes:-false} && cmd="$cmd -N \"plugin ${plugin_name}\""
-
-    u=$(cache_unescape_special_chars "$_bpk_key")
-    if $cfg_no_prefix; then
-        cmd="$cmd -n"
-        trigger_announce="Menus will be bound to: $u"
-    else
-        trigger_announce="Menus will be bound to: <prefix> $u"
-    fi
-    cmd="$cmd \"$_bpk_key\" run-shell $bind_cmd"
-
-    tmux_get_option _f_main_menu_override "@menus_main_menu" "-"
-    # SC2154: variable assigned dynamically by tmux_get_option using eval
-    # shellcheck disable=SC2154
-    [ "$_f_main_menu_override" != "-" ] && {
-        log_it "Using alternate main menu: $_f_main_menu_override"
-    }
-
-    [ "$TMUX_MENUS_NO_DISPLAY" = "1" ] && {
-        # used for debugging menu builds
-        log_it "Due to TMUX_MENUS_NO_DISPLAY terminating before binding trigger _bpk_key"
-        exit 0
-    }
-
-    [ ! -f "$f_skip_low_tmux_version_warning" ] && ! tmux_vers_check 1.8 && {
-        msg="Due to tmux($current_tmux_vers) < 1.8 user options can not be processed.\n\n"
-        msg="${msg}The tmux-menus plugin will be bound to its default key: $_bpk_key"
-        msg="${msg} \n\nAll other options will also use their defaults.\n\n"
-        msg="${msg}  tools/show_config.sh will display current settings.\n\n"
-        msg="${msg}To avoid seeing this message again - do:\n"
-        msg="${msg}  touch $f_skip_low_tmux_version_warning"
-        display_formatted_message "$msg"
-    }
-
-    eval "$TMUX_BIN" "$cmd" || {
-        error_msg "Failed to bind trigger: $_bpk_key"
-    }
-
-    log_it_minimal "$trigger_announce"
-}
-
 #===============================================================
 #
 #   Main
 #
+#
 #===============================================================
 
 initialize_plugin=true
-f_skip_low_tmux_version_warning="$D_TM_BASE_PATH"/.skip_old_tmux_warning
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
+# Set up plugin location in tmux env
+TMUX_BIN="${TMUX_BIN:-tmux}"
+TMUX_MENUS_LOCATION=$(cd "${0%/*}/.." && pwd)
+
+_d_cache="$TMUX_MENUS_LOCATION"/cache
+[ -d "$_d_cache" ] && {
+    rm -rf "$_d_cache" || {
+        echo "ERROR: tmux-menus init, clearing previous cache: $_d_cache"
+        exit 1
+    }
+}
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/helpers.sh
+all_helpers=1 . "$TMUX_MENUS_LOCATION"/scripts/helpers.sh
 
-# log_it "=====   plugin_init.sh starting   ====="
+case "$1" in
+    -z) safe_remove "$d_cache" "Clear cache" && echo "$d_cache cleared!" ;;
+    "") ;;
+    *)
+        echo "$0 [-z to clear cache]"
+        exit 0
+        ;;
+esac
 
 # Define cfg_use_cache as soon as possible, and importantly, don't cache this
 # param since it is as of yet unknown if caching is enabled.
 # Once this has been set, it defines if caching should be used or not
 
-if normalize_bool_param "@menus_use_cache" "$default_use_cache" "no-cache"; then
-    cfg_use_cache=true
-else
-    cfg_use_cache=false
-fi
-
-if ${cfg_use_cache:-false} && [ -d "$d_cache" ]; then
-    #
-    # Clear out potentially obsolete cache items
-    #
-    # If these are removed, it can't be detected if config changed, so
-    # there is no hint if cached items should be dropped or not
-    #
-    # "$f_cache_params"  "$f_chksum_custom"  "$f_min_display_time"
-    #
-    [ -f "$f_cache_known_tmux_vers" ] && {
-        safe_remove "$f_cache_known_tmux_vers" "plugin_init.sh - known_tmux_vers"
-        # Ensure env didn't pick anything up from an obsolete version of this file
-        cached_ok_tmux_versions=""
-        cached_bad_tmux_versions=""
-    }
-
-    safe_remove "$f_cached_tmux_options" "plugin_init.sh - listing detected tmux options"
-    safe_remove "$f_safe_now_method" "plugin_init.sh - safe_now method"
-    # Used by display commands
-    safe_remove "$f_cached_tmux_key_binds" "plugin_init.sh - display commands util" external_path_ok
-
-    # Clear any errors from previous runs
-    safe_remove "$d_cache"/error-* "plugin_init.sh"
-    safe_remove "$d_cache"/cmd_output "plugin_init.sh"
-fi
-
 #
 # These will only do something during debugging, if cfg_log_file was hardcoded
-# in helpers_minimal.sh or similar...
+# in helpers.sh or similar...
 # So normally silent, and really convenient when working on the code
 #
 log_it
 log_it
 log_it
+log_it "=====   plugin_init.sh starting   ====="
+
+$TMUX_BIN set-environment -g TMUX_MENUS_LOCATION "$TMUX_MENUS_LOCATION"
+
+[ -n "$($TMUX_BIN show-environment -g TMUX_PLUGIN_MANAGER_PATH 2>/dev/null)" ] || {
+    # will normally happen for tmux < 1.9
+    $TMUX_BIN show-environment -g TMUX_PLUGIN_MANAGER_PATH | cut
+    TMUX_PLUGIN_MANAGER_PATH=$(cd "${0%/*}/../.." && pwd)
+    log_it "TMUX_PLUGIN_MANAGER_PATH was unset, now set to: $TMUX_PLUGIN_MANAGER_PATH"
+    $TMUX_BIN set-environment -g TMUX_PLUGIN_MANAGER_PATH "$TMUX_PLUGIN_MANAGER_PATH"
+}
 
 config_setup
 
+if $cfg_no_prefix; then
+    log_it "Menus will be bound to: $cfg_trigger_key"
+else
+    log_it "Menus will be bound to: <prefix> $cfg_trigger_key"
+fi
+
+# potentially will change plugin key
+# handle_env_variables # should have been checked set a breakpoint to verify
 #
 # If @menus_log_file was defined, it has now taken effect
 # create a blank line in the log to separate tmux sessions
@@ -187,12 +91,5 @@ if ${cfg_use_cache:-false}; then
 else
     log_it "Will NOT use cached params and key bindings"
 fi
-
-#
-# Key is not bound until cache (if allowed) has been prepared, so normally
-# no menus will be triggered by the user before this
-#
-bind_plugin_key "$cfg_trigger_key"
-consider_secondary_default
 
 exit 0 # ensure consider_secondary_default exit code doesn't indicate error exit

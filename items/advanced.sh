@@ -33,25 +33,25 @@ dynamic_content() {
     set -- \
         2.1 C o "Set mouse to: $new_mouse_status" \
         "set-option -g mouse $new_mouse_status $runshell_reload_mnu" \
-        2.4 E p "Change prefix (Current: $current_prefix)" \
+        2.4 E p "${cfg_danger_zone}Change prefix (Current: $current_prefix)" \
         "$d_scripts/change_prefix.sh $0"
     menu_generate_part 4 "$@"
 }
 
 static_content() {
-    ${cfg_use_hint_overlays:-false} && ! ${b_use_alt_handler:-false} && {
+    ${cfg_use_hint_overlays:-false} && [ -z "$alt_menu_handler" ] && {
         hint="\& $d_hints/choose-client.sh skip-oversized"
     }
 
     set -- \
-        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu"
+        0.0 M Left "Main Menu         $nav_home" "$cfg_main_menu"
     menu_generate_part 1 "$@"
     display_commands_toggle 2
 
     set -- \
         0.0 S
 
-    # if ${b_use_alt_handler:-false}; then
+    # if [ -n "$alt_menu_handler" ]; then
     #     #
     #     #  The tmux output down to Customize options will be displayed
     #     #  then disappear instantly since whiptail restarts the foreground
@@ -60,7 +60,7 @@ static_content() {
     #     set -- "$@" \
     #         0.0 T "Most outputs for this menu will disappear if this is run" \
     #         0.0 T "with another app put into the background, since it will" \
-    #         0.0 T "reapear as soon as this menu is closed." \
+    #         0.0 T "reappear as soon as this menu is closed." \
     #         0.0 T "Recommended workaround is to run this from a pane" \
     #         0.0 T "with a prompt." \
     #         0.0 S
@@ -69,17 +69,14 @@ static_content() {
     set -- "$@" \
         3.1 C n "Key bindings with notes" "list-keys -N" \
         0.0 C a "All key bindings" "list-keys" \
-        3.1 C d "Describe (prefix) key" "command-prompt -k \
-            -p key 'list-keys -N \"%1\" ; list-keys -T prefix \"%1\"'" \
+        0.0 E d "Describe (prefix) key" "$d_scripts"/act_describe_key.sh \
         0.0 C m "Tmux messages" 'show-messages' \
         1.9 C t "Tmux terminal bindings" 'show-messages -T' \
         0.0 C : "Enter a tmux command" command-prompt \
         0.0 C s "Toggle status line" "set-option -g status $runshell_reload_mnu" \
         1.8 S
 
-    ${cfg_use_hint_overlays:-false} && ${cfg_show_key_hints:-false} && tmux_vers_check 2.7 && {
-        # Only generate this segment if any content will be displayed
-        # i.e. tmux >= 2.7
+    ${cfg_use_hint_overlays:-false} && ${cfg_show_key_hints:-false} && {
         set -- "$@" \
             2.7 M K "Key hints - Disconnect $nav_next" \
             "$d_hints/choose-client.sh $0"
@@ -104,8 +101,5 @@ static_content() {
 
 menu_name="Advanced options"
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
-
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/menu_handling.sh
+. "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh

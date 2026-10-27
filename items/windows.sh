@@ -10,24 +10,21 @@
 
 static_content() {
     set -- \
-        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu" \
+        0.0 M Left "Main Menu         $nav_home" "$cfg_main_menu" \
         0.0 M S "Split             $nav_next" window_split.sh \
         0.0 M M "Move              $nav_next" window_move.sh \
-        0.0 M L "Layouts           $nav_next" "$d_items/layouts.sh $0 $menu_name"
+        0.0 M L "Layouts           $nav_next" "$cfg_d_menus/layouts.sh $0 $menu_name"
     menu_generate_part 1 "$@"
     display_commands_toggle 2
 
-    # def bindings
-    #  Previous window with an alert    <p> M-p
-    #  Next window with an alert        <p> M-n
     set -- \
         0.0 S \
-        1.5 C r "Rename" "command-prompt -I '#W'  \
-            -p 'New name: ' 'rename-window %%' $runshell_reload_mnu" \
+        1.5 C r "Rename" "command-prompt -I '##W'  \
+            -p 'New name: ' 'rename-window -- \"%%%\"' $prompt_reload_mnu" \
         1.3 C a "New after current" "command-prompt -p \
-            'Name of new: ' 'new-window -a -n \"%%\"' $runshell_reload_mnu" \
+            'Name of new  ' 'new-window -a -n \"%%%\"' $prompt_reload_mnu" \
         1.3 C e "New at the end" "command-prompt -p \
-            'Name of new: ' 'new-window -n \"%%\"' $runshell_reload_mnu" \
+            'Name of new: ' 'new-window -n \"%%%\"' $prompt_reload_mnu" \
         1.7 C s "Display size" "display-message \
             'Size: #{window_width}x#{window_height}' $runshell_reload_mnu" \
         0.0 S \
@@ -54,8 +51,5 @@ static_content() {
 
 menu_name="Handling Windows"
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
-
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/menu_handling.sh
+. "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh

@@ -6,8 +6,571 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#  Source the entire helpers suite
+#  Minimal support functions, enough when caches is used and cache is available
+#  All support functions will be sourced if needed, all to improve performance
 #
+
+print_stderr() {
+    # will print to stderr if this is run interactively
+    if [ -t 0 ]; then
+        echo "$1" >/dev/stderr
+        return 0
+    else
+        return 1
+    fi
+}
+
+log_it() {
+    # TMUX_MENUS_LOGGING_MINIMAL=1
+    #   Calls to log_it are ignored, only calls to log_it_minimal take effect
+    # TMUX_MENUS_LOGGING_MINIMAL=2
+    #   log_it & log_it_minimal are skipped
+    #
+    [ "${TMUX_MENUS_LOGGING_MINIMAL:-0}" -gt 0 ] && return
+    log_it_minimal "$1"
+}
+
+log_it_minimal() {
+    # Call this directly for things that should be logged even when
+    # TMUX_MENUS_LOGGING_MINIMAL is 1
+    # if TMUX_MENUS_LOGGING_MINIMAL=2 logging is completely disabled
+    [ "${TMUX_MENUS_LOGGING_MINIMAL:-0}" -gt 1 ] && return
+    _msg="[$$] $1"
+
+    [ "$log_interactive_to_stderr" = "1" ] && {
+        # log to stderr if in interactive mode
+        # printf "[%s] log: %s\n" "$(date '+%H:%M:%S')" "$_msg" >/dev/stderr
+        print_stderr "log: $_msg" && return
+        # continue if not an interactive session and use logfile if defined
+    }
+
+    if [ -n "$cfg_log_file" ]; then
+        # log to file
+        _lim_timestamp=$(date '+%H:%M:%S')
+        printf '[%s] %s\n' "$_lim_timestamp" "$_msg" >>"$cfg_log_file"
+    # else
+    #     # if no log file has been defined, try to use stderr
+    #     # should only be used for debugging
+    #     print_stderr "log: $_msg" && return
+    fi
+}
+
+error_msg() {
+    #  Used when potentially called without having sourced everything
+    msg="$1"
+    exit_code="$2"
+    ${b_all_helpers_sourced:-false} || source_all_helpers "error_msg()"
+    error_msg_real "$msg" "$exit_code"
+}
+
+source_all_helpers() {
+    #
+    #  Sources the full helper environment, if not already loaded.
+    #
+    #  Initially, only helpers.sh is sourced for performance. It includes:
+    #   - log_it / log_it_minimal
+    #   - tmux_vers_check
+    #   - safe_now & time_span (used by dialog_handling to log render speed)
+    #   - error_msg (safe to call before full sourcing)
+    #
+    #  Use this to load all helpers when needed, ensuring it's only done once:
+    #    ${b_all_helpers_sourced:-false} || source_all_helpers "caller description"
+    #
+
+    ${b_all_helpers_sourced:-false} && {
+        error_msg "source_all_helpers() called when it was already done - $1"
+    }
+    b_all_helpers_sourced=true # set it early to avoid recursion
+
+    # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
+    . "$TMUX_MENUS_LOCATION"/scripts/utils/helpers_full.sh || {
+        error_msg "Failed to source: scripts/utils/helpers_full.sh"
+    }
+}
+
+simple_dirname() {
+    #
+    # To fully avoid a fork, set $2=silent, and retrieve the value via _d_simple_dirname:
+    #   simple_dirname "$f_foo" silent
+    #   d_foo="$_d_simple_dirname"
+    # otherwise the more expensive but easier to code usage is the more typical:
+    #   d_foo=$(simple_dirname "$f_foo")
+    #
+    # But then you might-as-well do a double fork: d_foo=$(dirname "$d_foo")
+    #
+    # Provides:
+    #   _d_simple_dirname
+    #
+    _fp="$1"
+
+    case "$_fp" in
+        */*) _d_simple_dirname=${_fp%/*} ;;
+        *) _d_simple_dirname=. ;;
+    esac
+    [ -n "$_d_simple_dirname" ] || _d_simple_dirname=/
+
+    [ "$2" != silent ] && printf '%s' "$_d_simple_dirname"
+}
+
+do_validate_path() {
+    #
+    #  Provides: on success will set: relative_fname relative_fname
+    #
+    [ -n "$1" ] || error_msg "do_validate_path() - param 1 missing"
+    [ -n "$2" ] || error_msg "do_validate_path() - param 2 missing"
+
+    case "$1" in
+        /*) # absolute path
+            case "$1" in
+                $2/*) : ;;
+                *) return 1 ;; # error_msg "Abs-path outside bounds [$_d_base] - $1" ;;
+            esac
+            ;;
+        *) ;; # relative path
+    esac
+    relative_fname=${1#"$2"/}
+    return 0
+}
+
+validate_relativise_path() {
+    #
+    #  $1 validates this
+    #  $2 is base path to try to extract, defaults to TMUX_MENUS_LOCATION
+    #
+    #  Provides: relative_fname (relative to $1/TMUX_MENUS_LOCATION)
+    #
+    # Ensure menu is within main menu hierarchy if a fullpath is given
+    # remove (valid) absolute prefix - first check if relative or absolute
+
+    if [ -n "$2" ]; then
+        _d_base="$2"
+    else
+        _d_base="$TMUX_MENUS_LOCATION"
+    fi
+    do_validate_path "$1" "$_d_base"
+}
+
+validate_path_script_or_menu() {
+    #
+    #  Provides: relative_fname
+    #
+    validate_relativise_path "$1" "$TMUX_MENUS_LOCATION" || {
+        # [ -n "$cfg_d_menus" ] || {
+        #     error_msg "validate_path_script_or_menu() - when checking for cfg_d_menus it was undefined"
+        # }
+        validate_relativise_path "$1" "$cfg_d_menus" || {
+            _s="validate_path_script_or_menu() - $1"
+            _s="$_s\n\nNot in either valid path"
+            _s="$_s\n  plugin: $TMUX_MENUS_LOCATION"
+            _s="$_s\n  menus: $cfg_d_menus\n"
+            error_msg "$_s"
+        }
+    }
+}
+
+validate_varname() {
+    case "$1" in
+        [a-zA-Z_][a-zA-Z0-9_]*) return 0 ;;
+        *) error_msg "$2 Invalid variable name: $1" ;;
+    esac
+}
+
+#---------------------------------------------------------------
+#
+#   get configuration
+#
+#---------------------------------------------------------------
+
+source_cached_params() {
+    # This is just reading, so ok to do even if cache is disabled
+    ${b_cache_params_sourced:-false} && return 0
+
+    if [ -f "$f_cache_params" ]; then
+        [ "$log_file_forced" = 1 ] && {
+            # if log file is forced, save setting, in order to ignore cached config
+            orig_log_file="$cfg_log_file"
+        }
+
+        # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
+        . "$f_cache_params" || {
+            # restore forced log file setting if sourcing failed
+            [ "$log_file_forced" = 1 ] && cfg_log_file="$orig_log_file"
+            log_it "source_cached_params() - Failed to source: $f_cache_params"
+            return 1
+        }
+        b_cache_params_sourced=true
+
+        [ "$log_file_forced" = 1 ] && {
+            # use the forced log_file, ignoring any potential cached entry
+            cfg_log_file="$orig_log_file"
+            unset orig_log_file
+        }
+    else
+        return 1
+    fi
+
+    return 0
+}
+
+get_config() { # local usage during sourcing
+    #
+    #  The plugin init .tmux script should NOT depend on this!
+    #  This is used by everything else sourcing helpers.sh, then trusting
+    #  that the param cache is valid if found
+    #
+    replace_config=false
+    if [ -f "$f_cache_params" ]; then
+        source_cached_params || {
+            replace_config=true
+            _m="WARNING: get_config() failed to source: $f_cache_params,"
+            _m="$_m calling config_setup"
+            log_it "$_m"
+        }
+    elif [ -f "$f_no_cache_hint" ]; then
+        cfg_use_cache=false
+        ${b_all_helpers_sourced:-false} || {
+            source_all_helpers "get_config() - no cache hint found"
+        }
+        read_config
+    else
+        replace_config=true
+    fi
+
+    if ${replace_config:-false}; then
+        ${b_all_helpers_sourced:-false} || {
+            source_all_helpers "get_config() - failed to source cached params"
+        }
+        config_setup
+    fi
+
+    if [ -z "$skip_env_check" ]; then
+        handle_env_variables
+    fi
+}
+
+#---------------------------------------------------------------
+#
+#   env variables
+#
+#---------------------------------------------------------------
+
+check_alt_handler_changed() {
+    # log_it "><> check_alt_handler_changed()"
+
+    [ -n "$TMUX_MENUS_HANDLER" ] && [ "$TMUX_MENUS_HANDLER" != "$mnu_handler" ] && {
+        # env requests a change of handler
+        ${b_all_helpers_sourced:-false} || {
+            source_all_helpers "get_config() - failed to source cached params"
+        }
+
+        # assume alt_handler was changed, dump menu cache, re-create plugin_params
+        # if relevant and read config
+        safe_remove "$d_cache_menus" "check_alt_handler_changed() - handler change"
+        $cfg_use_cache && {
+            config_setup_cached
+        }
+        read_config
+    }
+}
+
+handle_env_variables() { # local usage by get_config()
+    # Check env variables and apply relevant env checks & config overrides
+
+    # TMUX_MENUS_LOGGING_MINIMAL - is handled directly by log_it() - no config needed
+    # TMUX_MENUS_NO_DISPLAY -  is handled directly - no config needed
+    # TMUX_MENUS_PROFILING - is handled directly - no config needed
+    [ -n "$TMUX_MENUS_HANDLER" ] && [ "$TMUX_MENUS_HANDLER" != "$mnu_handler" ] && {
+        check_alt_handler_changed
+    }
+}
+
+#---------------------------------------------------------------
+#
+#   get a time stamp
+#
+#---------------------------------------------------------------
+
+timers_disabled() {
+    [ -n "$cfg_use_timers" ] || {
+        return 0 # has not been set yet
+    }
+    ! ${initialize_plugin:-false} && ! ${cfg_use_timers:-false}
+}
+
+select_safe_now_method() { # local usage by safe_now()
+    #
+    # Select and save the time method for future use.
+    # Using milliseconds when possible
+    #
+    # Provides: selected_safe_now_mthd
+    #
+    [ -n "$selected_safe_now_mthd" ] && {
+        error_msg "Recursive call to: select_safe_now_method"
+    }
+
+    [ -f "$f_safe_now_method" ] && {
+        IFS= read -r selected_safe_now_mthd <"$f_safe_now_method" || {
+            error_msg "Failed to read: $f_safe_now_method"
+        }
+        return
+    }
+    # Probe actual output: %3N is a GNU extension, displaying ms
+    # BSD / MacOS  Displays N at end of output
+    # BusyBox date silently ignores it and returns seconds only
+    # — so test the output length rather than inferring from OS
+    _snm_test="$(date +%s%3N 2>/dev/null)"
+    if [ "${#_snm_test}" -ge 13 ]; then
+        selected_safe_now_mthd="date" # date supports ms precision
+    elif command -v gdate >/dev/null; then
+        selected_safe_now_mthd="gdate" # macOS with GNU date
+    elif command -v perl >/dev/null; then
+        selected_safe_now_mthd="perl" # fallback via Perl
+    else
+        selected_safe_now_mthd="seconds" # last resort, seconds-only
+    fi
+    unset _snm_test
+    [ -d "$d_cache" ] && {
+        # Only save to cache folder if it has been created.
+        # This avoids gotchas if this is called before  cache disabled has been
+        # checked
+        echo "$selected_safe_now_mthd" >"$f_safe_now_method" || {
+            error_msg "Failed to save: $f_safe_now_method"
+        }
+    }
+}
+
+set_script_start_time() {
+    case "$t_script_start" in
+        "") ;;         # unset
+        0) ;;          # previously unable to set
+        *) return 1 ;; # already set
+    esac
+
+    safe_now t_script_start
+    return 0
+}
+
+safe_now() {
+    #
+    #  Sets t_now to the current timestamp. If a variable name is given,
+    #  it will be assigned the same value directly (no subshell).
+    #
+    #  Provides: t_now
+    #
+    varname="$1"
+    # validate_varname "$varname" "safe_now()()" # disabled for performance
+
+    # always run during plugin init, otherwise only if cfg_use_timers is true
+    timers_disabled && {
+        # Don't use timers
+        t_now=0
+        [ -n "$varname" ] && {
+            # if variable name provided set it to t_now
+            eval "$varname=\"\$t_now\""
+        }
+        return
+    }
+
+    # [ -n "$selected_safe_now_mthd" ] && {
+    #     # first call will have no method defined, so this will recurse once it is
+    #     # set
+    #     log_it "safe_now($varname) mthd: [$selected_safe_now_mthd]"
+    # }
+
+    case "$selected_safe_now_mthd" in
+        date) t_now="$(date +%s.%N)" ;;
+        gdate) t_now="$(gdate +%s.%N)" ;;
+        perl) t_now="$(perl -MTime::HiRes=time -E '$t = time; printf "%.9f\n", $t')" ;;
+        seconds) t_now="$(date +%s)" ;;
+        *)
+            select_safe_now_method
+
+            # to prevent infinite recursion, ensure a valid timing method is now selected
+            case "$selected_safe_now_mthd" in
+                date | gdate | perl | seconds) ;;
+                *)
+                    error_msg \
+                        "safe_now($varname) - failed to select a timing method"
+                    ;;
+            esac
+
+            safe_now "$varname"
+            return
+            ;;
+    esac
+    [ -n "$varname" ] && {
+        # if variable name provided set it to t_now
+        eval "$varname=\"\$t_now\""
+    }
+}
+
+time_span() { # display_menu() / check_speed_cutoff()
+    #
+    # Calculates a time span compared to param 1
+    #
+    # Provides: t_time_span
+    #
+    timers_disabled && {
+        # Don't use timers
+        t_time_span=1
+        return
+    }
+
+    _t_start="$1"
+    case "$_t_start" in
+        "") error_msg "time_span() - called without t_start param" ;;
+        0) # safe_now() failed to provide a time-stamp, give token 1 response
+            t_time_span=1
+            return
+            ;;
+        *) ;;
+    esac
+
+    safe_now # assigns t_now
+
+    if [ -d /proc/ish ]; then
+        # iSH performs better with bc due to emulation characteristics
+        t_time_span="$(echo "$t_now - $_t_start" | bc)"
+    else
+        t_time_span="$(awk -v now="$t_now" -v start="$_t_start" \
+            'BEGIN { print now - start }')"
+    fi
+}
+
+#---------------------------------------------------------------
+#
+#   tmux version related support functions
+#
+#---------------------------------------------------------------
+
+tmux_vers_check() { # local usage when checking $min_tmux_vers
+    _v_comp="$1"    # Desired minimum version to check against
+    [ -z "$_v_comp" ] && error_msg "tmux_vers_check() - no parameter given"
+
+    # Retrieve and cache the current tmux version on the first call,
+    # unless it has been read from the param cache
+    if [ -z "$current_tmux_vers" ] || [ -z "$current_tmux_vers_i" ]; then
+        tpt_retrieve_running_tmux_vers
+    fi
+
+    if [ -z "$cached_ok_tmux_versions" ] && [ -f "$f_cache_known_tmux_vers" ]; then
+        # Reading it if existing is harmless even if cache is disabled
+        # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
+        . "$f_cache_known_tmux_vers" || {
+            log_it "WARNING: Failed to source: f_cache_known_tmux_vers"
+            # Since the source failed, clear these in order to ensure no bad
+            # state was retrieved
+            cached_ok_tmux_versions=""
+            cached_bad_tmux_versions=""
+        }
+    fi
+
+    # Check if the version is in the cached good or bad lists using case statements
+    case "$cached_ok_tmux_versions" in
+        *" $_v_comp "*) return 0 ;; # Version found in good list
+        *) ;;
+    esac
+    case "$cached_bad_tmux_versions" in
+        *" $_v_comp "*) return 1 ;; # Version found in bad list
+        *) ;;
+    esac
+
+    # Once a menu has been processed once, all version references should already be
+    # cached, so in the normal cached state this point will not be reached
+
+    # If helpers aren't sourced yet, source them before continuing the version check
+    ${b_all_helpers_sourced:-false} || {
+        # tmux_vers_check might be called as the other helpers are sourced, so
+        # ensure that the original check is retained
+        _preserve_check_version="$_v_comp"
+        source_all_helpers "tmux_vers_check($_v_comp) - non-cached version"
+        _v_comp="$_preserve_check_version"
+    }
+
+    # Perform the actual version comparison check, and then store it as a good/bad version
+    tmux_vers_check_do_compare "$_v_comp"
+}
+
+tpt_retrieve_running_tmux_vers() { # local usage by tmux_vers_check()
+    #
+    # If the variables defining the currently used tmux version needs to
+    # be accessed before the first call to tmux_vers_ok this can be called.
+    # This will by necessity be called as config_setup() is processing, so unless
+    # caching is disabled, this won't be called by menus directly.
+    #
+    current_tmux_vers=$($TMUX_BIN -V | cut -d' ' -f2)
+    case "$current_tmux_vers" in
+        "2.4."*) current_tmux_vers="2.4" ;; # handle tmate triple digits
+        *) ;;
+    esac
+
+    tpt_parse_tmux_vers "$current_tmux_vers"
+    current_tmux_vers_i="$tpt_vers_digits"
+    current_tmux_vers_suffix="$tpt_vers_suffix"
+}
+
+tpt_parse_tmux_vers() {
+    # converts the given tmux version into our simplified notation
+    # Provides:
+    #   tpt_vers_digits
+    #   tpt_vers_suffix
+    #
+    #   "tmux 3.7" => tpt_vers_digits="37" tpt_suffix=""
+    #   "3.7a"     => tpt_vers_digits="37" tpt_suffix="a"
+    #   "tmux next-3.8" => tpt_vers_digits="37" tpt_suffix="z"
+    #
+    _vers=$1
+    [ -z "$_vers" ] && error_msg "tpt_parse_tmux_vers() - no param"
+    _vers=${_vers%%-rc*} # Remove trailing "-rc" and anything after
+
+    # Helper: Apply "next-" version reduction consistently
+    # Reduces next-X.Y versions: next-X.0 => (X-1).9, next-X.Y => X.(Y-1)
+    case $_vers in
+        next-*)
+            _vers="${_vers#next-}"          # Strip "next-" prefix
+            _major="${_vers%.*}"            # Everything before last dot
+            _minor="${_vers#*.}"            # Everything after first dot
+            _minor_num="${_minor%%[^0-9]*}" # Keep only leading digits
+
+            if [ "$_minor_num" -eq 0 ] 2>/dev/null; then
+                # next-X.0: decrement major, set minor to 9
+                _vers="$((_major - 1)).9"
+            else
+                # next-X.Y (Y>0): decrement minor
+                # ensure the next version has the last suffix, ending in a virtual subvers
+                # higher than any actual release
+                _vers="${_major}.$((_minor_num - 1))z"
+            fi
+            ;;
+        *) ;; # no reduction needed
+    esac
+
+    # Extract only digits from version string
+    tpt_vers_digits=""
+    _tpvd_temp="$_vers"
+    while [ -n "$_tpvd_temp" ]; do
+        _tpvd_char="${_tpvd_temp%"${_tpvd_temp#?}"}" # Get first character
+        case "$_tpvd_char" in
+            [0-9]) tpt_vers_digits="$tpt_vers_digits$_tpvd_char" ;;
+            *) ;;
+        esac
+        _tpvd_temp="${_tpvd_temp#?}" # Remove first character
+    done
+    # Check if result is empty after digit extraction
+    [ -z "$tpt_vers_digits" ] && error_msg "tpt_vers_digits - result empty"
+
+    # Remove leading digits, dots, and dashes to isolate non-rc suffix
+    tpt_vers_suffix=$(printf "%s" "$_vers" | sed 's/^[0-9.-]*//')
+}
+
+base_path_not_defined() {
+    # Show error msg if TMUX_MENUS_LOCATION is not defined
+    # helpers not yet sourced, so TMUX_BIN & error_msg() not yet available
+    msg="$plugin_name ERROR: $0 - TMUX_MENUS_LOCATION must be set before sourcing this file"
+    print_stderr "$msg"
+    $TMUX_BIN display-message "$msg"
+    exit 1
+}
 
 #===============================================================
 #
@@ -15,23 +578,96 @@
 #
 #===============================================================
 
-[ "${env_initialized:-0}" -lt 1 ] && {
-    # Only source if not done
+#
+#  Early debug options
+#
+#  Define before anything else. Normally commented out.
+#
 
-    [ -z "$D_TM_BASE_PATH" ] && {
-        # helpers not yet sourced, so error_msg() not yet available
-        msg="ERROR: menu_handling.sh - D_TM_BASE_PATH must be set before sourcing this file"
-        (
-            echo
-            echo "$msg"
-            echo
-        ) >/dev/stderr
-        exit 1
-    }
-    # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-    . "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
+#
+# Hardcoded log file for early startup tracing (before @menus_log_file is
+# read). If log_file_forced=1, @menus_log_file is ignored and this remains.
+#
+# cfg_log_file="$HOME"/tmp/tmux-menus-t2.log
+# log_file_forced=1
+
+# Only run this log_it if cfg_log_file was defined just above
+# log_it "[$$] STARTING: scripts/helpers.sh all_helpers[$all_helpers] for: $0"
+
+#
+#  And the rest
+#
+
+# initially on for init timings to define
+# minimal display time before judged as failed for older tmux versions
+# Will be set according to config preferences during get_config
+cfg_use_timers=true
+
+plugin_name="tmux-menus"
+menus_version="2.5.0"
+
+TMUX_BIN="${TMUX_BIN:-tmux}" # point to tmux bin being used
+
+[ -n "$env_initialized" ] && error_msg "helpers.sh already sourced"
+env_initialized=0
+
+min_tmux_vers=1.5 # oldest accepted tmux version
+
+# for performance only a minimum of support features are in this file
+# as long as cache is used, it is sufficient, if extra features are needed
+# a call to source_all_helpers will be done, this ensures it only happens once
+b_all_helpers_sourced=false
+
+log_interactive_to_stderr="${TMUX_MENUS_INTERACTIVE_TO_STDERR:-0}"
+
+d_tmp="${TMPDIR:-/tmp}"
+d_tmp="${d_tmp%/}" # Removes a trailing slash if present - sometimes set in TMPDIR...
+
+# If present cache will not be used
+f_no_cache_hint="$d_tmp/${plugin_name}"-no-cache-hint
+
+[ -z "$TMUX_MENUS_LOCATION" ] && base_path_not_defined
+
+d_items="$TMUX_MENUS_LOCATION"/items # where the built in menus are located
+d_scripts="$TMUX_MENUS_LOCATION"/scripts
+
+scr_ext_dlg_trigger="$d_scripts/external_dialog_trigger.sh"
+scr_float_pane_switch="$d_scripts/floating_pane_switch.sh"
+f_skip_low_tmux_version_warning="$TMUX_MENUS_LOCATION"/.skip_old_tmux_warning
+
+# only used when caching is enabled
+d_cache="$TMUX_MENUS_LOCATION"/cache
+d_cache_menus="$d_cache"/menus          # where rendered menus/menu fragments are located
+f_cache_params="$d_cache"/plugin_params # cache for all variables based on config and env
+f_cache_known_tmux_vers="$d_cache"/known_tmux_versions
+
+# state files needed even when caching is disabled
+f_cached_tmux_key_binds="$d_tmp/${plugin_name}"-tmux_key_binds
+f_safe_now_method="$d_tmp/${plugin_name}"-safe_now_method
+f_max_25_line_menus="$d_tmp/${plugin_name}"-limit_menus_to_25_lines
+
+bn_current_script=${0##*/} # same but faster than "$(basename "$0")"
+
+# --->  Only enable this if profiling is being used during startup  <---
+# [ "$profiling_sourced" != 1 ] && {
+#     # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
+#     . "$TMUX_MENUS_LOCATION"/scripts/utils/dbg_profiling.sh
+# }
+
+validate_path_script_or_menu "$0"
+rn_current_script="$relative_fname" # saves a fork
+# current_script_no_ext=${rn_current_script%.*} # not used ATM
+
+env_initialized=1
+# log_it "[$$] ===  Completed: scripts/helpers.sh - $0"
+
+#
+#  Some post-init tasks
+#
+[ "$all_helpers" = 1 ] && source_all_helpers
+
+${initialize_plugin:-false} || {
+    # plugin_init will call config_setup directly, so should not call get_config
+    get_config
+    set_script_start_time
 }
-
-${b_all_helpers_sourced:-false} || source_all_helpers "helpers.sh"
-
-# log_it "===  Completed: scripts/helpers_full.sh  == [$0]"

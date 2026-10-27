@@ -1,6 +1,6 @@
 # Custom Menus
 
-## Planned obsolescence - end of 2026
+## Deprecation Notice: Removal Planned for End of 2026
 
 This feature is deprecated and will be removed by end of 2026. Earlier versions
 will remain available.
@@ -91,7 +91,5 @@ appear in the main menu's custom items list.
 
 ## Summary
 
-This feature ensures your custom menus are automatically recognized, properly
-linked, and easily accessible via the main menu. By following these simple
-guidelines, you can maintain a clean, organized tmux environment tailored to
-your workflow.
+Custom menus are detected automatically and linked from the main menu. Following
+the requirements above keeps each menu recognized and easy to reach.

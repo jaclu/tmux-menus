@@ -30,16 +30,21 @@
 #
 #===============================================================
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}" && pwd)
+#  Full path to tmux-menus plugin, remember to do one /.. for each subfolder
+TMUX_BIN="${TMUX_BIN:-tmux}"
+# Set up plugin location in tmux env
+TMUX_MENUS_LOCATION=$(cd "${0%/*}" && pwd)
+# export TMUX_MENUS_LOCATION
+$TMUX_BIN set-environment -g TMUX_MENUS_LOCATION "$TMUX_MENUS_LOCATION"
+
 #
 #  Run the plugin setup in the background in order not to slow down tpm during startup.
 #  On systems with "normal" performance init takes perhaps 0.5 seconds
-#  On slower things like iSH or termux it might take 2-3 seconds, then the
+#  On slower things like iSH or termux it might take 3-5 seconds, then the
 #  long wait for tpm to complete becomes more apparent.
 #
 (
-    "$D_TM_BASE_PATH"/scripts/plugin_init.sh || {
+    "$TMUX_MENUS_LOCATION"/scripts/plugin_init.sh || {
         # Report if init failed
         tmux display-message "tmux-menus - Failed to initialize"
         sleep 3

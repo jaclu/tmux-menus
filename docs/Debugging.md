@@ -1,11 +1,15 @@
 # Debugging
 
-## Logging
+The plugin initialization sets TMUX_MENUS_LOCATION in the global tmux environment.
+
+Because this happens after the initial pane(s) of the tmux session are created,
+it is recommended to always create a new pane when working interactively with the
+code, so that pane has this variable defined.
 
 If `@menus_log_file` is defined, it will be used for status updates generated
 by `log_it "msg"`.
 
-The `log_interactive_to_stderr` variable (set in `scripts/helpers_minimal.sh`
+The `log_interactive_to_stderr` variable (set in `scripts/helpers.sh`
 around line 515) controls whether interactive scripts (run from the command
 line) log to `/dev/stderr`. This setting is independent of file-based logging.
 
@@ -20,6 +24,13 @@ When `teh_debug` is enabled, error displays are limited to one-liners in the
 log file, preventing it from being flooded with elaborate error reports.
 
 ## Environment Variables
+
+### TMUX_MENUS_INTERACTIVE_TO_STDERR
+
+If set to 1 all log_it in scripts run from cmdline will divert log_it calls to /dev/stderr
+Any value other than 0/1 will most likely trigger an error
+
+Non-interactive scripts, like menus triggered via trigger key, will still use logfile if defined
 
 ### TMUX_MENUS_LOGGING_MINIMAL
 

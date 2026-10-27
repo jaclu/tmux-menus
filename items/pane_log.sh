@@ -22,7 +22,7 @@ log_to_file() {
 static_content() {
     set -- \
         0.0 M Left "Back to Previous  $nav_prev" panes.sh \
-        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu"
+        0.0 M Home "Main Menu         $nav_home" "$cfg_main_menu"
     menu_generate_part 1 "$@"
     display_commands_toggle 2
 
@@ -54,15 +54,12 @@ menu_name="Saving pane output to file"
 
 menu_min_vers=1.1
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
-
 no_auto_menu_handling=1 # delay processing of dialog, only source it for now
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/menu_handling.sh
+. "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh
 
-if ${b_use_alt_handler:-false}; then
+if [ -n "$alt_menu_handler" ]; then
     # It "should" work, but something is going wrong and I haven't figured it out yet...
     error_msg "Menu pane_log is not yet usable for whiptail/dialog"
     exit 1

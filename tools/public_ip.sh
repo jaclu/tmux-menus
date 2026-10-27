@@ -8,11 +8,9 @@
 #   Displays public IP
 #
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
-
+TMUX_MENUS_LOCATION=$(cd "${0%/*}/.." && pwd)
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/helpers.sh
+all_helpers=1 . "$TMUX_MENUS_LOCATION"/scripts/helpers.sh
 
 _this="public_ip.sh" # error prone if script name is changed :(
 [ "$bn_current_script" != "$_this" ] && error_msg "$_this should NOT be sourced"

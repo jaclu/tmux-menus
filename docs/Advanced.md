@@ -22,8 +22,8 @@ regenerate each display. See [items/pane_move.sh](../items/pane_move.sh) where
 The cache is fully invalidated during plugin init when:
 
 - A different tmux version is detected at initialization
-- the plugin repo has been updated
-- Any changes to the tmux-menus variables in tmux.conf
+- The plugin repo has been updated
+- Any change to the tmux-menus variables in tmux.conf
 
 ### Validate Cache
 
@@ -33,7 +33,7 @@ set -g @menus_validate_cache 'Yes'
 
 Default: `No`
 
-When enabled, the cache system verifies that cached menu items haven't staled by
+When enabled, the cache system verifies that cached menu items have not become stale by
 checking file modification timestamps. This ensures that if a menu script is
 modified, the cache is immediately invalidated rather than serving outdated
 content on the next display.
@@ -75,15 +75,15 @@ menus spill over available display edges instead of silently failing, and
 anyway. The option is still available for debugging purposes on slow systems
 where you want to monitor actual menu rendering performance.
 
-## Hint Overlays (Obsoleted in tmux 3.7)
+## Hint Overlays (Obsolete in tmux 3.7)
 
 ```tmux
 set -g @menus_use_hint_overlays 'No'
 ```
 
-Up to tmux 3.6, this defaults to active, however starting with 3.7 all tmux dialogs
-have native help popups via F1, so this feature is entirely obsolete and thus
-not offered on 3.7 and up.
+Up to tmux 3.6, this defaults to enabled. Starting with 3.7, all tmux dialogs
+have native help popups via F1, so this feature is obsolete and is not offered
+on 3.7 and later.
 
 (not available when using whiptail/dialog)
 
@@ -103,9 +103,9 @@ option (below) is ignored.
 set -g @menus_show_key_hints 'Yes'
 ```
 
-Up to tmux 3.6, this defaults to disabled, however starting with 3.7 all tmux dialogs
-have native help popups via F1, so this feature is entirely obsolete and thus
-not offered on 3.7 and up.
+Up to tmux 3.6, this defaults to disabled. Starting with 3.7, all tmux dialogs
+have native help popups via F1, so this feature is obsolete and is not offered
+on 3.7 and later.
 
 Related to `@menus_use_hint_overlays`. Since key listings can be quite long,
 they may not fit on screen and will be silently skipped. Enabling this option

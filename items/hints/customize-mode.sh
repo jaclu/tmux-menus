@@ -14,7 +14,7 @@ dynamic_content() {
     if [ -n "$prev_menu" ]; then
         set -- \
             0.0 M Left "Back to Previous  $nav_prev" "$prev_menu" \
-            0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu"
+            0.0 M Home "Main Menu         $nav_home" "$cfg_main_menu"
     else
         set -- \
             0.0 T "Press Esc or q to close this help overlay"
@@ -64,17 +64,12 @@ static_content() {
 menu_name="Keys for customize-mode"
 menu_min_vers=3.2
 
-if [ -n "$1" ]; then
-    prev_menu="$(realpath "$1")"
-fi
-
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/../.." && pwd)
+prev_menu="$1"
 
 no_auto_menu_handling=1 # delay processing of dialog, only source it for now
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/menu_handling.sh
+. "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh
 
 # manually trigger dialog handling
 do_menu_handling

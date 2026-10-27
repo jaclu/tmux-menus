@@ -9,13 +9,13 @@
 #  is simulated to be run in the active pane by using send-keys
 #
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
+# Prevents handle_env_variables to be run by this process
+skip_env_check=1
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/helpers_minimal.sh
+. "$TMUX_MENUS_LOCATION"/scripts/helpers.sh
 
-menu_name="${1:-$f_main_menu}"
+menu_name="${1:-$cfg_main_menu}"
 
 dlg_handler="$d_scripts/external_dialog_handle.sh"
 [ ! -f "$dlg_handler" ] && error_msg "File not found: $dlg_handler"

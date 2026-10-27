@@ -43,11 +43,9 @@ param_check() {
 #
 #===============================================================
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
-
+TMUX_MENUS_LOCATION=$(cd "${0%/*}/.." && pwd)
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/helpers.sh
+. "$TMUX_MENUS_LOCATION"/scripts/helpers.sh
 
 tmux_vers_check 1.8 || {
     error_msg "$rn_current_script - needs tmux 1.8"
@@ -55,7 +53,7 @@ tmux_vers_check 1.8 || {
 
 param_check "$1" "$2"
 
-if ${cfg_use_hint_overlays:-false} && ! ${b_use_alt_handler:-false}; then
+if ${cfg_use_hint_overlays:-false} && [ -z "$alt_menu_handler" ]; then
     "$d_hints"/choose-tree.sh skip-oversized &
 fi
 
@@ -74,4 +72,4 @@ case "$item_type" in
         ;;
 esac
 
-tmux_error_handler choose-tree "$flags" "run-shell '$template %%'"
+$TMUX_BIN choose-tree "$flags" "run-shell '$template %%'"

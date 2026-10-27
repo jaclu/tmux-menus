@@ -163,21 +163,34 @@ sc_filter_ws() {
     # Remove leading/trailing spaces and collapse inner whitespace
     # shellcheck disable=SC2086 # intentionally unquoted string
     set -- $_sc_fw_input
-    sc_cmd="$*"
+    sc_filtered="$*"
+}
+
+sc_remove_a_suffix() {
+    sc_filter_ws "${1%"$2"}"
+}
+
+sc_remove_suffixes() {
+    sc_remove_a_suffix "$1" "$runshell_reload_mnu"
+    sc_remove_a_suffix "$sc_filtered" "$runshell_sleep_reload_mnu"
+    sc_remove_a_suffix "$sc_filtered" "$mnu_reload_direct"
+    # sc_remove_a_suffix "$sc_filtered" "$0"
+
+    sc_no_suffix="$sc_filtered"
 }
 
 sc_clean_up_cmd() {
     # Remove menu reload and hint overlay suffixes
     # Defines: sc_cmd (via sc_filter_ws)
+
     _sc_cuc_cmd="$1"
 
-    # Remove reload suffixes and hint overlays
-    _sc_cuc_cmd="${_sc_cuc_cmd%" $runshell_reload_mnu"}"
-    _sc_cuc_cmd="${_sc_cuc_cmd%" $mnu_reload_direct"}"
-    _sc_cuc_cmd="${_sc_cuc_cmd%"; $0"}"
-    _sc_cuc_cmd="${_sc_cuc_cmd%%\\&*}"
+    sc_remove_suffixes "$1"
 
-    sc_filter_ws "$_sc_cuc_cmd"
+    _sc_cuc_in="$sc_no_suffix"
+    _sc_cuc_out="${_sc_cuc_in%%\\&*}"
+
+    sc_cmd="$_sc_cuc_out"
 }
 
 sc_clean_up_result() {
@@ -196,11 +209,32 @@ sc_clean_up_result() {
 
     # Replace plugin path with tag
     case $_sc_cur_result in
-        "$D_TM_BASE_PATH/"*) _sc_cur_result='[tmux-menus] '"${_sc_cur_result#"$D_TM_BASE_PATH/"}" ;;
+        "$TMUX_MENUS_LOCATION/"*) _sc_cur_result='[tmux-menus] '"${_sc_cur_result#"$TMUX_MENUS_LOCATION/"}" ;;
         *) ;;
     esac
 
     sc_processed="$_sc_cur_result"
+}
+
+sc_get_window_width() {
+    #
+    #  This will only be run if $menus_display_commands is active
+    #
+    if tmux_vers_check 1.7; then
+        _sc_window_width=$($TMUX_BIN display-message -p '#{window_width}')
+        _sc_max_width=$((_sc_window_width - 8)) # 8 leave space for menu border etc
+        if [ "$cfg_display_cmds_cols" -lt "$_sc_max_width" ]; then
+            # Limited by window size
+            sc_max_usable_width=$cfg_display_cmds_cols
+        else
+            sc_max_usable_width=$_sc_max_width
+        fi
+    else
+        # 1.5 & 1.6 can't report window_width via display-message
+        # In principle list-windows can be used to display window_width, but I
+        # don't see much point in implementing that :)
+        sc_max_usable_width=$cfg_display_cmds_cols
+    fi
 }
 
 sc_display_cmd() {
@@ -208,8 +242,10 @@ sc_display_cmd() {
     # then calls mnu_text_line() for each line of the command to be displayed.
     _sc_dc_remainder="$1"
 
+    [ "$sc_max_usable_width" = 0 ] && sc_get_window_width
+
     while [ -n "$_sc_dc_remainder" ]; do
-        _sc_dc_chunk=$(printf '%s\n' "$_sc_dc_remainder" | awk -v max="$cfg_display_cmds_cols" '
+        _sc_dc_chunk=$(printf '%s\n' "$_sc_dc_remainder" | awk -v max="$sc_max_usable_width" '
         {
             if (length($0) <= max) {
                 print $0
@@ -253,8 +289,7 @@ sc_show_cmd() {
             # Keybind mode: check if command is bound to a shortcut
             sc_check_key_binds "${sc_cmd#"$TMUX_BIN "}"
             ;;
-        *)
-            ;;
+        *) ;;
     esac
 
     sc_display_cmd "$sc_processed"
@@ -272,3 +307,4 @@ if false; then
     # Shellcheck analyzes this code path but it never executes at runtime
     . tools/variables_meta.sh
 fi
+sc_max_usable_width=0

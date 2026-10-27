@@ -14,7 +14,7 @@
 #
 #  Typical usage:
 #  In the script I want to optimize paste the code below, time starts when
-#  set_profiling_t_now is called so depending on what you want to measure the dropin
+#  set_profiling_t_now is called so depending on what you want to measure the drop-in
 #  point for this code can make a difference!
 #
 #   If you want to see the precise time for an action, do this:
@@ -61,7 +61,6 @@ profiling_select_timing_method() {
     [ -n "$profiling_selected_get_time" ] && {
         error_msg "Recursive call to: profiling_selected_get_time"
     }
-    # log_it "profiling_select_timing_method()"
 
     # Probe actual output: %3N is a GNU extension, BusyBox date silently ignores it
     # and returns seconds only — so test the output length rather than inferring from OS
@@ -98,7 +97,7 @@ profiling_get_time() {
                 profiling_t_now="$(perl -MTime::HiRes=time -E 'say int(time * 1e3)')"
                 ;;
             *)
-                _m="Call to profiling_get_time without first cslling"
+                _m="Call to profiling_get_time without first calling"
                 _m="$_m profiling_select_timing_method"
                 profiling_error_msg "$_m"
                 ;;

@@ -5,99 +5,25 @@
 #
 #   Part of https://github.com/jaclu/tmux-menus
 #
-#   Handling floating pane
-#
-#   Move / resize panes with this diamond:
-#
-#        t
-#      f   g
-#        v
-#
-#   The version next-3.8 is handled as 3.7z in order to not match 3.8
-#   until it is released, so the below 3.7z will be replaced with 3.8 once
-#   it is released
+#   Handling floating panes - 25x80 split menu version
 #
 
 dynamic_content() {
-    #
-    # menu_idx used, empty if no floating pane is present:
-    #  2 navigate to floating_placement.sh, prev, next & Help
-    #  5 Floating pane manipulation
-    #
-    case "$current_pane_is_floating" in
-        0)                           # clear items
-            menu_generate_part 2 0 D # dummy allows next item to be considered
-            menu_generate_part 5     # non-item prevents 6 and on from being considered
-            ;;
-        1)
-            # Only use this part if current is a floating pane
-
-            set -- \
-                3.7z M P "Placement         $nav_next" floating_placement.sh \
-                3.7z M H "Help              $nav_next" \
-                "$d_help/h_floating_pane.sh $0"
-            menu_generate_part 2 "$@"
-
-            if [ -n "$other_floating_panes" ]; then
-                set -- \
-                    3.7 E p "Previous" "$scr_float_pane_switch  previous \; $0" \
-                    3.7 E n "Next" "$scr_float_pane_switch  next \; $0"
-
-            else
-                set -- 0 D
-            fi
-            menu_generate_part 5 "$@"
-
-            # rest to static 6 ??
-
-            ;;
-        *) error_msg "Invalid value for pane_floating_flag [$current_pane_is_floating]" ;;
-    esac
+    # Could have been in floating_pane_helpers.sh, but left it here
+    # to make it obvious this menu has dynamic_content
+    menu_section_dynamic split
 }
 
 static_content() {
-    set -- \
-        0.0 M Left "Back to Previous  $nav_prev" panes.sh \
-        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu"
-    menu_generate_part 1 "$@"
-    display_commands_toggle 3
-
-    set -- \
-        0.0 S
-
-    [ -d "$d_cache" ] && {
-        # Combined option unless cache is disabled
-        _combo_menu="$d_items"/floating_pane_combined.sh
-        set -- "$@" \
-            3.7 E c "Use Combined Menu" "rm -f '$f_max_25_line_menus' \; $_combo_menu"
-    }
-
-    set -- "$@" \
-        3.7 C N "New" \
-        "new-pane -c \"#{pane_current_path}\" $runshell_sleep_reload_mnu"
-    menu_generate_part 4 "$@"
-
-    # shorter variablenames to avoid too long lines
-    _vert_step="$cfg_floating_pane_incr_vertical"
-    _hori_step="$cfg_floating_pane_incr_horizontal"
-    _rrm="$runshell_reload_mnu"
-
-    # focus is on a floating pane, primary actions relevant
-    set -- \
-        3.7z S \
-        3.7z C t "Move up" "move-pane -D -$_vert_step $_rrm" \
-        3.7z C v "Move down" "move-pane -D $_vert_step $_rrm" \
-        3.7z C f "Move left" "move-pane -R -$_hori_step $_rrm" \
-        3.7z C g "Move right" "move-pane -R $_hori_step $_rrm" \
-        3.7z S \
-        3.7z C T "Reduce height" "resize-pane -D -$_vert_step $_rrm" \
-        3.7z C V "Grow height" "resize-pane -D $_vert_step $_rrm" \
-        3.7z C F "Reduce width" "resize-pane -R -$_hori_step $_rrm" \
-        3.7z C G "Grow width" "resize-pane -R $_hori_step $_rrm" \
-        1.8 S \
-        1.8 C K "${cfg_danger_zone}Kill current" "confirm-before -p \
-            'kill-pane #T (#P)? (y/n)' kill-pane $runshell_reload_mnu"
-    menu_generate_part 6 "$@"
+    menu_section_base split
+    #
+    # This can be cached statically, greatly improving responsiveness.
+    # Item 8 depends on item 7, so when there are no floating panes and
+    # item 7 is omitted, item 8 and on are skipped automatically.
+    # Thus can be cached statically for added performance
+    #
+    menu_section_move 8
+    menu_section_resize 9
 }
 
 #===============================================================
@@ -109,12 +35,16 @@ static_content() {
 menu_name="Handling Floating Panes"
 menu_min_vers=3.7
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
+no_auto_menu_handling=1
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/helpers_floating_pane.sh
+. "$TMUX_MENUS_LOCATION"/scripts/floating_pane_helpers.sh
 floating_pane_focus
 
-# shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/menu_handling.sh
+[ "$menu_handling_sourced" != 1 ] && {
+    # Only source if not done
+    # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
+    . "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh
+}
+
+do_menu_handling

@@ -10,7 +10,7 @@
 
 static_content() {
     set -- \
-        0.0 M Home "Back to Main  $nav_home" main.sh \
+        0.0 M Home "Main Menu     $nav_home" "$cfg_main_menu" \
         0.0 S \
         "CUSTOM_ITEMS_SPLITTER" # the list of custom items will be inserted here
 
@@ -25,8 +25,5 @@ static_content() {
 
 menu_name="Custom items index"
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
-
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/menu_handling.sh
+. "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh

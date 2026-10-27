@@ -14,7 +14,7 @@ static_content() {
     fi
     set -- \
         0.0 M Left "Back to Previous  $nav_prev" "$prev_menu" \
-        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu" \
+        0.0 M Home "Main Menu         $nav_home" "$cfg_main_menu" \
         0.0 S \
         0.0 T "Extras are menus manipulating" \
         0.0 T "other software." \
@@ -29,11 +29,9 @@ static_content() {
 #
 #===============================================================
 
-[ -n "$1" ] && prev_menu="$(realpath "$1")"
 menu_name="Help Extras"
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/../.." && pwd)
+prev_menu="$1"
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/menu_handling.sh
+. "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh

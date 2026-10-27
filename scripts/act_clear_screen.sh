@@ -20,25 +20,27 @@
 #
 #===============================================================
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
-
+TMUX_MENUS_LOCATION=$(cd "${0%/*}/.." && pwd)
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/helpers.sh
+. "$TMUX_MENUS_LOCATION"/scripts/helpers.sh
 
 #
 #  The intent for $1 - next menu is to be provided using relative path
 # to make the Display Commands listing more convenient, this isolates the path
 # if it still was given as a full path
-rel_path_menu="$(relative_path "$1")"
-next_menu="$D_TM_BASE_PATH/$rel_path_menu"
+[ -n "$1" ] && {
+    [ -x "$1" ] || {
+        validate_relativise_path "$1" "$cfg_d_menus"
+        error_msg "act_clear_Next menu is not executable: $relative_fname"
+    }
+}
 
-if ${b_use_alt_handler:-false}; then
+if [ -n "$alt_menu_handler" ]; then
     clear
 else
-    tmux_error_handler send-keys C-l
+    $TMUX_BIN send-keys C-l
 fi
 
-tmux_error_handler clear-history
+$TMUX_BIN clear-history
 
-[ -n "$1" ] && $next_menu
+[ -n "$1" ] && $1

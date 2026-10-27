@@ -31,16 +31,17 @@ dynamic_content() {
             # prev_name=$($TMUX_BIN show-environment | grep "$e_prev_menu_name" | cut -d= -f2)
         fi
     fi
+    # check this late since it might have been manually assigned above
+    [ -n "$prev_menu" ] || error_msg "$0 - no previous menu parameter given"
 
     set -- 0.0 M Left "Back to Previous    $nav_prev" "$prev_menu"
-    [ -n "$prev_menu" ] || error_msg "$rn_current_script - no previous menu parameter given"
     menu_generate_part 1 "$@"
 }
 
 static_content() {
     set -- \
-        0.0 M Home "Back to Main        $nav_home" "$cfg_main_menu" \
-        2.3 M P "Pane Borders        $nav_next" layouts_pane_borders.sh \
+        0.0 M Home "Main Menu           $nav_home" "$cfg_main_menu" \
+        2.3 M B "Pane Borders        $nav_next" layouts_pane_borders.sh \
         3.3 M I "Border Indicator    $nav_next" layouts_indicators.sh \
         3.6 M S "Scroll Bars         $nav_next" layouts_scrollbars.sh
     menu_generate_part 2 "$@"
@@ -72,14 +73,7 @@ static_content() {
 
 menu_name="Layouts"
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
-
-if [ -n "$1" ]; then
-    prev_menu="$(realpath "$1")"
-    shift # reamiing params are prev menu name
-    # prev_name="$*"
-fi
+prev_menu="$1"
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/menu_handling.sh
+. "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh

@@ -20,7 +20,7 @@ display_char() {
     # log_it "display_char($c)"
     [ -z "$c" ] && error_msg "display_char() - no param"
 
-    if ${b_use_alt_handler:-false}; then
+    if [ -n "$alt_menu_handler" ]; then
         #
         #  Normally the char is just sent into the current pane
         #  If whiptail is used, this can't be done, since whatever was
@@ -65,11 +65,9 @@ handle_char() {
 #
 #===============================================================
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
-
+TMUX_MENUS_LOCATION=$(cd "${0%/*}/.." && pwd)
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/helpers.sh
+all_helpers=1 . "$TMUX_MENUS_LOCATION"/scripts/helpers.sh
 
 if [ -n "$1" ]; then
     handle_char "$1"

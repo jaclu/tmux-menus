@@ -12,7 +12,7 @@ configuration has changed.
 
 Defined in `static_content() {}` within each menu script.
 
-On first access, the menu output is generated and stored in `cache/<menu-name>`.
+On first access, the menu output is generated and stored in `cache/menus/<menu-name>`.
 Subsequent displays read directly from this cache and are effectively instantaneous.
 
 ## Dynamic Content
@@ -28,13 +28,12 @@ All scripts start with a minimal environment. Static cached content requires not
 To load the full environment in manually added/modified scripts, use:
 
 ```sh
-${b_all_helpers_sourced:-false} || source_all_helpers "Reason for souring the full env"
+${b_all_helpers_sourced:-false} || source_all_helpers "Reason for sourcing the full env"
 ```
 
-This prevents repeated sourcings if script logic might take multiple paths to a
-piece of code depending on the full env. In essence, when in doubt - source it
-with a notice to what sourced it, this comes with close to zero overhead if
-already sourced.
+This prevents repeated sourcing when script logic can reach the same code via
+multiple paths that depend on the full environment. When in doubt, source it and
+give a reason; this has close to zero overhead if the environment is already loaded.
 
 ## Read-Only Plugin Directory
 
@@ -47,7 +46,7 @@ ln -sf ~/.cache/tmux-menus <tmux-plugin-folder>/cache
 
 A configurable cache path is intentionally not supported. Implementing one would
 require checking that location for every script invocation, adding overhead that
-nullifies the cache’s purpose. A symlink avoids this cost.
+nullifies the purpose of the cache. A symlink avoids this cost.
 
 ## whiptail / dialog
 

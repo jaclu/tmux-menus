@@ -23,7 +23,7 @@ dynamic_content() {
         set -- \
             3.0 C s "Swap marked" "swap-pane $runshell_reload_mnu"
     else
-        set -- 0 D # clear params
+        set -- 0 D # clear part 4 content
     fi
 
     # Needs to be generated even if empty, in order to clear this item if it had
@@ -34,8 +34,8 @@ dynamic_content() {
 static_content() {
     set -- \
         0.0 M Left "Back to Previous  $nav_prev" panes.sh \
-        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu" \
-        0.0 M H "Help, Move        $nav_next" "$d_help/h_pane_move.sh $0"
+        0.0 M Home "Main Menu         $nav_home" "$cfg_main_menu" \
+        0.0 M H "Help, Move        $nav_next" "$cfg_d_menus/help/h_pane_move.sh $0"
     menu_generate_part 1 "$@"
     display_commands_toggle 2
 
@@ -78,8 +78,5 @@ static_content() {
 
 menu_name="Move Pane"
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
-
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/menu_handling.sh
+. "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh

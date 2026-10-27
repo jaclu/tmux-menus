@@ -4,6 +4,39 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [2.5.0] - 2026-10-27
+
+### Added
+
+- Key collision detection to prevent duplicate menu key assignments across all menus
+- New menu: "Display Settings" - theme selector for tmux 3.8+
+- Plugin now automatically detects its location via TMUX_MENUS_LOCATION global variable
+  (eliminates need for manual D_TM_BASE_PATH configuration)
+- Keyboard shortcuts for floating panes: C-t for top-floating, C-b for bottom-floating
+- plugin_init.sh: added -z flag to clear cache when run interactively
+- Light theme variant added to README documentation
+
+### Changed
+
+- Gave up on careful cache pruning for now, at plugin init entire cache is dropped
+- Floating Panes switched to Navigation section of main menu for better organization
+- Floating Panes menu improved with grouped New/Kill operations
+- Floating pane "Kill current" moved from `k` to `K`, since `k` is used for vi-style navigation
+- Split Pane Toggle now displays as a submenu for clearer organization
+- Help system now version-gated for tmux 3.7+ only
+- Version requirements updated: all 3.7z tags changed to 3.8
+- Helper scripts reorganized (`helpers_minimal.sh` merged into `helpers.sh`); custom
+  menus that source helpers directly may need updating
+- Several menu items cleaned up and obsolete entries removed
+
+### Fixed
+
+- Fixed handling of names with quotes and spaces
+- Corrected broken path generation in act_clear_screen.sh
+- Fixed Display Commands display in various menu contexts
+- Fixed missing environment variable retrieval when TMUX_MENUS_HANDLER is configured
+- Various code simplifications eliminating redundant conditions and logic
+
 ## [2.4.1] - 2026-09-12
 
 ### Fixed
@@ -506,7 +539,7 @@ Added some tmux 3.6 features
 - time_span(org_time) - sets t_time_span to time since org_time
 - copied definition of TMUX*BIN to scripts/utils/define_tmux_bin.sh in order to ensure
   sockets will always be used to minimize risk for collisions if an inner tmux uses
-  this plugin in stdalone tools, like `external_dialog*\*`
+  this plugin in standalone tools, like `external_dialog*\*`
 - scripts/utils/std*alone_log.sh - Tries to pick up current log_file if defined
   otherwise logs to /dev/stderr, used by external tools that don't load the entire
   environment like `external_dialog*\*`
@@ -553,7 +586,7 @@ Added some tmux 3.6 features
 - Updated Screenshots
 - tools/dbg_vars.sh - When running with 'clear' it clears env before displaying
   current state
-- whiptail / dialog - useses `--title` option to display title
+- whiptail / dialog - uses `--title` option to display title
 
 ---
 

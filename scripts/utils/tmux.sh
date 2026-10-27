@@ -1,7 +1,7 @@
 #!/bin/sh
 # Always sourced file - Fake bang path to help editors
 #
-#   Copyright (c) 2022-2025: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2022-2026: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
@@ -10,10 +10,9 @@
 #
 
 tmux_vers_check_do_compare() {
-    # Called fomh helpers_minimal.sh:tmux_vers_check() if checked version was not cached
+    # Called from helpers.sh:tmux_vers_check() if checked version was not cached
     _v_comp="$1"
     [ -z "$_v_comp" ] && error_msg "tmux_vers_check_do_compare() - no param supplied"
-    # log_it "tmux_vers_check_do_compare($_v_comp)"
 
     tpt_parse_tmux_vers "$_v_comp"
 
@@ -55,14 +54,12 @@ tmux_get_defaults() { # new init
     #   default_  defaults for tmux config options
     #
 
-    # log_it "tmux_get_defaults()"
-
-    default_trigger_key=\\
+    default_trigger_key="\\"
     default_no_prefix=No
     # Since default_use_cache is needed early on, before this function can be
     # called, it is defined in the main segment of this script
     default_display_commands=Yes
-    default_main_menu="$f_main_menu"
+    default_main_menu="$d_items"/main.sh
     default_danger_zone="#[reverse]"
 
     if [ -n "$TMUX_CONF" ]; then
@@ -114,13 +111,16 @@ cache_save_options_defined_in_tmux() {
     #  On slow systems, doing individual show-options takes a ridiculous amount of
     #  time. Here we read all relevant options in one go and store them in a cache file
     #
+    "${cfg_use_cache:-false}" || return
+
     [ -f "$f_cached_tmux_options" ] && return
-    # log_it "cache_save_options_defined_in_tmux()"
+
+    # Can't check for errors here, since if the item is not present grep will exit error
     $TMUX_BIN show-options -g | grep ^@menus_ \
         | grep -v "$cfg_force_unset" | sort >"$f_cached_tmux_options"
     $TMUX_BIN show-options -g | grep @use_bind_key_notes_in_plugins \
         | grep -v "$cfg_force_unset" >>"$f_cached_tmux_options"
-    # log_it "  <-- cache_save_options_defined_in_tmux() - wrote: $f_cached_tmux_options"
+    return 0 # hide potential grep error
 }
 
 tmux_get_option() {
@@ -128,10 +128,8 @@ tmux_get_option() {
     tgo_option="$2"
     tgo_default="$3"
     # if non-empty, prevent cache from being used - when options other than
-    #  @menux_ needs to be read
+    #  @menus_ needs to be read
     tgo_no_cache="$4"
-
-    # log_it "tmux_get_option($tgo_varname, $tgo_option, $tgo_default, $tgo_no_cache)"
 
     # usually disabled for performance
     # validate_varname "$tgo_varname" "tmux_get_option()"
@@ -150,13 +148,12 @@ tmux_get_option() {
         # this is run standalone outside tmux, just report the defaults
         log_it "tmux_get_option() - no \$TMUX - using default"
         _line=""
-    elif ! tmux_vers_check 1.8; then
+    elif ! tmux_vers_check 1.8 && [ -z "$no_user_options_warning_displayed" ]; then
         # before 1.8 no support for user options
+        no_user_options_warning_displayed=1
         log_it "tmux_get_option() - tmux < 1.8 - User options not available, using default"
         _line=""
     elif ${tgo_use_cache:-false}; then
-        cache_save_options_defined_in_tmux
-
         if [ -d /proc/ish ]; then
             # much slower due to subshell, but iSH lacks a full /dev so the quick method
             # below can't be used
@@ -177,7 +174,6 @@ tmux_get_option() {
             done <"$f_cached_tmux_options"
         fi
     else
-        # log_it "tmux_get_option($tgo_option) - not using cache"
         _line="$($TMUX_BIN show-options -g "$tgo_option" 2>/dev/null \
             | grep -v "$cfg_force_unset")"
     fi
@@ -187,7 +183,6 @@ tmux_get_option() {
         # option was empty ie "", which confuses tmux 3.0–3.2a returning success
         # if using show-options  on undefined options
         tgo_value="$tgo_default"
-        # log_it "><> using default due to undefined for $tgo_option [$tgo_value]"
     else
         # Extract value (skip key)
         tgo_value=${_line#* }
@@ -202,13 +197,9 @@ tmux_get_option() {
         esac
     fi
     case "$tgo_value" in
-        "$cfg_default_is_empty_string" | "''" | '""')
-            tgo_value=""
-            # log_it "><> overriding to empty for $tgo_option [$tgo_value]"
-            ;;
+        "$cfg_default_is_empty_string" | "''" | '""') tgo_value="" ;;
         *) ;;
     esac
-    # log_it "tmux_get_option($tgo_option) - using [$tgo_value]"
     eval "$tgo_varname=\"\$tgo_value\""
 }
 
@@ -232,8 +223,6 @@ fix_home_path() {
     fhp_path="$1"
     fhp_varname="$2"
 
-    # log_it "fix_home_path($fhp_varname,$fhp_path)"
-
     if false; then
         # For performance reasons full variable name assessment when is disabled by default
         validate_varname "$fhp_varname" "fix_home_path()"
@@ -242,7 +231,7 @@ fix_home_path() {
     fi
     [ -z "$fhp_path" ] && error_msg "fix_home_path() param 2 empty"
 
-    # But of course tmux changed how they escpe options starting with ~ or $HOME...
+    # But of course tmux changed how they escape options starting with ~ or $HOME...
     if tmux_vers_check 3.4 && ! tmux_vers_check 3.5; then
         # Special case for tmux 3.4
         case "$fhp_path" in
@@ -298,14 +287,14 @@ fix_home_path() {
 
 tmux_get_plugin_options() { # new init
     #
-    #  This only reads all plugin options from tmux env, any decisions based
-    #  on debug variables etc are handled by create_param_cache()
+    #  This only reads all plugin options from tmux env
     #
     #  Public variables
     #   cfg_  config variables, either read from tmux or the default
     #
-    # log_it "tmux_get_plugin_options()"
     tmux_get_defaults
+    # caching is known to be enabled, cache tmux options right away
+    cache_save_options_defined_in_tmux
 
     tmux_get_option cfg_trigger_key "@menus_trigger" "$default_trigger_key"
 
@@ -317,119 +306,89 @@ tmux_get_plugin_options() { # new init
 
     # Define main menu
     tmux_get_option cfg_main_menu "@menus_main_menu" "$default_main_menu"
-    [ ! -f "$cfg_main_menu" ] && error_msg "Main menu not found: $cfg_main_menu"
-
-    if tmux_vers_check 3.0; then
-        b_use_alt_handler=false
-        alt_menu_handler=""
-    else
-        b_use_alt_handler=true
-        # if on next plugin_setup a menus able tmux is detected the relevant
-        # additional settings will be cached
-        if command -v whiptail >/dev/null; then
-            alt_menu_handler=whiptail
-        elif command -v dialog >/dev/null; then
-            alt_menu_handler=dialog
-        else
-            error_msg "Neither whiptail or dialog found, plugin aborted"
-        fi
-        log_it "--- Activating b_use_alt_handler [$alt_menu_handler] due to tmux < 3.0"
-    fi
+    [ ! -f "$cfg_main_menu" ] && {
+        _s="Main menu not found: $cfg_main_menu"
+        tmux_vers_check 1.8 || {
+            _s="$_s\n\ntmux < 1.8 can't read user variables, so it is limited to"
+            _s="$_s\nthe default settings and cannot use menus from other locations."
+        }
+        error_msg "$_s"
+    }
 
     tmux_get_option cfg_danger_zone "@menus_danger_zone" "$default_danger_zone"
 
-    handle_env_variables # potential b_use_alt_handler override
+    tmux_get_option cfg_mnu_loc_x "@menus_location_x" "$default_location_x"
+    tmux_get_option cfg_mnu_loc_y "@menus_location_y" "$default_location_y"
+    tmux_get_option cfg_format_title "@menus_format_title" "$default_format_title"
 
-    if ${b_use_alt_handler:-false}; then
-        # variables only used by whiptail
-        cfg_display_cmds=false
-
-        # this is slowish anyhow, so no point in optimizing for peak cached performance
+    _v_use_timers="@menus_use_timers"
+    if tmux_vers_check 3.8; then
+        if normalize_bool_param "$_v_use_timers" "$default_use_timers"; then
+            cfg_use_timers=true
+        else
+            cfg_use_timers=false
+        fi
+    else
+        # Prior to 3.8, timers are needed to check if menu didn't fit on screen
+        # So always enabled
         cfg_use_timers=true
-        cfg_validate_cache=true
+        _use_timers_found=$(grep @menus_use_timers "$f_cached_tmux_options")
+        [ -n "$_use_timers_found" ] && {
+            log_it "$_v_use_timers ignored for tmux < 3.8"
+        }
+    fi
 
+    if normalize_bool_param "@menus_validate_cache" "$default_validate_cache"; then
+        cfg_validate_cache=true
+    else
+        cfg_validate_cache=false
+    fi
+
+    tmux_vers_check 3.4 && {
+        tmux_get_option cfg_border_type "@menus_border_type" "$default_border_type"
+        tmux_get_option cfg_simple_style_selected "@menus_simple_style_selected" \
+            "$default_simple_style_selected"
+        tmux_get_option cfg_simple_style "@menus_simple_style" \
+            "$default_simple_style"
+        tmux_get_option cfg_simple_style_border "@menus_simple_style_border" \
+            "$default_simple_style_border"
+    }
+    tmux_vers_check 3.8 && {
+        tmux_get_option cfg_floating_pane_incr_horizontal \
+            "@menus_floating_pane_incr_horizontal" \
+            "$default_floating_pane_incr_horizontal"
+        tmux_get_option cfg_floating_pane_incr_vertical \
+            "@menus_floating_pane_incr_vertical" \
+            "$default_floating_pane_incr_vertical"
+    }
+    tmux_get_option cfg_nav_next "@menus_nav_next" "$default_nav_next"
+    tmux_get_option cfg_nav_prev "@menus_nav_prev" "$default_nav_prev"
+    tmux_get_option cfg_nav_home "@menus_nav_home" "$default_nav_home"
+    if normalize_bool_param "@menus_display_commands" "$default_display_commands"; then
+        cfg_display_cmds=true
+        tmux_get_option cfg_display_cmds_cols "@menus_display_cmds_cols" \
+            "$default_display_cmds_cols"
+
+        is_int "$cfg_display_cmds_cols" || {
+            error_msg "@menus_display_cmds_cols is not int: $cfg_display_cmds_cols"
+        }
+    else
+        cfg_display_cmds=false
+    fi
+    if tmux_vers_check 3.7; then
+        # Obsolete, tmux provides F1 popup for this
         cfg_use_hint_overlays=false
         cfg_show_key_hints=false
-        cfg_nav_next="$default_nav_next"
-        cfg_nav_prev="$default_nav_prev"
-        cfg_nav_home="$default_nav_home"
-
-        # not a config variable as such, just used as paste bufferr for
-        # missing keys and currencies
-        wt_pasting="@tmp_menus_wt_paste_in_progress"
     else
-        tmux_get_option cfg_mnu_loc_x "@menus_location_x" "$default_location_x"
-        tmux_get_option cfg_mnu_loc_y "@menus_location_y" "$default_location_y"
-        tmux_get_option cfg_format_title "@menus_format_title" "$default_format_title"
-
-        if tmux_vers_check 3.7z; then
-            if normalize_bool_param "@menus_use_timers" "$default_use_timers"; then
-                cfg_use_timers=true
-            else
-                cfg_use_timers=false
-            fi
+        if normalize_bool_param "@menus_use_hint_overlays" "$default_use_hint_overlays"; then
+            cfg_use_hint_overlays=true
         else
-            # Prior to 3.8, timers are needed to check if menu didn't fit on screen
-            # So always enabled
-            cfg_use_timers=true
-            _use_timers_found=$(grep @menus_use_timers "$f_cached_tmux_options")
-            [ -n "$_use_timers_found" ] && {
-                log_it "Config ignored for tmux < 3.8: $_use_timers_found"
-            }
-        fi
-
-        if normalize_bool_param "@menus_validate_cache" "$default_validate_cache"; then
-            cfg_validate_cache=true
-        else
-            cfg_validate_cache=false
-        fi
-
-        tmux_vers_check 3.4 && {
-            tmux_get_option cfg_border_type "@menus_border_type" "$default_border_type"
-            tmux_get_option cfg_simple_style_selected "@menus_simple_style_selected" \
-                "$default_simple_style_selected"
-            tmux_get_option cfg_simple_style "@menus_simple_style" \
-                "$default_simple_style"
-            tmux_get_option cfg_simple_style_border "@menus_simple_style_border" \
-                "$default_simple_style_border"
-        }
-        tmux_vers_check 3.7z && {
-            tmux_get_option cfg_floating_pane_incr_horizontal \
-                "@menus_floating_pane_incr_horizontal" \
-                "$default_floating_pane_incr_horizontal"
-            tmux_get_option cfg_floating_pane_incr_vertical \
-                "@menus_floating_pane_incr_vertical" \
-                "$default_floating_pane_incr_vertical"
-        }
-        tmux_get_option cfg_nav_next "@menus_nav_next" "$default_nav_next"
-        tmux_get_option cfg_nav_prev "@menus_nav_prev" "$default_nav_prev"
-        tmux_get_option cfg_nav_home "@menus_nav_home" "$default_nav_home"
-        if normalize_bool_param "@menus_display_commands" "$default_display_commands"; then
-            cfg_display_cmds=true
-            tmux_get_option cfg_display_cmds_cols "@menus_display_cmds_cols" \
-                "$default_display_cmds_cols"
-
-            is_int "$cfg_display_cmds_cols" || {
-                error_msg "@menus_display_cmds_cols is not int: $cfg_display_cmds_cols"
-            }
-        else
-            cfg_display_cmds=false
-        fi
-        if tmux_vers_check 3.7; then
-            # Obsolete, tmux provides F1 popup for this
             cfg_use_hint_overlays=false
-            cfg_show_key_hints=false
+        fi
+        if normalize_bool_param "@menus_show_key_hints" "$default_show_key_hints"; then
+            cfg_show_key_hints=true
         else
-            if normalize_bool_param "@menus_use_hint_overlays" "$default_use_hint_overlays"; then
-                cfg_use_hint_overlays=true
-            else
-                cfg_use_hint_overlays=false
-            fi
-            if normalize_bool_param "@menus_show_key_hints" "$default_show_key_hints"; then
-                cfg_show_key_hints=true
-            else
-                cfg_show_key_hints=false
-            fi
+            cfg_show_key_hints=false
         fi
     fi
 
@@ -443,7 +402,6 @@ tmux_get_plugin_options() { # new init
 
     [ "$log_file_forced" != 1 ] && {
         #  If a debug logfile has been set, the tmux setting will be ignored.
-        # log_it "tmux will read cfg_log_file"
         tmux_get_option _log_file "@menus_log_file" "$default_log_file"
         # Handle the case of ~ or $HOME being wrapped in single quotes in tmux.conf
         if [ -n "$_log_file" ]; then
@@ -463,18 +421,6 @@ tmux_get_plugin_options() { # new init
         use_bind_key_notes=true
     else
         use_bind_key_notes=false
-    fi
-}
-
-use_whiptail_env() {
-    # if this is moved to helpers_minimal, ensure to also
-    # move the required defaults to that file
-    # log_it "use_whiptail_env()"
-    if ${b_use_alt_handler:-false}; then
-        {
-            cfg_display_cmds=false
-            cfg_show_key_hints=false
-        }
     fi
 }
 
@@ -525,7 +471,7 @@ tmux_error_handler_assign() { # cache references
         fi
     }
 
-    # Define a location where to store the potentiall error output
+    # Define a location where to store the potentially error output
     # and create a file name based on this location
     if ${cfg_use_cache:-false}; then
         d_errors="$d_cache"
@@ -534,7 +480,7 @@ tmux_error_handler_assign() { # cache references
     fi
     # ensure it exists
     [ ! -d "$d_errors" ] && mkdir -p "$d_errors"
-    f_tmux_err="$d_errors"/tmux-errror-in-last-command-if-not-empty
+    f_tmux_err="$d_errors"/tmux-error-in-last-command-if-not-empty
 
     #
     # Run the actual command and save any error output. If the command succeeded
@@ -564,7 +510,7 @@ tmux_error_handler_assign() { # cache references
         #  First save the error to a named file
         #
         f_error_base="$d_errors/error-"
-        [ "$d_errors" != "$d_cache" ] && f_error_base="${f_error_base}tmux-menus-"
+        [ "$d_errors" != "$d_cache" ] && f_error_base="${f_error_base}$plugin_name-"
         f_error_base="${f_error_base}$(tr -cs '[:alnum:]._' '_' <"$f_tmux_err")"
 
         _idx=0
@@ -597,9 +543,7 @@ $(cat "$f_error_log")
 -----------------------------------
 
 The error message has been saved in:
-  $(relative_path "$f_error_log")
-
-Full path: $f_error_log
+$f_error_log
 EOF
             )"
             #endregion
@@ -645,14 +589,14 @@ fi
 sut_store_result=true
 
 # Two special usage tmux.conf values, of probably of little to no use for most,
-# hwo directly configures their tmux.conf. However I use a python based tmux.conf
+# who directly configures their tmux.conf. However I use a python based tmux.conf
 # generator, and sometimes an inherited class might want to unset a variable
 # that is placed earlier on in the tmux.conf, then FORCE-UNSET comes in handy.
 # It filters out such variables, and this plugins uses the default value.
 # also used in pligin_init.sh
 cfg_force_unset="FORCE-UNSET"
 
-# primarilly internal usage, to point out that the value SHOULD be ""
+# primarily internal usage, to point out that the value SHOULD be ""
 cfg_default_is_empty_string="FORCE-EMPTY"
 
 #
@@ -669,4 +613,4 @@ teh_debug=false
 
 default_use_cache=Yes
 
-# log_it "><> [$$] scripts/utils/tmux.sh - completed [$0]"
+# log_it "[$$] ===  Completed: scripts/utils/tmux.sh - $0"

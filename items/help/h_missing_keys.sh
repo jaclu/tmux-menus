@@ -14,16 +14,16 @@ static_content() {
     fi
     set -- \
         0.0 M Left "Back to Previous  $nav_prev" "$prev_menu" \
-        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu" \
+        0.0 M Home "Main Menu         $nav_home" "$cfg_main_menu" \
         0.0 S \
         0.0 T "Use this to send keys that might" \
         0.0 T "not be available with the current" \
         0.0 T "keyboard settings."
 
-    if ${b_use_alt_handler:-false}; then
+    if [ -n "$alt_menu_handler" ]; then
         set -- "$@" \
             0.0 T " " \
-            0.0 T "When using whiptail it is not possible" \
+            0.0 T "When using whiptail/dialog it is not possible" \
             0.0 T "to paste directly into the pane." \
             0.0 T "Instead a tmux buffer is used." \
             0.0 T " " \
@@ -44,11 +44,9 @@ static_content() {
 #
 #===============================================================
 
-[ -n "$1" ] && prev_menu="$(realpath "$1")"
 menu_name="Help Missing Keys"
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/../.." && pwd)
+prev_menu="$1"
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/menu_handling.sh
+. "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh

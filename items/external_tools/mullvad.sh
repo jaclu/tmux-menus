@@ -74,7 +74,7 @@ dynamic_content() {
 static_content() {
     set -- \
         0.0 M Left "Back to Previous   $nav_prev" extras.sh \
-        0.0 M Home "Back to Main       $nav_home" "$cfg_main_menu"
+        0.0 M Home "Main Menu          $nav_home" "$cfg_main_menu"
     menu_generate_part 1 "$@"
 
     display_commands_toggle 2
@@ -94,13 +94,10 @@ static_content() {
 
 menu_name="Mullvad VPN"
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/../.." && pwd)
-
 no_auto_menu_handling=1 # delay processing of dialog, only source it for now
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/menu_handling.sh
+. "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh
 
 command -v mullvad >/dev/null || {
     error_msg "Command not found: mullvad"

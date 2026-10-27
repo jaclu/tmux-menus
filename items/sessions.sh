@@ -18,17 +18,18 @@ static_content() {
     cli_dtch_mode="set-option -s detach-on-destroy $_s"
 
     set -- \
-        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu"
+        0.0 M Left "Main Menu         $nav_home" "$cfg_main_menu"
     menu_generate_part 1 "$@"
     display_commands_toggle 2
 
     set -- \
         0.0 S \
-        0.0 C r "Rename" "command-prompt -I '#{session_name}' \
-            'rename-session -- \"%%\"' $runshell_reload_mnu" \
+        0.0 C r "Rename" "command-prompt -I '##{session_name}' \
+            'rename-session -- \"%%%\"' $prompt_reload_mnu" \
         0.0 C s "New" "command-prompt -p \
             'Name of new: ' \
-            'new-session -d -s \"%1\" ; switch-client -t \"%1\"' $runshell_reload_mnu" \
+            'new-session -d -s \"%%%\" ; switch-client -t \"%1\"' \
+            $runshell_sleep_reload_mnu" \
         0.0 S \
         0.0 C l "Last selected" "switch-client -l        $runshell_reload_mnu" \
         0.0 C p "Previous" "switch-client -p  $runshell_reload_mnu" \
@@ -57,8 +58,5 @@ static_content() {
 
 menu_name="Handling Sessions"
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
-
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/menu_handling.sh
+. "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh

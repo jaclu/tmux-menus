@@ -16,7 +16,7 @@ static_content() {
     fi
 
     navigate_cmd="$TMUX_BIN $choose_tree"
-    if ${cfg_use_hint_overlays:-false} && ! ${b_use_alt_handler:-false}; then
+    if ${cfg_use_hint_overlays:-false} && [ -z "$alt_menu_handler" ]; then
         # The help overlay can't be displayed using whiptail
         navigate_cmd="$navigate_cmd & $d_hints/choose-tree.sh skip-oversized"
     fi
@@ -34,10 +34,10 @@ static_content() {
     else
         fw_flags=""
     fi
-    fw_cmd="command-prompt -p 'Search for:' 'find-window $fw_flags %%'"
+    fw_cmd="command-prompt -p 'Search for:' 'find-window $fw_flags \n%%%\n'"
 
     set -- \
-        0.0 M Home "Back to Main            $nav_home" "$cfg_main_menu"
+        0.0 M Left "Main Menu               $nav_home" "$cfg_main_menu"
     menu_generate_part 1 "$@"
     display_commands_toggle 2
 
@@ -67,8 +67,5 @@ static_content() {
 menu_name="Navigate - Search"
 menu_min_vers=1.7
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
-
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/menu_handling.sh
+. "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh

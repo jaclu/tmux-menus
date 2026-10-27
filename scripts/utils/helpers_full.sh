@@ -1,7 +1,7 @@
 #!/bin/sh
 # Always sourced file - Fake bang path to help editors
 #
-#   Copyright (c) 2022-2025: Jacob.Lundqvist@gmail.com
+#   Copyright (c) 2022-2026: Jacob.Lundqvist@gmail.com
 #   License: MIT
 #
 #   Part of https://github.com/jaclu/tmux-menus
@@ -42,8 +42,6 @@ display_message_hold() {
     dmh_msg="$1"
     dmh_no_hold="$2"
 
-    # log_it "display_message_hold($dmh_msg) no_hold: $dmh_no_hold"
-
     [ "$dmh_no_hold" = "no_hold" ] && {
         # request to not hold the msg
         $TMUX_BIN display-message "$dmh_msg"
@@ -56,8 +54,12 @@ display_message_hold() {
     else
         # Manually make the error msg stay on screen a long time
 
-        # save value in a pre tmux 1.7 safe way, not relying on show-options -v
-        org_display_time="$($TMUX_BIN show-options -g display-time | cut -d' ' -f2)"
+        if tmux_vers_check 1.8; then
+            org_display_time=$($TMUX_BIN show-options -gv display-time)
+        else
+            # save value in a pre tmux 1.7 safe way, not relying on show-options -v
+            org_display_time=$($TMUX_BIN show-options -g display-time | cut -d' ' -f2)
+        fi
         $TMUX_BIN set -g display-time 120000 >/dev/null
         $TMUX_BIN display-message "$dmh_msg"
 
@@ -80,7 +82,6 @@ display_formatted_message() {
     _dfm_msg="$1"
     _default_msg_type="notification message"
     _msg_type="${2:-$_default_msg_type}"
-    # log_it "display_formatted_message()"
 
     [ -z "$_dfm_msg" ] && {
         # Can't use error_msg here, so _dfm_msg is used to display this error
@@ -110,7 +111,7 @@ To scroll back in this ${_msg_type}:
 Press Ctrl-C to close this message
 "
 
-    $TMUX_BIN new-window -n "tmux-menus notification" "echo '$_display_msg' ; tail -f /dev/null " || exit 1
+    $TMUX_BIN new-window -n "$plugin_name notification" "echo '$_display_msg' ; tail -f /dev/null " || exit 1
 }
 
 error_msg_real() {
@@ -140,8 +141,6 @@ error_msg_actual() {
     # Disable logging for the remainder of error_msg processing, to avoid getting
     # log-flooded, unless exit is not requested
     # [ "$exit_code" -gt -1 ] && cfg_log_file=""
-
-    # log_it "error_msg_actual()"
 
     if [ -z "$TMUX" ]; then
         # with no tmux env, dumping it to stderr & log-file is the only output options
@@ -184,8 +183,6 @@ error_msg_formatted() {
     #  recursion
     #
     emf_err="$1"
-
-    # log_it "error_msg_formatted()"
 
     emf_msg="$(
         echo "ERROR in plugin $plugin_name - running: $rn_current_script"
@@ -262,7 +259,6 @@ normalize_bool_param() {
     nbp_default="$2"  # only needed for tmux options
     nbp_no_cache="$3" # if non-empty, the cache will be ignored
 
-    # log_it "normalize_bool_param($nbp_param, $nbp_default) [$nbp_no_cache]"
     if [ "${nbp_param%"${nbp_param#?}"}" = "@" ]; then
         #
         #  If it starts with "@", assume it is a tmux option, thus
@@ -299,8 +295,6 @@ normalize_bool_param() {
 }
 
 has_lf_not_at_end() {
-    # log_it "has_lf_not_at_end()" # with cache:
-
     #
     #  POSIX hack I came up with to check if a string contains LF
     #  somewhere within, since I could not figure out how to to substring
@@ -331,11 +325,135 @@ get_screen_size_variables() {
 
 #---------------------------------------------------------------
 #
-#   minimal display time to trigger screen might be too small warning
+#   Binding plugin key(-s)
 #
 #---------------------------------------------------------------
 
+bind_plugin_key() {
+    _bpk_key="$1"
+    [ -z "$_bpk_key" ] && error_msg "bind_plugin_key() - No param"
+
+    # shellcheck disable=SC1003 # false positive: this is a literal backslash pattern, not an escape attempt
+    case "$_bpk_key" in
+        '\') _bpk_key='\\' ;; # needs to be escaped
+        *) ;;
+    esac
+
+    bind_cmd="$cfg_main_menu"
+    if [ -n "$alt_menu_handler" ]; then
+        bind_cmd="$scr_ext_dlg_trigger"
+        log_it "Alternate menu handler: $alt_menu_handler"
+    fi
+    cmd="bind-key"
+    ${use_bind_key_notes:-false} && cmd="$cmd -N \"plugin ${plugin_name}\""
+
+    $cfg_no_prefix && cmd="$cmd -n"
+    cmd="$cmd \"$_bpk_key\" run-shell $bind_cmd"
+
+    [ "$cfg_main_menu" = "$default_main_menu" ] || {
+        log_it "Alternate main menu: $cfg_main_menu"
+    }
+
+    [ "$TMUX_MENUS_NO_DISPLAY" = "1" ] && {
+        # used for debugging menu builds
+        log_it "Due to TMUX_MENUS_NO_DISPLAY terminating before binding trigger _bpk_key"
+        exit 0
+    }
+
+    [ ! -f "$f_skip_low_tmux_version_warning" ] && ! tmux_vers_check 1.8 && {
+        msg="Due to tmux($current_tmux_vers) < 1.8 user options can not be processed.\n\n"
+        msg="${msg}The $plugin_name plugin will be bound to its default key: $_bpk_key"
+        msg="${msg} \n\nAll other options will also use their defaults.\n\n"
+        msg="${msg}  tools/show_config.sh will display current settings.\n\n"
+        msg="${msg}To avoid seeing this message again - do:\n"
+        msg="${msg}  touch $f_skip_low_tmux_version_warning"
+        display_formatted_message "$msg"
+    }
+
+    eval "$TMUX_BIN" "$cmd" || {
+        error_msg "Failed to bind trigger: $_bpk_key"
+    }
+}
+
+is_key_enter_available() {
+    # Clunky but version independent approach
+    enter_in_use=0
+    if tmux_vers_check 2.1; then
+        "$TMUX_BIN" list-keys -T prefix | awk '{ print $4 }' | grep -q Enter && enter_in_use=1
+    else
+        "$TMUX_BIN" list-keys | awk '{ print $2 }' | grep -q Enter && enter_in_use=1
+    fi
+    [ "$enter_in_use" = 1 ] && {
+        return 1
+    }
+    return 0
+}
+
+consider_secondary_default() {
+    # Secondary default: <prefix> Enter for non-US keyboards where \ is impractical
+    # Only if @menus_trigger not defined and Enter is available
+    _csd_skip=0
+    if [ -f "$f_cached_tmux_options" ]; then
+        grep -q @menus_trigger "$f_cached_tmux_options" && _csd_skip=1
+    else
+        # assume cacheless state
+        $TMUX_BIN show-option -gv @menus_trigger 2>/dev/null \
+            | grep -vq "$cfg_force_unset" && _csd_skip=1
+    fi
+    [ "$_csd_skip" = 1 ] && {
+        # since a @menus_trigger is defined in tmux.conf, assume user knows how
+        # to configure things, and skip secondary default
+        return 1
+    }
+    is_key_enter_available && {
+        cfg_no_prefix=false # disable skip prefix for this secondary default
+        bind_plugin_key Enter
+    }
+}
+
+set_plugin_key() {
+    bind_plugin_key "$cfg_trigger_key"
+    consider_secondary_default
+}
+
+#---------------------------------------------------------------
+#
+#   Get Config & Env
+#
+#---------------------------------------------------------------
+
+set_wt_pasting() {
+    # not a config variable as such, just used as paste buffer for
+    # missing keys and currencies
+    log_it "><> set_wt_pasting()"
+    wt_pasting="@tmp_menus_wt_paste_in_progress"
+}
+
+retrieve_non_tmux_env_vars() {
+    # TODO: must be called before params_not_config_2
+
+    #  ---  retrieve_non_tmux_env_vars  ---
+    # if cached, called at start of cache_write_plugin_params, only after get_env
+    # if not cached called in get_config(), right after tmux_get_plugin_options
+
+    #  ---  params_not_config_2  ---
+    # config_setup_cached - at the end:
+    #   cache_write_plugin_params
+    #     params_not_config_2
+
+    simple_dirname "$cfg_main_menu" silent
+    cfg_d_menus="$_d_simple_dirname"
+
+    d_cache_main_menu="$d_cache/menus"
+
+    # for uncached:
+    # repo_last_changed="$new_repo_last_changed"
+    # last_local_edit="$new_last_local_edit"
+
+}
+
 check_speed_cutoff() {
+    #   minimal display time to trigger screen might be too small warning
     # if processing was slower than the supplied param, set a higher minimal
     # display time before triggering "SCREEN might be too small" warning
     cut_off="$1"
@@ -347,14 +465,237 @@ check_speed_cutoff() {
     time_span "$t_script_start"
 
     log_it "-T- check_speed_cutoff($cut_off) - $t_time_span"
-
-    _csc_speed_ok=$(echo "$t_time_span < $cut_off" | bc)
+    # _csc_speed_ok=$(echo "$t_time_span < $cut_off" | bc)
+    _csc_speed_ok=$(awk -v ts="$t_time_span" -v co="$cut_off" \
+        'BEGIN { print (ts < co) }')
     if [ "$_csc_speed_ok" -eq 1 ]; then
         t_minimal_display_time=0.1
     else
-        # log_it "  Failed cutoff time, considered a slow system: $t_time_span >= $cut_off"
         # for slower systems
         t_minimal_display_time=1
+    fi
+}
+
+examine_code_base() {
+    #
+    # Examins state of code base, to ensure cache is cleared if anything has been
+    # changed
+    #
+    # Public variables:
+    # new_repo_last_changed - time stamp for latest repo change
+    # new_last_local_edit - timestamp and filename for last local change
+    #
+    env_uname="$(uname -s)"
+
+    # need to be in repo base dir for the git checks below
+    cd "$TMUX_MENUS_LOCATION" || {
+        error_msg "Failed to cd into TMUX_MENUS_LOCATION [$TMUX_MENUS_LOCATION]"
+    }
+
+    #
+    # Log last repo change and if & when latest local changes were done
+    # to ensure any code changes will trigger a cache reset
+    #
+    if command -v git >/dev/null; then
+        # Timestamp for latest change of repo that hs been pulled
+        new_repo_last_changed="$(git log -1 --format="%ad" --date=iso 2>/dev/null)"
+
+        _ecb_modified="$(git ls-files -m 2>/dev/null)"
+        if [ -z "$_ecb_modified" ]; then
+            new_last_local_edit=""
+        else
+            if [ "$env_uname" = "Darwin" ]; then
+                new_last_local_edit="$(printf '%s\n' "$_ecb_modified" \
+                    | xargs stat -f '%m %N' 2>/dev/null | sort -nr | head -1)"
+            else
+                new_last_local_edit="$(printf '%s\n' "$_ecb_modified" \
+                    | xargs stat -c '%Y %n' 2>/dev/null | sort -nr | head -1)"
+            fi
+        fi
+    else
+        # this check does not depend on git being present
+        log_it "examine_code_base() - no git found"
+        new_repo_last_changed="git not installed"
+
+        # Manually find latest changed file and its mtime
+        if [ "$env_uname" = "Darwin" ]; then
+            _ecb_newest=$(
+                find . \( -path ./.git -o -path ./cache \) -prune -o -type f \
+                    -exec stat -f '%m %N' {} + 2>/dev/null | sort -rn | head -n 1
+            )
+        else
+            _ecb_newest=$(
+                find . \( -path ./.git -o -path ./cache \) -prune -o -type f \
+                    -exec stat -c '%Y %n' {} + 2>/dev/null | sort -rn | head -n 1
+            )
+        fi
+        _ecb_mtime=${_ecb_newest%% *}
+        _ecb_file=${_ecb_newest#* }
+        new_last_local_edit="$_ecb_mtime $_ecb_file"
+    fi
+    return 0 # Don't return if state...
+}
+
+select_handler() {
+    _sh_handler="$1"
+    [ -n "$_sh_handler" ] || err_msg "select_handler() - no param"
+    case "$_sh_handler" in
+        0)
+            if tmux_vers_check 3.0; then
+                mnu_handler=0
+                alt_menu_handler=""
+            else
+                error_msg "Built in menu handling unavailable for tmux < 3.0"
+            fi
+            ;;
+        1)
+            if command -v whiptail >/dev/null; then
+                mnu_handler="$_sh_handler"
+                alt_menu_handler=whiptail
+            else
+                error_msg "whiptail not found, plugin aborted"
+            fi
+            ;;
+        2)
+            if command -v dialog >/dev/null; then
+                mnu_handler="$_sh_handler"
+                alt_menu_handler=dialog
+            else
+                error_msg "dialog not found, plugin aborted"
+            fi
+            ;;
+        -1)
+            if tmux_vers_check 3.0; then
+                mnu_handler=0
+                alt_menu_handler=""
+            else
+                #
+                # if on next plugin_setup a menus able tmux is detected the relevant
+                # additional settings will be cached
+                if command -v whiptail >/dev/null; then
+                    mnu_handler=1
+                    alt_menu_handler=whiptail
+                elif command -v dialog >/dev/null; then
+                    mnu_handler=2
+                    alt_menu_handler=dialog
+                else
+                    error_msg "Neither whiptail nor dialog found, plugin aborted"
+                fi
+            fi
+            ;;
+        *) error_msg "Invalid menu-handler (by number): $_sh_handler" 1 ;;
+    esac
+    if [ -n "$TMUX_MENUS_HANDLER" ]; then
+        $TMUX_BIN set-environment -g TMUX_MENUS_HANDLER "$TMUX_MENUS_HANDLER"
+    else
+        $TMUX_BIN set-environment -gu TMUX_MENUS_HANDLER
+    fi
+    if [ -n "$alt_menu_handler" ]; then
+        # clear settings not used with alt handlers
+        cfg_display_cmds=false
+
+        # this is slowish anyhow, so no point in optimizing for peak cached performance
+        cfg_use_timers=true
+        cfg_validate_cache=true
+
+        cfg_use_hint_overlays=false
+        cfg_show_key_hints=false
+        cfg_nav_next="$default_nav_next"
+        cfg_nav_prev="$default_nav_prev"
+        cfg_nav_home="$default_nav_home"
+    fi
+    set_plugin_key
+}
+
+read_config() {
+    # Called from cache_write_plugin_params() when setting up cache
+    # and for every script when caching is disabled
+    # log_it "><> read_config()"
+
+    cut_off="${1:-06}"
+
+    tmux_get_plugin_options
+    retrieve_non_tmux_env_vars
+    mnu_handler="${mnu_handler:--1}"
+    select_handler "${TMUX_MENUS_HANDLER:-$mnu_handler}"
+
+    check_speed_cutoff "$cut_off"
+    examine_code_base
+    # cfg_trigger_key=$(cache_escape_special_chars "$cfg_trigger_key")
+    t_delayed_menu_reload=$(awk -v t="$t_minimal_display_time" 'BEGIN { print t + 1 }')
+
+}
+
+#---------------------------------------------------------------
+#
+#   Config
+#
+#---------------------------------------------------------------
+
+config_setup_cached() {
+    # log_it "><> config_setup_cached()"
+    "${cfg_use_cache:-false}" || {
+        error_msg "config_setup_cached() - Called when caching is disabled"
+    }
+    rm -f "$f_no_cache_hint" || error_msg "Failed to remove: $f_no_cache_hint"
+    cache_create_folder
+
+    # For now cache is always fully cleared on init
+
+    # verify_tmux_vers_unchanged || {
+    #     # If tmux vers changed the entire cache has been cleared, here
+    #     # the intention is to clear
+
+    #     tpt_retrieve_running_tmux_vers
+    #     safe_remove "$f_no_cache_hint" "config_setup_cached()"
+    #     safe_remove "$f_cached_tmux_options" "config_setup_cached()"
+
+    #     if "${initialize_plugin:-false}"; then
+    #         # if verify_tmux_vers_unchanged was false, the entire cache has already
+    #         # been purged, so no need to consider what to keep/drop
+    #         [ -f "$f_cache_known_tmux_vers" ] && {
+    #             safe_remove "$f_cache_known_tmux_vers" "plugin_init.sh - known_tmux_vers"
+    #             # Ensure env didn't pick anything up from an obsolete version of this file
+    #             cached_ok_tmux_versions=""
+    #             cached_bad_tmux_versions=""
+    #         }
+
+    #         safe_remove "$f_safe_now_method" "config_setup_cached()"
+    #         # Used by display commands
+    #         safe_remove "$f_cached_tmux_key_binds" "config_setup_cached()"
+
+    #         # Clear any errors from previous runs
+    #         safe_remove "$d_cache"/error-* "config_setup_cached()"
+    #         safe_remove "$d_cache"/cmd_output "config_setup_cached()"
+    #     fi
+    # }
+
+    tpt_retrieve_running_tmux_vers
+
+    # should be done during init - not for every script
+    if ! tmux_vers_check "$min_tmux_vers"; then
+        # @variables are not usable prior to 1.8
+        error_msg "$plugin_name needs at least tmux $min_tmux_vers to work properly."
+    fi
+
+    set_script_start_time
+    cache_write_plugin_params
+}
+
+config_setup() {
+    # Examins tmux env, and depending on caching config either plainly read
+    # tmux.conf, or prepare a f_cache_params
+    if normalize_bool_param "@menus_use_cache" "${default_use_cache:-Yes}"; then
+        cfg_use_cache=true
+        config_setup_cached
+    else
+        cfg_use_cache=false
+        touch "$f_no_cache_hint" || {
+            err_msg "config_setup() - failed to touch $f_no_cache_hint"
+        }
+        # Just read the config, don't try to cache it
+        log_it "config_setup() - @menus_use_cache is false, but no f_no_cache_hint"
+        read_config
     fi
 }
 
@@ -364,33 +705,11 @@ check_speed_cutoff() {
 #
 #---------------------------------------------------------------
 
-config_setup() {
-    # Examins tmux env, and depending on caching config either plainly read
-    # tmux.conf, or prepare a f_cache_params
-    # log_it "config_setup()"
-
-    #
-    # If called from plugin_init.sh cfg_use_cache has already been checked, but since
-    # config_setup will also be called if other things fail to read the cached
-    # params, it should be re-checked here.
-    # Since this will not happen regularly this overhead will not ruin general performance
-    #
-    if normalize_bool_param "@menus_use_cache" "$default_use_cache"; then
-        cfg_use_cache=true
-        safe_remove "$f_no_cache_hint" "config_setup()" config_setup
-        create_param_cache
-    else
-        cfg_use_cache=false
-        touch "$f_no_cache_hint"
-        tmux_get_plugin_options
-    fi
-}
-
 safe_remove() {
     #
     # Ensures what is to be removed is not a "dangerous" path that would
     # cause a mess of the file system
-    # If param 2 is empty, an extra check will be made that the pattern is prefixed
+    # If param 3 is empty, an extra check will be made that the pattern is prefixed
     # by the location of this plugin, only use param 2 if something outside
     # the plugin location needs to be removed
     #
@@ -398,8 +717,12 @@ safe_remove() {
     reason="$2"
     skip_plugin_name_in_path_check="$3"
 
-    # log_it "safe_remove($pattern) - $reason"
-    [ -z "$pattern" ] && error_msg "safe_remove() - no path supplied to remove"
+    [ -z "$pattern" ] && {
+        [ -n "$reason" ] && {
+            error_msg "safe_remove() - path empty for request: $reason"
+        }
+        error_msg "safe_remove() - no path supplied to remove"
+    }
     [ -z "$reason" ] && error_msg "safe_remove() - no reason given"
 
     tmpdir_noslash="${TMPDIR%/}" # Remove trailing slash if present
@@ -424,6 +747,7 @@ safe_remove() {
     [ -z "$skip_plugin_name_in_path_check" ] && {
         case "$pattern" in
             *"$plugin_name"*) ;;
+            $TMPDIR*) ;;
             *)
                 _s="safe_remove($pattern) seems wrong - $plugin_name not in that path"
                 error_msg "$_s"
@@ -443,19 +767,9 @@ wait_to_close_display() {
     #  call this to display an appropriate suggestion, and in the
     #  whiptail case wait for that key
     #
-    #  Busybox ps has no -x and will throw error, so send to /dev/null
-    #  pgrep does not provide the command line, so ignore SC2009
-    # if ps -x "$PPID" 2>/dev/null | grep -q tmux-menus && ${b_use_alt_handler:-false}; then
-    _b_is_whiptail=false
-    case $(ps -o command= -p "$PPID" 2>/dev/null) in
-        *tmux-menus*)
-            ${b_use_alt_handler:-false} && _b_is_whiptail=true
-            ;;
-        *) ;;
-    esac
-    if ${_b_is_whiptail:-false}; then
+    if [ -n "$alt_menu_handler" ]; then
         #
-        # called using whiptail menus, since a pause is needed, before what
+        # called using whiptail/dialog menus, since a pause is needed, before what
         # might be a backgrounded process is resumed
         #
         echo " "
@@ -481,7 +795,6 @@ helpers_full_additional_files_sourced() {
 }
 
 set_display_command_labels() {
-    # log_it "set_display_command_labels() - $show_cmds_state"
     case "$show_cmds_state" in
         1)
             _lbl="Display Commands"
@@ -538,30 +851,30 @@ parse_move_link_dest() {
 #
 #===============================================================
 
-[ -z "$env_initialized" ] && {
-    printf "\n\nERROR: helpers_full.sh can't be run standalone\n"
-    exit 1
-}
-
-[ "${env_initialized:-0}" -gt 1 ] && {
-    error_msg "helpers_full already sourced [$env_initialized]"
-}
-
-# log_it "><> [$$] STARTING: scripts/utils/helpers_full.sh"
+case "${env_initialized:-0}" in
+    0)
+        printf "\n\nERROR: helpers_full.sh - helpers.sh not sourced\n"
+        exit 1
+        ;;
+    1) ;; # helpers.sh has been sourced
+    *) error_msg "helpers_full.sh has already been sourced" ;;
+        # log_it "><> =====!!   helpers_full.sh has already been sourced"
+        # return 0
+        # ;;
+esac
+# log_it "[$$] STARTING: scripts/utils/helpers_full.sh for: $0"
 
 #
 #  Convenience shortcuts
 #
 
 d_hints="$d_items"/hints
-d_custom_items="$D_TM_BASE_PATH"/custom_items
+d_custom_items="$TMUX_MENUS_LOCATION"/custom_items
 f_custom_items_index="$d_custom_items"/_index.sh
 f_chksum_custom="$d_cache"/chksum_custom_content
-f_min_display_time="$d_cache"/min_display_time
 f_cached_tmux_options="$d_cache"/tmux_options
 
-helpers_full_additional_files_sourced
-
 env_initialized=2 # indicates that env is fully configured
+# log_it "[$$] ===  Completed: scripts/utils/helpers_full.sh - $0"
 
-# log_it "><> [$$] scripts/utils/helpers_full.sh - completed [$0]"
+helpers_full_additional_files_sourced

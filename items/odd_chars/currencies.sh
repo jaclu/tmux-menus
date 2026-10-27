@@ -5,24 +5,22 @@
 #
 #  Part of https://github.com/jaclu/tmux-menus
 #
-#  Sending currency symbolsx that might not always be accessible,
+#  Sending currency symbols that might not always be accessible,
 #  depending on keyboards or their mappings.
 #
 
 show_label() {
     # Some Currency symbols can't be printed in whiptail
-    if ${b_use_alt_handler:-false}; then
+    if [ -n "$alt_menu_handler" ]; then
         case "$1" in
             ₺ | ₴ | ₽ | ₹ | ₿)
                 echo "Send   ($2) - not printable in whiptail"
+                return
                 ;;
-            *)
-                echo "Send $1 ($2)"
-                ;;
+            *) ;; # default handling
         esac
-    else
-        echo "Send $1 ($2)"
     fi
+    echo "Send $1 ($2)"
 }
 
 static_content() {
@@ -30,9 +28,9 @@ static_content() {
     tmux_vers_check 2.0 || error_msg "needs tmux 2.0"
 
     set -- \
-        0.0 M Left "Back to Previous  $nav_prev" "$d_odd_chars"/missing_keys.sh \
-        0.0 M Home "Back to Main      $nav_home" "$cfg_main_menu" \
-        0.0 M H "Help              $nav_next" "$d_help/h_currencies.sh $0"
+        0.0 M Left "Back to Previous  $nav_prev" odd_chars/missing_keys.sh \
+        0.0 M Home "Main Menu         $nav_home" "$cfg_main_menu" \
+        0.0 M H "Help              $nav_next" "$cfg_d_menus/help/h_odd_chars.sh $0"
     menu_generate_part 1 "$@"
     display_commands_toggle 2
 
@@ -64,17 +62,14 @@ static_content() {
 menu_name="Currency symbols"
 menu_min_vers=2.0
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/../.." && pwd)
-
 no_auto_menu_handling=1 # delay processing of dialog, only source it for now
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/menu_handling.sh
+. "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh
 
 if [ -n "$1" ]; then
-    "$D_TM_BASE_PATH"/scripts/act_display_char.sh "$1"
-elif ${b_use_alt_handler:-false}; then
+    "$TMUX_MENUS_LOCATION"/scripts/act_display_char.sh "$1"
+elif [ -n "$alt_menu_handler" ]; then
     ${b_all_helpers_sourced:-false} || source_all_helpers "currencies.sh"
     tmux_error_handler set-option -gqu "$wt_pasting"
 fi

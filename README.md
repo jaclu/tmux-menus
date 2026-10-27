@@ -1,15 +1,14 @@
 # Tmux-Menus
 
-<img width="236" alt="Main"
-  src="https://github.com/user-attachments/assets/f8510b2f-4880-4fed-99e5-7db29f400cd8" />
-<img width="235" alt="Main styled"
-  src="https://github.com/user-attachments/assets/12188f8f-fcdd-457c-ae74-2a6fd8cc38f1" />
+<img width="237" height="278" alt="Main - Dark theme"
+src="https://github.com/user-attachments/assets/adb009fc-9a6c-4c56-b01c-b1570f1bc5ff" />
+<img width="237" height="279" alt="Main - Light Theme"
+src="https://github.com/user-attachments/assets/bfbd8eb2-70a6-4821-834f-fae7cc9f8a87" />
 
 ## Summary
 
-A collection of popup menus for managing your tmux environment. Menus can be
-customized with optional [docs/Styling.md](docs/Styling.md), as shown in the right
-screenshot above.
+A collection of popup menus for managing your tmux environment. With tmux 3.8+,
+automatic theming is much improved. The dark and light themes are shown above.
 
 Once installed, press the trigger key to display the main menu. The default
 trigger is `<prefix> \` (see Configuration below to customize).
@@ -23,14 +22,16 @@ discover functionality—advanced users can simply remove what they don't need.
 
 ## Recent Changes
 
+- Fixed handling of tmux names containing quotes and spaces
+- **Floating Panes handling** — New menus for positioning and managing floating panes
+  (tmux 3.7+)
+- **Display Settings** — New menu for selecting one of the available themes
+  (Dark/Light, Terminal, Auto) (tmux 3.8+)
 - **Danger Zone** — Destructive commands are highlighted by default; enable/disable
   or customize as needed
-- **Enhanced Floating Panes handling** — New combined menu, with a toggle to
-  split format for standard 25x80 terminals, plus new pane placement controls
-- **Stabilized Display Commands** — Fixed crashes and improved stability when
-  displaying menu command references
-- **Secondary default trigger key** `<prefix> Enter` for non-US keyboards where
-  `<prefix> \` is impractical
+- **Key collision detection** — Prevents duplicate keyboard shortcuts across menus
+- **Automatic location detection** — The plugin finds its own location, so manual
+  `D_TM_BASE_PATH` configuration is no longer needed
 
 ## Purpose
 
@@ -60,14 +61,14 @@ The white screenshot shows a whiptail-generated menu, which uses more screen
 space than native tmux menus. However, whiptail menus are scrollable when they
 don't fit the screen. The other screenshots show native tmux menus.
 
-<img width="254" height="354" alt="Handling Pane"
-  src="https://github.com/user-attachments/assets/2aa664b7-33a7-4560-a6e6-d128212e16f4" />
-<img width="253" height="325" alt="Handling Window"
-  src="https://github.com/user-attachments/assets/54e3ce58-0f18-4bef-8388-712e21acb930" />
-<img width="268" height="294" alt="Layouts"
-  src="https://github.com/user-attachments/assets/ae6a3bea-c550-4062-9cb7-92d56dc72680" />
+<img width="252" height="354" alt="Handling Pane"
+  src="https://github.com/user-attachments/assets/4363910a-237e-4d07-bdd5-d659cb656592" />
+<img width="252" height="324" alt="Handling Window"
+  src="https://github.com/user-attachments/assets/fead153b-081c-420e-afff-e2db948bfac9" />
+<img width="268" height="295" alt="Layouts"
+  src="https://github.com/user-attachments/assets/aaef90f0-c1e0-4110-821e-f8b8aed3c2ed" />
 <img width="251" height="203" alt="Missing Keys"
-  src="https://github.com/user-attachments/assets/638d5071-669d-483a-bacf-6fb2d45b248a" />
+  src="https://github.com/user-attachments/assets/4211bdbb-3ce2-4273-ba45-6b081dbc1998" />
 <img width="227" height="264" alt="Missing Keys-whiptail"
   src="https://github.com/user-attachments/assets/6186795e-ef99-4a73-b958-61f42aa9fb13" />
 
@@ -75,12 +76,12 @@ Floating pane handling offers both a combined menu and split menus. If the combi
 menu is too tall for your terminal, you can toggle to split format. This selection
 is remembered for the next time.
 
-<img width="253" height="325" alt="Handling floating panes - Placement"
-  src="https://github.com/user-attachments/assets/5018d1a9-5e25-4b58-95c9-618682d45b88" />
-<img width="254" height="355" alt="Handling floating panes - split menu"
-  src="https://github.com/user-attachments/assets/ec90a06a-8861-4fa4-bdf4-4db8e22059c5" />
-<img width="262" height="492" alt="Handling floating panes - combined"
-  src="https://github.com/user-attachments/assets/902e3a1f-d6fe-4327-8bd0-5c0022e4d88b" />
+<img width="261" height="339" alt="Handling floating panes - Placement"
+  src="https://github.com/user-attachments/assets/ba8b444f-404c-4ecb-aa09-93bd27f23bef" />
+<img width="261" height="354" alt="Handling floating panes - split menu"
+  src="https://github.com/user-attachments/assets/abb0b5fc-1b60-4f21-98b9-3889475166e0" />
+<img width="263" height="492" alt="Handling floating panes - combined"
+  src="https://github.com/user-attachments/assets/e54d79f6-5c22-4d1d-82dc-c799b030748c" />
 
 ## Known Limitations
 
@@ -90,7 +91,7 @@ This plugin does not work when the tmux environment path contains spaces.
 
 Left arrow doesn't work to go back. Workaround: Highlight and press Enter instead.
 
-Still present in `3.7c` - resolved in `3.8`
+Still present in `3.7c`; resolved in `3.8`.
 
 ## Dependencies & Compatibility
 
@@ -108,7 +109,7 @@ may have minimum version requirements—items incompatible with your tmux versio
 will be automatically skipped. If you encounter incorrect version limits, please
 report them!
 
-## Installation
+## Installation of tmux-menus
 
 ### Via TPM (Recommended)
 
@@ -157,9 +158,9 @@ The default trigger is `<prefix> \`. To customize it:
 set -g @menus_trigger 'Space'
 ```
 
-See [docs/QuotingPitfalls.md](docs/QuotingPitfalls.md) for handling special characters like
-`\` in tmux variables. For more information about the secondary default and why
-it was introduced, see [SecondaryDefault](docs/SecondaryDefault.md).
+See [docs/QuotingPitfalls.md](docs/QuotingPitfalls.md) for handling special characters
+like `\` in tmux variables. For more information about the secondary default and why
+it was introduced, see [Secondary Default Key](docs/SecondaryDefault.md).
 
 ### Trigger Without Prefix
 
@@ -173,8 +174,8 @@ Enable this to trigger menus without pressing `<prefix>` first.
 
 ### Danger Zone
 
-All commands that are destructive, such as kill/delete/respawn etc can be made
-to standout by using a specific style. If this is not desired, set it to `""`
+All commands that are destructive, such as kill, delete, and respawn, can be made
+to stand out by using a specific style. To disable this, set it to `""`
 
 ```tmux
 set -g @menus_danger_zone "#[fg=red,bg=white]" # prints it red on white
@@ -192,11 +193,6 @@ set -g @menus_main_menu "~/my_tmux_menus/main.sh"
 Default: None (uses built-in menus)
 
 Override the default menu system with custom menus.
-
-**Important notes:**
-
-- All custom menus must define `D_TM_BASE_PATH` to point to the tmux-menus
-  installation directory for support scripts to work correctly.
 
 ### Menu Position
 
@@ -221,7 +217,7 @@ Common options:
 
 ### Floating Panes positioning
 
-This impacts floating pane move/resize actions in the Panes - Floating Panes
+This affects floating pane move/resize actions in the Panes - Floating Panes
 menu (requires tmux 3.8).
 
 The stepping size is defined by these two settings:
@@ -271,8 +267,8 @@ Controls the maximum line length for displayed commands. Long commands are split
 into chunks at whitespace when possible, or at the maximum length if no
 whitespace is found.
 
-If lines end with `>`, they've been truncated by tmux because they exceed the
-display width. Reduce `@menus_display_cmds_cols` to prevent truncation.
+If the window is narrower than this value, the window width limits this setting so
+that no lines are cut off.
 
 ### Config File Location
 
@@ -334,10 +330,10 @@ These are full-screen terminal applications that pause your session while displa
 **Limitations:** External handlers don't differentiate between uppercase and lowercase
 letters, and don't support special keys (arrow keys, Home, etc.).
 
-### Installation
+### Installation of whiptail
 
-**Linux:** Most distributions include `whiptail` by default. In the Red Hat
-an Homebrew ecosystems, the package that contains `whiptail` is called `newt`.
+**Linux:** Most distributions include `whiptail` by default. In Red Hat and Homebrew
+ecosystems, the package that contains `whiptail` is called `newt`.
 
 **macOS:** Install via Homebrew: `brew install newt`
 
@@ -362,6 +358,8 @@ To report bugs, request features, or provide feedback, please file an
 
 Thanks to everyone who has contributed to making this plugin better:
 
+- [gregorias](https://github.com/gregorias) - Reported about issues handling
+  quotes and spaces when naming tmux entities, like sessions, windows and more
 - [shixianqin](https://github.com/shixianqin) - Reported that `<prefix> \` is
   problematic on non-US keyboards, leading to the secondary default `<prefix> Enter`
   (fixed in 2.3.0)

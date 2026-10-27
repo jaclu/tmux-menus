@@ -9,8 +9,8 @@ Common menu styling can be set using:
 - menu-border-style
 - menu-border-lines
 
-The plugin styling features are not so much meant to duplicate this, instead
-offering convenient overrides for certain menus/items.
+The plugin's styling options are not meant to duplicate these; instead, they
+offer convenient overrides for certain menus and items.
 
 ## Navigation Indicators
 
@@ -50,10 +50,9 @@ regenerate with the new style on next display.
 The table below lists available style variables. "Param" refers to
 `display-menu` parameters (see the tmux man page).
 
-In the Defaults it is indicated what Session option will control this if not
-directly provided to `display-menu`. This means that at least in principle
-these menus can have different styling from other tmux menus. If that might be
-desirable I leave up to others to decide...
+The Default column shows which session option controls each value when it is not
+provided directly to `display-menu`. In principle, these menus can therefore be
+styled differently from other tmux menus. Whether that is desirable is up to each user.
 
 | Param | Variable                     | Default                              | Example             |
 | ----- | ---------------------------- | ------------------------------------ | ------------------- |
@@ -70,7 +69,7 @@ desirable I leave up to others to decide...
   display the menu name.
 - **-b** (`@menus_border_type`): Sets border character style. See
   `popup-border-lines` in the tmux man page.
-- **-H, -s, -S**: Appear to only support `fg`, `bg`, and `default` attributes.
+- **-H, -s, -S**: Appear to support only the `fg`, `bg`, and `default` attributes.
 
 ### Quoting Considerations
 
@@ -78,7 +77,7 @@ To maximize styling freedom, these variables are **not** wrapped in quotes in
 the generated menu code. This means you're responsible for proper quoting,
 especially for spaces in menu names.
 
-If using `#{@menu_name}` and menus contain spaces, wrap it in an inner quote.
+If using `#{@menu_name}` and menus contain spaces, wrap it in an inner pair of single quotes.
 
 Example:
 
@@ -86,7 +85,7 @@ Example:
 set -g @menus_format_title "'#[align=centre] #[fg=colour34]#{@menu_name} '"
 ```
 
-## The styling I use
+## Example Configuration
 
 ```tmux
 set -g @menus_nav_next "#[fg=colour220]-->"

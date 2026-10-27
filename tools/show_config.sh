@@ -38,11 +38,9 @@ show_item() {
 #
 #===============================================================
 
-#  Full path to tmux-menux plugin, remember to do one /.. for each subfolder
-D_TM_BASE_PATH=$(cd "${0%/*}/.." && pwd)
-
+TMUX_MENUS_LOCATION=$(cd "${0%/*}/.." && pwd)
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-. "$D_TM_BASE_PATH"/scripts/helpers.sh
+all_helpers=1 . "$TMUX_MENUS_LOCATION"/scripts/helpers.sh
 
 tmux_get_defaults
 
@@ -58,7 +56,7 @@ echo
 show_item @menus_log_file "$cfg_log_file" "$default_log_file"
 show_item @menus_display_cmds_cols "$cfg_display_cmds_cols" "$default_display_cmds_cols"
 
-${b_use_alt_handler:-false} || {
+[ -n "$alt_menu_handler" ] || {
     printf '\n# Display-menu related config\n'
     show_item @menus_location_x "$cfg_mnu_loc_x" "$default_location_x"
     show_item @menus_location_y "$cfg_mnu_loc_y" "$default_location_y"
@@ -83,11 +81,12 @@ ${b_use_alt_handler:-false} || {
 }
 
 if tmux_vers_check 3.0; then
-    default_use_whiptail=false
+    default_mnu_handler=0
+    default_alt_handler=""
 else
-    default_use_whiptail=true
+    default_mnu_handler=1
+    default_alt_handler="whiptail"
 fi
 echo
-show_item "b_use_alt_handler" "$b_use_alt_handler" "$default_use_whiptail"
-
-show_item "alt_menu_handler" "$alt_menu_handler" "whiptail"
+show_item "mnu_handler" "$mnu_handler" "$default_mnu_handler"
+show_item "alt_menu_handler" "$alt_menu_handler" "$default_alt_handler"

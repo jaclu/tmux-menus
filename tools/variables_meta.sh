@@ -11,7 +11,7 @@
 #   In any script that sources other files, use the shellcheck directive:
 #
 #     # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
-#     . "$D_TM_BASE_PATH"/scripts/menu_handling.sh
+#     . "$TMUX_MENUS_LOCATION"/scripts/menu_handling.sh
 #
 #   This tells shellcheck to use THIS file (variables_meta.sh) as the reference
 #   for variable and function definitions when analyzing the sourcing statement,
@@ -51,67 +51,59 @@
 #
 
 #===============================================================
-# scripts/helpers_minimal.sh
+# scripts/helpers.sh
 #===============================================================
 
-D_TM_BASE_PATH="${D_TM_BASE_PATH:-}"
-TMUX_BIN="${TMUX_BIN:-tmux}"
-
+_d_simple_dirname="${_d_simple_dirname:-}"
+all_helpers="${all_helpers:-}"
 bn_current_script="${bn_current_script:-}"
-alt_menu_handler="${alt_menu_handler:-}"
-
 # shellcheck disable=SC2031 # needed since cache.sh redefines it in a subshell
 cfg_log_file="${cfg_log_file:-}"
-
 cfg_use_cache="${cfg_use_cache:-}"
-b_use_alt_handler="${b_use_alt_handler:-}"
 current_tmux_vers="${current_tmux_vers:-}"
 current_tmux_vers_i="${current_tmux_vers_i:-}"
 current_tmux_vers_suffix="${current_tmux_vers_suffix:-}"
 d_cache="${d_cache:-}"
-d_cache_main_menu="${d_cache_main_menu:-}"
-d_help="${d_help:-}"
+d_cache_menus="${d_cache_menus:-}"
 d_items="${d_items:-}"
-d_safe_tmp_folder="${d_safe_tmp_folder:-}"
 d_scripts="${d_scripts:-}"
 d_tmp="${d_tmp:-}"
 env_initialized="${env_initialized:-}"
-env_unmame="${env_unmame:-}"
 f_cache_params="${f_cache_params:-}"
 f_cached_tmux_key_binds="${f_cached_tmux_key_binds:-}"
-f_ext_dlg_trigger="${f_ext_dlg_trigger:-}"
-f_main_menu="${f_main_menu:-}"
 f_max_25_line_menus="${f_max_25_line_menus:-}"
 f_no_cache_hint="${f_no_cache_hint:-}"
 f_safe_now_method="${f_safe_now_method:-}"
-initialize_plugin="${initialize_plugin:-}"
+f_skip_low_tmux_version_warning="${f_skip_low_tmux_version_warning:-}"
 log_file_forced="${log_file_forced:-}" # debug variable, normally not defined
+menus_version="${menus_version:-}"
+min_tmux_vers="${min_tmux_vers:-}"
 plugin_name="${plugin_name:-}"
+relative_fname="${relative_fname:-}"
 rn_current_script="${rn_current_script:-}"
+scr_ext_dlg_trigger="${scr_ext_dlg_trigger:-}"
 scr_float_pane_switch="${scr_float_pane_switch:-}"
-t_minimal_display_time="${t_minimal_display_time:-}"
 t_script_start="${t_script_start:-}"
 t_time_span="${t_time_span:-}"
 tpt_vers_digits="${tpt_vers_digits:-}"
 
 #===============================================================
-# scripts/helpers_floating_pane.sh
+# scripts/floating_pane_helpers.sh
 #===============================================================
 
 current_pane_is_floating="${current_pane_is_floating:-}"
-other_floating_panes="${other_floating_panes:-}"
 
 #===============================================================
 # scripts/menu_handling.sh
 #===============================================================
 
-b_display_commands_issue="${b_display_commands_issue:-}"
-d_odd_chars="${d_odd_chars:-}"
 dh_t_start="${dh_t_start:-}" # time when menu is displayed
+menu_handling_sourced="${menu_handling_sourced:-}"
 mnu_reload_direct="${mnu_reload_direct:-}"
 nav_home="${nav_home:-}"
 nav_next="${nav_next:-}"
 nav_prev="${nav_prev:-}"
+prompt_reload_mnu="${prompt_reload_mnu:-}"
 runshell_reload_mnu="${runshell_reload_mnu:-}"
 runshell_sleep_reload_mnu="${runshell_sleep_reload_mnu:-}"
 show_cmds_state="${show_cmds_state:-}" # current state for displaying cmds
@@ -121,32 +113,11 @@ t_show_cmds="${t_show_cmds:-}"         # time when cmds generation starts
 # scripts/utils/cache.sh
 #===============================================================
 
-cached_ok_tmux_versions="${cached_ok_tmux_versions:-}"
 cached_bad_tmux_versions="${cached_bad_tmux_versions:-}"
-cfg_border_type="${cfg_border_type:-}"
-cfg_danger_zone="${cfg_danger_zone:-}"
-cfg_display_cmds="${cfg_display_cmds:-}"
-cfg_display_cmds_cols="${cfg_display_cmds_cols:-}"
-cfg_format_title="${cfg_format_title:-}"
-cfg_main_menu="${cfg_main_menu:-}"
-cfg_mnu_loc_x="${cfg_mnu_loc_x:-}"
-cfg_mnu_loc_y="${cfg_mnu_loc_y:-}"
-cfg_nav_home="${cfg_nav_home:-}"
-cfg_nav_next="${cfg_nav_next:-}"
-cfg_nav_prev="${cfg_nav_prev:-}"
-cfg_no_prefix="${cfg_no_prefix:-}"
-cfg_validate_cache="${cfg_validate_cache:-}"
-cfg_use_timers="${cfg_use_timers:-}"
-cfg_show_key_hints="${cfg_show_key_hints:-}"
-cfg_simple_style="${cfg_simple_style:-}"
-cfg_simple_style_border="${cfg_simple_style_border:-}"
-cfg_simple_style_selected="${cfg_simple_style_selected:-}"
-cfg_tmux_conf="${cfg_tmux_conf:-}"
-cfg_trigger_key="${cfg_trigger_key:-}"
-cfg_use_hint_overlays="${cfg_use_hint_overlays:-}"
-use_bind_key_notes="${use_bind_key_notes:-}"
+cached_ok_tmux_versions="${cached_ok_tmux_versions:-}"
+d_cache_main_menu="${d_cache_main_menu:-}"
 f_cache_known_tmux_vers="${f_cache_known_tmux_vers:-}"
-t_delayed_menu_reload="${t_delayed_menu_reload:-}"
+use_bind_key_notes="${use_bind_key_notes:-}"
 wt_pasting="${wt_pasting:-}"
 
 #===============================================================
@@ -156,6 +127,7 @@ wt_pasting="${wt_pasting:-}"
 _idx_next="${_idx_next:-}"
 _lbl="${_lbl:-}"
 _lbl_next="${_lbl_next:-}"
+alt_menu_handler="${alt_menu_handler:-}"
 cur_ses="${cur_ses:-}"
 d_custom_items="${d_custom_items:-}"
 d_hints="${d_hints:-}"
@@ -165,21 +137,45 @@ dest_win_idx="${dest_win_idx:-}"
 f_cached_tmux_options="${f_cached_tmux_options:-}"
 f_chksum_custom="${f_chksum_custom:-}"
 f_custom_items_index="${f_custom_items_index:-}"
-f_min_display_time="${f_min_display_time:-}"
+mnu_handler="${mnu_handler:-}"
+new_last_local_edit="${new_last_local_edit:-}"
+new_repo_last_changed="${new_repo_last_changed:-}"
+t_delayed_menu_reload="${t_delayed_menu_reload:-}"
+t_minimal_display_time="${t_minimal_display_time:-}"
 
 #===============================================================
 # scripts/utils/tmux.sh
 #===============================================================
 
-cfg_force_unset="${cfg_force_unset:-}"
 cfg_default_is_empty_string="${cfg_default_is_empty_string:-}"
+cfg_force_unset="${cfg_force_unset:-}"
+cfg_border_type="${cfg_border_type:-}"
+cfg_d_menus="${cfg_d_menus:-}"
+cfg_danger_zone="${cfg_danger_zone:-}"
+cfg_display_cmds="${cfg_display_cmds:-}"
+cfg_display_cmds_cols="${cfg_display_cmds_cols:-}"
 cfg_floating_pane_incr_horizontal="${cfg_floating_pane_incr_horizontal:-}"
 cfg_floating_pane_incr_vertical="${cfg_floating_pane_incr_vertical:-}"
+cfg_format_title="${cfg_format_title:-}"
+cfg_main_menu="${cfg_main_menu:-}"
+cfg_mnu_loc_x="${cfg_mnu_loc_x:-}"
+cfg_mnu_loc_y="${cfg_mnu_loc_y:-}"
+cfg_nav_home="${cfg_nav_home:-}"
+cfg_nav_next="${cfg_nav_next:-}"
+cfg_nav_prev="${cfg_nav_prev:-}"
+cfg_no_prefix="${cfg_no_prefix:-}"
+cfg_show_key_hints="${cfg_show_key_hints:-}"
+cfg_simple_style="${cfg_simple_style:-}"
+cfg_simple_style_border="${cfg_simple_style_border:-}"
+cfg_simple_style_selected="${cfg_simple_style_selected:-}"
+cfg_tmux_conf="${cfg_tmux_conf:-}"
+cfg_trigger_key="${cfg_trigger_key:-}"
+cfg_use_hint_overlays="${cfg_use_hint_overlays:-}"
+cfg_use_timers="${cfg_use_timers:-}"
+cfg_validate_cache="${cfg_validate_cache:-}"
 default_border_type="${default_border_type:-}"
 default_display_cmds_cols="${default_display_cmds_cols:-}"
 default_display_commands="${default_display_commands:-}"
-default_floating_pane_incr_horizontal="${default_floating_pane_incr_horizontal:-}"
-default_floating_pane_incr_vertical="${default_floating_pane_incr_vertical:-}"
 default_format_title="${default_format_title:-}"
 default_location_x="${default_location_x:-}"
 default_location_y="${default_location_y:-}"
@@ -202,16 +198,42 @@ default_use_hint_overlays="${default_use_hint_overlays:-}"
 # items/*.sh - Menu definitions (exported for logging/external use)
 #===============================================================
 
-menu_key="${menu_key:-}" # When Custom Menus are used
 menu_min_vers="${menu_min_vers:-}"
 menu_name="${menu_name:-}"
 no_auto_menu_handling="${no_auto_menu_handling:-}"
+prev_menu="${prev_menu:-}"
 
 #===============================================================
 # env settings probed for inside app
 #===============================================================
 
+# always available inside tmux
+TMUX="${TMUX:-}"
+
+# defines actual tmux bin being used
+TMUX_BIN="${TMUX_BIN:-tmux}"
+
+# Defined in tmux env in menus.tmux, thus accessible for all
+# menus triggered via plugin_key
+# Directly assigned in some scripts when it can be deduced,
+# since it is much faster than manually probing tmux env
+# if not available in current pane
+TMUX_MENUS_LOCATION="${TMUX_MENUS_LOCATION:-}"
+
+# Env variables that impact operation, not normally defined
 TMUX_MENUS_HANDLER="${TMUX_MENUS_HANDLER:-}"
 TMUX_MENUS_LOGGING_MINIMAL="${TMUX_MENUS_LOGGING_MINIMAL:-}"
 TMUX_MENUS_NO_DISPLAY="${TMUX_MENUS_NO_DISPLAY:-}"
 TMUX_MENUS_PROFILING="${TMUX_MENUS_PROFILING:-}"
+
+#===============================================================
+# scripts/plugin_init.sh
+#===============================================================
+
+initialize_plugin="${initialize_plugin:-}"
+
+#===============================================================
+# scripts/external_dialog_handle.sh scripts/external_dialog_trigger.sh scripts/list-sessions.sh
+#===============================================================
+
+skip_env_check="${skip_env_check:-}"
