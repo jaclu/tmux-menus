@@ -598,10 +598,6 @@ base_path_not_defined() {
 #  And the rest
 #
 
-# initially on for init timings to define
-# minimal display time before judged as failed for older tmux versions
-# Will be set according to config preferences during get_config
-cfg_use_timers=true
 
 plugin_name="tmux-menus"
 menus_version="2.5.0"
@@ -617,6 +613,11 @@ min_tmux_vers=1.5 # oldest accepted tmux version
 # as long as cache is used, it is sufficient, if extra features are needed
 # a call to source_all_helpers will be done, this ensures it only happens once
 b_all_helpers_sourced=false
+
+# initially on for init timings to define
+# minimal display time before judged as failed for older tmux versions
+# Will be set according to config preferences during get_config
+cfg_use_timers=true
 
 log_interactive_to_stderr="${TMUX_MENUS_INTERACTIVE_TO_STDERR:-0}"
 
