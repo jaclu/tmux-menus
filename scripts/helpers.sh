@@ -598,23 +598,23 @@ base_path_not_defined() {
 #  And the rest
 #
 
-
 plugin_name="tmux-menus"
 menus_version="2.5.0"
+
+min_tmux_vers=1.5 # oldest accepted tmux version
 
 TMUX_BIN="${TMUX_BIN:-tmux}" # point to tmux bin being used
 
 [ -n "$env_initialized" ] && error_msg "helpers.sh already sourced"
-env_initialized=0
 
-min_tmux_vers=1.5 # oldest accepted tmux version
+env_initialized=0
 
 # for performance only a minimum of support features are in this file
 # as long as cache is used, it is sufficient, if extra features are needed
 # a call to source_all_helpers will be done, this ensures it only happens once
 b_all_helpers_sourced=false
 
-# initially on for init timings to define
+# Initially on for init timings to define
 # minimal display time before judged as failed for older tmux versions
 # Will be set according to config preferences during get_config
 cfg_use_timers=true
