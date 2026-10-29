@@ -4,6 +4,12 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [2.5.1] - Not released
+
+### Changed
+
+- Updated README.md and /docs/Advanced.md
+
 ## [2.5.0] - 2026-10-27
 
 ### Added

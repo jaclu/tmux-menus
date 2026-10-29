@@ -87,22 +87,14 @@ is remembered for the next time.
 
 This plugin does not work when the tmux environment path contains spaces.
 
-### tmux 3.7 - display-menu bug
-
-Left arrow doesn't work to go back. Workaround: Highlight and press Enter instead.
-
-Still present in `3.7c`; resolved in `3.8`.
-
 ## Dependencies & Compatibility
 
-| Version    | Notes                                                                                                 |
-| ---------- | ----------------------------------------------------------------------------------------------------- |
-| 3.4        | Styling supported.                                                                                    |
-| 3.2        | Full menu positioning available.                                                                      |
-| 3.0 - 3.1c | Menu centering not supported; displays top-left if C is selected.                                     |
-| < 3.0      | Requires `whiptail` or `dialog` (see below). Menu location and styling settings are ignored.          |
-| < 1.8      | TPM not available; initialize by running `[path to tmux-menus]/menus.tmux` directly from config file. |
-| 1.5        | Minimum required version.                                                                             |
+| Version    | Notes                                                                                                                         |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| 3.4        | Styling supported.                                                                                                            |
+| 3.2        | Full menu positioning available.                                                                                              |
+| 3.0 - 3.1c | Menu centering not supported; displays top-left if C is selected.                                                             |
+| < 3.0      | Supported back to tmux 1.5 via whiptail/dialog, see [Alternative Menu Handlers](#alternative-menu-handlers-whiptail--dialog). |
 
 These compatibility notes apply to the plugin as a whole. Individual menu items
 may have minimum version requirements—items incompatible with your tmux version
@@ -140,6 +132,9 @@ Reload your configuration:
 ```sh
 tmux source-file ~/.tmux.conf
 ```
+
+**tmux 3.7:** Left arrow doesn't go back to the previous menu (tmux bug, fixed in 3.8).
+Highlight "Back" and press Enter instead.
 
 ## Configuration
 
@@ -229,69 +224,6 @@ set -g @menus_floating_pane_incr_vertical 2
 
 Default for both: `1`
 
-### Display Menu Commands
-
-```tmux
-set -g @menus_display_commands 'No'
-```
-
-Default: `Yes` (not available when using whiptail/dialog)
-
-When enabled, each menu includes a "Display Commands" item (shortcut `!`). Press it
-to cycle through three views: the underlying tmux commands, all matching prefix and
-root key bindings, and back to the normal menu.
-
-This helps you discover tmux bindings and verify if an action already has a shortcut
-configured.
-
-Note: Menus grow larger with this feature enabled—ensure sufficient screen space.
-
-<img width="251" height="188" alt="Move Window"
-  src="https://github.com/user-attachments/assets/55daaf9d-80c8-49f8-a5c2-121536e159e3" />
-<img width="389" height="264" alt="Move Window-Cmds"
-  src="https://github.com/user-attachments/assets/16142418-5a9a-4798-a87a-3407d8e7d55a" />
-<img width="251" height="217" alt="Move Window-KeyBinds"
-  src="https://github.com/user-attachments/assets/df2262ae-c055-4451-9d00-c7580fae30f5" />
-
-#### Command Display Width
-
-This option only applies when Display Menu Commands is enabled above.
-
-```tmux
-set -g @menus_display_cmds_cols 160
-```
-
-Default: `75`
-
-Controls the maximum line length for displayed commands. Long commands are split
-into chunks at whitespace when possible, or at the maximum length if no
-whitespace is found.
-
-If the window is narrower than this value, the window width limits this setting so
-that no lines are cut off.
-
-### Config File Location
-
-Usually the default (below) is sufficient, but you can configure it if needed:
-
-```tmux
-set -g @menus_config_file "~/.configs/tmux.conf"
-```
-
-See [QuotingPitfalls](docs/QuotingPitfalls.md) for handling `$HOME` and `~` in tmux
-variables.
-
-The main menu includes a reload option that needs to know which config file to
-reload. The location is determined in this order:
-
-1. `@menus_config_file` - if defined in your tmux config
-2. `$TMUX_CONF` - if present in the environment
-3. `$XDG_CONFIG_HOME/tmux/tmux.conf` - if `$XDG_CONFIG_HOME` is defined
-4. `~/.tmux.conf` - default fallback
-
-When reloading, you'll be prompted to confirm the config file path, which
-defaults to the first match above and can be edited if needed.
-
 ## Advanced Configuration
 
 For advanced settings including caching, logging, and hint overlays, see
@@ -329,8 +261,6 @@ These are full-screen terminal applications that pause your session while displa
 
 **Limitations:** External handlers don't differentiate between uppercase and lowercase
 letters, and don't support special keys (arrow keys, Home, etc.).
-
-### Installation of whiptail
 
 **Linux:** Most distributions include `whiptail` by default. In Red Hat and Homebrew
 ecosystems, the package that contains `whiptail` is called `newt`.
