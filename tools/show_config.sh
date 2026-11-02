@@ -63,7 +63,8 @@ show_item @menus_display_cmds_cols "$cfg_display_cmds_cols" "$default_display_cm
 
     tmux_vers_check 3.7 || {
         # Not used in 3.7 and up
-        show_item @menus_use_hint_overlays "$cfg_use_hint_overlays" "$default_use_hint_overlays"
+        show_item @menus_use_hint_overlays "$cfg_use_hint_overlays" \
+            "$default_use_hint_overlays"
         show_item @menus_show_key_hints "$cfg_show_key_hints" "$default_show_key_hints"
     }
 
@@ -74,9 +75,11 @@ show_item @menus_display_cmds_cols "$cfg_display_cmds_cols" "$default_display_cm
     tmux_vers_check 3.4 && {
         echo
         show_item @menus_border_type "$cfg_border_type" "$default_border_type"
-        show_item @menus_simple_style_selected "$cfg_simple_style_selected" "$default_simple_style_selected"
+        show_item @menus_simple_style_selected "$cfg_simple_style_selected" \
+            "$default_simple_style_selected"
         show_item @menus_simple_style "$cfg_simple_style" "$default_simple_style"
-        show_item @menus_simple_style_border "$cfg_simple_style_border" "$default_simple_style_border"
+        show_item @menus_simple_style_border "$cfg_simple_style_border" \
+            "$default_simple_style_border"
     }
 }
 

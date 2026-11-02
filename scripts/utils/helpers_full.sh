@@ -23,7 +23,9 @@ display_message() {
     if tmux_vers_check 1.7; then
         # "#{client_width}" - not usable before tmux 1.7
         actual_win_width="$($TMUX_BIN display-message -p '#{client_width}')"
-        if [ "${#dm_msg_hold}" -ge "$actual_win_width" ] || has_lf_not_at_end "$dm_msg"; then
+        if [ "${#dm_msg_hold}" -ge "$actual_win_width" ] \
+            || has_lf_not_at_end "$dm_msg"; then
+
             display_formatted_message "$dm_msg"
         else
             display_message_hold "$dm_msg_hold" "$dm_no_hold"
@@ -111,7 +113,8 @@ To scroll back in this ${_msg_type}:
 Press Ctrl-C to close this message
 "
 
-    $TMUX_BIN new-window -n "$plugin_name notification" "echo '$_display_msg' ; tail -f /dev/null " || exit 1
+    $TMUX_BIN new-window -n "$plugin_name notification" \
+        "echo '$_display_msg' ; tail -f /dev/null " || exit 1
 }
 
 error_msg_real() {
@@ -286,7 +289,8 @@ normalize_bool_param() {
         0 | no | false) return 1 ;;
         *)
             if ${_tmux_param:-false}; then
-                error_msg "$nbp_param = [$nbp_value_lc] ($_v) - should be yes/true/1 or no/false/0"
+                _m="should be yes/true/1 or no/false/0"
+                error_msg "$nbp_param = [$nbp_value_lc] ($_v) - $_m"
             else
                 error_msg "[$nbp_param] - should be yes/true/1 or no/false/0"
             fi
@@ -379,7 +383,8 @@ is_key_enter_available() {
     # Clunky but version independent approach
     enter_in_use=0
     if tmux_vers_check 2.1; then
-        "$TMUX_BIN" list-keys -T prefix | awk '{ print $4 }' | grep -q Enter && enter_in_use=1
+        "$TMUX_BIN" list-keys -T prefix | awk '{ print $4 }' \
+            | grep -q Enter && enter_in_use=1
     else
         "$TMUX_BIN" list-keys | awk '{ print $2 }' | grep -q Enter && enter_in_use=1
     fi

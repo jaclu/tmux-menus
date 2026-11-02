@@ -175,4 +175,6 @@ esac
 this_platform="${this_platform:-}"
 
 profiling_use_default_timer=0
-profiling_sourced=1 # Indicate this has been sourced
+
+# Indicate this has been sourced
+profiling_sourced=1

@@ -20,6 +20,7 @@ if tmux_vers_check 3.2; then
         "$cmd ; printf '\nPress Escape / Ctrl-C to close this Popup\n'"
     [ -n "$1" ] && $1 # re-display previous menu
 else
+    _c="Press Ctrl-C to close this Window\n' ; sleep 3600"
     $TMUX_BIN new-window -n "List all sessions" \
-        "$TMUX_BIN list-sessions ; printf '\nPress Ctrl-C to close this Window\n' ; sleep 3600"
+        "$TMUX_BIN list-sessions ; printf '\n$_c"
 fi

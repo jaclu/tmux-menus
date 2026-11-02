@@ -92,4 +92,5 @@ else
     log_it "Will NOT use cached params and key bindings"
 fi
 
-exit 0 # ensure consider_secondary_default exit code doesn't indicate error exit
+# ensure consider_secondary_default exit code doesn't indicate error exit
+exit 0

@@ -189,8 +189,9 @@ EOF
 
     _dime_cache_info=""
     if [ -n "$d_menu_cache" ]; then
-        _dime_cache_info=$(printf '\nThe original cached snippets that generated the above, can be found
-    here:\n  %s/\n\n' "$d_menu_cache")
+        _dime_cache_info=$(printf '\n%s\n  %s/\n\n' \
+            "The original cached snippets that generated the above, can be found here:" \
+            "$d_menu_cache")
     fi
 
     #region m_menu_code = Display the generated menu code
@@ -354,7 +355,8 @@ alt_command() {
     key_action="$(echo "$key" | sed 's/\\//')"
 
     menu_items="$menu_items $key \"$_ac_label\""
-    wt_actions="$wt_actions $key_action | tmux_error_handler_assign wt_output $cmd $external_action_separator"
+    wt_actions="$wt_actions $key_action | tmux_error_handler_assign"
+    wt_actions="$wt_actions wt_output $cmd $external_action_separator"
 }
 
 alt_text_line() {
@@ -425,7 +427,9 @@ menu_parse() {
         _mp_action="$1"
         shift
 
-        [ -n "$menu_debug" ] && debug_print "-- parsing an item [$_mp_min_vers] [$_mp_action]"
+        [ -n "$menu_debug" ] && {
+            debug_print "-- parsing an item [$_mp_min_vers] [$_mp_action]"
+        }
         case "$_mp_action" in
 
             D) ;; # dummy to just create empty cache item, to make next item available
@@ -444,7 +448,9 @@ menu_parse() {
 
                 verify_menu_key "$_mp_key" "tmux command: $_mp_cmd"
 
-                [ -n "$menu_debug" ] && debug_print "key[$_mp_key] label[$_mp_label] command[$_mp_cmd]"
+                [ -n "$menu_debug" ] && {
+                    debug_print "key[$_mp_key] label[$_mp_label] command[$_mp_cmd]"
+                }
 
                 if [ -n "$alt_menu_handler" ]; then
                     alt_command "$_mp_label" "$_mp_key" "$_mp_cmd"
@@ -479,13 +485,17 @@ menu_parse() {
 
                 verify_menu_key "$_mp_key" "external command: $_mp_cmd"
 
-                [ -n "$menu_debug" ] && debug_print "key[$_mp_key] label[$_mp_label] command[$_mp_cmd]"
+                [ -n "$menu_debug" ] && {
+                    debug_print "key[$_mp_key] label[$_mp_label] command[$_mp_cmd]"
+                }
 
                 if [ -n "$alt_menu_handler" ]; then
                     alt_external_cmd "$_mp_label" "$_mp_key" "$_mp_cmd"
                 else
                     mnu_external_cmd "$_mp_label" "$_mp_key" "$_mp_cmd"
-                    ${b_do_show_cmds:-false} && [ "$_mp_key" != "!" ] && sc_show_cmd "$_mp_cmd"
+                    ${b_do_show_cmds:-false} && [ "$_mp_key" != "!" ] && {
+                        sc_show_cmd "$_mp_cmd"
+                    }
                 fi
                 ;;
 
@@ -512,7 +522,9 @@ menu_parse() {
                     *) menu="$cfg_d_menus/$menu" ;; # fix relative path
                 esac
 
-                [ -n "$menu_debug" ] && debug_print "key[$_mp_key] label[$_mp_label] menu[$menu]"
+                [ -n "$menu_debug" ] && {
+                    debug_print "key[$_mp_key] label[$_mp_label] menu[$menu]"
+                }
 
                 if [ -n "$alt_menu_handler" ]; then
                     alt_open_menu "$_mp_label" "$_mp_key" "$menu"
@@ -599,7 +611,9 @@ menu_generate_part() {
     else
         _mgp_prefix=""
     fi
-    ${b_all_helpers_sourced:-false} || source_all_helpers "$_mgp_prefix menu_generate_part($menu_idx)"
+    ${b_all_helpers_sourced:-false} || {
+        source_all_helpers "$_mgp_prefix menu_generate_part($menu_idx)"
+    }
 
     wt_actions=""
     menu_parse "$@"
@@ -933,9 +947,11 @@ $idx	$_sumi_body"
     done
 
     menu_items="$(
-        printf "%s\n" "$_sumi_entries" | sed 1d | sort -n | while IFS='	' read -r idx this_section; do
-            printf '%s' "$this_section" # send it back to the script
-        done
+        printf "%s\n" "$_sumi_entries" | sed 1d | sort -n \
+            | while IFS='	' read -r idx this_section; do
+
+                printf '%s' "$this_section" # send it back to the script
+            done
     )"
 }
 
@@ -1021,7 +1037,9 @@ ensure_menu_fits_on_screen() {
     # Display time menu was shown
     time_span "$dh_t_start"
 
-    [ "$(echo "$t_time_span < $t_minimal_display_time" | bc || true)" -eq 1 ] && {
+    [ "$(echo "$t_time_span < $t_minimal_display_time" \
+        | bc || true)" -eq 1 ] && {
+
         _s="$rn_current_script: Screen might be too small"
         _s="$_s - menu closed after $t_time_span"
         error_msg "$_s"

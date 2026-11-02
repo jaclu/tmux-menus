@@ -11,20 +11,24 @@
 gather_about_box_variables() {
     # Release date from the CHANGELOG heading of the version in use
     # shellcheck disable=SC2154 # menus_version is set in scripts/helpers.sh, always sourced
-    rel_date="$(sed -n "s/^## \[$menus_version\] - \([0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}\)$/\1/p" \
+    rel_date="$(sed -n \
+        "s/^## \[$menus_version\] - \([0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}\)$/\1/p" \
         "$TMUX_MENUS_LOCATION/CHANGELOG.md" 2>/dev/null | head -1)"
     rel_date="${rel_date:-unreleased}"
 
     # Checkout details only exist when .git is present, checked by existence
     # so a copied plugin inside some other git repo is not mistaken for a checkout
     if [ -e "$TMUX_MENUS_LOCATION/.git" ]; then
-        branch="$(git -C "$TMUX_MENUS_LOCATION" symbolic-ref --quiet --short HEAD 2>/dev/null)"
+        branch="$(git -C "$TMUX_MENUS_LOCATION" symbolic-ref --quiet --short \
+            HEAD 2>/dev/null)"
         sha="$(git -C "$TMUX_MENUS_LOCATION" rev-parse --short HEAD 2>/dev/null)"
         commit_date="$(git -C "$TMUX_MENUS_LOCATION" log -1 --format=%cs 2>/dev/null)"
         # Empty if the version tag does not exist yet, i.e. unreleased
-        ahead="$(git -C "$TMUX_MENUS_LOCATION" rev-list --count "v$menus_version..HEAD" 2>/dev/null)"
+        ahead="$(git -C "$TMUX_MENUS_LOCATION" rev-list --count "v$menus_version..HEAD" \
+            2>/dev/null)"
         dirty="$(git -C "$TMUX_MENUS_LOCATION" status --porcelain 2>/dev/null)"
-        repo_url="$(git -C "$TMUX_MENUS_LOCATION" config --get remote.origin.url 2>/dev/null)"
+        repo_url="$(git -C "$TMUX_MENUS_LOCATION" config --get remote.origin.url \
+            2>/dev/null)"
     fi
 }
 

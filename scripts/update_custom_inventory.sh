@@ -166,7 +166,9 @@ create_custom_index() {
     chmod 0755 "$f_custom_items_index"
     checksum_content_write # custom index change
     # Verify that custom_items/_index.sh was correctly generated
-    TMUX_MENUS_NO_DISPLAY=1 TMUX_MENUS_LOGGING_MINIMAL=2 sh "$f_custom_items_index" >/dev/null 2>&1 || {
+    TMUX_MENUS_NO_DISPLAY=1 TMUX_MENUS_LOGGING_MINIMAL=2 sh \
+        "$f_custom_items_index" >/dev/null 2>&1 || {
+
         error_msg "Generated custom index failed validation"
     }
 }

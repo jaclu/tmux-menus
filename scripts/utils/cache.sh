@@ -16,7 +16,9 @@
 #---------------------------------------------------------------
 
 cache_create_folder() {
-    ${cfg_use_cache:-false} || error_msg "cache_create_folder() - called when cache is disabled"
+    ${cfg_use_cache:-false} || {
+        error_msg "cache_create_folder() - called when cache is disabled"
+    }
     [ -z "$d_cache" ] && {
         error_msg "cache_create_folder() - variable d_cache undefined"
     }
@@ -336,7 +338,9 @@ cache_write_plugin_params() {
     #  Writes all config params to file
     #  if it differed with previous params, clear cache
     #
-    ${cfg_use_cache:-false} || error_msg "cache_write_plugin_params() - called when not using cache"
+    ${cfg_use_cache:-false} || {
+        error_msg "cache_write_plugin_params() - called when not using cache"
+    }
 
     read_config 0.5
     # cloud node .22 jacmac .25 jacpad 2.5 jacdoid 1
@@ -359,7 +363,9 @@ cache_write_plugin_params() {
             cache_clear "=======   Environment changed:  $(
                 diff "$_f_params_tmp" "$f_cache_params"
             )"
-            mv "$_f_params_tmp" "$f_cache_params" || error_msg "Failed to write to tmpfile: $f_cache_params"
+            mv "$_f_params_tmp" "$f_cache_params" || {
+                error_msg "Failed to write to tmpfile: $f_cache_params"
+            }
             _f_params_tmp=""
             [ -n "$cfg_log_file" ] && [ -f "$cfg_log_file" ] && {
                 # not strictly needed, the cache files will be created
@@ -372,7 +378,9 @@ cache_write_plugin_params() {
             _f_params_tmp=""
         fi
     else
-        mv "$_f_params_tmp" "$f_cache_params" || error_msg "Failed to replace: $f_cache_params"
+        mv "$_f_params_tmp" "$f_cache_params" || {
+            error_msg "Failed to replace: $f_cache_params"
+        }
         _f_params_tmp=""
     fi
 }

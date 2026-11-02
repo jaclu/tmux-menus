@@ -26,7 +26,9 @@ tmux_vers_check_do_compare() {
     }
 
     # - If no suffix is required or suffix matches, return success
-    if [ -z "$tpt_vers_suffix" ] || [ "$tpt_vers_suffix" = "$current_tmux_vers_suffix" ]; then
+    if [ -z "$tpt_vers_suffix" ] \
+        || [ "$tpt_vers_suffix" = "$current_tmux_vers_suffix" ]; then
+
         cache_add_ok_vers "$_v_comp"
         return 0
     fi
@@ -380,7 +382,9 @@ tmux_get_plugin_options() { # new init
         cfg_use_hint_overlays=false
         cfg_show_key_hints=false
     else
-        if normalize_bool_param "@menus_use_hint_overlays" "$default_use_hint_overlays"; then
+        if normalize_bool_param "@menus_use_hint_overlays" \
+            "$default_use_hint_overlays"; then
+
             cfg_use_hint_overlays=true
         else
             cfg_use_hint_overlays=false
