@@ -21,5 +21,5 @@ experience for users with keyboards where the backslash key is impractical.
 ## Plugin Ordering
 
 If another plugin also wants to use `<prefix> Enter`, ensure it's defined
-*before* tmux-menus in your `.tmux.conf`, or set `@menus_trigger` to disable
+_before_ tmux-menus in your `.tmux.conf`, or set `@menus_trigger` to disable
 the secondary default.

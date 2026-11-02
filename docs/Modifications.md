@@ -45,21 +45,21 @@ Each item consists of at least two parameters
 Item types and their parameters:
 
 - M - Open another menu
-  - shortcut for this item, or "" if none wanted
-  - label - can use styling
-  - menu script
+    - shortcut for this item, or "" if none wanted
+    - label - can use styling
+    - menu script
 - C - Run tmux Command
-  - shortcut for this item, or "" if none wanted
-  - label - can use styling
-  - tmux command
+    - shortcut for this item, or "" if none wanted
+    - label - can use styling
+    - tmux command
 - E - Run External command
-  - shortcut for this item, or "" if none wanted
-  - label - can use styling
-  - external command
+    - shortcut for this item, or "" if none wanted
+    - label - can use styling
+    - external command
 - T - Display text line
-  - text to display - can use styling
+    - text to display - can use styling
 - S - Separator/Spacer line
-  - no parameters
+    - no parameters
 
 ### Sample script
 
