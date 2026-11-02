@@ -108,7 +108,7 @@ all usages of single-quote have been replaced by backtick in this message"
     }
     _display_msg="$_display_msg\n
 To scroll back in this ${_msg_type}:
- <prefix>-[ then up/down arrows
+    <prefix>-[ then up/down arrows
 
 Press Ctrl-C to close this message
 "
@@ -167,7 +167,9 @@ error_msg_actual() {
     if tmux_vers_check 1.7; then
         # "#{client_width}" - not usable before tmux 1.7
         actual_win_width="$($TMUX_BIN display-message -p '#{client_width}')"
-        if [ "${#msg_hold}" -ge "$actual_win_width" ] || has_lf_not_at_end "$em_msg"; then
+        if [ "${#msg_hold}" -ge "$actual_win_width" ] \
+            || has_lf_not_at_end "$em_msg"; then
+
             error_msg_formatted "$em_msg"
         else
             display_message_hold "$msg_hold"
