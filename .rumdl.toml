@@ -1,0 +1,56 @@
+# rumdl configuration - Google developer documentation style
+# Based on https://google.github.io/styleguide/docguide/style.html
+
+[global]
+exclude = [
+  ".git",
+  ".github",
+  "node_modules",
+  "vendor",
+  "dist",
+  "build",
+  "CHANGELOG.md",
+  "LICENSE.md",
+]
+respect-gitignore = true
+
+# ATX-style headings required
+[MD003]
+style = "atx"
+
+# Unordered list style: dash
+[MD004]
+style = "dash"
+
+# 4-space indent for nested lists
+[MD007]
+indent = 4
+
+# Strict mode: no trailing spaces allowed (Google uses backslash for line breaks)
+[MD009]
+strict = true
+
+# 80-character line length
+[MD013]
+line-length = 92
+code-blocks = false
+tables = false
+
+# No trailing punctuation in headings
+[MD026]
+punctuation = ".,;:!。，；：！"
+
+[MD033]
+allowed-elements = ["img"]
+
+# Fenced code blocks only (no indented code blocks)
+[MD046]
+style = "fenced"
+
+# Emphasis with underscores
+[MD049]
+style = "underscore"
+
+# Strong with asterisks
+[MD050]
+style = "asterisk"
