@@ -34,7 +34,7 @@ exclude = [
   "build",
 
   # Specific files or patterns
-  "CHANGELOG.md",
+  # "CHANGELOG.md",
   "LICENSE.md",
 ]
 

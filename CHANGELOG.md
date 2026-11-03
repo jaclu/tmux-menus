@@ -551,7 +551,6 @@ Added some tmux 3.6 features
 - Bug fix: verify_menu_runable() - escape ' in order to display errors in menu code
 - Bug fix: scripts/update_custom_inventory.sh - ensure main menu is cleared if
   custom items are removed, to ensure main menu stops offering custom menus
-
 - menu_parse() - optimized processing
 - menu_generate_part() - abort early for empty parts
 - tmux_error_handler_assign() - streamlined for performance and added inline comments
@@ -598,7 +597,6 @@ Added some tmux 3.6 features
 - Moved some tasks into `Handling Window`
   - Split window
   - Layouts
-
 - About box via **Help** menu:
   - Dynamically generate about box content each time that help menu is displayed
   - In the about box, added tag date, and if repo is newer also time for last commit
