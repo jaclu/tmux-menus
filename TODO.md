@@ -13,15 +13,15 @@ alt menus missing keys
 ## Potential new itemss
 
 - Client
-    - Detach other clients:
-    - list connected clients
-    - Detach this client
-      tmux detach-client
-    - Detach other clients
-      tmux detach-client -a
-    - Detach all other clients from current session
-      tmux detach-client -a -s "$(tmux display-message -p '#{session_name}')"
-    - Switch session
+  - Detach other clients:
+  - list connected clients
+  - Detach this client
+    tmux detach-client
+  - Detach other clients
+    tmux detach-client -a
+  - Detach all other clients from current session
+    tmux detach-client -a -s "$(tmux display-message -p '#{session_name}')"
+  - Switch session
 
 - Display commands - if no binds, say so and go to default
 
@@ -29,8 +29,8 @@ alt menus missing keys
     <!-- - list connected clients ?
     - Detach other clients ?
     - Detach from this ?updated -->
-    - Scroll window larger than screen
-      prefix S-Arrow
+  - Scroll window larger than screen
+    prefix S-Arrow
 
 ## Inspect if this works as intended
 
@@ -49,7 +49,7 @@ a counter if 0 causes issues
 choose-tree - 1.8 - not usable in 1.7
 
 - flags
-    - -Z 2.7
+  - -Z 2.7
 
 ## Floating pane menu
 

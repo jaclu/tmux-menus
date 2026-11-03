@@ -1,56 +1,61 @@
-# rumdl configuration - Google developer documentation style
-# Based on https://google.github.io/styleguide/docguide/style.html
+# rumdl configuration file
 
+
+# Global configuration options
 [global]
+# List of rules to disable (uncomment and modify as needed)
+# disable = ["MD013", "MD033"]
+
+# List of rules to enable exclusively (replaces defaults; only these rules will run)
+# enable = ["MD001", "MD003", "MD004"]
+
+# Additional rules to enable on top of defaults (additive, does not replace)
+# Use this to activate opt-in rules like MD060, MD063, MD072, MD073, MD074
+# extend-enable = ["MD060", "MD063"]
+
+# Additional rules to disable on top of the disable list (additive)
+# extend-disable = ["MD041"]
+
+# List of file/directory patterns to include for linting (if provided, only these will be linted)
+# include = [
+#    "docs/*.md",
+#    "src/**/*.md",
+#    "README.md"
+# ]
+
+# List of file/directory patterns to exclude from linting
 exclude = [
+  # Common directories to exclude
   ".git",
   ".github",
   "node_modules",
   "vendor",
   "dist",
   "build",
+
+  # Specific files or patterns
   "CHANGELOG.md",
   "LICENSE.md",
 ]
+
+flavor = "gfm"
+
+# Respect .gitignore, .ignore and git exclude files when scanning directories
+# (default: true). .markdownlintignore applies regardless.
 respect-gitignore = true
 
-# ATX-style headings required
-[MD003]
-style = "atx"
+# Markdown flavor/dialect (uncomment to enable)
+# Options: standard (default), gfm, commonmark, mkdocs, mdx, pandoc, quarto, obsidian, kramdown, azure_devops, myst, hugo, mdg, gh-aw
+# flavor = "mkdocs"
 
-# Unordered list style: dash
-[MD004]
-style = "dash"
-
-# 4-space indent for nested lists
 [MD007]
-indent = 4
+indent = 2 # Unordered list indentation
 
-# Strict mode: no trailing spaces allowed (Google uses backslash for line breaks)
-[MD009]
-strict = true
-
-# 80-character line length
 [MD013]
 line-length = 92
-code-blocks = false
-tables = false
-
-# No trailing punctuation in headings
-[MD026]
-punctuation = ".,;:!。，；：！"
 
 [MD033]
-allowed-elements = ["img"]
-
-# Fenced code blocks only (no indented code blocks)
-[MD046]
-style = "fenced"
-
-# Emphasis with underscores
-[MD049]
-style = "underscore"
-
-# Strong with asterisks
-[MD050]
-style = "asterisk"
+allowed-elements = [
+  "img",
+  # "br",
+]
