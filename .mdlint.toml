@@ -14,4 +14,3 @@ allowed_elements = ['img']
 
 [rules.MD049]
 style = 'underscore'
-
