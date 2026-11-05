@@ -83,7 +83,7 @@ All notable changes to this project will be documented here.
 
 - New menu "Handling Floating Pane" available for 3.8 (and next-3.8), only listed in
   main menu if started from a floating pane.
-- Introduced @menus*floating_pane_incr*\* variables for the "Handling Floating Pane"
+- Introduced @menus_floating_pane_incr* variables for the "Handling Floating Pane"
   to control incrementation rate
 - New pane-scrollbars option "auto-hide" for tmux 3.6+
 
