@@ -64,7 +64,7 @@ handle_pane_border_status() {
 dynamic_content() {
     tmux_vers_check 2.3 && handle_pane_border_status
     tmux_vers_check 3.2 && {
-        # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
+        # shellcheck source=tools/variables_meta.sh # faking variables for shellcheck
         . "$d_scripts"/layouts_support.sh
 
         handle_layout_border_lines "pane-border-lines" 5
@@ -77,10 +77,11 @@ static_content() {
         0.0 M Home "Main Menu         $nav_home" "$cfg_main_menu"
     menu_generate_part 1 "$@"
     display_commands_toggle 2
+    # %%% is safe from 2.4
     set -- \
         0.0 S \
-        2.6 C c "Change Title" "command-prompt -I '##T' -p 'Pane title: ' \
-            'select-pane -T \"%%%\"' $prompt_reload_mnu"
+        2.6 C c "Change Title" "command-prompt -I '${cmd_prmpt_hash_esc}T' \
+            -p 'Pane title: ' 'select-pane -T \"%%%\"' $prompt_reload_mnu"
     menu_generate_part 3 "$@"
 }
 

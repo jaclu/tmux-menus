@@ -274,6 +274,9 @@ repo_last_changed=\"$new_repo_last_changed\"
 # Only tracks uncommitted repo-changes
 last_local_edit=\"$new_last_local_edit\"
 
+cmd_prmpt_hash_esc=$cmd_prmpt_hash_esc
+cmd_prmpt_sel_esc=\\\"$cmd_prmpt_sel_esc\\\"
+
 #
 #  For some menus 'Display Commands' fail, and until it is resolved, those
 #  menus should be tagged with:

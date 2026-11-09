@@ -597,8 +597,19 @@ select_handler() {
     else
         $TMUX_BIN set-environment -gu TMUX_MENUS_HANDLER
     fi
-    if [ -n "$alt_menu_handler" ]; then
-        # clear settings not used with alt handlers
+
+    if [ "$mnu_handler" = 0 ]; then
+        # Built in menu handler parses menu code twice, so '#' needs to be doubled,
+        # when given as part of a display-menu cmd
+        # Sample: #T
+        #  On first parse the "extra" is removed ##T -> #T
+        #  and on second parse #T is rendered as pane title
+        cmd_prmpt_hash_esc="##"
+    else
+        # For whiptail/dialog this is not needed
+        cmd_prmpt_hash_esc="#"
+
+        # Clear other settings not used with alt handlers
         cfg_display_cmds=false
 
         # this is slowish anyhow, so no point in optimizing for peak cached performance
@@ -610,6 +621,14 @@ select_handler() {
         cfg_nav_next="$default_nav_next"
         cfg_nav_prev="$default_nav_prev"
         cfg_nav_home="$default_nav_home"
+    fi
+    if tmux_vers_check 2.4; then
+        # For command-prompt:
+        # ‘%%%’ is like ‘%%’ but any quotation marks are escaped
+        cmd_prmpt_sel_esc="%%%"
+    else
+        # Not available on really old versions
+        cmd_prmpt_sel_esc="%%"
     fi
     set_plugin_key
 }

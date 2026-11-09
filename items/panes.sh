@@ -36,7 +36,9 @@ static_content() {
     menu_generate_part 1 "$@"
     display_commands_toggle 2
 
-    respawn_action="confirm-before -p 'respawn-pane #T (id:%#D idx:#P)? (y/n)' \"respawn-pane -k\""
+    respawn_action="confirm-before -p \
+        'respawn-pane ${cmd_prmpt_hash_esc}T (id:%#D idx:#P)? (y/n)' \
+        \"respawn-pane -k\""
     respawn_action="$respawn_action $runshell_reload_mnu"
     set -- \
         0.0 S \
@@ -46,12 +48,14 @@ static_content() {
         0.8 C f "Rotate forward" "rotate-window -D $runshell_reload_mnu" \
         0.8 C b "Rotate backward" "rotate-window -U $runshell_reload_mnu" \
         0.0 S \
-        2.6 C t "Rename (title)" "command-prompt -I '##T'  -p 'Title: '  \
-            'select-pane -T \"%%%\"' $prompt_reload_mnu" \
+        2.6 C t "Rename (title)" "command-prompt -I \
+            '${cmd_prmpt_hash_esc}T'  -p 'Title: '  \
+            'select-pane -T $cmd_prmpt_sel_esc' $prompt_reload_mnu" \
         0.0 S \
         1.5 C r "${cfg_danger_zone}Respawn current" "$respawn_action" \
         1.8 C x "${cfg_danger_zone}Kill current" "confirm-before -p \
-            'kill-pane #T (id:%#D idx:#P)? (y/n)' kill-pane $runshell_reload_mnu" \
+            'Kill pane: ${cmd_prmpt_hash_esc}T (id:%#D idx:#P)? (y/n)' \
+            kill-pane $runshell_reload_mnu" \
         1.8 C o "${cfg_danger_zone}Kill all other" "confirm-before -p \
             'Are you sure you want to kill all other panes? (y/n)' \
             \"kill-pane -a\" $runshell_reload_mnu"

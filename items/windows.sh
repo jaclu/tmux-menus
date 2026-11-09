@@ -19,12 +19,14 @@ static_content() {
 
     set -- \
         0.0 S \
-        1.5 C r "Rename" "command-prompt -I '##W'  \
-            -p 'New name: ' 'rename-window -- \"%%%\"' $prompt_reload_mnu" \
+        1.5 C r "Rename" "command-prompt -I '${cmd_prmpt_hash_esc}W'  \
+            -p 'New name: ' 'rename-window -- $cmd_prmpt_sel_esc' $prompt_reload_mnu" \
         1.3 C a "New after current" "command-prompt -p \
-            'Name of new  ' 'new-window -a -n \"%%%\"' $prompt_reload_mnu" \
+            'Name of new window:  ' 'new-window -a -n $cmd_prmpt_sel_esc' \
+            $prompt_reload_mnu" \
         1.3 C e "New at the end" "command-prompt -p \
-            'Name of new: ' 'new-window -n \"%%%\"' $prompt_reload_mnu" \
+            'Name of new window:  ' 'new-window -n $cmd_prmpt_sel_esc' \
+            $prompt_reload_mnu" \
         1.7 C s "Display size" "display-message \
             'Size: #{window_width}x#{window_height}' $runshell_reload_mnu" \
         0.0 S \
@@ -36,7 +38,8 @@ static_content() {
         2.7 C c "Choose" "choose-tree -Zw" \
         0.0 S \
         1.8 C x "${cfg_danger_zone}Kill current" "confirm-before -p \
-            'kill-window #W? (y/n)' kill-window  $runshell_reload_mnu" \
+            'Kill this window: ${cmd_prmpt_hash_esc}W (id:#{window_id} idx:#I)? (y/n)' \
+            kill-window  $runshell_reload_mnu" \
         1.8 C o "${cfg_danger_zone}Kill all other" "confirm-before -p \
             'Are you sure you want to kill all other? (y/n)' \
             'run-shell \"${d_scripts}/kill_other_windows.sh\"' $runshell_reload_mnu"

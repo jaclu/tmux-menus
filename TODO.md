@@ -1,12 +1,18 @@
 # TODO
 
-## other items that need altering for alt_win_handlers
+check nav_search handling of its %%%
+panes: cmd_prmpt_sel_esc for respawn-pane??
 
-`##W`
+```sh
+Pane:    #T (id:%#D idx:#P)
+window:  ${cmd_prmpt_hash_esc}W (id:#{window_id} idx:#I)
+Session: ${cmd_prmpt_hash_esc}S (id:#{session_id})
+```
+
 `##T`
 `##{session_name}`
 
-### figure out how to handle
+## figure out how to handle
 
 alt menus missing keys
 
