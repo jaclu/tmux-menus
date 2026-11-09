@@ -161,7 +161,7 @@ menu_section_dynamic() {
     [ "$current_pane_is_floating" = 1 ] && {
         set -- "$@" \
             1.8 C K "${cfg_danger_zone}Kill current" "confirm-before -p \
-                'kill-pane #T (id: %#D idx:#P)? (y/n)' kill-pane $runshell_reload_mnu"
+                'kill-pane #T (id:%#D idx:#P)? (y/n)' kill-pane $runshell_reload_mnu"
         if tmux_vers_check 3.8 || [ -n "$other_floating_panes" ]; then
             set -- "$@" 1.8 S
         fi

@@ -36,7 +36,7 @@ static_content() {
     menu_generate_part 1 "$@"
     display_commands_toggle 2
 
-    respawn_action="confirm-before -p 'respawn-pane #T (id: %#D idx:#P)? (y/n)' \"respawn-pane -k\""
+    respawn_action="confirm-before -p 'respawn-pane #T (id:%#D idx:#P)? (y/n)' \"respawn-pane -k\""
     respawn_action="$respawn_action $runshell_reload_mnu"
     set -- \
         0.0 S \
@@ -51,7 +51,7 @@ static_content() {
         0.0 S \
         1.5 C r "${cfg_danger_zone}Respawn current" "$respawn_action" \
         1.8 C x "${cfg_danger_zone}Kill current" "confirm-before -p \
-            'kill-pane #T (id: %#D idx:#P)? (y/n)' kill-pane $runshell_reload_mnu" \
+            'kill-pane #T (id:%#D idx:#P)? (y/n)' kill-pane $runshell_reload_mnu" \
         1.8 C o "${cfg_danger_zone}Kill all other" "confirm-before -p \
             'Are you sure you want to kill all other panes? (y/n)' \
             \"kill-pane -a\" $runshell_reload_mnu"
