@@ -30,7 +30,7 @@ static_content() {
         1.8 C w "Set width & height" "command-prompt -p \
             'Pane width,Pane height' 'resize-pane -x %1 -y %2'" \
         1.7 C s "Show size" "display-message \
-            'Pane: #P size: #{pane_width}x#{pane_height}' $runshell_reload_mnu"
+            'Pane: #T (id: #D idx:#P) size: #{pane_width}x#{pane_height}' $runshell_reload_mnu"
     menu_generate_part 3 "$@"
 }
 
