@@ -10,10 +10,10 @@
             "name": "Bash env",
             "cwd": "${workspaceFolder}",
             "program": "${file}",
-            "args": [],
+            "args": [ "/Users/jaclu/t2/tmux/plugins/tmux-menus/items/main.sh" ],
             "env": {
-                "TMUX": "/private/tmp/tmux-501/501-serv2,87584,0",
-                "TMUX_BIN": "/Users/jaclu/.asdf/installs/tmux/3.4/bin/tmux",
+                "TMUX": "/private/tmp/tmux-501/501-serv2,41471,0",
+                "TMUX_BIN": "/Users/jaclu/.asdf/installs/tmux/2.9a/bin/tmux",
                 "TMUX_MENUS_LOCATION": "/Users/jaclu/t2/tmux/plugins/tmux-menus",
                 // "TMUX_MENUS_HANDLER": 2,
                 // "show_cmds_state": "1",

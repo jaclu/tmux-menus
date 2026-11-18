@@ -11,10 +11,9 @@
 # Prevents handle_env_variables to be run by this process
 skip_env_check=1
 
-[ -z "$TMUX_MENUS_LOCATION" ] && {
-    TMUX_MENUS_LOCATION=$(cd "${0%/*}/.." && pwd)
-    export TMUX_MENUS_LOCATION
-}
+# ensure correct path is used if nested tmux
+TMUX_MENUS_LOCATION=$(cd "${0%/*}/.." && pwd)
+export TMUX_MENUS_LOCATION
 
 # shellcheck source=tools/variables_meta.sh # faking external variables for shellcheck
 . "$TMUX_MENUS_LOCATION"/scripts/helpers.sh
