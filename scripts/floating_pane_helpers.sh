@@ -250,22 +250,27 @@ menu_section_resize() {
 }
 
 menu_section_placement() {
-    hfp_rrm="$runshell_mnu_reload"
-
     _idx="$1"
     [ -n "$_idx" ] || error_msg "menu_section_placement() - no item index"
 
     set -- \
         3.8 S \
-        3.8 C q "Place top-left" "move-pane -P top-left  $hfp_rrm" \
-        3.8 C w "Place top-centre" "move-pane -P top-centre  $hfp_rrm" \
-        3.8 C e "Place top-right" "move-pane -P top-right  $hfp_rrm" \
-        3.8 C a "Place centre-left" "move-pane -P centre-left  $hfp_rrm" \
-        3.8 C s "Place centre" "move-pane -P centre  $hfp_rrm" \
-        3.8 C d "Place centre-right" "move-pane -P centre-right  $hfp_rrm" \
-        3.8 C z "Place bottom-left" "move-pane -P bottom-left  $hfp_rrm" \
-        3.8 C x "Place bottom-centre" "move-pane -P bottom-centre  $hfp_rrm" \
-        3.8 C c "Place bottom-right" "move-pane -P bottom-right  $hfp_rrm"
+        3.8 C q "Place top-left" "move-pane -P top-left $runshell_mnu_reload" \
+        3.8 C w "Place top-centre" "move-pane -P top-centre \
+                $runshell_mnu_reload" \
+        3.8 C e "Place top-right" "move-pane -P top-right \
+                $runshell_mnu_reload" \
+        3.8 C a "Place centre-left" "move-pane -P centre-left \
+                $runshell_mnu_reload" \
+        3.8 C s "Place centre" "move-pane -P centre  $runshell_mnu_reload" \
+        3.8 C d "Place centre-right" "move-pane -P centre-right \
+                $runshell_mnu_reload" \
+        3.8 C z "Place bottom-left" "move-pane -P bottom-left \
+                $runshell_mnu_reload" \
+        3.8 C x "Place bottom-centre" "move-pane -P bottom-centre \
+                $runshell_mnu_reload" \
+        3.8 C c "Place bottom-right" "move-pane -P bottom-right \
+                $runshell_mnu_reload"
 
     menu_generate_part "$_idx" "$@"
 }
@@ -351,7 +356,6 @@ no_auto_menu_handling=1 # delay processing of dialog, only source it for now
 # shorter variablenames to avoid too long lines
 hfp_v_step="$cfg_floating_pane_incr_vertical"
 hfp_h_step="$cfg_floating_pane_incr_horizontal"
-hfp_rrm="$runshell_mnu_reload"
 
 new_pane="new-pane -c '#{pane_current_path}'"
 tmux_vers_check 3.8 && new_pane="$new_pane -A" # does not unzoom window

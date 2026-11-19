@@ -33,15 +33,14 @@ dynamic_content() {
             ;;
         *) cur_theme="Theme: $t_current" ;;
     esac
-    rrm="$runshell_mnu_reload"
     set -- \
         0.0 S \
         0.0 T "#[align=centre,dim]Current: #[nodim]$cur_theme" \
         0.0 T "" \
-        3.8 C a "$t_detect" "set-option theme detect $rrm" \
-        3.8 C l "$t_light" "set-option theme light $rrm" \
-        3.8 C d "$t_dark" "set-option theme dark $rrm" \
-        3.8 C t "$t_terminal" "set-option theme terminal $rrm"
+        3.8 C a "$t_detect" "set-option theme detect $runshell_mnu_reload" \
+        3.8 C l "$t_light" "set-option theme light $runshell_mnu_reload" \
+        3.8 C d "$t_dark" "set-option theme dark $runshell_mnu_reload" \
+        3.8 C t "$t_terminal" "set-option theme terminal $runshell_mnu_reload"
     menu_generate_part 3 "$@"
 }
 
