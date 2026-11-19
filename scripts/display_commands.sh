@@ -172,7 +172,7 @@ sc_remove_a_suffix() {
 
 sc_remove_suffixes() {
     sc_remove_a_suffix "$1" "$runshell_reload_mnu"
-    sc_remove_a_suffix "$sc_filtered" "$runshell_sleep_reload_mnu"
+    sc_remove_a_suffix "$sc_filtered" "$runshell_delayed_reload_mnu"
     sc_remove_a_suffix "$sc_filtered" "$mnu_reload_direct"
     # sc_remove_a_suffix "$sc_filtered" "$0"
 

@@ -34,7 +34,7 @@ static_content() {
     respawn_action="confirm-before -p \
         'respawn-pane ${cmd_prmpt_hash_esc}T (id:%#D idx:#P)? (y/n)' \
         \"respawn-pane -k\""
-    respawn_action="$respawn_action $runshell_sleep_reload_mnu"
+    respawn_action="$respawn_action $runshell_delayed_reload_mnu"
     set -- \
         0.0 S \
         1.4 C l "Last selected" "last-pane $runshell_reload_mnu" \

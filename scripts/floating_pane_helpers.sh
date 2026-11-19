@@ -156,7 +156,7 @@ menu_section_dynamic() {
 
     set -- \
         1.8 S \
-        3.7 C N "New" "$new_pane $runshell_sleep_reload_mnu"
+        3.7 C N "New" "$new_pane $runshell_delayed_reload_mnu"
 
     [ "$current_pane_is_floating" = 1 ] && {
         set -- "$@" \

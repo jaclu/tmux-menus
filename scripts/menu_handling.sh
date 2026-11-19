@@ -782,7 +782,7 @@ set_menu_env_variables() {
         #  so disabled for now
         #
         runshell_reload_mnu="\; run-shell \"$scr_ext_dlg_trigger $0\""
-        runshell_sleep_reload_mnu="$runshell_reload_mnu"
+        runshell_delayed_reload_mnu="$runshell_reload_mnu"
         mnu_reload_direct=""
     else
         # built in menu handler doesn't ever seem to need \;
@@ -803,7 +803,7 @@ set_menu_env_variables() {
         # displayed and then the new pane etc gets drawn over it, use this sleep
         # for such tasks
         _s="sleep $t_delayed_menu_reload"
-        runshell_sleep_reload_mnu=" ; run-shell \"$_s ; $0\""
+        runshell_delayed_reload_mnu=" ; run-shell \"$_s ; $0\""
 
         # For E items and C items where a run-shell is already started
         mnu_reload_direct=" ; $0"

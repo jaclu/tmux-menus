@@ -105,7 +105,7 @@ nav_next="${nav_next:-}"
 nav_prev="${nav_prev:-}"
 prompt_reload_mnu="${prompt_reload_mnu:-}"
 runshell_reload_mnu="${runshell_reload_mnu:-}"
-runshell_sleep_reload_mnu="${runshell_sleep_reload_mnu:-}"
+runshell_delayed_reload_mnu="${runshell_delayed_reload_mnu:-}"
 show_cmds_state="${show_cmds_state:-}" # current state for displaying cmds
 t_show_cmds="${t_show_cmds:-}"         # time when cmds generation starts
 
