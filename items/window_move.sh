@@ -15,8 +15,8 @@ dynamic_content() {
     ${b_all_helpers_sourced:-false} || source_all_helpers "window_move:dynamic_content()"
 
     tmux_error_handler_assign this_win_id display-message -p '#{window_id}'
-    tmux_error_handler_assign pane_marked_status list-panes -a \
-        -F '#{pane_marked} #{window_id}'
+    tmux_error_handler_assign pane_marked_status \
+        list-panes -a -F '#{pane_marked} #{window_id}'
 
     # SC2154: variables assigned dynamically by tmux_error_handler_assign using eval
     # shellcheck disable=SC2154# faking external variables for shellcheck

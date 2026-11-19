@@ -14,14 +14,14 @@ dynamic_content() {
 
     ${b_all_helpers_sourced:-false} || source_all_helpers "pane_move:dynamic_content()"
 
-    tmux_error_handler_assign other_pane_marked display-message \
-        -p '#{&&:#{pane_marked_set},#{!=:#{pane_marked},1}}'
+    tmux_error_handler_assign other_pane_marked \
+        display-message -p '#{&&:#{pane_marked_set},#{!=:#{pane_marked},1}}'
 
     # SC2154: variable assigned dynamically by tmux_error_handler_assign using eval
     # shellcheck disable=SC2154
     if [ "$other_pane_marked" = 1 ]; then
         set -- \
-            3.0 C s "Swap marked" "swap-pane $runshell_mnu_reload"
+            3.0 C m "Swap marked" "swap-pane $runshell_mnu_reload"
     else
         set -- 0 D # clear part 4 content
     fi
@@ -57,7 +57,7 @@ static_content() {
         0.0 S \
         2.4 E b "Break to new window" "$d_scripts/break_pane.sh \
                 $direct_mnu_reload" \
-        1.8 E m "Move to other" "$d_scripts/act_choose_tree.sh p m"
+        1.8 E o "Move to other" "$d_scripts/act_choose_tree.sh p m"
 
     tmux_vers_check 1.8 && {
         # Limit to same vers as act_choose-tree.sh, even if this is not vers dependent.

@@ -325,8 +325,10 @@ is_int() {
 
 get_screen_size_variables() {
     # Sets variables current_screen_rows & current_screen_cols - indicating screen-size
-    tmux_error_handler_assign current_screen_rows display-message -p "#{client_height}"
-    tmux_error_handler_assign current_screen_cols display-message -p "#{client_width}"
+    tmux_error_handler_assign current_screen_rows \
+        display-message -p "#{client_height}"
+    tmux_error_handler_assign current_screen_cols \
+        display-message -p "#{client_width}"
 }
 
 #---------------------------------------------------------------
