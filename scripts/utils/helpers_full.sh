@@ -599,9 +599,9 @@ select_handler() {
     fi
 
     if [ "$mnu_handler" = 0 ]; then
-        # Built in menu handler parses menu code twice, so '#' needs to be doubled,
-        # when given as part of a display-menu cmd
-        # Sample: #T
+        # Built in display-menu parses menu code twice in some cases,
+        # for example when using confirm-before/cmmand-prompt
+        # so '#' needs to be doubled, Sample: #T
         #  On first parse the "extra" is removed ##T -> #T
         #  and on second parse #T is rendered as pane title
         cmd_prmpt_hash_esc="##"
