@@ -9,8 +9,9 @@
 #
 
 dynamic_content() {
-    tmux_error_handler_assign _p_disabled display-message -p '#{pane_input_off}'
-    # _p_disabled=$($TMUX_BIN display -p '#{pane_input_off}')
+    # only latter mthd works as per 261120
+    # tmux_error_handler_assign _p_disabled display-message -p '#{pane_input_off}'
+    _p_disabled=$($TMUX_BIN display -p '#{pane_input_off}')
 
     # shellcheck disable=SC2154 # p_disabled assigned by tmux_error_handler_assign
     if [ "$_p_disabled" = 0 ]; then
