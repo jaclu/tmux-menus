@@ -16,13 +16,8 @@ static_content() {
         0.0 M M "Move              $nav_next" pane_move.sh \
         0.0 M T "Toggle states     $nav_next" pane_toggle.sh \
         0.0 M L "Layouts           $nav_next" "$cfg_d_menus/layouts.sh $0 $menu_name" \
-        0.0 M I "History           $nav_next" pane_history.sh
-
-    [ -z "$alt_menu_handler" ] && {
-        # can not be used with alt menu handlers...
-        set -- "$@" \
-            3.7 M F "Floating panes    $nav_next" floating_pane_combined.sh
-    }
+        0.0 M I "History           $nav_next" pane_history.sh \
+        3.7 M F "Floating panes    $nav_next" floating_pane_combined.sh
 
     # Too buggy - skipped for now
     # set -- "$@" \
@@ -39,7 +34,7 @@ static_content() {
     respawn_action="confirm-before -p \
         'respawn-pane ${cmd_prmpt_hash_esc}T (id:%#D idx:#P)? (y/n)' \
         \"respawn-pane -k\""
-    respawn_action="$respawn_action $runshell_reload_mnu"
+    respawn_action="$respawn_action $runshell_sleep_reload_mnu"
     set -- \
         0.0 S \
         1.4 C l "Last selected" "last-pane $runshell_reload_mnu" \
