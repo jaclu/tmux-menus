@@ -44,11 +44,11 @@ handle_pane_border_status() {
     set -- \
         0.0 T "" \
         0.0 T "#[align=centre]pane-border-status" \
-        2.3 C o "$lbl_off" "$_cmd  off              $runshell_reload_mnu" \
-        2.3 C t "$lbl_top" "$_cmd  top              $runshell_reload_mnu" \
-        2.3 C b "$lbl_bottom" "$_cmd  bottom           $runshell_reload_mnu" \
-        3.8 C 1 "$lbb_top_float" "$_cmd  top-floating     $runshell_reload_mnu" \
-        3.8 C 2 "$lbl_bot_float" "$_cmd  bottom-floating  $runshell_reload_mnu"
+        2.3 C o "$lbl_off" "$_cmd  off              $runshell_mnu_reload" \
+        2.3 C t "$lbl_top" "$_cmd  top              $runshell_mnu_reload" \
+        2.3 C b "$lbl_bottom" "$_cmd  bottom           $runshell_mnu_reload" \
+        3.8 C 1 "$lbb_top_float" "$_cmd  top-floating     $runshell_mnu_reload" \
+        3.8 C 2 "$lbl_bot_float" "$_cmd  bottom-floating  $runshell_mnu_reload"
     menu_generate_part 4 "$@"
 }
 

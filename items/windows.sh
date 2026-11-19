@@ -28,21 +28,21 @@ static_content() {
             'Name of new window:  ' 'new-window -n $cmd_prmpt_sel_esc' \
             $prompt_reload_mnu" \
         1.7 C s "Display size" "display-message \
-            'Size: #{window_width}x#{window_height}' $runshell_reload_mnu" \
+            'Size: #{window_width}x#{window_height}' $runshell_mnu_reload" \
         0.0 S \
-        0.0 C l "Last selected" "last-window $runshell_reload_mnu" \
-        0.0 C p "Previous" "previous-window $runshell_reload_mnu" \
-        0.0 C n "Next" "next-window $runshell_reload_mnu" \
-        0.0 C M-p "Previous (alert)" "previous-window -a $runshell_reload_mnu" \
-        0.0 C M-n "Next     (alert)" "next-window -a $runshell_reload_mnu" \
+        0.0 C l "Last selected" "last-window $runshell_mnu_reload" \
+        0.0 C p "Previous" "previous-window $runshell_mnu_reload" \
+        0.0 C n "Next" "next-window $runshell_mnu_reload" \
+        0.0 C M-p "Previous (alert)" "previous-window -a $runshell_mnu_reload" \
+        0.0 C M-n "Next     (alert)" "next-window -a $runshell_mnu_reload" \
         2.7 C c "Choose" "choose-tree -Zw" \
         0.0 S \
         1.8 C x "${cfg_danger_zone}Kill current" "confirm-before -p \
             'Kill this window: ${cmd_prmpt_hash_esc}W (id:#{window_id} idx:#I)? (y/n)' \
-            kill-window  $runshell_reload_mnu" \
+            kill-window  $runshell_mnu_reload" \
         1.8 C o "${cfg_danger_zone}Kill all other" "confirm-before -p \
             'Are you sure you want to kill all other? (y/n)' \
-            'run-shell \"${d_scripts}/kill_other_windows.sh\"' $runshell_reload_mnu"
+            'run-shell \"${d_scripts}/kill_other_windows.sh\"' $runshell_mnu_reload"
     menu_generate_part 3 "$@"
 }
 

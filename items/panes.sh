@@ -37,11 +37,11 @@ static_content() {
     respawn_action="$respawn_action $runshell_delayed_reload_mnu"
     set -- \
         0.0 S \
-        1.4 C l "Last selected" "last-pane $runshell_reload_mnu" \
-        1.4 C p "Previous" "select-pane -t :.- $runshell_reload_mnu" \
-        1.4 C n "Next" "select-pane -t :.+ $runshell_reload_mnu" \
-        0.8 C f "Rotate forward" "rotate-window -D $runshell_reload_mnu" \
-        0.8 C b "Rotate backward" "rotate-window -U $runshell_reload_mnu" \
+        1.4 C l "Last selected" "last-pane $runshell_mnu_reload" \
+        1.4 C p "Previous" "select-pane -t :.- $runshell_mnu_reload" \
+        1.4 C n "Next" "select-pane -t :.+ $runshell_mnu_reload" \
+        0.8 C f "Rotate forward" "rotate-window -D $runshell_mnu_reload" \
+        0.8 C b "Rotate backward" "rotate-window -U $runshell_mnu_reload" \
         0.0 S \
         2.6 C t "Rename (title)" "command-prompt -I \
             '${cmd_prmpt_hash_esc}T'  -p 'Title: '  \
@@ -50,10 +50,10 @@ static_content() {
         1.5 C r "${cfg_danger_zone}Respawn current" "$respawn_action" \
         1.8 C x "${cfg_danger_zone}Kill current" "confirm-before -p \
             'Kill pane: ${cmd_prmpt_hash_esc}T (id:%#D idx:#P)? (y/n)' \
-            kill-pane $runshell_reload_mnu" \
+            kill-pane $runshell_mnu_reload" \
         1.8 C o "${cfg_danger_zone}Kill all other" "confirm-before -p \
             'Are you sure you want to kill all other panes? (y/n)' \
-            \"kill-pane -a\" $runshell_reload_mnu"
+            \"kill-pane -a\" $runshell_mnu_reload"
     menu_generate_part 3 "$@"
 }
 

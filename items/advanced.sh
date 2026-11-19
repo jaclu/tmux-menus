@@ -32,7 +32,7 @@ dynamic_content() {
     current_prefix="$($TMUX_BIN show-options -g prefix | cut -d' ' -f2)"
     set -- \
         2.1 C o "Set mouse to: $new_mouse_status" \
-        "set-option -g mouse $new_mouse_status $runshell_reload_mnu" \
+        "set-option -g mouse $new_mouse_status $runshell_mnu_reload" \
         2.4 E p "${cfg_danger_zone}Change prefix (Current: $current_prefix)" \
         "$d_scripts/change_prefix.sh $0"
     menu_generate_part 4 "$@"
@@ -73,7 +73,7 @@ static_content() {
         0.0 C m "Tmux messages" 'show-messages' \
         1.9 C t "Tmux terminal bindings" 'show-messages -T' \
         0.0 C : "Enter a tmux command" command-prompt \
-        0.0 C s "Toggle status line" "set-option -g status $runshell_reload_mnu" \
+        0.0 C s "Toggle status line" "set-option -g status $runshell_mnu_reload" \
         1.8 S
 
     ${cfg_use_hint_overlays:-false} && ${cfg_show_key_hints:-false} && {

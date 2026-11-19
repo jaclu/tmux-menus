@@ -27,20 +27,20 @@ static_content() {
         0.0 C r "Rename" "command-prompt -I '${cmd_prmpt_hash_esc}{session_name}' \
             'rename-session -- $cmd_prmpt_sel_esc' $prompt_reload_mnu" \
         0.0 C s "New" "command-prompt -p 'Name of new session:  ' \
-            'new-session -s $cmd_prmpt_sel_esc' $runshell_reload_mnu" \
+            'new-session -s $cmd_prmpt_sel_esc' $runshell_mnu_reload" \
         0.0 S \
-        0.0 C l "Last selected" "switch-client -l        $runshell_reload_mnu" \
-        0.0 C p "Previous" "switch-client -p  $runshell_reload_mnu" \
-        0.0 C n "Next" "switch-client -n  $runshell_reload_mnu" \
+        0.0 C l "Last selected" "switch-client -l        $runshell_mnu_reload" \
+        0.0 C p "Previous" "switch-client -p  $runshell_mnu_reload" \
+        0.0 C n "Next" "switch-client -n  $runshell_mnu_reload" \
         2.7 C c "Choose" "choose-tree -Zs" \
         0.0 S \
         1.8 C x "${cfg_danger_zone}Kill current" \
         "confirm-before -p \
         'Kill this session: ${cmd_prmpt_hash_esc}S (id:#{session_id}) (y/n)' \
-        \"$cli_dtch_mode ; kill-session\" $runshell_reload_mnu" \
+        \"$cli_dtch_mode ; kill-session\" $runshell_mnu_reload" \
         1.8 C o "${cfg_danger_zone}Kill all other" "confirm-before -p \
         'Are you sure you want to kill all other? (y/n)' \
-        \"kill-session -a\" $runshell_reload_mnu"
+        \"kill-session -a\" $runshell_mnu_reload"
     menu_generate_part 3 "$@"
 }
 

@@ -21,7 +21,7 @@ dynamic_content() {
     # shellcheck disable=SC2154
     if [ "$other_pane_marked" = 1 ]; then
         set -- \
-            3.0 C s "Swap marked" "swap-pane $runshell_reload_mnu"
+            3.0 C s "Swap marked" "swap-pane $runshell_mnu_reload"
     else
         set -- 0 D # clear part 4 content
     fi
@@ -49,14 +49,14 @@ static_content() {
     #
     set -- \
         0.0 S \
-        0.0 C p "Swap Prev" "swap-pane -U $runshell_reload_mnu" \
-        0.0 C n "Swap Next" "swap-pane -D $runshell_reload_mnu"
+        0.0 C p "Swap Prev" "swap-pane -U $runshell_mnu_reload" \
+        0.0 C n "Swap Next" "swap-pane -D $runshell_mnu_reload"
     menu_generate_part 3 "$@"
 
     set -- \
         0.0 S \
         2.4 E b "Break to new window" "$d_scripts/break_pane.sh \
-                $mnu_reload_direct" \
+                $direct_mnu_reload" \
         1.8 E m "Move to other" "$d_scripts/act_choose_tree.sh p m"
 
     tmux_vers_check 1.8 && {

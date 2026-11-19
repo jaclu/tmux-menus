@@ -37,10 +37,10 @@ dynamic_content() {
     fi
 
     set -- \
-        3.3 C "o" "$lbl_off" "$_cmd  off     $runshell_reload_mnu" \
-        3.3 C "c" "$lbl_color" "$_cmd  colour  $runshell_reload_mnu" \
-        3.3 C "a" "$lbl_arrows" "$_cmd  arrows  $runshell_reload_mnu" \
-        3.3 C "b" "$lbl_both" "$_cmd  both    $runshell_reload_mnu"
+        3.3 C "o" "$lbl_off" "$_cmd  off     $runshell_mnu_reload" \
+        3.3 C "c" "$lbl_color" "$_cmd  colour  $runshell_mnu_reload" \
+        3.3 C "a" "$lbl_arrows" "$_cmd  arrows  $runshell_mnu_reload" \
+        3.3 C "b" "$lbl_both" "$_cmd  both    $runshell_mnu_reload"
     menu_generate_part 4 "$@"
 }
 

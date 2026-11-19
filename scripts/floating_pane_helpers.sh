@@ -162,7 +162,7 @@ menu_section_dynamic() {
         set -- "$@" \
             1.8 C K "${cfg_danger_zone}Kill current" "confirm-before -p \
                 'kill-pane #T (id:%#D idx:#P)? (y/n)' kill-pane \
-                $runshell_reload_mnu"
+                $runshell_mnu_reload"
         if tmux_vers_check 3.8 || [ -n "$other_floating_panes" ]; then
             set -- "$@" 1.8 S
         fi
@@ -203,8 +203,8 @@ menu_section_dynamic() {
             if [ -n "$other_floating_panes" ]; then
                 set -- \
                     3.7 E p "Previous" \
-                    "$scr_float_pane_switch  previous $mnu_reload_direct" \
-                    3.7 E n "Next" "$scr_float_pane_switch  next $mnu_reload_direct"
+                    "$scr_float_pane_switch  previous $direct_mnu_reload" \
+                    3.7 E n "Next" "$scr_float_pane_switch  next $direct_mnu_reload"
             else
                 set -- 0 D # dummy allows next item to be considered
             fi
@@ -223,10 +223,10 @@ menu_section_move() {
 
     set -- \
         3.8 S \
-        3.8 C t "Move up" "move-pane -U $hfp_v_step  $runshell_reload_mnu" \
-        3.8 C v "Move down" "move-pane -D $hfp_v_step  $runshell_reload_mnu" \
-        3.8 C f "Move left" "move-pane -L $hfp_h_step  $runshell_reload_mnu" \
-        3.8 C g "Move right" "move-pane -R $hfp_h_step  $runshell_reload_mnu"
+        3.8 C t "Move up" "move-pane -U $hfp_v_step  $runshell_mnu_reload" \
+        3.8 C v "Move down" "move-pane -D $hfp_v_step  $runshell_mnu_reload" \
+        3.8 C f "Move left" "move-pane -L $hfp_h_step  $runshell_mnu_reload" \
+        3.8 C g "Move right" "move-pane -R $hfp_h_step  $runshell_mnu_reload"
     menu_generate_part "$_idx" "$@"
 }
 
@@ -240,17 +240,17 @@ menu_section_resize() {
     set -- \
         3.8 S \
         3.8 C T "Reduce height" "resize-pane -D -- -$hfp_v_step  \
-                $runshell_reload_mnu" \
-        3.8 C V "Grow height" "resize-pane -D $hfp_v_step  $runshell_reload_mnu" \
+                $runshell_mnu_reload" \
+        3.8 C V "Grow height" "resize-pane -D $hfp_v_step  $runshell_mnu_reload" \
         3.8 C F "Reduce width" "resize-pane -R -- -$hfp_h_step  \
-                $runshell_reload_mnu" \
-        3.8 C G "Grow width" "resize-pane -R $hfp_h_step  $runshell_reload_mnu"
+                $runshell_mnu_reload" \
+        3.8 C G "Grow width" "resize-pane -R $hfp_h_step  $runshell_mnu_reload"
 
     menu_generate_part "$_idx" "$@"
 }
 
 menu_section_placement() {
-    hfp_rrm="$runshell_reload_mnu"
+    hfp_rrm="$runshell_mnu_reload"
 
     _idx="$1"
     [ -n "$_idx" ] || error_msg "menu_section_placement() - no item index"
@@ -351,7 +351,7 @@ no_auto_menu_handling=1 # delay processing of dialog, only source it for now
 # shorter variablenames to avoid too long lines
 hfp_v_step="$cfg_floating_pane_incr_vertical"
 hfp_h_step="$cfg_floating_pane_incr_horizontal"
-hfp_rrm="$runshell_reload_mnu"
+hfp_rrm="$runshell_mnu_reload"
 
 new_pane="new-pane -c '#{pane_current_path}'"
 tmux_vers_check 3.8 && new_pane="$new_pane -A" # does not unzoom window

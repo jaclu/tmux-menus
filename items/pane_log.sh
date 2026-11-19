@@ -39,7 +39,7 @@ static_content() {
         # if logging is enabled
 
         set -- "$@" \
-            1.1 C c "Clear logging (if enabled)" "pipe-pane $runshell_reload_mnu"
+            1.1 C c "Clear logging (if enabled)" "pipe-pane $runshell_mnu_reload"
     }
     menu_generate_part 3 "$@"
 }
@@ -77,7 +77,7 @@ tmux_vers_check 2.6 && {
 
         if [ "$($TMUX_BIN display -p '#{pane_pipe}')" = 1 ]; then
             set -- \
-                2.6 C c "Clear logging" "pipe-pane $runshell_reload_mnu"
+                2.6 C c "Clear logging" "pipe-pane $runshell_mnu_reload"
         else
             # clear item if pane logging no longer is active
             set --

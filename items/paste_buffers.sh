@@ -37,7 +37,7 @@ static_content() {
 
     if [ -z "$alt_menu_handler" ]; then
         set -- "$@" \
-            0.0 C v "Paste latest" "paste-buffer -p  $runshell_reload_mnu"
+            0.0 C v "Paste latest" "paste-buffer -p  $runshell_mnu_reload"
     fi
     set -- "$@" \
         1.8 E s "Select from list" "$select_cmd" \

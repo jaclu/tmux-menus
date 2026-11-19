@@ -78,7 +78,7 @@ static_content() {
     2.0 C "r" "Rename this session" "command-prompt -I '#S' 'rename-session -- \"%%\"'" \
     0.0 S \
     0.0 T "Example of action reloading the menu" \
-    1.8 C "z" "Zoom pane toggle" "resize-pane -Z $runshell_reload_mnu"
+    1.8 C "z" "Zoom pane toggle" "resize-pane -Z $runshell_mnu_reload"
 
   menu_generate_part 1 "$@"
 }
@@ -118,14 +118,14 @@ Something like this:
 
 ```shell
 ...
-    1.8 C z "Zoom pane toggle" "resize-pane -Z $runshell_reload_mnu"
+    1.8 C z "Zoom pane toggle" "resize-pane -Z $runshell_mnu_reload"
 
 if tmux display-message -p '#{pane_marked_set}' | grep -q '1'; then
     set -- "$@" \
-        2.1 C s "Swap current pane with marked" "swap-pane $runshell_reload_mnu"
+        2.1 C s "Swap current pane with marked" "swap-pane $runshell_mnu_reload"
 fi
 
 set -- "$@" \
-    1.7 C p "Swap pane with prev" "swap-pane -U $runshell_reload_mnu" \
+    1.7 C p "Swap pane with prev" "swap-pane -U $runshell_mnu_reload" \
 ...
 ```

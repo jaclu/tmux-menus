@@ -41,8 +41,8 @@ static_content() {
 
     set -- \
         0.0 S \
-        0.0 C p "Swap window Left" "swap-window -d -t :-1 $runshell_reload_mnu" \
-        0.0 C n "Swap window Right" "swap-window -d -t :+1 $runshell_reload_mnu"
+        0.0 C p "Swap window Left" "swap-window -d -t :-1 $runshell_mnu_reload" \
+        0.0 C n "Swap window Right" "swap-window -d -t :+1 $runshell_mnu_reload"
     menu_generate_part 3 "$@"
 
     set -- \

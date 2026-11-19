@@ -33,7 +33,7 @@ dynamic_content() {
             ;;
         *) cur_theme="Theme: $t_current" ;;
     esac
-    rrm="$runshell_reload_mnu"
+    rrm="$runshell_mnu_reload"
     set -- \
         0.0 S \
         0.0 T "#[align=centre,dim]Current: #[nodim]$cur_theme" \

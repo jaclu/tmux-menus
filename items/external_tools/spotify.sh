@@ -34,18 +34,18 @@ static_content() {
 
     set -- \
         0.0 S \
-        0.0 E t "Title - currently playing track" "$0 -t $mnu_reload_direct" \
+        0.0 E t "Title - currently playing track" "$0 -t $direct_mnu_reload" \
         0.0 S \
-        0.0 E Space "Pause/Resume" "spotify pause   $mnu_reload_direct" \
-        0.0 E n "Next" "spotify             next  $mnu_reload_direct" \
-        0.0 E p "Prev" "spotify             prev  $mnu_reload_direct" \
-        0.0 E r "Replay" "spotify           replay  $mnu_reload_direct" \
-        0.0 E s "Shuffle - toggle" "spotify toggle shuffle  $mnu_reload_direct" \
-        0.0 E R "Repeat  - toggle" "spotify toggle repeat  $mnu_reload_direct" \
-        0.0 E u "vol Up" "spotify           vol up  $mnu_reload_direct" \
-        0.0 E d "vol Down" "spotify         vol down  $mnu_reload_direct" \
-        0.0 E i "Copy URI to clipboard" "spotify share uri  $mnu_reload_direct" \
-        0.0 E l "Copy URL to clipboard" "spotify share url  $mnu_reload_direct"
+        0.0 E Space "Pause/Resume" "spotify pause   $direct_mnu_reload" \
+        0.0 E n "Next" "spotify             next  $direct_mnu_reload" \
+        0.0 E p "Prev" "spotify             prev  $direct_mnu_reload" \
+        0.0 E r "Replay" "spotify           replay  $direct_mnu_reload" \
+        0.0 E s "Shuffle - toggle" "spotify toggle shuffle  $direct_mnu_reload" \
+        0.0 E R "Repeat  - toggle" "spotify toggle repeat  $direct_mnu_reload" \
+        0.0 E u "vol Up" "spotify           vol up  $direct_mnu_reload" \
+        0.0 E d "vol Down" "spotify         vol down  $direct_mnu_reload" \
+        0.0 E i "Copy URI to clipboard" "spotify share uri  $direct_mnu_reload" \
+        0.0 E l "Copy URL to clipboard" "spotify share url  $direct_mnu_reload"
     menu_generate_part 3 "$@"
 }
 

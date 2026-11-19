@@ -781,16 +781,16 @@ set_menu_env_variables() {
         #  I haven't been able do to menu reload with whiptail/dialog yet,
         #  so disabled for now
         #
-        runshell_reload_mnu="\; run-shell \"$scr_ext_dlg_trigger $0\""
-        runshell_delayed_reload_mnu="$runshell_reload_mnu"
-        mnu_reload_direct=""
+        runshell_mnu_reload="\; run-shell \"$scr_ext_dlg_trigger $0\""
+        runshell_delayed_reload_mnu="$runshell_mnu_reload"
+        direct_mnu_reload=""
     else
         # built in menu handler doesn't ever seem to need \;
 
         # For C items where a run-shell has not been started
-        runshell_reload_mnu=" ; run-shell $0"
+        runshell_mnu_reload=" ; run-shell $0"
         if tmux_vers_check 3.3; then
-            prompt_reload_mnu="$runshell_reload_mnu"
+            prompt_reload_mnu="$runshell_mnu_reload"
         else
             # command-prompt seems to fork, either way it returns directly as soon
             # as the prompt is presented,causing loss of focus if the menu is
@@ -806,7 +806,7 @@ set_menu_env_variables() {
         runshell_delayed_reload_mnu=" ; run-shell \"$_s ; $0\""
 
         # For E items and C items where a run-shell is already started
-        mnu_reload_direct=" ; $0"
+        direct_mnu_reload=" ; $0"
 
     fi
     menu_handling_env_variables_init_done=1

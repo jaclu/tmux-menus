@@ -15,7 +15,7 @@ static_content() {
     menu_generate_part 1 "$@"
     display_commands_toggle 2
 
-    rrm="$runshell_reload_mnu"
+    rrm="$runshell_mnu_reload"
     set -- \
         0.0 S \
         1.8 C z "zoom" "resize-pane -Z $rrm" \

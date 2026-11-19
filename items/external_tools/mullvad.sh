@@ -68,7 +68,7 @@ dynamic_content() {
 
     set -- \
         0.0 E l "$lan_label LAN sharing" "mullvad lan set $lan_cmd >/dev/null \
-        $mnu_reload_direct"
+        $direct_mnu_reload"
     menu_generate_part 4 "$@"
 }
 
@@ -82,8 +82,8 @@ static_content() {
 
     set -- \
         0.0 S \
-        0.0 E s "Status" "$0 status  $mnu_reload_direct" \
-        0.0 E t "toggle running status" "$0 toggle $mnu_reload_direct"
+        0.0 E s "Status" "$0 status  $direct_mnu_reload" \
+        0.0 E t "toggle running status" "$0 toggle $direct_mnu_reload"
     menu_generate_part 3 "$@"
 }
 

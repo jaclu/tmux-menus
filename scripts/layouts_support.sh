@@ -68,30 +68,30 @@ handle_layout_border_lines() {
     set -- \
         3.2 T "" \
         3.2 T "#[align=centre]pane-border-lines" \
-        3.2 C s "$hlbl_lbl_single" "$hlbl_cmd  single  $runshell_reload_mnu"
+        3.2 C s "$hlbl_lbl_single" "$hlbl_cmd  single  $runshell_mnu_reload"
 
     [ "$hlbl_opt" = "popup-border-lines" ] && {
         set -- "$@" \
-            3.2 C s "$hlbl_lbl_rounded" "$hlbl_cmd  rounded  $runshell_reload_mnu"
+            3.2 C s "$hlbl_lbl_rounded" "$hlbl_cmd  rounded  $runshell_mnu_reload"
 
     }
 
     set -- "$@" \
-        3.2 C d "$hlbl_lbl_double" "$hlbl_cmd  double  $runshell_reload_mnu" \
-        3.2 C h "$hlbl_lbl_heavy" "$hlbl_cmd  heavy   $runshell_reload_mnu" \
-        3.2 C i "$hlbl_lbl_simple" "$hlbl_cmd  simple  $runshell_reload_mnu"
+        3.2 C d "$hlbl_lbl_double" "$hlbl_cmd  double  $runshell_mnu_reload" \
+        3.2 C h "$hlbl_lbl_heavy" "$hlbl_cmd  heavy   $runshell_mnu_reload" \
+        3.2 C i "$hlbl_lbl_simple" "$hlbl_cmd  simple  $runshell_mnu_reload"
 
     case "$hlbl_opt" in
         popup-border-lines | menu-border-lines)
             set -- "$@" \
-                3.3 C p "$hlbl_lbl_padded" "$hlbl_cmd  padded  $runshell_reload_mnu" \
-                3.3 C n "$hlbl_lbl_none" "$hlbl_cmd  none  $runshell_reload_mnu"
+                3.3 C p "$hlbl_lbl_padded" "$hlbl_cmd  padded  $runshell_mnu_reload" \
+                3.3 C n "$hlbl_lbl_none" "$hlbl_cmd  none  $runshell_mnu_reload"
             ;;
         pane-border-lines)
             set -- "$@" \
-                3.2 C \\# "$hlbl_lbl_number" "$hlbl_cmd  number  $runshell_reload_mnu" \
-                3.6 C Space "$hlbl_lbl_spaces" "$hlbl_cmd  spaces  $runshell_reload_mnu" \
-                3.8 C n "$hlbl_lbl_none" "$hlbl_cmd  none  $runshell_reload_mnu"
+                3.2 C \\# "$hlbl_lbl_number" "$hlbl_cmd  number  $runshell_mnu_reload" \
+                3.6 C Space "$hlbl_lbl_spaces" "$hlbl_cmd  spaces  $runshell_mnu_reload" \
+                3.8 C n "$hlbl_lbl_none" "$hlbl_cmd  none  $runshell_mnu_reload"
             ;;
         *) ;;
     esac

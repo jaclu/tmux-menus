@@ -99,12 +99,12 @@ current_pane_is_floating="${current_pane_is_floating:-}"
 
 dh_t_start="${dh_t_start:-}" # time when menu is displayed
 menu_handling_sourced="${menu_handling_sourced:-}"
-mnu_reload_direct="${mnu_reload_direct:-}"
+direct_mnu_reload="${direct_mnu_reload:-}"
 nav_home="${nav_home:-}"
 nav_next="${nav_next:-}"
 nav_prev="${nav_prev:-}"
 prompt_reload_mnu="${prompt_reload_mnu:-}"
-runshell_reload_mnu="${runshell_reload_mnu:-}"
+runshell_mnu_reload="${runshell_mnu_reload:-}"
 runshell_delayed_reload_mnu="${runshell_delayed_reload_mnu:-}"
 show_cmds_state="${show_cmds_state:-}" # current state for displaying cmds
 t_show_cmds="${t_show_cmds:-}"         # time when cmds generation starts

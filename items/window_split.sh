@@ -26,10 +26,10 @@ static_content() {
         0.0 T "Divides the entire window/screen" \
         0.0 T "in desired direction." \
         0.0 T "" \
-        2.0 C l "Left" "split-window   -bfh  $same_folder  $runshell_reload_mnu" \
-        0.0 C r "Right" "split-window  -fh   $same_folder  $runshell_reload_mnu" \
-        2.0 C a "Above" "split-window  -bfv  $same_folder  $runshell_reload_mnu" \
-        0.0 C b "Below" "split-window  -fv   $same_folder  $runshell_reload_mnu"
+        2.0 C l "Left" "split-window   -bfh  $same_folder  $runshell_mnu_reload" \
+        0.0 C r "Right" "split-window  -fh   $same_folder  $runshell_mnu_reload" \
+        2.0 C a "Above" "split-window  -bfv  $same_folder  $runshell_mnu_reload" \
+        0.0 C b "Below" "split-window  -fv   $same_folder  $runshell_mnu_reload"
     menu_generate_part 3 "$@"
 }
 

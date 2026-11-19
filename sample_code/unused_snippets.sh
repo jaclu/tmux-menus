@@ -33,7 +33,7 @@ scope_selector() {
         g) scp_global="-$scp_global" ;;
         *) scp_current=w ;; # set it to a valid option
     esac
-    mrd="$mnu_reload_direct"
+    mrd="$direct_mnu_reload"
     set -- \
         0.0 T "" \
         0.0 T "#[align=centre]Select Scope" \
