@@ -13,6 +13,15 @@ Session: ${cmd_prmpt_hash_esc}S (id:#{session_id})
 `##T`
 `##{session_name}`
 
+## Odd bugg pane_toggle enable/disable
+
+`tmux_error_handler_assign _p_disabled display-message -p '#{pane_input_off}'`
+only works at first run, then returning "" regardless of current state
+
+`_p_disabled=$($TMUX_BIN display -p '#{pane_input_off}')` can be used repeatedly
+
+Might be some glitch in tmux_error_handler_assign, investigate when time allows
+
 ## figure out how to handle
 
 alt menus missing keys
