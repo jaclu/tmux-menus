@@ -1,7 +1,5 @@
 # TODO
 
-runshell_sleep_reload_mnu -> runshell_delayed_reload_mnu
-
 check nav_search handling of its %%%
 
 panes: cmd_prmpt_sel_esc for respawn-pane??
