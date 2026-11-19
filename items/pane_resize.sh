@@ -28,9 +28,11 @@ static_content() {
         0.0 C R "right by 10" "resize-pane -R 10 $runshell_reload_mnu" \
         1.7 S \
         1.8 C w "Set width & height" "command-prompt -p \
-            'Pane width,Pane height' 'resize-pane -x %1 -y %2'" \
+            'Pane #T (id:%#D idx:#P) width,Pane #T (id:%#D idx:#P) height' \
+            'resize-pane -x %1 -y %2' $runshell_reload_mnu" \
         1.7 C s "Show size" "display-message \
-            'Pane: #T (id:%#D idx:#P) size: #{pane_width}x#{pane_height}' $runshell_reload_mnu"
+            'Pane: #T (id:%#D idx:#P) size: #{pane_width}x#{pane_height}' \
+            $runshell_reload_mnu"
     menu_generate_part 3 "$@"
 }
 
