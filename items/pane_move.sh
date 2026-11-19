@@ -55,7 +55,8 @@ static_content() {
 
     set -- \
         0.0 S \
-        2.4 E b "Break to new window" "$d_scripts/break_pane.sh ; $0" \
+        2.4 E b "Break to new window" "$d_scripts/break_pane.sh \
+                $mnu_reload_direct" \
         1.8 E m "Move to other" "$d_scripts/act_choose_tree.sh p m"
 
     tmux_vers_check 1.8 && {

@@ -193,7 +193,8 @@ menu_section_dynamic() {
                 set --
             fi
             set -- "$@" \
-                3.8 M H "Help               $nav_next" "$cfg_d_menus/help/$help_menu $0"
+                3.8 M H "Help               $nav_next" \
+                "$cfg_d_menus/help/$help_menu $0"
             menu_generate_part 3 "$@"
 
             #
@@ -201,8 +202,9 @@ menu_section_dynamic() {
             #
             if [ -n "$other_floating_panes" ]; then
                 set -- \
-                    3.7 E p "Previous" "$scr_float_pane_switch  previous ; $0" \
-                    3.7 E n "Next" "$scr_float_pane_switch  next ; $0"
+                    3.7 E p "Previous" \
+                    "$scr_float_pane_switch  previous $mnu_reload_direct" \
+                    3.7 E n "Next" "$scr_float_pane_switch  next $mnu_reload_direct"
             else
                 set -- 0 D # dummy allows next item to be considered
             fi
@@ -237,9 +239,11 @@ menu_section_resize() {
     # And it doesn't seem to hurt the other's so safe to use
     set -- \
         3.8 S \
-        3.8 C T "Reduce height" "resize-pane -D -- -$hfp_v_step  $runshell_reload_mnu" \
+        3.8 C T "Reduce height" "resize-pane -D -- -$hfp_v_step  \
+                $runshell_reload_mnu" \
         3.8 C V "Grow height" "resize-pane -D $hfp_v_step  $runshell_reload_mnu" \
-        3.8 C F "Reduce width" "resize-pane -R -- -$hfp_h_step  $runshell_reload_mnu" \
+        3.8 C F "Reduce width" "resize-pane -R -- -$hfp_h_step  \
+                $runshell_reload_mnu" \
         3.8 C G "Grow width" "resize-pane -R $hfp_h_step  $runshell_reload_mnu"
 
     menu_generate_part "$_idx" "$@"

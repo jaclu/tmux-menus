@@ -24,7 +24,6 @@ display_currently_playing_track() {
 }
 
 static_content() {
-    # reload_no_output=" >/dev/null ; $0"
     command -v spotify >/dev/null || error_msg "spotify bin not found"
 
     set -- \
@@ -35,18 +34,18 @@ static_content() {
 
     set -- \
         0.0 S \
-        0.0 E t "Title - currently playing track" "$0 -t ; $0" \
+        0.0 E t "Title - currently playing track" "$0 -t $mnu_reload_direct" \
         0.0 S \
-        0.0 E Space "Pause/Resume" "spotify pause   ; $0" \
-        0.0 E n "Next" "spotify             next  ; $0" \
-        0.0 E p "Prev" "spotify             prev  ; $0" \
-        0.0 E r "Replay" "spotify           replay  ; $0" \
-        0.0 E s "Shuffle - toggle" "spotify toggle shuffle  ; $0" \
-        0.0 E R "Repeat  - toggle" "spotify toggle repeat  ; $0" \
-        0.0 E u "vol Up" "spotify           vol up  ; $0" \
-        0.0 E d "vol Down" "spotify         vol down  ; $0" \
-        0.0 E i "Copy URI to clipboard" "spotify share uri  ; $0" \
-        0.0 E l "Copy URL to clipboard" "spotify share url  ; $0"
+        0.0 E Space "Pause/Resume" "spotify pause   $mnu_reload_direct" \
+        0.0 E n "Next" "spotify             next  $mnu_reload_direct" \
+        0.0 E p "Prev" "spotify             prev  $mnu_reload_direct" \
+        0.0 E r "Replay" "spotify           replay  $mnu_reload_direct" \
+        0.0 E s "Shuffle - toggle" "spotify toggle shuffle  $mnu_reload_direct" \
+        0.0 E R "Repeat  - toggle" "spotify toggle repeat  $mnu_reload_direct" \
+        0.0 E u "vol Up" "spotify           vol up  $mnu_reload_direct" \
+        0.0 E d "vol Down" "spotify         vol down  $mnu_reload_direct" \
+        0.0 E i "Copy URI to clipboard" "spotify share uri  $mnu_reload_direct" \
+        0.0 E l "Copy URL to clipboard" "spotify share url  $mnu_reload_direct"
     menu_generate_part 3 "$@"
 }
 
