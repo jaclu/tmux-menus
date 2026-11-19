@@ -15,17 +15,15 @@ dynamic_content() {
 
     # shellcheck disable=SC2154 # p_disabled assigned by tmux_error_handler_assign
     if [ "$_p_disabled" = 0 ]; then
-        marker_enable="-"
-        marker_disable=""
+        input_lbl="Disable"
+        input_toggle="-d"
     else
-        marker_enable=""
-        marker_disable="-"
-        set --
+        input_lbl="Enable"
+        input_toggle="-e"
     fi
     set -- \
         0.0 S \
-        2.0 C e "${marker_enable}Enable input" "select-pane -e $runshell_mnu_reload" \
-        2.0 C d "${marker_disable}Disable input" "select-pane -d $runshell_mnu_reload"
+        2.0 C i "$input_lbl input" "select-pane $input_toggle $runshell_mnu_reload"
     menu_generate_part 4 "$@"
 }
 
