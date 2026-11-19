@@ -27,10 +27,10 @@ static_content() {
         0.0 T "Subdivides the current pane" \
         0.0 T "in desired direction." \
         0.0 T "" \
-        2.0 C l "Left" "split-window  -bh  $same_folder  $runshell_reload_mnu" \
-        0.0 C r "Right" "split-window -h   $same_folder  $runshell_reload_mnu" \
-        2.0 C a "Above" "split-window -bv  $same_folder  $runshell_reload_mnu" \
-        0.0 C b "Below" "split-window      $same_folder  $runshell_reload_mnu" \
+        2.0 C l "Left" "split-window  -bh  $same_folder  $runshell_sleep_reload_mnu" \
+        0.0 C r "Right" "split-window -h   $same_folder  $runshell_sleep_reload_mnu" \
+        2.0 C a "Above" "split-window -bv  $same_folder  $runshell_sleep_reload_mnu" \
+        0.0 C b "Below" "split-window      $same_folder  $runshell_sleep_reload_mnu" \
         3.7 S \
         3.7 C f "Floating pane" "new-pane    $same_folder  \
             $runshell_sleep_reload_mnu" \
