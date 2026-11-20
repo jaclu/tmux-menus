@@ -46,7 +46,7 @@ static_content() {
     menu_generate_part 3 "$@"
 
     set -- \
-        0.0 S \
+        1.8 S \
         1.8 E m "Move to other" "$d_scripts/act_choose_tree.sh w m" \
         1.8 E l "Link to other" "$d_scripts/act_choose_tree.sh w l"
 

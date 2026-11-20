@@ -33,7 +33,7 @@ static_content() {
         0.0 C p "Previous" "switch-client -p  $runshell_mnu_reload" \
         0.0 C n "Next" "switch-client -n  $runshell_mnu_reload" \
         2.7 C c "Choose" "choose-tree -Zs" \
-        0.0 S \
+        1.8 S \
         1.8 C x "${cfg_danger_zone}Kill current" \
         "confirm-before -p \
         'Kill this session: ${cmd_prmpt_hash_esc}S (id:#{session_id}) (y/n)' \

@@ -73,23 +73,21 @@ static_content() {
         0.0 C m "Tmux messages" 'show-messages' \
         1.9 C t "Tmux terminal bindings" 'show-messages -T' \
         0.0 C : "Enter a tmux command" command-prompt \
-        0.0 C s "Toggle status line" "set-option -g status $runshell_mnu_reload" \
-        1.8 S
+        0.0 C s "Toggle status line" "set-option -g status $runshell_mnu_reload"
 
     ${cfg_use_hint_overlays:-false} && ${cfg_show_key_hints:-false} && {
         set -- "$@" \
-            2.7 M K "Key hints - Disconnect $nav_next" \
-            "$d_hints/choose-client.sh $0"
-
+            2.7 S \
+            2.7 M K "Key hints - Disconnect $nav_next" "$d_hints/choose-client.sh $0"
     }
     menu_generate_part 3 "$@"
 
     set -- \
-        0.0 S \
+        1.8 S \
         2.7 E c "${cfg_danger_zone}Disconnect clients" \
         "$TMUX_BIN choose-client -Z $hint" \
         1.8 C x "${cfg_danger_zone}Kill server" "confirm-before -p \
-            'kill tmux server defined in($cfg_tmux_conf) ? (y/n)' kill-server"
+                'kill tmux server defined in($cfg_tmux_conf) ? (y/n)' kill-server"
     menu_generate_part 5 "$@"
 }
 

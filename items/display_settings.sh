@@ -34,9 +34,9 @@ dynamic_content() {
         *) cur_theme="Theme: $t_current" ;;
     esac
     set -- \
-        0.0 S \
-        0.0 T "#[align=centre,dim]Current: #[nodim]$cur_theme" \
-        0.0 T "" \
+        3.8 S \
+        3.8 T "#[align=centre,dim]Current: #[nodim]$cur_theme" \
+        3.8 T "" \
         3.8 C a "$t_detect" "set-option theme detect $runshell_mnu_reload" \
         3.8 C l "$t_light" "set-option theme light $runshell_mnu_reload" \
         3.8 C d "$t_dark" "set-option theme dark $runshell_mnu_reload" \

@@ -27,7 +27,7 @@ static_content() {
     display_commands_toggle 2
 
     set -- \
-        0.0 S \
+        1.1 S \
         1.1 C l "Log to file" "command-prompt -p 'Dest file:' \
             -I '$HOME/tmp/pane-output.log' \
             'run-shell \"$0 --log-file %1\"'"

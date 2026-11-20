@@ -36,7 +36,7 @@ static_content() {
         0.0 C M-p "Previous (alert)" "previous-window -a $runshell_mnu_reload" \
         0.0 C M-n "Next     (alert)" "next-window -a $runshell_mnu_reload" \
         2.7 C c "Choose" "choose-tree -Zw" \
-        0.0 S \
+        1.8 S \
         1.8 C x "${cfg_danger_zone}Kill current" "confirm-before -p \
             'Kill this window: ${cmd_prmpt_hash_esc}W (id:#{window_id} idx:#I)? (y/n)' \
             kill-window  $runshell_mnu_reload" \

@@ -13,6 +13,10 @@ Session: ${cmd_prmpt_hash_esc}S (id:#{session_id})
 `##T`
 `##{session_name}`
 
+## Dangerzone on alt handler
+
+filter out `#[reverse]`
+
 ## Odd bugg pane_toggle enable/disable
 
 `tmux_error_handler_assign _p_disabled display-message -p '#{pane_input_off}'`
