@@ -38,7 +38,7 @@ static_content() {
         2.7 C c "Choose" "choose-tree -Zw" \
         1.8 S \
         1.8 C x "${cfg_danger_zone}Kill current" "confirm-before -p \
-            'Kill this window: ${cmd_prmpt_hash_esc}W (id:#{window_id} idx:#I)? (y/n)' \
+            'Kill this window: ${cmd_prmpt_hash_esc}W (id:#W idx:#I)? (y/n)' \
             kill-window  $runshell_mnu_reload" \
         1.8 C o "${cfg_danger_zone}Kill all other" "confirm-before -p \
             'Are you sure you want to kill all other? (y/n)' \

@@ -20,10 +20,10 @@ _this="kill_other_windows.sh" # error prone if script name is changed :(
 window_list=""
 current_window=""
 
-tmux_error_handler_assign window_list list-windows -F '#{window_id}' || {
+tmux_error_handler_assign window_list list-windows -F '#W' || {
     error_msg "Failed to list windows"
 }
-tmux_error_handler_assign current_window display-message -p '#{window_id}' || {
+tmux_error_handler_assign current_window display-message -p '#W' || {
     error_msg "Failed to get current window_id"
 }
 
