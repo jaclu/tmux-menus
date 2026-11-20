@@ -9,26 +9,37 @@
 #
 
 dynamic_content() {
-    # marking a pane is an ancient feature, but pane_marked came at 3.0
-    tmux_vers_check 3.0 || return
 
     ${b_all_helpers_sourced:-false} || source_all_helpers "window_move:dynamic_content()"
 
-    tmux_error_handler_assign this_win_id display-message -p '#{window_id}'
-    tmux_error_handler_assign pane_marked_status \
-        list-panes -a -F '#{pane_marked} #{window_id}'
-
-    # SC2154: variables assigned dynamically by tmux_error_handler_assign using eval
-    # shellcheck disable=SC2154# faking external variables for shellcheck
-    s_found="$(echo "$pane_marked_status" | grep '1 ' | grep -v "$this_win_id")"
-    if [ -n "$s_found" ]; then
-        set -- \
-            3.0 T "Swap current window with window" \
-            3.0 C s " containing marked pane" swap-window
+    if tmux_vers_check 3.0; then
+        follow_win="-d"
     else
-        set -- 0 D
+        # The man page suggests -d should be used for this, regardless of version,
+        # but pre-3.0 tmux produces the desired result only when -d is omitted.
+        follow_win=""
     fi
-    menu_generate_part 4 "$@"
+    tmux_error_handler_assign this_win_id display-message -p '#W'
+    # shellcheck disable=SC2154# this_win_id defined by tmux_error_handler_assign
+    set -- \
+        0.0 S \
+        0.0 C p "Move window Left" "swap-window $follow_win -s $this_win_id -t :- \
+                $runshell_mnu_reload" \
+        0.0 C n "Move window Right" "swap-window $follow_win -s $this_win_id -t :+ \
+                $runshell_mnu_reload"
+    # marking a pane is an ancient feature, but pane_marked came at 3.0
+    tmux_vers_check 3.0 && {
+        tmux_error_handler_assign pane_marked_status \
+            list-panes -a -F '#{pane_marked} #W'
+        # shellcheck disable=SC2154# pane_marked_status defined by tmux_error_handler_assign
+        s_found="$(echo "$pane_marked_status" | grep '1 ' | grep -v "$this_win_id")"
+        [ -n "$s_found" ] && {
+            set -- "$@" \
+                3.0 T "Swap current window with window" \
+                3.0 C s " containing marked pane" swap-window
+        }
+    }
+    menu_generate_part 3 "$@"
 }
 
 static_content() {
@@ -39,18 +50,15 @@ static_content() {
     menu_generate_part 1 "$@"
     display_commands_toggle 2 # give this its own menu part idx
 
-    set -- \
-        0.0 S \
-        0.0 C p "Swap window Left" "swap-window -d -t :-1 $runshell_mnu_reload" \
-        0.0 C n "Swap window Right" "swap-window -d -t :+1 $runshell_mnu_reload"
-    menu_generate_part 3 "$@"
-
-    set -- \
-        1.8 S \
-        1.8 E m "Move to other" "$d_scripts/act_choose_tree.sh w m" \
-        1.8 E l "Link to other" "$d_scripts/act_choose_tree.sh w l"
-
     tmux_vers_check 1.8 && {
+        set -- \
+            1.8 S \
+            1.8 T "Move before selected window" \
+            1.8 E m "  (including in other sessions)" \
+            "$d_scripts/act_choose_tree.sh w m" \
+            1.8 S \
+            1.8 E l "Link to other session" "$d_scripts/act_choose_tree.sh w l"
+
         # Limit to same vers as act_choose-tree.sh, even if this is not vers dependent.
         # Showing help about a disabled feature would be confusing
 
@@ -58,11 +66,10 @@ static_content() {
             set -- "$@" \
                 0.0 M K "Key hints - Move/Link      $nav_next" "$d_hints/choose-tree.sh $0"
         }
-
         set -- "$@" \
-            0.0 C u "${cfg_danger_zone}Unlink from session" "unlink-window"
+            1.8 C u "${cfg_danger_zone}Unlink from current session" "unlink-window"
     }
-    menu_generate_part 5 "$@"
+    menu_generate_part 4 "$@"
 }
 
 #===============================================================
